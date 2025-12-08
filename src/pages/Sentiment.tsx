@@ -1,12 +1,32 @@
 import { Layout } from "@/components/layout/Layout";
-import { Brain, TrendingUp, TrendingDown, Activity, Users, Newspaper, Waves } from "lucide-react";
+import { Brain, TrendingUp, TrendingDown, Activity, Users, Newspaper, Waves, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useMarketData } from "@/hooks/useMarketData";
+import { useAIForecast } from "@/hooks/useAIForecast";
 
 const SentimentPage = () => {
-  const fearGreedIndex = 68;
-  const socialSentiment = 72;
-  const newsImpact = 45;
-  const whaleActivity = 85;
+  const { data: marketData, isLoading } = useMarketData();
+  const topCoins = marketData?.topCoins?.slice(0, 10) || [];
+  
+  const { data: aiData, isLoading: aiLoading } = useAIForecast(
+    topCoins.length > 0 ? topCoins : null,
+    "market_sentiment",
+    topCoins.length > 0
+  );
+
+  const fearGreedIndex = marketData?.fearGreedIndex || 50;
+  
+  // Calculate social sentiment from price changes
+  const avgChange = topCoins.reduce((sum, c) => sum + c.change24h, 0) / (topCoins.length || 1);
+  const socialSentiment = Math.min(100, Math.max(0, 50 + avgChange * 5));
+  
+  // News impact based on volatility
+  const volatility = topCoins.reduce((sum, c) => sum + Math.abs(c.change24h), 0) / (topCoins.length || 1);
+  const newsImpact = Math.min(100, Math.max(0, volatility * 10));
+  
+  // Whale activity based on volume
+  const totalVolume = topCoins.reduce((sum, c) => sum + c.volume, 0);
+  const whaleActivity = Math.min(100, Math.max(0, 50 + (totalVolume > 100e9 ? 30 : totalVolume > 50e9 ? 15 : 0)));
 
   const getSentimentColor = (value: number) => {
     if (value >= 70) return "text-success";
@@ -22,6 +42,19 @@ const SentimentPage = () => {
     return "Extreme Fear";
   };
 
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="container mx-auto px-4 py-12 flex justify-center items-center min-h-[600px]">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="w-12 h-12 animate-spin text-primary" />
+            <p className="text-muted-foreground font-display">Scanning market sentiment...</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <div className="container mx-auto px-4 py-12">
@@ -30,7 +63,7 @@ const SentimentPage = () => {
             <span className="text-gradient-cosmic">COSMIC</span> SENTIMENT SCANNER
           </h1>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Real-time analysis of market emotions and whale movements
+            Real-time analysis of market emotions and whale movements • Live Data
           </p>
         </div>
 
@@ -59,15 +92,17 @@ const SentimentPage = () => {
             <Users className="w-8 h-8 text-secondary mx-auto mb-4" />
             <h3 className="font-display text-sm text-muted-foreground mb-2">SOCIAL SENTIMENT</h3>
             <div className={cn("text-5xl font-display font-bold mb-2", getSentimentColor(socialSentiment))}>
-              {socialSentiment}
+              {Math.round(socialSentiment)}
             </div>
-            <div className="text-foreground font-display">Positive</div>
+            <div className="text-foreground font-display">
+              {socialSentiment >= 60 ? "Positive" : socialSentiment >= 40 ? "Neutral" : "Negative"}
+            </div>
             <div className="mt-4 flex justify-center gap-1">
               {[...Array(10)].map((_, i) => (
                 <div
                   key={i}
                   className={cn(
-                    "w-2 h-8 rounded-full transition-all",
+                    "w-2 rounded-full transition-all",
                     i < Math.floor(socialSentiment / 10) ? "bg-success" : "bg-muted"
                   )}
                   style={{ height: `${20 + Math.random() * 20}px` }}
@@ -79,20 +114,18 @@ const SentimentPage = () => {
           {/* News Impact */}
           <div className="holo-card p-6 text-center">
             <Newspaper className="w-8 h-8 text-warning mx-auto mb-4" />
-            <h3 className="font-display text-sm text-muted-foreground mb-2">NEWS IMPACT</h3>
+            <h3 className="font-display text-sm text-muted-foreground mb-2">VOLATILITY INDEX</h3>
             <div className={cn("text-5xl font-display font-bold mb-2", getSentimentColor(newsImpact))}>
-              {newsImpact}
+              {Math.round(newsImpact)}
             </div>
-            <div className="text-warning font-display">Neutral</div>
+            <div className="text-warning font-display">
+              {newsImpact >= 60 ? "High" : newsImpact >= 30 ? "Medium" : "Low"}
+            </div>
             <div className="mt-4 relative h-4 bg-muted rounded-full overflow-hidden">
-              <div className="absolute inset-0 flex">
-                <div className="w-1/2 flex justify-end pr-1">
-                  <div className="h-full w-12 bg-danger/60 rounded-l-full" />
-                </div>
-                <div className="w-1/2 flex pl-1">
-                  <div className="h-full w-8 bg-success/60 rounded-r-full" />
-                </div>
-              </div>
+              <div 
+                className="h-full bg-warning/60 transition-all duration-1000"
+                style={{ width: `${newsImpact}%` }}
+              />
             </div>
           </div>
 
@@ -101,9 +134,11 @@ const SentimentPage = () => {
             <Waves className="w-8 h-8 text-primary mx-auto mb-4" />
             <h3 className="font-display text-sm text-muted-foreground mb-2">WHALE ACTIVITY</h3>
             <div className={cn("text-5xl font-display font-bold mb-2", getSentimentColor(whaleActivity))}>
-              {whaleActivity}
+              {Math.round(whaleActivity)}
             </div>
-            <div className="text-success font-display">High</div>
+            <div className="text-success font-display">
+              {whaleActivity >= 70 ? "High" : whaleActivity >= 40 ? "Medium" : "Low"}
+            </div>
             <div className="mt-4 flex justify-center">
               <div className="relative w-20 h-20">
                 <svg className="w-full h-full transform -rotate-90">
@@ -131,45 +166,77 @@ const SentimentPage = () => {
           </div>
         </div>
 
+        {/* AI Insights */}
+        {aiData?.forecast && (
+          <div className="holo-card p-6 mb-12">
+            <h2 className="font-display text-xl font-bold mb-6 flex items-center gap-2">
+              <Brain className="w-5 h-5 text-primary" />
+              AI MARKET ANALYSIS
+            </h2>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <h4 className="font-display text-sm text-muted-foreground mb-2">SHORT TERM OUTLOOK</h4>
+                <p className="text-foreground">{aiData.forecast.shortTermOutlook || "Analyzing market conditions..."}</p>
+              </div>
+              {aiData.forecast.keyInsights && aiData.forecast.keyInsights.length > 0 && (
+                <div>
+                  <h4 className="font-display text-sm text-muted-foreground mb-2">KEY INSIGHTS</h4>
+                  <ul className="space-y-1">
+                    {aiData.forecast.keyInsights.slice(0, 3).map((insight: string, i: number) => (
+                      <li key={i} className="text-foreground text-sm flex items-start gap-2">
+                        <span className="text-primary">•</span>
+                        {insight}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Recent Signals */}
         <div className="holo-card p-6 mb-12">
           <h2 className="font-display text-xl font-bold mb-6 flex items-center gap-2">
             <Activity className="w-5 h-5 text-primary" />
-            RECENT SIGNALS
+            LIVE SIGNALS
           </h2>
           <div className="space-y-4">
-            {[
-              { time: "2 min ago", type: "bullish", message: "Large BTC accumulation detected - 500+ BTC moved to cold storage" },
-              { time: "15 min ago", type: "neutral", message: "ETH gas fees normalizing after morning spike" },
-              { time: "32 min ago", type: "bullish", message: "SOL showing strong momentum with increasing volume" },
-              { time: "1 hour ago", type: "bearish", message: "Minor whale sell-off detected in XRP markets" },
-              { time: "2 hours ago", type: "bullish", message: "Positive regulatory news impacting overall market sentiment" },
-            ].map((signal, index) => (
-              <div
-                key={index}
-                className={cn(
-                  "flex items-start gap-4 p-4 rounded-lg border transition-all hover:bg-muted/30",
-                  signal.type === "bullish" ? "border-success/30" : signal.type === "bearish" ? "border-danger/30" : "border-border"
-                )}
-              >
-                <div className={cn(
-                  "p-2 rounded-lg",
-                  signal.type === "bullish" ? "bg-success/20" : signal.type === "bearish" ? "bg-danger/20" : "bg-warning/20"
-                )}>
-                  {signal.type === "bullish" ? (
-                    <TrendingUp className={cn("w-5 h-5", "text-success")} />
-                  ) : signal.type === "bearish" ? (
-                    <TrendingDown className={cn("w-5 h-5", "text-danger")} />
-                  ) : (
-                    <Activity className={cn("w-5 h-5", "text-warning")} />
+            {topCoins.slice(0, 5).map((coin, index) => {
+              const type = coin.change24h >= 3 ? "bullish" : coin.change24h <= -3 ? "bearish" : "neutral";
+              const message = type === "bullish" 
+                ? `${coin.name} showing strong momentum with +${coin.change24h.toFixed(2)}% gain`
+                : type === "bearish"
+                ? `${coin.name} under pressure with ${coin.change24h.toFixed(2)}% decline`
+                : `${coin.name} trading sideways at $${coin.price.toLocaleString()}`;
+              
+              return (
+                <div
+                  key={coin.symbol}
+                  className={cn(
+                    "flex items-start gap-4 p-4 rounded-lg border transition-all hover:bg-muted/30",
+                    type === "bullish" ? "border-success/30" : type === "bearish" ? "border-danger/30" : "border-border"
                   )}
+                >
+                  <div className={cn(
+                    "p-2 rounded-lg",
+                    type === "bullish" ? "bg-success/20" : type === "bearish" ? "bg-danger/20" : "bg-warning/20"
+                  )}>
+                    {type === "bullish" ? (
+                      <TrendingUp className="w-5 h-5 text-success" />
+                    ) : type === "bearish" ? (
+                      <TrendingDown className="w-5 h-5 text-danger" />
+                    ) : (
+                      <Activity className="w-5 h-5 text-warning" />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-foreground">{message}</p>
+                    <p className="text-sm text-muted-foreground mt-1">Volume: ${(coin.volume / 1e9).toFixed(2)}B</p>
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <p className="text-foreground">{signal.message}</p>
-                  <p className="text-sm text-muted-foreground mt-1">{signal.time}</p>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

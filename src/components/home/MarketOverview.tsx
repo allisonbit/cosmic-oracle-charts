@@ -1,22 +1,35 @@
-import { TrendingUp, TrendingDown, Flame, Zap } from "lucide-react";
+import { TrendingUp, TrendingDown, Flame, Zap, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useMarketData } from "@/hooks/useMarketData";
 
-const topCoins = [
-  { rank: 1, symbol: "BTC", name: "Bitcoin", price: 67842.50, change: 2.34, volume: "38.2B", hot: true },
-  { rank: 2, symbol: "ETH", name: "Ethereum", price: 3521.80, change: -0.87, volume: "18.5B", hot: false },
-  { rank: 3, symbol: "SOL", name: "Solana", price: 142.30, change: 5.67, volume: "4.2B", hot: true },
-  { rank: 4, symbol: "BNB", name: "BNB", price: 584.20, change: 1.45, volume: "2.1B", hot: false },
-  { rank: 5, symbol: "XRP", name: "Ripple", price: 0.62, change: -1.23, volume: "3.8B", hot: false },
-];
-
-const trendingCoins = [
-  { symbol: "PEPE", change: 45.2 },
-  { symbol: "WIF", change: 23.8 },
-  { symbol: "BONK", change: 18.5 },
-  { symbol: "FLOKI", change: 12.3 },
-];
+function formatNumber(num: number): string {
+  if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
+  if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
+  if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
+  return `$${num.toLocaleString()}`;
+}
 
 export function MarketOverview() {
+  const { data, isLoading, error } = useMarketData();
+
+  if (isLoading) {
+    return (
+      <section className="py-24 relative cosmic-bg">
+        <div className="container mx-auto px-4 flex justify-center items-center min-h-[400px]">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="w-12 h-12 animate-spin text-primary" />
+            <p className="text-muted-foreground font-display">Loading market data...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const topCoins = data?.topCoins?.slice(0, 5) || [];
+  const trendingCoins = data?.trending || [];
+  const global = data?.global;
+  const fearGreedIndex = data?.fearGreedIndex || 50;
+
   return (
     <section className="py-24 relative cosmic-bg">
       <div className="container mx-auto px-4">
@@ -35,6 +48,7 @@ export function MarketOverview() {
             <div className="flex items-center gap-2 mb-6">
               <Zap className="w-5 h-5 text-primary" />
               <h3 className="font-display text-xl font-bold">TOP COINS</h3>
+              <span className="text-xs text-muted-foreground ml-auto">Live Data</span>
             </div>
             
             <div className="overflow-x-auto">
@@ -59,25 +73,25 @@ export function MarketOverview() {
                         <div className="flex items-center gap-2">
                           <span className="font-display font-bold text-primary">{coin.symbol}</span>
                           <span className="text-muted-foreground text-sm hidden sm:inline">{coin.name}</span>
-                          {coin.hot && <Flame className="w-4 h-4 text-warning" />}
+                          {Math.abs(coin.change24h) > 5 && <Flame className="w-4 h-4 text-warning" />}
                         </div>
                       </td>
                       <td className="py-4 px-2 text-right font-medium">
-                        ${coin.price.toLocaleString()}
+                        ${coin.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}
                       </td>
                       <td className={cn(
                         "py-4 px-2 text-right font-medium flex items-center justify-end gap-1",
-                        coin.change >= 0 ? "text-success" : "text-danger"
+                        coin.change24h >= 0 ? "text-success" : "text-danger"
                       )}>
-                        {coin.change >= 0 ? (
+                        {coin.change24h >= 0 ? (
                           <TrendingUp className="w-4 h-4" />
                         ) : (
                           <TrendingDown className="w-4 h-4" />
                         )}
-                        {coin.change >= 0 ? "+" : ""}{coin.change}%
+                        {coin.change24h >= 0 ? "+" : ""}{coin.change24h.toFixed(2)}%
                       </td>
                       <td className="py-4 px-2 text-right text-muted-foreground hidden sm:table-cell">
-                        ${coin.volume}
+                        {formatNumber(coin.volume)}
                       </td>
                     </tr>
                   ))}
@@ -95,15 +109,22 @@ export function MarketOverview() {
                 <h3 className="font-display font-bold">TRENDING</h3>
               </div>
               <div className="space-y-3">
-                {trendingCoins.map((coin, index) => (
+                {trendingCoins.length > 0 ? trendingCoins.map((coin, index) => (
                   <div key={coin.symbol} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="text-muted-foreground text-sm">{index + 1}</span>
                       <span className="font-display font-bold text-primary">{coin.symbol}</span>
                     </div>
-                    <span className="text-success font-medium">+{coin.change}%</span>
+                    <span className={cn(
+                      "font-medium",
+                      coin.priceChange >= 0 ? "text-success" : "text-danger"
+                    )}>
+                      {coin.priceChange >= 0 ? "+" : ""}{coin.priceChange?.toFixed(1) || "0"}%
+                    </span>
                   </div>
-                ))}
+                )) : (
+                  <p className="text-muted-foreground text-sm">Loading trending...</p>
+                )}
               </div>
             </div>
             
@@ -113,15 +134,21 @@ export function MarketOverview() {
               <div className="space-y-4">
                 <div>
                   <div className="text-muted-foreground text-sm">Total Market Cap</div>
-                  <div className="text-xl font-bold text-foreground">$2.45T</div>
+                  <div className="text-xl font-bold text-foreground">
+                    {global ? formatNumber(global.totalMarketCap) : "Loading..."}
+                  </div>
                 </div>
                 <div>
                   <div className="text-muted-foreground text-sm">24h Volume</div>
-                  <div className="text-xl font-bold text-foreground">$89.2B</div>
+                  <div className="text-xl font-bold text-foreground">
+                    {global ? formatNumber(global.totalVolume24h) : "Loading..."}
+                  </div>
                 </div>
                 <div>
                   <div className="text-muted-foreground text-sm">BTC Dominance</div>
-                  <div className="text-xl font-bold text-primary">52.3%</div>
+                  <div className="text-xl font-bold text-primary">
+                    {global ? `${global.btcDominance.toFixed(1)}%` : "Loading..."}
+                  </div>
                 </div>
               </div>
             </div>
@@ -132,12 +159,17 @@ export function MarketOverview() {
               <div className="relative h-4 bg-muted rounded-full overflow-hidden">
                 <div 
                   className="absolute inset-y-0 left-0 bg-gradient-to-r from-danger via-warning to-success"
-                  style={{ width: "68%" }}
+                  style={{ width: `${fearGreedIndex}%` }}
                 />
               </div>
               <div className="flex justify-between mt-2 text-sm">
                 <span className="text-danger">Fear</span>
-                <span className="text-success font-bold">68 - Greed</span>
+                <span className={cn(
+                  "font-bold",
+                  fearGreedIndex >= 60 ? "text-success" : fearGreedIndex >= 40 ? "text-warning" : "text-danger"
+                )}>
+                  {fearGreedIndex} - {fearGreedIndex >= 60 ? "Greed" : fearGreedIndex >= 40 ? "Neutral" : "Fear"}
+                </span>
               </div>
             </div>
           </div>
