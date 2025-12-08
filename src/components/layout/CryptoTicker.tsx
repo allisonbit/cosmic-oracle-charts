@@ -1,19 +1,28 @@
-import { TrendingUp, TrendingDown } from "lucide-react";
+import { TrendingUp, TrendingDown, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-const tickerData = [
-  { symbol: "BTC", name: "Bitcoin", price: 67842.50, change: 2.34 },
-  { symbol: "ETH", name: "Ethereum", price: 3521.80, change: -0.87 },
-  { symbol: "BNB", name: "BNB", price: 584.20, change: 1.45 },
-  { symbol: "SOL", name: "Solana", price: 142.30, change: 5.67 },
-  { symbol: "XRP", name: "Ripple", price: 0.62, change: -1.23 },
-  { symbol: "ADA", name: "Cardano", price: 0.45, change: 3.21 },
-  { symbol: "DOGE", name: "Dogecoin", price: 0.12, change: 8.90 },
-  { symbol: "DOT", name: "Polkadot", price: 7.85, change: -2.15 },
-];
+import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 
 export function CryptoTicker() {
+  const { data, isLoading, error } = useCryptoPrices();
+
+  const tickerData = data?.prices || [];
   const duplicatedData = [...tickerData, ...tickerData];
+
+  if (isLoading) {
+    return (
+      <div className="w-full overflow-hidden bg-muted/50 border-y border-primary/20 py-3 flex justify-center">
+        <Loader2 className="w-5 h-5 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (error || tickerData.length === 0) {
+    return (
+      <div className="w-full overflow-hidden bg-muted/50 border-y border-primary/20 py-3 text-center text-muted-foreground text-sm">
+        Loading market data...
+      </div>
+    );
+  }
 
   return (
     <div className="w-full overflow-hidden bg-muted/50 border-y border-primary/20 py-3">
@@ -27,21 +36,21 @@ export function CryptoTicker() {
               {coin.symbol}
             </span>
             <span className="text-foreground font-medium">
-              ${coin.price.toLocaleString()}
+              ${coin.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}
             </span>
             <span
               className={cn(
                 "flex items-center gap-1 text-sm font-medium",
-                coin.change >= 0 ? "text-success" : "text-danger"
+                coin.change24h >= 0 ? "text-success" : "text-danger"
               )}
             >
-              {coin.change >= 0 ? (
+              {coin.change24h >= 0 ? (
                 <TrendingUp className="w-3 h-3" />
               ) : (
                 <TrendingDown className="w-3 h-3" />
               )}
-              {coin.change >= 0 ? "+" : ""}
-              {coin.change}%
+              {coin.change24h >= 0 ? "+" : ""}
+              {coin.change24h.toFixed(2)}%
             </span>
           </div>
         ))}

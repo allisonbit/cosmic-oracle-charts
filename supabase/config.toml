@@ -1,1 +1,10 @@
 project_id = "qynszkirmcrldqmiplwh"
+
+[functions.crypto-prices]
+verify_jwt = false
+
+[functions.crypto-market]
+verify_jwt = false
+
+[functions.ai-forecast]
+verify_jwt = false
