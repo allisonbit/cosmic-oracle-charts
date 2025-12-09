@@ -8,3 +8,9 @@ verify_jwt = false
 
 [functions.ai-forecast]
 verify_jwt = false
+
+[functions.chain-data]
+verify_jwt = false
+
+[functions.chain-forecast]
+verify_jwt = false
