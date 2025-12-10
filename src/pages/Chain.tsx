@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { getChainById } from "@/lib/chainConfig";
 import { useChainData } from "@/hooks/useChainData";
 import { useChainForecast } from "@/hooks/useChainForecast";
@@ -14,12 +14,10 @@ import { SocialSentimentGalaxy } from "@/components/chain/SocialSentimentGalaxy"
 import { TokenDiscoveryEngine } from "@/components/chain/TokenDiscoveryEngine";
 import { DailySummary } from "@/components/chain/DailySummary";
 import { ChainSidebar } from "@/components/chain/ChainSidebar";
-import { Navbar } from "@/components/layout/Navbar";
 import { CryptoTicker } from "@/components/layout/CryptoTicker";
 import { Footer } from "@/components/layout/Footer";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { ArrowLeft, Loader2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 export default function Chain() {
   const { chainId } = useParams<{ chainId: string }>();
@@ -32,17 +30,13 @@ export default function Chain() {
 
   if (!chain) {
     return (
-      <div className="min-h-screen cosmic-bg flex flex-col">
-        <Navbar />
-        <div className="flex-1 flex items-center justify-center p-6 mt-16">
-          <div className="holo-card p-8 text-center">
-            <h2 className="text-2xl font-display text-foreground mb-4">Chain Not Found</h2>
-            <button onClick={() => navigate("/")} className="text-primary hover:underline">
-              Return Home
-            </button>
-          </div>
+      <div className="min-h-screen cosmic-bg flex items-center justify-center p-6">
+        <div className="holo-card p-8 text-center">
+          <h2 className="text-2xl font-display text-foreground mb-4">Chain Not Found</h2>
+          <button onClick={() => navigate("/")} className="text-primary hover:underline">
+            Return Home
+          </button>
         </div>
-        <Footer />
       </div>
     );
   }
@@ -54,11 +48,10 @@ export default function Chain() {
   const showLoading = chainLoading && !chainData;
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen cosmic-bg flex w-full overflow-x-hidden">
-        <Navbar />
+    <SidebarProvider defaultOpen={true}>
+      <div className="min-h-screen cosmic-bg flex w-full">
         <ChainSidebar />
-        <div className="flex-1 flex flex-col mt-14 md:mt-16">
+        <div className="flex-1 flex flex-col min-w-0">
           <CryptoTicker />
           
           {showLoading ? (
@@ -69,7 +62,7 @@ export default function Chain() {
               </div>
             </div>
           ) : (
-            <main className="flex-1">
+            <main className="flex-1 overflow-y-auto">
               <div className="container mx-auto px-4 py-6 md:py-8 space-y-4 md:space-y-6">
                 {/* Back Button */}
                 <button
