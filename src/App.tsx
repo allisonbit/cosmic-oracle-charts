@@ -3,8 +3,6 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { ChainSidebar } from "@/components/chain/ChainSidebar";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Sentiment from "./pages/Sentiment";
@@ -22,23 +20,16 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <SidebarProvider>
-          <div className="flex min-h-screen w-full">
-            <ChainSidebar />
-            <main className="flex-1">
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/sentiment" element={<Sentiment />} />
-                <Route path="/explorer" element={<Explorer />} />
-                <Route path="/learn" element={<Learn />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/chain/:chainId" element={<Chain />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </main>
-          </div>
-        </SidebarProvider>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/sentiment" element={<Sentiment />} />
+          <Route path="/explorer" element={<Explorer />} />
+          <Route path="/learn" element={<Learn />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/chain/:chainId" element={<Chain />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

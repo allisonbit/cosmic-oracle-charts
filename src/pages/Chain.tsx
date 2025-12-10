@@ -13,6 +13,10 @@ import { RiskAnalyzer } from "@/components/chain/RiskAnalyzer";
 import { SocialSentimentGalaxy } from "@/components/chain/SocialSentimentGalaxy";
 import { TokenDiscoveryEngine } from "@/components/chain/TokenDiscoveryEngine";
 import { DailySummary } from "@/components/chain/DailySummary";
+import { ChainSidebar } from "@/components/chain/ChainSidebar";
+import { Navbar } from "@/components/layout/Navbar";
+import { CryptoTicker } from "@/components/layout/CryptoTicker";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -28,7 +32,8 @@ export default function Chain() {
   if (!chain) {
     return (
       <div className="min-h-screen cosmic-bg flex items-center justify-center p-6">
-        <div className="holo-card p-8 text-center">
+        <Navbar />
+        <div className="holo-card p-8 text-center mt-16">
           <h2 className="text-2xl font-display text-foreground mb-4">Chain Not Found</h2>
           <button onClick={() => navigate("/")} className="text-primary hover:underline">
             Return Home
@@ -43,57 +48,70 @@ export default function Chain() {
 
   if (chainLoading && !chainData) {
     return (
-      <div className="min-h-screen cosmic-bg flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="w-12 h-12 animate-spin text-primary" />
-          <p className="text-muted-foreground font-display">Loading {chain.name} data...</p>
+      <SidebarProvider>
+        <div className="min-h-screen cosmic-bg flex w-full">
+          <Navbar />
+          <ChainSidebar />
+          <div className="flex-1 flex items-center justify-center mt-14 md:mt-16">
+            <div className="flex flex-col items-center gap-4">
+              <Loader2 className="w-12 h-12 animate-spin text-primary" />
+              <p className="text-muted-foreground font-display">Loading {chain.name} data...</p>
+            </div>
+          </div>
         </div>
-      </div>
+      </SidebarProvider>
     );
   }
 
   return (
-    <div className="min-h-screen cosmic-bg">
-      <div className="container mx-auto px-4 py-6 md:py-8 space-y-4 md:space-y-6">
-        {/* Back Button */}
-        <button
-          onClick={() => navigate("/dashboard")}
-          className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          <span>Back to Dashboard</span>
-        </button>
+    <SidebarProvider>
+      <div className="min-h-screen cosmic-bg flex w-full overflow-x-hidden">
+        <Navbar />
+        <ChainSidebar />
+        <main className="flex-1 mt-14 md:mt-16">
+          <CryptoTicker />
+          <div className="container mx-auto px-4 py-6 md:py-8 space-y-4 md:space-y-6">
+            {/* Back Button */}
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              <span>Back to Dashboard</span>
+            </button>
 
-        {/* Overview */}
-        <ChainOverviewPanel chain={chain} overview={chainData?.overview} isLoading={chainLoading} />
+            {/* Overview */}
+            <ChainOverviewPanel chain={chain} overview={chainData?.overview} isLoading={chainLoading} />
 
-        {/* Price Charts & Predictions */}
-        <div className="grid lg:grid-cols-2 gap-4 md:gap-6">
-          <AdvancedPriceChart chain={chain} priceData={chainPrice} />
-          <PredictionDeepDive chain={chain} forecast={forecastData?.forecast} isLoading={forecastLoading} />
-        </div>
+            {/* Price Charts & Predictions */}
+            <div className="grid lg:grid-cols-2 gap-4 md:gap-6">
+              <AdvancedPriceChart chain={chain} priceData={chainPrice} />
+              <PredictionDeepDive chain={chain} forecast={forecastData?.forecast} isLoading={forecastLoading} />
+            </div>
 
-        {/* Whale & Heat Scanner */}
-        <div className="grid lg:grid-cols-2 gap-4 md:gap-6">
-          <WhaleActivityRadar chain={chain} whaleActivity={chainData?.whaleActivity} isLoading={chainLoading} />
-          <TokenHeatScanner chain={chain} tokenHeat={chainData?.tokenHeat} isLoading={chainLoading} />
-        </div>
+            {/* Whale & Heat Scanner */}
+            <div className="grid lg:grid-cols-2 gap-4 md:gap-6">
+              <WhaleActivityRadar chain={chain} whaleActivity={chainData?.whaleActivity} isLoading={chainLoading} />
+              <TokenHeatScanner chain={chain} tokenHeat={chainData?.tokenHeat} isLoading={chainLoading} />
+            </div>
 
-        {/* Smart Money & Risk */}
-        <div className="grid lg:grid-cols-2 gap-4 md:gap-6">
-          <SmartMoneyFlow chain={chain} smartMoneyFlow={chainData?.smartMoneyFlow} isLoading={chainLoading} />
-          <RiskAnalyzer chain={chain} tokenRisks={forecastData?.tokenRisks} isLoading={forecastLoading} />
-        </div>
+            {/* Smart Money & Risk */}
+            <div className="grid lg:grid-cols-2 gap-4 md:gap-6">
+              <SmartMoneyFlow chain={chain} smartMoneyFlow={chainData?.smartMoneyFlow} isLoading={chainLoading} />
+              <RiskAnalyzer chain={chain} tokenRisks={forecastData?.tokenRisks} isLoading={forecastLoading} />
+            </div>
 
-        {/* Social Sentiment */}
-        <SocialSentimentGalaxy chain={chain} socialSentiment={forecastData?.socialSentiment} isLoading={forecastLoading} />
+            {/* Social Sentiment */}
+            <SocialSentimentGalaxy chain={chain} socialSentiment={forecastData?.socialSentiment} isLoading={forecastLoading} />
 
-        {/* Token Discovery */}
-        <TokenDiscoveryEngine chain={chain} tokenHeat={chainData?.tokenHeat} isLoading={chainLoading} />
+            {/* Token Discovery */}
+            <TokenDiscoveryEngine chain={chain} tokenHeat={chainData?.tokenHeat} isLoading={chainLoading} />
 
-        {/* Daily Summary */}
-        <DailySummary chain={chain} forecast={forecastData?.forecast} isLoading={forecastLoading} />
+            {/* Daily Summary */}
+            <DailySummary chain={chain} forecast={forecastData?.forecast} isLoading={forecastLoading} />
+          </div>
+        </main>
       </div>
-    </div>
+    </SidebarProvider>
   );
 }
