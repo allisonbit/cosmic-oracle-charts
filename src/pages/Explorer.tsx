@@ -1,12 +1,13 @@
 import { Layout } from "@/components/layout/Layout";
 import { useState, useMemo, useEffect } from "react";
-import { Search, TrendingUp, TrendingDown, Activity, BarChart3, Shield, Zap, Loader2, ExternalLink, Globe, Layers, Copy, CheckCircle, AlertTriangle, Clock, Target, Brain, Rocket } from "lucide-react";
+import { Search, TrendingUp, TrendingDown, Activity, BarChart3, Shield, Zap, Loader2, ExternalLink, Globe, Layers, Copy, CheckCircle, AlertTriangle, Clock, Target, Brain, Rocket, BadgeCheck, Link2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts";
 import { useMarketData } from "@/hooks/useMarketData";
 import { useAIForecast } from "@/hooks/useAIForecast";
+import { useTokenSearch, SearchToken } from "@/hooks/useTokenSearch";
 import { toast } from "sonner";
 
 function formatNumber(num: number): string {
@@ -14,107 +15,89 @@ function formatNumber(num: number): string {
   if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
   if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
   if (num >= 1e3) return `$${(num / 1e3).toFixed(2)}K`;
-  return `$${num.toLocaleString()}`;
+  if (num === 0) return '$0';
+  if (num < 0.01) return `$${num.toFixed(6)}`;
+  return `$${num.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+}
+
+function formatPrice(price: number): string {
+  if (price === 0) return 'N/A';
+  if (price < 0.0001) return `$${price.toFixed(8)}`;
+  if (price < 0.01) return `$${price.toFixed(6)}`;
+  if (price < 1) return `$${price.toFixed(4)}`;
+  return `$${price.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
 }
 
 const CHAINS = [
-  { id: "all", name: "All Chains", icon: Globe },
-  { id: "ethereum", name: "Ethereum", icon: Layers },
-  { id: "bsc", name: "BNB Chain", icon: Layers },
-  { id: "solana", name: "Solana", icon: Layers },
-  { id: "polygon", name: "Polygon", icon: Layers },
-  { id: "arbitrum", name: "Arbitrum", icon: Layers },
-  { id: "base", name: "Base", icon: Layers },
+  { id: "ethereum", name: "Ethereum", icon: Layers, explorer: "https://etherscan.io" },
+  { id: "polygon", name: "Polygon", icon: Layers, explorer: "https://polygonscan.com" },
+  { id: "arbitrum", name: "Arbitrum", icon: Layers, explorer: "https://arbiscan.io" },
+  { id: "base", name: "Base", icon: Layers, explorer: "https://basescan.org" },
+  { id: "optimism", name: "Optimism", icon: Layers, explorer: "https://optimistic.etherscan.io" },
 ];
 
 const ExplorerPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedChain, setSelectedChain] = useState("all");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [selectedChain, setSelectedChain] = useState("ethereum");
   const [copiedAddress, setCopiedAddress] = useState(false);
-  const { data: marketData, isLoading } = useMarketData();
+  const [selectedToken, setSelectedToken] = useState<SearchToken | null>(null);
   
+  const { data: marketData, isLoading: marketLoading } = useMarketData();
+  const { data: searchResults, isLoading: searchLoading, error: searchError } = useTokenSearch(debouncedQuery, selectedChain);
+  
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   const allCoins = useMemo(() => marketData?.topCoins || [], [marketData]);
   
-  // Real-time search filtering
-  const filteredCoins = useMemo(() => {
-    if (!searchQuery.trim()) return allCoins;
-    const query = searchQuery.toLowerCase().trim();
-    
-    // Check if it's a contract address (starts with 0x)
-    const isContractAddress = query.startsWith("0x") && query.length >= 10;
-    
-    return allCoins.filter(c => {
-      if (isContractAddress) {
-        // For contract addresses, we'd normally check against actual addresses
-        // For now, match any coin for demo purposes
-        return c.symbol.toLowerCase().includes(query.slice(2, 5)) || true;
-      }
-      return c.symbol.toLowerCase().includes(query) || 
-             c.name.toLowerCase().includes(query);
-    });
-  }, [allCoins, searchQuery]);
-
-  const [selectedSymbol, setSelectedSymbol] = useState("BTC");
-  
-  const selectedToken = useMemo(() => {
-    return allCoins.find(c => c.symbol === selectedSymbol) || allCoins[0];
-  }, [allCoins, selectedSymbol]);
-
   const { data: aiData, isLoading: aiLoading } = useAIForecast(
     selectedToken ? { 
       symbol: selectedToken.symbol, 
       price: selectedToken.price, 
       change24h: selectedToken.change24h,
-      volume: selectedToken.volume 
+      volume: 0 
     } : null,
     "coin_forecast",
-    !!selectedToken
+    !!selectedToken && selectedToken.price > 0
   );
 
   const forecast = aiData?.forecast;
 
-  // Generate chart data based on current price
+  // Generate chart data based on selected token
   const chartData = useMemo(() => {
-    if (!selectedToken) return [];
+    if (!selectedToken || selectedToken.price === 0) return [];
     const basePrice = selectedToken.price;
     return Array.from({ length: 24 }, (_, i) => ({
       time: `${i}h`,
       price: basePrice * (0.97 + Math.random() * 0.06),
-      volume: selectedToken.volume * (0.5 + Math.random() * 0.5) / 24,
+      volume: Math.random() * 1000000,
     })).map((item, i, arr) => {
       if (i === arr.length - 1) return { ...item, price: basePrice };
       return item;
     });
   }, [selectedToken]);
 
-  // Mock contract address for demo
-  const mockContractAddress = useMemo(() => {
-    if (!selectedToken) return "";
-    const hash = selectedToken.symbol.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return `0x${hash.toString(16).padStart(8, "0")}...${(hash * 2).toString(16).slice(0, 4)}`;
-  }, [selectedToken]);
-
-  const copyAddress = () => {
-    navigator.clipboard.writeText(mockContractAddress);
+  const copyAddress = (address: string) => {
+    navigator.clipboard.writeText(address);
     setCopiedAddress(true);
     toast.success("Address copied to clipboard");
     setTimeout(() => setCopiedAddress(false), 2000);
   };
 
-  const popularTokens = useMemo(() => allCoins.slice(0, 8), [allCoins]);
+  const getExplorerUrl = (address: string) => {
+    const chain = CHAINS.find(c => c.id === selectedChain);
+    return `${chain?.explorer || 'https://etherscan.io'}/token/${address}`;
+  };
 
-  if (isLoading) {
-    return (
-      <Layout>
-        <div className="container mx-auto px-4 py-8 md:py-12 flex justify-center items-center min-h-[60vh]">
-          <div className="flex flex-col items-center gap-4">
-            <Loader2 className="w-10 h-10 md:w-12 md:h-12 animate-spin text-primary" />
-            <p className="text-muted-foreground font-display text-sm md:text-base">Loading token data...</p>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
+  const popularTokens = useMemo(() => allCoins.slice(0, 8), [allCoins]);
+  const isSearching = searchQuery.length >= 2;
+  const hasResults = searchResults?.tokens && searchResults.tokens.length > 0;
 
   return (
     <Layout>
@@ -125,7 +108,7 @@ const ExplorerPage = () => {
             <span className="glow-text">TOKEN</span> <span className="text-gradient-cosmic">EXPLORER</span>
           </h1>
           <p className="text-muted-foreground text-xs sm:text-sm max-w-xl mx-auto">
-            Search any token by name, symbol, or contract address across all chains
+            Search any token by name, symbol, or contract address using Alchemy
           </p>
         </div>
 
@@ -138,7 +121,10 @@ const ExplorerPage = () => {
                 key={chain.id}
                 variant={selectedChain === chain.id ? "default" : "outline"}
                 size="sm"
-                onClick={() => setSelectedChain(chain.id)}
+                onClick={() => {
+                  setSelectedChain(chain.id);
+                  setSelectedToken(null);
+                }}
                 className="gap-2 whitespace-nowrap"
               >
                 <Icon className="w-4 h-4" />
@@ -154,7 +140,7 @@ const ExplorerPage = () => {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <Input
               type="text"
-              placeholder="Search by name, symbol, or contract address (0x...)..."
+              placeholder="Search any token: name, symbol, or contract address (0x...)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-12 h-14 text-base bg-muted/50 border-primary/30 focus:border-primary"
@@ -163,7 +149,10 @@ const ExplorerPage = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setSearchQuery("")}
+                onClick={() => {
+                  setSearchQuery("");
+                  setSelectedToken(null);
+                }}
                 className="absolute right-2 top-1/2 -translate-y-1/2"
               >
                 Clear
@@ -171,68 +160,109 @@ const ExplorerPage = () => {
             )}
           </div>
           
-          {/* Quick Select Tokens */}
-          <div className="flex flex-wrap gap-2 mt-4 justify-center">
-            {popularTokens.map((token) => (
-              <Button
-                key={token.symbol}
-                variant={selectedSymbol === token.symbol ? "default" : "outline"}
-                size="sm"
-                onClick={() => {
-                  setSelectedSymbol(token.symbol);
-                  setSearchQuery("");
-                }}
-              >
-                {token.symbol}
-              </Button>
-            ))}
-          </div>
+          {/* Quick Select Popular Tokens */}
+          {!isSearching && !selectedToken && (
+            <div className="flex flex-wrap gap-2 mt-4 justify-center">
+              <span className="text-xs text-muted-foreground mr-2">Popular:</span>
+              {popularTokens.map((token) => (
+                <Button
+                  key={token.symbol}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSearchQuery(token.symbol)}
+                >
+                  {token.symbol}
+                </Button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Search Results */}
-        {searchQuery && (
+        {isSearching && (
           <div className="max-w-5xl mx-auto mb-6">
             <div className="holo-card p-6">
               <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
                 <Search className="w-4 h-4 text-primary" />
-                Search Results ({filteredCoins.length})
+                {searchLoading ? (
+                  <span className="flex items-center gap-2">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Searching {selectedChain}...
+                  </span>
+                ) : (
+                  `Search Results (${searchResults?.tokens?.length || 0})`
+                )}
               </h3>
-              {filteredCoins.length > 0 ? (
+              
+              {searchError && (
+                <div className="text-center py-8">
+                  <AlertTriangle className="w-12 h-12 text-danger mx-auto mb-3" />
+                  <p className="text-danger">Search failed. Please try again.</p>
+                </div>
+              )}
+              
+              {!searchLoading && hasResults && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {filteredCoins.slice(0, 12).map((coin) => (
+                  {searchResults.tokens.map((token, idx) => (
                     <button
-                      key={coin.symbol}
+                      key={`${token.contractAddress || token.symbol}-${idx}`}
                       onClick={() => {
-                        setSelectedSymbol(coin.symbol);
+                        setSelectedToken(token);
                         setSearchQuery("");
                       }}
                       className="p-4 rounded-lg bg-muted/30 border border-border hover:border-primary/50 transition-all text-left hover:scale-[1.02]"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                            <span className="font-display font-bold text-primary">{coin.symbol[0]}</span>
-                          </div>
+                          {token.logo ? (
+                            <img 
+                              src={token.logo} 
+                              alt={token.symbol} 
+                              className="w-10 h-10 rounded-full bg-muted"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).style.display = 'none';
+                              }}
+                            />
+                          ) : (
+                            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                              <span className="font-display font-bold text-primary">{token.symbol[0]}</span>
+                            </div>
+                          )}
                           <div>
-                            <span className="font-display font-bold text-primary">{coin.symbol}</span>
-                            <p className="text-xs text-muted-foreground truncate">{coin.name}</p>
+                            <div className="flex items-center gap-1">
+                              <span className="font-display font-bold text-primary">{token.symbol}</span>
+                              {token.verified && <BadgeCheck className="w-3 h-3 text-primary" />}
+                            </div>
+                            <p className="text-xs text-muted-foreground truncate max-w-[120px]">{token.name}</p>
+                            {token.contractAddress && (
+                              <p className="text-[10px] text-muted-foreground/60 font-mono truncate max-w-[120px]">
+                                {token.contractAddress.slice(0, 6)}...{token.contractAddress.slice(-4)}
+                              </p>
+                            )}
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="font-medium">${coin.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
-                          <p className={cn("text-xs font-bold", coin.change24h >= 0 ? "text-success" : "text-danger")}>
-                            {coin.change24h >= 0 ? "+" : ""}{coin.change24h.toFixed(2)}%
-                          </p>
+                          <p className="font-medium text-sm">{formatPrice(token.price)}</p>
+                          {token.change24h !== 0 && (
+                            <p className={cn("text-xs font-bold", token.change24h >= 0 ? "text-success" : "text-danger")}>
+                              {token.change24h >= 0 ? "+" : ""}{token.change24h.toFixed(2)}%
+                            </p>
+                          )}
+                          {token.rank && (
+                            <p className="text-[10px] text-muted-foreground">Rank #{token.rank}</p>
+                          )}
                         </div>
                       </div>
                     </button>
                   ))}
                 </div>
-              ) : (
+              )}
+              
+              {!searchLoading && !hasResults && debouncedQuery.length >= 2 && (
                 <div className="text-center py-8">
                   <AlertTriangle className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-                  <p className="text-muted-foreground">No tokens found matching "{searchQuery}"</p>
-                  <p className="text-xs text-muted-foreground mt-1">Try searching by symbol (BTC, ETH) or full name</p>
+                  <p className="text-muted-foreground">No tokens found for "{debouncedQuery}" on {selectedChain}</p>
+                  <p className="text-xs text-muted-foreground mt-1">Try a different chain or check the contract address</p>
                 </div>
               )}
             </div>
@@ -240,7 +270,7 @@ const ExplorerPage = () => {
         )}
 
         {/* Selected Token Details */}
-        {selectedToken && !searchQuery && (
+        {selectedToken && !isSearching && (
           <div className="grid lg:grid-cols-3 gap-6">
             {/* Main Info */}
             <div className="lg:col-span-2 space-y-6">
@@ -248,78 +278,111 @@ const ExplorerPage = () => {
               <div className="holo-card p-6">
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
                   <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center">
-                      <span className="font-display font-bold text-primary text-xl">{selectedToken.symbol[0]}</span>
-                    </div>
+                    {selectedToken.logo ? (
+                      <img 
+                        src={selectedToken.logo} 
+                        alt={selectedToken.symbol}
+                        className="w-14 h-14 rounded-full bg-muted"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center">
+                        <span className="font-display font-bold text-primary text-xl">{selectedToken.symbol[0]}</span>
+                      </div>
+                    )}
                     <div>
-                      <h2 className="font-display text-2xl font-bold">{selectedToken.name}</h2>
+                      <div className="flex items-center gap-2">
+                        <h2 className="font-display text-2xl font-bold">{selectedToken.name}</h2>
+                        {selectedToken.verified && <BadgeCheck className="w-5 h-5 text-primary" />}
+                      </div>
                       <div className="flex items-center gap-2 mt-1">
                         <span className="text-muted-foreground">{selectedToken.symbol}</span>
-                        <span className="text-xs px-2 py-0.5 rounded bg-muted text-muted-foreground">Rank #{selectedToken.rank}</span>
+                        <span className="text-xs px-2 py-0.5 rounded bg-muted text-muted-foreground capitalize">{selectedToken.chain}</span>
+                        {selectedToken.rank && (
+                          <span className="text-xs px-2 py-0.5 rounded bg-muted text-muted-foreground">Rank #{selectedToken.rank}</span>
+                        )}
                       </div>
                     </div>
                   </div>
                   <div className="flex flex-col items-start sm:items-end gap-1">
-                    <div className="text-3xl font-bold">${selectedToken.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
-                    <div className={cn("flex items-center gap-1 font-medium", selectedToken.change24h >= 0 ? "text-success" : "text-danger")}>
-                      {selectedToken.change24h >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
-                      {selectedToken.change24h >= 0 ? "+" : ""}{selectedToken.change24h.toFixed(2)}% (24h)
-                    </div>
+                    <div className="text-3xl font-bold">{formatPrice(selectedToken.price)}</div>
+                    {selectedToken.change24h !== 0 && (
+                      <div className={cn("flex items-center gap-1 font-medium", selectedToken.change24h >= 0 ? "text-success" : "text-danger")}>
+                        {selectedToken.change24h >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
+                        {selectedToken.change24h >= 0 ? "+" : ""}{selectedToken.change24h.toFixed(2)}% (24h)
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 {/* Contract Address */}
-                <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50 mb-6">
-                  <span className="text-xs text-muted-foreground">Contract:</span>
-                  <code className="text-xs text-primary flex-1 truncate">{mockContractAddress}</code>
-                  <Button variant="ghost" size="sm" onClick={copyAddress} className="gap-1">
-                    {copiedAddress ? <CheckCircle className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}
-                  </Button>
-                  <Button variant="ghost" size="sm" onClick={() => window.open(`https://etherscan.io`, "_blank")}>
-                    <ExternalLink className="w-4 h-4" />
-                  </Button>
-                </div>
+                {selectedToken.contractAddress && (
+                  <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50 mb-6">
+                    <span className="text-xs text-muted-foreground">Contract:</span>
+                    <code className="text-xs text-primary flex-1 truncate font-mono">{selectedToken.contractAddress}</code>
+                    <Button variant="ghost" size="sm" onClick={() => copyAddress(selectedToken.contractAddress)} className="gap-1">
+                      {copiedAddress ? <CheckCircle className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}
+                    </Button>
+                    <Button variant="ghost" size="sm" onClick={() => window.open(getExplorerUrl(selectedToken.contractAddress), "_blank")}>
+                      <ExternalLink className="w-4 h-4" />
+                    </Button>
+                  </div>
+                )}
 
                 {/* Price Chart */}
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={chartData}>
-                      <defs>
-                        <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="hsl(190, 100%, 50%)" stopOpacity={0.3} />
-                          <stop offset="95%" stopColor="hsl(190, 100%, 50%)" stopOpacity={0} />
-                        </linearGradient>
-                      </defs>
-                      <XAxis dataKey="time" stroke="hsl(200, 30%, 60%)" fontSize={10} />
-                      <YAxis stroke="hsl(200, 30%, 60%)" fontSize={10} domain={["dataMin * 0.99", "dataMax * 1.01"]} tickFormatter={(v) => `$${v.toLocaleString()}`} />
-                      <Tooltip
-                        contentStyle={{
-                          background: "hsl(230, 30%, 8%)",
-                          border: "1px solid hsl(190, 100%, 50%, 0.3)",
-                          borderRadius: "8px",
-                          color: "hsl(200, 100%, 95%)",
-                        }}
-                        formatter={(value: number) => [`$${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}`, "Price"]}
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="price"
-                        stroke="hsl(190, 100%, 50%)"
-                        strokeWidth={2}
-                        fill="url(#colorPrice)"
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
+                {chartData.length > 0 && (
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={chartData}>
+                        <defs>
+                          <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                            <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                          </linearGradient>
+                        </defs>
+                        <XAxis dataKey="time" stroke="hsl(var(--muted-foreground))" fontSize={10} />
+                        <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} domain={["dataMin * 0.99", "dataMax * 1.01"]} tickFormatter={(v) => formatPrice(v)} />
+                        <Tooltip
+                          contentStyle={{
+                            background: "hsl(var(--card))",
+                            border: "1px solid hsl(var(--border))",
+                            borderRadius: "8px",
+                            color: "hsl(var(--foreground))",
+                          }}
+                          formatter={(value: number) => [formatPrice(value), "Price"]}
+                        />
+                        <Area
+                          type="monotone"
+                          dataKey="price"
+                          stroke="hsl(var(--primary))"
+                          strokeWidth={2}
+                          fill="url(#colorPrice)"
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                )}
+
+                {selectedToken.price === 0 && (
+                  <div className="h-64 flex items-center justify-center text-muted-foreground">
+                    <div className="text-center">
+                      <BarChart3 className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                      <p>Price data not available for this token</p>
+                      <p className="text-xs mt-1">Try searching on a different chain</p>
+                    </div>
+                  </div>
+                )}
               </div>
 
-              {/* Stats Grid */}
+              {/* Token Info Grid */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                  { label: "Market Cap", value: formatNumber(selectedToken.marketCap), icon: BarChart3, color: "text-primary" },
-                  { label: "24h Volume", value: formatNumber(selectedToken.volume), icon: Activity, color: "text-secondary" },
-                  { label: "Circulating Supply", value: `${(selectedToken.marketCap / selectedToken.price / 1e6).toFixed(1)}M`, icon: Globe, color: "text-warning" },
-                  { label: "Volatility", value: Math.abs(selectedToken.change24h) > 5 ? "High" : Math.abs(selectedToken.change24h) > 2 ? "Medium" : "Low", icon: Zap, color: Math.abs(selectedToken.change24h) > 5 ? "text-danger" : "text-success" },
+                  { label: "Chain", value: selectedToken.chain.charAt(0).toUpperCase() + selectedToken.chain.slice(1), icon: Layers, color: "text-primary" },
+                  { label: "Decimals", value: selectedToken.decimals.toString(), icon: Activity, color: "text-secondary" },
+                  { label: "Verified", value: selectedToken.verified ? "Yes" : "No", icon: Shield, color: selectedToken.verified ? "text-success" : "text-warning" },
+                  { label: "Type", value: selectedToken.contractAddress ? "ERC-20" : "Native", icon: Zap, color: "text-primary" },
                 ].map((stat) => (
                   <div key={stat.label} className="holo-card p-4 text-center">
                     <stat.icon className={cn("w-5 h-5 mx-auto mb-2", stat.color)} />
@@ -329,209 +392,201 @@ const ExplorerPage = () => {
                 ))}
               </div>
 
-              {/* Volume Chart */}
-              <div className="holo-card p-6">
-                <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
-                  <BarChart3 className="w-4 h-4 text-primary" />
-                  24H VOLUME DISTRIBUTION
-                </h3>
-                <div className="h-32">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={chartData}>
-                      <XAxis dataKey="time" stroke="hsl(200, 30%, 60%)" fontSize={10} />
-                      <YAxis stroke="hsl(200, 30%, 60%)" fontSize={10} tickFormatter={(v) => formatNumber(v)} />
-                      <Tooltip
-                        contentStyle={{
-                          background: "hsl(230, 30%, 8%)",
-                          border: "1px solid hsl(190, 100%, 50%, 0.3)",
-                          borderRadius: "8px",
-                          color: "hsl(200, 100%, 95%)",
-                        }}
-                        formatter={(value: number) => [formatNumber(value), "Volume"]}
-                      />
-                      <Bar dataKey="volume" fill="hsl(270, 60%, 50%)" radius={[4, 4, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
+              {/* External Links */}
+              {selectedToken.contractAddress && (
+                <div className="holo-card p-6">
+                  <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
+                    <Link2 className="w-4 h-4 text-primary" />
+                    EXTERNAL LINKS
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {[
+                      { name: "Block Explorer", url: getExplorerUrl(selectedToken.contractAddress) },
+                      { name: "DexScreener", url: `https://dexscreener.com/${selectedChain}/${selectedToken.contractAddress}` },
+                      { name: "DexTools", url: `https://www.dextools.io/app/en/${selectedChain}/pair-explorer/${selectedToken.contractAddress}` },
+                      { name: "CoinGecko", url: selectedToken.coingeckoId ? `https://www.coingecko.com/en/coins/${selectedToken.coingeckoId}` : `https://www.coingecko.com/en/search?query=${selectedToken.symbol}` },
+                    ].map((link) => (
+                      <Button
+                        key={link.name}
+                        variant="outline"
+                        size="sm"
+                        className="gap-2"
+                        onClick={() => window.open(link.url, "_blank")}
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                        {link.name}
+                      </Button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-
-              {/* All Tokens Table */}
-              <div className="holo-card p-6">
-                <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
-                  <Globe className="w-4 h-4 text-primary" />
-                  ALL TOKENS
-                </h3>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="text-muted-foreground text-xs font-display border-b border-border">
-                        <th className="text-left py-2 px-2">#</th>
-                        <th className="text-left py-2 px-2">Token</th>
-                        <th className="text-right py-2 px-2">Price</th>
-                        <th className="text-right py-2 px-2">24h</th>
-                        <th className="text-right py-2 px-2 hidden sm:table-cell">Volume</th>
-                        <th className="text-right py-2 px-2 hidden md:table-cell">Market Cap</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {allCoins.map((coin) => (
-                        <tr 
-                          key={coin.symbol}
-                          onClick={() => setSelectedSymbol(coin.symbol)}
-                          className={cn(
-                            "border-b border-border/50 cursor-pointer transition-colors",
-                            selectedSymbol === coin.symbol ? "bg-primary/10" : "hover:bg-muted/30"
-                          )}
-                        >
-                          <td className="py-3 px-2 text-muted-foreground text-xs">{coin.rank}</td>
-                          <td className="py-3 px-2">
-                            <div className="flex items-center gap-2">
-                              <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
-                                <span className="font-display font-bold text-primary text-xs">{coin.symbol[0]}</span>
-                              </div>
-                              <div>
-                                <span className="font-display font-bold text-primary">{coin.symbol}</span>
-                                <span className="text-muted-foreground text-xs ml-1 hidden sm:inline">{coin.name}</span>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="py-3 px-2 text-right font-medium">${coin.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
-                          <td className={cn("py-3 px-2 text-right font-medium", coin.change24h >= 0 ? "text-success" : "text-danger")}>
-                            {coin.change24h >= 0 ? "+" : ""}{coin.change24h.toFixed(2)}%
-                          </td>
-                          <td className="py-3 px-2 text-right text-muted-foreground hidden sm:table-cell">{formatNumber(coin.volume)}</td>
-                          <td className="py-3 px-2 text-right text-muted-foreground hidden md:table-cell">{formatNumber(coin.marketCap)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+              )}
             </div>
 
             {/* Sidebar */}
             <div className="space-y-6">
-              {/* AI Forecast */}
+              {/* AI Analysis */}
               <div className="holo-card p-6">
                 <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
                   <Brain className="w-4 h-4 text-primary" />
                   AI ANALYSIS
-                  {aiLoading && <Loader2 className="w-4 h-4 animate-spin" />}
                 </h3>
-                <div className="space-y-4">
-                  <div className={cn(
-                    "text-center p-4 rounded-lg border",
-                    forecast?.trend === "bullish" || selectedToken.change24h >= 0 ? "bg-success/10 border-success/30" : "bg-danger/10 border-danger/30"
-                  )}>
-                    <div className={cn(
-                      "font-display text-2xl font-bold",
-                      forecast?.trend === "bullish" || selectedToken.change24h >= 0 ? "text-success" : "text-danger"
-                    )}>
-                      {forecast?.trend?.toUpperCase() || (selectedToken.change24h >= 0 ? "BULLISH" : "BEARISH")}
-                    </div>
-                    <div className="text-xs text-muted-foreground">AI Sentiment</div>
+                {aiLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="w-6 h-6 animate-spin text-primary" />
                   </div>
-                  
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="text-center p-3 rounded-lg bg-muted/50">
-                      <div className="text-xs text-muted-foreground">24H FORECAST</div>
-                      <div className={cn("text-lg font-bold", selectedToken.change24h >= 0 ? "text-success" : "text-danger")}>
-                        {selectedToken.change24h >= 0 ? "↑ UP" : "↓ DOWN"}
+                ) : forecast ? (
+                  <div className="space-y-4">
+                    <div className="p-3 rounded-lg bg-muted/50">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Target className="w-4 h-4 text-primary" />
+                        <span className="text-xs font-display">TREND</span>
                       </div>
+                      <p className={cn("font-bold", 
+                        forecast.trend === "bullish" ? "text-success" : 
+                        forecast.trend === "bearish" ? "text-danger" : "text-warning"
+                      )}>
+                        {forecast.trend?.toUpperCase()}
+                      </p>
                     </div>
-                    <div className="text-center p-3 rounded-lg bg-muted/50">
-                      <div className="text-xs text-muted-foreground">CONFIDENCE</div>
-                      <div className="text-lg font-bold text-primary">{forecast?.confidence || 72}%</div>
+                    
+                    <div className="p-3 rounded-lg bg-muted/50">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Clock className="w-4 h-4 text-secondary" />
+                        <span className="text-xs font-display">SHORT TERM</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">{forecast.shortTerm}</p>
                     </div>
+                    
+                    <div className="p-3 rounded-lg bg-muted/50">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Rocket className="w-4 h-4 text-warning" />
+                        <span className="text-xs font-display">LONG TERM</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">{forecast.longTerm}</p>
+                    </div>
+
+                    {forecast.riskLevel !== undefined && (
+                      <div className="p-3 rounded-lg bg-muted/50">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Shield className="w-4 h-4 text-danger" />
+                          <span className="text-xs font-display">RISK LEVEL</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
+                            <div 
+                              className={cn("h-full rounded-full transition-all", 
+                                forecast.riskLevel <= 30 ? "bg-success" :
+                                forecast.riskLevel <= 60 ? "bg-warning" : "bg-danger"
+                              )}
+                              style={{ width: `${forecast.riskLevel}%` }}
+                            />
+                          </div>
+                          <span className="text-sm font-bold">{forecast.riskLevel}%</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  
-                  {forecast?.reasoning && (
-                    <p className="text-xs text-muted-foreground p-3 rounded-lg bg-muted/30">{forecast.reasoning}</p>
+                ) : selectedToken.price === 0 ? (
+                  <div className="text-center py-6 text-muted-foreground">
+                    <Brain className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">AI analysis requires price data</p>
+                  </div>
+                ) : (
+                  <div className="text-center py-6 text-muted-foreground">
+                    <Brain className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">No AI analysis available</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Quick Actions */}
+              <div className="holo-card p-6">
+                <h3 className="font-display font-bold text-sm mb-4">QUICK ACTIONS</h3>
+                <div className="space-y-2">
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start gap-2"
+                    onClick={() => {
+                      setSelectedToken(null);
+                      setSearchQuery("");
+                    }}
+                  >
+                    <Search className="w-4 h-4" />
+                    Search Another Token
+                  </Button>
+                  {selectedToken.contractAddress && (
+                    <Button 
+                      variant="outline" 
+                      className="w-full justify-start gap-2"
+                      onClick={() => copyAddress(selectedToken.contractAddress)}
+                    >
+                      <Copy className="w-4 h-4" />
+                      Copy Contract
+                    </Button>
                   )}
                 </div>
               </div>
+            </div>
+          </div>
+        )}
 
-              {/* Trading Range */}
-              <div className="holo-card p-6">
-                <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
-                  <Target className="w-4 h-4 text-primary" />
-                  TRADING LEVELS
-                </h3>
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-muted-foreground">Resistance</span>
-                      <span className="text-danger font-bold">
-                        ${(selectedToken.price * 1.08).toLocaleString(undefined, { maximumFractionDigits: 2 })}
-                      </span>
-                    </div>
-                    <div className="h-2 bg-danger/30 rounded-full" />
-                  </div>
-                  <div className="text-center py-3">
-                    <div className="text-xs text-muted-foreground">Current Price</div>
-                    <div className="text-xl font-bold text-primary">
-                      ${selectedToken.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-muted-foreground">Support</span>
-                      <span className="text-success font-bold">
-                        ${(selectedToken.price * 0.92).toLocaleString(undefined, { maximumFractionDigits: 2 })}
-                      </span>
-                    </div>
-                    <div className="h-2 bg-success/30 rounded-full" />
-                  </div>
-                </div>
-              </div>
+        {/* Default View - Top Tokens */}
+        {!selectedToken && !isSearching && !marketLoading && (
+          <div className="holo-card p-6">
+            <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
+              <Globe className="w-4 h-4 text-primary" />
+              TOP TOKENS
+            </h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-muted-foreground text-xs font-display border-b border-border">
+                    <th className="text-left py-2 px-2">#</th>
+                    <th className="text-left py-2 px-2">Token</th>
+                    <th className="text-right py-2 px-2">Price</th>
+                    <th className="text-right py-2 px-2">24h</th>
+                    <th className="text-right py-2 px-2 hidden sm:table-cell">Volume</th>
+                    <th className="text-right py-2 px-2 hidden md:table-cell">Market Cap</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {allCoins.slice(0, 20).map((coin) => (
+                    <tr 
+                      key={coin.symbol} 
+                      className="border-b border-border/50 hover:bg-muted/30 cursor-pointer transition-colors"
+                      onClick={() => setSearchQuery(coin.symbol)}
+                    >
+                      <td className="py-3 px-2 text-muted-foreground">{coin.rank}</td>
+                      <td className="py-3 px-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                            <span className="font-display font-bold text-primary text-xs">{coin.symbol[0]}</span>
+                          </div>
+                          <div>
+                            <span className="font-medium">{coin.symbol}</span>
+                            <p className="text-xs text-muted-foreground">{coin.name}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-3 px-2 text-right font-medium">{formatPrice(coin.price)}</td>
+                      <td className={cn("py-3 px-2 text-right font-bold", coin.change24h >= 0 ? "text-success" : "text-danger")}>
+                        {coin.change24h >= 0 ? "+" : ""}{coin.change24h.toFixed(2)}%
+                      </td>
+                      <td className="py-3 px-2 text-right hidden sm:table-cell text-muted-foreground">{formatNumber(coin.volume)}</td>
+                      <td className="py-3 px-2 text-right hidden md:table-cell text-muted-foreground">{formatNumber(coin.marketCap)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
 
-              {/* Quick Stats */}
-              <div className="holo-card p-6">
-                <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-primary" />
-                  QUICK INSIGHTS
-                </h3>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
-                    <span className="text-xs text-muted-foreground">Trend Strength</span>
-                    <span className={cn("font-bold text-sm", Math.abs(selectedToken.change24h) > 5 ? "text-warning" : "text-success")}>
-                      {Math.abs(selectedToken.change24h) > 5 ? "Strong" : "Moderate"}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
-                    <span className="text-xs text-muted-foreground">Volume Trend</span>
-                    <span className="font-bold text-sm text-success">Above Avg</span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
-                    <span className="text-xs text-muted-foreground">Risk Level</span>
-                    <span className={cn(
-                      "font-bold text-sm",
-                      Math.abs(selectedToken.change24h) > 10 ? "text-danger" : Math.abs(selectedToken.change24h) > 5 ? "text-warning" : "text-success"
-                    )}>
-                      {Math.abs(selectedToken.change24h) > 10 ? "High" : Math.abs(selectedToken.change24h) > 5 ? "Medium" : "Low"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* External Links */}
-              <div className="holo-card p-6">
-                <h3 className="font-display font-bold text-sm mb-4">EXPLORE MORE</h3>
-                <div className="space-y-2">
-                  <Button variant="outline" className="w-full justify-start gap-2" onClick={() => window.open(`https://www.coingecko.com/en/coins/${selectedToken.name.toLowerCase().replace(" ", "-")}`, "_blank")}>
-                    <ExternalLink className="w-4 h-4" />
-                    CoinGecko
-                  </Button>
-                  <Button variant="outline" className="w-full justify-start gap-2" onClick={() => window.open(`https://dexscreener.com/ethereum`, "_blank")}>
-                    <ExternalLink className="w-4 h-4" />
-                    DexScreener
-                  </Button>
-                  <Button variant="outline" className="w-full justify-start gap-2" onClick={() => window.open(`https://etherscan.io`, "_blank")}>
-                    <ExternalLink className="w-4 h-4" />
-                    Block Explorer
-                  </Button>
-                </div>
-              </div>
+        {marketLoading && !isSearching && (
+          <div className="flex justify-center items-center py-20">
+            <div className="flex flex-col items-center gap-4">
+              <Loader2 className="w-10 h-10 animate-spin text-primary" />
+              <p className="text-muted-foreground font-display">Loading market data...</p>
             </div>
           </div>
         )}
