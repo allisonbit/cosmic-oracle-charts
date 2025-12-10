@@ -10,6 +10,7 @@ import Explorer from "./pages/Explorer";
 import Learn from "./pages/Learn";
 import Contact from "./pages/Contact";
 import Chain from "./pages/Chain";
+import Portfolio from "./pages/Portfolio";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/portfolio" element={<Portfolio />} />
           <Route path="/sentiment" element={<Sentiment />} />
           <Route path="/explorer" element={<Explorer />} />
           <Route path="/learn" element={<Learn />} />

@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Activity, TrendingUp, BookOpen, Globe, Radio, Mail, Layers } from "lucide-react";
+import { Menu, X, Activity, TrendingUp, BookOpen, Globe, Radio, Mail, Layers, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { path: "/", label: "Home", icon: Activity },
   { path: "/dashboard", label: "Dashboard", icon: TrendingUp },
+  { path: "/portfolio", label: "Portfolio", icon: Wallet },
   { path: "/chain/ethereum", label: "Chains", icon: Layers },
   { path: "/sentiment", label: "Sentiment", icon: Radio },
   { path: "/explorer", label: "Explorer", icon: Globe },
