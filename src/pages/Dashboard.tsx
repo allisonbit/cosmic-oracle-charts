@@ -77,11 +77,11 @@ const Dashboard = () => {
     <Layout>
       <div className="container mx-auto px-4 py-12">
         {/* Header */}
-        <div className="text-center mb-12 space-y-4">
-          <h1 className="text-3xl md:text-5xl font-display font-bold">
-            <span className="text-gradient-cosmic">FORECAST</span> DASHBOARD
+        <div className="text-center mb-8 md:mb-12 space-y-3 md:space-y-4">
+          <h1 className="text-2xl md:text-4xl lg:text-5xl font-display font-bold">
+            <span className="glow-text">ORACLE</span> <span className="text-gradient-cosmic">DASHBOARD</span>
           </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">
             Real-time AI predictions and market analysis • Live Data
           </p>
         </div>
