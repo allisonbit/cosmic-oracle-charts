@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
-import cosmicOracle from "@/assets/cosmic-oracle-hero.jpg";
+import cosmicOracle from "@/assets/cosmic-oracle-mascot.jpg";
 
 export function HeroSection() {
   return (
