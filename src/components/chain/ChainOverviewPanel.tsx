@@ -1,7 +1,9 @@
 import { ChainConfig } from "@/lib/chainConfig";
 import { ChainOverview } from "@/hooks/useChainData";
-import { TrendingUp, TrendingDown, Activity, Zap, Users, DollarSign, BarChart3 } from "lucide-react";
+import { TrendingUp, TrendingDown, Activity, Zap, Users, DollarSign, BarChart3, Wifi, WifiOff } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useRealtimePrices } from "@/hooks/useRealtimePrices";
+import { useEffect, useState } from "react";
 
 interface ChainOverviewPanelProps {
   chain: ChainConfig;
@@ -10,6 +12,25 @@ interface ChainOverviewPanelProps {
 }
 
 export function ChainOverviewPanel({ chain, overview, isLoading }: ChainOverviewPanelProps) {
+  const { prices, isConnected } = useRealtimePrices([chain.symbol]);
+  const [priceFlash, setPriceFlash] = useState<"up" | "down" | null>(null);
+  const [lastPrice, setLastPrice] = useState<number | null>(null);
+
+  // Detect price changes for flash effect
+  useEffect(() => {
+    const currentPrice = prices[chain.symbol]?.price;
+    if (currentPrice && lastPrice && currentPrice !== lastPrice) {
+      setPriceFlash(currentPrice > lastPrice ? "up" : "down");
+      setTimeout(() => setPriceFlash(null), 500);
+    }
+    if (currentPrice) {
+      setLastPrice(currentPrice);
+    }
+  }, [prices, chain.symbol, lastPrice]);
+
+  const realtimePrice = prices[chain.symbol];
+  const displayChange = realtimePrice?.change24h ?? overview?.priceChange24h ?? 0;
+
   const formatNumber = (num: number, decimals = 2) => {
     if (num >= 1e12) return `$${(num / 1e12).toFixed(decimals)}T`;
     if (num >= 1e9) return `$${(num / 1e9).toFixed(decimals)}B`;
@@ -85,20 +106,52 @@ export function ChainOverviewPanel({ chain, overview, isLoading }: ChainOverview
             {chain.icon}
           </div>
           <div>
-            <h2 className="text-2xl font-display text-foreground glow-text">{chain.name}</h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-2xl font-display text-foreground glow-text">{chain.name}</h2>
+              {/* Realtime indicator */}
+              <div className={cn(
+                "flex items-center gap-1 px-2 py-0.5 rounded-full text-xs",
+                isConnected ? "bg-success/20 text-success" : "bg-muted/30 text-muted-foreground"
+              )}>
+                {isConnected ? (
+                  <>
+                    <Wifi className="h-3 w-3" />
+                    <span className="hidden sm:inline">Live</span>
+                  </>
+                ) : (
+                  <>
+                    <WifiOff className="h-3 w-3" />
+                    <span className="hidden sm:inline">Offline</span>
+                  </>
+                )}
+              </div>
+            </div>
             <p className="text-muted-foreground text-sm">Chain Health Status</p>
           </div>
         </div>
 
-        {overview && (
+        <div className="flex items-center gap-3">
+          {/* Live price */}
+          {realtimePrice && (
+            <div className={cn(
+              "text-xl font-display transition-all duration-300",
+              priceFlash === "up" && "text-success scale-105",
+              priceFlash === "down" && "text-danger scale-105",
+              !priceFlash && "text-foreground"
+            )}>
+              ${realtimePrice.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+            </div>
+          )}
+          
+          {/* Price change badge */}
           <div className={cn(
-            "flex items-center gap-2 px-4 py-2 rounded-lg",
-            overview.priceChange24h >= 0 ? "bg-success/20 text-success" : "bg-danger/20 text-danger"
+            "flex items-center gap-2 px-4 py-2 rounded-lg transition-all",
+            displayChange >= 0 ? "bg-success/20 text-success" : "bg-danger/20 text-danger"
           )}>
-            {overview.priceChange24h >= 0 ? <TrendingUp className="h-5 w-5" /> : <TrendingDown className="h-5 w-5" />}
-            <span className="font-medium">{overview.priceChange24h >= 0 ? "+" : ""}{overview.priceChange24h.toFixed(2)}%</span>
+            {displayChange >= 0 ? <TrendingUp className="h-5 w-5" /> : <TrendingDown className="h-5 w-5" />}
+            <span className="font-medium">{displayChange >= 0 ? "+" : ""}{displayChange.toFixed(2)}%</span>
           </div>
-        )}
+        </div>
       </div>
 
       {/* Stats Grid */}
