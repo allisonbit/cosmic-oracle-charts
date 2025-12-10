@@ -58,11 +58,11 @@ const SentimentPage = () => {
   return (
     <Layout>
       <div className="container mx-auto px-4 py-12">
-        <div className="text-center mb-12 space-y-4">
-          <h1 className="text-3xl md:text-5xl font-display font-bold">
-            <span className="text-gradient-cosmic">COSMIC</span> SENTIMENT SCANNER
+        <div className="text-center mb-8 md:mb-12 space-y-3 md:space-y-4">
+          <h1 className="text-2xl md:text-4xl lg:text-5xl font-display font-bold">
+            <span className="glow-text">ORACLE</span> <span className="text-gradient-cosmic">SENTIMENT</span>
           </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">
             Real-time analysis of market emotions and whale movements • Live Data
           </p>
         </div>

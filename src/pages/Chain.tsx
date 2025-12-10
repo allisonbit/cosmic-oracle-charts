@@ -13,7 +13,7 @@ import { RiskAnalyzer } from "@/components/chain/RiskAnalyzer";
 import { SocialSentimentGalaxy } from "@/components/chain/SocialSentimentGalaxy";
 import { TokenDiscoveryEngine } from "@/components/chain/TokenDiscoveryEngine";
 import { DailySummary } from "@/components/chain/DailySummary";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function Chain() {
@@ -23,7 +23,7 @@ export default function Chain() {
 
   const { data: chainData, isLoading: chainLoading } = useChainData(chainId || "", !!chain);
   const { data: forecastData, isLoading: forecastLoading } = useChainForecast(chainId || "", chainData, !!chain && !!chainData);
-  const { data: prices } = useCryptoPrices();
+  const { data: pricesData } = useCryptoPrices();
 
   if (!chain) {
     return (
@@ -38,11 +38,23 @@ export default function Chain() {
     );
   }
 
-  const chainPrice = prices?.find(p => p.symbol === chain.symbol);
+  // Get chain price from the prices array
+  const chainPrice = pricesData?.prices?.find(p => p.symbol === chain.symbol);
+
+  if (chainLoading && !chainData) {
+    return (
+      <div className="min-h-screen cosmic-bg flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-12 h-12 animate-spin text-primary" />
+          <p className="text-muted-foreground font-display">Loading {chain.name} data...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen cosmic-bg">
-      <div className="container mx-auto px-4 py-8 space-y-6">
+      <div className="container mx-auto px-4 py-6 md:py-8 space-y-4 md:space-y-6">
         {/* Back Button */}
         <button
           onClick={() => navigate("/dashboard")}
@@ -56,19 +68,19 @@ export default function Chain() {
         <ChainOverviewPanel chain={chain} overview={chainData?.overview} isLoading={chainLoading} />
 
         {/* Price Charts & Predictions */}
-        <div className="grid lg:grid-cols-2 gap-6">
+        <div className="grid lg:grid-cols-2 gap-4 md:gap-6">
           <AdvancedPriceChart chain={chain} priceData={chainPrice} />
           <PredictionDeepDive chain={chain} forecast={forecastData?.forecast} isLoading={forecastLoading} />
         </div>
 
         {/* Whale & Heat Scanner */}
-        <div className="grid lg:grid-cols-2 gap-6">
+        <div className="grid lg:grid-cols-2 gap-4 md:gap-6">
           <WhaleActivityRadar chain={chain} whaleActivity={chainData?.whaleActivity} isLoading={chainLoading} />
           <TokenHeatScanner chain={chain} tokenHeat={chainData?.tokenHeat} isLoading={chainLoading} />
         </div>
 
         {/* Smart Money & Risk */}
-        <div className="grid lg:grid-cols-2 gap-6">
+        <div className="grid lg:grid-cols-2 gap-4 md:gap-6">
           <SmartMoneyFlow chain={chain} smartMoneyFlow={chainData?.smartMoneyFlow} isLoading={chainLoading} />
           <RiskAnalyzer chain={chain} tokenRisks={forecastData?.tokenRisks} isLoading={forecastLoading} />
         </div>

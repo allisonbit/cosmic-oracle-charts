@@ -66,12 +66,12 @@ const ExplorerPage = () => {
   return (
     <Layout>
       <div className="container mx-auto px-4 py-12">
-        <div className="text-center mb-12 space-y-4">
-          <h1 className="text-3xl md:text-5xl font-display font-bold">
-            TOKEN <span className="glow-text">EXPLORER</span>
+        <div className="text-center mb-8 md:mb-12 space-y-3 md:space-y-4">
+          <h1 className="text-2xl md:text-4xl lg:text-5xl font-display font-bold">
+            <span className="glow-text">ORACLE</span> <span className="text-gradient-cosmic">EXPLORER</span>
           </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Search any token to view price, forecast, and analysis • Live Data
+          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">
+            Search any token by name, symbol, or contract address • Live Data
           </p>
         </div>
 
