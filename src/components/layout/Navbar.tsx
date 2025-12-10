@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Activity, TrendingUp, BookOpen, Globe, Radio, Mail, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,12 +18,29 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
+  // Close menu on route change
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname]);
+
+  // Prevent scroll when mobile menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-background/80 border-b border-primary/20">
+    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-background/95 border-b border-primary/20">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-14 md:h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 md:gap-3 group">
+          <Link to="/" className="flex items-center gap-2 md:gap-3 group z-10">
             <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg shadow-primary/30 group-hover:shadow-primary/50 transition-shadow">
               <Activity className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />
             </div>
@@ -60,16 +77,22 @@ export function Navbar() {
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden"
+            className="lg:hidden z-10"
             onClick={() => setIsOpen(!isOpen)}
+            aria-label={isOpen ? "Close menu" : "Open menu"}
           >
             {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </Button>
         </div>
 
-        {/* Mobile Navigation */}
-        {isOpen && (
-          <div className="lg:hidden py-4 space-y-2 animate-fade-in border-t border-border">
+        {/* Mobile Navigation - Full Screen Overlay */}
+        <div 
+          className={cn(
+            "lg:hidden fixed inset-0 top-14 bg-background/98 backdrop-blur-xl z-40 transition-all duration-300",
+            isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          )}
+        >
+          <div className="container mx-auto px-4 py-6 space-y-2">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path ||
@@ -80,9 +103,9 @@ export function Navbar() {
                   to={item.path}
                   onClick={() => setIsOpen(false)}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-lg font-display text-sm uppercase tracking-wider transition-all duration-300",
+                    "flex items-center gap-3 px-4 py-4 rounded-lg font-display text-base uppercase tracking-wider transition-all duration-300",
                     isActive
-                      ? "bg-primary/20 text-primary"
+                      ? "bg-primary/20 text-primary border border-primary/30"
                       : "text-muted-foreground hover:text-primary hover:bg-primary/10"
                   )}
                 >
@@ -92,7 +115,7 @@ export function Navbar() {
               );
             })}
           </div>
-        )}
+        </div>
       </div>
     </nav>
   );
