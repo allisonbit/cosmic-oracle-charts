@@ -14,3 +14,6 @@ verify_jwt = false
 
 [functions.chain-forecast]
 verify_jwt = false
+
+[functions.token-search]
+verify_jwt = false
