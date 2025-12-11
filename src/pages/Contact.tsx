@@ -80,7 +80,7 @@ const ContactPage = () => {
             <span className="text-gradient-cosmic">${tokenData?.symbol || 'ORACLE'}</span> TOKEN
           </h1>
           <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto">
-            {tokenData?.name || 'Oracle Token'} - Real-time data from Alchemy
+            {tokenData?.name || 'Oracle Token'} - Real-time market data
           </p>
           <Button 
             variant="outline" 
@@ -430,7 +430,6 @@ const ContactPage = () => {
             {/* Disclaimer */}
             <div className="text-center text-muted-foreground text-xs p-4">
               <p>
-                Data sourced from Alchemy. 
                 Always DYOR. Not financial advice.
               </p>
             </div>

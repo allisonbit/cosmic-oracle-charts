@@ -520,7 +520,7 @@ export function TokenDetailPanel({ token, chain, forecast, aiLoading }: TokenDet
             { name: "Block Explorer", url: `${chain.explorer}/token/${token.contractAddress}` },
             { name: "DexScreener", url: `https://dexscreener.com/${chain.id}/${token.contractAddress}` },
             { name: "DexTools", url: `https://www.dextools.io/app/en/${chain.id}/pair-explorer/${token.contractAddress}` },
-            { name: "CoinGecko", url: token.coingeckoId ? `https://www.coingecko.com/en/coins/${token.coingeckoId}` : `https://www.coingecko.com/en/search?query=${token.symbol}` },
+            { name: "Market Data", url: token.coingeckoId ? `https://www.coingecko.com/en/coins/${token.coingeckoId}` : `https://www.coingecko.com/en/search?query=${token.symbol}` },
           ].map((link) => (
             <Button
               key={link.name}
@@ -528,7 +528,7 @@ export function TokenDetailPanel({ token, chain, forecast, aiLoading }: TokenDet
               size="sm"
               className="gap-2"
               onClick={() => window.open(link.url, "_blank")}
-              disabled={!token.contractAddress && link.name !== "CoinGecko"}
+              disabled={!token.contractAddress && link.name !== "Market Data"}
             >
               <ExternalLink className="w-3 h-3" />
               {link.name}

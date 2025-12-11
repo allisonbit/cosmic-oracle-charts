@@ -188,7 +188,7 @@ export function CoinDetailModal({ open, onOpenChange, coin }: CoinDetailModalPro
               className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors text-sm font-medium"
             >
               <ExternalLink className="h-4 w-4" />
-              View on CoinGecko
+              View Details
             </a>
           </div>
         </div>

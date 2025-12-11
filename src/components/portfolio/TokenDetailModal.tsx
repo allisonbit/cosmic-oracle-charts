@@ -285,7 +285,7 @@ export function TokenDetailModal({ token, isOpen, onClose }: TokenDetailModalPro
                   onClick={() => window.open(`https://www.coingecko.com/en/coins/${token.name.toLowerCase().replace(/\s+/g, '-')}`, "_blank")}
                 >
                   <ExternalLink className="w-3 h-3" />
-                  CoinGecko
+                  Details
                 </Button>
               </>
             )}
