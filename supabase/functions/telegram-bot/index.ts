@@ -433,6 +433,185 @@ async function fetchWhaleTransactions() {
   }
 }
 
+// ============ WALLET SCANNER ============
+
+// Fetch wallet token balances using Alchemy
+async function fetchWalletBalances(address: string, chain = "ethereum") {
+  try {
+    const chainLower = chain.toLowerCase();
+    const network = ALCHEMY_NETWORKS[chainLower] || "eth-mainnet";
+    const alchemyUrl = `https://${network}.g.alchemy.com/v2/${ALCHEMY_API_KEY}`;
+
+    // Get ETH balance
+    const ethBalanceResponse = await fetch(alchemyUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "eth_getBalance",
+        params: [address, "latest"],
+        id: 1,
+      }),
+    });
+    const ethBalanceData = await ethBalanceResponse.json();
+    const ethBalance = parseInt(ethBalanceData.result || "0", 16) / 1e18;
+
+    // Get token balances
+    const tokenBalancesResponse = await fetch(alchemyUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "alchemy_getTokenBalances",
+        params: [address],
+        id: 2,
+      }),
+    });
+    const tokenBalancesData = await tokenBalancesResponse.json();
+    const tokenBalances = tokenBalancesData.result?.tokenBalances || [];
+
+    // Filter non-zero balances and get metadata
+    const nonZeroTokens = tokenBalances
+      .filter((t: any) => t.tokenBalance && t.tokenBalance !== "0x0000000000000000000000000000000000000000000000000000000000000000")
+      .slice(0, 10);
+
+    // Get token metadata for each
+    const tokensWithMetadata = [];
+    for (const token of nonZeroTokens) {
+      try {
+        const metadataResponse = await fetch(alchemyUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            jsonrpc: "2.0",
+            method: "alchemy_getTokenMetadata",
+            params: [token.contractAddress],
+            id: 3,
+          }),
+        });
+        const metadataData = await metadataResponse.json();
+        const metadata = metadataData.result || {};
+        
+        const decimals = metadata.decimals || 18;
+        const balance = parseInt(token.tokenBalance, 16) / Math.pow(10, decimals);
+        
+        if (balance > 0.0001) {
+          tokensWithMetadata.push({
+            address: token.contractAddress,
+            symbol: metadata.symbol || "???",
+            name: metadata.name || "Unknown",
+            balance,
+            decimals,
+          });
+        }
+      } catch (e) {
+        console.error("Token metadata error:", e);
+      }
+    }
+
+    return {
+      address,
+      chain: chainLower,
+      ethBalance,
+      tokens: tokensWithMetadata,
+      totalTokens: tokenBalances.length,
+    };
+  } catch (error) {
+    console.error("Error fetching wallet balances:", error);
+    return null;
+  }
+}
+
+// Get token prices for wallet holdings
+async function enrichWalletWithPrices(walletData: any) {
+  if (!walletData) return null;
+  
+  try {
+    // Get ETH price
+    const ethData = await fetchPrice("ethereum");
+    const ethUsdValue = (walletData.ethBalance || 0) * (ethData?.price || 0);
+    
+    // Try to get prices for tokens
+    let totalTokenValue = 0;
+    const enrichedTokens = [];
+    
+    for (const token of walletData.tokens.slice(0, 8)) {
+      try {
+        const priceData = await fetchPrice(token.symbol);
+        const usdValue = priceData ? token.balance * priceData.price : 0;
+        totalTokenValue += usdValue;
+        
+        enrichedTokens.push({
+          ...token,
+          price: priceData?.price || 0,
+          usdValue,
+          change24h: priceData?.change24h || 0,
+        });
+      } catch (e) {
+        enrichedTokens.push({
+          ...token,
+          price: 0,
+          usdValue: 0,
+          change24h: 0,
+        });
+      }
+    }
+    
+    // Sort by USD value
+    enrichedTokens.sort((a, b) => b.usdValue - a.usdValue);
+    
+    return {
+      ...walletData,
+      ethPrice: ethData?.price || 0,
+      ethUsdValue,
+      tokens: enrichedTokens,
+      totalTokenValue,
+      totalPortfolioValue: ethUsdValue + totalTokenValue,
+    };
+  } catch (error) {
+    console.error("Error enriching wallet:", error);
+    return walletData;
+  }
+}
+
+// Generate AI analysis for wallet
+async function analyzeWallet(walletData: any) {
+  if (!walletData || !OPENAI_API_KEY) return null;
+  
+  try {
+    const topHoldings = walletData.tokens.slice(0, 5).map((t: any) => 
+      `${t.symbol}: ${t.balance.toFixed(4)} (${formatNumber(t.usdValue)})`
+    ).join(", ");
+    
+    const prompt = `Analyze this crypto wallet briefly (under 100 words):
+- ETH Balance: ${walletData.ethBalance.toFixed(4)} ETH (${formatNumber(walletData.ethUsdValue)})
+- Top Holdings: ${topHoldings || "None"}
+- Total Portfolio: ${formatNumber(walletData.totalPortfolioValue)}
+- Total Tokens: ${walletData.totalTokens}
+
+Provide: 1) Wallet type (whale/retail/degen/inactive), 2) Risk level, 3) One insight about holdings. Be concise.`;
+
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: "You are a crypto wallet analyst. Give brief, actionable insights. No financial advice." },
+          { role: "user", content: prompt },
+        ],
+        max_tokens: 200,
+        temperature: 0.7,
+      }),
+    });
+    const data = await response.json();
+    return data.choices?.[0]?.message?.content || null;
+  } catch (error) {
+    console.error("Error analyzing wallet:", error);
+    return null;
+  }
+}
+
 // ============ CONVERSATION LEARNING ============
 
 async function extractTopicsAndSentiment(text: string) {
@@ -927,31 +1106,25 @@ I am the Cosmic Oracle - your intelligent crypto companion from ${WEBSITE_URL}!
 
 *📊 Market Data*
 /price <TOKEN> - Live prices
-/chart <TOKEN> - Token chart visual
-/gas <CHAIN> - Gas fees
+/chart <TOKEN> - Token chart
 /chain <NAME> - Chain overview
 /global - Global market
+
+*🔍 Research*
+/wallet <ADDRESS> - Scan any wallet
 /trending - Hot tokens
+/whales - Whale activity
 
 *🔔 Smart Alerts*
-/alert - Set any type of alert
-/myalerts - View your alerts
-
-*🗳️ Community*
-/poll <question> - Create a poll
-/vibe - Group sentiment
-/insights - What we talk about
+/alert - Set any alert
+/myalerts - Your alerts
 
 *🤖 AI Features*
 /analyze <TOKEN> - Deep analysis
 /ask <anything> - Ask me anything
-/learn <topic> - Crypto education
-/compare <A> vs <B> - Compare tokens
 
-*📌 More*
-/sentimentvisual - Sentiment with visual
-/pin <message> - Pin insight
-/website - Explore Oracle website
+*🗳️ Community*
+/poll, /vibe, /insights
 
 💬 Or just chat with me naturally!
         `);
@@ -961,34 +1134,34 @@ I am the Cosmic Oracle - your intelligent crypto companion from ${WEBSITE_URL}!
         await sendMessage(chatId, `
 🔮 *Oracle Bot Commands*
 
-*Prices & Charts:*
-/price btc eth sol
-/chart btc - Visual chart
-/gas eth base polygon
+*Market:*
+/price btc eth sol - Live prices
+/chart btc - Token chart
+/gas eth base - Gas fees
+/chain ethereum - Chain stats
+/global - Global market
 
-*Chains & Markets:*
-/chain ethereum - Chain overview
-/chain base, /chain arbitrum
-/global - Global market stats
+*Wallet Scanner:*
+/wallet 0x... - Scan any wallet
+/wallet 0x... base - Specify chain
+
+*Research:*
 /trending - Hot tokens
-/pulse - Market pulse
+/whales - Whale moves
+/analyze btc - AI analysis
 
-*Alerts:* 
+*Alerts:*
 /alert price BTC above 100000
-/alert sentiment fear/greed
-/alert whale BTC 1000000
+/alert sentiment fear
+/myalerts - View alerts
 
 *Community:*
-/poll Question here?
-/vibe, /insights
+/poll, /vibe, /insights
 
 *AI:*
-/analyze, /ask, /learn, /compare
+/ask, /learn, /compare
 
-*Website:*
-/website - Oracle website links
-
-💬 I also respond to natural questions!
+💬 I also respond naturally!
         `);
         break;
 
@@ -1054,6 +1227,84 @@ I am the Cosmic Oracle - your intelligent crypto companion from ${WEBSITE_URL}!
           await sendMessage(chatId, whaleMsg);
         } else {
           await sendMessage(chatId, "🐋 No major whale moves detected");
+        }
+        break;
+
+      case "/wallet":
+      case "/wallets":
+      case "/scan":
+        if (args.length === 0) {
+          await sendMessage(chatId, `🔍 *Wallet Scanner*
+
+Scan any EVM wallet for holdings & AI insights!
+
+Usage:
+\`/wallet 0x1234...abcd\`
+\`/wallet 0x... base\` (specify chain)
+
+Supported chains: ethereum, base, arbitrum, polygon, optimism`);
+          break;
+        }
+        
+        const walletAddress = args[0];
+        const walletChain = args[1]?.toLowerCase() || "ethereum";
+        
+        // Validate address format
+        if (!/^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
+          await sendMessage(chatId, "❌ Invalid address format. Use: `0x` followed by 40 hex characters");
+          break;
+        }
+        
+        await sendMessage(chatId, `🔍 Scanning wallet on ${walletChain}...`);
+        
+        try {
+          const walletData = await fetchWalletBalances(walletAddress, walletChain);
+          
+          if (!walletData) {
+            await sendMessage(chatId, "❌ Could not scan wallet. Try again.");
+            break;
+          }
+          
+          // Enrich with prices
+          const enrichedWallet = await enrichWalletWithPrices(walletData);
+          
+          // Format holdings
+          let holdingsMsg = `🔍 *WALLET SCAN*
+
+📍 \`${walletAddress.slice(0, 8)}...${walletAddress.slice(-6)}\`
+⛓️ ${walletChain.toUpperCase()}
+
+💰 *Native Balance*
+${enrichedWallet.ethBalance.toFixed(4)} ETH (${formatNumber(enrichedWallet.ethUsdValue)})
+
+`;
+          
+          if (enrichedWallet.tokens.length > 0) {
+            holdingsMsg += `📊 *Top Holdings*\n`;
+            enrichedWallet.tokens.slice(0, 5).forEach((t: any) => {
+              const changeEmoji = t.change24h >= 0 ? "🟢" : "🔴";
+              holdingsMsg += `${t.symbol}: ${t.balance < 1 ? t.balance.toFixed(6) : t.balance.toFixed(2)} ${t.usdValue > 0 ? `(${formatNumber(t.usdValue)})` : ""} ${t.change24h ? `${changeEmoji}${t.change24h.toFixed(1)}%` : ""}\n`;
+            });
+          }
+          
+          holdingsMsg += `
+💎 *Portfolio Value*: ${formatNumber(enrichedWallet.totalPortfolioValue)}
+🪙 Total Tokens: ${enrichedWallet.totalTokens}
+
+🔗 [View on Etherscan](https://etherscan.io/address/${walletAddress})
+📊 ${WEBSITE_PAGES.portfolio}`;
+
+          await sendPhoto(chatId, MASCOT_IMAGE, holdingsMsg);
+          
+          // Generate AI analysis
+          const aiAnalysis = await analyzeWallet(enrichedWallet);
+          if (aiAnalysis) {
+            await sendMessage(chatId, `🧠 *AI Analysis*\n\n${aiAnalysis}\n\n_Not financial advice._`);
+          }
+          
+        } catch (e) {
+          console.error("Wallet scan error:", e);
+          await sendMessage(chatId, "❌ Error scanning wallet. Try again.");
         }
         break;
 
