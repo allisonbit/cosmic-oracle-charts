@@ -17,7 +17,7 @@ const CHAIN_PLATFORMS: Record<string, string> = {
   optimism: 'optimistic-ethereum',
 };
 
-// Category IDs for chain ecosystems
+// Category IDs for chain ecosystems (CoinGecko categories)
 const CHAIN_CATEGORIES: Record<string, string> = {
   ethereum: 'ethereum-ecosystem',
   solana: 'solana-ecosystem',
@@ -25,8 +25,20 @@ const CHAIN_CATEGORIES: Record<string, string> = {
   avalanche: 'avalanche-ecosystem',
   polygon: 'polygon-ecosystem',
   arbitrum: 'arbitrum-ecosystem',
-  base: 'base-ecosystem',
+  base: 'base-meme-coins', // Base ecosystem uses this category
   optimism: 'optimism-ecosystem',
+};
+
+// Fallback token IDs for each chain's native ecosystem
+const CHAIN_TOKEN_IDS: Record<string, string[]> = {
+  ethereum: ['ethereum', 'uniswap', 'chainlink', 'aave', 'lido-dao', 'maker', 'curve-dao-token', 'compound-governance-token', 'ens', 'the-graph'],
+  solana: ['solana', 'raydium', 'orca', 'jupiter-exchange-solana', 'jito-governance-token', 'bonk', 'pyth-network', 'marinade', 'magic-eden', 'tensor'],
+  bnb: ['binancecoin', 'pancakeswap-token', 'venus', 'bakerytoken', 'trust-wallet-token', 'alpaca-finance', 'biswap', 'baby-doge-coin', 'floki', 'safemoon-2'],
+  avalanche: ['avalanche-2', 'trader-joe', 'benqi', 'pangolin', 'spell-token', 'wonderland', 'platypus-finance', 'vector-finance', 'gmx', 'stargate-finance'],
+  polygon: ['matic-network', 'quickswap', 'aavegotchi', 'sushi', 'balancer', 'gains-network', 'polymath', 'tellor', 'cartesi', 'vulcan-forged'],
+  arbitrum: ['arbitrum', 'gmx', 'magic', 'radiant-capital', 'gains-network', 'jones-dao', 'dopex', 'pendle', 'camelot-token', 'treasure-lol'],
+  base: ['aerodrome-finance', 'brett', 'degen-base', 'toshi', 'higher', 'normie-base', 'basenji', 'mochi-token', 'based-brett', 'virtual-protocol'],
+  optimism: ['optimism', 'velodrome-finance', 'synthetix-network-token', 'lyra-finance', 'thales', 'extra-finance', 'sonne-finance', 'exactly-token', 'poolz-finance', 'hop-protocol'],
 };
 
 interface DiscoveryToken {
@@ -79,41 +91,35 @@ serve(async (req) => {
       console.log('Category fetch failed, using fallback:', e);
     }
 
-    // Fallback to general market data if category fetch fails or returns empty
-    if (!marketData || marketData.length === 0) {
-      console.log('Using fallback general market data for:', chain);
-      const fallbackUrl = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=true&price_change_percentage=1h,24h,7d';
-      const fallbackResponse = await fetch(fallbackUrl);
-      marketData = await fallbackResponse.json();
+    // Fallback: fetch specific tokens by ID for this chain
+    if (!marketData || marketData.length < 5) {
+      console.log('Using token ID fallback for:', chain);
+      const tokenIds = CHAIN_TOKEN_IDS[chain] || CHAIN_TOKEN_IDS.ethereum;
+      const idsParam = tokenIds.join(',');
+      const idsUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${idsParam}&order=market_cap_desc&sparkline=true&price_change_percentage=1h,24h,7d`;
       
-      // Filter by platform if available
-      const platform = CHAIN_PLATFORMS[chain];
-      if (platform && Array.isArray(marketData)) {
-        // Keep native chain token + filter where possible
-        const nativeTokens: Record<string, string> = {
-          ethereum: 'ethereum',
-          solana: 'solana',
-          bnb: 'binancecoin',
-          avalanche: 'avalanche-2',
-          polygon: 'matic-network',
-          arbitrum: 'arbitrum',
-          base: 'ethereum', // Base uses ETH
-          optimism: 'ethereum', // OP uses ETH
-        };
-        
-        const nativeId = nativeTokens[chain];
-        // For fallback, prioritize showing the native token first
-        marketData = marketData.filter((coin: any) => 
-          coin.id === nativeId || 
-          coin.id?.includes(chain) ||
-          coin.symbol?.toLowerCase() === chain
-        ).slice(0, 50);
-        
-        // If still empty, use top 50 general tokens
-        if (marketData.length < 10) {
-          const fallbackResponse2 = await fetch(fallbackUrl);
-          marketData = (await fallbackResponse2.json()).slice(0, 50);
+      try {
+        const idsResponse = await fetch(idsUrl);
+        if (idsResponse.ok) {
+          const idsData = await idsResponse.json();
+          if (Array.isArray(idsData) && idsData.length > 0) {
+            marketData = idsData;
+            console.log(`Got ${marketData.length} tokens by ID for ${chain}`);
+          }
         }
+      } catch (e) {
+        console.log('ID fetch failed:', e);
+      }
+    }
+
+    // Final fallback to general market if still no data
+    if (!marketData || marketData.length < 5) {
+      console.log('Using general fallback for:', chain);
+      const fallbackUrl = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=true&price_change_percentage=1h,24h,7d';
+      const fallbackResponse = await fetch(fallbackUrl);
+      const fallbackData = await fallbackResponse.json();
+      if (Array.isArray(fallbackData)) {
+        marketData = fallbackData;
       }
     }
 
