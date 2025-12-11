@@ -10,15 +10,43 @@ const ALCHEMY_API_KEY = Deno.env.get("ALCHEMY_API_KEY_1");
 
 const WEBSITE_URL = "https://oraclebull.com";
 const MASCOT_IMAGE = "https://oraclebull.com/oracle-bot-mascot.jpg";
+const ORACLE_LOGO = "https://oraclebull.com/oracle-logo.jpg";
+const COSMIC_HERO = "https://oraclebull.com/cosmic-oracle-hero.jpg";
 
 // Website page URLs for sharing
 const WEBSITE_PAGES = {
   home: WEBSITE_URL,
   dashboard: `${WEBSITE_URL}/dashboard`,
   sentiment: `${WEBSITE_URL}/sentiment`,
-  chains: `${WEBSITE_URL}/chain/ethereum`,
   explorer: `${WEBSITE_URL}/explorer`,
   learn: `${WEBSITE_URL}/learn`,
+  portfolio: `${WEBSITE_URL}/portfolio`,
+  contact: `${WEBSITE_URL}/contact`,
+};
+
+// Chain-specific pages
+const CHAIN_PAGES: Record<string, string> = {
+  ethereum: `${WEBSITE_URL}/chain/ethereum`,
+  solana: `${WEBSITE_URL}/chain/solana`,
+  base: `${WEBSITE_URL}/chain/base`,
+  arbitrum: `${WEBSITE_URL}/chain/arbitrum`,
+  polygon: `${WEBSITE_URL}/chain/polygon`,
+  optimism: `${WEBSITE_URL}/chain/optimism`,
+  avalanche: `${WEBSITE_URL}/chain/avalanche`,
+  bsc: `${WEBSITE_URL}/chain/bsc`,
+};
+
+// Alchemy network mapping
+const ALCHEMY_NETWORKS: Record<string, string> = {
+  ethereum: "eth-mainnet",
+  eth: "eth-mainnet",
+  polygon: "polygon-mainnet",
+  matic: "polygon-mainnet",
+  arbitrum: "arb-mainnet",
+  arb: "arb-mainnet",
+  base: "base-mainnet",
+  optimism: "opt-mainnet",
+  opt: "opt-mainnet",
 };
 
 const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
@@ -160,11 +188,8 @@ async function fetchTrending() {
 
 async function fetchGas(chain: string) {
   try {
-    let network = "eth-mainnet";
-    if (chain.toLowerCase() === "polygon") network = "polygon-mainnet";
-    if (chain.toLowerCase() === "arbitrum") network = "arb-mainnet";
-    if (chain.toLowerCase() === "base") network = "base-mainnet";
-    if (chain.toLowerCase() === "optimism") network = "opt-mainnet";
+    const chainLower = chain.toLowerCase();
+    const network = ALCHEMY_NETWORKS[chainLower] || "eth-mainnet";
 
     const response = await fetch(`https://${network}.g.alchemy.com/v2/${ALCHEMY_API_KEY}`, {
       method: "POST",
@@ -176,6 +201,132 @@ async function fetchGas(chain: string) {
     return { slow: Math.round(gasGwei * 0.8), average: Math.round(gasGwei), fast: Math.round(gasGwei * 1.2) };
   } catch (error) {
     console.error("Error fetching gas:", error);
+    return null;
+  }
+}
+
+// Fetch comprehensive chain metrics from Alchemy
+async function fetchChainMetrics(chain: string) {
+  try {
+    const chainLower = chain.toLowerCase();
+    const network = ALCHEMY_NETWORKS[chainLower] || "eth-mainnet";
+    const alchemyUrl = `https://${network}.g.alchemy.com/v2/${ALCHEMY_API_KEY}`;
+
+    // Batch RPC calls for efficiency
+    const batchResponse = await fetch(alchemyUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify([
+        { jsonrpc: "2.0", method: "eth_blockNumber", params: [], id: 1 },
+        { jsonrpc: "2.0", method: "eth_gasPrice", params: [], id: 2 },
+        { jsonrpc: "2.0", method: "eth_syncing", params: [], id: 3 },
+      ]),
+    });
+    const batchData = await batchResponse.json();
+    
+    const blockNumber = parseInt(batchData[0]?.result || "0", 16);
+    const gasPrice = parseInt(batchData[1]?.result || "0", 16) / 1e9;
+    const syncing = batchData[2]?.result;
+
+    // Get latest block for timestamp and tx count
+    const blockResponse = await fetch(alchemyUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "eth_getBlockByNumber",
+        params: [batchData[0]?.result, false],
+        id: 1
+      }),
+    });
+    const blockData = await blockResponse.json();
+    const block = blockData.result || {};
+    
+    const txCount = block.transactions?.length || 0;
+    const timestamp = parseInt(block.timestamp || "0", 16);
+    const baseFee = block.baseFeePerGas ? parseInt(block.baseFeePerGas, 16) / 1e9 : null;
+
+    return {
+      chain: chainLower,
+      blockNumber,
+      gasPrice: Math.round(gasPrice),
+      baseFee: baseFee ? Math.round(baseFee) : null,
+      txCount,
+      timestamp,
+      syncing: syncing === false ? "synced" : "syncing",
+      chainPage: CHAIN_PAGES[chainLower] || CHAIN_PAGES.ethereum,
+    };
+  } catch (error) {
+    console.error("Error fetching chain metrics:", error);
+    return null;
+  }
+}
+
+// Fetch token data for specific chain
+async function fetchChainTokens(chain: string, limit = 5) {
+  try {
+    // Map chain to CoinGecko platform
+    const platformMap: Record<string, string> = {
+      ethereum: "ethereum",
+      base: "base",
+      arbitrum: "arbitrum-one",
+      polygon: "polygon-pos",
+      optimism: "optimistic-ethereum",
+      avalanche: "avalanche",
+      bsc: "binance-smart-chain",
+      solana: "solana",
+    };
+    
+    const platform = platformMap[chain.toLowerCase()] || "ethereum";
+    
+    // Get top tokens by market cap for the chain
+    const response = await fetch(
+      `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=${platform}&order=market_cap_desc&per_page=${limit}&page=1&sparkline=false&price_change_percentage=24h`
+    );
+    
+    if (!response.ok) {
+      // Fallback to general market data
+      const fallbackResponse = await fetch(
+        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${limit}&page=1&sparkline=false`
+      );
+      return await fallbackResponse.json();
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching chain tokens:", error);
+    return [];
+  }
+}
+
+// Fetch DeFi TVL data
+async function fetchDefiTVL(chain: string) {
+  try {
+    // Use DeFiLlama API for TVL data
+    const response = await fetch("https://api.llama.fi/v2/chains");
+    const data = await response.json();
+    
+    const chainMap: Record<string, string> = {
+      ethereum: "Ethereum",
+      base: "Base",
+      arbitrum: "Arbitrum",
+      polygon: "Polygon",
+      optimism: "Optimism",
+      avalanche: "Avalanche",
+      bsc: "BSC",
+      solana: "Solana",
+    };
+    
+    const chainName = chainMap[chain.toLowerCase()] || "Ethereum";
+    const chainData = data.find((c: any) => c.name === chainName);
+    
+    return chainData ? {
+      tvl: chainData.tvl,
+      change1d: chainData.change_1d,
+      change7d: chainData.change_7d,
+    } : null;
+  } catch (error) {
+    console.error("Error fetching TVL:", error);
     return null;
   }
 }
@@ -198,7 +349,9 @@ async function fetchGlobalMarket() {
       totalMarketCap: data.data?.total_market_cap?.usd,
       totalVolume: data.data?.total_volume?.usd,
       btcDominance: data.data?.market_cap_percentage?.btc,
+      ethDominance: data.data?.market_cap_percentage?.eth,
       marketCapChange: data.data?.market_cap_change_percentage_24h_usd,
+      activeCryptocurrencies: data.data?.active_cryptocurrencies,
     };
   } catch (error) {
     return null;
@@ -212,6 +365,15 @@ function formatNumber(num: number): string {
   if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
   if (num >= 1e3) return `$${(num / 1e3).toFixed(2)}K`;
   return `$${num.toFixed(2)}`;
+}
+
+function formatNumberRaw(num: number): string {
+  if (!num) return "N/A";
+  if (num >= 1e12) return `${(num / 1e12).toFixed(2)}T`;
+  if (num >= 1e9) return `${(num / 1e9).toFixed(2)}B`;
+  if (num >= 1e6) return `${(num / 1e6).toFixed(2)}M`;
+  if (num >= 1e3) return `${(num / 1e3).toFixed(2)}K`;
+  return num.toFixed(2);
 }
 
 // Fetch crypto news from CoinGecko status updates
@@ -546,6 +708,89 @@ async function generateSentimentVisual() {
   return `🎭 *SENTIMENT*\n${bar} ${fgValue}/100\n*${status}*\n🎭 ${WEBSITE_PAGES.sentiment}`;
 }
 
+// Generate comprehensive chain overview with website image
+async function generateChainOverview(chain: string) {
+  const chainLower = chain.toLowerCase();
+  const metrics = await fetchChainMetrics(chainLower);
+  const tvl = await fetchDefiTVL(chainLower);
+  const tokens = await fetchChainTokens(chainLower, 3);
+  
+  if (!metrics) return null;
+  
+  const chainNames: Record<string, string> = {
+    ethereum: "Ethereum",
+    eth: "Ethereum", 
+    base: "Base",
+    arbitrum: "Arbitrum",
+    arb: "Arbitrum",
+    polygon: "Polygon",
+    matic: "Polygon",
+    optimism: "Optimism",
+    opt: "Optimism",
+    solana: "Solana",
+    sol: "Solana",
+    avalanche: "Avalanche",
+    avax: "Avalanche",
+    bsc: "BNB Chain",
+    bnb: "BNB Chain",
+  };
+  
+  const displayName = chainNames[chainLower] || chain.toUpperCase();
+  const chainKey = Object.keys(CHAIN_PAGES).find(k => chainLower.includes(k)) || "ethereum";
+  const chainUrl = CHAIN_PAGES[chainKey] || CHAIN_PAGES.ethereum;
+  
+  let topTokens = "";
+  if (tokens && tokens.length > 0) {
+    topTokens = tokens.slice(0, 3).map((t: any) => {
+      const change = t.price_change_percentage_24h || 0;
+      const emoji = change >= 0 ? "🟢" : "🔴";
+      return `${t.symbol?.toUpperCase()}: $${t.current_price?.toLocaleString()} ${emoji}${change.toFixed(1)}%`;
+    }).join("\n");
+  }
+  
+  return {
+    text: `⛓️ *${displayName} Overview*
+
+📊 *Network Stats*
+Block: ${metrics.blockNumber.toLocaleString()}
+Gas: ${metrics.gasPrice} Gwei${metrics.baseFee ? ` (Base: ${metrics.baseFee})` : ""}
+TXs/Block: ~${metrics.txCount}
+${tvl ? `TVL: ${formatNumber(tvl.tvl)} ${tvl.change1d >= 0 ? "🟢" : "🔴"}${tvl.change1d?.toFixed(1)}%` : ""}
+
+${topTokens ? `📈 *Top Tokens*\n${topTokens}` : ""}
+
+🔗 ${chainUrl}`,
+    chainUrl,
+  };
+}
+
+// Generate global market overview
+async function generateGlobalOverview() {
+  const global = await fetchGlobalMarket();
+  const sentiment = await fetchSentiment();
+  const btc = await fetchPrice("bitcoin");
+  const eth = await fetchPrice("ethereum");
+  
+  if (!global) return null;
+  
+  const fgValue = parseInt(sentiment?.fearGreed || "50");
+  const sentimentBar = generateSentimentBar(fgValue);
+  
+  return `🌐 *GLOBAL MARKET*
+
+💎 *BTC* $${btc?.price?.toLocaleString()} ${btc?.change24h >= 0 ? "🟢" : "🔴"}${btc?.change24h?.toFixed(1)}%
+⟠ *ETH* $${eth?.price?.toLocaleString()} ${eth?.change24h >= 0 ? "🟢" : "🔴"}${eth?.change24h?.toFixed(1)}%
+
+📊 Total MCap: ${formatNumber(global.totalMarketCap)}
+📈 24h Vol: ${formatNumber(global.totalVolume)}
+₿ BTC Dom: ${global.btcDominance?.toFixed(1)}%
+⟠ ETH Dom: ${global.ethDominance?.toFixed(1)}%
+
+${sentimentBar} F&G: ${fgValue}/100
+
+🌐 ${WEBSITE_PAGES.dashboard}`;
+}
+
 // ============ COMMAND HANDLERS ============
 
 async function handleCommand(message: any) {
@@ -588,8 +833,9 @@ I am the Cosmic Oracle - your intelligent crypto companion from ${WEBSITE_URL}!
 /price <TOKEN> - Live prices
 /chart <TOKEN> - Token chart visual
 /gas <CHAIN> - Gas fees
+/chain <NAME> - Chain overview
+/global - Global market
 /trending - Hot tokens
-/pulse - Full market update
 
 *🔔 Smart Alerts*
 /alert - Set any type of alert
@@ -622,30 +868,29 @@ I am the Cosmic Oracle - your intelligent crypto companion from ${WEBSITE_URL}!
 *Prices & Charts:*
 /price btc eth sol
 /chart btc - Visual chart
-/gas eth, /gas base
+/gas eth base polygon
 
-*Market:*
+*Chains & Markets:*
+/chain ethereum - Chain overview
+/chain base, /chain arbitrum
+/global - Global market stats
 /trending - Hot tokens
-/pulse, /digest - Full update
-/sentimentvisual - Fear & Greed visual
+/pulse - Market pulse
 
 *Alerts:* 
 /alert price BTC above 100000
 /alert sentiment fear/greed
 /alert whale BTC 1000000
-/alert volume ETH spike
-/alert trending SOL
 
 *Community:*
 /poll Question here?
-/vibe - Group mood
-/insights - Hot topics
+/vibe, /insights
 
 *AI:*
 /analyze, /ask, /learn, /compare
 
 *Website:*
-/website - Explore Oracle website
+/website - Oracle website links
 
 💬 I also respond to natural questions!
         `);
@@ -722,6 +967,34 @@ I am the Cosmic Oracle - your intelligent crypto companion from ${WEBSITE_URL}!
         await sendMessage(chatId, await generateMarketPulse());
         break;
 
+      case "/chain":
+        if (args.length === 0) {
+          await sendMessage(chatId, `⛓️ Which chain? Try:
+/chain ethereum
+/chain base
+/chain arbitrum
+/chain polygon
+/chain optimism
+/chain solana`);
+          break;
+        }
+        const chainOverview = await generateChainOverview(args[0]);
+        if (chainOverview) {
+          await sendPhoto(chatId, MASCOT_IMAGE, chainOverview.text);
+        } else {
+          await sendMessage(chatId, "❌ Chain not found. Try: ethereum, base, arbitrum, polygon");
+        }
+        break;
+
+      case "/global":
+        const globalOverview = await generateGlobalOverview();
+        if (globalOverview) {
+          await sendPhoto(chatId, MASCOT_IMAGE, globalOverview);
+        } else {
+          await sendMessage(chatId, "❌ Could not fetch global data");
+        }
+        break;
+
       case "/chart":
         if (args.length === 0) {
           await sendMessage(chatId, "📊 Which token? Try: `/chart btc`");
@@ -758,7 +1031,7 @@ I am the Cosmic Oracle - your intelligent crypto companion from ${WEBSITE_URL}!
 
 📊 [Dashboard](${WEBSITE_PAGES.dashboard}) - Live market overview
 🎭 [Sentiment](${WEBSITE_PAGES.sentiment}) - Fear & Greed analysis
-⛓️ [Chains](${WEBSITE_PAGES.chains}) - Blockchain analytics
+⛓️ [Chains](${CHAIN_PAGES.ethereum}) - Blockchain analytics
 🔍 [Explorer](${WEBSITE_PAGES.explorer}) - Token search
 📚 [Learn](${WEBSITE_PAGES.learn}) - Crypto education
 
