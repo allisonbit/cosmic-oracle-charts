@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { ChainConfig } from "@/lib/chainConfig";
 import { useTokenDiscovery, DiscoveryToken } from "@/hooks/useTokenDiscovery";
-import { TrendingUp, TrendingDown, Sparkles, AlertTriangle, ExternalLink, Clock, Activity, BarChart3 } from "lucide-react";
+import { TrendingUp, TrendingDown, Sparkles, AlertTriangle, Clock, Activity } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { TokenDetailModal, TokenModalData } from "./TokenDetailModal";
 
 interface TokenDiscoveryEngineProps {
   chain: ChainConfig;
@@ -9,6 +11,29 @@ interface TokenDiscoveryEngineProps {
 
 export function TokenDiscoveryEngine({ chain }: TokenDiscoveryEngineProps) {
   const { data, isLoading, dataUpdatedAt } = useTokenDiscovery(chain.id);
+  const [selectedToken, setSelectedToken] = useState<TokenModalData | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleTokenClick = (token: DiscoveryToken) => {
+    setSelectedToken({
+      symbol: token.symbol,
+      name: token.name,
+      price: token.price,
+      change24h: token.change24h,
+      change7d: token.change7d,
+      volume24h: token.volume24h,
+      marketCap: token.marketCap,
+      rank: token.rank,
+      logo: token.logo,
+      momentum: token.momentum,
+      volumeSpike: token.volumeSpike,
+      volatility: token.volatility,
+      liquidityScore: token.liquidityScore,
+      sparkline: token.sparkline,
+      coingeckoId: token.coingeckoId,
+    });
+    setModalOpen(true);
+  };
 
   const rising = data?.tokens.filter(t => t.category === 'rising') || [];
   const crashing = data?.tokens.filter(t => t.category === 'crashing') || [];
@@ -104,7 +129,10 @@ export function TokenDiscoveryEngine({ chain }: TokenDiscoveryEngineProps) {
   };
 
   const TokenCard = ({ token }: { token: DiscoveryToken }) => (
-    <div className="group p-3 rounded-xl bg-background/60 border border-border/40 hover:border-primary/30 hover:bg-background/80 transition-all">
+    <button
+      onClick={() => handleTokenClick(token)}
+      className="w-full text-left group p-3 rounded-xl bg-background/60 border border-border/40 hover:border-primary/30 hover:bg-background/80 transition-all cursor-pointer"
+    >
       <div className="flex items-start gap-3">
         {token.logo && (
           <img src={token.logo} alt={token.symbol} className="w-8 h-8 rounded-full" />
@@ -178,7 +206,7 @@ export function TokenDiscoveryEngine({ chain }: TokenDiscoveryEngineProps) {
           </div>
         </div>
       </div>
-    </div>
+    </button>
   );
 
   return (
@@ -251,6 +279,12 @@ export function TokenDiscoveryEngine({ chain }: TokenDiscoveryEngineProps) {
           </div>
         ))}
       </div>
+
+      <TokenDetailModal
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        token={selectedToken}
+      />
     </div>
   );
 }
