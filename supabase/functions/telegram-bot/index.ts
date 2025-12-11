@@ -660,11 +660,19 @@ async function generateTrendingUpdate() {
   return `🔥 *TRENDING NOW*\n${list}\n🔍 ${WEBSITE_PAGES.explorer}`;
 }
 
-// Short whale alert
+// Short whale alert with real Etherscan link
 function formatWhaleAlert(tx: any, ethPrice: number) {
   const value = tx.value || 0;
   const usdValue = value * ethPrice;
-  return `🐋 *WHALE ALERT*\n${value.toFixed(1)} ETH (${formatNumber(usdValue)})\n${tx.from?.slice(0, 8)}...→${tx.to?.slice(0, 8)}...`;
+  const txHash = tx.hash || tx.uniqueId || "";
+  const etherscanLink = txHash ? `https://etherscan.io/tx/${txHash}` : "https://etherscan.io";
+  
+  return `🐋 *WHALE ALERT*
+${value.toFixed(1)} ETH (${formatNumber(usdValue)})
+📤 ${tx.from?.slice(0, 10)}...
+📥 ${tx.to?.slice(0, 10)}...
+🔗 [View TX](${etherscanLink})
+📊 ${WEBSITE_PAGES.dashboard}`;
 }
 
 // Short news update
@@ -677,6 +685,94 @@ async function generateNewsUpdate() {
   ).join("\n");
 
   return `📰 *CRYPTO NEWS*\n${headlines}\n📚 ${WEBSITE_PAGES.learn}`;
+}
+
+// Generate social sentiment update
+async function generateSocialSentimentUpdate() {
+  const sentiment = await fetchSentiment();
+  const fgValue = parseInt(sentiment?.fearGreed || "50");
+  const bar = generateSentimentBar(fgValue);
+  
+  let mood = "Neutral";
+  let emoji = "😐";
+  if (fgValue <= 20) { mood = "Extreme Fear"; emoji = "😱"; }
+  else if (fgValue <= 40) { mood = "Fear"; emoji = "😰"; }
+  else if (fgValue >= 80) { mood = "Extreme Greed"; emoji = "🤑"; }
+  else if (fgValue >= 60) { mood = "Greed"; emoji = "😊"; }
+  
+  const global = await fetchGlobalMarket();
+  
+  return `🎭 *SOCIAL SENTIMENT*
+${emoji} ${mood}
+${bar} ${fgValue}/100
+📈 24h MCap: ${global?.marketCapChange?.toFixed(1) || 0}%
+₿ BTC Dom: ${global?.btcDominance?.toFixed(1) || 0}%
+🔗 ${WEBSITE_PAGES.sentiment}`;
+}
+
+// Generate random chain update
+async function generateRandomChainUpdate() {
+  const chains = ["ethereum", "base", "arbitrum", "polygon", "optimism"];
+  const randomChain = chains[Math.floor(Math.random() * chains.length)];
+  
+  const metrics = await fetchChainMetrics(randomChain);
+  const tvl = await fetchDefiTVL(randomChain);
+  
+  if (!metrics) return null;
+  
+  const chainNames: Record<string, string> = {
+    ethereum: "Ethereum ⟠",
+    base: "Base 🔵",
+    arbitrum: "Arbitrum 🔶",
+    polygon: "Polygon 💜",
+    optimism: "Optimism 🔴",
+  };
+  
+  return `⛓️ *${chainNames[randomChain] || randomChain.toUpperCase()}*
+📦 Block: ${metrics.blockNumber.toLocaleString()}
+⛽ Gas: ${metrics.gasPrice} Gwei
+${tvl ? `💰 TVL: ${formatNumber(tvl.tvl)}` : ""}
+🔗 ${CHAIN_PAGES[randomChain] || CHAIN_PAGES.ethereum}`;
+}
+
+// Generate crypto tip/fact
+function generateCryptoTip() {
+  const tips = [
+    { tip: "Never share your seed phrase with anyone - not even support!", emoji: "🔐" },
+    { tip: "DCA (Dollar Cost Average) helps reduce volatility impact", emoji: "📊" },
+    { tip: "Gas fees are lowest on weekends and late night UTC", emoji: "⛽" },
+    { tip: "Always verify contract addresses before swapping", emoji: "✅" },
+    { tip: "Hardware wallets provide the best security for hodlers", emoji: "🔒" },
+    { tip: "Staking rewards vary by validator - research first!", emoji: "💎" },
+    { tip: "Layer 2s like Base & Arbitrum offer cheaper transactions", emoji: "⚡" },
+    { tip: "Impermanent loss affects LP positions during volatility", emoji: "📉" },
+    { tip: "Check TVL trends before depositing into protocols", emoji: "💰" },
+    { tip: "Fear & Greed extremes often signal reversal opportunities", emoji: "🎭" },
+  ];
+  
+  const random = tips[Math.floor(Math.random() * tips.length)];
+  return `${random.emoji} *CRYPTO TIP*
+${random.tip}
+📚 ${WEBSITE_PAGES.learn}`;
+}
+
+// Generate top movers update
+async function generateTopMoversUpdate() {
+  const coins = await fetchTopCoins(20);
+  if (!coins.length) return null;
+  
+  // Sort by 24h change
+  const sorted = [...coins].sort((a: any, b: any) => 
+    (b.price_change_percentage_24h || 0) - (a.price_change_percentage_24h || 0)
+  );
+  
+  const topGainer = sorted[0];
+  const topLoser = sorted[sorted.length - 1];
+  
+  return `📊 *TOP MOVERS*
+🚀 ${topGainer?.symbol?.toUpperCase()}: +${topGainer?.price_change_percentage_24h?.toFixed(1)}%
+📉 ${topLoser?.symbol?.toUpperCase()}: ${topLoser?.price_change_percentage_24h?.toFixed(1)}%
+🔍 ${WEBSITE_PAGES.dashboard}`;
 }
 
 // Generate chart preview for tokens
@@ -1276,6 +1372,17 @@ _Not financial advice._
 
 // ============ AUTO UPDATES & ALERTS ============
 
+// Update types for rotation
+const UPDATE_TYPES = [
+  "pulse",
+  "sentiment", 
+  "chain",
+  "trending",
+  "tip",
+  "movers",
+  "whale",
+];
+
 async function sendAutoUpdates() {
   console.log("Running auto updates...");
   
@@ -1285,39 +1392,77 @@ async function sendAutoUpdates() {
     .eq("is_active", true)
     .eq("auto_digest", true);
 
-  if (!groups?.length) return { sent: 0, whales: 0, trending: 0 };
+  if (!groups?.length) return { sent: 0, type: "none" };
 
   let sent = 0;
+  const currentHour = new Date().getHours();
   const currentMinute = new Date().getMinutes();
-  const isHourlyUpdate = currentMinute < 10; // First 10 mins of hour = trending update
   
-  // Get ETH price for whale calculations
-  const ethPrice = (await fetchPrice("ethereum"))?.price || 3000;
+  // Rotate update type based on time (changes every 10 min cycle)
+  const cycleIndex = Math.floor((currentHour * 6 + Math.floor(currentMinute / 10)) % UPDATE_TYPES.length);
+  const updateType = UPDATE_TYPES[cycleIndex];
+  
+  console.log(`Update type for this cycle: ${updateType}`);
+
+  // Generate the appropriate update
+  let updateContent: string | null = null;
+  let usePhoto = false;
+  
+  switch (updateType) {
+    case "pulse":
+      updateContent = await generateMarketPulse();
+      break;
+    case "sentiment":
+      updateContent = await generateSocialSentimentUpdate();
+      break;
+    case "chain":
+      updateContent = await generateRandomChainUpdate();
+      break;
+    case "trending":
+      updateContent = await generateTrendingUpdate();
+      break;
+    case "tip":
+      updateContent = generateCryptoTip();
+      break;
+    case "movers":
+      updateContent = await generateTopMoversUpdate();
+      break;
+    case "whale":
+      const ethPrice = (await fetchPrice("ethereum"))?.price || 3000;
+      const whaleTxs = await fetchWhaleTransactions();
+      if (whaleTxs.length > 0) {
+        updateContent = formatWhaleAlert(whaleTxs[0], ethPrice);
+      } else {
+        // Fallback to pulse if no whale activity
+        updateContent = await generateMarketPulse();
+      }
+      break;
+    default:
+      updateContent = await generateMarketPulse();
+  }
+
+  if (!updateContent) {
+    updateContent = await generateMarketPulse();
+  }
 
   for (const group of groups) {
     try {
-      // Every 10 min: short pulse
-      const pulse = await generateMarketPulse();
-      await sendMessage(group.chat_id, pulse);
-      sent++;
-
-      // Hourly: trending tokens
-      if (isHourlyUpdate) {
-        const trending = await generateTrendingUpdate();
-        await sendMessage(group.chat_id, trending);
-        await new Promise(r => setTimeout(r, 100));
+      if (usePhoto) {
+        await sendPhoto(group.chat_id, MASCOT_IMAGE, updateContent);
+      } else {
+        await sendMessage(group.chat_id, updateContent);
       }
-
+      sent++;
       await new Promise(r => setTimeout(r, 150));
     } catch (e) {
       console.error(`Failed to send to ${group.chat_id}:`, e);
     }
   }
 
-  return { sent, hourly: isHourlyUpdate };
+  return { sent, type: updateType };
 }
 
-// Check for whale transactions and alert groups
+// Check for whale transactions and alert groups (runs separately for big whales)
 async function checkWhaleActivity() {
   console.log("Checking whale activity...");
   
@@ -1331,8 +1476,8 @@ async function checkWhaleActivity() {
   const ethPrice = (await fetchPrice("ethereum"))?.price || 3000;
   const whaleTxs = await fetchWhaleTransactions();
   
-  // Only alert on very large transactions (>500 ETH = ~$1.5M+)
-  const bigWhales = whaleTxs.filter((tx: any) => tx.value && tx.value > 500);
+  // Only alert on VERY large transactions (>1000 ETH = ~$3M+) for instant alerts
+  const bigWhales = whaleTxs.filter((tx: any) => tx.value && tx.value > 1000);
   
   if (bigWhales.length === 0) return { whales: 0 };
 
@@ -1340,8 +1485,8 @@ async function checkWhaleActivity() {
   for (const group of groups) {
     try {
       const whale = bigWhales[0];
-      const msg = formatWhaleAlert(whale, ethPrice);
-      await sendMessage(group.chat_id, msg);
+      const msg = `🚨 *MAJOR WHALE DETECTED!*\n\n${formatWhaleAlert(whale, ethPrice)}`;
+      await sendPhoto(group.chat_id, MASCOT_IMAGE, msg);
       alertsSent++;
       await new Promise(r => setTimeout(r, 100));
     } catch (e) {
