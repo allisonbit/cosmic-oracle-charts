@@ -8,8 +8,6 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
 const ALCHEMY_API_KEY = Deno.env.get("ALCHEMY_API_KEY_1");
 
-// Bot mascot image URL
-const BOT_MASCOT_URL = "https://qynszkirmcrldqmiplwh.supabase.co/storage/v1/object/public/assets/oracle-bot-mascot.jpg";
 const WEBSITE_URL = "https://oracle-crypto.lovable.app";
 
 const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
@@ -19,18 +17,22 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Helper to send Telegram messages
-async function sendMessage(chatId: number, text: string, parseMode = "Markdown") {
+// ============ TELEGRAM HELPERS ============
+
+async function sendMessage(chatId: number, text: string, parseMode = "Markdown", replyMarkup?: any) {
   try {
+    const body: any = {
+      chat_id: chatId,
+      text,
+      parse_mode: parseMode,
+      disable_web_page_preview: true,
+    };
+    if (replyMarkup) body.reply_markup = replyMarkup;
+    
     const response = await fetch(`${TELEGRAM_API}/sendMessage`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text,
-        parse_mode: parseMode,
-        disable_web_page_preview: true,
-      }),
+      body: JSON.stringify(body),
     });
     return await response.json();
   } catch (error) {
@@ -38,48 +40,62 @@ async function sendMessage(chatId: number, text: string, parseMode = "Markdown")
   }
 }
 
-// Helper to send photo with caption
-async function sendPhoto(chatId: number, photoUrl: string, caption: string) {
+async function sendPoll(chatId: number, question: string, options: string[], isAnonymous = false) {
   try {
-    await fetch(`${TELEGRAM_API}/sendPhoto`, {
+    const response = await fetch(`${TELEGRAM_API}/sendPoll`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         chat_id: chatId,
-        photo: photoUrl,
-        caption,
-        parse_mode: "Markdown",
+        question,
+        options,
+        is_anonymous: isAnonymous,
+        allows_multiple_answers: false,
       }),
     });
+    return await response.json();
   } catch (error) {
-    console.error("Error sending photo:", error);
+    console.error("Error sending poll:", error);
   }
 }
 
-// Fetch crypto price from CoinGecko
+async function pinMessage(chatId: number, messageId: number) {
+  try {
+    await fetch(`${TELEGRAM_API}/pinChatMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        message_id: messageId,
+        disable_notification: true,
+      }),
+    });
+  } catch (error) {
+    console.error("Error pinning message:", error);
+  }
+}
+
+// ============ DATA FETCHING ============
+
 async function fetchPrice(symbol: string) {
   try {
-    // Try searching by symbol first
-    const searchResponse = await fetch(
-      `https://api.coingecko.com/api/v3/search?query=${symbol}`
-    );
+    const searchResponse = await fetch(`https://api.coingecko.com/api/v3/search?query=${symbol}`);
     const searchData = await searchResponse.json();
     
     if (searchData.coins?.length > 0) {
       const coin = searchData.coins[0];
-      const coinId = coin.id;
       const priceResponse = await fetch(
-        `https://api.coingecko.com/api/v3/simple/price?ids=${coinId}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_market_cap=true`
+        `https://api.coingecko.com/api/v3/simple/price?ids=${coin.id}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_market_cap=true`
       );
       const priceData = await priceResponse.json();
-      if (priceData[coinId]) {
+      if (priceData[coin.id]) {
         return {
           name: coin.name,
           symbol: coin.symbol.toUpperCase(),
-          price: priceData[coinId].usd,
-          change24h: priceData[coinId].usd_24h_change,
-          volume: priceData[coinId].usd_24h_vol,
-          marketCap: priceData[coinId].usd_market_cap,
+          price: priceData[coin.id].usd,
+          change24h: priceData[coin.id].usd_24h_change,
+          volume: priceData[coin.id].usd_24h_vol,
+          marketCap: priceData[coin.id].usd_market_cap,
         };
       }
     }
@@ -90,11 +106,10 @@ async function fetchPrice(symbol: string) {
   }
 }
 
-// Fetch multiple top coins
-async function fetchTopCoins() {
+async function fetchTopCoins(limit = 10) {
   try {
     const response = await fetch(
-      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false"
+      `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${limit}&page=1&sparkline=false&price_change_percentage=24h`
     );
     return await response.json();
   } catch (error) {
@@ -103,7 +118,17 @@ async function fetchTopCoins() {
   }
 }
 
-// Fetch gas prices
+async function fetchTrending() {
+  try {
+    const response = await fetch("https://api.coingecko.com/api/v3/search/trending");
+    const data = await response.json();
+    return data.coins?.slice(0, 7) || [];
+  } catch (error) {
+    console.error("Error fetching trending:", error);
+    return [];
+  }
+}
+
 async function fetchGas(chain: string) {
   try {
     let network = "eth-mainnet";
@@ -112,51 +137,30 @@ async function fetchGas(chain: string) {
     if (chain.toLowerCase() === "base") network = "base-mainnet";
     if (chain.toLowerCase() === "optimism") network = "opt-mainnet";
 
-    const response = await fetch(
-      `https://${network}.g.alchemy.com/v2/${ALCHEMY_API_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          jsonrpc: "2.0",
-          method: "eth_gasPrice",
-          params: [],
-          id: 1,
-        }),
-      }
-    );
+    const response = await fetch(`https://${network}.g.alchemy.com/v2/${ALCHEMY_API_KEY}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ jsonrpc: "2.0", method: "eth_gasPrice", params: [], id: 1 }),
+    });
     const data = await response.json();
-    const gasWei = parseInt(data.result, 16);
-    const gasGwei = gasWei / 1e9;
-    return {
-      slow: Math.round(gasGwei * 0.8),
-      average: Math.round(gasGwei),
-      fast: Math.round(gasGwei * 1.2),
-    };
+    const gasGwei = parseInt(data.result, 16) / 1e9;
+    return { slow: Math.round(gasGwei * 0.8), average: Math.round(gasGwei), fast: Math.round(gasGwei * 1.2) };
   } catch (error) {
     console.error("Error fetching gas:", error);
     return null;
   }
 }
 
-// Fetch market sentiment
 async function fetchSentiment() {
   try {
-    const fgiResponse = await fetch("https://api.alternative.me/fng/?limit=1");
-    const fgiData = await fgiResponse.json();
-    const fgi = fgiData.data?.[0];
-    
-    return {
-      fearGreed: fgi?.value || "N/A",
-      classification: fgi?.value_classification || "N/A",
-    };
+    const response = await fetch("https://api.alternative.me/fng/?limit=1");
+    const data = await response.json();
+    return { fearGreed: data.data?.[0]?.value || "50", classification: data.data?.[0]?.value_classification || "Neutral" };
   } catch (error) {
-    console.error("Error fetching sentiment:", error);
-    return null;
+    return { fearGreed: "50", classification: "Neutral" };
   }
 }
 
-// Fetch global market data
 async function fetchGlobalMarket() {
   try {
     const response = await fetch("https://api.coingecko.com/api/v3/global");
@@ -165,16 +169,13 @@ async function fetchGlobalMarket() {
       totalMarketCap: data.data?.total_market_cap?.usd,
       totalVolume: data.data?.total_volume?.usd,
       btcDominance: data.data?.market_cap_percentage?.btc,
-      ethDominance: data.data?.market_cap_percentage?.eth,
       marketCapChange: data.data?.market_cap_change_percentage_24h_usd,
     };
   } catch (error) {
-    console.error("Error fetching global market:", error);
     return null;
   }
 }
 
-// Format number helper
 function formatNumber(num: number): string {
   if (!num) return "N/A";
   if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
@@ -184,60 +185,168 @@ function formatNumber(num: number): string {
   return `$${num.toFixed(2)}`;
 }
 
-// AI-powered response for any question
-async function getAIResponse(message: string, context?: string) {
+// ============ CONVERSATION LEARNING ============
+
+async function extractTopicsAndSentiment(text: string) {
+  const cryptoKeywords = [
+    "btc", "bitcoin", "eth", "ethereum", "sol", "solana", "bnb", "xrp", "ada", "doge",
+    "defi", "nft", "staking", "yield", "airdrop", "pump", "dump", "moon", "rekt",
+    "bullish", "bearish", "hodl", "fomo", "fud", "whale", "rug", "dex", "cex",
+    "gas", "bridge", "swap", "liquidity", "tvl", "apy", "apr", "farming"
+  ];
+  
+  const textLower = text.toLowerCase();
+  const topics = cryptoKeywords.filter(keyword => textLower.includes(keyword));
+  
+  // Simple sentiment analysis
+  const bullishWords = ["bullish", "moon", "pump", "up", "green", "buy", "long", "ath", "breakout", "gains"];
+  const bearishWords = ["bearish", "dump", "down", "red", "sell", "short", "crash", "rekt", "fear", "drop"];
+  
+  let bullScore = bullishWords.filter(w => textLower.includes(w)).length;
+  let bearScore = bearishWords.filter(w => textLower.includes(w)).length;
+  
+  let sentiment = "neutral";
+  if (bullScore > bearScore) sentiment = "bullish";
+  else if (bearScore > bullScore) sentiment = "bearish";
+  
+  return { topics, sentiment };
+}
+
+async function saveConversation(chatId: number, userId: number, username: string, text: string) {
+  try {
+    const { topics, sentiment } = await extractTopicsAndSentiment(text);
+    
+    await supabase.from("telegram_conversations").insert({
+      chat_id: chatId,
+      user_id: userId,
+      username,
+      message_text: text,
+      sentiment,
+      topics,
+    });
+
+    // Update group learned topics
+    if (topics.length > 0) {
+      const { data: group } = await supabase
+        .from("telegram_groups")
+        .select("learned_topics")
+        .eq("chat_id", chatId)
+        .single();
+      
+      if (group) {
+        const existingTopics = group.learned_topics || [];
+        const newTopics = [...new Set([...existingTopics, ...topics])].slice(-50);
+        await supabase.from("telegram_groups").update({ learned_topics: newTopics }).eq("chat_id", chatId);
+      }
+    }
+  } catch (error) {
+    console.error("Error saving conversation:", error);
+  }
+}
+
+async function getGroupContext(chatId: number) {
+  try {
+    // Get recent conversations
+    const { data: conversations } = await supabase
+      .from("telegram_conversations")
+      .select("message_text, sentiment, topics, username")
+      .eq("chat_id", chatId)
+      .order("created_at", { ascending: false })
+      .limit(20);
+
+    // Get group info
+    const { data: group } = await supabase
+      .from("telegram_groups")
+      .select("learned_topics, community_sentiment")
+      .eq("chat_id", chatId)
+      .single();
+
+    // Calculate community sentiment
+    const sentiments = conversations?.map(c => c.sentiment) || [];
+    const bullishCount = sentiments.filter(s => s === "bullish").length;
+    const bearishCount = sentiments.filter(s => s === "bearish").length;
+    
+    let communitySentiment = "neutral";
+    if (bullishCount > bearishCount * 1.5) communitySentiment = "bullish";
+    else if (bearishCount > bullishCount * 1.5) communitySentiment = "bearish";
+
+    // Update community sentiment
+    if (group) {
+      await supabase.from("telegram_groups").update({ community_sentiment: communitySentiment }).eq("chat_id", chatId);
+    }
+
+    const recentTopics = [...new Set(conversations?.flatMap(c => c.topics || []) || [])].slice(0, 10);
+    const recentMessages = conversations?.slice(0, 5).map(c => `${c.username}: ${c.message_text.slice(0, 100)}`).join("\n") || "";
+
+    return {
+      recentTopics,
+      communitySentiment,
+      recentMessages,
+      learnedTopics: group?.learned_topics || [],
+    };
+  } catch (error) {
+    console.error("Error getting group context:", error);
+    return { recentTopics: [], communitySentiment: "neutral", recentMessages: "", learnedTopics: [] };
+  }
+}
+
+// ============ AI RESPONSE ============
+
+async function getAIResponse(message: string, chatId?: number, userName?: string) {
   if (!OPENAI_API_KEY) return null;
   
   try {
-    // Fetch current market data for context
     const btcData = await fetchPrice("bitcoin");
     const ethData = await fetchPrice("ethereum");
     const sentiment = await fetchSentiment();
     const globalMarket = await fetchGlobalMarket();
+    
+    let groupContext = "";
+    if (chatId) {
+      const ctx = await getGroupContext(chatId);
+      groupContext = `
+Community Context:
+- Recent hot topics: ${ctx.recentTopics.join(", ") || "general crypto"}
+- Community mood: ${ctx.communitySentiment}
+- Topics this group discusses often: ${ctx.learnedTopics.slice(0, 10).join(", ") || "various crypto topics"}
+`;
+    }
 
     const marketContext = `
-Current Market Data:
+Live Market Data:
 - BTC: $${btcData?.price?.toLocaleString()} (${btcData?.change24h?.toFixed(2)}% 24h)
 - ETH: $${ethData?.price?.toLocaleString()} (${ethData?.change24h?.toFixed(2)}% 24h)
 - Total Market Cap: ${formatNumber(globalMarket?.totalMarketCap || 0)}
-- Fear & Greed Index: ${sentiment?.fearGreed}/100 (${sentiment?.classification})
-- BTC Dominance: ${globalMarket?.btcDominance?.toFixed(1)}%
-`;
+- Fear & Greed: ${sentiment?.fearGreed}/100 (${sentiment?.classification})
+${groupContext}`;
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
-      headers: {
-        "Authorization": `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
+      headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
           {
             role: "system",
-            content: `You are Oracle Bot 🔮, a friendly and knowledgeable crypto assistant for the Oracle community on Telegram. You have a cosmic, mystical personality - you're the Cosmic Oracle that sees all in the crypto universe.
+            content: `You are Oracle Bot 🔮, a wise and friendly crypto oracle for the Oracle community. You have cosmic insight into the crypto markets!
 
-Your traits:
-- Helpful and informative about crypto, blockchain, DeFi, NFTs, trading concepts
-- Use cosmic/oracle-themed language occasionally (e.g., "The stars reveal...", "My cosmic vision shows...")
-- Always neutral - NEVER give financial advice or buy/sell recommendations
-- Keep responses concise (under 200 words) but informative
-- Use emojis sparingly but effectively
-- End with "For informational purposes. Not financial advice." on any price/market discussion
-- You can discuss: prices, market trends, blockchain concepts, DeFi protocols, gas fees, staking, airdrops, etc.
-- You represent the Oracle platform at ${WEBSITE_URL}
+Personality:
+- Mystical but approachable - use cosmic language occasionally ("The stars reveal...", "My cosmic vision shows...")
+- Knowledgeable about ALL crypto topics: DeFi, NFTs, trading, staking, airdrops, protocols, chains, etc.
+- NEVER give financial advice - always neutral and educational
+- Keep responses under 200 words, use emojis sparingly
+- Reference the group's interests when relevant
+- Be helpful for both beginners and experienced traders
+- End market discussions with "For informational purposes. Not financial advice."
 
 ${marketContext}
 
-${context || ""}`,
+${userName ? `Speaking to: ${userName}` : ""}`,
           },
-          {
-            role: "user",
-            content: message,
-          },
+          { role: "user", content: message },
         ],
-        max_tokens: 500,
-        temperature: 0.7,
+        max_tokens: 600,
+        temperature: 0.8,
       }),
     });
     const data = await response.json();
@@ -248,35 +357,27 @@ ${context || ""}`,
   }
 }
 
-// Log usage
-async function logUsage(userId: number, chatId: number, command: string, params?: any) {
+// ============ ALERT SYSTEM ============
+
+async function createAlert(userId: number, chatId: number, alertType: string, target: string, threshold: number, metadata?: any) {
   try {
-    await supabase.from("telegram_bot_usage").insert({
+    await supabase.from("telegram_alerts").insert({
       telegram_user_id: userId,
       telegram_chat_id: chatId,
-      command,
-      query_params: params,
+      alert_type: alertType,
+      token_or_chain: target,
+      threshold_value: threshold,
+      metadata: metadata || {},
     });
+    return true;
   } catch (error) {
-    console.error("Error logging usage:", error);
+    console.error("Error creating alert:", error);
+    return false;
   }
 }
 
-// Register group for auto-updates
-async function registerGroup(chatId: number, chatTitle?: string) {
-  try {
-    await supabase.from("telegram_groups").upsert({
-      chat_id: chatId,
-      chat_title: chatTitle,
-      is_active: true,
-      auto_digest: true,
-    }, { onConflict: "chat_id" });
-  } catch (error) {
-    console.error("Error registering group:", error);
-  }
-}
+// ============ MARKET PULSE ============
 
-// Generate market pulse message
 async function generateMarketPulse() {
   const btcData = await fetchPrice("bitcoin");
   const ethData = await fetchPrice("ethereum");
@@ -284,16 +385,17 @@ async function generateMarketPulse() {
   const sentiment = await fetchSentiment();
   const globalMarket = await fetchGlobalMarket();
   const gasData = await fetchGas("eth");
+  const trending = await fetchTrending();
 
-  let sentimentEmoji = "😐";
   const fgValue = parseInt(sentiment?.fearGreed || "50");
-  if (fgValue <= 25) sentimentEmoji = "😱";
-  else if (fgValue <= 45) sentimentEmoji = "😰";
-  else if (fgValue >= 75) sentimentEmoji = "🤑";
-  else if (fgValue >= 55) sentimentEmoji = "😊";
+  let sentimentEmoji = fgValue <= 25 ? "😱" : fgValue <= 45 ? "😰" : fgValue >= 75 ? "🤑" : fgValue >= 55 ? "😊" : "😐";
 
   const btcChange = btcData?.change24h || 0;
   const marketTrend = btcChange >= 2 ? "🚀 BULLISH" : btcChange <= -2 ? "📉 BEARISH" : "➡️ SIDEWAYS";
+
+  const trendingList = trending.slice(0, 5).map((t: any, i: number) => 
+    `${i + 1}. ${t.item?.symbol?.toUpperCase() || "?"}`
+  ).join(" | ");
 
   return `
 🔮 *ORACLE MARKET PULSE*
@@ -301,407 +403,516 @@ _${new Date().toLocaleString("en-US", { weekday: "short", month: "short", day: "
 
 ━━━━━━━━━━━━━━━━━━━━
 
-📊 *MARKET OVERVIEW*
-💰 Total Cap: ${formatNumber(globalMarket?.totalMarketCap || 0)}
-📈 24h Change: ${globalMarket?.marketCapChange?.toFixed(2)}%
-📊 Trend: ${marketTrend}
+📊 *MARKET*
+💰 Cap: ${formatNumber(globalMarket?.totalMarketCap || 0)} (${globalMarket?.marketCapChange?.toFixed(1)}%)
+📈 Trend: ${marketTrend}
 
 ━━━━━━━━━━━━━━━━━━━━
 
-💎 *BTC* $${btcData?.price?.toLocaleString()} ${btcData?.change24h >= 0 ? "🟢" : "🔴"} ${btcData?.change24h?.toFixed(2)}%
-⟠ *ETH* $${ethData?.price?.toLocaleString()} ${ethData?.change24h >= 0 ? "🟢" : "🔴"} ${ethData?.change24h?.toFixed(2)}%
-◎ *SOL* $${solData?.price?.toLocaleString()} ${solData?.change24h >= 0 ? "🟢" : "🔴"} ${solData?.change24h?.toFixed(2)}%
+💎 *BTC* $${btcData?.price?.toLocaleString()} ${btcData?.change24h >= 0 ? "🟢" : "🔴"}${btcData?.change24h?.toFixed(1)}%
+⟠ *ETH* $${ethData?.price?.toLocaleString()} ${ethData?.change24h >= 0 ? "🟢" : "🔴"}${ethData?.change24h?.toFixed(1)}%
+◎ *SOL* $${solData?.price?.toLocaleString()} ${solData?.change24h >= 0 ? "🟢" : "🔴"}${solData?.change24h?.toFixed(1)}%
 
 ━━━━━━━━━━━━━━━━━━━━
 
-${sentimentEmoji} *Sentiment:* ${sentiment?.fearGreed}/100 (${sentiment?.classification})
-⛽ *ETH Gas:* ${gasData?.average} Gwei
-👑 *BTC Dom:* ${globalMarket?.btcDominance?.toFixed(1)}%
+🔥 *TRENDING*
+${trendingList}
 
 ━━━━━━━━━━━━━━━━━━━━
 
-🌐 More insights: ${WEBSITE_URL}
+${sentimentEmoji} Sentiment: ${sentiment?.fearGreed}/100 | ⛽ Gas: ${gasData?.average} Gwei
 
+🌐 ${WEBSITE_URL}
 _For informational purposes. Not financial advice._
   `;
 }
 
-// Handle commands
+// ============ COMMAND HANDLERS ============
+
 async function handleCommand(message: any) {
   const chatId = message.chat.id;
   const userId = message.from?.id || 0;
+  const userName = message.from?.first_name || message.from?.username || "Anon";
   const chatTitle = message.chat.title;
   const text = message.text || "";
   const isGroup = message.chat.type === "group" || message.chat.type === "supergroup";
 
-  // Register group if it's a group chat
+  // Register group and save conversation for learning
   if (isGroup) {
-    await registerGroup(chatId, chatTitle);
+    await supabase.from("telegram_groups").upsert({
+      chat_id: chatId,
+      chat_title: chatTitle,
+      is_active: true,
+    }, { onConflict: "chat_id" });
+    
+    // Learn from conversation
+    if (text.length > 3 && !text.startsWith("/")) {
+      await saveConversation(chatId, userId, userName, text);
+    }
   }
 
   const [command, ...args] = text.split(" ");
   const commandLower = command.toLowerCase();
+  const argText = args.join(" ");
 
-  console.log(`Chat: ${chatId}, Command: ${command}, Args: ${args.join(" ")}, IsGroup: ${isGroup}`);
-  await logUsage(userId, chatId, command, { args, isGroup });
+  console.log(`[${chatId}] ${userName}: ${text.slice(0, 100)}`);
 
-  // Check if it's a command (starts with /)
   if (text.startsWith("/")) {
     switch (commandLower) {
       case "/start":
-        const welcomeMsg = `
+        await sendMessage(chatId, `
 🔮 *Welcome to Oracle Bot!*
 
-I am the Cosmic Oracle - your real-time blockchain intelligence assistant. I can see all that happens in the crypto universe!
+I am the Cosmic Oracle - your intelligent crypto companion. I learn from our conversations and provide real-time insights!
 
-*Commands:*
-📊 /price <TOKEN> - Get live prices
-⛽ /gas <CHAIN> - Gas fees
-🎭 /sentiment - Market mood
-📋 /pulse - Full market overview
-🤖 /analyze <TOKEN> - AI analysis
-📚 /learn <TOPIC> - Crypto education
-🔔 /alert - Set price alerts
+*📊 Market Data*
+/price <TOKEN> - Live prices
+/gas <CHAIN> - Gas fees
+/trending - Hot tokens
+/pulse - Full market update
 
-Or just *ask me anything* about crypto! I'm here to help 24/7.
+*🔔 Smart Alerts*
+/alert - Set any type of alert
+/myalerts - View your alerts
 
-🌐 Visit: ${WEBSITE_URL}
+*🗳️ Community*
+/poll <question> - Create a poll
+/vote - Current polls
+/vibe - Group sentiment
+/insights - What we talk about
 
-_For informational purposes. Not financial advice._
-        `;
-        await sendMessage(chatId, welcomeMsg);
+*🤖 AI Features*
+/analyze <TOKEN> - Deep analysis
+/ask <anything> - Ask me anything
+/learn <topic> - Crypto education
+/compare <A> vs <B> - Compare tokens
+
+*📌 More*
+/pin <message> - Pin insight
+/digest - Summary
+/help - All commands
+
+💬 Or just chat with me naturally!
+
+🌐 ${WEBSITE_URL}
+        `);
         break;
 
       case "/help":
         await sendMessage(chatId, `
 🔮 *Oracle Bot Commands*
 
-/price btc - Bitcoin price
-/price eth - Ethereum price
-/gas eth - Ethereum gas fees
-/sentiment - Market fear/greed
-/pulse - Full market update
-/analyze eth - AI analysis
-/learn defi - Learn about DeFi
+*Prices:* /price btc, /price eth sol ada
+*Gas:* /gas eth, /gas base
+*Trending:* /trending
+*Market:* /pulse, /digest
 
-💬 Or just ask me anything about crypto!
+*Alerts:* 
+/alert price BTC above 100000
+/alert price ETH below 3000
+/alert sentiment fear (when F&G < 25)
+/alert sentiment greed (when F&G > 75)
+/alert whale BTC 1000000 (whale moves)
+/alert trending SOL (if SOL trends)
 
-_For informational purposes. Not financial advice._
+*Community:*
+/poll Will BTC hit 100k this month?
+/vibe - Group mood
+/insights - Hot topics
+
+*AI:*
+/analyze, /ask, /learn, /compare
+
+💬 I also respond to natural questions!
         `);
         break;
 
       case "/price":
         if (args.length === 0) {
-          await sendMessage(chatId, "🔮 Which token would you like to check? Example: `/price btc`");
+          await sendMessage(chatId, "🔮 Which token? Try: `/price btc` or `/price eth sol ada`");
           break;
         }
-        const token = args[0].toUpperCase();
-        const priceData = await fetchPrice(args[0]);
-        if (priceData) {
-          const changeEmoji = priceData.change24h >= 0 ? "🟢" : "🔴";
-          await sendMessage(chatId, `
-🔮 *${priceData.name} (${priceData.symbol})*
-
-💰 *Price:* $${priceData.price?.toLocaleString(undefined, { maximumFractionDigits: 8 })}
-${changeEmoji} *24h:* ${priceData.change24h?.toFixed(2)}%
-📈 *Volume:* ${formatNumber(priceData.volume)}
-💎 *MCap:* ${formatNumber(priceData.marketCap)}
-
-_For informational purposes. Not financial advice._
-          `);
-        } else {
-          await sendMessage(chatId, `❌ Token "${token}" not found. Try the full name like "bitcoin" or "ethereum".`);
+        // Support multiple tokens
+        const tokens = args.slice(0, 5);
+        let priceMsg = "📊 *Live Prices*\n\n";
+        
+        for (const t of tokens) {
+          const data = await fetchPrice(t);
+          if (data) {
+            const emoji = data.change24h >= 0 ? "🟢" : "🔴";
+            priceMsg += `*${data.symbol}* $${data.price?.toLocaleString(undefined, { maximumFractionDigits: 6 })} ${emoji}${data.change24h?.toFixed(1)}%\n`;
+          }
         }
+        priceMsg += "\n_Not financial advice._";
+        await sendMessage(chatId, priceMsg);
         break;
 
       case "/gas":
         const chain = args[0]?.toLowerCase() || "eth";
         const gasData = await fetchGas(chain);
         if (gasData) {
-          await sendMessage(chatId, `
-⛽ *${chain.toUpperCase()} Gas Prices*
-
-🐢 Slow: ${gasData.slow} Gwei
-🚶 Average: ${gasData.average} Gwei  
-🚀 Fast: ${gasData.fast} Gwei
-
-_Updated just now._
-          `);
+          await sendMessage(chatId, `⛽ *${chain.toUpperCase()} Gas*\n🐢 ${gasData.slow} | 🚶 ${gasData.average} | 🚀 ${gasData.fast} Gwei`);
         } else {
           await sendMessage(chatId, "❌ Try: eth, polygon, arbitrum, base, optimism");
         }
         break;
 
-      case "/sentiment":
-        const sentimentData = await fetchSentiment();
-        if (sentimentData) {
-          let emoji = "😐";
-          if (parseInt(sentimentData.fearGreed) <= 25) emoji = "😱";
-          else if (parseInt(sentimentData.fearGreed) <= 45) emoji = "😰";
-          else if (parseInt(sentimentData.fearGreed) >= 75) emoji = "🤑";
-          else if (parseInt(sentimentData.fearGreed) >= 55) emoji = "😊";
-
-          await sendMessage(chatId, `
-🎭 *Market Sentiment*
-
-${emoji} *Fear & Greed:* ${sentimentData.fearGreed}/100
-📊 *Classification:* ${sentimentData.classification}
-
-_Sentiment is a lagging indicator._
-          `);
-        }
+      case "/trending":
+        const trending = await fetchTrending();
+        let trendMsg = "🔥 *Trending Now*\n\n";
+        trending.slice(0, 10).forEach((t: any, i: number) => {
+          const item = t.item;
+          trendMsg += `${i + 1}. *${item?.symbol?.toUpperCase()}* - ${item?.name}\n`;
+        });
+        await sendMessage(chatId, trendMsg);
         break;
 
       case "/pulse":
       case "/digest":
       case "/market":
-        const pulseMsg = await generateMarketPulse();
-        await sendMessage(chatId, pulseMsg);
+        const pulse = await generateMarketPulse();
+        await sendMessage(chatId, pulse);
         break;
 
-      case "/analyze":
-        if (args.length === 0) {
-          await sendMessage(chatId, "🔮 Which token should I analyze? Example: `/analyze eth`");
-          break;
-        }
-        await sendMessage(chatId, "🔮 Consulting the cosmic charts... Please wait.");
-        const analysisResponse = await getAIResponse(
-          `Provide a brief technical analysis and outlook for ${args[0]}. Include current trend, key levels to watch, and market context.`
-        );
-        if (analysisResponse) {
-          await sendMessage(chatId, `🔮 *Analysis: ${args[0].toUpperCase()}*\n\n${analysisResponse}`);
-        } else {
-          await sendMessage(chatId, "❌ Unable to generate analysis. Please try again.");
-        }
+      case "/sentiment":
+        const sent = await fetchSentiment();
+        const fgVal = parseInt(sent?.fearGreed || "50");
+        const emoji = fgVal <= 25 ? "😱 EXTREME FEAR" : fgVal <= 45 ? "😰 FEAR" : fgVal >= 75 ? "🤑 EXTREME GREED" : fgVal >= 55 ? "😊 GREED" : "😐 NEUTRAL";
+        await sendMessage(chatId, `🎭 *Market Sentiment*\n\n${emoji}\n📊 Fear & Greed: *${sent?.fearGreed}/100*`);
         break;
 
       case "/alert":
-        if (args.length < 4) {
+        if (args.length < 3) {
           await sendMessage(chatId, `
-🔔 *Set Price Alerts:*
+🔔 *Smart Alerts*
+
+*Price Alerts:*
 /alert price BTC above 100000
 /alert price ETH below 3000
-/alert gas eth above 50
 
-View alerts: /myalerts
+*Sentiment Alerts:*
+/alert sentiment fear
+/alert sentiment greed
+
+*Whale Alerts:*
+/alert whale BTC 1000000
+
+*Volume Alerts:*
+/alert volume ETH spike
+
+Examples work for any token!
           `);
           break;
         }
+
         const alertType = args[0].toLowerCase();
-        const alertToken = args[1].toUpperCase();
-        const direction = args[2].toLowerCase();
-        const threshold = parseFloat(args[3]);
+        let success = false;
+        let alertMsg = "";
 
-        if (isNaN(threshold)) {
-          await sendMessage(chatId, "❌ Invalid threshold value.");
-          break;
+        if (alertType === "price") {
+          const token = args[1].toUpperCase();
+          const direction = args[2].toLowerCase();
+          const value = parseFloat(args[3]);
+          
+          if (!isNaN(value)) {
+            const dbType = direction === "above" ? "price_above" : "price_below";
+            success = await createAlert(userId, chatId, dbType, token, value);
+            alertMsg = `💰 ${token} ${direction} $${value.toLocaleString()}`;
+          }
+        } else if (alertType === "sentiment") {
+          const type = args[1].toLowerCase();
+          const threshold = type === "fear" ? 25 : type === "greed" ? 75 : 50;
+          const dbType = type === "fear" ? "sentiment_fear" : "sentiment_greed";
+          success = await createAlert(userId, chatId, dbType, "market", threshold);
+          alertMsg = `🎭 Sentiment ${type} alert`;
+        } else if (alertType === "whale") {
+          const token = args[1].toUpperCase();
+          const minValue = parseFloat(args[2]) || 1000000;
+          success = await createAlert(userId, chatId, "whale", token, minValue);
+          alertMsg = `🐋 ${token} whale moves > $${formatNumber(minValue)}`;
+        } else if (alertType === "volume") {
+          const token = args[1].toUpperCase();
+          success = await createAlert(userId, chatId, "volume_spike", token, 100);
+          alertMsg = `📈 ${token} volume spike`;
+        } else if (alertType === "trending") {
+          const token = args[1].toUpperCase();
+          success = await createAlert(userId, chatId, "trending", token, 1);
+          alertMsg = `🔥 ${token} trending alert`;
         }
 
-        let dbAlertType = "";
-        if (alertType === "price" && direction === "above") dbAlertType = "price_above";
-        else if (alertType === "price" && direction === "below") dbAlertType = "price_below";
-        else if (alertType === "gas" && direction === "above") dbAlertType = "gas";
-        else {
-          await sendMessage(chatId, "❌ Use: price above/below, gas above");
-          break;
-        }
-
-        try {
-          await supabase.from("telegram_alerts").insert({
-            telegram_user_id: userId,
-            telegram_chat_id: chatId,
-            alert_type: dbAlertType,
-            token_or_chain: alertToken,
-            threshold_value: threshold,
-          });
-          await sendMessage(chatId, `
-✅ *Alert Created!*
-
-📍 ${alertType} ${direction} ${alertType === "gas" ? `${threshold} Gwei` : `$${threshold.toLocaleString()}`}
-🪙 ${alertToken}
-
-You'll be notified when triggered.
-          `);
-        } catch (error) {
-          console.error("Error creating alert:", error);
-          await sendMessage(chatId, "❌ Failed to create alert.");
+        if (success) {
+          await sendMessage(chatId, `✅ *Alert Created!*\n\n${alertMsg}\n\nYou will be notified when triggered.`);
+        } else {
+          await sendMessage(chatId, "❌ Could not create alert. Check format with /alert");
         }
         break;
 
       case "/myalerts":
-        try {
-          const { data: alerts } = await supabase
-            .from("telegram_alerts")
-            .select("*")
-            .eq("telegram_user_id", userId)
-            .eq("is_active", true)
-            .order("created_at", { ascending: false });
+        const { data: alerts } = await supabase
+          .from("telegram_alerts")
+          .select("*")
+          .eq("telegram_user_id", userId)
+          .eq("is_active", true)
+          .order("created_at", { ascending: false })
+          .limit(10);
 
-          if (!alerts || alerts.length === 0) {
-            await sendMessage(chatId, "📭 No active alerts. Create one with /alert");
-            break;
-          }
-
-          let alertList = "🔔 *Your Alerts:*\n\n";
-          alerts.forEach((alert, i) => {
-            const typeEmoji = alert.alert_type.includes("price") ? "💰" : "⛽";
-            const direction = alert.alert_type.includes("above") ? "↗️" : "↘️";
-            alertList += `${i + 1}. ${typeEmoji} ${alert.token_or_chain} ${direction} ${alert.threshold_value}\n`;
+        if (!alerts?.length) {
+          await sendMessage(chatId, "📭 No active alerts. Create with /alert");
+        } else {
+          let list = "🔔 *Your Alerts*\n\n";
+          alerts.forEach((a, i) => {
+            const emoji = a.alert_type.includes("price") ? "💰" : a.alert_type.includes("sentiment") ? "🎭" : a.alert_type.includes("whale") ? "🐋" : "📊";
+            list += `${i + 1}. ${emoji} ${a.token_or_chain} - ${a.alert_type.replace("_", " ")}\n`;
           });
-          await sendMessage(chatId, alertList);
-        } catch (error) {
-          await sendMessage(chatId, "❌ Failed to fetch alerts.");
+          await sendMessage(chatId, list);
         }
         break;
 
-      case "/learn":
-        const topic = args.join(" ").toLowerCase() || "crypto";
-        const learnResponse = await getAIResponse(
-          `Explain ${topic} in simple terms for someone learning about crypto. Keep it educational and under 150 words.`
+      case "/poll":
+        if (argText.length < 5) {
+          await sendMessage(chatId, "📊 Create a poll:\n`/poll Will BTC break 100k this week?`\n\nDefault options: Yes / No / Maybe");
+          break;
+        }
+        
+        const pollResult = await sendPoll(chatId, argText, ["Yes ✅", "No ❌", "Maybe 🤔", "Show results 📊"]);
+        
+        if (pollResult?.ok) {
+          await supabase.from("telegram_polls").insert({
+            chat_id: chatId,
+            created_by: userId,
+            question: argText,
+            options: ["Yes", "No", "Maybe", "Show results"],
+          });
+        }
+        break;
+
+      case "/vibe":
+      case "/mood":
+        const ctx = await getGroupContext(chatId);
+        const vibeEmoji = ctx.communitySentiment === "bullish" ? "🐂" : ctx.communitySentiment === "bearish" ? "🐻" : "😐";
+        await sendMessage(chatId, `
+${vibeEmoji} *Community Vibe: ${ctx.communitySentiment.toUpperCase()}*
+
+🔥 *Hot Topics:* ${ctx.recentTopics.slice(0, 5).join(", ") || "general discussion"}
+
+_Based on recent conversations_
+        `);
+        break;
+
+      case "/insights":
+        const insights = await getGroupContext(chatId);
+        await sendMessage(chatId, `
+🧠 *Community Insights*
+
+📚 *Topics We Discuss:*
+${insights.learnedTopics.slice(0, 15).join(", ") || "Various crypto topics"}
+
+🔥 *Recent Focus:*
+${insights.recentTopics.slice(0, 8).join(", ") || "General chat"}
+
+📊 *Current Mood:* ${insights.communitySentiment}
+
+_Oracle learns from your conversations!_
+        `);
+        break;
+
+      case "/pin":
+        if (argText.length < 5) {
+          await sendMessage(chatId, "📌 Pin a message:\n`/pin BTC key support at 89k`");
+          break;
+        }
+        
+        const pinnedMsg = await sendMessage(chatId, `📌 *PINNED INSIGHT*\n\n${argText}\n\n_by ${userName}_`);
+        if (pinnedMsg?.result?.message_id) {
+          await pinMessage(chatId, pinnedMsg.result.message_id);
+          await supabase.from("telegram_pinned").insert({
+            chat_id: chatId,
+            content_type: "insight",
+            content: argText,
+            metadata: { by: userName },
+          });
+        }
+        break;
+
+      case "/analyze":
+        if (args.length === 0) {
+          await sendMessage(chatId, "🔮 Analyze what? `/analyze eth`");
+          break;
+        }
+        await sendMessage(chatId, "🔮 Consulting the cosmic charts...");
+        const analysis = await getAIResponse(
+          `Provide a concise technical analysis for ${args[0]}. Include: current trend, key levels, volume analysis, and 24h outlook. Be specific with numbers.`,
+          chatId, userName
         );
-        if (learnResponse) {
-          await sendMessage(chatId, `📚 *Learn: ${topic.charAt(0).toUpperCase() + topic.slice(1)}*\n\n${learnResponse}`);
-        } else {
+        await sendMessage(chatId, analysis || "❌ Could not analyze. Try again.");
+        break;
+
+      case "/ask":
+        if (argText.length < 3) {
+          await sendMessage(chatId, "🔮 Ask me anything! `/ask what is impermanent loss?`");
+          break;
+        }
+        const answer = await getAIResponse(argText, chatId, userName);
+        await sendMessage(chatId, answer || "❌ Could not process. Try again.");
+        break;
+
+      case "/learn":
+        const topic = argText || "crypto basics";
+        const lesson = await getAIResponse(
+          `Explain ${topic} in simple terms for someone learning crypto. Be educational, use examples, keep under 150 words.`,
+          chatId, userName
+        );
+        await sendMessage(chatId, `📚 *Learn: ${topic}*\n\n${lesson || "Could not generate lesson."}`);
+        break;
+
+      case "/compare":
+        if (args.length < 2) {
+          await sendMessage(chatId, "⚖️ Compare tokens: `/compare btc vs eth`");
+          break;
+        }
+        const tokenA = args[0].toUpperCase();
+        const tokenB = args.find((a: string) => a.toLowerCase() !== "vs" && a.toUpperCase() !== tokenA)?.toUpperCase() || "ETH";
+        
+        const [dataA, dataB] = await Promise.all([fetchPrice(tokenA), fetchPrice(tokenB)]);
+        
+        if (dataA && dataB) {
           await sendMessage(chatId, `
-📚 *Quick Topics:*
-/learn defi - Decentralized Finance
-/learn gas - Gas fees explained
-/learn staking - Staking basics
-/learn nft - NFT fundamentals
+⚖️ *${tokenA} vs ${tokenB}*
+
+*${tokenA}*
+💰 $${dataA.price?.toLocaleString()}
+📊 24h: ${dataA.change24h?.toFixed(2)}%
+💎 MCap: ${formatNumber(dataA.marketCap)}
+
+*${tokenB}*
+💰 $${dataB.price?.toLocaleString()}
+📊 24h: ${dataB.change24h?.toFixed(2)}%
+💎 MCap: ${formatNumber(dataB.marketCap)}
+
+_Not financial advice._
           `);
         }
         break;
 
       default:
-        // Unknown command - try AI response
-        const aiHelp = await getAIResponse(text);
-        if (aiHelp) {
-          await sendMessage(chatId, aiHelp);
-        } else {
-          await sendMessage(chatId, "❓ Unknown command. Type /help for options or just ask me a question!");
-        }
+        // Unknown command - use AI
+        const aiResp = await getAIResponse(text, chatId, userName);
+        if (aiResp) await sendMessage(chatId, aiResp);
+        else await sendMessage(chatId, "❓ Unknown command. Try /help");
         break;
     }
   } else {
-    // Not a command - handle natural language
-    // In groups, only respond if bot is mentioned or replied to
+    // Natural language - respond in groups only when mentioned
     const botMentioned = text.toLowerCase().includes("oracle") || 
-                         text.toLowerCase().includes("@") ||
+                         text.toLowerCase().includes("@oraclebot") ||
                          message.reply_to_message?.from?.is_bot;
     
     if (!isGroup || botMentioned) {
-      // Get AI response for the message
-      const aiResponse = await getAIResponse(text);
-      if (aiResponse) {
-        await sendMessage(chatId, aiResponse);
-      }
+      const response = await getAIResponse(text, chatId, userName);
+      if (response) await sendMessage(chatId, response);
     }
   }
 }
 
-// Send automatic updates to all registered groups
+// ============ AUTO UPDATES & ALERTS ============
+
 async function sendAutoUpdates() {
-  console.log("Sending auto updates to all groups...");
+  console.log("Running auto updates...");
   
-  try {
-    const { data: groups } = await supabase
-      .from("telegram_groups")
-      .select("*")
-      .eq("is_active", true)
-      .eq("auto_digest", true);
+  const { data: groups } = await supabase
+    .from("telegram_groups")
+    .select("*")
+    .eq("is_active", true)
+    .eq("auto_digest", true);
 
-    if (!groups || groups.length === 0) {
-      console.log("No groups registered for auto updates");
-      return { sent: 0 };
+  if (!groups?.length) return { sent: 0 };
+
+  const pulse = await generateMarketPulse();
+  let sent = 0;
+
+  for (const group of groups) {
+    try {
+      await sendMessage(group.chat_id, pulse);
+      sent++;
+      await new Promise(r => setTimeout(r, 100));
+    } catch (e) {
+      console.error(`Failed to send to ${group.chat_id}`);
     }
-
-    const pulseMsg = await generateMarketPulse();
-    let sentCount = 0;
-
-    for (const group of groups) {
-      try {
-        await sendMessage(group.chat_id, pulseMsg);
-        sentCount++;
-        // Small delay to avoid rate limits
-        await new Promise(resolve => setTimeout(resolve, 100));
-      } catch (error) {
-        console.error(`Failed to send to group ${group.chat_id}:`, error);
-      }
-    }
-
-    console.log(`Auto updates sent to ${sentCount} groups`);
-    return { sent: sentCount };
-  } catch (error) {
-    console.error("Error in auto updates:", error);
-    return { error: error instanceof Error ? error.message : "Unknown error" };
   }
+
+  return { sent };
 }
 
-// Check and trigger alerts
 async function checkAlerts() {
   console.log("Checking alerts...");
   
-  try {
-    const { data: alerts } = await supabase
-      .from("telegram_alerts")
-      .select("*")
-      .eq("is_active", true)
-      .is("triggered_at", null);
+  const { data: alerts } = await supabase
+    .from("telegram_alerts")
+    .select("*")
+    .eq("is_active", true)
+    .is("triggered_at", null);
 
-    if (!alerts || alerts.length === 0) return { checked: 0, triggered: 0 };
+  if (!alerts?.length) return { checked: 0, triggered: 0 };
 
-    let triggeredCount = 0;
+  let triggered = 0;
+  const sentiment = await fetchSentiment();
+  const fgValue = parseInt(sentiment?.fearGreed || "50");
 
-    for (const alert of alerts) {
-      try {
-        let currentValue = 0;
-        
-        if (alert.alert_type === "gas") {
-          const gasData = await fetchGas(alert.token_or_chain);
-          currentValue = gasData?.average || 0;
-        } else {
-          const priceData = await fetchPrice(alert.token_or_chain);
-          currentValue = priceData?.price || 0;
-        }
+  for (const alert of alerts) {
+    try {
+      let shouldTrigger = false;
+      let currentValue = 0;
+      let unit = "$";
 
-        let triggered = false;
-        if (alert.alert_type === "price_above" && currentValue >= alert.threshold_value) triggered = true;
-        if (alert.alert_type === "price_below" && currentValue <= alert.threshold_value) triggered = true;
-        if (alert.alert_type === "gas" && currentValue >= alert.threshold_value) triggered = true;
+      if (alert.alert_type === "price_above" || alert.alert_type === "price_below") {
+        const price = await fetchPrice(alert.token_or_chain);
+        currentValue = price?.price || 0;
+        if (alert.alert_type === "price_above" && currentValue >= alert.threshold_value) shouldTrigger = true;
+        if (alert.alert_type === "price_below" && currentValue <= alert.threshold_value) shouldTrigger = true;
+      } else if (alert.alert_type === "gas") {
+        const gas = await fetchGas(alert.token_or_chain);
+        currentValue = gas?.average || 0;
+        unit = " Gwei";
+        if (currentValue >= alert.threshold_value) shouldTrigger = true;
+      } else if (alert.alert_type === "sentiment_fear") {
+        currentValue = fgValue;
+        unit = "";
+        if (fgValue <= alert.threshold_value) shouldTrigger = true;
+      } else if (alert.alert_type === "sentiment_greed") {
+        currentValue = fgValue;
+        unit = "";
+        if (fgValue >= alert.threshold_value) shouldTrigger = true;
+      }
 
-        if (triggered) {
-          const direction = alert.alert_type.includes("above") ? "risen above" : "fallen below";
-          const unit = alert.alert_type === "gas" ? "Gwei" : "$";
-          
-          await sendMessage(alert.telegram_chat_id, `
+      if (shouldTrigger) {
+        const typeEmoji = alert.alert_type.includes("price") ? "💰" : alert.alert_type.includes("sentiment") ? "🎭" : "📊";
+        await sendMessage(alert.telegram_chat_id, `
 🚨 *ALERT TRIGGERED!*
 
-${alert.alert_type === "gas" ? "⛽" : "💰"} *${alert.token_or_chain}* has ${direction} your target!
-
-🎯 Target: ${unit}${alert.threshold_value.toLocaleString()}
-📍 Current: ${unit}${currentValue.toLocaleString()}
+${typeEmoji} *${alert.token_or_chain}*
+📍 ${alert.alert_type.replace("_", " ")}
+🎯 Target: ${unit === "$" ? "$" : ""}${alert.threshold_value}${unit !== "$" ? unit : ""}
+📊 Current: ${unit === "$" ? "$" : ""}${currentValue.toLocaleString()}${unit !== "$" ? unit : ""}
 
 _For informational purposes. Not financial advice._
-          `);
+        `);
 
-          await supabase
-            .from("telegram_alerts")
-            .update({ triggered_at: new Date().toISOString(), is_active: false })
-            .eq("id", alert.id);
+        await supabase
+          .from("telegram_alerts")
+          .update({ triggered_at: new Date().toISOString(), is_active: false })
+          .eq("id", alert.id);
 
-          triggeredCount++;
-        }
-      } catch (error) {
-        console.error(`Error checking alert ${alert.id}:`, error);
+        triggered++;
       }
+    } catch (e) {
+      console.error(`Alert check failed: ${alert.id}`);
     }
-
-    return { checked: alerts.length, triggered: triggeredCount };
-  } catch (error) {
-    console.error("Error checking alerts:", error);
-    return { error: error instanceof Error ? error.message : "Unknown error" };
   }
+
+  return { checked: alerts.length, triggered };
 }
+
+// ============ MAIN SERVER ============
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -711,7 +922,6 @@ serve(async (req) => {
   try {
     const url = new URL(req.url);
     
-    // Webhook setup endpoint
     if (url.pathname.endsWith("/setup")) {
       const webhookUrl = `${SUPABASE_URL}/functions/v1/telegram-bot`;
       const response = await fetch(`${TELEGRAM_API}/setWebhook`, {
@@ -719,25 +929,21 @@ serve(async (req) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: webhookUrl }),
       });
-      const result = await response.json();
-      console.log("Webhook setup result:", result);
-      return new Response(JSON.stringify(result), {
+      return new Response(JSON.stringify(await response.json()), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Cron endpoint for auto updates (every 10 minutes)
     if (url.pathname.endsWith("/cron")) {
-      const updateResult = await sendAutoUpdates();
-      const alertResult = await checkAlerts();
-      return new Response(JSON.stringify({ updates: updateResult, alerts: alertResult }), {
+      const updates = await sendAutoUpdates();
+      const alerts = await checkAlerts();
+      return new Response(JSON.stringify({ updates, alerts }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Handle Telegram updates
     const update = await req.json();
-    console.log("Received update:", JSON.stringify(update));
+    console.log("Update:", JSON.stringify(update).slice(0, 500));
 
     if (update.message) {
       await handleCommand(update.message);
@@ -747,8 +953,8 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("Error processing update:", error);
-    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }), {
+    console.error("Error:", error);
+    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : "Unknown" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

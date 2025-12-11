@@ -20,6 +20,7 @@ export type Database = {
           created_at: string
           id: string
           is_active: boolean
+          metadata: Json | null
           telegram_chat_id: number
           telegram_user_id: number
           threshold_value: number
@@ -32,6 +33,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_active?: boolean
+          metadata?: Json | null
           telegram_chat_id: number
           telegram_user_id: number
           threshold_value: number
@@ -44,6 +46,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_active?: boolean
+          metadata?: Json | null
           telegram_chat_id?: number
           telegram_user_id?: number
           threshold_value?: number
@@ -80,30 +83,144 @@ export type Database = {
         }
         Relationships: []
       }
+      telegram_conversations: {
+        Row: {
+          chat_id: number
+          created_at: string
+          id: string
+          message_text: string
+          message_type: string | null
+          sentiment: string | null
+          topics: string[] | null
+          user_id: number | null
+          username: string | null
+        }
+        Insert: {
+          chat_id: number
+          created_at?: string
+          id?: string
+          message_text: string
+          message_type?: string | null
+          sentiment?: string | null
+          topics?: string[] | null
+          user_id?: number | null
+          username?: string | null
+        }
+        Update: {
+          chat_id?: number
+          created_at?: string
+          id?: string
+          message_text?: string
+          message_type?: string | null
+          sentiment?: string | null
+          topics?: string[] | null
+          user_id?: number | null
+          username?: string | null
+        }
+        Relationships: []
+      }
       telegram_groups: {
         Row: {
           auto_digest: boolean
           chat_id: number
           chat_title: string | null
+          community_sentiment: string | null
           created_at: string
           id: string
           is_active: boolean
+          learned_topics: string[] | null
+          preferences: Json | null
         }
         Insert: {
           auto_digest?: boolean
           chat_id: number
           chat_title?: string | null
+          community_sentiment?: string | null
           created_at?: string
           id?: string
           is_active?: boolean
+          learned_topics?: string[] | null
+          preferences?: Json | null
         }
         Update: {
           auto_digest?: boolean
           chat_id?: number
           chat_title?: string | null
+          community_sentiment?: string | null
           created_at?: string
           id?: string
           is_active?: boolean
+          learned_topics?: string[] | null
+          preferences?: Json | null
+        }
+        Relationships: []
+      }
+      telegram_pinned: {
+        Row: {
+          chat_id: number
+          content: string
+          content_type: string
+          created_at: string
+          id: string
+          is_active: boolean
+          metadata: Json | null
+        }
+        Insert: {
+          chat_id: number
+          content: string
+          content_type: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          metadata?: Json | null
+        }
+        Update: {
+          chat_id?: number
+          content?: string
+          content_type?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          metadata?: Json | null
+        }
+        Relationships: []
+      }
+      telegram_polls: {
+        Row: {
+          chat_id: number
+          created_at: string
+          created_by: number
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          is_pinned: boolean
+          options: Json
+          question: string
+          votes: Json
+        }
+        Insert: {
+          chat_id: number
+          created_at?: string
+          created_by: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          is_pinned?: boolean
+          options?: Json
+          question: string
+          votes?: Json
+        }
+        Update: {
+          chat_id?: number
+          created_at?: string
+          created_by?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          is_pinned?: boolean
+          options?: Json
+          question?: string
+          votes?: Json
         }
         Relationships: []
       }
