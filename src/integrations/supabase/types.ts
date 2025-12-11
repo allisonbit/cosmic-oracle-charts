@@ -14,7 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      telegram_alerts: {
+        Row: {
+          alert_type: string
+          created_at: string
+          id: string
+          is_active: boolean
+          telegram_chat_id: number
+          telegram_user_id: number
+          threshold_value: number
+          token_or_chain: string
+          triggered_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          telegram_chat_id: number
+          telegram_user_id: number
+          threshold_value: number
+          token_or_chain: string
+          triggered_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          telegram_chat_id?: number
+          telegram_user_id?: number
+          threshold_value?: number
+          token_or_chain?: string
+          triggered_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      telegram_bot_usage: {
+        Row: {
+          command: string
+          created_at: string
+          id: string
+          query_params: Json | null
+          telegram_chat_id: number
+          telegram_user_id: number
+        }
+        Insert: {
+          command: string
+          created_at?: string
+          id?: string
+          query_params?: Json | null
+          telegram_chat_id: number
+          telegram_user_id: number
+        }
+        Update: {
+          command?: string
+          created_at?: string
+          id?: string
+          query_params?: Json | null
+          telegram_chat_id?: number
+          telegram_user_id?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
