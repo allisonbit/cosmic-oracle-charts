@@ -72,28 +72,28 @@ export function AdvancedPriceChart({ chain, priceData }: AdvancedPriceChartProps
   ];
 
   return (
-    <div className="holo-card p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div className="holo-card p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
         <div>
-          <h3 className="text-lg font-display text-foreground">Price Analysis</h3>
-          <p className="text-sm text-muted-foreground">{chain.symbol}/USD</p>
+          <h3 className="text-base sm:text-lg font-display text-foreground">Price Analysis</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground">{chain.symbol}/USD</p>
         </div>
 
         {/* Mode Switcher */}
-        <div className="flex gap-2">
+        <div className="flex gap-1 sm:gap-2 overflow-x-auto pb-1 -mx-1 px-1">
           {modes.map((m) => (
             <button
               key={m.id}
               onClick={() => setMode(m.id as ChartMode)}
               className={cn(
-                "flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
+                "flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm transition-all whitespace-nowrap flex-shrink-0",
                 mode === m.id
                   ? "bg-primary/20 text-primary border border-primary/30"
                   : "bg-muted/50 text-muted-foreground hover:text-foreground hover:bg-muted"
               )}
             >
-              <m.icon className="h-4 w-4" />
-              {m.label}
+              <m.icon className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden xs:inline">{m.label}</span>
             </button>
           ))}
         </div>
@@ -101,12 +101,12 @@ export function AdvancedPriceChart({ chain, priceData }: AdvancedPriceChartProps
 
       {/* Current Price */}
       {priceData && (
-        <div className="flex items-baseline gap-4 mb-4">
-          <span className="text-3xl font-display text-foreground glow-text">
+        <div className="flex items-baseline gap-2 sm:gap-4 mb-3 sm:mb-4">
+          <span className="text-xl sm:text-3xl font-display text-foreground glow-text">
             ${priceData.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </span>
           <span className={cn(
-            "text-lg font-medium",
+            "text-sm sm:text-lg font-medium",
             priceData.change24h >= 0 ? "text-success" : "text-danger"
           )}>
             {priceData.change24h >= 0 ? "+" : ""}{priceData.change24h.toFixed(2)}%
@@ -115,7 +115,7 @@ export function AdvancedPriceChart({ chain, priceData }: AdvancedPriceChartProps
       )}
 
       {/* Chart */}
-      <div className="h-[300px]">
+      <div className="h-[200px] sm:h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={chartData}>
             <defs>
@@ -219,26 +219,26 @@ export function AdvancedPriceChart({ chain, priceData }: AdvancedPriceChartProps
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-6 mt-4 text-xs text-muted-foreground">
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full" style={{ background: `hsl(${chain.color})` }} />
+      <div className="flex flex-wrap items-center gap-3 sm:gap-6 mt-3 sm:mt-4 text-[10px] sm:text-xs text-muted-foreground">
+        <div className="flex items-center gap-1 sm:gap-2">
+          <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full" style={{ background: `hsl(${chain.color})` }} />
           <span>Price</span>
         </div>
         {mode === "ai-projection" && (
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-secondary" />
+          <div className="flex items-center gap-1 sm:gap-2">
+            <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-secondary" />
             <span>AI Projection</span>
           </div>
         )}
         {mode === "volatility" && (
           <>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-success" />
-              <span>Support Zone</span>
+            <div className="flex items-center gap-1 sm:gap-2">
+              <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-success" />
+              <span>Support</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-danger" />
-              <span>Resistance Zone</span>
+            <div className="flex items-center gap-1 sm:gap-2">
+              <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-danger" />
+              <span>Resistance</span>
             </div>
           </>
         )}

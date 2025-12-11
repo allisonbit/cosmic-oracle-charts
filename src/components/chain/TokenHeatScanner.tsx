@@ -32,13 +32,13 @@ export function TokenHeatScanner({ chain, tokenHeat, isLoading }: TokenHeatScann
   });
 
   return (
-    <div className="holo-card p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div className="holo-card p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 sm:mb-6">
         <div>
-          <h3 className="text-lg font-display text-foreground">Token Heat Scanner</h3>
-          <p className="text-sm text-muted-foreground">Top performing tokens on {chain.name}</p>
+          <h3 className="text-base sm:text-lg font-display text-foreground">Token Heat Scanner</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground">Top performing tokens on {chain.name}</p>
         </div>
-        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+        <div className="flex items-center gap-3 sm:gap-4 text-[10px] sm:text-xs text-muted-foreground">
           <div className="flex items-center gap-1">
             <div className="w-2 h-2 rounded-full bg-danger" />
             <span>Hot</span>
@@ -55,7 +55,7 @@ export function TokenHeatScanner({ chain, tokenHeat, isLoading }: TokenHeatScann
       </div>
 
       {/* Heat Map Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
         {isLoading ? (
           Array.from({ length: 8 }).map((_, i) => (
             <div key={i} className="h-32 rounded-xl bg-muted/20 animate-pulse" />
@@ -90,19 +90,19 @@ export function TokenHeatScanner({ chain, tokenHeat, isLoading }: TokenHeatScann
 
                 <div className="relative">
                   {/* Header */}
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-display text-sm text-foreground">{token.symbol}</span>
-                    {heatLevel === "hot" && <Flame className="h-4 w-4 text-danger animate-pulse" />}
+                  <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+                    <span className="font-display text-xs sm:text-sm text-foreground truncate">{token.symbol}</span>
+                    {heatLevel === "hot" && <Flame className="h-3 w-3 sm:h-4 sm:w-4 text-danger animate-pulse flex-shrink-0" />}
                   </div>
 
                   {/* Price */}
-                  <p className="text-lg font-display text-foreground mb-1">
+                  <p className="text-sm sm:text-lg font-display text-foreground mb-0.5 sm:mb-1 truncate">
                     ${token.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}
                   </p>
 
                   {/* Change */}
                   <div className={cn(
-                    "flex items-center gap-1 text-sm",
+                    "flex items-center gap-1 text-xs sm:text-sm",
                     token.change24h >= 0 ? "text-success" : "text-danger"
                   )}>
                     {token.change24h >= 0 ? (
@@ -113,11 +113,11 @@ export function TokenHeatScanner({ chain, tokenHeat, isLoading }: TokenHeatScann
                     <span>{token.change24h >= 0 ? "+" : ""}{token.change24h.toFixed(2)}%</span>
                   </div>
 
-                  {/* Metrics Bar */}
-                  <div className="mt-3 space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] text-muted-foreground w-14">Momentum</span>
-                      <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+                  {/* Metrics Bar - Hidden on mobile for density */}
+                  <div className="mt-2 sm:mt-3 space-y-1 hidden xs:block">
+                    <div className="flex items-center gap-1 sm:gap-2">
+                      <span className="text-[8px] sm:text-[10px] text-muted-foreground w-10 sm:w-14">Momentum</span>
+                      <div className="flex-1 h-1 sm:h-1.5 bg-muted rounded-full overflow-hidden">
                         <div
                           className={cn(
                             "h-full rounded-full",
@@ -129,9 +129,9 @@ export function TokenHeatScanner({ chain, tokenHeat, isLoading }: TokenHeatScann
                         />
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] text-muted-foreground w-14">Volume</span>
-                      <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+                    <div className="flex items-center gap-1 sm:gap-2">
+                      <span className="text-[8px] sm:text-[10px] text-muted-foreground w-10 sm:w-14">Volume</span>
+                      <div className="flex-1 h-1 sm:h-1.5 bg-muted rounded-full overflow-hidden">
                         <div
                           className={cn(
                             "h-full rounded-full",
@@ -143,9 +143,9 @@ export function TokenHeatScanner({ chain, tokenHeat, isLoading }: TokenHeatScann
                         />
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] text-muted-foreground w-14">Social</span>
-                      <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+                    <div className="flex items-center gap-1 sm:gap-2">
+                      <span className="text-[8px] sm:text-[10px] text-muted-foreground w-10 sm:w-14">Social</span>
+                      <div className="flex-1 h-1 sm:h-1.5 bg-muted rounded-full overflow-hidden">
                         <div
                           className={cn(
                             "h-full rounded-full",

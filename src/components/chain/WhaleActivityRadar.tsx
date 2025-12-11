@@ -52,17 +52,17 @@ export function WhaleActivityRadar({ chain, whaleActivity, isLoading }: WhaleAct
   }, [whaleActivity]);
 
   return (
-    <div className="holo-card p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div className="holo-card p-4 sm:p-6">
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
         <div>
-          <h3 className="text-lg font-display text-foreground">Whale Activity Radar</h3>
-          <p className="text-sm text-muted-foreground">Large transaction tracking on {chain.name}</p>
+          <h3 className="text-base sm:text-lg font-display text-foreground">Whale Activity Radar</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground">Large transactions on {chain.name}</p>
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         {/* Radar Visualization */}
-        <div className="relative aspect-square max-w-[300px] mx-auto">
+        <div className="relative aspect-square max-w-[200px] sm:max-w-[300px] mx-auto">
           {/* Radar circles */}
           <svg viewBox="0 0 100 100" className="w-full h-full">
             {/* Background circles */}
@@ -146,50 +146,50 @@ export function WhaleActivityRadar({ chain, whaleActivity, isLoading }: WhaleAct
         </div>
 
         {/* Activity Stats & List */}
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-2">
-            <div className="p-3 rounded-lg bg-success/10 border border-success/30">
-              <ArrowUpRight className="h-4 w-4 text-success mb-1" />
-              <p className="text-xs text-muted-foreground">Buys</p>
-              <p className="text-sm font-display text-success">{formatValue(stats.buys)}</p>
+          <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
+            <div className="p-2 sm:p-3 rounded-lg bg-success/10 border border-success/30">
+              <ArrowUpRight className="h-3 w-3 sm:h-4 sm:w-4 text-success mb-0.5 sm:mb-1" />
+              <p className="text-[10px] sm:text-xs text-muted-foreground">Buys</p>
+              <p className="text-xs sm:text-sm font-display text-success">{formatValue(stats.buys)}</p>
             </div>
-            <div className="p-3 rounded-lg bg-danger/10 border border-danger/30">
-              <ArrowDownRight className="h-4 w-4 text-danger mb-1" />
-              <p className="text-xs text-muted-foreground">Sells</p>
-              <p className="text-sm font-display text-danger">{formatValue(stats.sells)}</p>
+            <div className="p-2 sm:p-3 rounded-lg bg-danger/10 border border-danger/30">
+              <ArrowDownRight className="h-3 w-3 sm:h-4 sm:w-4 text-danger mb-0.5 sm:mb-1" />
+              <p className="text-[10px] sm:text-xs text-muted-foreground">Sells</p>
+              <p className="text-xs sm:text-sm font-display text-danger">{formatValue(stats.sells)}</p>
             </div>
-            <div className="p-3 rounded-lg bg-warning/10 border border-warning/30">
-              <ArrowRight className="h-4 w-4 text-warning mb-1" />
-              <p className="text-xs text-muted-foreground">Transfers</p>
-              <p className="text-sm font-display text-warning">{formatValue(stats.transfers)}</p>
+            <div className="p-2 sm:p-3 rounded-lg bg-warning/10 border border-warning/30">
+              <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 text-warning mb-0.5 sm:mb-1" />
+              <p className="text-[10px] sm:text-xs text-muted-foreground">Transfers</p>
+              <p className="text-xs sm:text-sm font-display text-warning">{formatValue(stats.transfers)}</p>
             </div>
           </div>
 
           {/* Recent Activity List */}
-          <div className="space-y-2 max-h-[200px] overflow-y-auto">
+          <div className="space-y-1.5 sm:space-y-2 max-h-[160px] sm:max-h-[200px] overflow-y-auto">
             {whaleActivity?.slice(0, 8).map((activity, i) => (
               <div
                 key={i}
                 className={cn(
-                  "flex items-center justify-between p-2 rounded-lg transition-all",
+                  "flex items-center justify-between p-1.5 sm:p-2 rounded-lg transition-all",
                   activity.type === "buy" && "bg-success/5 border border-success/20",
                   activity.type === "sell" && "bg-danger/5 border border-danger/20",
                   activity.type === "transfer" && "bg-warning/5 border border-warning/20"
                 )}
               >
-                <div className="flex items-center gap-2">
-                  {activity.type === "buy" && <ArrowUpRight className="h-4 w-4 text-success" />}
-                  {activity.type === "sell" && <ArrowDownRight className="h-4 w-4 text-danger" />}
-                  {activity.type === "transfer" && <ArrowRight className="h-4 w-4 text-warning" />}
-                  <div>
-                    <p className="text-sm text-foreground">
+                <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                  {activity.type === "buy" && <ArrowUpRight className="h-3 w-3 sm:h-4 sm:w-4 text-success flex-shrink-0" />}
+                  {activity.type === "sell" && <ArrowDownRight className="h-3 w-3 sm:h-4 sm:w-4 text-danger flex-shrink-0" />}
+                  {activity.type === "transfer" && <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 text-warning flex-shrink-0" />}
+                  <div className="min-w-0">
+                    <p className="text-xs sm:text-sm text-foreground truncate">
                       {activity.amount.toLocaleString()} {activity.token}
                     </p>
-                    <p className="text-xs text-muted-foreground">{formatTime(activity.timestamp)}</p>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground">{formatTime(activity.timestamp)}</p>
                   </div>
                 </div>
-                <span className="text-sm font-medium text-foreground">{formatValue(activity.value)}</span>
+                <span className="text-xs sm:text-sm font-medium text-foreground flex-shrink-0 ml-2">{formatValue(activity.value)}</span>
               </div>
             ))}
           </div>

@@ -92,12 +92,12 @@ export function ChainOverviewPanel({ chain, overview, isLoading }: ChainOverview
   ];
 
   return (
-    <div className="holo-card p-6">
+    <div className="holo-card p-4 sm:p-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 sm:mb-6">
+        <div className="flex items-center gap-3 sm:gap-4">
           <div
-            className="w-14 h-14 rounded-xl flex items-center justify-center text-3xl"
+            className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center text-xl sm:text-3xl flex-shrink-0"
             style={{
               background: `linear-gradient(135deg, hsl(${chain.color} / 0.2), hsl(${chain.color} / 0.1))`,
               boxShadow: `0 0 30px hsl(${chain.color} / 0.3)`,
@@ -105,36 +105,36 @@ export function ChainOverviewPanel({ chain, overview, isLoading }: ChainOverview
           >
             {chain.icon}
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-2xl font-display text-foreground glow-text">{chain.name}</h2>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h2 className="text-lg sm:text-2xl font-display text-foreground glow-text truncate">{chain.name}</h2>
               {/* Realtime indicator */}
               <div className={cn(
-                "flex items-center gap-1 px-2 py-0.5 rounded-full text-xs",
+                "flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-xs flex-shrink-0",
                 isConnected ? "bg-success/20 text-success" : "bg-muted/30 text-muted-foreground"
               )}>
                 {isConnected ? (
                   <>
                     <Wifi className="h-3 w-3" />
-                    <span className="hidden sm:inline">Live</span>
+                    <span className="hidden xs:inline">Live</span>
                   </>
                 ) : (
                   <>
                     <WifiOff className="h-3 w-3" />
-                    <span className="hidden sm:inline">Offline</span>
+                    <span className="hidden xs:inline">Offline</span>
                   </>
                 )}
               </div>
             </div>
-            <p className="text-muted-foreground text-sm">Chain Health Status</p>
+            <p className="text-muted-foreground text-xs sm:text-sm">Chain Health Status</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 justify-end sm:justify-start">
           {/* Live price */}
           {realtimePrice && (
             <div className={cn(
-              "text-xl font-display transition-all duration-300",
+              "text-base sm:text-xl font-display transition-all duration-300",
               priceFlash === "up" && "text-success scale-105",
               priceFlash === "down" && "text-danger scale-105",
               !priceFlash && "text-foreground"
@@ -145,17 +145,17 @@ export function ChainOverviewPanel({ chain, overview, isLoading }: ChainOverview
           
           {/* Price change badge */}
           <div className={cn(
-            "flex items-center gap-2 px-4 py-2 rounded-lg transition-all",
+            "flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg transition-all",
             displayChange >= 0 ? "bg-success/20 text-success" : "bg-danger/20 text-danger"
           )}>
-            {displayChange >= 0 ? <TrendingUp className="h-5 w-5" /> : <TrendingDown className="h-5 w-5" />}
-            <span className="font-medium">{displayChange >= 0 ? "+" : ""}{displayChange.toFixed(2)}%</span>
+            {displayChange >= 0 ? <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5" /> : <TrendingDown className="h-4 w-4 sm:h-5 sm:w-5" />}
+            <span className="font-medium text-sm sm:text-base">{displayChange >= 0 ? "+" : ""}{displayChange.toFixed(2)}%</span>
           </div>
         </div>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2 sm:gap-4">
         {stats.map((stat, index) => (
           <div
             key={stat.label}

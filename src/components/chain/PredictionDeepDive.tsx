@@ -79,21 +79,43 @@ export function PredictionDeepDive({ chain, forecast, isLoading }: PredictionDee
   }
 
   return (
-    <div className="holo-card p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div className="holo-card p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
         <div>
           <div className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
-            <h3 className="text-lg font-display text-foreground">AI Prediction Deep Dive</h3>
+            <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+            <h3 className="text-base sm:text-lg font-display text-foreground">AI Prediction Deep Dive</h3>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">Multi-timeframe analysis for {chain.name}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">Multi-timeframe analysis for {chain.name}</p>
         </div>
 
         {forecast && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 justify-end sm:justify-start">
             <span className="text-xs text-muted-foreground hidden sm:block">Confidence</span>
             <div className="relative">
-              <svg className="w-12 h-12 transform -rotate-90">
+              <svg className="w-10 h-10 sm:w-12 sm:h-12 transform -rotate-90">
+                <circle
+                  cx="20"
+                  cy="20"
+                  r="16"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  fill="transparent"
+                  className="text-muted sm:hidden"
+                />
+                <circle
+                  cx="20"
+                  cy="20"
+                  r="16"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  fill="transparent"
+                  strokeDasharray={`${(forecast.overallConfidence / 100) * 100.5} 100.5`}
+                  className="text-primary transition-all duration-1000 sm:hidden"
+                  style={{
+                    filter: "drop-shadow(0 0 6px hsl(var(--primary) / 0.6))",
+                  }}
+                />
                 <circle
                   cx="24"
                   cy="24"
@@ -101,7 +123,7 @@ export function PredictionDeepDive({ chain, forecast, isLoading }: PredictionDee
                   stroke="currentColor"
                   strokeWidth="4"
                   fill="transparent"
-                  className="text-muted"
+                  className="text-muted hidden sm:block"
                 />
                 <circle
                   cx="24"
@@ -111,14 +133,14 @@ export function PredictionDeepDive({ chain, forecast, isLoading }: PredictionDee
                   strokeWidth="4"
                   fill="transparent"
                   strokeDasharray={`${(forecast.overallConfidence / 100) * 125.6} 125.6`}
-                  className="text-primary transition-all duration-1000"
+                  className="text-primary transition-all duration-1000 hidden sm:block"
                   style={{
                     filter: "drop-shadow(0 0 6px hsl(var(--primary) / 0.6))",
                   }}
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-xs font-display text-primary">{forecast.overallConfidence}%</span>
+                <span className="text-[10px] sm:text-xs font-display text-primary">{forecast.overallConfidence}%</span>
               </div>
             </div>
           </div>
@@ -126,7 +148,7 @@ export function PredictionDeepDive({ chain, forecast, isLoading }: PredictionDee
       </div>
 
       {/* Timeframe Cards */}
-      <div className="grid md:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
         {timeframes.map((tf, index) => {
           const data = forecast?.[tf.key];
           const colorClass = data ? getTrendColor(data.prediction) : "muted";
@@ -241,52 +263,52 @@ export function PredictionDeepDive({ chain, forecast, isLoading }: PredictionDee
 
       {/* Key Triggers & Risk */}
       {forecast && (
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="p-4 rounded-xl border border-border/50 bg-gradient-to-br from-warning/5 to-transparent">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="p-1.5 rounded-lg bg-warning/20">
-                <AlertTriangle className="h-4 w-4 text-warning" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          <div className="p-3 sm:p-4 rounded-xl border border-border/50 bg-gradient-to-br from-warning/5 to-transparent">
+            <div className="flex items-center gap-2 mb-2 sm:mb-3">
+              <div className="p-1 sm:p-1.5 rounded-lg bg-warning/20">
+                <AlertTriangle className="h-3 w-3 sm:h-4 sm:w-4 text-warning" />
               </div>
-              <h4 className="text-sm font-medium text-foreground">Key Triggers</h4>
+              <h4 className="text-xs sm:text-sm font-medium text-foreground">Key Triggers</h4>
             </div>
-            <ul className="space-y-2">
+            <ul className="space-y-1.5 sm:space-y-2">
               {forecast.keyTriggers.slice(0, 4).map((trigger, i) => (
                 <li 
                   key={i} 
                   className={cn(
-                    "flex items-start gap-2 text-xs text-muted-foreground",
+                    "flex items-start gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-muted-foreground",
                     animateIn && "animate-in fade-in slide-in-from-left-2"
                   )}
                   style={{ animationDelay: `${(i + 3) * 100}ms` }}
                 >
                   <span className="text-primary mt-0.5">◆</span>
-                  {trigger}
+                  <span className="line-clamp-2">{trigger}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="p-4 rounded-xl border border-border/50 bg-gradient-to-br from-primary/5 to-transparent">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="p-1.5 rounded-lg bg-primary/20">
-                <Target className="h-4 w-4 text-primary" />
+          <div className="p-3 sm:p-4 rounded-xl border border-border/50 bg-gradient-to-br from-primary/5 to-transparent">
+            <div className="flex items-center gap-2 mb-2 sm:mb-3">
+              <div className="p-1 sm:p-1.5 rounded-lg bg-primary/20">
+                <Target className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
               </div>
-              <h4 className="text-sm font-medium text-foreground">Risk Assessment</h4>
+              <h4 className="text-xs sm:text-sm font-medium text-foreground">Risk Assessment</h4>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
               <div className="flex-1">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-muted-foreground">Risk Level</span>
+                <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+                  <span className="text-[10px] sm:text-xs text-muted-foreground">Risk Level</span>
                   <span className={cn(
-                    "text-xs font-medium px-2 py-0.5 rounded-full",
+                    "text-[10px] sm:text-xs font-medium px-1.5 sm:px-2 py-0.5 rounded-full",
                     forecast.riskLevel < 30 && "bg-success/20 text-success",
                     forecast.riskLevel >= 30 && forecast.riskLevel < 60 && "bg-warning/20 text-warning",
                     forecast.riskLevel >= 60 && "bg-danger/20 text-danger"
                   )}>
-                    {forecast.riskLevel < 30 ? "Low Risk" : forecast.riskLevel < 60 ? "Medium Risk" : "High Risk"}
+                    {forecast.riskLevel < 30 ? "Low" : forecast.riskLevel < 60 ? "Medium" : "High"}
                   </span>
                 </div>
-                <div className="h-2 bg-muted/50 rounded-full overflow-hidden">
+                <div className="h-1.5 sm:h-2 bg-muted/50 rounded-full overflow-hidden">
                   <div
                     className={cn(
                       "h-full rounded-full transition-all duration-1000",
@@ -301,7 +323,7 @@ export function PredictionDeepDive({ chain, forecast, isLoading }: PredictionDee
                   />
                 </div>
               </div>
-              <div className="text-3xl font-display text-foreground" style={{
+              <div className="text-xl sm:text-3xl font-display text-foreground" style={{
                 textShadow: forecast.riskLevel < 30 
                   ? "0 0 10px hsl(160 84% 39% / 0.4)"
                   : forecast.riskLevel < 60
