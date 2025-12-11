@@ -1,5 +1,5 @@
 import { Layout } from "@/components/layout/Layout";
-import { Brain, TrendingUp, TrendingDown, Activity, Users, Waves, Loader2, Flame, BarChart3, Zap, MessageCircle, Globe, Target, AlertTriangle, Rocket, Clock, Hash, Twitter, Info, ChevronRight } from "lucide-react";
+import { Brain, TrendingUp, TrendingDown, Activity, Users, Waves, Loader2, Flame, BarChart3, Zap, MessageCircle, Globe, Target, AlertTriangle, Rocket, Clock, Hash, Twitter, Info, ChevronRight, Newspaper, Github, Search as SearchIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMarketData } from "@/hooks/useMarketData";
 import { useAIForecast } from "@/hooks/useAIForecast";
@@ -8,6 +8,10 @@ import { Button } from "@/components/ui/button";
 import { CoinDetailModal, CoinData } from "@/components/sentiment/CoinDetailModal";
 import { WhaleAlertModal, WhaleAlert } from "@/components/sentiment/WhaleAlertModal";
 import { TopicDetailModal, TrendingTopic } from "@/components/sentiment/TopicDetailModal";
+import { SocialSentimentPanel } from "@/components/sentiment/SocialSentimentPanel";
+import { NewsPanel } from "@/components/sentiment/NewsPanel";
+import { GoogleTrendsPanel } from "@/components/sentiment/GoogleTrendsPanel";
+import { GitHubActivityPanel } from "@/components/sentiment/GitHubActivityPanel";
 
 function formatNumber(num: number): string {
   if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
@@ -412,10 +416,39 @@ const SentimentPage = () => {
         {/* Social Tab */}
         {activeTab === "social" && (
           <div className="space-y-6">
+            {/* Social Sentiment Panel - Real-time data */}
+            <SocialSentimentPanel 
+              tokens={topCoins.map(c => ({
+                symbol: c.symbol,
+                name: c.name,
+                price: c.price,
+                change24h: c.change24h,
+                volume: c.volume,
+                marketCap: c.marketCap,
+              }))}
+              onTokenClick={(symbol) => {
+                const coin = topCoins.find(c => c.symbol === symbol);
+                if (coin) handleCoinClick(coin);
+              }}
+            />
+
+            {/* Two Column Layout for News and Trends */}
+            <div className="grid lg:grid-cols-2 gap-6">
+              {/* News Panel */}
+              <NewsPanel />
+
+              {/* Google Trends */}
+              <GoogleTrendsPanel />
+            </div>
+
+            {/* GitHub Developer Activity */}
+            <GitHubActivityPanel />
+
+            {/* Legacy Trending Topics */}
             <div className="holo-card p-6">
               <h2 className="font-display font-bold text-lg mb-6 flex items-center gap-2">
                 <Twitter className="w-5 h-5 text-primary" />
-                TRENDING TOPICS
+                TRENDING HASHTAGS
               </h2>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {trendingTopics.map((topic, i) => (
@@ -453,42 +486,6 @@ const SentimentPage = () => {
                     </div>
                   </button>
                 ))}
-              </div>
-            </div>
-
-            <div className="holo-card p-6">
-              <h2 className="font-display font-bold text-lg mb-6 flex items-center gap-2">
-                <Globe className="w-5 h-5 text-primary" />
-                SOCIAL VOLUME BY COIN
-              </h2>
-              <div className="space-y-4">
-                {topCoins.slice(0, 8).map((coin, i) => {
-                  const volume = 100 - i * 10;
-                  return (
-                    <button 
-                      key={coin.symbol}
-                      onClick={() => handleCoinClick(coin)}
-                      className="w-full text-left group"
-                    >
-                      <div className="flex items-center justify-between mb-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-display font-bold group-hover:text-primary transition-colors">{coin.symbol}</span>
-                          <span className="text-xs text-muted-foreground">{coin.name}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm text-muted-foreground">{(volume * 1.5).toFixed(0)}K</span>
-                          <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                        </div>
-                      </div>
-                      <div className="h-3 rounded-full bg-muted overflow-hidden">
-                        <div 
-                          className="h-full bg-gradient-to-r from-primary to-secondary transition-all group-hover:brightness-110"
-                          style={{ width: `${volume}%` }}
-                        />
-                      </div>
-                    </button>
-                  );
-                })}
               </div>
             </div>
           </div>
