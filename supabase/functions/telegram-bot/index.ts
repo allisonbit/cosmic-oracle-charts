@@ -142,6 +142,87 @@ async function pinMessage(chatId: number, messageId: number) {
   }
 }
 
+// ============ CHART GENERATION ============
+
+// Generate live price chart using QuickChart API
+function generateChartUrl(symbol: string, prices: number[], labels: string[], isPositive: boolean): string {
+  const chartConfig = {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: symbol.toUpperCase(),
+        data: prices,
+        borderColor: isPositive ? '#10b981' : '#ef4444',
+        backgroundColor: isPositive ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 0,
+        borderWidth: 3,
+      }]
+    },
+    options: {
+      plugins: {
+        legend: { display: false },
+        title: { display: true, text: `${symbol.toUpperCase()} - 7D`, color: '#fff', font: { size: 18 } }
+      },
+      scales: {
+        x: { display: false },
+        y: { 
+          grid: { color: 'rgba(255,255,255,0.1)' },
+          ticks: { color: '#888', callback: (v: number) => '$' + v.toLocaleString() }
+        }
+      }
+    }
+  };
+  
+  const encoded = encodeURIComponent(JSON.stringify(chartConfig));
+  return `https://quickchart.io/chart?c=${encoded}&w=600&h=400&bkg=%231a1a2e`;
+}
+
+// Fetch price history for chart
+async function fetchPriceHistory(coinId: string, days = 7): Promise<{ prices: number[], labels: string[], change: number } | null> {
+  try {
+    const response = await fetch(
+      `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=${days}`
+    );
+    const data = await response.json();
+    
+    if (data.prices?.length > 0) {
+      // Sample ~20 points for cleaner chart
+      const step = Math.max(1, Math.floor(data.prices.length / 20));
+      const sampled = data.prices.filter((_: any, i: number) => i % step === 0);
+      
+      const prices = sampled.map((p: number[]) => p[1]);
+      const labels = sampled.map((p: number[]) => {
+        const date = new Date(p[0]);
+        return `${date.getMonth()+1}/${date.getDate()}`;
+      });
+      
+      const firstPrice = data.prices[0][1];
+      const lastPrice = data.prices[data.prices.length - 1][1];
+      const change = ((lastPrice - firstPrice) / firstPrice) * 100;
+      
+      return { prices, labels, change };
+    }
+    return null;
+  } catch (error) {
+    console.error("Error fetching price history:", error);
+    return null;
+  }
+}
+
+// Get coin ID from symbol
+async function getCoinId(symbol: string): Promise<string | null> {
+  try {
+    const response = await fetch(`https://api.coingecko.com/api/v3/search?query=${symbol}`);
+    const data = await response.json();
+    return data.coins?.[0]?.id || null;
+  } catch {
+    return null;
+  }
+}
+
 // ============ DATA FETCHING ============
 
 async function fetchPrice(symbol: string) {
@@ -1108,19 +1189,26 @@ async function generateTopMoversUpdate() {
 🔍 ${WEBSITE_PAGES.dashboard}`;
 }
 
-// Generate chart preview for tokens
-async function generateTokenChart(symbol: string) {
-  const data = await fetchPrice(symbol);
-  if (!data) return null;
+// Generate chart preview for tokens - returns { chartUrl, caption }
+async function generateTokenChart(symbol: string): Promise<{ chartUrl: string; caption: string } | null> {
+  const coinId = await getCoinId(symbol);
+  if (!coinId) return null;
   
-  const change = data.change24h || 0;
-  const bars = Math.abs(Math.round(change / 2));
-  const barChar = change >= 0 ? "🟢" : "🔴";
-  const chartBar = barChar.repeat(Math.min(bars, 8));
+  const [priceData, history] = await Promise.all([
+    fetchPrice(symbol),
+    fetchPriceHistory(coinId, 7)
+  ]);
   
-  return `${change >= 0 ? "📈" : "📉"} *${data.symbol}* $${data.price?.toLocaleString(undefined, { maximumFractionDigits: 4 })}
-${chartBar || "⚪"} ${change >= 0 ? "+" : ""}${change.toFixed(1)}%
-Vol: ${formatNumber(data.volume)} | MCap: ${formatNumber(data.marketCap)}`;
+  if (!priceData || !history) return null;
+  
+  const change = history.change;
+  const chartUrl = generateChartUrl(priceData.symbol, history.prices, history.labels, change >= 0);
+  
+  const caption = `${change >= 0 ? "📈" : "📉"} *${priceData.symbol}* $${priceData.price?.toLocaleString(undefined, { maximumFractionDigits: 4 })}
+7D: ${change >= 0 ? "+" : ""}${change.toFixed(1)}%
+Vol: ${formatNumber(priceData.volume)} | MCap: ${formatNumber(priceData.marketCap)}`;
+  
+  return { chartUrl, caption };
 }
 
 // Generate sentiment visual
@@ -1520,9 +1608,9 @@ ${(enrichedWallet.nativeBalance || 0).toFixed(4)} ${nativeSymbol} (${formatNumbe
           await sendMessage(chatId, "📊 Which token? Try: `/chart btc`");
           break;
         }
-        const chartData = await generateTokenChart(args[0]);
-        if (chartData) {
-          await sendPhoto(chatId, MASCOT_IMAGE, chartData);
+        const chartResult = await generateTokenChart(args[0]);
+        if (chartResult) {
+          await sendPhoto(chatId, chartResult.chartUrl, chartResult.caption);
         } else {
           await sendMessage(chatId, "❌ Token not found");
         }
