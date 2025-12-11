@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Activity, TrendingUp, BookOpen, Globe, Radio, Mail, Layers, Wallet } from "lucide-react";
+import { Menu, X, Activity, TrendingUp, BookOpen, Globe, Radio, Mail, Layers, Wallet, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { path: "/", label: "Home", icon: Activity },
+  { path: "/", label: "Home", icon: Home },
   { path: "/dashboard", label: "Dashboard", icon: TrendingUp },
-  { path: "/portfolio", label: "Portfolio", icon: Wallet },
+  { path: "/portfolio", label: "Scanner", icon: Wallet },
   { path: "/chain/ethereum", label: "Chains", icon: Layers },
   { path: "/sentiment", label: "Sentiment", icon: Radio },
   { path: "/explorer", label: "Explorer", icon: Globe },
@@ -19,12 +19,10 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
-  // Close menu on route change
   useEffect(() => {
     setIsOpen(false);
   }, [location.pathname]);
 
-  // Prevent scroll when mobile menu is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -35,6 +33,12 @@ export function Navbar() {
       document.body.style.overflow = '';
     };
   }, [isOpen]);
+
+  const isActivePath = (path: string) => {
+    if (path === "/") return location.pathname === "/";
+    if (path.includes("/chain/")) return location.pathname.includes("/chain/");
+    return location.pathname === path;
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-background/95 border-b border-primary/20">
@@ -54,8 +58,7 @@ export function Navbar() {
           <div className="hidden lg:flex items-center gap-1">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = location.pathname === item.path || 
-                (item.path.includes("/chain/") && location.pathname.includes("/chain/"));
+              const isActive = isActivePath(item.path);
               return (
                 <Link
                   key={item.path}
@@ -63,7 +66,7 @@ export function Navbar() {
                   className={cn(
                     "flex items-center gap-2 px-3 py-2 rounded-lg font-display text-xs uppercase tracking-wider transition-all duration-300",
                     isActive
-                      ? "bg-primary/20 text-primary glow-text"
+                      ? "bg-primary/20 text-primary glow-text border border-primary/30"
                       : "text-muted-foreground hover:text-primary hover:bg-primary/10"
                   )}
                 >
@@ -86,7 +89,7 @@ export function Navbar() {
           </Button>
         </div>
 
-        {/* Mobile Navigation - Full Screen Overlay */}
+        {/* Mobile Navigation */}
         <div 
           className={cn(
             "lg:hidden fixed inset-0 top-14 bg-background/98 backdrop-blur-xl z-40 transition-all duration-300",
@@ -96,8 +99,7 @@ export function Navbar() {
           <div className="container mx-auto px-4 py-6 space-y-2">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = location.pathname === item.path ||
-                (item.path.includes("/chain/") && location.pathname.includes("/chain/"));
+              const isActive = isActivePath(item.path);
               return (
                 <Link
                   key={item.path}
