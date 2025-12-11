@@ -1932,118 +1932,264 @@ _Not financial advice._
 
 // ============ AUTO UPDATES & ALERTS ============
 
-// Update types for rotation
-const UPDATE_TYPES = [
-  "pulse",
-  "sentiment", 
-  "chain",
-  "trending",
-  "tip",
-  "movers",
-  "whale",
-];
+// Website sections for random updates
+const WEBSITE_SECTIONS = ["home", "dashboard", "chains", "sentiment", "explorer", "learn"];
 
-// Generate a comprehensive random update with multiple data points and chart
-async function generateComprehensiveUpdate(): Promise<{ content: string; chartUrl?: string }> {
-  // Randomly select 2-3 data types to include
-  const numSections = 2 + Math.floor(Math.random() * 2);
-  const shuffled = [...UPDATE_TYPES].sort(() => Math.random() - 0.5);
-  const selectedTypes = shuffled.slice(0, numSections);
-  
-  console.log(`Generating update with: ${selectedTypes.join(", ")}`);
-  
-  // Fetch all data in parallel
-  const [btcData, ethData, solData, sentiment, globalMarket, trending, topCoins, whaleTxs] = await Promise.all([
+// Generate update from HOME section
+async function generateHomeUpdate(): Promise<{ content: string; chartUrl?: string; section: string }> {
+  const [btcData, ethData, solData, globalMarket, trending] = await Promise.all([
     fetchPrice("bitcoin"),
     fetchPrice("ethereum"),
     fetchPrice("solana"),
-    fetchSentiment(),
     fetchGlobalMarket(),
-    fetchTrending(),
-    fetchTopCoins(20),
-    fetchWhaleTransactions()
+    fetchTrending()
   ]);
   
-  // Generate chart for random coin
-  const chartCoins = ["bitcoin", "ethereum", "solana"];
-  const randomCoin = chartCoins[Math.floor(Math.random() * chartCoins.length)];
-  const chartResult = await generateTokenChart(randomCoin);
-  
-  const sections: string[] = [];
-  
-  // Prices section
+  const chartResult = await generateTokenChart("bitcoin");
   const btcEmoji = btcData?.change24h >= 0 ? "🟢" : "🔴";
   const ethEmoji = ethData?.change24h >= 0 ? "🟢" : "🔴";
   const solEmoji = solData?.change24h >= 0 ? "🟢" : "🔴";
-  sections.push(`💎 BTC $${btcData?.price?.toLocaleString()} ${btcEmoji}${btcData?.change24h?.toFixed(1)}%
-⟠ ETH $${ethData?.price?.toLocaleString()} ${ethEmoji}${ethData?.change24h?.toFixed(1)}%
-◎ SOL $${solData?.price?.toLocaleString()} ${solEmoji}${solData?.change24h?.toFixed(1)}%`);
   
-  for (const type of selectedTypes) {
-    switch (type) {
-      case "sentiment": {
-        const fgValue = parseInt(sentiment?.fearGreed || "50");
-        const bar = generateSentimentBar(fgValue);
-        let mood = "Neutral";
-        if (fgValue <= 25) mood = "Extreme Fear 😱";
-        else if (fgValue <= 45) mood = "Fear 😰";
-        else if (fgValue >= 75) mood = "Extreme Greed 🤑";
-        else if (fgValue >= 55) mood = "Greed 😊";
-        sections.push(`\n🎭 *Sentiment*: ${mood}\n${bar} ${fgValue}/100`);
-        break;
-      }
-      case "trending": {
-        const trendList = trending.slice(0, 3).map((t: any) => t.item?.symbol?.toUpperCase() || "???").join(" | ");
-        if (trendList) sections.push(`\n🔥 *Trending*: ${trendList}`);
-        break;
-      }
-      case "movers": {
-        if (topCoins.length > 0) {
-          const sorted = [...topCoins].sort((a: any, b: any) => (b.price_change_percentage_24h || 0) - (a.price_change_percentage_24h || 0));
-          const gainer = sorted[0];
-          const loser = sorted[sorted.length - 1];
-          sections.push(`\n📊 *Movers*\n🚀 ${gainer?.symbol?.toUpperCase()} +${gainer?.price_change_percentage_24h?.toFixed(1)}%\n📉 ${loser?.symbol?.toUpperCase()} ${loser?.price_change_percentage_24h?.toFixed(1)}%`);
-        }
-        break;
-      }
-      case "chain": {
-        const chains = ["ethereum", "base", "arbitrum", "solana"];
-        const chain = chains[Math.floor(Math.random() * chains.length)];
-        const [metrics, tvl] = await Promise.all([fetchChainMetrics(chain), fetchDefiTVL(chain)]);
-        if (metrics || tvl) {
-          const emoji: Record<string, string> = { ethereum: "⟠", base: "🔵", arbitrum: "🔶", solana: "◎" };
-          sections.push(`\n${emoji[chain] || "⛓️"} *${chain.charAt(0).toUpperCase() + chain.slice(1)}*${metrics ? ` Gas: ${metrics.gasPrice}` : ""}${tvl ? ` TVL: ${formatNumber(tvl.tvl)}` : ""}`);
-        }
-        break;
-      }
-      case "whale": {
-        if (whaleTxs.length > 0) {
-          const whale = whaleTxs[0];
-          sections.push(`\n🐋 *Whale*: ${whale.value?.toFixed(1)} ETH (${formatNumber(whale.value * (ethData?.price || 3000))})`);
-        }
-        break;
-      }
-      case "tip": {
-        const tips = ["DCA reduces volatility impact", "Gas cheapest on weekends", "Always verify contracts", "L2s = cheaper tx", "Check TVL before depositing"];
-        sections.push(`\n💡 *Tip*: ${tips[Math.floor(Math.random() * tips.length)]}`);
-        break;
-      }
-    }
+  const trendList = trending.slice(0, 3).map((t: any) => t.item?.symbol?.toUpperCase() || "???").join(" • ");
+  
+  const content = `🏠 *ORACLE HOME*
+
+💎 BTC $${btcData?.price?.toLocaleString()} ${btcEmoji}${btcData?.change24h?.toFixed(1)}%
+⟠ ETH $${ethData?.price?.toLocaleString()} ${ethEmoji}${ethData?.change24h?.toFixed(1)}%
+◎ SOL $${solData?.price?.toLocaleString()} ${solEmoji}${solData?.change24h?.toFixed(1)}%
+
+🌐 Global MCap: ${formatNumber(globalMarket?.totalMarketCap || 0)}
+📊 BTC Dom: ${globalMarket?.btcDominance?.toFixed(1)}%
+🔥 Trending: ${trendList}
+
+[View Live](${WEBSITE_PAGES.home})`;
+
+  return { content, chartUrl: chartResult?.chartUrl, section: "home" };
+}
+
+// Generate update from DASHBOARD section
+async function generateDashboardUpdate(): Promise<{ content: string; chartUrl?: string; section: string }> {
+  const [topCoins, sentiment, globalMarket] = await Promise.all([
+    fetchTopCoins(20),
+    fetchSentiment(),
+    fetchGlobalMarket()
+  ]);
+  
+  const sorted = [...topCoins].sort((a: any, b: any) => (b.price_change_percentage_24h || 0) - (a.price_change_percentage_24h || 0));
+  const gainers = sorted.slice(0, 3);
+  const losers = sorted.slice(-3).reverse();
+  
+  const chartCoin = gainers[0]?.id || "bitcoin";
+  const chartResult = await generateTokenChart(chartCoin);
+  
+  const fgValue = parseInt(sentiment?.fearGreed || "50");
+  const bar = generateSentimentBar(fgValue);
+  
+  const gainersList = gainers.map((c: any) => `🚀 ${c.symbol?.toUpperCase()} +${c.price_change_percentage_24h?.toFixed(1)}%`).join("\n");
+  const losersList = losers.map((c: any) => `📉 ${c.symbol?.toUpperCase()} ${c.price_change_percentage_24h?.toFixed(1)}%`).join("\n");
+  
+  const content = `📊 *ORACLE DASHBOARD*
+
+*Top Gainers*
+${gainersList}
+
+*Biggest Drops*
+${losersList}
+
+🎭 Market Mood: ${bar} ${fgValue}/100
+💰 24h Volume: ${formatNumber(globalMarket?.totalVolume || 0)}
+
+[Full Dashboard](${WEBSITE_PAGES.dashboard})`;
+
+  return { content, chartUrl: chartResult?.chartUrl, section: "dashboard" };
+}
+
+// Generate update from CHAINS section
+async function generateChainsUpdate(): Promise<{ content: string; chartUrl?: string; section: string }> {
+  const chains = ["ethereum", "solana", "base", "arbitrum", "polygon"];
+  const selectedChain = chains[Math.floor(Math.random() * chains.length)];
+  
+  const [metrics, tvl, gasData, ethData, solData] = await Promise.all([
+    fetchChainMetrics(selectedChain),
+    fetchDefiTVL(selectedChain),
+    fetchGas(selectedChain),
+    fetchPrice("ethereum"),
+    fetchPrice("solana")
+  ]);
+  
+  const chartCoin = selectedChain === "solana" ? "solana" : "ethereum";
+  const chartResult = await generateTokenChart(chartCoin);
+  
+  const chainEmojis: Record<string, string> = {
+    ethereum: "⟠", solana: "◎", base: "🔵", arbitrum: "🔶", polygon: "💜"
+  };
+  
+  const chainNames: Record<string, string> = {
+    ethereum: "Ethereum", solana: "Solana", base: "Base", arbitrum: "Arbitrum", polygon: "Polygon"
+  };
+  
+  const content = `⛓️ *ORACLE CHAINS - ${chainNames[selectedChain]}*
+
+${chainEmojis[selectedChain]} *${chainNames[selectedChain]} Stats*
+${gasData ? `⛽ Gas: ${gasData.average} Gwei` : ""}
+${tvl ? `🔒 TVL: ${formatNumber(tvl.tvl)}` : ""}
+${metrics ? `📦 Block: ${metrics.blockNumber}` : ""}
+
+💱 *Network Tokens*
+⟠ ETH $${ethData?.price?.toLocaleString()} (${ethData?.change24h >= 0 ? "+" : ""}${ethData?.change24h?.toFixed(1)}%)
+◎ SOL $${solData?.price?.toLocaleString()} (${solData?.change24h >= 0 ? "+" : ""}${solData?.change24h?.toFixed(1)}%)
+
+[${chainNames[selectedChain]} Analytics](${CHAIN_PAGES[selectedChain] || WEBSITE_PAGES.dashboard})`;
+
+  return { content, chartUrl: chartResult?.chartUrl, section: "chains" };
+}
+
+// Generate update from SENTIMENT section
+async function generateSentimentUpdate(): Promise<{ content: string; chartUrl?: string; section: string }> {
+  const [sentiment, whaleTxs, trending, ethData] = await Promise.all([
+    fetchSentiment(),
+    fetchWhaleTransactions(),
+    fetchTrending(),
+    fetchPrice("ethereum")
+  ]);
+  
+  const chartResult = await generateTokenChart("ethereum");
+  
+  const fgValue = parseInt(sentiment?.fearGreed || "50");
+  const bar = generateSentimentBar(fgValue);
+  
+  let mood = "Neutral 😐";
+  if (fgValue <= 25) mood = "Extreme Fear 😱";
+  else if (fgValue <= 45) mood = "Fear 😰";
+  else if (fgValue >= 75) mood = "Extreme Greed 🤑";
+  else if (fgValue >= 55) mood = "Greed 😊";
+  
+  const trendList = trending.slice(0, 4).map((t: any) => t.item?.symbol?.toUpperCase() || "???").join(" • ");
+  const whaleInfo = whaleTxs.length > 0 ? `🐋 Latest: ${whaleTxs[0].value?.toFixed(1)} ETH ($${formatNumber(whaleTxs[0].value * (ethData?.price || 3000))})` : "";
+  
+  const content = `🎭 *ORACLE SENTIMENT*
+
+*Fear & Greed Index*
+${bar} ${fgValue}/100
+${mood}
+
+🔥 *Trending Now*
+${trendList}
+
+${whaleInfo}
+
+[Full Sentiment Analysis](${WEBSITE_PAGES.sentiment})`;
+
+  return { content, chartUrl: chartResult?.chartUrl, section: "sentiment" };
+}
+
+// Generate update from EXPLORER section
+async function generateExplorerUpdate(): Promise<{ content: string; chartUrl?: string; section: string }> {
+  const [trending, topCoins] = await Promise.all([
+    fetchTrending(),
+    fetchTopCoins(10)
+  ]);
+  
+  // Pick random trending token
+  const randomTrending = trending[Math.floor(Math.random() * Math.min(trending.length, 5))];
+  const tokenSymbol = randomTrending?.item?.symbol?.toUpperCase() || "BTC";
+  const tokenId = randomTrending?.item?.id || "bitcoin";
+  
+  const chartResult = await generateTokenChart(tokenId);
+  const tokenData = await fetchPrice(tokenId);
+  
+  const trendList = trending.slice(0, 5).map((t: any, i: number) => 
+    `${i + 1}. ${t.item?.symbol?.toUpperCase()} - Rank #${t.item?.market_cap_rank || "?"}`
+  ).join("\n");
+  
+  const content = `🔍 *ORACLE EXPLORER*
+
+*Featured Token: ${tokenSymbol}*
+💰 Price: $${tokenData?.price?.toLocaleString() || "N/A"}
+📊 24h: ${tokenData?.change24h >= 0 ? "+" : ""}${tokenData?.change24h?.toFixed(2) || 0}%
+💎 MCap: ${formatNumber(tokenData?.marketCap || 0)}
+
+*Trending Tokens*
+${trendList}
+
+[Search Any Token](${WEBSITE_PAGES.explorer})`;
+
+  return { content, chartUrl: chartResult?.chartUrl, section: "explorer" };
+}
+
+// Generate update from LEARN section
+async function generateLearnUpdate(): Promise<{ content: string; chartUrl?: string; section: string }> {
+  const [btcData, sentiment] = await Promise.all([
+    fetchPrice("bitcoin"),
+    fetchSentiment()
+  ]);
+  
+  const chartResult = await generateTokenChart("bitcoin");
+  
+  const tips = [
+    { title: "DCA Strategy", tip: "Dollar-cost averaging reduces timing risk by spreading purchases over time." },
+    { title: "Gas Optimization", tip: "Weekends and late nights (UTC) typically have lower gas fees on Ethereum." },
+    { title: "Security First", tip: "Always verify contract addresses on block explorers before interacting." },
+    { title: "L2 Benefits", tip: "Layer 2 networks like Arbitrum & Base offer 10-100x cheaper transactions." },
+    { title: "TVL Matters", tip: "Higher Total Value Locked usually indicates more trust in a DeFi protocol." },
+    { title: "Whale Watching", tip: "Large wallet movements often precede significant price action." },
+    { title: "Diversification", tip: "Never put all funds in one token. Spread risk across different assets." },
+    { title: "Research First", tip: "Check team, tokenomics, and audit reports before investing." }
+  ];
+  
+  const randomTip = tips[Math.floor(Math.random() * tips.length)];
+  const fgValue = parseInt(sentiment?.fearGreed || "50");
+  
+  const content = `📚 *ORACLE LEARN*
+
+💡 *Today's Tip: ${randomTip.title}*
+${randomTip.tip}
+
+📊 *Current Market Context*
+BTC: $${btcData?.price?.toLocaleString()} (${btcData?.change24h >= 0 ? "+" : ""}${btcData?.change24h?.toFixed(1)}%)
+Fear/Greed: ${fgValue}/100
+
+🎓 *Quick Facts*
+• Crypto market cap: $2T+
+• Active blockchains: 100+
+• DeFi protocols: 1000+
+
+[Learn More](${WEBSITE_PAGES.learn})`;
+
+  return { content, chartUrl: chartResult?.chartUrl, section: "learn" };
+}
+
+// Generate random update from any website section
+async function generateComprehensiveUpdate(): Promise<{ content: string; chartUrl?: string }> {
+  const randomSection = WEBSITE_SECTIONS[Math.floor(Math.random() * WEBSITE_SECTIONS.length)];
+  console.log(`Generating update from: ${randomSection}`);
+  
+  let result: { content: string; chartUrl?: string; section: string };
+  
+  switch (randomSection) {
+    case "home":
+      result = await generateHomeUpdate();
+      break;
+    case "dashboard":
+      result = await generateDashboardUpdate();
+      break;
+    case "chains":
+      result = await generateChainsUpdate();
+      break;
+    case "sentiment":
+      result = await generateSentimentUpdate();
+      break;
+    case "explorer":
+      result = await generateExplorerUpdate();
+      break;
+    case "learn":
+      result = await generateLearnUpdate();
+      break;
+    default:
+      result = await generateHomeUpdate();
   }
   
-  sections.push(`\n📈 MCap: ${formatNumber(globalMarket?.totalMarketCap || 0)} | BTC: ${globalMarket?.btcDominance?.toFixed(1)}%`);
-  
-  const pages = [
-    { name: "Dashboard", url: WEBSITE_PAGES.dashboard },
-    { name: "Sentiment", url: WEBSITE_PAGES.sentiment },
-    { name: "Explorer", url: WEBSITE_PAGES.explorer },
-    { name: "Chains", url: CHAIN_PAGES.ethereum },
-    { name: "Learn", url: WEBSITE_PAGES.learn },
-  ];
-  const randomPages = pages.sort(() => Math.random() - 0.5).slice(0, 2);
-  sections.push(`\n[${randomPages[0].name}](${randomPages[0].url}) | [${randomPages[1].name}](${randomPages[1].url})`);
-  
-  return { content: `🔮 *ORACLE UPDATE*\n\n${sections.join("")}`, chartUrl: chartResult?.chartUrl };
+  return { content: result.content, chartUrl: result.chartUrl };
 }
 
 async function sendAutoUpdates() {
