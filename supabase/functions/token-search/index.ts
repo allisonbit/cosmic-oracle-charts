@@ -118,103 +118,51 @@ serve(async (req) => {
         });
       }
     } else {
-      // Search by symbol/name using Alchemy asset search
-      console.log(`Searching for: ${query} on ${network}`);
+      // Search by symbol/name using CoinGecko (Alchemy doesn't have a search API)
+      console.log(`Searching for: ${query} on ${chain}`);
       
-      // Use Alchemy's token API to search
-      const searchUrl = `https://api.g.alchemy.com/data/v1/${ALCHEMY_KEY}/assets/search`;
-      
-      const searchResponse = await fetch(searchUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: query,
-          networks: [network],
-          limit: 20
-        })
-      });
-
-      const searchResult = await searchResponse.json();
-      console.log('Search result:', JSON.stringify(searchResult).slice(0, 500));
-
-      if (searchResult.results && searchResult.results.length > 0) {
-        // Get prices for all found tokens
-        const addresses = searchResult.results
-          .filter((r: any) => r.address && r.address !== '0x0000000000000000000000000000000000000000')
-          .map((r: any) => ({
-            network: network,
-            address: r.address
-          }));
-
-        let priceMap: Record<string, { price: number; change24h: number }> = {};
+      try {
+        const cgResponse = await fetch(
+          `https://api.coingecko.com/api/v3/search?query=${encodeURIComponent(query)}`
+        );
+        const cgResult = await cgResponse.json();
+        console.log('CoinGecko search result:', JSON.stringify(cgResult).slice(0, 500));
         
-        if (addresses.length > 0) {
-          try {
-            const priceResponse = await fetch(`https://api.g.alchemy.com/prices/v1/${ALCHEMY_KEY}/tokens/by-address`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ addresses })
-            });
-            
-            const priceResult = await priceResponse.json();
-            if (priceResult.data) {
-              priceResult.data.forEach((item: any) => {
-                if (item.address && item.prices?.[0]) {
-                  priceMap[item.address.toLowerCase()] = {
-                    price: parseFloat(item.prices[0].value) || 0,
-                    change24h: parseFloat(item.prices[0].change24h) || 0
-                  };
-                }
-              });
-            }
-          } catch (e) {
-            console.log('Batch price error:', e);
-          }
-        }
-
-        tokens = searchResult.results.map((result: any) => {
-          const priceData = priceMap[result.address?.toLowerCase()] || { price: 0, change24h: 0 };
-          return {
-            symbol: result.symbol || 'UNKNOWN',
-            name: result.name || result.symbol || 'Unknown Token',
-            contractAddress: result.address || '',
-            decimals: result.decimals || 18,
-            logo: result.logo,
-            chain: chain,
-            price: priceData.price,
-            change24h: priceData.change24h,
-            verified: result.verified || false
-          };
-        });
-      }
-
-      // If no results from asset search, try a fallback approach
-      if (tokens.length === 0) {
-        // Try CoinGecko as fallback for broader search
-        try {
-          const cgResponse = await fetch(
-            `https://api.coingecko.com/api/v3/search?query=${encodeURIComponent(query)}`
-          );
-          const cgResult = await cgResponse.json();
+        if (cgResult.coins && cgResult.coins.length > 0) {
+          // Get detailed info for top results
+          const topCoins = cgResult.coins.slice(0, 15);
+          const coinIds = topCoins.map((c: any) => c.id).join(',');
           
-          if (cgResult.coins && cgResult.coins.length > 0) {
-            tokens = cgResult.coins.slice(0, 20).map((coin: any) => ({
+          // Fetch prices for the found coins
+          let priceData: Record<string, any> = {};
+          try {
+            const priceResponse = await fetch(
+              `https://api.coingecko.com/api/v3/simple/price?ids=${coinIds}&vs_currencies=usd&include_24hr_change=true`
+            );
+            priceData = await priceResponse.json();
+          } catch (e) {
+            console.log('Price fetch error:', e);
+          }
+          
+          tokens = topCoins.map((coin: any) => {
+            const prices = priceData[coin.id] || {};
+            return {
               symbol: coin.symbol?.toUpperCase() || 'UNKNOWN',
               name: coin.name || coin.symbol || 'Unknown',
               contractAddress: '',
               decimals: 18,
               logo: coin.thumb || coin.large,
               chain: 'multi',
-              price: 0,
-              change24h: 0,
+              price: prices.usd || 0,
+              change24h: prices.usd_24h_change || 0,
               verified: coin.market_cap_rank ? true : false,
               rank: coin.market_cap_rank,
               coingeckoId: coin.id
-            }));
-          }
-        } catch (e) {
-          console.log('CoinGecko fallback error:', e);
+            };
+          });
         }
+      } catch (e) {
+        console.log('CoinGecko search error:', e);
       }
     }
 
