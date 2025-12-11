@@ -93,11 +93,11 @@ export function Navbar() {
         {/* Mobile Navigation */}
         <div 
           className={cn(
-            "lg:hidden fixed inset-0 top-14 bg-background/98 backdrop-blur-xl z-40 transition-all duration-300",
+            "lg:hidden fixed inset-0 top-14 bg-background/98 backdrop-blur-xl z-40 transition-all duration-300 overflow-y-auto scroll-smooth-touch",
             isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
           )}
         >
-          <div className="container mx-auto px-4 py-6 space-y-2">
+          <div className="container mx-auto px-4 py-4 space-y-1 pb-24">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = isActivePath(item.path);
@@ -107,14 +107,15 @@ export function Navbar() {
                   to={item.path}
                   onClick={() => setIsOpen(false)}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-4 rounded-lg font-display text-base uppercase tracking-wider transition-all duration-300",
+                    "flex items-center gap-4 px-4 py-4 rounded-xl font-display text-base uppercase tracking-wider transition-all duration-200 touch-target tap-highlight-none active:scale-[0.98]",
                     isActive
                       ? "bg-primary/20 text-primary border border-primary/30"
-                      : "text-muted-foreground hover:text-primary hover:bg-primary/10"
+                      : "text-muted-foreground active:text-primary active:bg-primary/10"
                   )}
                 >
-                  <Icon className="w-5 h-5" />
-                  {item.label}
+                  <Icon className="w-6 h-6" />
+                  <span className="flex-1">{item.label}</span>
+                  {isActive && <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />}
                 </Link>
               );
             })}

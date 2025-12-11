@@ -36,13 +36,13 @@ export function HeroSection() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start">
-              <Button asChild variant="cosmic" size="lg" className="text-sm md:text-base">
+              <Button asChild variant="cosmic" size="lg" className="text-sm md:text-base touch-target-lg tap-highlight-none active:scale-95 transition-transform">
                 <Link to="/dashboard">
                   Explore Dashboard
                   <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
                 </Link>
               </Button>
-              <Button asChild variant="glow" size="lg" className="text-sm md:text-base">
+              <Button asChild variant="glow" size="lg" className="text-sm md:text-base touch-target-lg tap-highlight-none active:scale-95 transition-transform">
                 <Link to="/learn">
                   Learn More
                 </Link>

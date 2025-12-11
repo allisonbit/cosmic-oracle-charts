@@ -1,43 +1,49 @@
-import { Home, LayoutDashboard, Search, TrendingUp, MessageCircle } from "lucide-react";
+import { Home, LayoutDashboard, Search, TrendingUp, MessageCircle, Layers, BookOpen } from "lucide-react";
 import { NavLink as RouterNavLink, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { icon: Home, label: "Home", path: "/" },
   { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
+  { icon: Layers, label: "Chains", path: "/chain/ethereum" },
   { icon: Search, label: "Explorer", path: "/explorer" },
   { icon: TrendingUp, label: "Sentiment", path: "/sentiment" },
-  { icon: MessageCircle, label: "Contact", path: "/contact" },
 ];
 
 export function MobileBottomNav() {
   const location = useLocation();
 
+  const isActivePath = (path: string) => {
+    if (path === "/") return location.pathname === "/";
+    if (path.includes("/chain/")) return location.pathname.includes("/chain/");
+    return location.pathname === path;
+  };
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
       {/* Gradient backdrop */}
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/95 to-transparent pointer-events-none h-20 -top-6" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/95 to-transparent pointer-events-none h-24 -top-8" />
       
       {/* Nav container */}
-      <div className="relative bg-background/80 backdrop-blur-xl border-t border-primary/20 px-2 pb-safe">
-        <div className="flex items-center justify-around py-2">
+      <div className="relative bg-background/90 backdrop-blur-xl border-t border-primary/20 px-1 pb-safe">
+        <div className="flex items-center justify-around py-1.5">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = location.pathname === item.path;
+            const isActive = isActivePath(item.path);
             
             return (
               <RouterNavLink
                 key={item.path}
                 to={item.path}
                 className={cn(
-                  "flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all duration-200 min-w-[60px]",
+                  "flex flex-col items-center gap-0.5 px-2 py-2 rounded-xl transition-all duration-200 min-w-[56px] touch-target tap-highlight-none active:scale-95",
                   isActive 
                     ? "text-primary bg-primary/10" 
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                    : "text-muted-foreground active:text-foreground active:bg-muted/50"
                 )}
               >
                 <div className={cn(
-                  "relative",
+                  "relative p-1.5",
                   isActive && "animate-pulse"
                 )}>
                   <Icon className={cn(
@@ -49,7 +55,7 @@ export function MobileBottomNav() {
                   )}
                 </div>
                 <span className={cn(
-                  "text-[10px] font-display font-medium",
+                  "text-[9px] font-display font-medium leading-none",
                   isActive && "text-primary"
                 )}>
                   {item.label}

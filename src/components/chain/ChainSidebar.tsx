@@ -50,10 +50,11 @@ export function ChainSidebar() {
   const MobileTrigger = () => (
     <button
       onClick={() => setMobileOpen(!mobileOpen)}
-      className="fixed bottom-4 left-4 z-50 md:hidden w-12 h-12 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:bg-primary/90 transition-all"
+      className="fixed bottom-20 left-4 z-50 md:hidden w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center active:scale-95 transition-all tap-highlight-none touch-target-lg"
       style={{ boxShadow: "0 0 20px hsl(var(--primary) / 0.4)" }}
+      aria-label={mobileOpen ? "Close chain menu" : "Open chain menu"}
     >
-      {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+      {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
     </button>
   );
 
@@ -135,10 +136,10 @@ export function ChainSidebar() {
                     <SidebarMenuButton
                       onClick={() => handleNavigate(`/chain/${chain.id}`)}
                       className={cn(
-                        "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group",
+                        "w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-all group touch-target tap-highlight-none active:scale-[0.98]",
                         isChainActive(chain.id)
                           ? "bg-primary/20 border border-primary/30"
-                          : "hover:bg-muted/50"
+                          : "hover:bg-muted/50 active:bg-muted/70"
                       )}
                       style={{
                         color: isChainActive(chain.id) ? `hsl(${chain.color})` : undefined,

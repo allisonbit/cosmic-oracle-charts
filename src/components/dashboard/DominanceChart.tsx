@@ -24,16 +24,16 @@ export function DominanceChart() {
   });
 
   return (
-    <div className="holo-card p-6">
-      <h3 className="font-display font-bold text-lg mb-4 flex items-center gap-2">
-        <PieChart className="w-5 h-5 text-primary" />
+    <div className="holo-card p-3 sm:p-4 md:p-6">
+      <h3 className="font-display font-bold text-sm sm:text-base md:text-lg mb-3 sm:mb-4 flex items-center gap-2">
+        <PieChart className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
         MARKET DOMINANCE
       </h3>
       
-      <div className="flex items-center gap-6">
+      <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
         {/* Simple CSS pie chart */}
         <div 
-          className="w-32 h-32 rounded-full relative flex-shrink-0"
+          className="w-28 h-28 sm:w-32 sm:h-32 rounded-full relative flex-shrink-0"
           style={{
             background: `conic-gradient(
               ${dominanceData[0].color} 0deg ${segments[0].endAngle}deg,
@@ -42,23 +42,23 @@ export function DominanceChart() {
             )`
           }}
         >
-          <div className="absolute inset-4 rounded-full bg-card flex items-center justify-center">
-            <span className="font-display text-xs text-muted-foreground">DOMINANCE</span>
+          <div className="absolute inset-3 sm:inset-4 rounded-full bg-card flex items-center justify-center">
+            <span className="font-display text-[10px] sm:text-xs text-muted-foreground">DOMINANCE</span>
           </div>
         </div>
 
         {/* Legend */}
-        <div className="space-y-3 flex-1">
+        <div className="space-y-2 sm:space-y-3 flex-1 w-full sm:w-auto">
           {dominanceData.map(item => (
-            <div key={item.name} className="flex items-center justify-between">
+            <div key={item.name} className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-2">
                 <div 
-                  className="w-4 h-4 rounded"
+                  className="w-3 h-3 sm:w-4 sm:h-4 rounded"
                   style={{ background: item.color }}
                 />
-                <span className="font-display font-bold">{item.name}</span>
+                <span className="font-display font-bold text-sm sm:text-base">{item.name}</span>
               </div>
-              <span className="text-lg font-bold">{item.value.toFixed(1)}%</span>
+              <span className="text-base sm:text-lg font-bold">{item.value.toFixed(1)}%</span>
             </div>
           ))}
         </div>
