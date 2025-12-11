@@ -8,6 +8,7 @@ import { FeaturesSection } from "@/components/home/FeaturesSection";
 import { CTASection } from "@/components/home/CTASection";
 import { MarketOverview } from "@/components/home/MarketOverview";
 import { Footer } from "@/components/layout/Footer";
+import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 
 const Index = () => {
   return (
@@ -24,6 +25,9 @@ const Index = () => {
       <CTASection />
       <MarketOverview />
       <Footer />
+      <MobileBottomNav />
+      {/* Bottom padding for mobile nav */}
+      <div className="h-20 md:hidden" />
     </div>
   );
 };
