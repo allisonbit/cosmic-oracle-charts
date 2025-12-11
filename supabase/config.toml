@@ -27,3 +27,6 @@ verify_jwt = false
 
 [functions.chain-health]
 verify_jwt = false
+
+[functions.oracle-token]
+verify_jwt = false
