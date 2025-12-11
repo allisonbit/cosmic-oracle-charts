@@ -2,6 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getChainById } from "@/lib/chainConfig";
 import { useChainData } from "@/hooks/useChainData";
 import { useChainForecast } from "@/hooks/useChainForecast";
+import { useAdvancedChainData } from "@/hooks/useAdvancedChainData";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 import { ChainOverviewPanel } from "@/components/chain/ChainOverviewPanel";
 import { AdvancedPriceChart } from "@/components/chain/AdvancedPriceChart";
@@ -16,6 +17,12 @@ import { DailySummary } from "@/components/chain/DailySummary";
 import { ChainSidebar } from "@/components/chain/ChainSidebar";
 import { CryptoTicker } from "@/components/layout/CryptoTicker";
 import { Footer } from "@/components/layout/Footer";
+import { ChainHealthMetrics } from "@/components/chain/ChainHealthMetrics";
+import { DeepFinancialMetrics } from "@/components/chain/DeepFinancialMetrics";
+import { AdvancedPredictionModels } from "@/components/chain/AdvancedPredictionModels";
+import { AnomalyDetection } from "@/components/chain/AnomalyDetection";
+import { MultiChainComparison } from "@/components/chain/MultiChainComparison";
+import { InstitutionalView } from "@/components/chain/InstitutionalView";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { ArrowLeft, Loader2 } from "lucide-react";
 
@@ -26,6 +33,7 @@ export default function Chain() {
 
   const { data: chainData, isLoading: chainLoading, isFetching: chainFetching } = useChainData(chainId || "", !!chain);
   const { data: forecastData, isLoading: forecastLoading } = useChainForecast(chainId || "", chainData, !!chain && !!chainData);
+  const { data: advancedData, isLoading: advancedLoading } = useAdvancedChainData(chainId || "", !!chain);
   const { data: pricesData } = useCryptoPrices();
 
   if (!chain) {
@@ -33,14 +41,90 @@ export default function Chain() {
       <div className="min-h-screen cosmic-bg flex items-center justify-center p-6">
         <div className="holo-card p-8 text-center">
           <h2 className="text-2xl font-display text-foreground mb-4">Chain Not Found</h2>
-          <button onClick={() => navigate("/")} className="text-primary hover:underline">
-            Return Home
-          </button>
+          <button onClick={() => navigate("/")} className="text-primary hover:underline">Return Home</button>
         </div>
       </div>
     );
   }
 
+  const chainPrice = pricesData?.prices?.find(p => p.symbol === chain.symbol);
+  const showLoading = chainLoading && !chainData;
+
+  return (
+    <SidebarProvider defaultOpen={true}>
+      <div className="min-h-screen cosmic-bg flex w-full">
+        <ChainSidebar />
+        <div className="flex-1 flex flex-col min-w-0">
+          <CryptoTicker />
+          
+          {showLoading ? (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="flex flex-col items-center gap-4">
+                <Loader2 className="w-12 h-12 animate-spin text-primary" />
+                <p className="text-muted-foreground font-display">Loading {chain.name} data...</p>
+              </div>
+            </div>
+          ) : (
+            <main className="flex-1 overflow-y-auto">
+              <div className="container mx-auto px-4 py-6 md:py-8 space-y-4 md:space-y-6">
+                <button onClick={() => navigate("/dashboard")} className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+                  <ArrowLeft className="h-4 w-4" /><span>Back to Dashboard</span>
+                </button>
+
+                {chainFetching && chainData && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Loader2 className="w-4 h-4 animate-spin" /><span>Refreshing data...</span>
+                  </div>
+                )}
+
+                <ChainOverviewPanel chain={chain} overview={chainData?.overview} isLoading={chainLoading} />
+
+                <div className="grid lg:grid-cols-2 gap-4 md:gap-6">
+                  <AdvancedPriceChart chain={chain} priceData={chainPrice} />
+                  <PredictionDeepDive chain={chain} forecast={forecastData?.forecast} isLoading={forecastLoading} />
+                </div>
+
+                {/* NEW: Chain Health Metrics */}
+                <ChainHealthMetrics chain={chain} healthData={advancedData?.healthData} isLoading={advancedLoading} />
+
+                {/* NEW: Deep Financial Metrics */}
+                <DeepFinancialMetrics chain={chain} financialData={advancedData?.financialData} isLoading={advancedLoading} />
+
+                {/* NEW: Advanced AI Prediction Models */}
+                <AdvancedPredictionModels chain={chain} predictionData={advancedData?.predictionData} isLoading={advancedLoading} />
+
+                {/* NEW: Anomaly Detection */}
+                <AnomalyDetection chain={chain} anomalyData={advancedData?.anomalyData} isLoading={advancedLoading} />
+
+                <div className="grid lg:grid-cols-2 gap-4 md:gap-6">
+                  <WhaleActivityRadar chain={chain} whaleActivity={chainData?.whaleActivity} isLoading={chainLoading} />
+                  <TokenHeatScanner chain={chain} tokenHeat={chainData?.tokenHeat} isLoading={chainLoading} />
+                </div>
+
+                <div className="grid lg:grid-cols-2 gap-4 md:gap-6">
+                  <SmartMoneyFlow chain={chain} smartMoneyFlow={chainData?.smartMoneyFlow} isLoading={chainLoading} />
+                  <RiskAnalyzer chain={chain} tokenRisks={forecastData?.tokenRisks} isLoading={forecastLoading} />
+                </div>
+
+                {/* NEW: Multi-Chain Comparison */}
+                <MultiChainComparison chain={chain} comparisonData={advancedData?.comparisonData} isLoading={advancedLoading} />
+
+                {/* NEW: Institutional View */}
+                <InstitutionalView chain={chain} institutionalData={advancedData?.institutionalData} isLoading={advancedLoading} />
+
+                <SocialSentimentGalaxy chain={chain} socialSentiment={forecastData?.socialSentiment} isLoading={forecastLoading} />
+                <TokenDiscoveryEngine chain={chain} tokenHeat={chainData?.tokenHeat} isLoading={chainLoading} />
+                <DailySummary chain={chain} forecast={forecastData?.forecast} isLoading={forecastLoading} />
+              </div>
+            </main>
+          )}
+          
+          <Footer />
+        </div>
+      </div>
+    </SidebarProvider>
+  );
+}
   // Get chain price from the prices array
   const chainPrice = pricesData?.prices?.find(p => p.symbol === chain.symbol);
 
