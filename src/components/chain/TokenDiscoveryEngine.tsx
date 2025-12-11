@@ -50,25 +50,28 @@ export function TokenDiscoveryEngine({ chain }: TokenDiscoveryEngineProps) {
     },
   ];
 
-  const formatPrice = (price: number) => {
-    if (price >= 1000) return `$${(price / 1000).toFixed(1)}K`;
-    if (price >= 1) return `$${price.toFixed(2)}`;
-    if (price >= 0.01) return `$${price.toFixed(4)}`;
-    return `$${price.toFixed(6)}`;
+  const formatPrice = (price: number | string | undefined) => {
+    const p = Number(price) || 0;
+    if (p >= 1000) return `$${(p / 1000).toFixed(1)}K`;
+    if (p >= 1) return `$${p.toFixed(2)}`;
+    if (p >= 0.01) return `$${p.toFixed(4)}`;
+    return `$${p.toFixed(6)}`;
   };
 
-  const formatVolume = (vol: number) => {
-    if (vol >= 1e9) return `$${(vol / 1e9).toFixed(1)}B`;
-    if (vol >= 1e6) return `$${(vol / 1e6).toFixed(1)}M`;
-    if (vol >= 1e3) return `$${(vol / 1e3).toFixed(1)}K`;
-    return `$${vol.toFixed(0)}`;
+  const formatVolume = (vol: number | string | undefined) => {
+    const v = Number(vol) || 0;
+    if (v >= 1e9) return `$${(v / 1e9).toFixed(1)}B`;
+    if (v >= 1e6) return `$${(v / 1e6).toFixed(1)}M`;
+    if (v >= 1e3) return `$${(v / 1e3).toFixed(1)}K`;
+    return `$${v.toFixed(0)}`;
   };
 
-  const formatMarketCap = (mc: number) => {
-    if (mc >= 1e12) return `$${(mc / 1e12).toFixed(2)}T`;
-    if (mc >= 1e9) return `$${(mc / 1e9).toFixed(2)}B`;
-    if (mc >= 1e6) return `$${(mc / 1e6).toFixed(1)}M`;
-    return `$${(mc / 1e3).toFixed(1)}K`;
+  const formatMarketCap = (mc: number | string | undefined) => {
+    const m = Number(mc) || 0;
+    if (m >= 1e12) return `$${(m / 1e12).toFixed(2)}T`;
+    if (m >= 1e9) return `$${(m / 1e9).toFixed(2)}B`;
+    if (m >= 1e6) return `$${(m / 1e6).toFixed(1)}M`;
+    return `$${(m / 1e3).toFixed(1)}K`;
   };
 
   const renderSparkline = (sparkline: number[] | undefined) => {
