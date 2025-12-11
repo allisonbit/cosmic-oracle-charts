@@ -214,6 +214,63 @@ function formatNumber(num: number): string {
   return `$${num.toFixed(2)}`;
 }
 
+// Fetch crypto news from CoinGecko status updates
+async function fetchCryptoNews() {
+  try {
+    const response = await fetch("https://api.coingecko.com/api/v3/status_updates?per_page=5");
+    const data = await response.json();
+    return data.status_updates?.slice(0, 5) || [];
+  } catch (error) {
+    console.error("Error fetching news:", error);
+    return [];
+  }
+}
+
+// Fetch whale transactions using Alchemy
+async function fetchWhaleTransactions() {
+  try {
+    // Get latest block
+    const blockResponse = await fetch(`https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ jsonrpc: "2.0", method: "eth_blockNumber", params: [], id: 1 }),
+    });
+    const blockData = await blockResponse.json();
+    const latestBlock = blockData.result;
+
+    // Get asset transfers for large ETH movements (>100 ETH)
+    const transfersResponse = await fetch(`https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "alchemy_getAssetTransfers",
+        params: [{
+          fromBlock: `0x${(parseInt(latestBlock, 16) - 50).toString(16)}`,
+          toBlock: latestBlock,
+          category: ["external"],
+          withMetadata: false,
+          excludeZeroValue: true,
+          maxCount: "0x64",
+          order: "desc"
+        }],
+        id: 1
+      }),
+    });
+    const transfersData = await transfersResponse.json();
+    
+    // Filter for whale transactions (>100 ETH)
+    const whales = (transfersData.result?.transfers || [])
+      .filter((tx: any) => tx.value && tx.value > 100)
+      .slice(0, 5);
+    
+    return whales;
+  } catch (error) {
+    console.error("Error fetching whale transactions:", error);
+    return [];
+  }
+}
+
 // ============ CONVERSATION LEARNING ============
 
 async function extractTopicsAndSentiment(text: string) {
@@ -418,62 +475,46 @@ function generateSentimentBar(value: number): string {
 async function generateMarketPulse() {
   const btcData = await fetchPrice("bitcoin");
   const ethData = await fetchPrice("ethereum");
-  const solData = await fetchPrice("solana");
   const sentiment = await fetchSentiment();
-  const globalMarket = await fetchGlobalMarket();
-  const gasData = await fetchGas("eth");
-  const trending = await fetchTrending();
-
   const fgValue = parseInt(sentiment?.fearGreed || "50");
-  let sentimentEmoji = fgValue <= 25 ? "😱" : fgValue <= 45 ? "😰" : fgValue >= 75 ? "🤑" : fgValue >= 55 ? "😊" : "😐";
-  const sentimentBar = generateSentimentBar(fgValue);
+  const sentimentEmoji = fgValue <= 25 ? "😱" : fgValue <= 45 ? "😰" : fgValue >= 75 ? "🤑" : fgValue >= 55 ? "😊" : "😐";
 
-  const btcChange = btcData?.change24h || 0;
-  const marketTrend = btcChange >= 2 ? "🚀 BULLISH" : btcChange <= -2 ? "📉 BEARISH" : "➡️ SIDEWAYS";
+  return `🔮 *ORACLE PULSE*
+💎 BTC $${btcData?.price?.toLocaleString()} ${btcData?.change24h >= 0 ? "🟢" : "🔴"}${btcData?.change24h?.toFixed(1)}%
+⟠ ETH $${ethData?.price?.toLocaleString()} ${ethData?.change24h >= 0 ? "🟢" : "🔴"}${ethData?.change24h?.toFixed(1)}%
+${sentimentEmoji} F&G: ${sentiment?.fearGreed}/100
+🌐 ${WEBSITE_URL}`;
+}
 
-  const trendingList = trending.slice(0, 5).map((t: any, i: number) => 
-    `${i + 1}. ${t.item?.symbol?.toUpperCase() || "?"}`
-  ).join(" | ");
+// Short trending update
+async function generateTrendingUpdate() {
+  const trending = await fetchTrending();
+  const list = trending.slice(0, 5).map((t: any, i: number) => {
+    const item = t.item;
+    const price = item?.data?.price ? `$${parseFloat(item.data.price).toFixed(4)}` : "";
+    return `${i + 1}. *${item?.symbol?.toUpperCase()}* ${price}`;
+  }).join("\n");
 
-  return `
-🔮 *ORACLE MARKET PULSE*
-_${new Date().toLocaleString("en-US", { weekday: "short", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })} UTC_
+  return `🔥 *TRENDING NOW*\n${list}\n🔍 ${WEBSITE_PAGES.explorer}`;
+}
 
-━━━━━━━━━━━━━━━━━━━━
+// Short whale alert
+function formatWhaleAlert(tx: any, ethPrice: number) {
+  const value = tx.value || 0;
+  const usdValue = value * ethPrice;
+  return `🐋 *WHALE ALERT*\n${value.toFixed(1)} ETH (${formatNumber(usdValue)})\n${tx.from?.slice(0, 8)}...→${tx.to?.slice(0, 8)}...`;
+}
 
-📊 *MARKET*
-💰 Cap: ${formatNumber(globalMarket?.totalMarketCap || 0)} (${globalMarket?.marketCapChange?.toFixed(1)}%)
-📈 Trend: ${marketTrend}
+// Short news update
+async function generateNewsUpdate() {
+  const news = await fetchCryptoNews();
+  if (!news.length) return null;
+  
+  const headlines = news.slice(0, 3).map((n: any, i: number) => 
+    `${i + 1}. ${n.project?.name || "Crypto"}: ${(n.description || "").slice(0, 50)}...`
+  ).join("\n");
 
-━━━━━━━━━━━━━━━━━━━━
-
-💎 *BTC* $${btcData?.price?.toLocaleString()} ${btcData?.change24h >= 0 ? "🟢" : "🔴"}${btcData?.change24h?.toFixed(1)}%
-⟠ *ETH* $${ethData?.price?.toLocaleString()} ${ethData?.change24h >= 0 ? "🟢" : "🔴"}${ethData?.change24h?.toFixed(1)}%
-◎ *SOL* $${solData?.price?.toLocaleString()} ${solData?.change24h >= 0 ? "🟢" : "🔴"}${solData?.change24h?.toFixed(1)}%
-
-━━━━━━━━━━━━━━━━━━━━
-
-🔥 *TRENDING*
-${trendingList}
-
-━━━━━━━━━━━━━━━━━━━━
-
-${sentimentEmoji} *SENTIMENT*
-${sentimentBar} ${sentiment?.fearGreed}/100
-
-⛽ Gas: ${gasData?.average} Gwei
-
-━━━━━━━━━━━━━━━━━━━━
-
-📱 *EXPLORE MORE:*
-📊 [Dashboard](${WEBSITE_PAGES.dashboard})
-🎭 [Sentiment](${WEBSITE_PAGES.sentiment})
-⛓️ [Chains](${WEBSITE_PAGES.chains})
-🔍 [Explorer](${WEBSITE_PAGES.explorer})
-
-🌐 ${WEBSITE_URL}
-_For informational purposes. Not financial advice._
-  `;
+  return `📰 *CRYPTO NEWS*\n${headlines}\n📚 ${WEBSITE_PAGES.learn}`;
 }
 
 // Generate chart preview for tokens
@@ -482,59 +523,27 @@ async function generateTokenChart(symbol: string) {
   if (!data) return null;
   
   const change = data.change24h || 0;
-  const trend = change >= 0 ? "📈" : "📉";
   const bars = Math.abs(Math.round(change / 2));
   const barChar = change >= 0 ? "🟢" : "🔴";
-  const chartBar = barChar.repeat(Math.min(bars, 10));
+  const chartBar = barChar.repeat(Math.min(bars, 8));
   
-  return `
-${trend} *${data.symbol} CHART*
-
-💰 Price: $${data.price?.toLocaleString(undefined, { maximumFractionDigits: 6 })}
-📊 24h: ${change >= 0 ? "+" : ""}${change.toFixed(2)}%
-📉 Volume: ${formatNumber(data.volume)}
-💎 MCap: ${formatNumber(data.marketCap)}
-
+  return `${change >= 0 ? "📈" : "📉"} *${data.symbol}* $${data.price?.toLocaleString(undefined, { maximumFractionDigits: 4 })}
 ${chartBar || "⚪"} ${change >= 0 ? "+" : ""}${change.toFixed(1)}%
-
-🔍 [View on Oracle](${WEBSITE_PAGES.explorer}?search=${symbol.toLowerCase()})
-  `;
+Vol: ${formatNumber(data.volume)} | MCap: ${formatNumber(data.marketCap)}`;
 }
 
 // Generate sentiment visual
 async function generateSentimentVisual() {
   const sentiment = await fetchSentiment();
   const fgValue = parseInt(sentiment?.fearGreed || "50");
-  
-  let emoji = "😐";
-  let status = "NEUTRAL";
-  let color = "🟡";
-  
-  if (fgValue <= 20) { emoji = "😱"; status = "EXTREME FEAR"; color = "🔴"; }
-  else if (fgValue <= 40) { emoji = "😰"; status = "FEAR"; color = "🟠"; }
-  else if (fgValue >= 80) { emoji = "🤑"; status = "EXTREME GREED"; color = "🟣"; }
-  else if (fgValue >= 60) { emoji = "😊"; status = "GREED"; color = "🟢"; }
-  
   const bar = generateSentimentBar(fgValue);
+  let status = "NEUTRAL 😐";
+  if (fgValue <= 20) status = "EXTREME FEAR 😱";
+  else if (fgValue <= 40) status = "FEAR 😰";
+  else if (fgValue >= 80) status = "EXTREME GREED 🤑";
+  else if (fgValue >= 60) status = "GREED 😊";
   
-  return `
-${emoji} *MARKET SENTIMENT*
-
-${color} *${status}*
-
-Fear ${bar} Greed
-       ${fgValue}/100
-
-*What This Means:*
-${fgValue <= 25 ? "🔥 Markets are fearful - potential buying opportunities!" : 
-  fgValue <= 45 ? "😰 Caution in the market - watch for reversals" :
-  fgValue >= 75 ? "⚠️ Extreme greed - be cautious of corrections" :
-  fgValue >= 55 ? "📈 Positive sentiment - momentum is building" :
-  "➡️ Market is balanced - no strong direction"}
-
-🎭 [Full Sentiment Analysis](${WEBSITE_PAGES.sentiment})
-_For informational purposes. Not financial advice._
-  `;
+  return `🎭 *SENTIMENT*\n${bar} ${fgValue}/100\n*${status}*\n🎭 ${WEBSITE_PAGES.sentiment}`;
 }
 
 // ============ COMMAND HANDLERS ============
@@ -682,10 +691,35 @@ I am the Cosmic Oracle - your intelligent crypto companion from ${WEBSITE_URL}!
         await sendMessage(chatId, trendMsg);
         break;
 
+      case "/news":
+        const newsUpdate = await generateNewsUpdate();
+        if (newsUpdate) {
+          await sendMessage(chatId, newsUpdate);
+        } else {
+          await sendMessage(chatId, "📰 No news available right now");
+        }
+        break;
+
+      case "/whales":
+        await sendMessage(chatId, "🐋 Scanning for whale activity...");
+        const ethPrice = (await fetchPrice("ethereum"))?.price || 3000;
+        const whaleTxs = await fetchWhaleTransactions();
+        if (whaleTxs.length > 0) {
+          let whaleMsg = "🐋 *RECENT WHALE MOVES*\n";
+          whaleTxs.slice(0, 3).forEach((tx: any) => {
+            const usd = (tx.value || 0) * ethPrice;
+            whaleMsg += `\n${(tx.value || 0).toFixed(1)} ETH (${formatNumber(usd)})`;
+          });
+          await sendMessage(chatId, whaleMsg);
+        } else {
+          await sendMessage(chatId, "🐋 No major whale moves detected");
+        }
+        break;
+
       case "/pulse":
       case "/digest":
       case "/market":
-        await sendPhoto(chatId, MASCOT_IMAGE, await generateMarketPulse());
+        await sendMessage(chatId, await generateMarketPulse());
         break;
 
       case "/chart":
@@ -978,23 +1012,71 @@ async function sendAutoUpdates() {
     .eq("is_active", true)
     .eq("auto_digest", true);
 
-  if (!groups?.length) return { sent: 0 };
+  if (!groups?.length) return { sent: 0, whales: 0, trending: 0 };
 
-  const pulse = await generateMarketPulse();
   let sent = 0;
+  const currentMinute = new Date().getMinutes();
+  const isHourlyUpdate = currentMinute < 10; // First 10 mins of hour = trending update
+  
+  // Get ETH price for whale calculations
+  const ethPrice = (await fetchPrice("ethereum"))?.price || 3000;
 
   for (const group of groups) {
     try {
-      // Send with mascot image
-      await sendPhoto(group.chat_id, MASCOT_IMAGE, pulse);
+      // Every 10 min: short pulse
+      const pulse = await generateMarketPulse();
+      await sendMessage(group.chat_id, pulse);
       sent++;
-      await new Promise(r => setTimeout(r, 200));
+
+      // Hourly: trending tokens
+      if (isHourlyUpdate) {
+        const trending = await generateTrendingUpdate();
+        await sendMessage(group.chat_id, trending);
+        await new Promise(r => setTimeout(r, 100));
+      }
+
+      await new Promise(r => setTimeout(r, 150));
     } catch (e) {
       console.error(`Failed to send to ${group.chat_id}:`, e);
     }
   }
 
-  return { sent };
+  return { sent, hourly: isHourlyUpdate };
+}
+
+// Check for whale transactions and alert groups
+async function checkWhaleActivity() {
+  console.log("Checking whale activity...");
+  
+  const { data: groups } = await supabase
+    .from("telegram_groups")
+    .select("*")
+    .eq("is_active", true);
+
+  if (!groups?.length) return { whales: 0 };
+
+  const ethPrice = (await fetchPrice("ethereum"))?.price || 3000;
+  const whaleTxs = await fetchWhaleTransactions();
+  
+  // Only alert on very large transactions (>500 ETH = ~$1.5M+)
+  const bigWhales = whaleTxs.filter((tx: any) => tx.value && tx.value > 500);
+  
+  if (bigWhales.length === 0) return { whales: 0 };
+
+  let alertsSent = 0;
+  for (const group of groups) {
+    try {
+      const whale = bigWhales[0];
+      const msg = formatWhaleAlert(whale, ethPrice);
+      await sendMessage(group.chat_id, msg);
+      alertsSent++;
+      await new Promise(r => setTimeout(r, 100));
+    } catch (e) {
+      console.error(`Whale alert failed:`, e);
+    }
+  }
+
+  return { whales: alertsSent };
 }
 
 async function checkAlerts() {
@@ -1091,7 +1173,8 @@ serve(async (req) => {
     if (url.pathname.endsWith("/cron")) {
       const updates = await sendAutoUpdates();
       const alerts = await checkAlerts();
-      return new Response(JSON.stringify({ updates, alerts }), {
+      const whales = await checkWhaleActivity();
+      return new Response(JSON.stringify({ updates, alerts, whales }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
