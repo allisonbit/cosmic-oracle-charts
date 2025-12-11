@@ -1943,6 +1943,109 @@ const UPDATE_TYPES = [
   "whale",
 ];
 
+// Generate a comprehensive random update with multiple data points and chart
+async function generateComprehensiveUpdate(): Promise<{ content: string; chartUrl?: string }> {
+  // Randomly select 2-3 data types to include
+  const numSections = 2 + Math.floor(Math.random() * 2);
+  const shuffled = [...UPDATE_TYPES].sort(() => Math.random() - 0.5);
+  const selectedTypes = shuffled.slice(0, numSections);
+  
+  console.log(`Generating update with: ${selectedTypes.join(", ")}`);
+  
+  // Fetch all data in parallel
+  const [btcData, ethData, solData, sentiment, globalMarket, trending, topCoins, whaleTxs] = await Promise.all([
+    fetchPrice("bitcoin"),
+    fetchPrice("ethereum"),
+    fetchPrice("solana"),
+    fetchSentiment(),
+    fetchGlobalMarket(),
+    fetchTrending(),
+    fetchTopCoins(20),
+    fetchWhaleTransactions()
+  ]);
+  
+  // Generate chart for random coin
+  const chartCoins = ["bitcoin", "ethereum", "solana"];
+  const randomCoin = chartCoins[Math.floor(Math.random() * chartCoins.length)];
+  const chartResult = await generateTokenChart(randomCoin);
+  
+  const sections: string[] = [];
+  
+  // Prices section
+  const btcEmoji = btcData?.change24h >= 0 ? "🟢" : "🔴";
+  const ethEmoji = ethData?.change24h >= 0 ? "🟢" : "🔴";
+  const solEmoji = solData?.change24h >= 0 ? "🟢" : "🔴";
+  sections.push(`💎 BTC $${btcData?.price?.toLocaleString()} ${btcEmoji}${btcData?.change24h?.toFixed(1)}%
+⟠ ETH $${ethData?.price?.toLocaleString()} ${ethEmoji}${ethData?.change24h?.toFixed(1)}%
+◎ SOL $${solData?.price?.toLocaleString()} ${solEmoji}${solData?.change24h?.toFixed(1)}%`);
+  
+  for (const type of selectedTypes) {
+    switch (type) {
+      case "sentiment": {
+        const fgValue = parseInt(sentiment?.fearGreed || "50");
+        const bar = generateSentimentBar(fgValue);
+        let mood = "Neutral";
+        if (fgValue <= 25) mood = "Extreme Fear 😱";
+        else if (fgValue <= 45) mood = "Fear 😰";
+        else if (fgValue >= 75) mood = "Extreme Greed 🤑";
+        else if (fgValue >= 55) mood = "Greed 😊";
+        sections.push(`\n🎭 *Sentiment*: ${mood}\n${bar} ${fgValue}/100`);
+        break;
+      }
+      case "trending": {
+        const trendList = trending.slice(0, 3).map((t: any) => t.item?.symbol?.toUpperCase() || "???").join(" | ");
+        if (trendList) sections.push(`\n🔥 *Trending*: ${trendList}`);
+        break;
+      }
+      case "movers": {
+        if (topCoins.length > 0) {
+          const sorted = [...topCoins].sort((a: any, b: any) => (b.price_change_percentage_24h || 0) - (a.price_change_percentage_24h || 0));
+          const gainer = sorted[0];
+          const loser = sorted[sorted.length - 1];
+          sections.push(`\n📊 *Movers*\n🚀 ${gainer?.symbol?.toUpperCase()} +${gainer?.price_change_percentage_24h?.toFixed(1)}%\n📉 ${loser?.symbol?.toUpperCase()} ${loser?.price_change_percentage_24h?.toFixed(1)}%`);
+        }
+        break;
+      }
+      case "chain": {
+        const chains = ["ethereum", "base", "arbitrum", "solana"];
+        const chain = chains[Math.floor(Math.random() * chains.length)];
+        const [metrics, tvl] = await Promise.all([fetchChainMetrics(chain), fetchDefiTVL(chain)]);
+        if (metrics || tvl) {
+          const emoji: Record<string, string> = { ethereum: "⟠", base: "🔵", arbitrum: "🔶", solana: "◎" };
+          sections.push(`\n${emoji[chain] || "⛓️"} *${chain.charAt(0).toUpperCase() + chain.slice(1)}*${metrics ? ` Gas: ${metrics.gasPrice}` : ""}${tvl ? ` TVL: ${formatNumber(tvl.tvl)}` : ""}`);
+        }
+        break;
+      }
+      case "whale": {
+        if (whaleTxs.length > 0) {
+          const whale = whaleTxs[0];
+          sections.push(`\n🐋 *Whale*: ${whale.value?.toFixed(1)} ETH (${formatNumber(whale.value * (ethData?.price || 3000))})`);
+        }
+        break;
+      }
+      case "tip": {
+        const tips = ["DCA reduces volatility impact", "Gas cheapest on weekends", "Always verify contracts", "L2s = cheaper tx", "Check TVL before depositing"];
+        sections.push(`\n💡 *Tip*: ${tips[Math.floor(Math.random() * tips.length)]}`);
+        break;
+      }
+    }
+  }
+  
+  sections.push(`\n📈 MCap: ${formatNumber(globalMarket?.totalMarketCap || 0)} | BTC: ${globalMarket?.btcDominance?.toFixed(1)}%`);
+  
+  const pages = [
+    { name: "Dashboard", url: WEBSITE_PAGES.dashboard },
+    { name: "Sentiment", url: WEBSITE_PAGES.sentiment },
+    { name: "Explorer", url: WEBSITE_PAGES.explorer },
+    { name: "Chains", url: CHAIN_PAGES.ethereum },
+    { name: "Learn", url: WEBSITE_PAGES.learn },
+  ];
+  const randomPages = pages.sort(() => Math.random() - 0.5).slice(0, 2);
+  sections.push(`\n[${randomPages[0].name}](${randomPages[0].url}) | [${randomPages[1].name}](${randomPages[1].url})`);
+  
+  return { content: `🔮 *ORACLE UPDATE*\n\n${sections.join("")}`, chartUrl: chartResult?.chartUrl };
+}
+
 async function sendAutoUpdates() {
   console.log("Running auto updates...");
   
@@ -1955,71 +2058,25 @@ async function sendAutoUpdates() {
   if (!groups?.length) return { sent: 0, type: "none" };
 
   let sent = 0;
-  const currentHour = new Date().getHours();
-  const currentMinute = new Date().getMinutes();
+  const update = await generateComprehensiveUpdate();
   
-  // Rotate update type based on time (changes every 10 min cycle)
-  const cycleIndex = Math.floor((currentHour * 6 + Math.floor(currentMinute / 10)) % UPDATE_TYPES.length);
-  const updateType = UPDATE_TYPES[cycleIndex];
-  
-  console.log(`Update type for this cycle: ${updateType}`);
-
-  // Generate the appropriate update
-  let updateContent: string | null = null;
-  let usePhoto = false;
-  
-  switch (updateType) {
-    case "pulse":
-      updateContent = await generateMarketPulse();
-      break;
-    case "sentiment":
-      updateContent = await generateSocialSentimentUpdate();
-      break;
-    case "chain":
-      updateContent = await generateRandomChainUpdate();
-      break;
-    case "trending":
-      updateContent = await generateTrendingUpdate();
-      break;
-    case "tip":
-      updateContent = generateCryptoTip();
-      break;
-    case "movers":
-      updateContent = await generateTopMoversUpdate();
-      break;
-    case "whale":
-      const ethPrice = (await fetchPrice("ethereum"))?.price || 3000;
-      const whaleTxs = await fetchWhaleTransactions();
-      if (whaleTxs.length > 0) {
-        updateContent = formatWhaleAlert(whaleTxs[0], ethPrice);
-      } else {
-        // Fallback to pulse if no whale activity
-        updateContent = await generateMarketPulse();
-      }
-      break;
-    default:
-      updateContent = await generateMarketPulse();
-  }
-
-  if (!updateContent) {
-    updateContent = await generateMarketPulse();
-  }
+  console.log(`Sending update to ${groups.length} groups`);
 
   for (const group of groups) {
     try {
-      if (usePhoto) {
-        await sendPhoto(group.chat_id, MASCOT_IMAGE, updateContent);
+      if (update.chartUrl) {
+        await sendPhoto(group.chat_id, update.chartUrl, update.content);
       } else {
-        await sendMessage(group.chat_id, updateContent);
+        await sendMessage(group.chat_id, update.content);
       }
       sent++;
-      await new Promise(r => setTimeout(r, 150));
+      await new Promise(r => setTimeout(r, 200));
     } catch (e) {
       console.error(`Failed to send to ${group.chat_id}:`, e);
     }
   }
 
-  return { sent, type: updateType };
+  return { sent, type: "comprehensive" };
 }
 
 // Check for whale transactions and alert groups (runs separately for big whales)
