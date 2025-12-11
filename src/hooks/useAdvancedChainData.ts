@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { ChainHealthData } from "@/components/chain/ChainHealthMetrics";
 import { FinancialMetricsData } from "@/components/chain/DeepFinancialMetrics";
 import { PredictionModelsData } from "@/components/chain/AdvancedPredictionModels";
@@ -15,23 +16,46 @@ export interface AdvancedChainDataResponse {
   institutionalData: InstitutionalData;
 }
 
-const generateAdvancedData = (chainId: string): AdvancedChainDataResponse => {
+// Fetch real health data from Alchemy via edge function
+const fetchRealHealthData = async (chainId: string): Promise<ChainHealthData | null> => {
+  try {
+    const { data, error } = await supabase.functions.invoke("chain-health", {
+      body: { chainId },
+    });
+    if (error) {
+      console.error("Error fetching chain health:", error);
+      return null;
+    }
+    return data;
+  } catch (e) {
+    console.error("Chain health fetch failed:", e);
+    return null;
+  }
+};
+
+const generateAdvancedData = async (chainId: string): Promise<AdvancedChainDataResponse> => {
   const ethPrice = 3500 + Math.random() * 500;
   
+  // Fetch real health data from Alchemy
+  const realHealthData = await fetchRealHealthData(chainId);
+  
+  // Use real data if available, otherwise fallback to generated
+  const healthData: ChainHealthData = realHealthData || {
+    finalityRate: 99.2 + Math.random() * 0.7,
+    blockProduction: 7100 + Math.random() * 100,
+    avgBlockTime: chainId === "ethereum" ? 12.1 : chainId === "solana" ? 0.4 : 2.0,
+    validatorHealth: 97 + Math.random() * 2.5,
+    activeValidators: chainId === "ethereum" ? 950000 + Math.floor(Math.random() * 50000) : 1500 + Math.floor(Math.random() * 500),
+    totalStaked: 32000000 + Math.random() * 2000000,
+    mevMetrics: { flashbotsBlocks: 85 + Math.random() * 10, sandwichAttacks: 15000 + Math.floor(Math.random() * 5000), mevRevenue24h: 2000000 + Math.random() * 1000000 },
+    layer2Analytics: { arbitrumBridged: 15e9 + Math.random() * 2e9, optimismBridged: 8e9 + Math.random() * 1e9, baseBridged: 5e9 + Math.random() * 500e6 },
+    eip1559: { burnRate: 2500 + Math.random() * 500, supplyChange: -0.2 + Math.random() * 0.4, baseFee: 15 + Math.random() * 30 },
+    stakingMetrics: { stakingAPR: 3.5 + Math.random() * 0.5, lidoYield: 3.8 + Math.random() * 0.3, rocketPoolYield: 4.0 + Math.random() * 0.4, cbETHYield: 3.2 + Math.random() * 0.3 },
+    contractActivity: { verified: 450 + Math.floor(Math.random() * 100), unverified: 1200 + Math.floor(Math.random() * 300), total: 1650 + Math.floor(Math.random() * 400) }
+  };
+
   return {
-    healthData: {
-      finalityRate: 99.2 + Math.random() * 0.7,
-      blockProduction: 7100 + Math.random() * 100,
-      avgBlockTime: chainId === "ethereum" ? 12.1 : chainId === "solana" ? 0.4 : 2.0,
-      validatorHealth: 97 + Math.random() * 2.5,
-      activeValidators: chainId === "ethereum" ? 950000 + Math.floor(Math.random() * 50000) : 1500 + Math.floor(Math.random() * 500),
-      totalStaked: 32000000 + Math.random() * 2000000,
-      mevMetrics: { flashbotsBlocks: 85 + Math.random() * 10, sandwichAttacks: 15000 + Math.floor(Math.random() * 5000), mevRevenue24h: 2000000 + Math.random() * 1000000 },
-      layer2Analytics: { arbitrumBridged: 15e9 + Math.random() * 2e9, optimismBridged: 8e9 + Math.random() * 1e9, baseBridged: 5e9 + Math.random() * 500e6 },
-      eip1559: { burnRate: 2500 + Math.random() * 500, supplyChange: -0.2 + Math.random() * 0.4, baseFee: 15 + Math.random() * 30 },
-      stakingMetrics: { stakingAPR: 3.5 + Math.random() * 0.5, lidoYield: 3.8 + Math.random() * 0.3, rocketPoolYield: 4.0 + Math.random() * 0.4, cbETHYield: 3.2 + Math.random() * 0.3 },
-      contractActivity: { verified: 450 + Math.floor(Math.random() * 100), unverified: 1200 + Math.floor(Math.random() * 300), total: 1650 + Math.floor(Math.random() * 400) }
-    },
+    healthData,
     financialData: {
       realizedPrice: ethPrice * 0.7,
       currentPrice: ethPrice,
