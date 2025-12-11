@@ -8,7 +8,18 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
 const ALCHEMY_API_KEY = Deno.env.get("ALCHEMY_API_KEY_1");
 
-const WEBSITE_URL = "https://oracle-crypto.lovable.app";
+const WEBSITE_URL = "https://oraclebull.com";
+const MASCOT_IMAGE = "https://oraclebull.com/oracle-bot-mascot.jpg";
+
+// Website page URLs for sharing
+const WEBSITE_PAGES = {
+  home: WEBSITE_URL,
+  dashboard: `${WEBSITE_URL}/dashboard`,
+  sentiment: `${WEBSITE_URL}/sentiment`,
+  chains: `${WEBSITE_URL}/chain/ethereum`,
+  explorer: `${WEBSITE_URL}/explorer`,
+  learn: `${WEBSITE_URL}/learn`,
+};
 
 const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
 
@@ -37,6 +48,24 @@ async function sendMessage(chatId: number, text: string, parseMode = "Markdown",
     return await response.json();
   } catch (error) {
     console.error("Error sending message:", error);
+  }
+}
+
+async function sendPhoto(chatId: number, photoUrl: string, caption: string, parseMode = "Markdown") {
+  try {
+    const response = await fetch(`${TELEGRAM_API}/sendPhoto`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        photo: photoUrl,
+        caption,
+        parse_mode: parseMode,
+      }),
+    });
+    return await response.json();
+  } catch (error) {
+    console.error("Error sending photo:", error);
   }
 }
 
@@ -378,6 +407,14 @@ async function createAlert(userId: number, chatId: number, alertType: string, ta
 
 // ============ MARKET PULSE ============
 
+// Generate visual sentiment bar
+function generateSentimentBar(value: number): string {
+  const filled = Math.round(value / 10);
+  const empty = 10 - filled;
+  const bar = "█".repeat(filled) + "░".repeat(empty);
+  return bar;
+}
+
 async function generateMarketPulse() {
   const btcData = await fetchPrice("bitcoin");
   const ethData = await fetchPrice("ethereum");
@@ -389,6 +426,7 @@ async function generateMarketPulse() {
 
   const fgValue = parseInt(sentiment?.fearGreed || "50");
   let sentimentEmoji = fgValue <= 25 ? "😱" : fgValue <= 45 ? "😰" : fgValue >= 75 ? "🤑" : fgValue >= 55 ? "😊" : "😐";
+  const sentimentBar = generateSentimentBar(fgValue);
 
   const btcChange = btcData?.change24h || 0;
   const marketTrend = btcChange >= 2 ? "🚀 BULLISH" : btcChange <= -2 ? "📉 BEARISH" : "➡️ SIDEWAYS";
@@ -420,9 +458,81 @@ ${trendingList}
 
 ━━━━━━━━━━━━━━━━━━━━
 
-${sentimentEmoji} Sentiment: ${sentiment?.fearGreed}/100 | ⛽ Gas: ${gasData?.average} Gwei
+${sentimentEmoji} *SENTIMENT*
+${sentimentBar} ${sentiment?.fearGreed}/100
+
+⛽ Gas: ${gasData?.average} Gwei
+
+━━━━━━━━━━━━━━━━━━━━
+
+📱 *EXPLORE MORE:*
+📊 [Dashboard](${WEBSITE_PAGES.dashboard})
+🎭 [Sentiment](${WEBSITE_PAGES.sentiment})
+⛓️ [Chains](${WEBSITE_PAGES.chains})
+🔍 [Explorer](${WEBSITE_PAGES.explorer})
 
 🌐 ${WEBSITE_URL}
+_For informational purposes. Not financial advice._
+  `;
+}
+
+// Generate chart preview for tokens
+async function generateTokenChart(symbol: string) {
+  const data = await fetchPrice(symbol);
+  if (!data) return null;
+  
+  const change = data.change24h || 0;
+  const trend = change >= 0 ? "📈" : "📉";
+  const bars = Math.abs(Math.round(change / 2));
+  const barChar = change >= 0 ? "🟢" : "🔴";
+  const chartBar = barChar.repeat(Math.min(bars, 10));
+  
+  return `
+${trend} *${data.symbol} CHART*
+
+💰 Price: $${data.price?.toLocaleString(undefined, { maximumFractionDigits: 6 })}
+📊 24h: ${change >= 0 ? "+" : ""}${change.toFixed(2)}%
+📉 Volume: ${formatNumber(data.volume)}
+💎 MCap: ${formatNumber(data.marketCap)}
+
+${chartBar || "⚪"} ${change >= 0 ? "+" : ""}${change.toFixed(1)}%
+
+🔍 [View on Oracle](${WEBSITE_PAGES.explorer}?search=${symbol.toLowerCase()})
+  `;
+}
+
+// Generate sentiment visual
+async function generateSentimentVisual() {
+  const sentiment = await fetchSentiment();
+  const fgValue = parseInt(sentiment?.fearGreed || "50");
+  
+  let emoji = "😐";
+  let status = "NEUTRAL";
+  let color = "🟡";
+  
+  if (fgValue <= 20) { emoji = "😱"; status = "EXTREME FEAR"; color = "🔴"; }
+  else if (fgValue <= 40) { emoji = "😰"; status = "FEAR"; color = "🟠"; }
+  else if (fgValue >= 80) { emoji = "🤑"; status = "EXTREME GREED"; color = "🟣"; }
+  else if (fgValue >= 60) { emoji = "😊"; status = "GREED"; color = "🟢"; }
+  
+  const bar = generateSentimentBar(fgValue);
+  
+  return `
+${emoji} *MARKET SENTIMENT*
+
+${color} *${status}*
+
+Fear ${bar} Greed
+       ${fgValue}/100
+
+*What This Means:*
+${fgValue <= 25 ? "🔥 Markets are fearful - potential buying opportunities!" : 
+  fgValue <= 45 ? "😰 Caution in the market - watch for reversals" :
+  fgValue >= 75 ? "⚠️ Extreme greed - be cautious of corrections" :
+  fgValue >= 55 ? "📈 Positive sentiment - momentum is building" :
+  "➡️ Market is balanced - no strong direction"}
+
+🎭 [Full Sentiment Analysis](${WEBSITE_PAGES.sentiment})
 _For informational purposes. Not financial advice._
   `;
 }
@@ -460,13 +570,14 @@ async function handleCommand(message: any) {
   if (text.startsWith("/")) {
     switch (commandLower) {
       case "/start":
-        await sendMessage(chatId, `
+        await sendPhoto(chatId, MASCOT_IMAGE, `
 🔮 *Welcome to Oracle Bot!*
 
-I am the Cosmic Oracle - your intelligent crypto companion. I learn from our conversations and provide real-time insights!
+I am the Cosmic Oracle - your intelligent crypto companion from ${WEBSITE_URL}!
 
 *📊 Market Data*
 /price <TOKEN> - Live prices
+/chart <TOKEN> - Token chart visual
 /gas <CHAIN> - Gas fees
 /trending - Hot tokens
 /pulse - Full market update
@@ -477,7 +588,6 @@ I am the Cosmic Oracle - your intelligent crypto companion. I learn from our con
 
 *🗳️ Community*
 /poll <question> - Create a poll
-/vote - Current polls
 /vibe - Group sentiment
 /insights - What we talk about
 
@@ -488,13 +598,11 @@ I am the Cosmic Oracle - your intelligent crypto companion. I learn from our con
 /compare <A> vs <B> - Compare tokens
 
 *📌 More*
+/sentimentvisual - Sentiment with visual
 /pin <message> - Pin insight
-/digest - Summary
-/help - All commands
+/website - Explore Oracle website
 
 💬 Or just chat with me naturally!
-
-🌐 ${WEBSITE_URL}
         `);
         break;
 
@@ -502,26 +610,33 @@ I am the Cosmic Oracle - your intelligent crypto companion. I learn from our con
         await sendMessage(chatId, `
 🔮 *Oracle Bot Commands*
 
-*Prices:* /price btc, /price eth sol ada
-*Gas:* /gas eth, /gas base
-*Trending:* /trending
-*Market:* /pulse, /digest
+*Prices & Charts:*
+/price btc eth sol
+/chart btc - Visual chart
+/gas eth, /gas base
+
+*Market:*
+/trending - Hot tokens
+/pulse, /digest - Full update
+/sentimentvisual - Fear & Greed visual
 
 *Alerts:* 
 /alert price BTC above 100000
-/alert price ETH below 3000
-/alert sentiment fear (when F&G < 25)
-/alert sentiment greed (when F&G > 75)
-/alert whale BTC 1000000 (whale moves)
-/alert trending SOL (if SOL trends)
+/alert sentiment fear/greed
+/alert whale BTC 1000000
+/alert volume ETH spike
+/alert trending SOL
 
 *Community:*
-/poll Will BTC hit 100k this month?
+/poll Question here?
 /vibe - Group mood
 /insights - Hot topics
 
 *AI:*
 /analyze, /ask, /learn, /compare
+
+*Website:*
+/website - Explore Oracle website
 
 💬 I also respond to natural questions!
         `);
@@ -570,15 +685,53 @@ I am the Cosmic Oracle - your intelligent crypto companion. I learn from our con
       case "/pulse":
       case "/digest":
       case "/market":
-        const pulse = await generateMarketPulse();
-        await sendMessage(chatId, pulse);
+        await sendPhoto(chatId, MASCOT_IMAGE, await generateMarketPulse());
+        break;
+
+      case "/chart":
+        if (args.length === 0) {
+          await sendMessage(chatId, "📊 Which token? Try: `/chart btc`");
+          break;
+        }
+        const chartData = await generateTokenChart(args[0]);
+        if (chartData) {
+          await sendPhoto(chatId, MASCOT_IMAGE, chartData);
+        } else {
+          await sendMessage(chatId, "❌ Token not found");
+        }
+        break;
+
+      case "/sentimentvisual":
+      case "/fng":
+      case "/feargreed":
+        const sentimentVisual = await generateSentimentVisual();
+        await sendPhoto(chatId, MASCOT_IMAGE, sentimentVisual);
         break;
 
       case "/sentiment":
         const sent = await fetchSentiment();
         const fgVal = parseInt(sent?.fearGreed || "50");
         const emoji = fgVal <= 25 ? "😱 EXTREME FEAR" : fgVal <= 45 ? "😰 FEAR" : fgVal >= 75 ? "🤑 EXTREME GREED" : fgVal >= 55 ? "😊 GREED" : "😐 NEUTRAL";
-        await sendMessage(chatId, `🎭 *Market Sentiment*\n\n${emoji}\n📊 Fear & Greed: *${sent?.fearGreed}/100*`);
+        const sentBar = generateSentimentBar(fgVal);
+        await sendMessage(chatId, `🎭 *Market Sentiment*\n\n${emoji}\n\n${sentBar} *${sent?.fearGreed}/100*\n\n🎭 [Full Analysis](${WEBSITE_PAGES.sentiment})`);
+        break;
+
+      case "/website":
+      case "/oracle":
+      case "/links":
+        await sendPhoto(chatId, MASCOT_IMAGE, `
+🔮 *Explore Oracle*
+
+📊 [Dashboard](${WEBSITE_PAGES.dashboard}) - Live market overview
+🎭 [Sentiment](${WEBSITE_PAGES.sentiment}) - Fear & Greed analysis
+⛓️ [Chains](${WEBSITE_PAGES.chains}) - Blockchain analytics
+🔍 [Explorer](${WEBSITE_PAGES.explorer}) - Token search
+📚 [Learn](${WEBSITE_PAGES.learn}) - Crypto education
+
+🌐 *Main Site:* ${WEBSITE_URL}
+
+_Your cosmic crypto companion!_
+        `);
         break;
 
       case "/alert":
@@ -832,11 +985,12 @@ async function sendAutoUpdates() {
 
   for (const group of groups) {
     try {
-      await sendMessage(group.chat_id, pulse);
+      // Send with mascot image
+      await sendPhoto(group.chat_id, MASCOT_IMAGE, pulse);
       sent++;
-      await new Promise(r => setTimeout(r, 100));
+      await new Promise(r => setTimeout(r, 200));
     } catch (e) {
-      console.error(`Failed to send to ${group.chat_id}`);
+      console.error(`Failed to send to ${group.chat_id}:`, e);
     }
   }
 
