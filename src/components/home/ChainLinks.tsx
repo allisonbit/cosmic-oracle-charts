@@ -2,12 +2,12 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Sparkles } from "lucide-react";
 
 const chains = [
-  { id: "ethereum", name: "Ethereum", symbol: "ETH", color: "from-blue-500 to-purple-500" },
-  { id: "solana", name: "Solana", symbol: "SOL", color: "from-purple-500 to-pink-500" },
-  { id: "bnb", name: "BNB Chain", symbol: "BNB", color: "from-yellow-500 to-orange-500" },
-  { id: "arbitrum", name: "Arbitrum", symbol: "ARB", color: "from-blue-400 to-cyan-400" },
-  { id: "base", name: "Base", symbol: "BASE", color: "from-blue-600 to-blue-400" },
-  { id: "polygon", name: "Polygon", symbol: "MATIC", color: "from-purple-600 to-purple-400" },
+  { id: "ethereum", name: "Ethereum", symbol: "ETH", color: "bg-[#627EEA]", textColor: "text-white" },
+  { id: "solana", name: "Solana", symbol: "SOL", color: "bg-gradient-to-br from-[#9945FF] to-[#14F195]", textColor: "text-white" },
+  { id: "bnb", name: "BNB Chain", symbol: "BNB", color: "bg-[#F0B90B]", textColor: "text-black" },
+  { id: "arbitrum", name: "Arbitrum", symbol: "ARB", color: "bg-[#28A0F0]", textColor: "text-white" },
+  { id: "base", name: "Base", symbol: "BASE", color: "bg-[#0052FF]", textColor: "text-white" },
+  { id: "polygon", name: "Polygon", symbol: "MATIC", color: "bg-[#8247E5]", textColor: "text-white" },
 ];
 
 export function ChainLinks() {
@@ -36,9 +36,9 @@ export function ChainLinks() {
               style={{ animationDelay: `${index * 0.05}s` }}
             >
               <div
-                className={`w-12 h-12 md:w-16 md:h-16 rounded-full bg-gradient-to-br ${chain.color} mx-auto mb-3 flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all`}
+                className={`w-12 h-12 md:w-16 md:h-16 rounded-full ${chain.color} mx-auto mb-3 flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all`}
               >
-                <span className="font-display font-bold text-xs md:text-sm text-white">
+                <span className={`font-display font-bold text-xs md:text-sm ${chain.textColor}`}>
                   {chain.symbol}
                 </span>
               </div>
