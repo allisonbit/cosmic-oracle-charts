@@ -47,7 +47,17 @@ const ALCHEMY_NETWORKS: Record<string, string> = {
   base: "base-mainnet",
   optimism: "opt-mainnet",
   opt: "opt-mainnet",
+  solana: "solana-mainnet",
+  sol: "solana-mainnet",
 };
+
+// Check if address is Solana (base58, 32-44 chars, no 0x prefix)
+function isSolanaAddress(address: string): boolean {
+  if (address.startsWith("0x")) return false;
+  if (address.length < 32 || address.length > 44) return false;
+  const base58Regex = /^[1-9A-HJ-NP-Za-km-z]+$/;
+  return base58Regex.test(address);
+}
 
 const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
 
@@ -435,15 +445,119 @@ async function fetchWhaleTransactions() {
 
 // ============ WALLET SCANNER ============
 
-// Fetch wallet token balances using Alchemy
-async function fetchWalletBalances(address: string, chain = "ethereum") {
+// Fetch Solana wallet balances using Alchemy
+async function fetchSolanaWalletBalances(address: string) {
+  try {
+    const alchemyUrl = `https://solana-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`;
+
+    // Get SOL balance
+    const solBalanceResponse = await fetch(alchemyUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "getBalance",
+        params: [address],
+        id: 1,
+      }),
+    });
+    const solBalanceData = await solBalanceResponse.json();
+    const solBalance = (solBalanceData.result?.value || 0) / 1e9; // lamports to SOL
+
+    // Get SPL token accounts
+    const tokenAccountsResponse = await fetch(alchemyUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "getTokenAccountsByOwner",
+        params: [
+          address,
+          { programId: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" },
+          { encoding: "jsonParsed" }
+        ],
+        id: 2,
+      }),
+    });
+    const tokenAccountsData = await tokenAccountsResponse.json();
+    const tokenAccounts = tokenAccountsData.result?.value || [];
+
+    // Parse SPL tokens
+    const tokens = [];
+    for (const account of tokenAccounts.slice(0, 15)) {
+      try {
+        const info = account.account?.data?.parsed?.info;
+        if (info && info.tokenAmount) {
+          const balance = parseFloat(info.tokenAmount.uiAmountString || "0");
+          if (balance > 0.0001) {
+            tokens.push({
+              address: info.mint,
+              symbol: info.mint?.slice(0, 6) || "SPL",
+              name: "SPL Token",
+              balance,
+              decimals: info.tokenAmount.decimals || 9,
+              mint: info.mint,
+            });
+          }
+        }
+      } catch (e) {
+        console.error("SPL token parse error:", e);
+      }
+    }
+
+    // Try to get token metadata for known tokens
+    const enrichedTokens = await enrichSolanaTokens(tokens);
+
+    return {
+      address,
+      chain: "solana",
+      nativeSymbol: "SOL",
+      nativeBalance: solBalance,
+      tokens: enrichedTokens,
+      totalTokens: tokenAccounts.length,
+    };
+  } catch (error) {
+    console.error("Error fetching Solana wallet:", error);
+    return null;
+  }
+}
+
+// Enrich Solana tokens with metadata from known tokens
+async function enrichSolanaTokens(tokens: any[]) {
+  const knownTokens: Record<string, { symbol: string; name: string }> = {
+    "So11111111111111111111111111111111111111112": { symbol: "wSOL", name: "Wrapped SOL" },
+    "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v": { symbol: "USDC", name: "USD Coin" },
+    "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB": { symbol: "USDT", name: "Tether USD" },
+    "7dHbWXmci3dT8UFYWYZweBLXgycu7Y3iL6trKn1Y7ARj": { symbol: "stSOL", name: "Lido Staked SOL" },
+    "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So": { symbol: "mSOL", name: "Marinade Staked SOL" },
+    "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263": { symbol: "BONK", name: "Bonk" },
+    "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN": { symbol: "JUP", name: "Jupiter" },
+    "WENWENvqqNya429ubCdR81ZmD69brwQaaBYY6p3LCpk": { symbol: "WEN", name: "Wen" },
+    "7GCihgDB8fe6KNjn2MYtkzZcRjQy3t9GHdC8uHYmW2hr": { symbol: "POPCAT", name: "Popcat" },
+    "ukHH6c7mMyiWCf1b9pnWe25TSpkDDt3H5pQZgZ74J82": { symbol: "BOME", name: "Book of Meme" },
+    "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm": { symbol: "WIF", name: "dogwifhat" },
+    "rndrizKT3MK1iimdxRdWabcF7Zg7AR5T4nud4EkHBof": { symbol: "RENDER", name: "Render Token" },
+  };
+
+  return tokens.map(token => {
+    const known = knownTokens[token.mint];
+    return {
+      ...token,
+      symbol: known?.symbol || token.symbol,
+      name: known?.name || token.name,
+    };
+  });
+}
+
+// Fetch EVM wallet token balances using Alchemy
+async function fetchEvmWalletBalances(address: string, chain = "ethereum") {
   try {
     const chainLower = chain.toLowerCase();
     const network = ALCHEMY_NETWORKS[chainLower] || "eth-mainnet";
     const alchemyUrl = `https://${network}.g.alchemy.com/v2/${ALCHEMY_API_KEY}`;
 
-    // Get ETH balance
-    const ethBalanceResponse = await fetch(alchemyUrl, {
+    // Get native token balance (ETH, MATIC, etc.)
+    const nativeBalanceResponse = await fetch(alchemyUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -453,8 +567,8 @@ async function fetchWalletBalances(address: string, chain = "ethereum") {
         id: 1,
       }),
     });
-    const ethBalanceData = await ethBalanceResponse.json();
-    const ethBalance = parseInt(ethBalanceData.result || "0", 16) / 1e18;
+    const nativeBalanceData = await nativeBalanceResponse.json();
+    const nativeBalance = parseInt(nativeBalanceData.result || "0", 16) / 1e18;
 
     // Get token balances
     const tokenBalancesResponse = await fetch(alchemyUrl, {
@@ -509,17 +623,45 @@ async function fetchWalletBalances(address: string, chain = "ethereum") {
       }
     }
 
+    // Native symbol mapping
+    const nativeSymbols: Record<string, string> = {
+      ethereum: "ETH",
+      eth: "ETH",
+      polygon: "MATIC",
+      matic: "MATIC",
+      arbitrum: "ETH",
+      arb: "ETH",
+      base: "ETH",
+      optimism: "ETH",
+      opt: "ETH",
+    };
+
     return {
       address,
       chain: chainLower,
-      ethBalance,
+      nativeSymbol: nativeSymbols[chainLower] || "ETH",
+      nativeBalance,
       tokens: tokensWithMetadata,
       totalTokens: tokenBalances.length,
     };
   } catch (error) {
-    console.error("Error fetching wallet balances:", error);
+    console.error("Error fetching EVM wallet balances:", error);
     return null;
   }
+}
+
+// Main wallet balance fetcher - auto-detects chain
+async function fetchWalletBalances(address: string, chain = "auto") {
+  // Auto-detect if it's a Solana address
+  if (chain === "auto" || chain === "solana" || chain === "sol") {
+    if (isSolanaAddress(address)) {
+      return await fetchSolanaWalletBalances(address);
+    }
+  }
+  
+  // Default to EVM
+  const evmChain = chain === "auto" ? "ethereum" : chain;
+  return await fetchEvmWalletBalances(address, evmChain);
 }
 
 // Get token prices for wallet holdings
@@ -527,9 +669,13 @@ async function enrichWalletWithPrices(walletData: any) {
   if (!walletData) return null;
   
   try {
-    // Get ETH price
-    const ethData = await fetchPrice("ethereum");
-    const ethUsdValue = (walletData.ethBalance || 0) * (ethData?.price || 0);
+    // Get native token price (SOL or ETH/MATIC etc)
+    const isSolana = walletData.chain === "solana";
+    const nativeSymbol = walletData.nativeSymbol || (isSolana ? "SOL" : "ETH");
+    const nativeCoinId = isSolana ? "solana" : (nativeSymbol === "MATIC" ? "matic-network" : "ethereum");
+    
+    const nativeData = await fetchPrice(nativeCoinId);
+    const nativeUsdValue = (walletData.nativeBalance || 0) * (nativeData?.price || 0);
     
     // Try to get prices for tokens
     let totalTokenValue = 0;
@@ -562,11 +708,11 @@ async function enrichWalletWithPrices(walletData: any) {
     
     return {
       ...walletData,
-      ethPrice: ethData?.price || 0,
-      ethUsdValue,
+      nativePrice: nativeData?.price || 0,
+      nativeUsdValue,
       tokens: enrichedTokens,
       totalTokenValue,
-      totalPortfolioValue: ethUsdValue + totalTokenValue,
+      totalPortfolioValue: nativeUsdValue + totalTokenValue,
     };
   } catch (error) {
     console.error("Error enriching wallet:", error);
@@ -579,15 +725,19 @@ async function analyzeWallet(walletData: any) {
   if (!walletData || !OPENAI_API_KEY) return null;
   
   try {
+    const isSolana = walletData.chain === "solana";
+    const nativeSymbol = walletData.nativeSymbol || (isSolana ? "SOL" : "ETH");
+    
     const topHoldings = walletData.tokens.slice(0, 5).map((t: any) => 
-      `${t.symbol}: ${t.balance.toFixed(4)} (${formatNumber(t.usdValue)})`
+      `${t.symbol}: ${t.balance.toFixed(4)} (${formatNumber(t.usdValue || 0)})`
     ).join(", ");
     
-    const prompt = `Analyze this crypto wallet briefly (under 100 words):
-- ETH Balance: ${walletData.ethBalance.toFixed(4)} ETH (${formatNumber(walletData.ethUsdValue)})
+    const prompt = `Analyze this ${isSolana ? "Solana" : "EVM"} crypto wallet briefly (under 100 words):
+- Chain: ${walletData.chain?.toUpperCase() || "Unknown"}
+- ${nativeSymbol} Balance: ${(walletData.nativeBalance || 0).toFixed(4)} ${nativeSymbol} (${formatNumber(walletData.nativeUsdValue || 0)})
 - Top Holdings: ${topHoldings || "None"}
-- Total Portfolio: ${formatNumber(walletData.totalPortfolioValue)}
-- Total Tokens: ${walletData.totalTokens}
+- Total Portfolio: ${formatNumber(walletData.totalPortfolioValue || 0)}
+- Total Tokens: ${walletData.totalTokens || 0}
 
 Provide: 1) Wallet type (whale/retail/degen/inactive), 2) Risk level, 3) One insight about holdings. Be concise.`;
 
@@ -1142,7 +1292,8 @@ I am the Cosmic Oracle - your intelligent crypto companion from ${WEBSITE_URL}!
 /global - Global market
 
 *Wallet Scanner:*
-/wallet 0x... - Scan any wallet
+/wallet 0x... - Scan EVM wallet
+/wallet ABC... - Scan Solana wallet (auto-detect)
 /wallet 0x... base - Specify chain
 
 *Research:*
@@ -1236,29 +1387,34 @@ I am the Cosmic Oracle - your intelligent crypto companion from ${WEBSITE_URL}!
         if (args.length === 0) {
           await sendMessage(chatId, `🔍 *Wallet Scanner*
 
-Scan any EVM wallet for holdings & AI insights!
+Scan any EVM or Solana wallet for holdings & AI insights!
 
 Usage:
-\`/wallet 0x1234...abcd\`
+\`/wallet 0x1234...abcd\` (EVM)
+\`/wallet ABC...xyz\` (Solana - auto-detected)
 \`/wallet 0x... base\` (specify chain)
 
-Supported chains: ethereum, base, arbitrum, polygon, optimism`);
+Supported: ethereum, base, arbitrum, polygon, optimism, solana`);
           break;
         }
         
         const walletAddress = args[0];
-        const walletChain = args[1]?.toLowerCase() || "ethereum";
+        const walletChain = args[1]?.toLowerCase() || "auto";
         
-        // Validate address format
-        if (!/^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
-          await sendMessage(chatId, "❌ Invalid address format. Use: `0x` followed by 40 hex characters");
+        // Validate address format - support both EVM and Solana
+        const isEvmAddress = /^0x[a-fA-F0-9]{40}$/.test(walletAddress);
+        const isSolAddress = isSolanaAddress(walletAddress);
+        
+        if (!isEvmAddress && !isSolAddress) {
+          await sendMessage(chatId, "❌ Invalid address format.\n\nEVM: `0x` + 40 hex chars\nSolana: 32-44 base58 chars");
           break;
         }
         
-        await sendMessage(chatId, `🔍 Scanning wallet on ${walletChain}...`);
+        const detectedChain = isSolAddress ? "solana" : (walletChain === "auto" ? "ethereum" : walletChain);
+        await sendMessage(chatId, `🔍 Scanning ${isSolAddress ? "Solana" : detectedChain.toUpperCase()} wallet...`);
         
         try {
-          const walletData = await fetchWalletBalances(walletAddress, walletChain);
+          const walletData = await fetchWalletBalances(walletAddress, detectedChain);
           
           if (!walletData) {
             await sendMessage(chatId, "❌ Could not scan wallet. Try again.");
@@ -1267,31 +1423,44 @@ Supported chains: ethereum, base, arbitrum, polygon, optimism`);
           
           // Enrich with prices
           const enrichedWallet = await enrichWalletWithPrices(walletData);
+          const isSolanaWallet = enrichedWallet.chain === "solana";
+          const nativeSymbol = enrichedWallet.nativeSymbol || (isSolanaWallet ? "SOL" : "ETH");
+          
+          // Explorer link based on chain
+          const explorerLinks: Record<string, string> = {
+            ethereum: `https://etherscan.io/address/${walletAddress}`,
+            base: `https://basescan.org/address/${walletAddress}`,
+            arbitrum: `https://arbiscan.io/address/${walletAddress}`,
+            polygon: `https://polygonscan.com/address/${walletAddress}`,
+            optimism: `https://optimistic.etherscan.io/address/${walletAddress}`,
+            solana: `https://solscan.io/account/${walletAddress}`,
+          };
+          const explorerLink = explorerLinks[enrichedWallet.chain] || explorerLinks.ethereum;
           
           // Format holdings
           let holdingsMsg = `🔍 *WALLET SCAN*
 
 📍 \`${walletAddress.slice(0, 8)}...${walletAddress.slice(-6)}\`
-⛓️ ${walletChain.toUpperCase()}
+⛓️ ${enrichedWallet.chain?.toUpperCase() || "UNKNOWN"}
 
 💰 *Native Balance*
-${enrichedWallet.ethBalance.toFixed(4)} ETH (${formatNumber(enrichedWallet.ethUsdValue)})
+${(enrichedWallet.nativeBalance || 0).toFixed(4)} ${nativeSymbol} (${formatNumber(enrichedWallet.nativeUsdValue || 0)})
 
 `;
           
           if (enrichedWallet.tokens.length > 0) {
             holdingsMsg += `📊 *Top Holdings*\n`;
             enrichedWallet.tokens.slice(0, 5).forEach((t: any) => {
-              const changeEmoji = t.change24h >= 0 ? "🟢" : "🔴";
+              const changeEmoji = (t.change24h || 0) >= 0 ? "🟢" : "🔴";
               holdingsMsg += `${t.symbol}: ${t.balance < 1 ? t.balance.toFixed(6) : t.balance.toFixed(2)} ${t.usdValue > 0 ? `(${formatNumber(t.usdValue)})` : ""} ${t.change24h ? `${changeEmoji}${t.change24h.toFixed(1)}%` : ""}\n`;
             });
           }
           
           holdingsMsg += `
-💎 *Portfolio Value*: ${formatNumber(enrichedWallet.totalPortfolioValue)}
-🪙 Total Tokens: ${enrichedWallet.totalTokens}
+💎 *Portfolio Value*: ${formatNumber(enrichedWallet.totalPortfolioValue || 0)}
+🪙 Total Tokens: ${enrichedWallet.totalTokens || 0}
 
-🔗 [View on Etherscan](https://etherscan.io/address/${walletAddress})
+🔗 [View on Explorer](${explorerLink})
 📊 ${WEBSITE_PAGES.portfolio}`;
 
           await sendPhoto(chatId, MASCOT_IMAGE, holdingsMsg);
