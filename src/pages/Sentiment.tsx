@@ -1,10 +1,13 @@
 import { Layout } from "@/components/layout/Layout";
-import { Brain, TrendingUp, TrendingDown, Activity, Users, Waves, Loader2, Flame, BarChart3, Zap, MessageCircle, Globe, Target, AlertTriangle, Rocket, Clock, Hash, Twitter } from "lucide-react";
+import { Brain, TrendingUp, TrendingDown, Activity, Users, Waves, Loader2, Flame, BarChart3, Zap, MessageCircle, Globe, Target, AlertTriangle, Rocket, Clock, Hash, Twitter, Info, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMarketData } from "@/hooks/useMarketData";
 import { useAIForecast } from "@/hooks/useAIForecast";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { CoinDetailModal, CoinData } from "@/components/sentiment/CoinDetailModal";
+import { WhaleAlertModal, WhaleAlert } from "@/components/sentiment/WhaleAlertModal";
+import { TopicDetailModal, TrendingTopic } from "@/components/sentiment/TopicDetailModal";
 
 function formatNumber(num: number): string {
   if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
@@ -13,18 +16,19 @@ function formatNumber(num: number): string {
   return `$${num.toLocaleString()}`;
 }
 
-interface TrendingTopic {
-  tag: string;
-  mentions: number;
-  sentiment: "bullish" | "bearish" | "neutral";
-  change: number;
-}
-
 const SentimentPage = () => {
   const { data: marketData, isLoading } = useMarketData();
   const topCoins = useMemo(() => marketData?.topCoins?.slice(0, 20) || [], [marketData]);
   const [activeTab, setActiveTab] = useState<"overview" | "social" | "whales" | "signals">("overview");
   const [lastUpdate] = useState(new Date());
+  
+  // Modal states
+  const [selectedCoin, setSelectedCoin] = useState<CoinData | null>(null);
+  const [coinModalOpen, setCoinModalOpen] = useState(false);
+  const [selectedWhale, setSelectedWhale] = useState<WhaleAlert | null>(null);
+  const [whaleModalOpen, setWhaleModalOpen] = useState(false);
+  const [selectedTopic, setSelectedTopic] = useState<TrendingTopic | null>(null);
+  const [topicModalOpen, setTopicModalOpen] = useState(false);
   
   const { data: aiData, isLoading: aiLoading } = useAIForecast(
     topCoins.length > 0 ? topCoins : null,
@@ -51,28 +55,57 @@ const SentimentPage = () => {
   const topGainers = useMemo(() => [...topCoins].sort((a, b) => b.change24h - a.change24h).slice(0, 5), [topCoins]);
   const topLosers = useMemo(() => [...topCoins].sort((a, b) => a.change24h - b.change24h).slice(0, 5), [topCoins]);
 
-  // Trending topics (simulated)
+  // Trending topics
   const trendingTopics: TrendingTopic[] = useMemo(() => [
-    { tag: "#Bitcoin", mentions: 125000, sentiment: "bullish", change: 15 },
-    { tag: "#Ethereum", mentions: 89000, sentiment: "bullish", change: 8 },
-    { tag: "#Altseason", mentions: 45000, sentiment: "bullish", change: 32 },
-    { tag: "#DeFi", mentions: 34000, sentiment: "neutral", change: -2 },
-    { tag: "#NFT", mentions: 28000, sentiment: "bearish", change: -12 },
-    { tag: "#Solana", mentions: 67000, sentiment: "bullish", change: 25 },
+    { tag: "#Bitcoin", mentions: 125000, sentiment: "bullish", change: 15, twitterMentions: 75000, redditPosts: 31000, telegramMessages: 19000 },
+    { tag: "#Ethereum", mentions: 89000, sentiment: "bullish", change: 8, twitterMentions: 53000, redditPosts: 22000, telegramMessages: 14000 },
+    { tag: "#Altseason", mentions: 45000, sentiment: "bullish", change: 32, twitterMentions: 27000, redditPosts: 11000, telegramMessages: 7000 },
+    { tag: "#DeFi", mentions: 34000, sentiment: "neutral", change: -2, twitterMentions: 20000, redditPosts: 9000, telegramMessages: 5000 },
+    { tag: "#NFT", mentions: 28000, sentiment: "bearish", change: -12, twitterMentions: 17000, redditPosts: 7000, telegramMessages: 4000 },
+    { tag: "#Solana", mentions: 67000, sentiment: "bullish", change: 25, twitterMentions: 40000, redditPosts: 17000, telegramMessages: 10000 },
   ], []);
 
-  // Whale alerts (simulated based on volume)
-  const whaleAlerts = useMemo(() => {
+  // Whale alerts
+  const whaleAlerts: WhaleAlert[] = useMemo(() => {
     return topCoins
       .filter(c => c.volume > 1e9)
       .slice(0, 6)
       .map(c => ({
         symbol: c.symbol,
-        type: c.change24h > 0 ? "accumulation" : "distribution",
+        type: c.change24h > 0 ? "accumulation" : "distribution" as const,
         amount: `${(c.volume / 1e9).toFixed(1)}B`,
-        time: `${Math.floor(Math.random() * 60)} min ago`
+        time: `${Math.floor(Math.random() * 60)} min ago`,
+        volume: c.volume,
+        price: c.price,
+        change24h: c.change24h,
       }));
   }, [topCoins]);
+
+  const handleCoinClick = (coin: typeof topCoins[0], signalType?: string, signalMessage?: string) => {
+    setSelectedCoin({
+      symbol: coin.symbol,
+      name: coin.name,
+      price: coin.price,
+      change24h: coin.change24h,
+      volume: coin.volume,
+      marketCap: coin.marketCap,
+      rank: coin.rank,
+      sentiment: coin.change24h > 2 ? "bullish" : coin.change24h < -2 ? "bearish" : "neutral",
+      signalType,
+      signalMessage,
+    });
+    setCoinModalOpen(true);
+  };
+
+  const handleWhaleClick = (alert: WhaleAlert) => {
+    setSelectedWhale(alert);
+    setWhaleModalOpen(true);
+  };
+
+  const handleTopicClick = (topic: TrendingTopic) => {
+    setSelectedTopic(topic);
+    setTopicModalOpen(true);
+  };
 
   const getSentimentColor = (value: number) => {
     if (value >= 70) return "text-success";
@@ -149,6 +182,12 @@ const SentimentPage = () => {
           })}
         </div>
 
+        {/* Click hint */}
+        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
+          <Info className="w-3.5 h-3.5" />
+          <span>Click on any item for detailed insights and analysis</span>
+        </div>
+
         {/* Overview Tab */}
         {activeTab === "overview" && (
           <>
@@ -212,7 +251,10 @@ const SentimentPage = () => {
               </div>
 
               {/* Whale Activity */}
-              <div className="holo-card p-4 md:p-6 text-center">
+              <button 
+                onClick={() => setActiveTab("whales")}
+                className="holo-card p-4 md:p-6 text-center hover:border-primary/50 transition-all group cursor-pointer"
+              >
                 <Waves className="w-6 h-6 md:w-8 md:h-8 text-primary mx-auto mb-2" />
                 <h3 className="font-display text-[10px] md:text-xs text-muted-foreground mb-1">WHALE ACTIVITY</h3>
                 <div className={cn("text-3xl md:text-4xl font-display font-bold", getSentimentColor(whaleActivity))}>
@@ -221,15 +263,10 @@ const SentimentPage = () => {
                 <div className="text-success font-display text-xs">
                   {whaleActivity >= 70 ? "Very High" : whaleActivity >= 40 ? "Active" : "Quiet"}
                 </div>
-                <div className="mt-3 flex justify-center">
-                  <div className="relative w-12 h-12">
-                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 80 80">
-                      <circle cx="40" cy="40" r="32" stroke="hsl(230, 20%, 15%)" strokeWidth="6" fill="none" />
-                      <circle cx="40" cy="40" r="32" stroke="hsl(190, 100%, 50%)" strokeWidth="6" fill="none" strokeDasharray={`${whaleActivity * 2} 200`} strokeLinecap="round" />
-                    </svg>
-                  </div>
+                <div className="mt-3 flex items-center justify-center gap-1 text-xs text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                  View Details <ChevronRight className="w-3 h-3" />
                 </div>
-              </div>
+              </button>
             </div>
 
             {/* Market Momentum Bar */}
@@ -271,19 +308,26 @@ const SentimentPage = () => {
                 </h3>
                 <div className="space-y-2">
                   {topGainers.map((coin, i) => (
-                    <div key={coin.symbol} className="flex items-center justify-between p-3 rounded-lg bg-success/10 border border-success/20">
+                    <button
+                      key={coin.symbol}
+                      onClick={() => handleCoinClick(coin)}
+                      className="w-full flex items-center justify-between p-3 rounded-lg bg-success/10 border border-success/20 hover:border-success/40 hover:bg-success/15 transition-all text-left group"
+                    >
                       <div className="flex items-center gap-3">
                         <span className="w-6 h-6 rounded-full bg-success/20 flex items-center justify-center text-xs font-bold text-success">{i + 1}</span>
                         <div>
-                          <span className="font-display font-bold">{coin.symbol}</span>
+                          <span className="font-display font-bold group-hover:text-success transition-colors">{coin.symbol}</span>
                           <p className="text-xs text-muted-foreground">{coin.name}</p>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <div className="text-success font-bold">+{coin.change24h.toFixed(2)}%</div>
-                        <div className="text-xs text-muted-foreground">${coin.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
+                      <div className="text-right flex items-center gap-2">
+                        <div>
+                          <div className="text-success font-bold">+{coin.change24h.toFixed(2)}%</div>
+                          <div className="text-xs text-muted-foreground">${coin.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-success transition-colors" />
                       </div>
-                    </div>
+                    </button>
                   ))}
                 </div>
               </div>
@@ -295,19 +339,26 @@ const SentimentPage = () => {
                 </h3>
                 <div className="space-y-2">
                   {topLosers.map((coin, i) => (
-                    <div key={coin.symbol} className="flex items-center justify-between p-3 rounded-lg bg-danger/10 border border-danger/20">
+                    <button
+                      key={coin.symbol}
+                      onClick={() => handleCoinClick(coin)}
+                      className="w-full flex items-center justify-between p-3 rounded-lg bg-danger/10 border border-danger/20 hover:border-danger/40 hover:bg-danger/15 transition-all text-left group"
+                    >
                       <div className="flex items-center gap-3">
                         <span className="w-6 h-6 rounded-full bg-danger/20 flex items-center justify-center text-xs font-bold text-danger">{i + 1}</span>
                         <div>
-                          <span className="font-display font-bold">{coin.symbol}</span>
+                          <span className="font-display font-bold group-hover:text-danger transition-colors">{coin.symbol}</span>
                           <p className="text-xs text-muted-foreground">{coin.name}</p>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <div className="text-danger font-bold">{coin.change24h.toFixed(2)}%</div>
-                        <div className="text-xs text-muted-foreground">${coin.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
+                      <div className="text-right flex items-center gap-2">
+                        <div>
+                          <div className="text-danger font-bold">{coin.change24h.toFixed(2)}%</div>
+                          <div className="text-xs text-muted-foreground">${coin.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-danger transition-colors" />
                       </div>
-                    </div>
+                    </button>
                   ))}
                 </div>
               </div>
@@ -368,17 +419,18 @@ const SentimentPage = () => {
               </h2>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {trendingTopics.map((topic, i) => (
-                  <div 
+                  <button 
                     key={topic.tag}
+                    onClick={() => handleTopicClick(topic)}
                     className={cn(
-                      "p-4 rounded-lg border animate-fade-in",
-                      topic.sentiment === "bullish" ? "bg-success/10 border-success/30" :
-                      topic.sentiment === "bearish" ? "bg-danger/10 border-danger/30" : "bg-muted/50 border-border"
+                      "p-4 rounded-lg border animate-fade-in text-left transition-all group",
+                      topic.sentiment === "bullish" ? "bg-success/10 border-success/30 hover:border-success/50" :
+                      topic.sentiment === "bearish" ? "bg-danger/10 border-danger/30 hover:border-danger/50" : "bg-muted/50 border-border hover:border-primary/50"
                     )}
                     style={{ animationDelay: `${i * 0.1}s` }}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <span className="font-display font-bold text-primary">{topic.tag}</span>
+                      <span className="font-display font-bold text-primary group-hover:text-foreground transition-colors">{topic.tag}</span>
                       <span className={cn(
                         "text-xs font-bold px-2 py-1 rounded",
                         topic.sentiment === "bullish" ? "bg-success/20 text-success" :
@@ -389,14 +441,17 @@ const SentimentPage = () => {
                     </div>
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">{(topic.mentions / 1000).toFixed(0)}K mentions</span>
-                      <span className={cn(
-                        "font-medium",
-                        topic.change >= 0 ? "text-success" : "text-danger"
-                      )}>
-                        {topic.change >= 0 ? "+" : ""}{topic.change}%
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className={cn(
+                          "font-medium",
+                          topic.change >= 0 ? "text-success" : "text-danger"
+                        )}>
+                          {topic.change >= 0 ? "+" : ""}{topic.change}%
+                        </span>
+                        <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                      </div>
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             </div>
@@ -410,21 +465,28 @@ const SentimentPage = () => {
                 {topCoins.slice(0, 8).map((coin, i) => {
                   const volume = 100 - i * 10;
                   return (
-                    <div key={coin.symbol}>
+                    <button 
+                      key={coin.symbol}
+                      onClick={() => handleCoinClick(coin)}
+                      className="w-full text-left group"
+                    >
                       <div className="flex items-center justify-between mb-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-display font-bold">{coin.symbol}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-display font-bold group-hover:text-primary transition-colors">{coin.symbol}</span>
                           <span className="text-xs text-muted-foreground">{coin.name}</span>
                         </div>
-                        <span className="text-sm text-muted-foreground">{(volume * 1.5).toFixed(0)}K</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-muted-foreground">{(volume * 1.5).toFixed(0)}K</span>
+                          <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                        </div>
                       </div>
                       <div className="h-3 rounded-full bg-muted overflow-hidden">
                         <div 
-                          className="h-full bg-gradient-to-r from-primary to-secondary transition-all"
+                          className="h-full bg-gradient-to-r from-primary to-secondary transition-all group-hover:brightness-110"
                           style={{ width: `${volume}%` }}
                         />
                       </div>
-                    </div>
+                    </button>
                   );
                 })}
               </div>
@@ -464,11 +526,12 @@ const SentimentPage = () => {
               </h2>
               <div className="space-y-3">
                 {whaleAlerts.map((alert, i) => (
-                  <div 
+                  <button 
                     key={`${alert.symbol}-${i}`}
+                    onClick={() => handleWhaleClick(alert)}
                     className={cn(
-                      "p-4 rounded-lg border flex items-center justify-between animate-fade-in",
-                      alert.type === "accumulation" ? "bg-success/10 border-success/30" : "bg-danger/10 border-danger/30"
+                      "w-full p-4 rounded-lg border flex items-center justify-between animate-fade-in text-left transition-all group",
+                      alert.type === "accumulation" ? "bg-success/10 border-success/30 hover:border-success/50" : "bg-danger/10 border-danger/30 hover:border-danger/50"
                     )}
                     style={{ animationDelay: `${i * 0.1}s` }}
                   >
@@ -497,11 +560,14 @@ const SentimentPage = () => {
                         </p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="font-bold">${alert.amount}</div>
-                      <div className="text-xs text-muted-foreground">{alert.time}</div>
+                    <div className="text-right flex items-center gap-3">
+                      <div>
+                        <div className="font-bold">${alert.amount}</div>
+                        <div className="text-xs text-muted-foreground">{alert.time}</div>
+                      </div>
+                      <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             </div>
@@ -529,12 +595,13 @@ const SentimentPage = () => {
                   : `Trading sideways at $${coin.price.toLocaleString()}`;
                 
                 return (
-                  <div
+                  <button
                     key={coin.symbol}
+                    onClick={() => handleCoinClick(coin, type, message)}
                     className={cn(
-                      "flex items-start gap-4 p-4 rounded-lg border transition-all animate-fade-in",
-                      type === "pump" || type === "bullish" ? "border-success/30 bg-success/5" : 
-                      type === "dump" || type === "bearish" ? "border-danger/30 bg-danger/5" : "border-border"
+                      "w-full flex items-start gap-4 p-4 rounded-lg border transition-all animate-fade-in text-left group",
+                      type === "pump" || type === "bullish" ? "border-success/30 bg-success/5 hover:border-success/50" : 
+                      type === "dump" || type === "bearish" ? "border-danger/30 bg-danger/5 hover:border-danger/50" : "border-border hover:border-primary/50"
                     )}
                     style={{ animationDelay: `${i * 0.05}s` }}
                   >
@@ -549,7 +616,7 @@ const SentimentPage = () => {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="font-display font-bold text-primary">{coin.symbol}</span>
+                        <span className="font-display font-bold text-primary group-hover:text-foreground transition-colors">{coin.symbol}</span>
                         <span className="text-xs text-muted-foreground">{coin.name}</span>
                         {Math.abs(coin.change24h) > 5 && <Flame className="w-3 h-3 text-warning" />}
                       </div>
@@ -559,20 +626,40 @@ const SentimentPage = () => {
                         <span>MCap: {formatNumber(coin.marketCap)}</span>
                       </div>
                     </div>
-                    <div className={cn(
-                      "text-right flex-shrink-0",
-                      coin.change24h >= 0 ? "text-success" : "text-danger"
-                    )}>
-                      <div className="font-bold text-lg">{coin.change24h >= 0 ? "+" : ""}{coin.change24h.toFixed(2)}%</div>
-                      <div className="text-xs text-muted-foreground">${coin.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
+                    <div className="flex items-center gap-2">
+                      <div className={cn(
+                        "text-right flex-shrink-0",
+                        coin.change24h >= 0 ? "text-success" : "text-danger"
+                      )}>
+                        <div className="font-bold text-lg">{coin.change24h >= 0 ? "+" : ""}{coin.change24h.toFixed(2)}%</div>
+                        <div className="text-xs text-muted-foreground">${coin.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
+                      </div>
+                      <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
                     </div>
-                  </div>
+                  </button>
                 );
               })}
             </div>
           </div>
         )}
       </div>
+
+      {/* Modals */}
+      <CoinDetailModal
+        open={coinModalOpen}
+        onOpenChange={setCoinModalOpen}
+        coin={selectedCoin}
+      />
+      <WhaleAlertModal
+        open={whaleModalOpen}
+        onOpenChange={setWhaleModalOpen}
+        alert={selectedWhale}
+      />
+      <TopicDetailModal
+        open={topicModalOpen}
+        onOpenChange={setTopicModalOpen}
+        topic={selectedTopic}
+      />
     </Layout>
   );
 };
