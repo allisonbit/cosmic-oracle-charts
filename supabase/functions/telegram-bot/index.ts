@@ -1049,17 +1049,31 @@ function generateSentimentBar(value: number): string {
 }
 
 async function generateMarketPulse() {
-  const btcData = await fetchPrice("bitcoin");
-  const ethData = await fetchPrice("ethereum");
-  const sentiment = await fetchSentiment();
+  const [btcData, ethData, solData, sentiment, globalMarket] = await Promise.all([
+    fetchPrice("bitcoin"),
+    fetchPrice("ethereum"),
+    fetchPrice("solana"),
+    fetchSentiment(),
+    fetchGlobalMarket()
+  ]);
+  
   const fgValue = parseInt(sentiment?.fearGreed || "50");
   const sentimentEmoji = fgValue <= 25 ? "😱" : fgValue <= 45 ? "😰" : fgValue >= 75 ? "🤑" : fgValue >= 55 ? "😊" : "😐";
+  const btcChange = btcData?.change24h >= 0 ? "🟢" : "🔴";
+  const ethChange = ethData?.change24h >= 0 ? "🟢" : "🔴";
+  const solChange = solData?.change24h >= 0 ? "🟢" : "🔴";
 
   return `🔮 *ORACLE PULSE*
-💎 BTC $${btcData?.price?.toLocaleString()} ${btcData?.change24h >= 0 ? "🟢" : "🔴"}${btcData?.change24h?.toFixed(1)}%
-⟠ ETH $${ethData?.price?.toLocaleString()} ${ethData?.change24h >= 0 ? "🟢" : "🔴"}${ethData?.change24h?.toFixed(1)}%
-${sentimentEmoji} F&G: ${sentiment?.fearGreed}/100
-🌐 ${WEBSITE_URL}`;
+
+💎 BTC $${btcData?.price?.toLocaleString()} ${btcChange}${btcData?.change24h?.toFixed(1)}%
+⟠ ETH $${ethData?.price?.toLocaleString()} ${ethChange}${ethData?.change24h?.toFixed(1)}%
+◎ SOL $${solData?.price?.toLocaleString()} ${solChange}${solData?.change24h?.toFixed(1)}%
+
+${sentimentEmoji} Fear/Greed: ${fgValue}/100
+📊 MCap: ${formatNumber(globalMarket?.totalMarketCap || 0)}
+₿ Dominance: ${globalMarket?.btcDominance?.toFixed(1) || 0}%
+
+[Live Dashboard](${WEBSITE_PAGES.dashboard}) | [Sentiment](${WEBSITE_PAGES.sentiment})`;
 }
 
 // Short trending update
@@ -1067,11 +1081,16 @@ async function generateTrendingUpdate() {
   const trending = await fetchTrending();
   const list = trending.slice(0, 5).map((t: any, i: number) => {
     const item = t.item;
-    const price = item?.data?.price ? `$${parseFloat(item.data.price).toFixed(4)}` : "";
-    return `${i + 1}. *${item?.symbol?.toUpperCase()}* ${price}`;
+    const change = item?.data?.price_change_percentage_24h?.usd;
+    const changeStr = change ? ` ${change >= 0 ? "🟢" : "🔴"}${change.toFixed(1)}%` : "";
+    return `${i + 1}. *${item?.symbol?.toUpperCase()}*${changeStr}`;
   }).join("\n");
 
-  return `🔥 *TRENDING NOW*\n${list}\n🔍 ${WEBSITE_PAGES.explorer}`;
+  return `🔥 *TRENDING ON ORACLE*
+
+${list}
+
+[Explore All](${WEBSITE_PAGES.explorer}) | [Dashboard](${WEBSITE_PAGES.dashboard})`;
 }
 
 // Short whale alert with real Etherscan link
@@ -1103,50 +1122,66 @@ async function generateNewsUpdate() {
 
 // Generate social sentiment update
 async function generateSocialSentimentUpdate() {
-  const sentiment = await fetchSentiment();
+  const [sentiment, globalMarket, btcData] = await Promise.all([
+    fetchSentiment(),
+    fetchGlobalMarket(),
+    fetchPrice("bitcoin")
+  ]);
+  
   const fgValue = parseInt(sentiment?.fearGreed || "50");
   const bar = generateSentimentBar(fgValue);
   
-  let mood = "Neutral";
-  let emoji = "😐";
-  if (fgValue <= 20) { mood = "Extreme Fear"; emoji = "😱"; }
-  else if (fgValue <= 40) { mood = "Fear"; emoji = "😰"; }
-  else if (fgValue >= 80) { mood = "Extreme Greed"; emoji = "🤑"; }
-  else if (fgValue >= 60) { mood = "Greed"; emoji = "😊"; }
+  let mood = "Neutral 😐";
+  if (fgValue <= 20) mood = "Extreme Fear 😱";
+  else if (fgValue <= 40) mood = "Fear 😰";
+  else if (fgValue >= 80) mood = "Extreme Greed 🤑";
+  else if (fgValue >= 60) mood = "Greed 😊";
   
-  const global = await fetchGlobalMarket();
+  const btcTrend = btcData?.change24h >= 0 ? "📈 Bullish" : "📉 Bearish";
   
-  return `🎭 *SOCIAL SENTIMENT*
-${emoji} ${mood}
-${bar} ${fgValue}/100
-📈 24h MCap: ${global?.marketCapChange?.toFixed(1) || 0}%
-₿ BTC Dom: ${global?.btcDominance?.toFixed(1) || 0}%
-🔗 ${WEBSITE_PAGES.sentiment}`;
+  return `🎭 *MARKET SENTIMENT*
+
+${bar} *${fgValue}/100*
+${mood}
+
+${btcTrend} trend (BTC ${btcData?.change24h?.toFixed(1)}%)
+MCap 24h: ${globalMarket?.marketCapChange?.toFixed(1) || 0}%
+
+[Full Analysis](${WEBSITE_PAGES.sentiment}) | [Chains](${CHAIN_PAGES.ethereum})`;
 }
 
 // Generate random chain update
 async function generateRandomChainUpdate() {
-  const chains = ["ethereum", "base", "arbitrum", "polygon", "optimism"];
+  const chains = ["ethereum", "base", "arbitrum", "polygon", "optimism", "solana"];
   const randomChain = chains[Math.floor(Math.random() * chains.length)];
   
-  const metrics = await fetchChainMetrics(randomChain);
-  const tvl = await fetchDefiTVL(randomChain);
+  const [metrics, tvl] = await Promise.all([
+    fetchChainMetrics(randomChain),
+    fetchDefiTVL(randomChain)
+  ]);
   
-  if (!metrics) return null;
+  if (!metrics && !tvl) return null;
   
   const chainNames: Record<string, string> = {
-    ethereum: "Ethereum ⟠",
-    base: "Base 🔵",
-    arbitrum: "Arbitrum 🔶",
-    polygon: "Polygon 💜",
-    optimism: "Optimism 🔴",
+    ethereum: "⟠ Ethereum",
+    base: "🔵 Base",
+    arbitrum: "🔶 Arbitrum",
+    polygon: "💜 Polygon",
+    optimism: "🔴 Optimism",
+    solana: "◎ Solana",
   };
   
+  const gasInfo = metrics ? `⛽ Gas: ${metrics.gasPrice} Gwei` : "";
+  const blockInfo = metrics ? `📦 Block: ${metrics.blockNumber.toLocaleString()}` : "";
+  const tvlInfo = tvl ? `💰 TVL: ${formatNumber(tvl.tvl)}` : "";
+  
   return `⛓️ *${chainNames[randomChain] || randomChain.toUpperCase()}*
-📦 Block: ${metrics.blockNumber.toLocaleString()}
-⛽ Gas: ${metrics.gasPrice} Gwei
-${tvl ? `💰 TVL: ${formatNumber(tvl.tvl)}` : ""}
-🔗 ${CHAIN_PAGES[randomChain] || CHAIN_PAGES.ethereum}`;
+
+${blockInfo}
+${gasInfo}
+${tvlInfo}
+
+[View Analytics](${CHAIN_PAGES[randomChain] || WEBSITE_URL}) | [Compare](${WEBSITE_PAGES.dashboard})`;
 }
 
 // Generate crypto tip/fact
@@ -1180,13 +1215,26 @@ async function generateTopMoversUpdate() {
     (b.price_change_percentage_24h || 0) - (a.price_change_percentage_24h || 0)
   );
   
-  const topGainer = sorted[0];
-  const topLoser = sorted[sorted.length - 1];
+  const gainers = sorted.slice(0, 3);
+  const losers = sorted.slice(-3).reverse();
+  
+  const gainersList = gainers.map((c: any) => 
+    `🟢 ${c.symbol?.toUpperCase()} +${c.price_change_percentage_24h?.toFixed(1)}%`
+  ).join("\n");
+  
+  const losersList = losers.map((c: any) => 
+    `🔴 ${c.symbol?.toUpperCase()} ${c.price_change_percentage_24h?.toFixed(1)}%`
+  ).join("\n");
   
   return `📊 *TOP MOVERS*
-🚀 ${topGainer?.symbol?.toUpperCase()}: +${topGainer?.price_change_percentage_24h?.toFixed(1)}%
-📉 ${topLoser?.symbol?.toUpperCase()}: ${topLoser?.price_change_percentage_24h?.toFixed(1)}%
-🔍 ${WEBSITE_PAGES.dashboard}`;
+
+*Gainers*
+${gainersList}
+
+*Losers*
+${losersList}
+
+[Live Data](${WEBSITE_PAGES.dashboard}) | [Explorer](${WEBSITE_PAGES.explorer})`;
 }
 
 // Generate chart preview for tokens - returns { chartUrl, caption }
