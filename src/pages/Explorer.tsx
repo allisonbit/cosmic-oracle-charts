@@ -121,15 +121,15 @@ const ExplorerPage = () => {
           
           {/* Popular Tokens */}
           {!isSearching && !selectedToken && (
-            <div className="flex flex-wrap gap-2 mt-8 justify-center">
-              <span className="text-xs text-muted-foreground mr-2">Popular:</span>
+            <div className="flex flex-wrap gap-2 mt-6 sm:mt-8 justify-center">
+              <span className="text-[10px] sm:text-xs text-muted-foreground mr-1 sm:mr-2">Popular:</span>
               {popularTokens.map((token) => (
                 <Button
                   key={token.symbol}
                   variant="outline"
                   size="sm"
                   onClick={() => setSearchQuery(token.symbol)}
-                  className="text-xs"
+                  className="text-[10px] sm:text-xs touch-target tap-highlight-none active:scale-95 px-2 sm:px-3"
                 >
                   {token.symbol}
                 </Button>
@@ -154,12 +154,12 @@ const ExplorerPage = () => {
               </h3>
               
               {!searchLoading && hasResults && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
                   {searchResults.tokens.map((token, idx) => (
                     <button
                       key={`${token.contractAddress || token.symbol}-${idx}`}
                       onClick={() => handleTokenSelect(token)}
-                      className="p-4 rounded-lg bg-muted/30 border border-border hover:border-primary/50 transition-all text-left hover:scale-[1.02]"
+                      className="p-3 sm:p-4 rounded-lg bg-muted/30 border border-border active:border-primary/50 transition-all text-left active:scale-[0.98] touch-target tap-highlight-none"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
