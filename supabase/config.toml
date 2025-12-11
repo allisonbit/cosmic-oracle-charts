@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.token-search]
 verify_jwt = false
+
+[functions.wallet-scanner]
+verify_jwt = false

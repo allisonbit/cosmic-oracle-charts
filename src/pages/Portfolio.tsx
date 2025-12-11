@@ -23,6 +23,7 @@ interface TokenHolding {
   riskLevel: "low" | "medium" | "high" | "extreme";
   recommendation: "hold" | "accumulate" | "take_profit" | "exit";
   insight: string;
+  contractAddress?: string;
 }
 
 interface WalletAnalysis {
@@ -62,92 +63,19 @@ export default function Portfolio() {
 
       if (error) throw error;
       
+      if (data?.error) {
+        toast.error(data.error);
+        return;
+      }
+      
       setAnalysis(data as WalletAnalysis);
-      toast.success("Wallet analysis complete!");
+      toast.success(`Found ${data.holdings?.length || 0} tokens worth $${data.totalValue?.toLocaleString() || 0}`);
     } catch (error) {
       console.error("Analysis error:", error);
-      // Generate mock analysis for demo
-      setAnalysis(generateMockAnalysis(address));
-      toast.success("Wallet analysis complete!");
+      toast.error("Failed to scan wallet. Please try again.");
     } finally {
       setIsAnalyzing(false);
     }
-  };
-
-  const generateMockAnalysis = (addr: string): WalletAnalysis => {
-    const holdings: TokenHolding[] = [
-      {
-        symbol: "ETH",
-        name: "Ethereum",
-        balance: 2.5,
-        value: 8750,
-        price: 3500,
-        change24h: 2.4,
-        pumpPotential: "medium",
-        riskLevel: "low",
-        recommendation: "hold",
-        insight: "Strong foundation asset. ETH showing accumulation pattern with institutional interest increasing."
-      },
-      {
-        symbol: "SOL",
-        name: "Solana",
-        balance: 45,
-        value: 6750,
-        price: 150,
-        change24h: 5.2,
-        pumpPotential: "high",
-        riskLevel: "medium",
-        recommendation: "accumulate",
-        insight: "High momentum play. Breaking key resistance with strong developer activity and NFT volume surge."
-      },
-      {
-        symbol: "PEPE",
-        name: "Pepe",
-        balance: 50000000,
-        value: 850,
-        price: 0.000017,
-        change24h: -3.2,
-        pumpPotential: "high",
-        riskLevel: "extreme",
-        recommendation: "hold",
-        insight: "Meme coin with active community. High volatility but showing whale accumulation in recent days."
-      },
-      {
-        symbol: "ARB",
-        name: "Arbitrum",
-        balance: 1200,
-        value: 1440,
-        price: 1.2,
-        change24h: 1.8,
-        pumpPotential: "medium",
-        riskLevel: "medium",
-        recommendation: "accumulate",
-        insight: "L2 leader with growing TVL. Airdrop season speculation could drive significant upside."
-      },
-      {
-        symbol: "LINK",
-        name: "Chainlink",
-        balance: 80,
-        value: 1120,
-        price: 14,
-        change24h: -0.5,
-        pumpPotential: "medium",
-        riskLevel: "low",
-        recommendation: "hold",
-        insight: "Infrastructure play. CCIP adoption accelerating with major partnerships expected."
-      }
-    ];
-
-    return {
-      address: addr,
-      totalValue: holdings.reduce((sum, h) => sum + h.value, 0),
-      holdings,
-      riskScore: 62,
-      diversificationScore: 78,
-      overallInsight: "Portfolio shows good diversification with a mix of blue chips and high-risk/high-reward plays. Consider reducing meme coin exposure and increasing L2 positions for better risk-adjusted returns.",
-      topPicks: ["SOL", "ARB"],
-      warnings: ["High concentration in volatile assets", "Consider adding stablecoin allocation for opportunities"]
-    };
   };
 
   const getPumpPotentialColor = (potential: string) => {
