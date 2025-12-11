@@ -80,6 +80,33 @@ export type Database = {
         }
         Relationships: []
       }
+      telegram_groups: {
+        Row: {
+          auto_digest: boolean
+          chat_id: number
+          chat_title: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+        }
+        Insert: {
+          auto_digest?: boolean
+          chat_id: number
+          chat_title?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+        }
+        Update: {
+          auto_digest?: boolean
+          chat_id?: number
+          chat_title?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
