@@ -1,29 +1,153 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { ChainConfig } from "@/lib/chainConfig";
-import { TokenRisk } from "@/hooks/useChainForecast";
 import { Shield, AlertTriangle, AlertOctagon, Skull, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TokenDetailModal, TokenModalData } from "./TokenDetailModal";
+import { useTokenDiscovery, DiscoveryToken } from "@/hooks/useTokenDiscovery";
 
 interface RiskAnalyzerProps {
   chain: ChainConfig;
-  tokenRisks: TokenRisk[] | undefined;
-  isLoading: boolean;
+  tokenRisks?: unknown; // kept for compatibility but not used
+  isLoading?: boolean;
 }
 
-export function RiskAnalyzer({ chain, tokenRisks, isLoading }: RiskAnalyzerProps) {
+interface AnalyzedToken {
+  symbol: string;
+  name: string;
+  logo: string;
+  riskLevel: 'low' | 'medium' | 'high' | 'extreme';
+  riskScore: number;
+  volatility: number;
+  liquidityScore: number;
+  reasons: string[];
+  price: number;
+  change24h: number;
+  marketCap: number;
+  volume24h: number;
+}
+
+function calculateRisk(token: DiscoveryToken): AnalyzedToken {
+  const reasons: string[] = [];
+  let riskScore = 0;
+
+  // Volatility factor (high volatility = higher risk)
+  const volatility = token.volatility || Math.abs(token.change24h) * 2;
+  if (volatility > 50) {
+    riskScore += 35;
+    reasons.push(`Extreme volatility: ${volatility.toFixed(1)}%`);
+  } else if (volatility > 25) {
+    riskScore += 20;
+    reasons.push(`High volatility: ${volatility.toFixed(1)}%`);
+  } else if (volatility > 10) {
+    riskScore += 10;
+  }
+
+  // Price change factor
+  if (Math.abs(token.change24h) > 30) {
+    riskScore += 25;
+    reasons.push(`Major 24h move: ${token.change24h > 0 ? '+' : ''}${token.change24h.toFixed(1)}%`);
+  } else if (Math.abs(token.change24h) > 15) {
+    riskScore += 15;
+    reasons.push(`Significant 24h change: ${token.change24h > 0 ? '+' : ''}${token.change24h.toFixed(1)}%`);
+  }
+
+  // Liquidity factor (low liquidity = higher risk)
+  const liquidity = token.liquidityScore || (token.volume24h / (token.marketCap || 1)) * 100;
+  if (liquidity < 5) {
+    riskScore += 30;
+    reasons.push("Very low liquidity - difficult to exit positions");
+  } else if (liquidity < 15) {
+    riskScore += 15;
+    reasons.push("Below average liquidity");
+  }
+
+  // Market cap factor (smaller = riskier)
+  if (token.marketCap < 10000000) { // < $10M
+    riskScore += 25;
+    reasons.push("Micro-cap token - high manipulation risk");
+  } else if (token.marketCap < 100000000) { // < $100M
+    riskScore += 15;
+    reasons.push("Small-cap token");
+  } else if (token.marketCap > 1000000000) { // > $1B
+    riskScore -= 10;
+    reasons.push("Large market cap - more stability");
+  }
+
+  // Volume spike (unusual activity)
+  if (token.volumeSpike > 300) {
+    riskScore += 20;
+    reasons.push(`Volume spike: ${token.volumeSpike.toFixed(0)}% above normal`);
+  }
+
+  // Clamp risk score
+  riskScore = Math.max(5, Math.min(100, riskScore));
+
+  // Determine risk level
+  let riskLevel: 'low' | 'medium' | 'high' | 'extreme';
+  if (riskScore >= 75) {
+    riskLevel = 'extreme';
+  } else if (riskScore >= 50) {
+    riskLevel = 'high';
+  } else if (riskScore >= 25) {
+    riskLevel = 'medium';
+  } else {
+    riskLevel = 'low';
+  }
+
+  // Add positive reason if low risk
+  if (riskLevel === 'low' && reasons.length === 0) {
+    reasons.push("Stable trading patterns, good liquidity");
+  }
+
+  return {
+    symbol: token.symbol,
+    name: token.name,
+    logo: token.logo,
+    riskLevel,
+    riskScore,
+    volatility,
+    liquidityScore: liquidity,
+    reasons: reasons.length > 0 ? reasons : ["Standard market behavior"],
+    price: token.price,
+    change24h: token.change24h,
+    marketCap: token.marketCap,
+    volume24h: token.volume24h,
+  };
+}
+
+export function RiskAnalyzer({ chain }: RiskAnalyzerProps) {
   const [selectedToken, setSelectedToken] = useState<TokenModalData | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-  const handleTokenClick = (token: TokenRisk, level: string) => {
+  const { data: discoveryData, isLoading } = useTokenDiscovery(chain.id, true);
+
+  const analyzedTokens = useMemo(() => {
+    if (!discoveryData?.tokens) return [];
+    return discoveryData.tokens.map(calculateRisk);
+  }, [discoveryData?.tokens]);
+
+  const groupedRisks = useMemo(() => {
+    return analyzedTokens.reduce((acc, token) => {
+      if (!acc[token.riskLevel]) acc[token.riskLevel] = [];
+      acc[token.riskLevel].push(token);
+      return acc;
+    }, {} as Record<string, AnalyzedToken[]>);
+  }, [analyzedTokens]);
+
+  const handleTokenClick = (token: AnalyzedToken) => {
     setSelectedToken({
       symbol: token.symbol,
-      name: token.symbol,
-      riskLevel: level,
+      name: token.name,
+      logo: token.logo,
+      riskLevel: token.riskLevel,
       riskScore: token.riskScore,
       reasons: token.reasons,
       volatility: token.volatility,
-      liquidityScore: token.liquidity,
+      liquidityScore: token.liquidityScore,
+      price: token.price,
+      change24h: token.change24h,
+      marketCap: token.marketCap,
+      volume24h: token.volume24h,
     });
     setModalOpen(true);
   };
@@ -37,12 +161,6 @@ export function RiskAnalyzer({ chain, tokenRisks, isLoading }: RiskAnalyzerProps
       default: return Shield;
     }
   };
-
-  const groupedRisks = tokenRisks?.reduce((acc, token) => {
-    if (!acc[token.riskLevel]) acc[token.riskLevel] = [];
-    acc[token.riskLevel].push(token);
-    return acc;
-  }, {} as Record<string, TokenRisk[]>);
 
   const riskLevels = ["low", "medium", "high", "extreme"] as const;
 
@@ -59,7 +177,7 @@ export function RiskAnalyzer({ chain, tokenRisks, isLoading }: RiskAnalyzerProps
         <div className="flex items-center justify-between mb-6">
           <div>
             <h3 className="text-lg font-display text-foreground">AI Risk Analyzer</h3>
-            <p className="text-sm text-muted-foreground">Token safety analysis on {chain.name}</p>
+            <p className="text-sm text-muted-foreground">Real-time token safety analysis on {chain.name}</p>
           </div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Info className="h-3.5 w-3.5" />
@@ -132,15 +250,31 @@ export function RiskAnalyzer({ chain, tokenRisks, isLoading }: RiskAnalyzerProps
                       tokens.slice(0, 4).map((token) => (
                         <button
                           key={token.symbol}
-                          onClick={() => handleTokenClick(token, level)}
+                          onClick={() => handleTokenClick(token)}
                           className="w-full p-3 rounded-lg bg-background/60 border border-border/30 hover:border-primary/30 hover:bg-background/80 transition-all text-left group"
                         >
                           <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
-                              {token.symbol}
-                            </span>
                             <div className="flex items-center gap-2">
-                              <span className="text-xs text-muted-foreground">Risk Score</span>
+                              {token.logo && (
+                                <img 
+                                  src={token.logo} 
+                                  alt={token.symbol}
+                                  className="w-5 h-5 rounded-full"
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).style.display = 'none';
+                                  }}
+                                />
+                              )}
+                              <div>
+                                <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
+                                  {token.symbol}
+                                </span>
+                                <span className="text-xs text-muted-foreground ml-2">
+                                  {token.name.length > 12 ? token.name.slice(0, 12) + '...' : token.name}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
                               <span className={cn(
                                 "text-sm font-bold",
                                 level === "low" && "text-success",
