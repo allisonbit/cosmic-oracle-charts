@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import cosmicOracle from "@/assets/cosmic-oracle-hero.jpg";
+import oracleLogo from "@/assets/oracle-logo.jpg";
 import { useState } from "react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -111,11 +111,7 @@ const ContactPage = () => {
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                 <div className="flex items-center gap-4">
                   <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-primary/50">
-                    {tokenData?.logo ? (
-                      <img src={tokenData.logo} alt={tokenData.symbol} className="w-full h-full object-cover" />
-                    ) : (
-                      <img src={cosmicOracle} alt="Oracle" className="w-full h-full object-cover" />
-                    )}
+                    <img src={oracleLogo} alt="Oracle" className="w-full h-full object-cover" />
                   </div>
                   <div>
                     <h2 className="font-display font-bold text-2xl">{tokenData?.name || 'Oracle Token'}</h2>
@@ -308,7 +304,7 @@ const ContactPage = () => {
               <div className="relative">
                 <div className="absolute inset-0 w-40 h-40 rounded-full border border-primary/30 pulse-glow" />
                 <div className="relative w-40 h-40 rounded-full overflow-hidden float">
-                  <img src={cosmicOracle} alt="Cosmic Oracle" className="w-full h-full object-cover" />
+                  <img src={oracleLogo} alt="Cosmic Oracle" className="w-full h-full object-cover" />
                 </div>
               </div>
             </div>

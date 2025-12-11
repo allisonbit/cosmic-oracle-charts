@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Activity, TrendingUp, BookOpen, Globe, Radio, Mail, Layers, Wallet, Home } from "lucide-react";
+import { Menu, X, TrendingUp, BookOpen, Globe, Radio, Mail, Layers, Wallet, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import oracleLogo from "@/assets/oracle-logo.jpg";
 
 const navItems = [
   { path: "/", label: "Home", icon: Home },
@@ -46,8 +47,8 @@ export function Navbar() {
         <div className="flex items-center justify-between h-14 md:h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 md:gap-3 group z-10">
-            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg shadow-primary/30 group-hover:shadow-primary/50 transition-shadow">
-              <Activity className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />
+            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden shadow-lg shadow-primary/30 group-hover:shadow-primary/50 transition-shadow">
+              <img src={oracleLogo} alt="Oracle" className="w-full h-full object-cover" />
             </div>
             <span className="font-display text-base md:text-lg font-bold glow-text">
               ORACLE
