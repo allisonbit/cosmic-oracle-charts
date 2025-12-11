@@ -51,7 +51,7 @@ export default function Chain() {
   const showLoading = chainLoading && !chainData;
 
   return (
-    <SidebarProvider defaultOpen={true}>
+    <SidebarProvider defaultOpen={false}>
       <div className="min-h-screen cosmic-bg flex w-full">
         <ChainSidebar />
         <div className="flex-1 flex flex-col min-w-0">
@@ -60,14 +60,14 @@ export default function Chain() {
           {showLoading ? (
             <div className="flex-1 flex items-center justify-center">
               <div className="flex flex-col items-center gap-4">
-                <Loader2 className="w-12 h-12 animate-spin text-primary" />
-                <p className="text-muted-foreground font-display">Loading {chain.name} data...</p>
+                <Loader2 className="w-10 h-10 sm:w-12 sm:h-12 animate-spin text-primary" />
+                <p className="text-muted-foreground font-display text-sm">Loading {chain.name} data...</p>
               </div>
             </div>
           ) : (
-            <main className="flex-1 overflow-y-auto">
-              <div className="container mx-auto px-4 py-6 md:py-8 space-y-4 md:space-y-6">
-                <button onClick={() => navigate("/dashboard")} className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+            <main className="flex-1 overflow-y-auto pb-20 md:pb-0">
+              <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8 space-y-3 sm:space-y-4 md:space-y-6">
+                <button onClick={() => navigate("/dashboard")} className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm">
                   <ArrowLeft className="h-4 w-4" /><span>Back to Dashboard</span>
                 </button>
 
@@ -79,37 +79,27 @@ export default function Chain() {
 
                 <ChainOverviewPanel chain={chain} overview={chainData?.overview} isLoading={chainLoading} />
 
-                <div className="grid lg:grid-cols-2 gap-4 md:gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
                   <AdvancedPriceChart chain={chain} priceData={chainPrice} />
                   <PredictionDeepDive chain={chain} forecast={forecastData?.forecast} isLoading={forecastLoading} />
                 </div>
 
-                {/* NEW: Chain Health Metrics */}
                 <ChainHealthMetrics chain={chain} healthData={advancedData?.healthData} isLoading={advancedLoading} />
-
-                {/* NEW: Deep Financial Metrics */}
                 <DeepFinancialMetrics chain={chain} financialData={advancedData?.financialData} isLoading={advancedLoading} />
-
-                {/* NEW: Advanced AI Prediction Models */}
                 <AdvancedPredictionModels chain={chain} predictionData={advancedData?.predictionData} isLoading={advancedLoading} />
-
-                {/* NEW: Anomaly Detection */}
                 <AnomalyDetection chain={chain} anomalyData={advancedData?.anomalyData} isLoading={advancedLoading} />
 
-                <div className="grid lg:grid-cols-2 gap-4 md:gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
                   <WhaleActivityRadar chain={chain} whaleActivity={chainData?.whaleActivity} isLoading={chainLoading} />
                   <TokenHeatScanner chain={chain} tokenHeat={chainData?.tokenHeat} isLoading={chainLoading} />
                 </div>
 
-                <div className="grid lg:grid-cols-2 gap-4 md:gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
                   <SmartMoneyFlow chain={chain} smartMoneyFlow={chainData?.smartMoneyFlow} isLoading={chainLoading} />
                   <RiskAnalyzer chain={chain} tokenRisks={forecastData?.tokenRisks} isLoading={forecastLoading} />
                 </div>
 
-                {/* NEW: Multi-Chain Comparison */}
                 <MultiChainComparison chain={chain} comparisonData={advancedData?.comparisonData} isLoading={advancedLoading} />
-
-                {/* NEW: Institutional View */}
                 <InstitutionalView chain={chain} institutionalData={advancedData?.institutionalData} isLoading={advancedLoading} />
 
                 <SocialSentimentGalaxy chain={chain} socialSentiment={forecastData?.socialSentiment} isLoading={forecastLoading} />

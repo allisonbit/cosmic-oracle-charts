@@ -72,114 +72,114 @@ export function ChainHealthMetrics({ chain, healthData, isLoading }: ChainHealth
   }
 
   return (
-    <div className="holo-card p-6">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 rounded-lg bg-primary/20">
-          <Activity className="h-5 w-5 text-primary" />
+    <div className="holo-card p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4 sm:mb-6">
+        <div className="p-2 rounded-lg bg-primary/20 flex-shrink-0 w-fit">
+          <Activity className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
         </div>
-        <div>
-          <h3 className="font-display text-lg text-foreground">Chain Health Monitor</h3>
-          <p className="text-sm text-muted-foreground">Real-time network vitals</p>
+        <div className="flex-1 min-w-0">
+          <h3 className="font-display text-base sm:text-lg text-foreground">Chain Health Monitor</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground">Real-time network vitals</p>
         </div>
-        <div className="ml-auto flex items-center gap-2">
+        <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
           <span className="text-xs text-green-400">Live</span>
         </div>
       </div>
 
       {/* Primary Health Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-background/40 border border-border/30 rounded-lg p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Blocks className="h-4 w-4 text-primary" />
-            <span className="text-xs text-muted-foreground">Finality Rate</span>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6">
+        <div className="bg-background/40 border border-border/30 rounded-lg p-3 sm:p-4">
+          <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+            <Blocks className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+            <span className="text-[10px] sm:text-xs text-muted-foreground">Finality Rate</span>
           </div>
-          <div className={`text-2xl font-bold ${getHealthColor(healthData.finalityRate)}`}>
+          <div className={`text-lg sm:text-2xl font-bold ${getHealthColor(healthData.finalityRate)}`}>
             {healthData.finalityRate.toFixed(1)}%
           </div>
-          <Progress value={healthData.finalityRate} className="h-1 mt-2" />
+          <Progress value={healthData.finalityRate} className="h-1 mt-1.5 sm:mt-2" />
         </div>
 
-        <div className="bg-background/40 border border-border/30 rounded-lg p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Clock className="h-4 w-4 text-cyan-400" />
-            <span className="text-xs text-muted-foreground">Block Time</span>
+        <div className="bg-background/40 border border-border/30 rounded-lg p-3 sm:p-4">
+          <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+            <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-cyan-400" />
+            <span className="text-[10px] sm:text-xs text-muted-foreground">Block Time</span>
           </div>
-          <div className="text-2xl font-bold text-foreground">
+          <div className="text-lg sm:text-2xl font-bold text-foreground">
             {healthData.avgBlockTime.toFixed(1)}s
           </div>
-          <span className="text-xs text-muted-foreground">
+          <span className="text-[10px] sm:text-xs text-muted-foreground">
             {formatNumber(healthData.blockProduction)} blocks/day
           </span>
         </div>
 
-        <div className="bg-background/40 border border-border/30 rounded-lg p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Shield className="h-4 w-4 text-green-400" />
-            <span className="text-xs text-muted-foreground">Validator Health</span>
+        <div className="bg-background/40 border border-border/30 rounded-lg p-3 sm:p-4">
+          <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+            <Shield className="h-3 w-3 sm:h-4 sm:w-4 text-green-400" />
+            <span className="text-[10px] sm:text-xs text-muted-foreground">Validator Health</span>
           </div>
-          <div className={`text-2xl font-bold ${getHealthColor(healthData.validatorHealth)}`}>
+          <div className={`text-lg sm:text-2xl font-bold ${getHealthColor(healthData.validatorHealth)}`}>
             {healthData.validatorHealth.toFixed(1)}%
           </div>
-          <span className="text-xs text-muted-foreground">
+          <span className="text-[10px] sm:text-xs text-muted-foreground">
             {formatNumber(healthData.activeValidators, 0)} active
           </span>
         </div>
 
-        <div className="bg-background/40 border border-border/30 rounded-lg p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Users className="h-4 w-4 text-purple-400" />
-            <span className="text-xs text-muted-foreground">Total Staked</span>
+        <div className="bg-background/40 border border-border/30 rounded-lg p-3 sm:p-4">
+          <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+            <Users className="h-3 w-3 sm:h-4 sm:w-4 text-purple-400" />
+            <span className="text-[10px] sm:text-xs text-muted-foreground">Total Staked</span>
           </div>
-          <div className="text-2xl font-bold text-foreground">
+          <div className="text-lg sm:text-2xl font-bold text-foreground">
             {formatNumber(healthData.totalStaked)} ETH
           </div>
-          <span className="text-xs text-green-400">
+          <span className="text-[10px] sm:text-xs text-green-400">
             {((healthData.totalStaked / 120e6) * 100).toFixed(1)}% supply
           </span>
         </div>
       </div>
 
       {/* MEV Metrics */}
-      <div className="mb-6">
-        <h4 className="text-sm font-medium text-foreground mb-3 flex items-center gap-2">
-          <Zap className="h-4 w-4 text-yellow-400" />
+      <div className="mb-4 sm:mb-6">
+        <h4 className="text-xs sm:text-sm font-medium text-foreground mb-2 sm:mb-3 flex items-center gap-2">
+          <Zap className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400" />
           MEV Analytics
         </h4>
-        <div className="grid grid-cols-3 gap-4">
-          <div className="bg-background/40 border border-border/30 rounded-lg p-3">
-            <span className="text-xs text-muted-foreground block">Flashbots Blocks</span>
-            <span className="text-lg font-bold text-foreground">{healthData.mevMetrics.flashbotsBlocks}%</span>
+        <div className="grid grid-cols-3 gap-2 sm:gap-4">
+          <div className="bg-background/40 border border-border/30 rounded-lg p-2 sm:p-3">
+            <span className="text-[10px] sm:text-xs text-muted-foreground block">Flashbots</span>
+            <span className="text-sm sm:text-lg font-bold text-foreground">{healthData.mevMetrics.flashbotsBlocks}%</span>
           </div>
-          <div className="bg-background/40 border border-border/30 rounded-lg p-3">
-            <span className="text-xs text-muted-foreground block">Sandwich Attacks</span>
-            <span className="text-lg font-bold text-red-400">{formatNumber(healthData.mevMetrics.sandwichAttacks, 0)}</span>
+          <div className="bg-background/40 border border-border/30 rounded-lg p-2 sm:p-3">
+            <span className="text-[10px] sm:text-xs text-muted-foreground block">Sandwich</span>
+            <span className="text-sm sm:text-lg font-bold text-red-400">{formatNumber(healthData.mevMetrics.sandwichAttacks, 0)}</span>
           </div>
-          <div className="bg-background/40 border border-border/30 rounded-lg p-3">
-            <span className="text-xs text-muted-foreground block">MEV Revenue 24h</span>
-            <span className="text-lg font-bold text-green-400">${formatNumber(healthData.mevMetrics.mevRevenue24h)}</span>
+          <div className="bg-background/40 border border-border/30 rounded-lg p-2 sm:p-3">
+            <span className="text-[10px] sm:text-xs text-muted-foreground block">MEV 24h</span>
+            <span className="text-sm sm:text-lg font-bold text-green-400">${formatNumber(healthData.mevMetrics.mevRevenue24h)}</span>
           </div>
         </div>
       </div>
 
       {/* Layer 2 Analytics */}
-      <div className="mb-6">
-        <h4 className="text-sm font-medium text-foreground mb-3 flex items-center gap-2">
-          <Layers className="h-4 w-4 text-blue-400" />
+      <div className="mb-4 sm:mb-6">
+        <h4 className="text-xs sm:text-sm font-medium text-foreground mb-2 sm:mb-3 flex items-center gap-2">
+          <Layers className="h-3 w-3 sm:h-4 sm:w-4 text-blue-400" />
           Layer 2 Bridged Assets
         </h4>
-        <div className="grid grid-cols-3 gap-4">
-          <div className="bg-gradient-to-br from-blue-500/10 to-transparent border border-blue-500/30 rounded-lg p-3">
-            <span className="text-xs text-muted-foreground block">Arbitrum</span>
-            <span className="text-lg font-bold text-foreground">${formatNumber(healthData.layer2Analytics.arbitrumBridged)}</span>
+        <div className="grid grid-cols-3 gap-2 sm:gap-4">
+          <div className="bg-gradient-to-br from-blue-500/10 to-transparent border border-blue-500/30 rounded-lg p-2 sm:p-3">
+            <span className="text-[10px] sm:text-xs text-muted-foreground block">Arbitrum</span>
+            <span className="text-sm sm:text-lg font-bold text-foreground">${formatNumber(healthData.layer2Analytics.arbitrumBridged)}</span>
           </div>
-          <div className="bg-gradient-to-br from-red-500/10 to-transparent border border-red-500/30 rounded-lg p-3">
-            <span className="text-xs text-muted-foreground block">Optimism</span>
-            <span className="text-lg font-bold text-foreground">${formatNumber(healthData.layer2Analytics.optimismBridged)}</span>
+          <div className="bg-gradient-to-br from-red-500/10 to-transparent border border-red-500/30 rounded-lg p-2 sm:p-3">
+            <span className="text-[10px] sm:text-xs text-muted-foreground block">Optimism</span>
+            <span className="text-sm sm:text-lg font-bold text-foreground">${formatNumber(healthData.layer2Analytics.optimismBridged)}</span>
           </div>
-          <div className="bg-gradient-to-br from-blue-400/10 to-transparent border border-blue-400/30 rounded-lg p-3">
-            <span className="text-xs text-muted-foreground block">Base</span>
-            <span className="text-lg font-bold text-foreground">${formatNumber(healthData.layer2Analytics.baseBridged)}</span>
+          <div className="bg-gradient-to-br from-blue-400/10 to-transparent border border-blue-400/30 rounded-lg p-2 sm:p-3">
+            <span className="text-[10px] sm:text-xs text-muted-foreground block">Base</span>
+            <span className="text-sm sm:text-lg font-bold text-foreground">${formatNumber(healthData.layer2Analytics.baseBridged)}</span>
           </div>
         </div>
       </div>
