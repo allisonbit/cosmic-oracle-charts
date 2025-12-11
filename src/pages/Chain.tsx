@@ -113,7 +113,7 @@ export default function Chain() {
                 <InstitutionalView chain={chain} institutionalData={advancedData?.institutionalData} isLoading={advancedLoading} />
 
                 <SocialSentimentGalaxy chain={chain} socialSentiment={forecastData?.socialSentiment} isLoading={forecastLoading} />
-                <TokenDiscoveryEngine chain={chain} tokenHeat={chainData?.tokenHeat} isLoading={chainLoading} />
+                <TokenDiscoveryEngine chain={chain} />
                 <DailySummary chain={chain} forecast={forecastData?.forecast} isLoading={forecastLoading} />
               </div>
             </main>
