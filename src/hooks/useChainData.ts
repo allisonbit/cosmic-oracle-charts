@@ -42,6 +42,15 @@ export interface SmartMoneyFlow {
   liquidityRemoved: number;
 }
 
+export interface EcosystemToken {
+  symbol: string;
+  name: string;
+  address: string;
+  category: string;
+  price?: number;
+  change24h?: number;
+}
+
 export interface ChainSpecificData {
   type?: string;
   rollupType?: string;
@@ -56,6 +65,10 @@ export interface ChainSpecificData {
   telegramApps?: { name: string; users: number; category: string }[];
   uniqueMetrics?: Record<string, number>;
   recentUpgrades?: { name: string; date: string; description: string }[];
+  subnets?: { name: string; description: string; tvl: number }[];
+  zkSolutions?: { name: string; status: string; tps?: number; description?: string }[];
+  orbitChains?: { name: string; description: string; status: string }[];
+  ecosystemTokens?: EcosystemToken[];
 }
 
 export interface ChainDataResponse {
