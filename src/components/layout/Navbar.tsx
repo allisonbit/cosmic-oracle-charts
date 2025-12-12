@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X, TrendingUp, BookOpen, Globe, Radio, Mail, Layers, Wallet, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import oracleLogo from "@/assets/oracle-logo.jpg";
+import oracleLogo from "@/assets/oracle-bull-logo.jpg";
 
 const navItems = [
   { path: "/", label: "Home", icon: Home },

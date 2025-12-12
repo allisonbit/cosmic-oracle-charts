@@ -2352,10 +2352,9 @@ serve(async (req) => {
     }
 
     if (url.pathname.endsWith("/cron")) {
-      const updates = await sendAutoUpdates();
+      // Auto-updates disabled - only check user alerts
       const alerts = await checkAlerts();
-      const whales = await checkWhaleActivity();
-      return new Response(JSON.stringify({ updates, alerts, whales }), {
+      return new Response(JSON.stringify({ updates: { sent: 0, type: "disabled" }, alerts, whales: { whales: 0 } }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
