@@ -36,8 +36,8 @@ interface WhaleDetailModalData {
 }
 
 export function EnhancedWhaleActivityRadar({ chain, whaleActivity: initialWhaleActivity, isLoading }: WhaleActivityRadarProps) {
-  const { alerts: wsAlerts, isConnected, newAlert } = useWhaleAlertsWS(chain.id);
-  const [showNewAlertBanner, setShowNewAlertBanner] = useState(false);
+  // Notifications disabled - pass false to prevent toast popups
+  const { alerts: wsAlerts, isConnected } = useWhaleAlertsWS(chain.id, false);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalData, setModalData] = useState<WhaleDetailModalData | null>(null);
 
@@ -58,18 +58,6 @@ export function EnhancedWhaleActivityRadar({ chain, whaleActivity: initialWhaleA
     }
     return initialWhaleActivity || [];
   }, [wsAlerts, initialWhaleActivity]);
-
-  // Show new alert notification
-  useEffect(() => {
-    if (newAlert) {
-      setShowNewAlertBanner(true);
-      toast.info(`🐳 New whale ${newAlert.type}: ${newAlert.amount.toLocaleString()} ${newAlert.token}`, {
-        description: `Value: $${(newAlert.value / 1e6).toFixed(2)}M`,
-        duration: 5000,
-      });
-      setTimeout(() => setShowNewAlertBanner(false), 5000);
-    }
-  }, [newAlert]);
 
   const formatValue = (num: number) => {
     if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
@@ -153,17 +141,7 @@ export function EnhancedWhaleActivityRadar({ chain, whaleActivity: initialWhaleA
 
   return (
     <div className="holo-card p-4 sm:p-6 relative overflow-hidden">
-      {/* New Alert Banner */}
-      {showNewAlertBanner && newAlert && (
-        <div className="absolute top-0 left-0 right-0 bg-warning/20 border-b border-warning/40 px-4 py-2 flex items-center gap-2 animate-pulse z-10">
-          <Bell className="h-4 w-4 text-warning" />
-          <span className="text-xs text-warning font-medium">
-            New whale alert: {newAlert.amount.toLocaleString()} {newAlert.token}
-          </span>
-        </div>
-      )}
-
-      <div className={cn("flex items-center justify-between mb-4 sm:mb-6", showNewAlertBanner && "mt-6")}>
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
         <div>
           <h3 className="text-base sm:text-lg font-display text-foreground flex items-center gap-2">
             🐳 Enhanced Whale Radar
@@ -319,8 +297,7 @@ export function EnhancedWhaleActivityRadar({ chain, whaleActivity: initialWhaleA
                     "w-full flex items-center justify-between p-2 sm:p-2.5 rounded-lg transition-all group text-left",
                     activity.type === "buy" && "bg-success/5 border border-success/20 hover:bg-success/10",
                     activity.type === "sell" && "bg-danger/5 border border-danger/20 hover:bg-danger/10",
-                    activity.type === "transfer" && "bg-warning/5 border border-warning/20 hover:bg-warning/10",
-                    i === 0 && newAlert && "ring-2 ring-warning/50 animate-pulse"
+                    activity.type === "transfer" && "bg-warning/5 border border-warning/20 hover:bg-warning/10"
                   )}
                 >
                   <div className="flex items-center gap-2 min-w-0">
