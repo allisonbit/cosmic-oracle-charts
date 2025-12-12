@@ -145,29 +145,26 @@ export function useChainData(chainId: string, enabled = true) {
     queryKey: ["chain-data", chainId],
     queryFn: async (): Promise<ChainDataResponse> => {
       try {
-        console.log("Fetching chain data for:", chainId);
         const { data, error } = await supabase.functions.invoke("chain-data", {
           body: { chainId },
         });
 
         if (error) {
           console.error("Error fetching chain data:", error);
-          // Return fallback data instead of throwing
           return generateFallbackData(chainId);
         }
 
-        console.log("Chain data received:", data);
         return data as ChainDataResponse;
       } catch (err) {
         console.error("Exception fetching chain data:", err);
-        // Return fallback data on any error
         return generateFallbackData(chainId);
       }
     },
     enabled: enabled && !!chainId,
-    refetchInterval: 30000,
-    staleTime: 15000,
-    retry: 1,
+    refetchInterval: 12000, // Refresh every 12 seconds for live updates
+    staleTime: 10000,
+    refetchIntervalInBackground: true,
+    retry: 2,
     retryDelay: 1000,
   });
 }

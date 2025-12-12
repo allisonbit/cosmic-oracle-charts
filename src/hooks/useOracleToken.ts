@@ -31,16 +31,23 @@ export function useOracleToken() {
   return useQuery<OracleTokenData>({
     queryKey: ['oracle-token'],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke('oracle-token');
-      
-      if (error) {
-        console.error('Oracle token fetch error:', error);
-        throw error;
+      try {
+        const { data, error } = await supabase.functions.invoke('oracle-token');
+        
+        if (error) {
+          console.error('Oracle token fetch error:', error);
+          throw error;
+        }
+        
+        return data as OracleTokenData;
+      } catch (err) {
+        console.error('Oracle token exception:', err);
+        throw err;
       }
-      
-      return data as OracleTokenData;
     },
-    staleTime: 30000, // Refresh every 30 seconds
-    refetchInterval: 60000, // Auto-refresh every minute
+    staleTime: 15000, // 15 seconds
+    refetchInterval: 15000, // Auto-refresh every 15 seconds
+    refetchIntervalInBackground: true,
+    retry: 2,
   });
 }

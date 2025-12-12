@@ -119,7 +119,6 @@ export function useChainForecast(chainId: string, chainData: ChainDataResponse |
     queryKey: ["chain-forecast", chainId],
     queryFn: async (): Promise<ChainForecastResponse> => {
       try {
-        console.log("Fetching chain forecast for:", chainId);
         const { data, error } = await supabase.functions.invoke("chain-forecast", {
           body: { chainId, chainData },
         });
@@ -129,7 +128,6 @@ export function useChainForecast(chainId: string, chainData: ChainDataResponse |
           return generateFallbackForecast(chainId, chainData?.overview?.priceChange24h || 0);
         }
 
-        console.log("Chain forecast received:", data);
         return data as ChainForecastResponse;
       } catch (err) {
         console.error("Exception fetching chain forecast:", err);
@@ -137,9 +135,10 @@ export function useChainForecast(chainId: string, chainData: ChainDataResponse |
       }
     },
     enabled: enabled && !!chainId && !!chainData,
-    staleTime: 300000,
-    refetchInterval: 300000,
-    retry: 1,
+    staleTime: 60000, // 1 minute stale time
+    refetchInterval: 60000, // Refresh every minute
+    refetchIntervalInBackground: true,
+    retry: 2,
     retryDelay: 1000,
   });
 }

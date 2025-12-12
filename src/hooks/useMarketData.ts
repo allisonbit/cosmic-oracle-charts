@@ -39,16 +39,24 @@ export function useMarketData() {
   return useQuery({
     queryKey: ["crypto-market"],
     queryFn: async (): Promise<MarketDataResponse> => {
-      const { data, error } = await supabase.functions.invoke("crypto-market");
-      
-      if (error) {
-        console.error("Error fetching market data:", error);
-        throw error;
+      try {
+        const { data, error } = await supabase.functions.invoke("crypto-market");
+        
+        if (error) {
+          console.error("Error fetching market data:", error);
+          throw error;
+        }
+        
+        return data as MarketDataResponse;
+      } catch (err) {
+        console.error("Exception fetching market data:", err);
+        throw err;
       }
-      
-      return data as MarketDataResponse;
     },
-    refetchInterval: 60000, // Refresh every minute
-    staleTime: 30000,
+    refetchInterval: 15000, // Refresh every 15 seconds
+    staleTime: 10000,
+    refetchIntervalInBackground: true,
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 5000),
   });
 }
