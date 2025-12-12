@@ -28,7 +28,7 @@ import { ChainExternalLinks } from "@/components/chain/ChainExternalLinks";
 import { RealtimePriceTicker } from "@/components/chain/RealtimePriceTicker";
 import { ChainSpecificMetrics } from "@/components/chain/ChainSpecificMetrics";
 import { NetworkInfoPanel } from "@/components/chain/NetworkInfoPanel";
-import { EcosystemTokensPanel } from "@/components/chain/EcosystemTokensPanel";
+import { LiveTokenSearchPanel } from "@/components/chain/LiveTokenSearchPanel";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { ArrowLeft, Loader2, ExternalLink, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -139,11 +139,8 @@ export default function Chain() {
                 {/* Chain-specific Metrics */}
                 <ChainSpecificMetrics chain={chain} chainSpecificData={chainData?.chainSpecificData} />
 
-                {/* Enhanced Ecosystem Tokens Panel */}
-                <EcosystemTokensPanel 
-                  chain={chain} 
-                  ecosystemTokens={chainData?.chainSpecificData?.ecosystemTokens} 
-                />
+                {/* Live Token Search - DexScreener Style */}
+                <LiveTokenSearchPanel chain={chain} />
 
                 {/* Price Chart & Predictions */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
