@@ -9,11 +9,11 @@ import { EnhancedPriceAnalysis } from "@/components/chain/EnhancedPriceAnalysis"
 import { EnhancedPredictionDeepDive } from "@/components/chain/EnhancedPredictionDeepDive";
 import { EnhancedWhaleActivityRadar } from "@/components/chain/EnhancedWhaleActivityRadar";
 import { EnhancedTokenHeatScanner } from "@/components/chain/EnhancedTokenHeatScanner";
-import { SmartMoneyFlow } from "@/components/chain/SmartMoneyFlow";
-import { RiskAnalyzer } from "@/components/chain/RiskAnalyzer";
-import { SocialSentimentGalaxy } from "@/components/chain/SocialSentimentGalaxy";
-import { TokenDiscoveryEngine } from "@/components/chain/TokenDiscoveryEngine";
-import { DailySummary } from "@/components/chain/DailySummary";
+import { EnhancedSmartMoneyFlow } from "@/components/chain/EnhancedSmartMoneyFlow";
+import { EnhancedRiskAnalyzer } from "@/components/chain/EnhancedRiskAnalyzer";
+import { EnhancedSocialSentimentGalaxy } from "@/components/chain/EnhancedSocialSentimentGalaxy";
+import { EnhancedTokenDiscoveryEngine } from "@/components/chain/EnhancedTokenDiscoveryEngine";
+import { EnhancedDailySummary } from "@/components/chain/EnhancedDailySummary";
 import { ChainSidebar } from "@/components/chain/ChainSidebar";
 import { CryptoTicker } from "@/components/layout/CryptoTicker";
 import { Footer } from "@/components/layout/Footer";
@@ -21,8 +21,8 @@ import { EnhancedChainHealthMonitor } from "@/components/chain/EnhancedChainHeal
 import { EnhancedDeepFinancialMetrics } from "@/components/chain/EnhancedDeepFinancialMetrics";
 import { EnhancedAdvancedPredictionModels } from "@/components/chain/EnhancedAdvancedPredictionModels";
 import { EnhancedAnomalyDetection } from "@/components/chain/EnhancedAnomalyDetection";
-import { MultiChainComparison } from "@/components/chain/MultiChainComparison";
-import { InstitutionalView } from "@/components/chain/InstitutionalView";
+import { EnhancedMultiChainComparison } from "@/components/chain/EnhancedMultiChainComparison";
+import { EnhancedInstitutionalView } from "@/components/chain/EnhancedInstitutionalView";
 import { ChainQuickNav } from "@/components/chain/ChainQuickNav";
 import { ChainExternalLinks } from "@/components/chain/ChainExternalLinks";
 import { RealtimePriceTicker } from "@/components/chain/RealtimePriceTicker";
@@ -166,24 +166,24 @@ export default function Chain() {
 
                 {/* Smart Money & Risk */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                  <SmartMoneyFlow chain={chain} smartMoneyFlow={chainData?.smartMoneyFlow} isLoading={chainLoading} />
-                  <RiskAnalyzer chain={chain} />
+                  <EnhancedSmartMoneyFlow chain={chain} smartMoneyFlow={chainData?.smartMoneyFlow} isLoading={chainLoading} />
+                  <EnhancedRiskAnalyzer chain={chain} />
                 </div>
 
                 {/* Multi-chain Comparison */}
-                <MultiChainComparison chain={chain} comparisonData={advancedData?.comparisonData} isLoading={advancedLoading} />
+                <EnhancedMultiChainComparison chain={chain} comparisonData={advancedData?.comparisonData} isLoading={advancedLoading} />
 
                 {/* Institutional View */}
-                <InstitutionalView chain={chain} institutionalData={advancedData?.institutionalData} isLoading={advancedLoading} />
+                <EnhancedInstitutionalView chain={chain} institutionalData={advancedData?.institutionalData} isLoading={advancedLoading} />
 
                 {/* Social Sentiment */}
-                <SocialSentimentGalaxy chain={chain} socialSentiment={forecastData?.socialSentiment} isLoading={forecastLoading} />
+                <EnhancedSocialSentimentGalaxy chain={chain} socialSentiment={forecastData?.socialSentiment} isLoading={forecastLoading} />
 
                 {/* Token Discovery */}
-                <TokenDiscoveryEngine chain={chain} />
+                <EnhancedTokenDiscoveryEngine chain={chain} />
 
                 {/* Daily Summary */}
-                <DailySummary chain={chain} forecast={forecastData?.forecast} isLoading={forecastLoading} />
+                <EnhancedDailySummary chain={chain} forecast={forecastData?.forecast} isLoading={forecastLoading} />
               </div>
             </main>
           )}
