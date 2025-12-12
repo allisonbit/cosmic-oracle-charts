@@ -545,7 +545,6 @@ export function EnhancedRiskAnalyzer({ chain }: EnhancedRiskAnalyzerProps) {
         open={modalOpen}
         onOpenChange={setModalOpen}
         token={selectedToken}
-        chain={chain}
       />
 
       {/* Risk Detail Modal */}
