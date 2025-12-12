@@ -1,28 +1,14 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { memo, useMemo, useCallback, lazy, Suspense } from "react";
 import { getChainById } from "@/lib/chainConfig";
 import { useChainData } from "@/hooks/useChainData";
 import { useChainForecast } from "@/hooks/useChainForecast";
 import { useAdvancedChainData } from "@/hooks/useAdvancedChainData";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 import { ChainOverviewPanel } from "@/components/chain/ChainOverviewPanel";
-import { EnhancedPriceAnalysis } from "@/components/chain/EnhancedPriceAnalysis";
-import { EnhancedPredictionDeepDive } from "@/components/chain/EnhancedPredictionDeepDive";
-import { EnhancedWhaleActivityRadar } from "@/components/chain/EnhancedWhaleActivityRadar";
-import { EnhancedTokenHeatScanner } from "@/components/chain/EnhancedTokenHeatScanner";
-import { EnhancedSmartMoneyFlow } from "@/components/chain/EnhancedSmartMoneyFlow";
-import { EnhancedRiskAnalyzer } from "@/components/chain/EnhancedRiskAnalyzer";
-import { EnhancedSocialSentimentGalaxy } from "@/components/chain/EnhancedSocialSentimentGalaxy";
-import { EnhancedTokenDiscoveryEngine } from "@/components/chain/EnhancedTokenDiscoveryEngine";
-import { EnhancedDailySummary } from "@/components/chain/EnhancedDailySummary";
 import { ChainSidebar } from "@/components/chain/ChainSidebar";
 import { CryptoTicker } from "@/components/layout/CryptoTicker";
 import { Footer } from "@/components/layout/Footer";
-import { EnhancedChainHealthMonitor } from "@/components/chain/EnhancedChainHealthMonitor";
-import { EnhancedDeepFinancialMetrics } from "@/components/chain/EnhancedDeepFinancialMetrics";
-import { EnhancedAdvancedPredictionModels } from "@/components/chain/EnhancedAdvancedPredictionModels";
-import { EnhancedAnomalyDetection } from "@/components/chain/EnhancedAnomalyDetection";
-import { EnhancedMultiChainComparison } from "@/components/chain/EnhancedMultiChainComparison";
-import { EnhancedInstitutionalView } from "@/components/chain/EnhancedInstitutionalView";
 import { ChainQuickNav } from "@/components/chain/ChainQuickNav";
 import { ChainExternalLinks } from "@/components/chain/ChainExternalLinks";
 import { RealtimePriceTicker } from "@/components/chain/RealtimePriceTicker";
@@ -30,26 +16,47 @@ import { ChainSpecificMetrics } from "@/components/chain/ChainSpecificMetrics";
 import { NetworkInfoPanel } from "@/components/chain/NetworkInfoPanel";
 import { LiveTokenSearchPanel } from "@/components/chain/LiveTokenSearchPanel";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { LazySection } from "@/components/ui/LazySection";
 import { ArrowLeft, Loader2, ExternalLink, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useQueryClient } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/skeleton";
+
+// Lazy load heavy components
+const EnhancedPriceAnalysis = lazy(() => import("@/components/chain/EnhancedPriceAnalysis").then(m => ({ default: m.EnhancedPriceAnalysis })));
+const EnhancedPredictionDeepDive = lazy(() => import("@/components/chain/EnhancedPredictionDeepDive").then(m => ({ default: m.EnhancedPredictionDeepDive })));
+const EnhancedWhaleActivityRadar = lazy(() => import("@/components/chain/EnhancedWhaleActivityRadar").then(m => ({ default: m.EnhancedWhaleActivityRadar })));
+const EnhancedTokenHeatScanner = lazy(() => import("@/components/chain/EnhancedTokenHeatScanner").then(m => ({ default: m.EnhancedTokenHeatScanner })));
+const EnhancedSmartMoneyFlow = lazy(() => import("@/components/chain/EnhancedSmartMoneyFlow").then(m => ({ default: m.EnhancedSmartMoneyFlow })));
+const EnhancedRiskAnalyzer = lazy(() => import("@/components/chain/EnhancedRiskAnalyzer").then(m => ({ default: m.EnhancedRiskAnalyzer })));
+const EnhancedSocialSentimentGalaxy = lazy(() => import("@/components/chain/EnhancedSocialSentimentGalaxy").then(m => ({ default: m.EnhancedSocialSentimentGalaxy })));
+const EnhancedTokenDiscoveryEngine = lazy(() => import("@/components/chain/EnhancedTokenDiscoveryEngine").then(m => ({ default: m.EnhancedTokenDiscoveryEngine })));
+const EnhancedDailySummary = lazy(() => import("@/components/chain/EnhancedDailySummary").then(m => ({ default: m.EnhancedDailySummary })));
+const EnhancedChainHealthMonitor = lazy(() => import("@/components/chain/EnhancedChainHealthMonitor").then(m => ({ default: m.EnhancedChainHealthMonitor })));
+const EnhancedDeepFinancialMetrics = lazy(() => import("@/components/chain/EnhancedDeepFinancialMetrics").then(m => ({ default: m.EnhancedDeepFinancialMetrics })));
+const EnhancedAdvancedPredictionModels = lazy(() => import("@/components/chain/EnhancedAdvancedPredictionModels").then(m => ({ default: m.EnhancedAdvancedPredictionModels })));
+const EnhancedAnomalyDetection = lazy(() => import("@/components/chain/EnhancedAnomalyDetection").then(m => ({ default: m.EnhancedAnomalyDetection })));
+const EnhancedMultiChainComparison = lazy(() => import("@/components/chain/EnhancedMultiChainComparison").then(m => ({ default: m.EnhancedMultiChainComparison })));
+const EnhancedInstitutionalView = lazy(() => import("@/components/chain/EnhancedInstitutionalView").then(m => ({ default: m.EnhancedInstitutionalView })));
+
+// Component loader placeholder
+const ComponentLoader = memo(function ComponentLoader() {
+  return (
+    <div className="holo-card p-4 sm:p-6 animate-pulse">
+      <Skeleton className="h-6 w-48 mb-4" />
+      <Skeleton className="h-32" />
+    </div>
+  );
+});
 
 export default function Chain() {
   const { chainId } = useParams<{ chainId: string }>();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const chain = chainId ? getChainById(chainId) : undefined;
 
-  const { data: chainData, isLoading: chainLoading, isFetching: chainFetching, refetch: refetchChainData, isError: chainError } = useChainData(chainId || "", !!chain);
+  const { data: chainData, isLoading: chainLoading, isFetching: chainFetching, refetch: refetchChainData } = useChainData(chainId || "", !!chain);
   const { data: forecastData, isLoading: forecastLoading, refetch: refetchForecast } = useChainForecast(chainId || "", chainData, !!chain && !!chainData);
   const { data: advancedData, isLoading: advancedLoading, refetch: refetchAdvanced } = useAdvancedChainData(chainId || "", !!chain);
   const { data: pricesData } = useCryptoPrices();
-
-  const handleRefreshAll = () => {
-    refetchChainData();
-    refetchForecast();
-    refetchAdvanced();
-  };
 
   if (!chain) {
     return (
@@ -65,7 +72,16 @@ export default function Chain() {
     );
   }
 
-  const chainPrice = pricesData?.prices?.find(p => p.symbol === chain.symbol);
+  const chainPrice = useMemo(() => 
+    pricesData?.prices?.find(p => p.symbol === chain.symbol),
+    [pricesData?.prices, chain.symbol]
+  );
+
+  const handleRefreshAll = useCallback(() => {
+    refetchChainData();
+    refetchForecast();
+    refetchAdvanced();
+  }, [refetchChainData, refetchForecast, refetchAdvanced]);
 
   return (
     <SidebarProvider defaultOpen={false}>
@@ -74,7 +90,6 @@ export default function Chain() {
         <div className="flex-1 flex flex-col min-w-0">
           <CryptoTicker />
           
-          {/* Always render content - use placeholder data during loading */}
           <main className="flex-1 overflow-y-auto pb-20 md:pb-0">
             <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8 space-y-4 sm:space-y-6">
               {/* Header with navigation */}
@@ -105,76 +120,109 @@ export default function Chain() {
                 </div>
               </div>
 
-              {/* Quick chain navigation */}
               <ChainQuickNav />
 
-              {/* Refreshing indicator */}
               {chainFetching && (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/20 px-3 py-2 rounded-lg w-fit">
                   <Loader2 className="w-4 h-4 animate-spin" /><span>Refreshing data...</span>
                 </div>
               )}
 
-              {/* Main Overview */}
+              {/* Critical above-fold components - load immediately */}
               <ChainOverviewPanel chain={chain} overview={chainData?.overview} isLoading={chainLoading} />
-
-              {/* External links */}
               <ChainExternalLinks chain={chain} />
-
-              {/* Enhanced Network Info Panel */}
               <NetworkInfoPanel chain={chain} overview={chainData?.overview} isLoading={chainLoading} />
-
-              {/* Real-time Price Ticker for all chains */}
               <RealtimePriceTicker chain={chain} />
-
-              {/* Chain-specific Metrics */}
               <ChainSpecificMetrics chain={chain} chainSpecificData={chainData?.chainSpecificData} />
-
-              {/* Live Token Search - DexScreener Style */}
               <LiveTokenSearchPanel chain={chain} />
 
-              {/* Price Chart & Predictions */}
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
-                <EnhancedPriceAnalysis chain={chain} priceData={chainPrice} />
-                <EnhancedPredictionDeepDive chain={chain} forecast={forecastData?.forecast} isLoading={forecastLoading} />
-              </div>
+              {/* Lazy load below-fold components */}
+              <LazySection fallbackHeight="h-80">
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
+                  <Suspense fallback={<ComponentLoader />}>
+                    <EnhancedPriceAnalysis chain={chain} priceData={chainPrice} />
+                  </Suspense>
+                  <Suspense fallback={<ComponentLoader />}>
+                    <EnhancedPredictionDeepDive chain={chain} forecast={forecastData?.forecast} isLoading={forecastLoading} />
+                  </Suspense>
+                </div>
+              </LazySection>
 
-              {/* Health & Financial Metrics */}
-              <EnhancedChainHealthMonitor chain={chain} healthData={advancedData?.healthData} isLoading={advancedLoading} onRefresh={refetchAdvanced} />
-              <EnhancedDeepFinancialMetrics chain={chain} financialData={advancedData?.financialData} isLoading={advancedLoading} />
+              <LazySection fallbackHeight="h-64">
+                <Suspense fallback={<ComponentLoader />}>
+                  <EnhancedChainHealthMonitor chain={chain} healthData={advancedData?.healthData} isLoading={advancedLoading} onRefresh={refetchAdvanced} />
+                </Suspense>
+              </LazySection>
 
-              {/* AI Prediction Models */}
-              <EnhancedAdvancedPredictionModels chain={chain} predictionData={advancedData?.predictionData} isLoading={advancedLoading} />
+              <LazySection fallbackHeight="h-64">
+                <Suspense fallback={<ComponentLoader />}>
+                  <EnhancedDeepFinancialMetrics chain={chain} financialData={advancedData?.financialData} isLoading={advancedLoading} />
+                </Suspense>
+              </LazySection>
 
-              {/* Anomaly Detection */}
-              <EnhancedAnomalyDetection chain={chain} anomalyData={advancedData?.anomalyData} isLoading={advancedLoading} />
+              <LazySection fallbackHeight="h-64">
+                <Suspense fallback={<ComponentLoader />}>
+                  <EnhancedAdvancedPredictionModels chain={chain} predictionData={advancedData?.predictionData} isLoading={advancedLoading} />
+                </Suspense>
+              </LazySection>
 
-              {/* Whale & Token Analysis */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                <EnhancedWhaleActivityRadar chain={chain} whaleActivity={chainData?.whaleActivity} isLoading={chainLoading} />
-                <EnhancedTokenHeatScanner chain={chain} tokenHeat={chainData?.tokenHeat} isLoading={chainLoading} />
-              </div>
+              <LazySection fallbackHeight="h-64">
+                <Suspense fallback={<ComponentLoader />}>
+                  <EnhancedAnomalyDetection chain={chain} anomalyData={advancedData?.anomalyData} isLoading={advancedLoading} />
+                </Suspense>
+              </LazySection>
 
-              {/* Smart Money & Risk */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                <EnhancedSmartMoneyFlow chain={chain} smartMoneyFlow={chainData?.smartMoneyFlow} isLoading={chainLoading} />
-                <EnhancedRiskAnalyzer chain={chain} />
-              </div>
+              <LazySection fallbackHeight="h-80">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                  <Suspense fallback={<ComponentLoader />}>
+                    <EnhancedWhaleActivityRadar chain={chain} whaleActivity={chainData?.whaleActivity} isLoading={chainLoading} />
+                  </Suspense>
+                  <Suspense fallback={<ComponentLoader />}>
+                    <EnhancedTokenHeatScanner chain={chain} tokenHeat={chainData?.tokenHeat} isLoading={chainLoading} />
+                  </Suspense>
+                </div>
+              </LazySection>
 
-              {/* Multi-chain Comparison */}
-              <EnhancedMultiChainComparison chain={chain} comparisonData={advancedData?.comparisonData} isLoading={advancedLoading} />
+              <LazySection fallbackHeight="h-80">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                  <Suspense fallback={<ComponentLoader />}>
+                    <EnhancedSmartMoneyFlow chain={chain} smartMoneyFlow={chainData?.smartMoneyFlow} isLoading={chainLoading} />
+                  </Suspense>
+                  <Suspense fallback={<ComponentLoader />}>
+                    <EnhancedRiskAnalyzer chain={chain} />
+                  </Suspense>
+                </div>
+              </LazySection>
 
-              {/* Institutional View */}
-              <EnhancedInstitutionalView chain={chain} institutionalData={advancedData?.institutionalData} isLoading={advancedLoading} />
+              <LazySection fallbackHeight="h-64">
+                <Suspense fallback={<ComponentLoader />}>
+                  <EnhancedMultiChainComparison chain={chain} comparisonData={advancedData?.comparisonData} isLoading={advancedLoading} />
+                </Suspense>
+              </LazySection>
 
-              {/* Social Sentiment */}
-              <EnhancedSocialSentimentGalaxy chain={chain} socialSentiment={forecastData?.socialSentiment} isLoading={forecastLoading} />
+              <LazySection fallbackHeight="h-64">
+                <Suspense fallback={<ComponentLoader />}>
+                  <EnhancedInstitutionalView chain={chain} institutionalData={advancedData?.institutionalData} isLoading={advancedLoading} />
+                </Suspense>
+              </LazySection>
 
-              {/* Token Discovery */}
-              <EnhancedTokenDiscoveryEngine chain={chain} />
+              <LazySection fallbackHeight="h-64">
+                <Suspense fallback={<ComponentLoader />}>
+                  <EnhancedSocialSentimentGalaxy chain={chain} socialSentiment={forecastData?.socialSentiment} isLoading={forecastLoading} />
+                </Suspense>
+              </LazySection>
 
-              {/* Daily Summary */}
-              <EnhancedDailySummary chain={chain} forecast={forecastData?.forecast} isLoading={forecastLoading} />
+              <LazySection fallbackHeight="h-64">
+                <Suspense fallback={<ComponentLoader />}>
+                  <EnhancedTokenDiscoveryEngine chain={chain} />
+                </Suspense>
+              </LazySection>
+
+              <LazySection fallbackHeight="h-48">
+                <Suspense fallback={<ComponentLoader />}>
+                  <EnhancedDailySummary chain={chain} forecast={forecastData?.forecast} isLoading={forecastLoading} />
+                </Suspense>
+              </LazySection>
             </div>
           </main>
           
