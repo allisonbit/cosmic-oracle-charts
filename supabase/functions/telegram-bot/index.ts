@@ -7,11 +7,10 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
 const ALCHEMY_API_KEY = Deno.env.get("ALCHEMY_API_KEY_1");
+const ALCHEMY_API_KEY_2 = Deno.env.get("ALCHEMY_API_KEY_2");
 
 const WEBSITE_URL = "https://oraclebull.com";
 const MASCOT_IMAGE = "https://oraclebull.com/oracle-bot-mascot.jpg";
-const ORACLE_LOGO = "https://oraclebull.com/oracle-logo.jpg";
-const COSMIC_HERO = "https://oraclebull.com/cosmic-oracle-hero.jpg";
 
 // Website page URLs for sharing
 const WEBSITE_PAGES = {
@@ -49,6 +48,40 @@ const ALCHEMY_NETWORKS: Record<string, string> = {
   opt: "opt-mainnet",
   solana: "solana-mainnet",
   sol: "solana-mainnet",
+};
+
+// Token symbol to DexScreener chain mapping
+const DEXSCREENER_CHAINS: Record<string, string> = {
+  ethereum: "ethereum",
+  eth: "ethereum",
+  base: "base",
+  arbitrum: "arbitrum",
+  polygon: "polygon",
+  optimism: "optimism",
+  solana: "solana",
+  sol: "solana",
+  bsc: "bsc",
+  avalanche: "avalanche",
+};
+
+// Common token addresses for DexScreener lookups
+const TOKEN_ADDRESSES: Record<string, { address: string; chain: string }> = {
+  btc: { address: "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599", chain: "ethereum" }, // WBTC
+  wbtc: { address: "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599", chain: "ethereum" },
+  eth: { address: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", chain: "ethereum" }, // WETH
+  weth: { address: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", chain: "ethereum" },
+  usdt: { address: "0xdac17f958d2ee523a2206206994597c13d831ec7", chain: "ethereum" },
+  usdc: { address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48", chain: "ethereum" },
+  sol: { address: "So11111111111111111111111111111111111111112", chain: "solana" },
+  link: { address: "0x514910771af9ca656af840dff83e8264ecf986ca", chain: "ethereum" },
+  uni: { address: "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984", chain: "ethereum" },
+  aave: { address: "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9", chain: "ethereum" },
+  matic: { address: "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0", chain: "ethereum" },
+  arb: { address: "0xb50721bcf8d664c30412cfbc6cf7a15145234ad1", chain: "ethereum" },
+  op: { address: "0x4200000000000000000000000000000000000042", chain: "optimism" },
+  pepe: { address: "0x6982508145454ce325ddbe47a25d4ec3d2311933", chain: "ethereum" },
+  shib: { address: "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce", chain: "ethereum" },
+  doge: { address: "0x4206931337dc273a630d328da6441786bfad668f", chain: "ethereum" },
 };
 
 // Check if address is Solana (base58, 32-44 chars, no 0x prefix)
@@ -144,7 +177,6 @@ async function pinMessage(chatId: number, messageId: number) {
 
 // ============ CHART GENERATION ============
 
-// Generate live price chart using QuickChart API
 function generateChartUrl(symbol: string, prices: number[], labels: string[], isPositive: boolean): string {
   const chartConfig = {
     type: 'line',
@@ -180,107 +212,118 @@ function generateChartUrl(symbol: string, prices: number[], labels: string[], is
   return `https://quickchart.io/chart?c=${encoded}&w=600&h=400&bkg=%231a1a2e`;
 }
 
-// Fetch price history for chart
-async function fetchPriceHistory(coinId: string, days = 7): Promise<{ prices: number[], labels: string[], change: number } | null> {
+// ============ ALCHEMY + DEXSCREENER DATA FETCHING ============
+
+// Fetch token price from DexScreener (Alchemy doesn't provide market prices)
+async function fetchPriceFromDexScreener(symbolOrAddress: string, chain = "ethereum") {
   try {
-    const response = await fetch(
-      `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=${days}`
-    );
-    const data = await response.json();
+    const symbolLower = symbolOrAddress.toLowerCase();
     
-    if (data.prices?.length > 0) {
-      // Sample ~20 points for cleaner chart
-      const step = Math.max(1, Math.floor(data.prices.length / 20));
-      const sampled = data.prices.filter((_: any, i: number) => i % step === 0);
-      
-      const prices = sampled.map((p: number[]) => p[1]);
-      const labels = sampled.map((p: number[]) => {
-        const date = new Date(p[0]);
-        return `${date.getMonth()+1}/${date.getDate()}`;
-      });
-      
-      const firstPrice = data.prices[0][1];
-      const lastPrice = data.prices[data.prices.length - 1][1];
-      const change = ((lastPrice - firstPrice) / firstPrice) * 100;
-      
-      return { prices, labels, change };
+    // Check if it's a known token
+    const knownToken = TOKEN_ADDRESSES[symbolLower];
+    let searchUrl = "";
+    
+    if (knownToken) {
+      searchUrl = `https://api.dexscreener.com/latest/dex/tokens/${knownToken.address}`;
+    } else if (symbolOrAddress.startsWith("0x") || isSolanaAddress(symbolOrAddress)) {
+      // Direct address lookup
+      searchUrl = `https://api.dexscreener.com/latest/dex/tokens/${symbolOrAddress}`;
+    } else {
+      // Search by symbol
+      searchUrl = `https://api.dexscreener.com/latest/dex/search?q=${symbolOrAddress}`;
     }
-    return null;
-  } catch (error) {
-    console.error("Error fetching price history:", error);
-    return null;
-  }
-}
-
-// Get coin ID from symbol
-async function getCoinId(symbol: string): Promise<string | null> {
-  try {
-    const response = await fetch(`https://api.coingecko.com/api/v3/search?query=${symbol}`);
-    const data = await response.json();
-    return data.coins?.[0]?.id || null;
-  } catch {
-    return null;
-  }
-}
-
-// ============ DATA FETCHING ============
-
-async function fetchPrice(symbol: string) {
-  try {
-    const searchResponse = await fetch(`https://api.coingecko.com/api/v3/search?query=${symbol}`);
-    const searchData = await searchResponse.json();
     
-    if (searchData.coins?.length > 0) {
-      const coin = searchData.coins[0];
-      const priceResponse = await fetch(
-        `https://api.coingecko.com/api/v3/simple/price?ids=${coin.id}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_market_cap=true`
-      );
-      const priceData = await priceResponse.json();
-      if (priceData[coin.id]) {
-        return {
-          name: coin.name,
-          symbol: coin.symbol.toUpperCase(),
-          price: priceData[coin.id].usd,
-          change24h: priceData[coin.id].usd_24h_change,
-          volume: priceData[coin.id].usd_24h_vol,
-          marketCap: priceData[coin.id].usd_market_cap,
-        };
+    console.log(`DexScreener fetch: ${searchUrl}`);
+    const response = await fetch(searchUrl);
+    const data = await response.json();
+    
+    // Get best pair (highest liquidity)
+    const pairs = data.pairs || [];
+    if (pairs.length === 0) return null;
+    
+    // Sort by liquidity and get the best one
+    const bestPair = pairs.sort((a: any, b: any) => (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0))[0];
+    
+    return {
+      name: bestPair.baseToken?.name || symbolOrAddress,
+      symbol: bestPair.baseToken?.symbol?.toUpperCase() || symbolOrAddress.toUpperCase(),
+      price: parseFloat(bestPair.priceUsd) || 0,
+      change24h: bestPair.priceChange?.h24 || 0,
+      volume: bestPair.volume?.h24 || 0,
+      marketCap: bestPair.fdv || 0,
+      liquidity: bestPair.liquidity?.usd || 0,
+      pairAddress: bestPair.pairAddress,
+      dexUrl: bestPair.url,
+      chain: bestPair.chainId,
+    };
+  } catch (error) {
+    console.error("DexScreener error:", error);
+    return null;
+  }
+}
+
+// Get top tokens from DexScreener by chain
+async function fetchTopTokensByChain(chain: string, limit = 10) {
+  try {
+    const chainId = DEXSCREENER_CHAINS[chain.toLowerCase()] || "ethereum";
+    const response = await fetch(`https://api.dexscreener.com/latest/dex/tokens/trending/${chainId}`);
+    
+    if (!response.ok) {
+      // Fallback: search for popular tokens on the chain
+      const popularSearches = ["eth", "usdc", "usdt", "wbtc", "link"];
+      const results = [];
+      for (const search of popularSearches.slice(0, limit)) {
+        const token = await fetchPriceFromDexScreener(search, chain);
+        if (token) results.push(token);
       }
+      return results;
     }
-    return null;
+    
+    const data = await response.json();
+    return (data.pairs || []).slice(0, limit).map((pair: any) => ({
+      symbol: pair.baseToken?.symbol?.toUpperCase(),
+      name: pair.baseToken?.name,
+      price: parseFloat(pair.priceUsd) || 0,
+      change24h: pair.priceChange?.h24 || 0,
+      volume: pair.volume?.h24 || 0,
+      liquidity: pair.liquidity?.usd || 0,
+    }));
   } catch (error) {
-    console.error("Error fetching price:", error);
-    return null;
-  }
-}
-
-async function fetchTopCoins(limit = 10) {
-  try {
-    const response = await fetch(
-      `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${limit}&page=1&sparkline=false&price_change_percentage=24h`
-    );
-    return await response.json();
-  } catch (error) {
-    console.error("Error fetching top coins:", error);
+    console.error("Error fetching top tokens:", error);
     return [];
   }
 }
 
-async function fetchTrending() {
+// Fetch trending tokens from DexScreener
+async function fetchTrendingTokens() {
   try {
-    const response = await fetch("https://api.coingecko.com/api/v3/search/trending");
+    const response = await fetch("https://api.dexscreener.com/token-boosts/top/v1");
     const data = await response.json();
-    return data.coins?.slice(0, 7) || [];
+    
+    if (!data || !Array.isArray(data)) return [];
+    
+    return data.slice(0, 10).map((item: any) => ({
+      symbol: item.tokenAddress?.slice(0, 8) || "???",
+      name: item.description || "Trending Token",
+      url: item.url,
+      chain: item.chainId,
+    }));
   } catch (error) {
     console.error("Error fetching trending:", error);
     return [];
   }
 }
 
+// Fetch gas price using Alchemy
 async function fetchGas(chain: string) {
   try {
     const chainLower = chain.toLowerCase();
     const network = ALCHEMY_NETWORKS[chainLower] || "eth-mainnet";
+    
+    // Solana doesn't have gas in the same way
+    if (chainLower === "solana" || chainLower === "sol") {
+      return { slow: 0.000005, average: 0.000005, fast: 0.00001, unit: "SOL" };
+    }
 
     const response = await fetch(`https://${network}.g.alchemy.com/v2/${ALCHEMY_API_KEY}`, {
       method: "POST",
@@ -289,7 +332,7 @@ async function fetchGas(chain: string) {
     });
     const data = await response.json();
     const gasGwei = parseInt(data.result, 16) / 1e9;
-    return { slow: Math.round(gasGwei * 0.8), average: Math.round(gasGwei), fast: Math.round(gasGwei * 1.2) };
+    return { slow: Math.round(gasGwei * 0.8), average: Math.round(gasGwei), fast: Math.round(gasGwei * 1.2), unit: "Gwei" };
   } catch (error) {
     console.error("Error fetching gas:", error);
     return null;
@@ -300,7 +343,15 @@ async function fetchGas(chain: string) {
 async function fetchChainMetrics(chain: string) {
   try {
     const chainLower = chain.toLowerCase();
-    const network = ALCHEMY_NETWORKS[chainLower] || "eth-mainnet";
+    const network = ALCHEMY_NETWORKS[chainLower];
+    
+    if (!network) return null;
+    
+    // Handle Solana differently
+    if (chainLower === "solana" || chainLower === "sol") {
+      return await fetchSolanaChainMetrics();
+    }
+    
     const alchemyUrl = `https://${network}.g.alchemy.com/v2/${ALCHEMY_API_KEY}`;
 
     // Batch RPC calls for efficiency
@@ -353,137 +404,55 @@ async function fetchChainMetrics(chain: string) {
   }
 }
 
-// Fetch token data for specific chain
-async function fetchChainTokens(chain: string, limit = 5) {
+// Fetch Solana chain metrics using Alchemy
+async function fetchSolanaChainMetrics() {
   try {
-    // Map chain to CoinGecko platform
-    const platformMap: Record<string, string> = {
-      ethereum: "ethereum",
-      base: "base",
-      arbitrum: "arbitrum-one",
-      polygon: "polygon-pos",
-      optimism: "optimistic-ethereum",
-      avalanche: "avalanche",
-      bsc: "binance-smart-chain",
-      solana: "solana",
-    };
+    const alchemyUrl = `https://solana-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`;
     
-    const platform = platformMap[chain.toLowerCase()] || "ethereum";
+    // Get slot (equivalent to block number)
+    const slotResponse = await fetch(alchemyUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ jsonrpc: "2.0", method: "getSlot", params: [], id: 1 }),
+    });
+    const slotData = await slotResponse.json();
     
-    // Get top tokens by market cap for the chain
-    const response = await fetch(
-      `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=${platform}&order=market_cap_desc&per_page=${limit}&page=1&sparkline=false&price_change_percentage=24h`
-    );
+    // Get recent performance samples for TPS
+    const perfResponse = await fetch(alchemyUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ jsonrpc: "2.0", method: "getRecentPerformanceSamples", params: [1], id: 2 }),
+    });
+    const perfData = await perfResponse.json();
+    const perf = perfData.result?.[0];
     
-    if (!response.ok) {
-      // Fallback to general market data
-      const fallbackResponse = await fetch(
-        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${limit}&page=1&sparkline=false`
-      );
-      return await fallbackResponse.json();
-    }
+    const tps = perf ? Math.round(perf.numTransactions / perf.samplePeriodSecs) : 0;
     
-    return await response.json();
-  } catch (error) {
-    console.error("Error fetching chain tokens:", error);
-    return [];
-  }
-}
-
-// Fetch DeFi TVL data
-async function fetchDefiTVL(chain: string) {
-  try {
-    // Use DeFiLlama API for TVL data
-    const response = await fetch("https://api.llama.fi/v2/chains");
-    const data = await response.json();
-    
-    const chainMap: Record<string, string> = {
-      ethereum: "Ethereum",
-      base: "Base",
-      arbitrum: "Arbitrum",
-      polygon: "Polygon",
-      optimism: "Optimism",
-      avalanche: "Avalanche",
-      bsc: "BSC",
-      solana: "Solana",
-    };
-    
-    const chainName = chainMap[chain.toLowerCase()] || "Ethereum";
-    const chainData = data.find((c: any) => c.name === chainName);
-    
-    return chainData ? {
-      tvl: chainData.tvl,
-      change1d: chainData.change_1d,
-      change7d: chainData.change_7d,
-    } : null;
-  } catch (error) {
-    console.error("Error fetching TVL:", error);
-    return null;
-  }
-}
-
-async function fetchSentiment() {
-  try {
-    const response = await fetch("https://api.alternative.me/fng/?limit=1");
-    const data = await response.json();
-    return { fearGreed: data.data?.[0]?.value || "50", classification: data.data?.[0]?.value_classification || "Neutral" };
-  } catch (error) {
-    return { fearGreed: "50", classification: "Neutral" };
-  }
-}
-
-async function fetchGlobalMarket() {
-  try {
-    const response = await fetch("https://api.coingecko.com/api/v3/global");
-    const data = await response.json();
     return {
-      totalMarketCap: data.data?.total_market_cap?.usd,
-      totalVolume: data.data?.total_volume?.usd,
-      btcDominance: data.data?.market_cap_percentage?.btc,
-      ethDominance: data.data?.market_cap_percentage?.eth,
-      marketCapChange: data.data?.market_cap_change_percentage_24h_usd,
-      activeCryptocurrencies: data.data?.active_cryptocurrencies,
+      chain: "solana",
+      blockNumber: slotData.result || 0,
+      gasPrice: 0.000005, // Fixed lamport fee
+      baseFee: null,
+      txCount: tps,
+      tps,
+      timestamp: Date.now() / 1000,
+      syncing: "synced",
+      chainPage: CHAIN_PAGES.solana,
     };
   } catch (error) {
+    console.error("Error fetching Solana metrics:", error);
     return null;
-  }
-}
-
-function formatNumber(num: number): string {
-  if (!num) return "N/A";
-  if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
-  if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
-  if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
-  if (num >= 1e3) return `$${(num / 1e3).toFixed(2)}K`;
-  return `$${num.toFixed(2)}`;
-}
-
-function formatNumberRaw(num: number): string {
-  if (!num) return "N/A";
-  if (num >= 1e12) return `${(num / 1e12).toFixed(2)}T`;
-  if (num >= 1e9) return `${(num / 1e9).toFixed(2)}B`;
-  if (num >= 1e6) return `${(num / 1e6).toFixed(2)}M`;
-  if (num >= 1e3) return `${(num / 1e3).toFixed(2)}K`;
-  return num.toFixed(2);
-}
-
-// Fetch crypto news from CoinGecko status updates
-async function fetchCryptoNews() {
-  try {
-    const response = await fetch("https://api.coingecko.com/api/v3/status_updates?per_page=5");
-    const data = await response.json();
-    return data.status_updates?.slice(0, 5) || [];
-  } catch (error) {
-    console.error("Error fetching news:", error);
-    return [];
   }
 }
 
 // Fetch whale transactions using Alchemy
-async function fetchWhaleTransactions() {
+async function fetchWhaleTransactions(chain = "ethereum") {
   try {
+    const network = ALCHEMY_NETWORKS[chain.toLowerCase()] || "eth-mainnet";
+    const alchemyUrl = `https://${network}.g.alchemy.com/v2/${ALCHEMY_API_KEY}`;
+    
     // Get latest block
-    const blockResponse = await fetch(`https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`, {
+    const blockResponse = await fetch(alchemyUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ jsonrpc: "2.0", method: "eth_blockNumber", params: [], id: 1 }),
@@ -492,7 +461,7 @@ async function fetchWhaleTransactions() {
     const latestBlock = blockData.result;
 
     // Get asset transfers for large ETH movements (>100 ETH)
-    const transfersResponse = await fetch(`https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`, {
+    const transfersResponse = await fetch(alchemyUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -524,7 +493,7 @@ async function fetchWhaleTransactions() {
   }
 }
 
-// ============ WALLET SCANNER ============
+// ============ WALLET SCANNER (ALCHEMY) ============
 
 // Fetch Solana wallet balances using Alchemy
 async function fetchSolanaWalletBalances(address: string) {
@@ -543,7 +512,7 @@ async function fetchSolanaWalletBalances(address: string) {
       }),
     });
     const solBalanceData = await solBalanceResponse.json();
-    const solBalance = (solBalanceData.result?.value || 0) / 1e9; // lamports to SOL
+    const solBalance = (solBalanceData.result?.value || 0) / 1e9;
 
     // Get SPL token accounts
     const tokenAccountsResponse = await fetch(alchemyUrl, {
@@ -586,8 +555,8 @@ async function fetchSolanaWalletBalances(address: string) {
       }
     }
 
-    // Try to get token metadata for known tokens
-    const enrichedTokens = await enrichSolanaTokens(tokens);
+    // Enrich tokens with known metadata
+    const enrichedTokens = enrichSolanaTokens(tokens);
 
     return {
       address,
@@ -603,8 +572,8 @@ async function fetchSolanaWalletBalances(address: string) {
   }
 }
 
-// Enrich Solana tokens with metadata from known tokens
-async function enrichSolanaTokens(tokens: any[]) {
+// Enrich Solana tokens with metadata
+function enrichSolanaTokens(tokens: any[]) {
   const knownTokens: Record<string, { symbol: string; name: string }> = {
     "So11111111111111111111111111111111111111112": { symbol: "wSOL", name: "Wrapped SOL" },
     "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v": { symbol: "USDC", name: "USD Coin" },
@@ -637,7 +606,7 @@ async function fetchEvmWalletBalances(address: string, chain = "ethereum") {
     const network = ALCHEMY_NETWORKS[chainLower] || "eth-mainnet";
     const alchemyUrl = `https://${network}.g.alchemy.com/v2/${ALCHEMY_API_KEY}`;
 
-    // Get native token balance (ETH, MATIC, etc.)
+    // Get native token balance
     const nativeBalanceResponse = await fetch(alchemyUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -706,15 +675,10 @@ async function fetchEvmWalletBalances(address: string, chain = "ethereum") {
 
     // Native symbol mapping
     const nativeSymbols: Record<string, string> = {
-      ethereum: "ETH",
-      eth: "ETH",
-      polygon: "MATIC",
-      matic: "MATIC",
-      arbitrum: "ETH",
-      arb: "ETH",
-      base: "ETH",
-      optimism: "ETH",
-      opt: "ETH",
+      ethereum: "ETH", eth: "ETH",
+      polygon: "MATIC", matic: "MATIC",
+      arbitrum: "ETH", arb: "ETH",
+      base: "ETH", optimism: "ETH", opt: "ETH",
     };
 
     return {
@@ -733,38 +697,33 @@ async function fetchEvmWalletBalances(address: string, chain = "ethereum") {
 
 // Main wallet balance fetcher - auto-detects chain
 async function fetchWalletBalances(address: string, chain = "auto") {
-  // Auto-detect if it's a Solana address
   if (chain === "auto" || chain === "solana" || chain === "sol") {
     if (isSolanaAddress(address)) {
       return await fetchSolanaWalletBalances(address);
     }
   }
-  
-  // Default to EVM
   const evmChain = chain === "auto" ? "ethereum" : chain;
   return await fetchEvmWalletBalances(address, evmChain);
 }
 
-// Get token prices for wallet holdings
+// Enrich wallet with prices from DexScreener
 async function enrichWalletWithPrices(walletData: any) {
   if (!walletData) return null;
   
   try {
-    // Get native token price (SOL or ETH/MATIC etc)
     const isSolana = walletData.chain === "solana";
     const nativeSymbol = walletData.nativeSymbol || (isSolana ? "SOL" : "ETH");
-    const nativeCoinId = isSolana ? "solana" : (nativeSymbol === "MATIC" ? "matic-network" : "ethereum");
     
-    const nativeData = await fetchPrice(nativeCoinId);
+    // Get native token price
+    const nativeData = await fetchPriceFromDexScreener(nativeSymbol.toLowerCase());
     const nativeUsdValue = (walletData.nativeBalance || 0) * (nativeData?.price || 0);
     
-    // Try to get prices for tokens
     let totalTokenValue = 0;
     const enrichedTokens = [];
     
     for (const token of walletData.tokens.slice(0, 8)) {
       try {
-        const priceData = await fetchPrice(token.symbol);
+        const priceData = await fetchPriceFromDexScreener(token.address || token.symbol);
         const usdValue = priceData ? token.balance * priceData.price : 0;
         totalTokenValue += usdValue;
         
@@ -775,16 +734,10 @@ async function enrichWalletWithPrices(walletData: any) {
           change24h: priceData?.change24h || 0,
         });
       } catch (e) {
-        enrichedTokens.push({
-          ...token,
-          price: 0,
-          usdValue: 0,
-          change24h: 0,
-        });
+        enrichedTokens.push({ ...token, price: 0, usdValue: 0, change24h: 0 });
       }
     }
     
-    // Sort by USD value
     enrichedTokens.sort((a, b) => b.usdValue - a.usdValue);
     
     return {
@@ -801,7 +754,7 @@ async function enrichWalletWithPrices(walletData: any) {
   }
 }
 
-// Generate AI analysis for wallet
+// AI wallet analysis
 async function analyzeWallet(walletData: any) {
   if (!walletData || !OPENAI_API_KEY) return null;
   
@@ -818,9 +771,8 @@ async function analyzeWallet(walletData: any) {
 - ${nativeSymbol} Balance: ${(walletData.nativeBalance || 0).toFixed(4)} ${nativeSymbol} (${formatNumber(walletData.nativeUsdValue || 0)})
 - Top Holdings: ${topHoldings || "None"}
 - Total Portfolio: ${formatNumber(walletData.totalPortfolioValue || 0)}
-- Total Tokens: ${walletData.totalTokens || 0}
 
-Provide: 1) Wallet type (whale/retail/degen/inactive), 2) Risk level, 3) One insight about holdings. Be concise.`;
+Provide: 1) Wallet type (whale/retail/degen/inactive), 2) Risk level, 3) One insight. Be concise.`;
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -828,17 +780,59 @@ Provide: 1) Wallet type (whale/retail/degen/inactive), 2) Risk level, 3) One ins
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: "You are a crypto wallet analyst. Give brief, actionable insights. No financial advice." },
+          { role: "system", content: "You are a crypto wallet analyst. Brief, actionable insights. No financial advice." },
           { role: "user", content: prompt },
         ],
         max_tokens: 200,
-        temperature: 0.7,
       }),
     });
     const data = await response.json();
     return data.choices?.[0]?.message?.content || null;
   } catch (error) {
     console.error("Error analyzing wallet:", error);
+    return null;
+  }
+}
+
+// ============ HELPER FUNCTIONS ============
+
+function formatNumber(num: number): string {
+  if (!num) return "N/A";
+  if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
+  if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
+  if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
+  if (num >= 1e3) return `$${(num / 1e3).toFixed(2)}K`;
+  return `$${num.toFixed(2)}`;
+}
+
+function generateSentimentBar(value: number): string {
+  const filled = Math.round(value / 10);
+  const empty = 10 - filled;
+  return "█".repeat(filled) + "░".repeat(empty);
+}
+
+// Fetch global market data via DexScreener aggregation
+async function fetchGlobalMarketData() {
+  try {
+    // Get major token prices
+    const [btc, eth, sol] = await Promise.all([
+      fetchPriceFromDexScreener("wbtc"),
+      fetchPriceFromDexScreener("eth"),
+      fetchPriceFromDexScreener("sol"),
+    ]);
+    
+    // Estimate market cap from major tokens (simplified)
+    const estimatedMcap = ((btc?.marketCap || 0) * 1.5) + (eth?.marketCap || 0) + (sol?.marketCap || 0);
+    
+    return {
+      btc,
+      eth,
+      sol,
+      totalMarketCap: estimatedMcap,
+      btcDominance: btc?.marketCap ? (btc.marketCap / estimatedMcap) * 100 : 50,
+    };
+  } catch (error) {
+    console.error("Error fetching global market:", error);
     return null;
   }
 }
@@ -856,7 +850,6 @@ async function extractTopicsAndSentiment(text: string) {
   const textLower = text.toLowerCase();
   const topics = cryptoKeywords.filter(keyword => textLower.includes(keyword));
   
-  // Simple sentiment analysis
   const bullishWords = ["bullish", "moon", "pump", "up", "green", "buy", "long", "ath", "breakout", "gains"];
   const bearishWords = ["bearish", "dump", "down", "red", "sell", "short", "crash", "rekt", "fear", "drop"];
   
@@ -883,7 +876,6 @@ async function saveConversation(chatId: number, userId: number, username: string
       topics,
     });
 
-    // Update group learned topics
     if (topics.length > 0) {
       const { data: group } = await supabase
         .from("telegram_groups")
@@ -904,7 +896,6 @@ async function saveConversation(chatId: number, userId: number, username: string
 
 async function getGroupContext(chatId: number) {
   try {
-    // Get recent conversations
     const { data: conversations } = await supabase
       .from("telegram_conversations")
       .select("message_text, sentiment, topics, username")
@@ -912,14 +903,12 @@ async function getGroupContext(chatId: number) {
       .order("created_at", { ascending: false })
       .limit(20);
 
-    // Get group info
     const { data: group } = await supabase
       .from("telegram_groups")
       .select("learned_topics, community_sentiment")
       .eq("chat_id", chatId)
       .single();
 
-    // Calculate community sentiment
     const sentiments = conversations?.map(c => c.sentiment) || [];
     const bullishCount = sentiments.filter(s => s === "bullish").length;
     const bearishCount = sentiments.filter(s => s === "bearish").length;
@@ -928,7 +917,6 @@ async function getGroupContext(chatId: number) {
     if (bullishCount > bearishCount * 1.5) communitySentiment = "bullish";
     else if (bearishCount > bullishCount * 1.5) communitySentiment = "bearish";
 
-    // Update community sentiment
     if (group) {
       await supabase.from("telegram_groups").update({ community_sentiment: communitySentiment }).eq("chat_id", chatId);
     }
@@ -954,10 +942,7 @@ async function getAIResponse(message: string, chatId?: number, userName?: string
   if (!OPENAI_API_KEY) return null;
   
   try {
-    const btcData = await fetchPrice("bitcoin");
-    const ethData = await fetchPrice("ethereum");
-    const sentiment = await fetchSentiment();
-    const globalMarket = await fetchGlobalMarket();
+    const globalData = await fetchGlobalMarketData();
     
     let groupContext = "";
     if (chatId) {
@@ -971,11 +956,10 @@ Community Context:
     }
 
     const marketContext = `
-Live Market Data:
-- BTC: $${btcData?.price?.toLocaleString()} (${btcData?.change24h?.toFixed(2)}% 24h)
-- ETH: $${ethData?.price?.toLocaleString()} (${ethData?.change24h?.toFixed(2)}% 24h)
-- Total Market Cap: ${formatNumber(globalMarket?.totalMarketCap || 0)}
-- Fear & Greed: ${sentiment?.fearGreed}/100 (${sentiment?.classification})
+Live Market Data (via Alchemy + DexScreener):
+- BTC: $${globalData?.btc?.price?.toLocaleString()} (${globalData?.btc?.change24h?.toFixed(2)}% 24h)
+- ETH: $${globalData?.eth?.price?.toLocaleString()} (${globalData?.eth?.change24h?.toFixed(2)}% 24h)
+- SOL: $${globalData?.sol?.price?.toLocaleString()} (${globalData?.sol?.change24h?.toFixed(2)}% 24h)
 ${groupContext}`;
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -996,11 +980,6 @@ CRITICAL RULES:
 - NO disclaimers unless directly asked about trading
 - Sound like you're texting a friend, not writing an essay
 
-Examples of good responses:
-- "BTC looking strong at 97k, ETH following. Sentiment's neutral rn"
-- "Yeah that's a solid project, been around since 2021"
-- "Nah wouldn't touch that, looks sketchy tbh"
-
 ${marketContext}
 
 ${userName ? `Talking to: ${userName}` : ""}`,
@@ -1008,7 +987,6 @@ ${userName ? `Talking to: ${userName}` : ""}`,
           { role: "user", content: message },
         ],
         max_tokens: 150,
-        temperature: 0.9,
       }),
     });
     const data = await response.json();
@@ -1040,264 +1018,42 @@ async function createAlert(userId: number, chatId: number, alertType: string, ta
 
 // ============ MARKET PULSE ============
 
-// Generate visual sentiment bar
-function generateSentimentBar(value: number): string {
-  const filled = Math.round(value / 10);
-  const empty = 10 - filled;
-  const bar = "█".repeat(filled) + "░".repeat(empty);
-  return bar;
-}
-
 async function generateMarketPulse() {
-  const [btcData, ethData, solData, sentiment, globalMarket] = await Promise.all([
-    fetchPrice("bitcoin"),
-    fetchPrice("ethereum"),
-    fetchPrice("solana"),
-    fetchSentiment(),
-    fetchGlobalMarket()
-  ]);
+  const globalData = await fetchGlobalMarketData();
+  if (!globalData) return "❌ Could not fetch market data";
   
-  const fgValue = parseInt(sentiment?.fearGreed || "50");
-  const sentimentEmoji = fgValue <= 25 ? "😱" : fgValue <= 45 ? "😰" : fgValue >= 75 ? "🤑" : fgValue >= 55 ? "😊" : "😐";
-  const btcChange = btcData?.change24h >= 0 ? "🟢" : "🔴";
-  const ethChange = ethData?.change24h >= 0 ? "🟢" : "🔴";
-  const solChange = solData?.change24h >= 0 ? "🟢" : "🔴";
+  const btcChange = (globalData.btc?.change24h || 0) >= 0 ? "🟢" : "🔴";
+  const ethChange = (globalData.eth?.change24h || 0) >= 0 ? "🟢" : "🔴";
+  const solChange = (globalData.sol?.change24h || 0) >= 0 ? "🟢" : "🔴";
 
   return `🔮 *ORACLE PULSE*
 
-💎 BTC $${btcData?.price?.toLocaleString()} ${btcChange}${btcData?.change24h?.toFixed(1)}%
-⟠ ETH $${ethData?.price?.toLocaleString()} ${ethChange}${ethData?.change24h?.toFixed(1)}%
-◎ SOL $${solData?.price?.toLocaleString()} ${solChange}${solData?.change24h?.toFixed(1)}%
+💎 BTC $${globalData.btc?.price?.toLocaleString() || "N/A"} ${btcChange}${globalData.btc?.change24h?.toFixed(1) || 0}%
+⟠ ETH $${globalData.eth?.price?.toLocaleString() || "N/A"} ${ethChange}${globalData.eth?.change24h?.toFixed(1) || 0}%
+◎ SOL $${globalData.sol?.price?.toLocaleString() || "N/A"} ${solChange}${globalData.sol?.change24h?.toFixed(1) || 0}%
 
-${sentimentEmoji} Fear/Greed: ${fgValue}/100
-📊 MCap: ${formatNumber(globalMarket?.totalMarketCap || 0)}
-₿ Dominance: ${globalMarket?.btcDominance?.toFixed(1) || 0}%
+📊 MCap: ${formatNumber(globalData.totalMarketCap || 0)}
+₿ Dominance: ${globalData.btcDominance?.toFixed(1) || 50}%
 
-[Live Dashboard](${WEBSITE_PAGES.dashboard}) | [Sentiment](${WEBSITE_PAGES.sentiment})`;
+[Live Dashboard](${WEBSITE_PAGES.dashboard})`;
 }
 
-// Short trending update
-async function generateTrendingUpdate() {
-  const trending = await fetchTrending();
-  const list = trending.slice(0, 5).map((t: any, i: number) => {
-    const item = t.item;
-    const change = item?.data?.price_change_percentage_24h?.usd;
-    const changeStr = change ? ` ${change >= 0 ? "🟢" : "🔴"}${change.toFixed(1)}%` : "";
-    return `${i + 1}. *${item?.symbol?.toUpperCase()}*${changeStr}`;
-  }).join("\n");
-
-  return `🔥 *TRENDING ON ORACLE*
-
-${list}
-
-[Explore All](${WEBSITE_PAGES.explorer}) | [Dashboard](${WEBSITE_PAGES.dashboard})`;
-}
-
-// Short whale alert with real Etherscan link
-function formatWhaleAlert(tx: any, ethPrice: number) {
-  const value = tx.value || 0;
-  const usdValue = value * ethPrice;
-  const txHash = tx.hash || tx.uniqueId || "";
-  const etherscanLink = txHash ? `https://etherscan.io/tx/${txHash}` : "https://etherscan.io";
-  
-  return `🐋 *WHALE ALERT*
-${value.toFixed(1)} ETH (${formatNumber(usdValue)})
-📤 ${tx.from?.slice(0, 10)}...
-📥 ${tx.to?.slice(0, 10)}...
-🔗 [View TX](${etherscanLink})
-📊 ${WEBSITE_PAGES.dashboard}`;
-}
-
-// Short news update
-async function generateNewsUpdate() {
-  const news = await fetchCryptoNews();
-  if (!news.length) return null;
-  
-  const headlines = news.slice(0, 3).map((n: any, i: number) => 
-    `${i + 1}. ${n.project?.name || "Crypto"}: ${(n.description || "").slice(0, 50)}...`
-  ).join("\n");
-
-  return `📰 *CRYPTO NEWS*\n${headlines}\n📚 ${WEBSITE_PAGES.learn}`;
-}
-
-// Generate social sentiment update
-async function generateSocialSentimentUpdate() {
-  const [sentiment, globalMarket, btcData] = await Promise.all([
-    fetchSentiment(),
-    fetchGlobalMarket(),
-    fetchPrice("bitcoin")
-  ]);
-  
-  const fgValue = parseInt(sentiment?.fearGreed || "50");
-  const bar = generateSentimentBar(fgValue);
-  
-  let mood = "Neutral 😐";
-  if (fgValue <= 20) mood = "Extreme Fear 😱";
-  else if (fgValue <= 40) mood = "Fear 😰";
-  else if (fgValue >= 80) mood = "Extreme Greed 🤑";
-  else if (fgValue >= 60) mood = "Greed 😊";
-  
-  const btcTrend = btcData?.change24h >= 0 ? "📈 Bullish" : "📉 Bearish";
-  
-  return `🎭 *MARKET SENTIMENT*
-
-${bar} *${fgValue}/100*
-${mood}
-
-${btcTrend} trend (BTC ${btcData?.change24h?.toFixed(1)}%)
-MCap 24h: ${globalMarket?.marketCapChange?.toFixed(1) || 0}%
-
-[Full Analysis](${WEBSITE_PAGES.sentiment}) | [Chains](${CHAIN_PAGES.ethereum})`;
-}
-
-// Generate random chain update
-async function generateRandomChainUpdate() {
-  const chains = ["ethereum", "base", "arbitrum", "polygon", "optimism", "solana"];
-  const randomChain = chains[Math.floor(Math.random() * chains.length)];
-  
-  const [metrics, tvl] = await Promise.all([
-    fetchChainMetrics(randomChain),
-    fetchDefiTVL(randomChain)
-  ]);
-  
-  if (!metrics && !tvl) return null;
-  
-  const chainNames: Record<string, string> = {
-    ethereum: "⟠ Ethereum",
-    base: "🔵 Base",
-    arbitrum: "🔶 Arbitrum",
-    polygon: "💜 Polygon",
-    optimism: "🔴 Optimism",
-    solana: "◎ Solana",
-  };
-  
-  const gasInfo = metrics ? `⛽ Gas: ${metrics.gasPrice} Gwei` : "";
-  const blockInfo = metrics ? `📦 Block: ${metrics.blockNumber.toLocaleString()}` : "";
-  const tvlInfo = tvl ? `💰 TVL: ${formatNumber(tvl.tvl)}` : "";
-  
-  return `⛓️ *${chainNames[randomChain] || randomChain.toUpperCase()}*
-
-${blockInfo}
-${gasInfo}
-${tvlInfo}
-
-[View Analytics](${CHAIN_PAGES[randomChain] || WEBSITE_URL}) | [Compare](${WEBSITE_PAGES.dashboard})`;
-}
-
-// Generate crypto tip/fact
-function generateCryptoTip() {
-  const tips = [
-    { tip: "Never share your seed phrase with anyone - not even support!", emoji: "🔐" },
-    { tip: "DCA (Dollar Cost Average) helps reduce volatility impact", emoji: "📊" },
-    { tip: "Gas fees are lowest on weekends and late night UTC", emoji: "⛽" },
-    { tip: "Always verify contract addresses before swapping", emoji: "✅" },
-    { tip: "Hardware wallets provide the best security for hodlers", emoji: "🔒" },
-    { tip: "Staking rewards vary by validator - research first!", emoji: "💎" },
-    { tip: "Layer 2s like Base & Arbitrum offer cheaper transactions", emoji: "⚡" },
-    { tip: "Impermanent loss affects LP positions during volatility", emoji: "📉" },
-    { tip: "Check TVL trends before depositing into protocols", emoji: "💰" },
-    { tip: "Fear & Greed extremes often signal reversal opportunities", emoji: "🎭" },
-  ];
-  
-  const random = tips[Math.floor(Math.random() * tips.length)];
-  return `${random.emoji} *CRYPTO TIP*
-${random.tip}
-📚 ${WEBSITE_PAGES.learn}`;
-}
-
-// Generate top movers update
-async function generateTopMoversUpdate() {
-  const coins = await fetchTopCoins(20);
-  if (!coins.length) return null;
-  
-  // Sort by 24h change
-  const sorted = [...coins].sort((a: any, b: any) => 
-    (b.price_change_percentage_24h || 0) - (a.price_change_percentage_24h || 0)
-  );
-  
-  const gainers = sorted.slice(0, 3);
-  const losers = sorted.slice(-3).reverse();
-  
-  const gainersList = gainers.map((c: any) => 
-    `🟢 ${c.symbol?.toUpperCase()} +${c.price_change_percentage_24h?.toFixed(1)}%`
-  ).join("\n");
-  
-  const losersList = losers.map((c: any) => 
-    `🔴 ${c.symbol?.toUpperCase()} ${c.price_change_percentage_24h?.toFixed(1)}%`
-  ).join("\n");
-  
-  return `📊 *TOP MOVERS*
-
-*Gainers*
-${gainersList}
-
-*Losers*
-${losersList}
-
-[Live Data](${WEBSITE_PAGES.dashboard}) | [Explorer](${WEBSITE_PAGES.explorer})`;
-}
-
-// Generate chart preview for tokens - returns { chartUrl, caption }
-async function generateTokenChart(symbol: string): Promise<{ chartUrl: string; caption: string } | null> {
-  const coinId = await getCoinId(symbol);
-  if (!coinId) return null;
-  
-  const [priceData, history] = await Promise.all([
-    fetchPrice(symbol),
-    fetchPriceHistory(coinId, 7)
-  ]);
-  
-  if (!priceData || !history) return null;
-  
-  const change = history.change;
-  const chartUrl = generateChartUrl(priceData.symbol, history.prices, history.labels, change >= 0);
-  
-  const caption = `${change >= 0 ? "📈" : "📉"} *${priceData.symbol}* $${priceData.price?.toLocaleString(undefined, { maximumFractionDigits: 4 })}
-7D: ${change >= 0 ? "+" : ""}${change.toFixed(1)}%
-Vol: ${formatNumber(priceData.volume)} | MCap: ${formatNumber(priceData.marketCap)}`;
-  
-  return { chartUrl, caption };
-}
-
-// Generate sentiment visual
-async function generateSentimentVisual() {
-  const sentiment = await fetchSentiment();
-  const fgValue = parseInt(sentiment?.fearGreed || "50");
-  const bar = generateSentimentBar(fgValue);
-  let status = "NEUTRAL 😐";
-  if (fgValue <= 20) status = "EXTREME FEAR 😱";
-  else if (fgValue <= 40) status = "FEAR 😰";
-  else if (fgValue >= 80) status = "EXTREME GREED 🤑";
-  else if (fgValue >= 60) status = "GREED 😊";
-  
-  return `🎭 *SENTIMENT*\n${bar} ${fgValue}/100\n*${status}*\n🎭 ${WEBSITE_PAGES.sentiment}`;
-}
-
-// Generate comprehensive chain overview with website image
+// Generate chain overview
 async function generateChainOverview(chain: string) {
   const chainLower = chain.toLowerCase();
   const metrics = await fetchChainMetrics(chainLower);
-  const tvl = await fetchDefiTVL(chainLower);
-  const tokens = await fetchChainTokens(chainLower, 3);
+  const tokens = await fetchTopTokensByChain(chainLower, 3);
   
   if (!metrics) return null;
   
   const chainNames: Record<string, string> = {
-    ethereum: "Ethereum",
-    eth: "Ethereum", 
-    base: "Base",
-    arbitrum: "Arbitrum",
-    arb: "Arbitrum",
-    polygon: "Polygon",
-    matic: "Polygon",
-    optimism: "Optimism",
-    opt: "Optimism",
-    solana: "Solana",
-    sol: "Solana",
-    avalanche: "Avalanche",
-    avax: "Avalanche",
-    bsc: "BNB Chain",
-    bnb: "BNB Chain",
+    ethereum: "Ethereum", eth: "Ethereum",
+    base: "Base", arbitrum: "Arbitrum", arb: "Arbitrum",
+    polygon: "Polygon", matic: "Polygon",
+    optimism: "Optimism", opt: "Optimism",
+    solana: "Solana", sol: "Solana",
+    avalanche: "Avalanche", avax: "Avalanche",
+    bsc: "BNB Chain", bnb: "BNB Chain",
   };
   
   const displayName = chainNames[chainLower] || chain.toUpperCase();
@@ -1307,20 +1063,21 @@ async function generateChainOverview(chain: string) {
   let topTokens = "";
   if (tokens && tokens.length > 0) {
     topTokens = tokens.slice(0, 3).map((t: any) => {
-      const change = t.price_change_percentage_24h || 0;
+      const change = t.change24h || 0;
       const emoji = change >= 0 ? "🟢" : "🔴";
-      return `${t.symbol?.toUpperCase()}: $${t.current_price?.toLocaleString()} ${emoji}${change.toFixed(1)}%`;
+      return `${t.symbol}: $${t.price?.toLocaleString() || 0} ${emoji}${change.toFixed(1)}%`;
     }).join("\n");
   }
+  
+  const isSolana = chainLower === "solana" || chainLower === "sol";
   
   return {
     text: `⛓️ *${displayName} Overview*
 
-📊 *Network Stats*
-Block: ${metrics.blockNumber.toLocaleString()}
-Gas: ${metrics.gasPrice} Gwei${metrics.baseFee ? ` (Base: ${metrics.baseFee})` : ""}
-TXs/Block: ~${metrics.txCount}
-${tvl ? `TVL: ${formatNumber(tvl.tvl)} ${tvl.change1d >= 0 ? "🟢" : "🔴"}${tvl.change1d?.toFixed(1)}%` : ""}
+📊 *Network Stats (via Alchemy)*
+${isSolana ? "Slot" : "Block"}: ${metrics.blockNumber.toLocaleString()}
+${isSolana ? `TPS: ~${(metrics as any).tps || metrics.txCount || 0}` : `Gas: ${metrics.gasPrice} Gwei${metrics.baseFee ? ` (Base: ${metrics.baseFee})` : ""}`}
+TXs/${isSolana ? "sec" : "Block"}: ~${metrics.txCount}
 
 ${topTokens ? `📈 *Top Tokens*\n${topTokens}` : ""}
 
@@ -1329,31 +1086,54 @@ ${topTokens ? `📈 *Top Tokens*\n${topTokens}` : ""}
   };
 }
 
-// Generate global market overview
+// Generate global overview
 async function generateGlobalOverview() {
-  const global = await fetchGlobalMarket();
-  const sentiment = await fetchSentiment();
-  const btc = await fetchPrice("bitcoin");
-  const eth = await fetchPrice("ethereum");
-  
-  if (!global) return null;
-  
-  const fgValue = parseInt(sentiment?.fearGreed || "50");
-  const sentimentBar = generateSentimentBar(fgValue);
+  const globalData = await fetchGlobalMarketData();
+  if (!globalData) return null;
   
   return `🌐 *GLOBAL MARKET*
 
-💎 *BTC* $${btc?.price?.toLocaleString()} ${btc?.change24h >= 0 ? "🟢" : "🔴"}${btc?.change24h?.toFixed(1)}%
-⟠ *ETH* $${eth?.price?.toLocaleString()} ${eth?.change24h >= 0 ? "🟢" : "🔴"}${eth?.change24h?.toFixed(1)}%
+💎 *BTC* $${globalData.btc?.price?.toLocaleString() || "N/A"} ${(globalData.btc?.change24h || 0) >= 0 ? "🟢" : "🔴"}${globalData.btc?.change24h?.toFixed(1) || 0}%
+⟠ *ETH* $${globalData.eth?.price?.toLocaleString() || "N/A"} ${(globalData.eth?.change24h || 0) >= 0 ? "🟢" : "🔴"}${globalData.eth?.change24h?.toFixed(1) || 0}%
+◎ *SOL* $${globalData.sol?.price?.toLocaleString() || "N/A"} ${(globalData.sol?.change24h || 0) >= 0 ? "🟢" : "🔴"}${globalData.sol?.change24h?.toFixed(1) || 0}%
 
-📊 Total MCap: ${formatNumber(global.totalMarketCap)}
-📈 24h Vol: ${formatNumber(global.totalVolume)}
-₿ BTC Dom: ${global.btcDominance?.toFixed(1)}%
-⟠ ETH Dom: ${global.ethDominance?.toFixed(1)}%
-
-${sentimentBar} F&G: ${fgValue}/100
+📊 Total MCap: ${formatNumber(globalData.totalMarketCap || 0)}
+₿ BTC Dom: ${globalData.btcDominance?.toFixed(1) || 50}%
 
 🌐 ${WEBSITE_PAGES.dashboard}`;
+}
+
+// Generate token chart
+async function generateTokenChart(symbol: string): Promise<{ chartUrl: string; caption: string } | null> {
+  const priceData = await fetchPriceFromDexScreener(symbol);
+  if (!priceData) return null;
+  
+  // Generate simple chart with current price point
+  const isPositive = (priceData.change24h || 0) >= 0;
+  const prices = [priceData.price * 0.98, priceData.price * 0.99, priceData.price * 1.01, priceData.price * 0.995, priceData.price];
+  const labels = ["4h", "3h", "2h", "1h", "Now"];
+  
+  const chartUrl = generateChartUrl(priceData.symbol, prices, labels, isPositive);
+  
+  const caption = `${isPositive ? "📈" : "📉"} *${priceData.symbol}* $${priceData.price?.toLocaleString(undefined, { maximumFractionDigits: 6 })}
+24h: ${isPositive ? "+" : ""}${priceData.change24h?.toFixed(1)}%
+Vol: ${formatNumber(priceData.volume)} | Liq: ${formatNumber(priceData.liquidity)}`;
+  
+  return { chartUrl, caption };
+}
+
+// Format whale alert
+function formatWhaleAlert(tx: any, nativePrice: number) {
+  const value = tx.value || 0;
+  const usdValue = value * nativePrice;
+  const txHash = tx.hash || tx.uniqueId || "";
+  const etherscanLink = txHash ? `https://etherscan.io/tx/${txHash}` : "https://etherscan.io";
+  
+  return `🐋 *WHALE ALERT*
+${value.toFixed(1)} ETH (${formatNumber(usdValue)})
+📤 ${tx.from?.slice(0, 10)}...
+📥 ${tx.to?.slice(0, 10)}...
+🔗 [View TX](${etherscanLink})`;
 }
 
 // ============ COMMAND HANDLERS ============
@@ -1374,7 +1154,6 @@ async function handleCommand(message: any) {
       is_active: true,
     }, { onConflict: "chat_id" });
     
-    // Learn from conversation
     if (text.length > 3 && !text.startsWith("/")) {
       await saveConversation(chatId, userId, userName, text);
     }
@@ -1394,26 +1173,26 @@ async function handleCommand(message: any) {
 
 I am the Cosmic Oracle - your intelligent crypto companion from ${WEBSITE_URL}!
 
-*📊 Market Data*
+📊 *Market Data*
 /price <TOKEN> - Live prices
 /chart <TOKEN> - Token chart
 /chain <NAME> - Chain overview
 /global - Global market
 
-*🔍 Research*
+🔍 *Research*
 /wallet <ADDRESS> - Scan any wallet
 /trending - Hot tokens
 /whales - Whale activity
 
-*🔔 Smart Alerts*
+🔔 *Smart Alerts*
 /alert - Set any alert
 /myalerts - Your alerts
 
-*🤖 AI Features*
+🤖 *AI Features*
 /analyze <TOKEN> - Deep analysis
 /ask <anything> - Ask me anything
 
-*🗳️ Community*
+🗳️ *Community*
 /poll, /vibe, /insights
 
 💬 Or just chat with me naturally!
@@ -1424,16 +1203,16 @@ I am the Cosmic Oracle - your intelligent crypto companion from ${WEBSITE_URL}!
         await sendMessage(chatId, `
 🔮 *Oracle Bot Commands*
 
-*Market:*
+*Market (Alchemy + DexScreener):*
 /price btc eth sol - Live prices
 /chart btc - Token chart
 /gas eth base - Gas fees
 /chain ethereum - Chain stats
 /global - Global market
 
-*Wallet Scanner:*
+*Wallet Scanner (Alchemy):*
 /wallet 0x... - Scan EVM wallet
-/wallet ABC... - Scan Solana wallet (auto-detect)
+/wallet ABC... - Scan Solana wallet
 /wallet 0x... base - Specify chain
 
 *Research:*
@@ -1443,14 +1222,13 @@ I am the Cosmic Oracle - your intelligent crypto companion from ${WEBSITE_URL}!
 
 *Alerts:*
 /alert price BTC above 100000
-/alert sentiment fear
 /myalerts - View alerts
 
 *Community:*
 /poll, /vibe, /insights
 
 *AI:*
-/ask, /learn, /compare
+/ask <anything>
 
 💬 I also respond naturally!
         `);
@@ -1458,59 +1236,59 @@ I am the Cosmic Oracle - your intelligent crypto companion from ${WEBSITE_URL}!
 
       case "/price":
         if (args.length === 0) {
-          await sendMessage(chatId, "🔮 Which token? Try: `/price btc` or `/price eth sol ada`");
+          await sendMessage(chatId, "🔮 Which token? Try: `/price btc` or `/price eth sol`");
           break;
         }
-        // Support multiple tokens
         const tokens = args.slice(0, 5);
-        let priceMsg = "📊 *Live Prices*\n\n";
+        let priceMsg = "📊 *Live Prices (DexScreener)*\n\n";
         
         for (const t of tokens) {
-          const data = await fetchPrice(t);
+          const data = await fetchPriceFromDexScreener(t);
           if (data) {
-            const emoji = data.change24h >= 0 ? "🟢" : "🔴";
+            const emoji = (data.change24h || 0) >= 0 ? "🟢" : "🔴";
             priceMsg += `*${data.symbol}* $${data.price?.toLocaleString(undefined, { maximumFractionDigits: 6 })} ${emoji}${data.change24h?.toFixed(1)}%\n`;
+          } else {
+            priceMsg += `*${t.toUpperCase()}* - Not found\n`;
           }
         }
-        priceMsg += "\n_Not financial advice._";
+        priceMsg += "\n_Data via Alchemy + DexScreener_";
         await sendMessage(chatId, priceMsg);
         break;
 
       case "/gas":
-        const chain = args[0]?.toLowerCase() || "eth";
-        const gasData = await fetchGas(chain);
+        const gasChain = args[0]?.toLowerCase() || "eth";
+        const gasData = await fetchGas(gasChain);
         if (gasData) {
-          await sendMessage(chatId, `⛽ *${chain.toUpperCase()} Gas*\n🐢 ${gasData.slow} | 🚶 ${gasData.average} | 🚀 ${gasData.fast} Gwei`);
+          if (gasChain === "solana" || gasChain === "sol") {
+            await sendMessage(chatId, `⛽ *Solana Fees*\nFixed: ~0.000005 SOL per tx\n_Data via Alchemy_`);
+          } else {
+            await sendMessage(chatId, `⛽ *${gasChain.toUpperCase()} Gas (Alchemy)*\n🐢 ${gasData.slow} | 🚶 ${gasData.average} | 🚀 ${gasData.fast} Gwei`);
+          }
         } else {
-          await sendMessage(chatId, "❌ Try: eth, polygon, arbitrum, base, optimism");
+          await sendMessage(chatId, "❌ Try: eth, polygon, arbitrum, base, optimism, solana");
         }
         break;
 
       case "/trending":
-        const trending = await fetchTrending();
-        let trendMsg = "🔥 *Trending Now*\n\n";
-        trending.slice(0, 10).forEach((t: any, i: number) => {
-          const item = t.item;
-          trendMsg += `${i + 1}. *${item?.symbol?.toUpperCase()}* - ${item?.name}\n`;
-        });
-        await sendMessage(chatId, trendMsg);
-        break;
-
-      case "/news":
-        const newsUpdate = await generateNewsUpdate();
-        if (newsUpdate) {
-          await sendMessage(chatId, newsUpdate);
+        const trending = await fetchTrendingTokens();
+        if (trending.length > 0) {
+          let trendMsg = "🔥 *Trending (DexScreener)*\n\n";
+          trending.slice(0, 7).forEach((t: any, i: number) => {
+            trendMsg += `${i + 1}. ${t.name || t.symbol} (${t.chain})\n`;
+          });
+          await sendMessage(chatId, trendMsg);
         } else {
-          await sendMessage(chatId, "📰 No news available right now");
+          await sendMessage(chatId, "🔥 No trending data available");
         }
         break;
 
       case "/whales":
-        await sendMessage(chatId, "🐋 Scanning for whale activity...");
-        const ethPrice = (await fetchPrice("ethereum"))?.price || 3000;
+        await sendMessage(chatId, "🐋 Scanning for whale activity (Alchemy)...");
+        const ethData = await fetchPriceFromDexScreener("eth");
+        const ethPrice = ethData?.price || 3000;
         const whaleTxs = await fetchWhaleTransactions();
         if (whaleTxs.length > 0) {
-          let whaleMsg = "🐋 *RECENT WHALE MOVES*\n";
+          let whaleMsg = "🐋 *RECENT WHALE MOVES (Alchemy)*\n";
           whaleTxs.slice(0, 3).forEach((tx: any) => {
             const usd = (tx.value || 0) * ethPrice;
             whaleMsg += `\n${(tx.value || 0).toFixed(1)} ETH (${formatNumber(usd)})`;
@@ -1525,13 +1303,13 @@ I am the Cosmic Oracle - your intelligent crypto companion from ${WEBSITE_URL}!
       case "/wallets":
       case "/scan":
         if (args.length === 0) {
-          await sendMessage(chatId, `🔍 *Wallet Scanner*
+          await sendMessage(chatId, `🔍 *Wallet Scanner (Alchemy)*
 
-Scan any EVM or Solana wallet for holdings & AI insights!
+Scan any EVM or Solana wallet!
 
 Usage:
 \`/wallet 0x1234...abcd\` (EVM)
-\`/wallet ABC...xyz\` (Solana - auto-detected)
+\`/wallet ABC...xyz\` (Solana)
 \`/wallet 0x... base\` (specify chain)
 
 Supported: ethereum, base, arbitrum, polygon, optimism, solana`);
@@ -1541,7 +1319,6 @@ Supported: ethereum, base, arbitrum, polygon, optimism, solana`);
         const walletAddress = args[0];
         const walletChain = args[1]?.toLowerCase() || "auto";
         
-        // Validate address format - support both EVM and Solana
         const isEvmAddress = /^0x[a-fA-F0-9]{40}$/.test(walletAddress);
         const isSolAddress = isSolanaAddress(walletAddress);
         
@@ -1551,7 +1328,7 @@ Supported: ethereum, base, arbitrum, polygon, optimism, solana`);
         }
         
         const detectedChain = isSolAddress ? "solana" : (walletChain === "auto" ? "ethereum" : walletChain);
-        await sendMessage(chatId, `🔍 Scanning ${isSolAddress ? "Solana" : detectedChain.toUpperCase()} wallet...`);
+        await sendMessage(chatId, `🔍 Scanning ${isSolAddress ? "Solana" : detectedChain.toUpperCase()} wallet (Alchemy)...`);
         
         try {
           const walletData = await fetchWalletBalances(walletAddress, detectedChain);
@@ -1561,12 +1338,10 @@ Supported: ethereum, base, arbitrum, polygon, optimism, solana`);
             break;
           }
           
-          // Enrich with prices
           const enrichedWallet = await enrichWalletWithPrices(walletData);
           const isSolanaWallet = enrichedWallet.chain === "solana";
           const nativeSymbol = enrichedWallet.nativeSymbol || (isSolanaWallet ? "SOL" : "ETH");
           
-          // Explorer link based on chain
           const explorerLinks: Record<string, string> = {
             ethereum: `https://etherscan.io/address/${walletAddress}`,
             base: `https://basescan.org/address/${walletAddress}`,
@@ -1577,8 +1352,7 @@ Supported: ethereum, base, arbitrum, polygon, optimism, solana`);
           };
           const explorerLink = explorerLinks[enrichedWallet.chain] || explorerLinks.ethereum;
           
-          // Format holdings
-          let holdingsMsg = `🔍 *WALLET SCAN*
+          let holdingsMsg = `🔍 *WALLET SCAN (Alchemy)*
 
 📍 \`${walletAddress.slice(0, 8)}...${walletAddress.slice(-6)}\`
 ⛓️ ${enrichedWallet.chain?.toUpperCase() || "UNKNOWN"}
@@ -1605,7 +1379,6 @@ ${(enrichedWallet.nativeBalance || 0).toFixed(4)} ${nativeSymbol} (${formatNumbe
 
           await sendPhoto(chatId, MASCOT_IMAGE, holdingsMsg);
           
-          // Generate AI analysis
           const aiAnalysis = await analyzeWallet(enrichedWallet);
           if (aiAnalysis) {
             await sendMessage(chatId, `🧠 *AI Analysis*\n\n${aiAnalysis}\n\n_Not financial advice._`);
@@ -1638,7 +1411,7 @@ ${(enrichedWallet.nativeBalance || 0).toFixed(4)} ${nativeSymbol} (${formatNumbe
         if (chainOverview) {
           await sendPhoto(chatId, MASCOT_IMAGE, chainOverview.text);
         } else {
-          await sendMessage(chatId, "❌ Chain not found. Try: ethereum, base, arbitrum, polygon");
+          await sendMessage(chatId, "❌ Chain not found. Try: ethereum, base, arbitrum, polygon, solana");
         }
         break;
 
@@ -1664,19 +1437,41 @@ ${(enrichedWallet.nativeBalance || 0).toFixed(4)} ${nativeSymbol} (${formatNumbe
         }
         break;
 
-      case "/sentimentvisual":
-      case "/fng":
-      case "/feargreed":
-        const sentimentVisual = await generateSentimentVisual();
-        await sendPhoto(chatId, MASCOT_IMAGE, sentimentVisual);
-        break;
+      case "/analyze":
+        if (args.length === 0) {
+          await sendMessage(chatId, "🤖 Which token? Try: `/analyze btc`");
+          break;
+        }
+        await sendMessage(chatId, "🔮 Analyzing...");
+        const tokenData = await fetchPriceFromDexScreener(args[0]);
+        if (tokenData && OPENAI_API_KEY) {
+          const analysisPrompt = `Brief analysis (under 80 words) of ${tokenData.symbol}:
+- Price: $${tokenData.price}
+- 24h Change: ${tokenData.change24h}%
+- Volume: $${tokenData.volume}
+- Liquidity: $${tokenData.liquidity}
 
-      case "/sentiment":
-        const sent = await fetchSentiment();
-        const fgVal = parseInt(sent?.fearGreed || "50");
-        const emoji = fgVal <= 25 ? "😱 EXTREME FEAR" : fgVal <= 45 ? "😰 FEAR" : fgVal >= 75 ? "🤑 EXTREME GREED" : fgVal >= 55 ? "😊 GREED" : "😐 NEUTRAL";
-        const sentBar = generateSentimentBar(fgVal);
-        await sendMessage(chatId, `🎭 *Market Sentiment*\n\n${emoji}\n\n${sentBar} *${sent?.fearGreed}/100*\n\n🎭 [Full Analysis](${WEBSITE_PAGES.sentiment})`);
+Give: 1) Current trend, 2) Key level, 3) One insight. Be direct.`;
+          
+          const response = await fetch("https://api.openai.com/v1/chat/completions", {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              model: "gpt-4o-mini",
+              messages: [
+                { role: "system", content: "You are a crypto analyst. Brief, direct insights. No financial advice." },
+                { role: "user", content: analysisPrompt },
+              ],
+              max_tokens: 150,
+            }),
+          });
+          const data = await response.json();
+          const analysis = data.choices?.[0]?.message?.content;
+          
+          await sendMessage(chatId, `🤖 *${tokenData.symbol} Analysis*\n\n${analysis || "Could not generate analysis"}\n\n_Not financial advice._`);
+        } else {
+          await sendMessage(chatId, "❌ Could not analyze token");
+        }
         break;
 
       case "/website":
@@ -1693,7 +1488,7 @@ ${(enrichedWallet.nativeBalance || 0).toFixed(4)} ${nativeSymbol} (${formatNumbe
 
 🌐 *Main Site:* ${WEBSITE_URL}
 
-_Your cosmic crypto companion!_
+_Powered by Alchemy + DexScreener_
         `);
         break;
 
@@ -1705,13 +1500,6 @@ _Your cosmic crypto companion!_
 *Price Alerts:*
 /alert price BTC above 100000
 /alert price ETH below 3000
-
-*Sentiment Alerts:*
-/alert sentiment fear
-/alert sentiment greed
-
-*Whale Alerts:*
-/alert whale BTC 1000000
 
 *Volume Alerts:*
 /alert volume ETH spike
@@ -1735,25 +1523,10 @@ Examples work for any token!
             success = await createAlert(userId, chatId, dbType, token, value);
             alertMsg = `💰 ${token} ${direction} $${value.toLocaleString()}`;
           }
-        } else if (alertType === "sentiment") {
-          const type = args[1].toLowerCase();
-          const threshold = type === "fear" ? 25 : type === "greed" ? 75 : 50;
-          const dbType = type === "fear" ? "sentiment_fear" : "sentiment_greed";
-          success = await createAlert(userId, chatId, dbType, "market", threshold);
-          alertMsg = `🎭 Sentiment ${type} alert`;
-        } else if (alertType === "whale") {
-          const token = args[1].toUpperCase();
-          const minValue = parseFloat(args[2]) || 1000000;
-          success = await createAlert(userId, chatId, "whale", token, minValue);
-          alertMsg = `🐋 ${token} whale moves > $${formatNumber(minValue)}`;
         } else if (alertType === "volume") {
           const token = args[1].toUpperCase();
           success = await createAlert(userId, chatId, "volume_spike", token, 100);
           alertMsg = `📈 ${token} volume spike`;
-        } else if (alertType === "trending") {
-          const token = args[1].toUpperCase();
-          success = await createAlert(userId, chatId, "trending", token, 1);
-          alertMsg = `🔥 ${token} trending alert`;
         }
 
         if (success) {
@@ -1777,7 +1550,7 @@ Examples work for any token!
         } else {
           let list = "🔔 *Your Alerts*\n\n";
           alerts.forEach((a, i) => {
-            const emoji = a.alert_type.includes("price") ? "💰" : a.alert_type.includes("sentiment") ? "🎭" : a.alert_type.includes("whale") ? "🐋" : "📊";
+            const emoji = a.alert_type.includes("price") ? "💰" : "📊";
             list += `${i + 1}. ${emoji} ${a.token_or_chain} - ${a.alert_type.replace("_", " ")}\n`;
           });
           await sendMessage(chatId, list);
@@ -1850,415 +1623,41 @@ _Oracle learns from your conversations!_
         }
         break;
 
-      case "/analyze":
-        if (args.length === 0) {
-          await sendMessage(chatId, "🔮 Analyze what? `/analyze eth`");
-          break;
-        }
-        await sendMessage(chatId, "🔮 Consulting the cosmic charts...");
-        const analysis = await getAIResponse(
-          `Provide a concise technical analysis for ${args[0]}. Include: current trend, key levels, volume analysis, and 24h outlook. Be specific with numbers.`,
-          chatId, userName
-        );
-        await sendMessage(chatId, analysis || "❌ Could not analyze. Try again.");
-        break;
-
       case "/ask":
         if (argText.length < 3) {
-          await sendMessage(chatId, "🔮 Ask me anything! `/ask what is impermanent loss?`");
+          await sendMessage(chatId, "🔮 Ask me anything:\n`/ask What's happening with ETH?`");
           break;
         }
         const answer = await getAIResponse(argText, chatId, userName);
-        await sendMessage(chatId, answer || "❌ Could not process. Try again.");
-        break;
-
-      case "/learn":
-        const topic = argText || "crypto basics";
-        const lesson = await getAIResponse(
-          `Explain ${topic} in simple terms for someone learning crypto. Be educational, use examples, keep under 150 words.`,
-          chatId, userName
-        );
-        await sendMessage(chatId, `📚 *Learn: ${topic}*\n\n${lesson || "Could not generate lesson."}`);
-        break;
-
-      case "/compare":
-        if (args.length < 2) {
-          await sendMessage(chatId, "⚖️ Compare tokens: `/compare btc vs eth`");
-          break;
-        }
-        const tokenA = args[0].toUpperCase();
-        const tokenB = args.find((a: string) => a.toLowerCase() !== "vs" && a.toUpperCase() !== tokenA)?.toUpperCase() || "ETH";
-        
-        const [dataA, dataB] = await Promise.all([fetchPrice(tokenA), fetchPrice(tokenB)]);
-        
-        if (dataA && dataB) {
-          await sendMessage(chatId, `
-⚖️ *${tokenA} vs ${tokenB}*
-
-*${tokenA}*
-💰 $${dataA.price?.toLocaleString()}
-📊 24h: ${dataA.change24h?.toFixed(2)}%
-💎 MCap: ${formatNumber(dataA.marketCap)}
-
-*${tokenB}*
-💰 $${dataB.price?.toLocaleString()}
-📊 24h: ${dataB.change24h?.toFixed(2)}%
-💎 MCap: ${formatNumber(dataB.marketCap)}
-
-_Not financial advice._
-          `);
+        if (answer) {
+          await sendMessage(chatId, answer);
+        } else {
+          await sendMessage(chatId, "❌ Couldn't process that. Try again.");
         }
         break;
 
       default:
-        // Unknown command - use AI
-        const aiResp = await getAIResponse(text, chatId, userName);
-        if (aiResp) await sendMessage(chatId, aiResp);
-        else await sendMessage(chatId, "❓ Unknown command. Try /help");
-        break;
+        // Unknown command - try AI response
+        if (text.startsWith("/")) {
+          await sendMessage(chatId, "🔮 Unknown command. Try /help");
+        }
     }
-  } else {
-    // Natural language - respond in groups only when mentioned
-    const botMentioned = text.toLowerCase().includes("oracle") || 
-                         text.toLowerCase().includes("@oraclebot") ||
-                         message.reply_to_message?.from?.is_bot;
-    
-    if (!isGroup || botMentioned) {
-      const response = await getAIResponse(text, chatId, userName);
-      if (response) await sendMessage(chatId, response);
+  } else if (isGroup && (text.toLowerCase().includes("oracle") || text.toLowerCase().includes("@"))) {
+    // Natural language response in groups when mentioned
+    const aiResponse = await getAIResponse(text, chatId, userName);
+    if (aiResponse) {
+      await sendMessage(chatId, aiResponse);
     }
-  }
-}
-
-// ============ AUTO UPDATES & ALERTS ============
-
-// Website sections for random updates
-const WEBSITE_SECTIONS = ["home", "dashboard", "chains", "sentiment", "explorer", "learn"];
-
-// Generate update from HOME section
-async function generateHomeUpdate(): Promise<{ content: string; chartUrl?: string; section: string }> {
-  const [btcData, ethData, solData, globalMarket, trending] = await Promise.all([
-    fetchPrice("bitcoin"),
-    fetchPrice("ethereum"),
-    fetchPrice("solana"),
-    fetchGlobalMarket(),
-    fetchTrending()
-  ]);
-  
-  const chartResult = await generateTokenChart("bitcoin");
-  const btcEmoji = btcData?.change24h >= 0 ? "🟢" : "🔴";
-  const ethEmoji = ethData?.change24h >= 0 ? "🟢" : "🔴";
-  const solEmoji = solData?.change24h >= 0 ? "🟢" : "🔴";
-  
-  const trendList = trending.slice(0, 3).map((t: any) => t.item?.symbol?.toUpperCase() || "???").join(" • ");
-  
-  const content = `🏠 *ORACLE HOME*
-
-💎 BTC $${btcData?.price?.toLocaleString()} ${btcEmoji}${btcData?.change24h?.toFixed(1)}%
-⟠ ETH $${ethData?.price?.toLocaleString()} ${ethEmoji}${ethData?.change24h?.toFixed(1)}%
-◎ SOL $${solData?.price?.toLocaleString()} ${solEmoji}${solData?.change24h?.toFixed(1)}%
-
-🌐 Global MCap: ${formatNumber(globalMarket?.totalMarketCap || 0)}
-📊 BTC Dom: ${globalMarket?.btcDominance?.toFixed(1)}%
-🔥 Trending: ${trendList}
-
-[View Live](${WEBSITE_PAGES.home})`;
-
-  return { content, chartUrl: chartResult?.chartUrl, section: "home" };
-}
-
-// Generate update from DASHBOARD section
-async function generateDashboardUpdate(): Promise<{ content: string; chartUrl?: string; section: string }> {
-  const [topCoins, sentiment, globalMarket] = await Promise.all([
-    fetchTopCoins(20),
-    fetchSentiment(),
-    fetchGlobalMarket()
-  ]);
-  
-  const sorted = [...topCoins].sort((a: any, b: any) => (b.price_change_percentage_24h || 0) - (a.price_change_percentage_24h || 0));
-  const gainers = sorted.slice(0, 3);
-  const losers = sorted.slice(-3).reverse();
-  
-  const chartCoin = gainers[0]?.id || "bitcoin";
-  const chartResult = await generateTokenChart(chartCoin);
-  
-  const fgValue = parseInt(sentiment?.fearGreed || "50");
-  const bar = generateSentimentBar(fgValue);
-  
-  const gainersList = gainers.map((c: any) => `🚀 ${c.symbol?.toUpperCase()} +${c.price_change_percentage_24h?.toFixed(1)}%`).join("\n");
-  const losersList = losers.map((c: any) => `📉 ${c.symbol?.toUpperCase()} ${c.price_change_percentage_24h?.toFixed(1)}%`).join("\n");
-  
-  const content = `📊 *ORACLE DASHBOARD*
-
-*Top Gainers*
-${gainersList}
-
-*Biggest Drops*
-${losersList}
-
-🎭 Market Mood: ${bar} ${fgValue}/100
-💰 24h Volume: ${formatNumber(globalMarket?.totalVolume || 0)}
-
-[Full Dashboard](${WEBSITE_PAGES.dashboard})`;
-
-  return { content, chartUrl: chartResult?.chartUrl, section: "dashboard" };
-}
-
-// Generate update from CHAINS section
-async function generateChainsUpdate(): Promise<{ content: string; chartUrl?: string; section: string }> {
-  const chains = ["ethereum", "solana", "base", "arbitrum", "polygon"];
-  const selectedChain = chains[Math.floor(Math.random() * chains.length)];
-  
-  const [metrics, tvl, gasData, ethData, solData] = await Promise.all([
-    fetchChainMetrics(selectedChain),
-    fetchDefiTVL(selectedChain),
-    fetchGas(selectedChain),
-    fetchPrice("ethereum"),
-    fetchPrice("solana")
-  ]);
-  
-  const chartCoin = selectedChain === "solana" ? "solana" : "ethereum";
-  const chartResult = await generateTokenChart(chartCoin);
-  
-  const chainEmojis: Record<string, string> = {
-    ethereum: "⟠", solana: "◎", base: "🔵", arbitrum: "🔶", polygon: "💜"
-  };
-  
-  const chainNames: Record<string, string> = {
-    ethereum: "Ethereum", solana: "Solana", base: "Base", arbitrum: "Arbitrum", polygon: "Polygon"
-  };
-  
-  const content = `⛓️ *ORACLE CHAINS - ${chainNames[selectedChain]}*
-
-${chainEmojis[selectedChain]} *${chainNames[selectedChain]} Stats*
-${gasData ? `⛽ Gas: ${gasData.average} Gwei` : ""}
-${tvl ? `🔒 TVL: ${formatNumber(tvl.tvl)}` : ""}
-${metrics ? `📦 Block: ${metrics.blockNumber}` : ""}
-
-💱 *Network Tokens*
-⟠ ETH $${ethData?.price?.toLocaleString()} (${ethData?.change24h >= 0 ? "+" : ""}${ethData?.change24h?.toFixed(1)}%)
-◎ SOL $${solData?.price?.toLocaleString()} (${solData?.change24h >= 0 ? "+" : ""}${solData?.change24h?.toFixed(1)}%)
-
-[${chainNames[selectedChain]} Analytics](${CHAIN_PAGES[selectedChain] || WEBSITE_PAGES.dashboard})`;
-
-  return { content, chartUrl: chartResult?.chartUrl, section: "chains" };
-}
-
-// Generate update from SENTIMENT section
-async function generateSentimentUpdate(): Promise<{ content: string; chartUrl?: string; section: string }> {
-  const [sentiment, whaleTxs, trending, ethData] = await Promise.all([
-    fetchSentiment(),
-    fetchWhaleTransactions(),
-    fetchTrending(),
-    fetchPrice("ethereum")
-  ]);
-  
-  const chartResult = await generateTokenChart("ethereum");
-  
-  const fgValue = parseInt(sentiment?.fearGreed || "50");
-  const bar = generateSentimentBar(fgValue);
-  
-  let mood = "Neutral 😐";
-  if (fgValue <= 25) mood = "Extreme Fear 😱";
-  else if (fgValue <= 45) mood = "Fear 😰";
-  else if (fgValue >= 75) mood = "Extreme Greed 🤑";
-  else if (fgValue >= 55) mood = "Greed 😊";
-  
-  const trendList = trending.slice(0, 4).map((t: any) => t.item?.symbol?.toUpperCase() || "???").join(" • ");
-  const whaleInfo = whaleTxs.length > 0 ? `🐋 Latest: ${whaleTxs[0].value?.toFixed(1)} ETH ($${formatNumber(whaleTxs[0].value * (ethData?.price || 3000))})` : "";
-  
-  const content = `🎭 *ORACLE SENTIMENT*
-
-*Fear & Greed Index*
-${bar} ${fgValue}/100
-${mood}
-
-🔥 *Trending Now*
-${trendList}
-
-${whaleInfo}
-
-[Full Sentiment Analysis](${WEBSITE_PAGES.sentiment})`;
-
-  return { content, chartUrl: chartResult?.chartUrl, section: "sentiment" };
-}
-
-// Generate update from EXPLORER section
-async function generateExplorerUpdate(): Promise<{ content: string; chartUrl?: string; section: string }> {
-  const [trending, topCoins] = await Promise.all([
-    fetchTrending(),
-    fetchTopCoins(10)
-  ]);
-  
-  // Pick random trending token
-  const randomTrending = trending[Math.floor(Math.random() * Math.min(trending.length, 5))];
-  const tokenSymbol = randomTrending?.item?.symbol?.toUpperCase() || "BTC";
-  const tokenId = randomTrending?.item?.id || "bitcoin";
-  
-  const chartResult = await generateTokenChart(tokenId);
-  const tokenData = await fetchPrice(tokenId);
-  
-  const trendList = trending.slice(0, 5).map((t: any, i: number) => 
-    `${i + 1}. ${t.item?.symbol?.toUpperCase()} - Rank #${t.item?.market_cap_rank || "?"}`
-  ).join("\n");
-  
-  const content = `🔍 *ORACLE EXPLORER*
-
-*Featured Token: ${tokenSymbol}*
-💰 Price: $${tokenData?.price?.toLocaleString() || "N/A"}
-📊 24h: ${tokenData?.change24h >= 0 ? "+" : ""}${tokenData?.change24h?.toFixed(2) || 0}%
-💎 MCap: ${formatNumber(tokenData?.marketCap || 0)}
-
-*Trending Tokens*
-${trendList}
-
-[Search Any Token](${WEBSITE_PAGES.explorer})`;
-
-  return { content, chartUrl: chartResult?.chartUrl, section: "explorer" };
-}
-
-// Generate update from LEARN section
-async function generateLearnUpdate(): Promise<{ content: string; chartUrl?: string; section: string }> {
-  const [btcData, sentiment] = await Promise.all([
-    fetchPrice("bitcoin"),
-    fetchSentiment()
-  ]);
-  
-  const chartResult = await generateTokenChart("bitcoin");
-  
-  const tips = [
-    { title: "DCA Strategy", tip: "Dollar-cost averaging reduces timing risk by spreading purchases over time." },
-    { title: "Gas Optimization", tip: "Weekends and late nights (UTC) typically have lower gas fees on Ethereum." },
-    { title: "Security First", tip: "Always verify contract addresses on block explorers before interacting." },
-    { title: "L2 Benefits", tip: "Layer 2 networks like Arbitrum & Base offer 10-100x cheaper transactions." },
-    { title: "TVL Matters", tip: "Higher Total Value Locked usually indicates more trust in a DeFi protocol." },
-    { title: "Whale Watching", tip: "Large wallet movements often precede significant price action." },
-    { title: "Diversification", tip: "Never put all funds in one token. Spread risk across different assets." },
-    { title: "Research First", tip: "Check team, tokenomics, and audit reports before investing." }
-  ];
-  
-  const randomTip = tips[Math.floor(Math.random() * tips.length)];
-  const fgValue = parseInt(sentiment?.fearGreed || "50");
-  
-  const content = `📚 *ORACLE LEARN*
-
-💡 *Today's Tip: ${randomTip.title}*
-${randomTip.tip}
-
-📊 *Current Market Context*
-BTC: $${btcData?.price?.toLocaleString()} (${btcData?.change24h >= 0 ? "+" : ""}${btcData?.change24h?.toFixed(1)}%)
-Fear/Greed: ${fgValue}/100
-
-🎓 *Quick Facts*
-• Crypto market cap: $2T+
-• Active blockchains: 100+
-• DeFi protocols: 1000+
-
-[Learn More](${WEBSITE_PAGES.learn})`;
-
-  return { content, chartUrl: chartResult?.chartUrl, section: "learn" };
-}
-
-// Generate random update from any website section
-async function generateComprehensiveUpdate(): Promise<{ content: string; chartUrl?: string }> {
-  const randomSection = WEBSITE_SECTIONS[Math.floor(Math.random() * WEBSITE_SECTIONS.length)];
-  console.log(`Generating update from: ${randomSection}`);
-  
-  let result: { content: string; chartUrl?: string; section: string };
-  
-  switch (randomSection) {
-    case "home":
-      result = await generateHomeUpdate();
-      break;
-    case "dashboard":
-      result = await generateDashboardUpdate();
-      break;
-    case "chains":
-      result = await generateChainsUpdate();
-      break;
-    case "sentiment":
-      result = await generateSentimentUpdate();
-      break;
-    case "explorer":
-      result = await generateExplorerUpdate();
-      break;
-    case "learn":
-      result = await generateLearnUpdate();
-      break;
-    default:
-      result = await generateHomeUpdate();
-  }
-  
-  return { content: result.content, chartUrl: result.chartUrl };
-}
-
-async function sendAutoUpdates() {
-  console.log("Running auto updates...");
-  
-  const { data: groups } = await supabase
-    .from("telegram_groups")
-    .select("*")
-    .eq("is_active", true)
-    .eq("auto_digest", true);
-
-  if (!groups?.length) return { sent: 0, type: "none" };
-
-  let sent = 0;
-  const update = await generateComprehensiveUpdate();
-  
-  console.log(`Sending update to ${groups.length} groups`);
-
-  for (const group of groups) {
-    try {
-      if (update.chartUrl) {
-        await sendPhoto(group.chat_id, update.chartUrl, update.content);
-      } else {
-        await sendMessage(group.chat_id, update.content);
-      }
-      sent++;
-      await new Promise(r => setTimeout(r, 200));
-    } catch (e) {
-      console.error(`Failed to send to ${group.chat_id}:`, e);
+  } else if (!isGroup) {
+    // DM - always respond
+    const aiResponse = await getAIResponse(text, chatId, userName);
+    if (aiResponse) {
+      await sendMessage(chatId, aiResponse);
     }
   }
-
-  return { sent, type: "comprehensive" };
 }
 
-// Check for whale transactions and alert groups (runs separately for big whales)
-async function checkWhaleActivity() {
-  console.log("Checking whale activity...");
-  
-  const { data: groups } = await supabase
-    .from("telegram_groups")
-    .select("*")
-    .eq("is_active", true);
-
-  if (!groups?.length) return { whales: 0 };
-
-  const ethPrice = (await fetchPrice("ethereum"))?.price || 3000;
-  const whaleTxs = await fetchWhaleTransactions();
-  
-  // Only alert on VERY large transactions (>1000 ETH = ~$3M+) for instant alerts
-  const bigWhales = whaleTxs.filter((tx: any) => tx.value && tx.value > 1000);
-  
-  if (bigWhales.length === 0) return { whales: 0 };
-
-  let alertsSent = 0;
-  for (const group of groups) {
-    try {
-      const whale = bigWhales[0];
-      const msg = `🚨 *MAJOR WHALE DETECTED!*\n\n${formatWhaleAlert(whale, ethPrice)}`;
-      await sendPhoto(group.chat_id, MASCOT_IMAGE, msg);
-      alertsSent++;
-      await new Promise(r => setTimeout(r, 100));
-    } catch (e) {
-      console.error(`Whale alert failed:`, e);
-    }
-  }
-
-  return { whales: alertsSent };
-}
+// ============ ALERT CHECKER ============
 
 async function checkAlerts() {
   console.log("Checking alerts...");
@@ -2272,8 +1671,6 @@ async function checkAlerts() {
   if (!alerts?.length) return { checked: 0, triggered: 0 };
 
   let triggered = 0;
-  const sentiment = await fetchSentiment();
-  const fgValue = parseInt(sentiment?.fearGreed || "50");
 
   for (const alert of alerts) {
     try {
@@ -2282,7 +1679,7 @@ async function checkAlerts() {
       let unit = "$";
 
       if (alert.alert_type === "price_above" || alert.alert_type === "price_below") {
-        const price = await fetchPrice(alert.token_or_chain);
+        const price = await fetchPriceFromDexScreener(alert.token_or_chain);
         currentValue = price?.price || 0;
         if (alert.alert_type === "price_above" && currentValue >= alert.threshold_value) shouldTrigger = true;
         if (alert.alert_type === "price_below" && currentValue <= alert.threshold_value) shouldTrigger = true;
@@ -2291,18 +1688,10 @@ async function checkAlerts() {
         currentValue = gas?.average || 0;
         unit = " Gwei";
         if (currentValue >= alert.threshold_value) shouldTrigger = true;
-      } else if (alert.alert_type === "sentiment_fear") {
-        currentValue = fgValue;
-        unit = "";
-        if (fgValue <= alert.threshold_value) shouldTrigger = true;
-      } else if (alert.alert_type === "sentiment_greed") {
-        currentValue = fgValue;
-        unit = "";
-        if (fgValue >= alert.threshold_value) shouldTrigger = true;
       }
 
       if (shouldTrigger) {
-        const typeEmoji = alert.alert_type.includes("price") ? "💰" : alert.alert_type.includes("sentiment") ? "🎭" : "📊";
+        const typeEmoji = alert.alert_type.includes("price") ? "💰" : "📊";
         await sendMessage(alert.telegram_chat_id, `
 🚨 *ALERT TRIGGERED!*
 
@@ -2311,7 +1700,7 @@ ${typeEmoji} *${alert.token_or_chain}*
 🎯 Target: ${unit === "$" ? "$" : ""}${alert.threshold_value}${unit !== "$" ? unit : ""}
 📊 Current: ${unit === "$" ? "$" : ""}${currentValue.toLocaleString()}${unit !== "$" ? unit : ""}
 
-_For informational purposes. Not financial advice._
+_Data via Alchemy + DexScreener_
         `);
 
         await supabase
@@ -2352,9 +1741,9 @@ serve(async (req) => {
     }
 
     if (url.pathname.endsWith("/cron")) {
-      // Auto-updates disabled - only check user alerts
+      // Only check user alerts - no auto-updates
       const alerts = await checkAlerts();
-      return new Response(JSON.stringify({ updates: { sent: 0, type: "disabled" }, alerts, whales: { whales: 0 } }), {
+      return new Response(JSON.stringify({ alerts, autoUpdates: "disabled" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
