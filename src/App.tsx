@@ -21,7 +21,13 @@ const queryClient = new QueryClient({
       refetchOnMount: true,
       retry: 3,
       retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
-      staleTime: 10000,
+      staleTime: 15000,
+      gcTime: 1000 * 60 * 5, // 5 minutes cache
+      networkMode: 'offlineFirst',
+    },
+    mutations: {
+      retry: 2,
+      networkMode: 'offlineFirst',
     },
   },
 });
