@@ -1,8 +1,9 @@
 import { useMemo } from "react";
 import { ChainConfig } from "@/lib/chainConfig";
 import { WhaleActivity } from "@/hooks/useChainData";
-import { ArrowUpRight, ArrowDownRight, ArrowRight } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, ArrowRight, ExternalLink, Copy } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface WhaleActivityRadarProps {
   chain: ChainConfig;
@@ -25,6 +26,13 @@ export function WhaleActivityRadar({ chain, whaleActivity, isLoading }: WhaleAct
     return `${hours}h ago`;
   };
 
+  const copyWallet = (wallet: string | undefined) => {
+    if (wallet) {
+      navigator.clipboard.writeText(wallet);
+      toast.success("Wallet address copied!");
+    }
+  };
+
   // Calculate radar positions for visualization
   const radarDots = useMemo(() => {
     if (!whaleActivity) return [];
@@ -41,14 +49,15 @@ export function WhaleActivityRadar({ chain, whaleActivity, isLoading }: WhaleAct
   }, [whaleActivity]);
 
   const stats = useMemo(() => {
-    if (!whaleActivity) return { buys: 0, sells: 0, transfers: 0, totalVolume: 0 };
+    if (!whaleActivity) return { buys: 0, sells: 0, transfers: 0, totalVolume: 0, count: 0 };
     return whaleActivity.reduce((acc, a) => {
       if (a.type === "buy") acc.buys += a.value;
       if (a.type === "sell") acc.sells += a.value;
       if (a.type === "transfer") acc.transfers += a.value;
       acc.totalVolume += a.value;
+      acc.count++;
       return acc;
-    }, { buys: 0, sells: 0, transfers: 0, totalVolume: 0 });
+    }, { buys: 0, sells: 0, transfers: 0, totalVolume: 0, count: 0 });
   }, [whaleActivity]);
 
   return (
@@ -58,6 +67,15 @@ export function WhaleActivityRadar({ chain, whaleActivity, isLoading }: WhaleAct
           <h3 className="text-base sm:text-lg font-display text-foreground">Whale Activity Radar</h3>
           <p className="text-xs sm:text-sm text-muted-foreground">Large transactions on {chain.name}</p>
         </div>
+        <a
+          href={`${chain.explorerUrl}/txs`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1 px-2 py-1 rounded text-[10px] bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all"
+        >
+          <ExternalLink className="h-2.5 w-2.5" />
+          View All
+        </a>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
@@ -172,7 +190,7 @@ export function WhaleActivityRadar({ chain, whaleActivity, isLoading }: WhaleAct
               <div
                 key={i}
                 className={cn(
-                  "flex items-center justify-between p-1.5 sm:p-2 rounded-lg transition-all",
+                  "flex items-center justify-between p-1.5 sm:p-2 rounded-lg transition-all group",
                   activity.type === "buy" && "bg-success/5 border border-success/20",
                   activity.type === "sell" && "bg-danger/5 border border-danger/20",
                   activity.type === "transfer" && "bg-warning/5 border border-warning/20"
@@ -186,10 +204,33 @@ export function WhaleActivityRadar({ chain, whaleActivity, isLoading }: WhaleAct
                     <p className="text-xs sm:text-sm text-foreground truncate">
                       {activity.amount.toLocaleString()} {activity.token}
                     </p>
-                    <p className="text-[10px] sm:text-xs text-muted-foreground">{formatTime(activity.timestamp)}</p>
+                    <div className="flex items-center gap-1">
+                      <p className="text-[10px] sm:text-xs text-muted-foreground">{formatTime(activity.timestamp)}</p>
+                      {activity.wallet && (
+                        <button
+                          onClick={() => copyWallet(activity.wallet)}
+                          className="opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <Copy className="h-2.5 w-2.5 text-muted-foreground hover:text-foreground" />
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
-                <span className="text-xs sm:text-sm font-medium text-foreground flex-shrink-0 ml-2">{formatValue(activity.value)}</span>
+                <div className="flex items-center gap-1.5 flex-shrink-0 ml-2">
+                  <span className="text-xs sm:text-sm font-medium text-foreground">{formatValue(activity.value)}</span>
+                  {activity.wallet && (
+                    <a
+                      href={`${chain.explorerUrl}/address/${activity.wallet}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <ExternalLink className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                    </a>
+                  )}
+                </div>
               </div>
             ))}
           </div>
