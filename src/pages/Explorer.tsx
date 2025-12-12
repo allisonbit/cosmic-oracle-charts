@@ -8,7 +8,10 @@ import { useAIForecast } from "@/hooks/useAIForecast";
 import { useTokenSearch, SearchToken } from "@/hooks/useTokenSearch";
 import { ChainSelector } from "@/components/explorer/ChainSelector";
 import { SearchInput } from "@/components/explorer/SearchInput";
-import { TokenDetailPanel } from "@/components/explorer/TokenDetailPanel";
+import { EnhancedTokenDetailPanel } from "@/components/explorer/EnhancedTokenDetailPanel";
+import { TrendingTokensPanel } from "@/components/explorer/TrendingTokensPanel";
+import { MarketStatsBar } from "@/components/explorer/MarketStatsBar";
+import { TopTokensTable } from "@/components/explorer/TopTokensTable";
 import { ALL_CHAINS, getChainById } from "@/lib/explorerChains";
 
 function formatNumber(num: number): string {
@@ -223,7 +226,7 @@ const ExplorerPage = () => {
 
         {/* Token Detail Panel */}
         {selectedToken && !isSearching && (
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-6xl mx-auto">
             <Button
               variant="ghost"
               size="sm"
@@ -232,7 +235,7 @@ const ExplorerPage = () => {
             >
               ← Back to search
             </Button>
-            <TokenDetailPanel 
+            <EnhancedTokenDetailPanel 
               token={selectedToken} 
               chain={chainData}
               forecast={forecast}
@@ -241,54 +244,18 @@ const ExplorerPage = () => {
           </div>
         )}
 
-        {/* Default View - Top Tokens Table */}
+        {/* Default View - DexScreener-like Layout */}
         {!selectedToken && !isSearching && !marketLoading && (
-          <div className="holo-card p-6">
-            <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
-              <Globe className="w-4 h-4 text-primary" />
-              TOP TOKENS BY MARKET CAP
-            </h3>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-muted-foreground text-xs font-display border-b border-border">
-                    <th className="text-left py-2 px-2">#</th>
-                    <th className="text-left py-2 px-2">Token</th>
-                    <th className="text-right py-2 px-2">Price</th>
-                    <th className="text-right py-2 px-2">24h</th>
-                    <th className="text-right py-2 px-2 hidden sm:table-cell">Volume</th>
-                    <th className="text-right py-2 px-2 hidden md:table-cell">Market Cap</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {allCoins.slice(0, 20).map((coin) => (
-                    <tr 
-                      key={coin.symbol} 
-                      className="border-b border-border/50 hover:bg-muted/30 cursor-pointer transition-colors"
-                      onClick={() => setSearchQuery(coin.symbol)}
-                    >
-                      <td className="py-3 px-2 text-muted-foreground">{coin.rank}</td>
-                      <td className="py-3 px-2">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                            <span className="font-display font-bold text-primary text-xs">{coin.symbol[0]}</span>
-                          </div>
-                          <div>
-                            <span className="font-medium">{coin.symbol}</span>
-                            <p className="text-xs text-muted-foreground">{coin.name}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="py-3 px-2 text-right font-medium">{formatPrice(coin.price)}</td>
-                      <td className={cn("py-3 px-2 text-right font-bold", coin.change24h >= 0 ? "text-success" : "text-danger")}>
-                        {coin.change24h >= 0 ? "+" : ""}{coin.change24h.toFixed(2)}%
-                      </td>
-                      <td className="py-3 px-2 text-right hidden sm:table-cell text-muted-foreground">{formatNumber(coin.volume)}</td>
-                      <td className="py-3 px-2 text-right hidden md:table-cell text-muted-foreground">{formatNumber(coin.marketCap)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          <div className="space-y-6">
+            <MarketStatsBar chain={chainData} />
+            
+            <div className="grid lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-1">
+                <TrendingTokensPanel chain={chainData} onTokenSelect={handleTokenSelect} />
+              </div>
+              <div className="lg:col-span-2">
+                <TopTokensTable chain={chainData} onTokenSelect={handleTokenSelect} />
+              </div>
             </div>
           </div>
         )}
