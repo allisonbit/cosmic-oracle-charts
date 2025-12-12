@@ -168,7 +168,26 @@ serve(async (req) => {
 
     const chainData = chainSpecificData[chainId as keyof typeof chainSpecificData] || chainSpecificData.ethereum;
 
-    // Build health data response
+    // Fetch transaction count for the latest block
+    let transactionCount = 0;
+    try {
+      const txCountRes = await fetch(alchemyUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          jsonrpc: "2.0", 
+          id: 6, 
+          method: "eth_getBlockTransactionCountByNumber", 
+          params: ["latest"] 
+        }),
+      });
+      const txCountData = await txCountRes.json();
+      transactionCount = parseInt(txCountData.result, 16) || 0;
+    } catch (e) {
+      console.log("Could not fetch transaction count");
+    }
+
+    // Build health data response with real Alchemy data
     const healthData = {
       // Real data from Alchemy
       blockNumber: latestBlockNumber,
@@ -176,6 +195,8 @@ serve(async (req) => {
       blockProduction: blocksPerDay,
       baseFee: baseFee,
       gasPrice: gasPrice,
+      transactionCount: transactionCount,
+      blockTimestamp: currentTimestamp,
       
       // Calculated/estimated data
       finalityRate: 99.5 + Math.random() * 0.4,
@@ -220,6 +241,10 @@ serve(async (req) => {
         unverified: 1100 + Math.floor(Math.random() * 400),
         total: 1500 + Math.floor(Math.random() * 550),
       },
+      
+      // Network info
+      network: network,
+      chainId: chainId,
       
       timestamp: Date.now(),
     };
