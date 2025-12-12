@@ -131,7 +131,7 @@ const Dashboard = () => {
           <>
             {/* Quick Actions */}
             <div className="mb-6">
-              <QuickActions />
+              <EnhancedQuickActions />
             </div>
 
             {/* Stats Row */}
@@ -257,21 +257,21 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-                <MarketMomentum />
-                <MarketInsightsPanel />
+                <EnhancedMarketMomentum />
+                <EnhancedMarketInsightsPanel />
               </div>
 
               {/* Right Column */}
               <div className="space-y-6">
-                <TrendingAlerts />
-                <TopPerformers onCoinClick={setSelectedCoin} />
+                <EnhancedTrendingAlerts />
+                <EnhancedTopPerformers onCoinClick={setSelectedCoin} />
               </div>
             </div>
 
             {/* Volume & Dominance */}
             <div className="grid md:grid-cols-2 gap-6 mb-6">
-              <VolumeLeaders />
-              <DominanceChart />
+              <EnhancedVolumeLeaders />
+              <EnhancedDominanceChart />
             </div>
 
             {/* Coin Cards - Clickable */}
