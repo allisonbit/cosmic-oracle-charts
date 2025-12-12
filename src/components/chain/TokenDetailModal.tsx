@@ -1,7 +1,9 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { TrendingUp, TrendingDown, Activity, DollarSign, BarChart3, Shield, AlertTriangle, ExternalLink, Copy } from "lucide-react";
+import { TrendingUp, TrendingDown, Activity, DollarSign, BarChart3, Shield, AlertTriangle, ExternalLink, Copy, ArrowUpDown, Wallet, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { useState } from "react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 export interface TokenModalData {
   symbol: string;
@@ -22,6 +24,8 @@ export interface TokenModalData {
   riskScore?: number;
   reasons?: string[];
   coingeckoId?: string;
+  contractAddress?: string;
+  chain?: string;
 }
 
 interface TokenDetailModalProps {
@@ -31,6 +35,9 @@ interface TokenDetailModalProps {
 }
 
 export function TokenDetailModal({ open, onOpenChange, token }: TokenDetailModalProps) {
+  const [tradingExpanded, setTradingExpanded] = useState(false);
+  const [analyticsExpanded, setAnalyticsExpanded] = useState(false);
+
   if (!token) return null;
 
   const formatPrice = (price: number | undefined) => {
@@ -106,9 +113,11 @@ export function TokenDetailModal({ open, onOpenChange, token }: TokenDetailModal
     }
   };
 
+  const chainSlug = token.chain || "ethereum";
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg bg-background/95 backdrop-blur-xl border-border/50">
+      <DialogContent className="sm:max-w-lg bg-background/95 backdrop-blur-xl border-border/50 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
             {token.logo && (
@@ -253,22 +262,150 @@ export function TokenDetailModal({ open, onOpenChange, token }: TokenDetailModal
             </div>
           )}
 
-          {/* Actions */}
+          {/* Trading Links - Expandable */}
+          <Collapsible open={tradingExpanded} onOpenChange={setTradingExpanded}>
+            <CollapsibleTrigger className="w-full flex items-center justify-between p-3 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors">
+              <div className="flex items-center gap-2 text-primary">
+                <ArrowUpDown className="h-4 w-4" />
+                <span className="text-sm font-medium">Trading Options</span>
+              </div>
+              {tradingExpanded ? <TrendingDown className="h-4 w-4 text-primary" /> : <TrendingUp className="h-4 w-4 text-primary" />}
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <div className="mt-2 p-4 rounded-xl border border-border/30 bg-background/50 space-y-3">
+                <div className="grid grid-cols-2 gap-2">
+                  <a
+                    href={`https://app.uniswap.org/#/swap?outputCurrency=${token.symbol}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-[#FF007A]/20 text-[#FF007A] hover:bg-[#FF007A]/30 transition-colors text-sm"
+                  >
+                    <ExternalLink className="h-4 w-4" /> Uniswap
+                  </a>
+                  <a
+                    href={`https://1inch.io/`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-[#1B314F]/40 text-primary hover:bg-[#1B314F]/60 transition-colors text-sm"
+                  >
+                    <ExternalLink className="h-4 w-4" /> 1inch
+                  </a>
+                  <a
+                    href={`https://www.sushi.com/swap`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-[#FA52A0]/20 text-[#FA52A0] hover:bg-[#FA52A0]/30 transition-colors text-sm"
+                  >
+                    <ExternalLink className="h-4 w-4" /> Sushi
+                  </a>
+                  <a
+                    href={`https://kyberswap.com/swap`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-[#31CB9E]/20 text-[#31CB9E] hover:bg-[#31CB9E]/30 transition-colors text-sm"
+                  >
+                    <ExternalLink className="h-4 w-4" /> Kyber
+                  </a>
+                </div>
+                <p className="text-[10px] text-muted-foreground text-center">
+                  Always verify contract addresses before trading
+                </p>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+
+          {/* Analytics Links - Expandable */}
+          <Collapsible open={analyticsExpanded} onOpenChange={setAnalyticsExpanded}>
+            <CollapsibleTrigger className="w-full flex items-center justify-between p-3 rounded-lg bg-secondary/10 hover:bg-secondary/20 transition-colors">
+              <div className="flex items-center gap-2 text-secondary">
+                <Globe className="h-4 w-4" />
+                <span className="text-sm font-medium">Analytics & Research</span>
+              </div>
+              {analyticsExpanded ? <TrendingDown className="h-4 w-4 text-secondary" /> : <TrendingUp className="h-4 w-4 text-secondary" />}
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <div className="mt-2 p-4 rounded-xl border border-border/30 bg-background/50">
+                <div className="flex flex-wrap gap-2">
+                  <a
+                    href={`https://dexscreener.com/${chainSlug}/${token.symbol.toLowerCase()}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-1.5 rounded-lg bg-muted/20 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors flex items-center gap-1"
+                  >
+                    <ExternalLink className="h-3 w-3" /> DexScreener
+                  </a>
+                  <a
+                    href={`https://www.geckoterminal.com/${chainSlug}/pools/${token.symbol.toLowerCase()}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-1.5 rounded-lg bg-muted/20 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors flex items-center gap-1"
+                  >
+                    <ExternalLink className="h-3 w-3" /> GeckoTerminal
+                  </a>
+                  <a
+                    href={`https://dextools.io/app/en/${chainSlug}/pair-explorer/${token.symbol.toLowerCase()}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-1.5 rounded-lg bg-muted/20 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors flex items-center gap-1"
+                  >
+                    <ExternalLink className="h-3 w-3" /> DexTools
+                  </a>
+                  {token.coingeckoId && (
+                    <a
+                      href={`https://www.coingecko.com/en/coins/${token.coingeckoId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-1.5 rounded-lg bg-muted/20 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors flex items-center gap-1"
+                    >
+                      <ExternalLink className="h-3 w-3" /> CoinGecko
+                    </a>
+                  )}
+                  <a
+                    href={`https://tokensniffer.com/token/${chainSlug}/${token.symbol.toLowerCase()}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-1.5 rounded-lg bg-muted/20 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors flex items-center gap-1"
+                  >
+                    <Shield className="h-3 w-3" /> TokenSniffer
+                  </a>
+                  <a
+                    href={`https://gopluslabs.io/token-security/${chainSlug === "ethereum" ? "1" : chainSlug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-1.5 rounded-lg bg-muted/20 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors flex items-center gap-1"
+                  >
+                    <Shield className="h-3 w-3" /> GoPlus Security
+                  </a>
+                </div>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+
+          {/* Primary Actions */}
           <div className="flex gap-2">
             {token.coingeckoId && (
               <a
                 href={`https://www.coingecko.com/en/coins/${token.coingeckoId}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors text-sm font-medium"
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors text-sm font-medium"
               >
                 <ExternalLink className="h-4 w-4" />
-                View Details
+                Full Details
               </a>
             )}
+            <a
+              href={`https://dexscreener.com/${chainSlug}/${token.symbol.toLowerCase()}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-secondary/20 text-secondary hover:bg-secondary/30 transition-colors text-sm font-medium"
+            >
+              <BarChart3 className="h-4 w-4" />
+              Live Chart
+            </a>
             <button
               onClick={() => copyToClipboard(token.symbol)}
-              className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-muted/20 text-foreground hover:bg-muted/30 transition-colors text-sm"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-muted/20 text-foreground hover:bg-muted/30 transition-colors text-sm"
             >
               <Copy className="h-4 w-4" />
             </button>
