@@ -28,6 +28,7 @@ import { ChainExternalLinks } from "@/components/chain/ChainExternalLinks";
 import { ChainInfoCard } from "@/components/chain/ChainInfoCard";
 import { RealtimePriceTicker } from "@/components/chain/RealtimePriceTicker";
 import { ChainSpecificMetrics } from "@/components/chain/ChainSpecificMetrics";
+import { EcosystemTokenSearch } from "@/components/chain/EcosystemTokenSearch";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { ArrowLeft, Loader2, ExternalLink, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -131,13 +132,19 @@ export default function Chain() {
                 {/* Chain Info Card */}
                 <ChainInfoCard chain={chain} />
 
-                {/* Real-time Price Ticker for specific chains */}
-                {["optimism", "sui", "ton"].includes(chain.id) && (
+                {/* Real-time Price Ticker for supported chains */}
+                {["optimism", "sui", "ton", "avalanche", "polygon", "arbitrum"].includes(chain.id) && (
                   <RealtimePriceTicker chain={chain} />
                 )}
 
-                {/* Chain-specific Metrics for Optimism, Sui, TON */}
+                {/* Chain-specific Metrics */}
                 <ChainSpecificMetrics chain={chain} chainSpecificData={chainData?.chainSpecificData} />
+
+                {/* Ecosystem Token Search */}
+                <EcosystemTokenSearch 
+                  chain={chain} 
+                  ecosystemTokens={chainData?.chainSpecificData?.ecosystemTokens} 
+                />
 
                 {/* Price Chart & Predictions */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">

@@ -407,6 +407,142 @@ function getChainSpecificData(chainId: string) {
         jettonTypes: 15000,
       },
     },
+    // AVALANCHE - C-Chain Layer 1
+    avalanche: {
+      type: "layer1",
+      consensus: "Avalanche Consensus",
+      language: "Solidity (EVM)",
+      features: ["Subnets", "Sub-second Finality", "EVM Compatible", "Low Fees"],
+      governance: "Avalanche Foundation",
+      bridges: [
+        { name: "Avalanche Bridge", url: "https://bridge.avax.network" },
+        { name: "LayerZero", url: "https://layerzero.network" },
+        { name: "Stargate", url: "https://stargate.finance" },
+      ],
+      dexes: [
+        { name: "Trader Joe", url: "https://traderjoexyz.com", volume24h: 85e6 },
+        { name: "Pangolin", url: "https://pangolin.exchange", volume24h: 25e6 },
+        { name: "GMX", url: "https://gmx.io", volume24h: 120e6 },
+      ],
+      defiProtocols: [
+        { name: "Aave", tvl: 450e6, category: "Lending" },
+        { name: "BENQI", tvl: 280e6, category: "Lending" },
+        { name: "GMX", tvl: 380e6, category: "Perpetuals" },
+        { name: "Trader Joe", tvl: 180e6, category: "DEX" },
+        { name: "Yield Yak", tvl: 45e6, category: "Yield Aggregator" },
+      ],
+      subnets: [
+        { name: "DFK Chain", description: "DeFi Kingdoms gaming subnet", tvl: 25e6 },
+        { name: "Swimmer Network", description: "Crabada gaming subnet", tvl: 5e6 },
+        { name: "MELD", description: "Banking subnet", tvl: 15e6 },
+      ],
+      uniqueMetrics: {
+        activeSubnets: 45,
+        validatorCount: 1200,
+        stakingApr: 8.2,
+        c_chainTps: 4500,
+      },
+      ecosystemTokens: [
+        { symbol: "AVAX", name: "Avalanche", address: "Native", category: "Native" },
+        { symbol: "JOE", name: "Trader Joe", address: "0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd", category: "DEX" },
+        { symbol: "PNG", name: "Pangolin", address: "0x60781C2586D68229fde47564546784ab3fACA982", category: "DEX" },
+        { symbol: "QI", name: "BENQI", address: "0x8729438EB15e2C8B576fCc6AeCdA6A148776C0F5", category: "Lending" },
+        { symbol: "GMX", name: "GMX", address: "0x62edc0692BD897D2295872a9FFCac5425011c661", category: "Perpetuals" },
+        { symbol: "STG", name: "Stargate", address: "0x2F6F07CDcf3588944Bf4C42aC74ff24bF56e7590", category: "Bridge" },
+      ],
+    },
+    // POLYGON - PoS Sidechain
+    polygon: {
+      type: "sidechain",
+      consensus: "Proof of Stake",
+      language: "Solidity (EVM)",
+      features: ["EVM Compatible", "Low Fees", "Fast Transactions", "zkEVM"],
+      governance: "Polygon Labs",
+      bridges: [
+        { name: "Polygon Bridge", url: "https://portal.polygon.technology/bridge" },
+        { name: "Hop Protocol", url: "https://hop.exchange" },
+        { name: "Multichain", url: "https://multichain.org" },
+      ],
+      dexes: [
+        { name: "QuickSwap", url: "https://quickswap.exchange", volume24h: 45e6 },
+        { name: "Uniswap", url: "https://app.uniswap.org", volume24h: 85e6 },
+        { name: "SushiSwap", url: "https://sushi.com", volume24h: 25e6 },
+      ],
+      defiProtocols: [
+        { name: "Aave", tvl: 850e6, category: "Lending" },
+        { name: "QuickSwap", tvl: 180e6, category: "DEX" },
+        { name: "Balancer", tvl: 120e6, category: "DEX" },
+        { name: "Curve", tvl: 95e6, category: "Stableswap" },
+        { name: "Beefy Finance", tvl: 45e6, category: "Yield Aggregator" },
+      ],
+      zkSolutions: [
+        { name: "Polygon zkEVM", status: "Mainnet", tps: 2000 },
+        { name: "Polygon Miden", status: "Development", tps: 5000 },
+        { name: "Polygon ID", status: "Live", description: "Decentralized Identity" },
+      ],
+      uniqueMetrics: {
+        validatorCount: 100,
+        stakingApr: 5.5,
+        checkpointsDaily: 96,
+        avgBlockTime: 2.1,
+      },
+      ecosystemTokens: [
+        { symbol: "POL", name: "Polygon", address: "0x0000000000000000000000000000000000001010", category: "Native" },
+        { symbol: "QUICK", name: "QuickSwap", address: "0xB5C064F955D8e7F38fE0460C556a72987494eE17", category: "DEX" },
+        { symbol: "GHST", name: "Aavegotchi", address: "0x385Eeac5cB85A38A9a07A70c73e0a3271CfB54A7", category: "Gaming" },
+        { symbol: "SUSHI", name: "SushiSwap", address: "0x0b3F868E0BE5597D5DB7fEB59E1CADBb0fdDa50a", category: "DEX" },
+        { symbol: "AAVE", name: "Aave", address: "0xD6DF932A45C0f255f85145f286eA0b292B21C90B", category: "Lending" },
+        { symbol: "BAL", name: "Balancer", address: "0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3", category: "DEX" },
+      ],
+    },
+    // ARBITRUM - Optimistic L2
+    arbitrum: {
+      type: "layer2",
+      rollupType: "Optimistic Rollup",
+      parentChain: "Ethereum",
+      language: "Solidity (EVM)",
+      features: ["EVM Compatible", "Low Fees", "High Throughput", "Nitro Stack"],
+      governance: "Arbitrum DAO",
+      bridges: [
+        { name: "Arbitrum Bridge", url: "https://bridge.arbitrum.io" },
+        { name: "Hop Protocol", url: "https://hop.exchange" },
+        { name: "Stargate", url: "https://stargate.finance" },
+      ],
+      dexes: [
+        { name: "GMX", url: "https://gmx.io", volume24h: 250e6 },
+        { name: "Uniswap", url: "https://app.uniswap.org", volume24h: 180e6 },
+        { name: "Camelot", url: "https://camelot.exchange", volume24h: 45e6 },
+        { name: "SushiSwap", url: "https://sushi.com", volume24h: 35e6 },
+      ],
+      defiProtocols: [
+        { name: "GMX", tvl: 580e6, category: "Perpetuals" },
+        { name: "Aave", tvl: 420e6, category: "Lending" },
+        { name: "Radiant Capital", tvl: 180e6, category: "Lending" },
+        { name: "Pendle", tvl: 350e6, category: "Yield" },
+        { name: "Camelot", tvl: 120e6, category: "DEX" },
+        { name: "Jones DAO", tvl: 45e6, category: "Options" },
+      ],
+      orbitChains: [
+        { name: "Xai", description: "Gaming-focused L3", status: "Live" },
+        { name: "Nova", description: "Gaming & social", status: "Live" },
+        { name: "Degen Chain", description: "Degen community L3", status: "Live" },
+      ],
+      uniqueMetrics: {
+        sequencerUptime: 99.98,
+        batchesPosted24h: 2880,
+        l1DataCost: 0.0005,
+        avgTxCost: 0.12,
+      },
+      ecosystemTokens: [
+        { symbol: "ARB", name: "Arbitrum", address: "0x912CE59144191C1204E64559FE8253a0e49E6548", category: "Governance" },
+        { symbol: "GMX", name: "GMX", address: "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a", category: "Perpetuals" },
+        { symbol: "MAGIC", name: "Magic", address: "0x539bdE0d7Dbd336b79148AA742883198BBF60342", category: "Gaming" },
+        { symbol: "RDNT", name: "Radiant", address: "0x3082CC23568eA640225c2467653dB90e9250AaA0", category: "Lending" },
+        { symbol: "PENDLE", name: "Pendle", address: "0x0c880f6761F1af8d9Aa9C466984b80DAb9a8c9e8", category: "Yield" },
+        { symbol: "GNS", name: "Gains Network", address: "0x18c11FD286C5EC11c3b683Caa813B77f5163A122", category: "Trading" },
+        { symbol: "GRAIL", name: "Camelot", address: "0x3d9907F9a368ad0a51Be60f7Da3b97cf940982D8", category: "DEX" },
+      ],
+    },
   };
 
   return chainData[chainId] || null;
