@@ -396,9 +396,9 @@ const ContactPage = () => {
               </div>
             </div>
 
-            {/* External Links */}
+            {/* External Links - Enhanced */}
             <div className="holo-card p-6">
-              <h3 className="font-display font-bold text-sm mb-4">EXPLORE</h3>
+              <h3 className="font-display font-bold text-sm mb-4">EXPLORE & VERIFY</h3>
               <div className="space-y-2">
                 <Button 
                   variant="outline" 
@@ -407,6 +407,7 @@ const ContactPage = () => {
                 >
                   <Globe className="w-4 h-4" />
                   Etherscan
+                  <ExternalLink className="w-3 h-3 ml-auto" />
                 </Button>
                 <Button 
                   variant="outline" 
@@ -415,6 +416,7 @@ const ContactPage = () => {
                 >
                   <BarChart3 className="w-4 h-4" />
                   DexScreener
+                  <ExternalLink className="w-3 h-3 ml-auto" />
                 </Button>
                 <Button 
                   variant="outline" 
@@ -423,6 +425,25 @@ const ContactPage = () => {
                 >
                   <Activity className="w-4 h-4" />
                   DexTools
+                  <ExternalLink className="w-3 h-3 ml-auto" />
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start gap-2"
+                  onClick={() => window.open(`https://www.coingecko.com/en/coins/oracle-ai`, '_blank')}
+                >
+                  <Coins className="w-4 h-4" />
+                  CoinGecko
+                  <ExternalLink className="w-3 h-3 ml-auto" />
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start gap-2"
+                  onClick={() => window.open(`https://tokensniffer.com/token/eth/${CONTRACT_ADDRESS}`, '_blank')}
+                >
+                  <Shield className="w-4 h-4" />
+                  TokenSniffer
+                  <ExternalLink className="w-3 h-3 ml-auto" />
                 </Button>
               </div>
             </div>
