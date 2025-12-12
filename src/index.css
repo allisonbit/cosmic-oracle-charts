@@ -107,14 +107,45 @@
 @layer base {
   * {
     @apply border-border;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 
   body {
     @apply bg-background text-foreground font-body antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+    min-height: 100vh;
+    min-height: 100dvh;
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-display;
+  }
+
+  /* Improve touch targets globally */
+  button, a, input, select, textarea {
+    touch-action: manipulation;
+  }
+
+  /* Prevent text selection on interactive elements */
+  button, .no-select {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Improve image rendering */
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
   }
 }
 
@@ -404,6 +435,10 @@
   .min-h-screen {
     min-height: 100dvh;
   }
+  
+  .h-screen {
+    height: 100dvh;
+  }
 }
 
 /* Touch action optimization */
@@ -417,4 +452,57 @@
 
 .touch-manipulation {
   touch-action: manipulation;
+}
+
+/* Stability improvements - prevent layout shifts */
+.stable-layout {
+  contain: layout style;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .ticker {
+    animation: none !important;
+  }
+}
+
+/* Improve focus visibility for accessibility */
+:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+/* Active state for touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .touch-active:active {
+    opacity: 0.7;
+    transform: scale(0.98);
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --border: 230 30% 40%;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    background: white;
+    color: black;
+  }
 }

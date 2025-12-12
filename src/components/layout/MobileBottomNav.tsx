@@ -20,13 +20,13 @@ export function MobileBottomNav() {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden no-print gpu-accelerated" role="navigation" aria-label="Mobile navigation">
       {/* Gradient backdrop */}
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/95 to-transparent pointer-events-none h-24 -top-8" />
       
       {/* Nav container */}
-      <div className="relative bg-background/90 backdrop-blur-xl border-t border-primary/20 px-1 pb-safe">
-        <div className="flex items-center justify-around py-1.5">
+      <div className="relative bg-background/95 backdrop-blur-xl border-t border-primary/20 px-1 pb-safe">
+        <div className="flex items-center justify-around py-2">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = isActivePath(item.path);
@@ -35,27 +35,31 @@ export function MobileBottomNav() {
               <RouterNavLink
                 key={item.path}
                 to={item.path}
+                aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "flex flex-col items-center gap-0.5 px-2 py-2 rounded-xl transition-all duration-200 min-w-[56px] touch-target tap-highlight-none active:scale-95",
+                  "flex flex-col items-center justify-center gap-1 rounded-xl transition-all duration-150",
+                  "min-w-[52px] min-h-[52px] px-2 py-1.5",
+                  "tap-highlight-none touch-manipulation select-none",
+                  "active:scale-95 active:opacity-80",
                   isActive 
                     ? "text-primary bg-primary/10" 
                     : "text-muted-foreground active:text-foreground active:bg-muted/50"
                 )}
               >
                 <div className={cn(
-                  "relative p-1.5",
+                  "relative flex items-center justify-center w-6 h-6",
                   isActive && "animate-pulse"
                 )}>
                   <Icon className={cn(
-                    "w-5 h-5 transition-transform",
+                    "w-5 h-5 transition-transform duration-150",
                     isActive && "scale-110"
                   )} />
                   {isActive && (
-                    <div className="absolute -inset-1 bg-primary/20 rounded-full blur-md -z-10" />
+                    <div className="absolute inset-0 bg-primary/20 rounded-full blur-md -z-10 scale-150" />
                   )}
                 </div>
                 <span className={cn(
-                  "text-[9px] font-display font-medium leading-none",
+                  "text-[10px] font-display font-medium leading-none tracking-wide",
                   isActive && "text-primary"
                 )}>
                   {item.label}
