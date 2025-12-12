@@ -104,16 +104,10 @@ export function LiveTokenSearchPanel({ chain }: LiveTokenSearchPanelProps) {
             </div>
           </div>
           
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => searchQuery ? refetchSearch() : refetchTrending()}
-            disabled={isLoading}
-            className="gap-2"
-          >
-            <RefreshCw className={cn("h-4 w-4", isLoading && "animate-spin")} />
-            Refresh
-          </Button>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/20 text-xs text-muted-foreground">
+            <div className={cn("w-2 h-2 rounded-full animate-pulse", isLoading ? "bg-warning" : "bg-success")} />
+            Live
+          </div>
         </div>
 
         {/* Search Input */}

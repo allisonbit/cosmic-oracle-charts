@@ -1251,7 +1251,7 @@ I am the Cosmic Oracle - your intelligent crypto companion from ${WEBSITE_URL}!
             priceMsg += `*${t.toUpperCase()}* - Not found\n`;
           }
         }
-        priceMsg += "\n_Data via Alchemy + DexScreener_";
+        priceMsg += "\n_Real-time data_";
         await sendMessage(chatId, priceMsg);
         break;
 
@@ -1488,7 +1488,7 @@ Give: 1) Current trend, 2) Key level, 3) One insight. Be direct.`;
 
 🌐 *Main Site:* ${WEBSITE_URL}
 
-_Powered by Alchemy + DexScreener_
+_Real-time market data_
         `);
         break;
 
@@ -1700,7 +1700,7 @@ ${typeEmoji} *${alert.token_or_chain}*
 🎯 Target: ${unit === "$" ? "$" : ""}${alert.threshold_value}${unit !== "$" ? unit : ""}
 📊 Current: ${unit === "$" ? "$" : ""}${currentValue.toLocaleString()}${unit !== "$" ? unit : ""}
 
-_Data via Alchemy + DexScreener_
+_Real-time alert_
         `);
 
         await supabase

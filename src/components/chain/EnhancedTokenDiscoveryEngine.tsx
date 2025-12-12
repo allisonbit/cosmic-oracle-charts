@@ -247,13 +247,9 @@ export function EnhancedTokenDiscoveryEngine({ chain }: EnhancedTokenDiscoveryEn
           </div>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <Clock className="h-3 w-3" />
-              <span>Updated {dataUpdatedAt ? new Date(dataUpdatedAt).toLocaleTimeString() : 'Loading...'}</span>
               <div className={cn("w-2 h-2 rounded-full animate-pulse", isLoading || isFetching ? "bg-warning" : "bg-success")} />
+              <span>Live</span>
             </div>
-            <button onClick={() => refetch()} disabled={isFetching} className="p-2 rounded-lg bg-muted/20 hover:bg-muted/40 transition-colors disabled:opacity-50">
-              <RefreshCw className={cn("h-4 w-4 text-muted-foreground", isFetching && "animate-spin")} />
-            </button>
             <button onClick={() => openDiscoveryModal('methodology', 'Discovery Methodology', {})} className="p-2 rounded-lg bg-muted/20 hover:bg-muted/40 transition-colors">
               <Info className="h-4 w-4 text-muted-foreground" />
             </button>

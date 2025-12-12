@@ -72,13 +72,6 @@ export function EnhancedTopPerformers({ onCoinClick }: EnhancedTopPerformersProp
             <span className="sm:hidden">{view === "gainers" ? "GAINERS" : "LOSERS"}</span>
           </h3>
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => refetch()}
-              disabled={isLoading}
-              className="p-1.5 rounded-lg hover:bg-muted/50 transition-colors"
-            >
-              <RefreshCw className={cn("w-4 h-4 text-muted-foreground", isLoading && "animate-spin")} />
-            </button>
             <div className="flex gap-1 bg-muted/50 p-1 rounded-lg">
               <button
                 onClick={() => setView("gainers")}

@@ -120,8 +120,8 @@ export function EnhancedWhaleTracker({ whaleAlerts }: EnhancedWhaleTrackerProps)
           ))}
         </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <RefreshCw className="w-3 h-3 animate-spin" />
-          Live updates
+          <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
+          Live
         </div>
       </div>
 

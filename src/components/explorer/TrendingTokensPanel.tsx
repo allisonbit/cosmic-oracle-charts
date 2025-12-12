@@ -115,10 +115,10 @@ export function TrendingTokensPanel({ chain, onTokenSelect }: TrendingTokensPane
             {chain.name} TOKENS
             {isLoading && <Loader2 className="w-3 h-3 animate-spin" />}
           </h3>
-          <Button variant="ghost" size="sm" className="text-xs gap-1" onClick={() => refetch()} disabled={isRefetching}>
-            <RefreshCw className={cn("w-3 h-3", isRefetching && "animate-spin")} />
-            Refresh
-          </Button>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <div className={cn("w-2 h-2 rounded-full animate-pulse", isRefetching ? "bg-warning" : "bg-success")} />
+            Live
+          </div>
         </div>
 
         <TabsList className="w-full grid grid-cols-4 h-auto mb-4">
