@@ -33,3 +33,9 @@ verify_jwt = false
 
 [functions.telegram-bot]
 verify_jwt = false
+
+[functions.realtime-prices]
+verify_jwt = false
+
+[functions.whale-alerts]
+verify_jwt = false
