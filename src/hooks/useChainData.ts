@@ -154,6 +154,10 @@ export function useChainData(chainId: string, enabled = true) {
           return generateFallbackData(chainId);
         }
 
+        if (!data || !data.overview) {
+          return generateFallbackData(chainId);
+        }
+
         return data as ChainDataResponse;
       } catch (err) {
         console.error("Exception fetching chain data:", err);
@@ -161,10 +165,11 @@ export function useChainData(chainId: string, enabled = true) {
       }
     },
     enabled: enabled && !!chainId,
-    refetchInterval: 12000, // Refresh every 12 seconds for live updates
+    refetchInterval: 12000,
     staleTime: 10000,
     refetchIntervalInBackground: true,
     retry: 2,
     retryDelay: 1000,
+    placeholderData: (previousData) => previousData || generateFallbackData(chainId),
   });
 }

@@ -128,17 +128,22 @@ export function useChainForecast(chainId: string, chainData: ChainDataResponse |
           return generateFallbackForecast(chainId, chainData?.overview?.priceChange24h || 0);
         }
 
+        if (!data || !data.forecast) {
+          return generateFallbackForecast(chainId, chainData?.overview?.priceChange24h || 0);
+        }
+
         return data as ChainForecastResponse;
       } catch (err) {
         console.error("Exception fetching chain forecast:", err);
         return generateFallbackForecast(chainId, chainData?.overview?.priceChange24h || 0);
       }
     },
-    enabled: enabled && !!chainId && !!chainData,
-    staleTime: 60000, // 1 minute stale time
-    refetchInterval: 60000, // Refresh every minute
+    enabled: enabled && !!chainId,
+    staleTime: 60000,
+    refetchInterval: 60000,
     refetchIntervalInBackground: true,
     retry: 2,
     retryDelay: 1000,
+    placeholderData: (previousData) => previousData || generateFallbackForecast(chainId, 0),
   });
 }
