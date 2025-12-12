@@ -32,24 +32,27 @@ export function useTokenDiscovery(chain: string = 'ethereum', enabled = true) {
   return useQuery<TokenDiscoveryResponse>({
     queryKey: ['token-discovery', chain],
     queryFn: async () => {
-      console.log('Fetching token discovery for:', chain);
-      
-      const { data, error } = await supabase.functions.invoke('token-discovery', {
-        body: { chain }
-      });
+      try {
+        const { data, error } = await supabase.functions.invoke('token-discovery', {
+          body: { chain }
+        });
 
-      if (error) {
-        console.error('Token discovery error:', error);
-        throw error;
+        if (error) {
+          console.error('Token discovery error:', error);
+          throw error;
+        }
+
+        return data as TokenDiscoveryResponse;
+      } catch (err) {
+        console.error('Token discovery exception:', err);
+        throw err;
       }
-
-      console.log('Token discovery data:', data);
-      return data as TokenDiscoveryResponse;
     },
     enabled,
-    staleTime: 60000, // 1 minute
-    refetchInterval: 60000, // Refresh every minute
-    refetchOnWindowFocus: false,
+    staleTime: 20000, // 20 seconds
+    refetchInterval: 20000, // Refresh every 20 seconds
+    refetchIntervalInBackground: true,
+    refetchOnWindowFocus: true,
     retry: 2,
   });
 }

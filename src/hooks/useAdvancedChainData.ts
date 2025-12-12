@@ -129,7 +129,9 @@ export function useAdvancedChainData(chainId: string, enabled = true) {
     queryKey: ["advanced-chain-data", chainId],
     queryFn: () => generateAdvancedData(chainId),
     enabled,
-    staleTime: 30000,
-    refetchInterval: 30000,
+    staleTime: 15000,
+    refetchInterval: 15000, // Refresh every 15 seconds
+    refetchIntervalInBackground: true,
+    retry: 2,
   });
 }

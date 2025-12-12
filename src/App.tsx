@@ -13,7 +13,18 @@ import Chain from "./pages/Chain";
 import Portfolio from "./pages/Portfolio";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
+      refetchOnMount: true,
+      retry: 3,
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
+      staleTime: 10000,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>

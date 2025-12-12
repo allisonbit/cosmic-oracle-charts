@@ -20,21 +20,29 @@ export interface MarketSentiment {
 
 export function useAIForecast(coinData: any, analysisType: "coin_forecast" | "market_sentiment", enabled = true) {
   return useQuery({
-    queryKey: ["ai-forecast", analysisType, JSON.stringify(coinData)],
+    queryKey: ["ai-forecast", analysisType, coinData?.symbol || "market"],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke("ai-forecast", {
-        body: { coinData, analysisType },
-      });
-      
-      if (error) {
-        console.error("Error fetching AI forecast:", error);
-        throw error;
+      try {
+        const { data, error } = await supabase.functions.invoke("ai-forecast", {
+          body: { coinData, analysisType },
+        });
+        
+        if (error) {
+          console.error("Error fetching AI forecast:", error);
+          throw error;
+        }
+        
+        return data;
+      } catch (err) {
+        console.error("Exception fetching AI forecast:", err);
+        throw err;
       }
-      
-      return data;
     },
     enabled: enabled && !!coinData,
-    staleTime: 300000, // 5 minutes
-    refetchInterval: 300000,
+    staleTime: 120000, // 2 minutes
+    refetchInterval: 120000, // Refresh every 2 minutes
+    refetchIntervalInBackground: true,
+    retry: 2,
+    retryDelay: 2000,
   });
 }
