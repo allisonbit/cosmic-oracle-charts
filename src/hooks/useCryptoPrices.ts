@@ -34,10 +34,11 @@ export function useCryptoPrices() {
         throw err;
       }
     },
-    refetchInterval: 10000, // Refresh every 10 seconds for live feel
-    staleTime: 8000,
-    refetchIntervalInBackground: true, // Keep fetching even when tab is not focused
+    refetchInterval: 20000, // 20 seconds - balanced for live feel without rate limiting
+    staleTime: 15000,
+    gcTime: 1000 * 60 * 5, // 5 min cache
+    refetchIntervalInBackground: false, // Don't refetch when tab not focused
     retry: 3,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 5000),
+    retryDelay: (attemptIndex) => Math.min(2000 * 2 ** attemptIndex, 10000),
   });
 }

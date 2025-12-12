@@ -165,11 +165,12 @@ export function useChainData(chainId: string, enabled = true) {
       }
     },
     enabled: enabled && !!chainId,
-    refetchInterval: 12000,
-    staleTime: 10000,
-    refetchIntervalInBackground: true,
+    refetchInterval: 30000, // 30 seconds - reduced to prevent rate limiting
+    staleTime: 25000,
+    gcTime: 1000 * 60 * 5, // 5 min cache
+    refetchIntervalInBackground: false, // Don't refetch when tab not focused
     retry: 2,
-    retryDelay: 1000,
+    retryDelay: 2000,
     placeholderData: (previousData) => previousData || generateFallbackData(chainId),
   });
 }

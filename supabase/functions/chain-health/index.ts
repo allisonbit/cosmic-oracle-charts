@@ -14,6 +14,26 @@ const ALCHEMY_NETWORKS: Record<string, string> = {
   optimism: "opt-mainnet",
 };
 
+// Rotate through all available API keys for load balancing
+let keyIndex = 0;
+function getAlchemyKey(): string {
+  const keys = [
+    Deno.env.get("ALCHEMY_API_KEY_1"),
+    Deno.env.get("ALCHEMY_API_KEY_2"),
+    Deno.env.get("ALCHEMY_API_KEY_3"),
+    Deno.env.get("ALCHEMY_API_KEY_4"),
+    Deno.env.get("ALCHEMY_API_KEY_5"),
+  ].filter(Boolean) as string[];
+  
+  if (keys.length === 0) {
+    throw new Error("No Alchemy API keys configured");
+  }
+  
+  const key = keys[keyIndex % keys.length];
+  keyIndex++;
+  return key;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -23,14 +43,7 @@ serve(async (req) => {
     const { chainId } = await req.json();
     console.log("Chain health request:", chainId);
 
-    const alchemyKey1 = Deno.env.get("ALCHEMY_API_KEY_1");
-    const alchemyKey2 = Deno.env.get("ALCHEMY_API_KEY_2");
-    const alchemyKey = alchemyKey1 || alchemyKey2;
-
-    if (!alchemyKey) {
-      throw new Error("Alchemy API key not configured");
-    }
-
+    const alchemyKey = getAlchemyKey();
     const network = ALCHEMY_NETWORKS[chainId] || "eth-mainnet";
     const alchemyUrl = `https://${network}.g.alchemy.com/v2/${alchemyKey}`;
 

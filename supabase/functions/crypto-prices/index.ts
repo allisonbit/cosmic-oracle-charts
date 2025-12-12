@@ -6,10 +6,10 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Cache to avoid rate limiting
+// Cache to avoid rate limiting - increased duration
 let cachedData: any = null;
 let cacheTimestamp = 0;
-const CACHE_DURATION = 60000; // 1 minute cache
+const CACHE_DURATION = 30000; // 30 second cache for stability
 
 // Fallback data when API is unavailable
 const fallbackPrices = [
