@@ -413,7 +413,7 @@ export function EnhancedTokenDiscoveryEngine({ chain }: EnhancedTokenDiscoveryEn
         </div>
       </div>
 
-      <TokenDetailModal open={modalOpen} onOpenChange={setModalOpen} token={selectedToken} chain={chain} />
+      <TokenDetailModal open={modalOpen} onOpenChange={setModalOpen} token={selectedToken} />
 
       {/* Discovery Modal */}
       <Dialog open={discoveryModalOpen} onOpenChange={setDiscoveryModalOpen}>
