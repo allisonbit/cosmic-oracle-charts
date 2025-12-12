@@ -183,14 +183,9 @@ export function EnhancedTrendingAlerts({ compact }: EnhancedTrendingAlertsProps)
             <Bell className="w-5 h-5 text-warning animate-pulse" />
             LIVE ALERTS
           </h3>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => refetch()}
-              disabled={isLoading}
-              className="p-1.5 rounded-lg hover:bg-muted/50 transition-colors"
-            >
-              <RefreshCw className={cn("w-4 h-4 text-muted-foreground", isLoading && "animate-spin")} />
-            </button>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <div className={cn("w-2 h-2 rounded-full animate-pulse", isLoading ? "bg-warning" : "bg-success")} />
+            Live
           </div>
         </div>
 

@@ -205,17 +205,14 @@ export function DailySummary({ chain, forecast, isLoading, onRefresh }: DailySum
             <Clock className="h-3 w-3" />
             <span>Updated {new Date().toLocaleTimeString()}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <span>Powered by OpenAI</span>
-            <a
-              href={chain.website}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1 text-primary hover:underline"
-            >
-              <ExternalLink className="h-3 w-3" /> {chain.name} Official
-            </a>
-          </div>
+          <a
+            href={chain.website}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 text-primary hover:underline"
+          >
+            <ExternalLink className="h-3 w-3" /> {chain.name} Official
+          </a>
         </div>
       </div>
     </div>

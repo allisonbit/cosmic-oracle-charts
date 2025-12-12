@@ -98,16 +98,10 @@ export default function Chain() {
                   <ArrowLeft className="h-4 w-4" /><span>Back to Dashboard</span>
                 </button>
                 <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleRefreshAll}
-                    disabled={chainFetching}
-                    className="text-xs"
-                  >
-                    <RefreshCw className={`h-3 w-3 mr-1.5 ${chainFetching ? 'animate-spin' : ''}`} />
-                    Refresh
-                  </Button>
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/20 text-xs text-muted-foreground">
+                    <div className={`w-2 h-2 rounded-full ${chainFetching ? 'bg-warning' : 'bg-success'} animate-pulse`} />
+                    Live Data
+                  </div>
                   <a
                     href={chain.explorerUrl}
                     target="_blank"

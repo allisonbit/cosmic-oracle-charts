@@ -82,16 +82,10 @@ const ContactPage = () => {
           <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto">
             {tokenData?.name || 'Oracle Token'} - Real-time market data
           </p>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={() => refetch()}
-            disabled={isRefetching}
-            className="gap-2"
-          >
-            <RefreshCw className={cn("w-4 h-4", isRefetching && "animate-spin")} />
-            Refresh Data
-          </Button>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/20 text-xs text-muted-foreground">
+            <div className={cn("w-2 h-2 rounded-full animate-pulse", isRefetching ? "bg-warning" : "bg-success")} />
+            Live Data
+          </div>
         </div>
 
         {error && (

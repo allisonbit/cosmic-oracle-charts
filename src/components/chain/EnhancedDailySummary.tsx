@@ -114,11 +114,6 @@ export function EnhancedDailySummary({ chain, forecast, isLoading, onRefresh }: 
                   <span className={cn("text-xs", marketSignal.color)}>({marketSignal.score.toFixed(0)}%)</span>
                 </button>
               )}
-              {onRefresh && (
-                <button onClick={onRefresh} disabled={isLoading} className="p-2 rounded-lg bg-muted/20 hover:bg-muted/40 transition-colors disabled:opacity-50">
-                  <RefreshCw className={cn("h-4 w-4 text-muted-foreground", isLoading && "animate-spin")} />
-                </button>
-              )}
               <button onClick={() => openDetailModal('methodology', 'AI Methodology', {})} className="p-2 rounded-lg bg-muted/20 hover:bg-muted/40 transition-colors">
                 <Info className="h-4 w-4 text-muted-foreground" />
               </button>
@@ -291,12 +286,9 @@ export function EnhancedDailySummary({ chain, forecast, isLoading, onRefresh }: 
               <Clock className="h-3 w-3" />
               <span>Updated {new Date().toLocaleTimeString()}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span>Powered by OpenAI</span>
-              <a href={chain.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-primary hover:underline">
-                <ExternalLink className="h-3 w-3" /> {chain.name} Official
-              </a>
-            </div>
+            <a href={chain.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-primary hover:underline">
+              <ExternalLink className="h-3 w-3" /> {chain.name} Official
+            </a>
           </div>
         </div>
       </div>

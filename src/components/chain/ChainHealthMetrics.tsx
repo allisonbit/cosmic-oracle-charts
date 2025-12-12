@@ -98,18 +98,13 @@ export function ChainHealthMetrics({ chain, healthData, isLoading, onRefresh }: 
         </div>
         <div className="flex-1 min-w-0">
           <h3 className="font-display text-base sm:text-lg text-foreground">Chain Health Monitor</h3>
-          <p className="text-xs sm:text-sm text-muted-foreground">Real-time network vitals from Alchemy</p>
+          <p className="text-xs sm:text-sm text-muted-foreground">Real-time network vitals</p>
         </div>
         <div className="flex items-center gap-3">
-          {onRefresh && (
-            <button
-              onClick={onRefresh}
-              className="p-2 rounded-lg bg-muted/20 hover:bg-muted/40 transition-colors"
-              title="Refresh data"
-            >
-              <RefreshCw className="h-4 w-4 text-muted-foreground" />
-            </button>
-          )}
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
+            Live
+          </div>
           <a
             href={chain.explorerUrl}
             target="_blank"
@@ -485,7 +480,7 @@ export function ChainHealthMetrics({ chain, healthData, isLoading, onRefresh }: 
       {healthData.timestamp && (
         <div className="mt-4 pt-4 border-t border-border/30 flex items-center justify-between text-xs text-muted-foreground">
           <span>Last updated: {new Date(healthData.timestamp).toLocaleTimeString()}</span>
-          <span>Data source: Alchemy API</span>
+          <div className="w-2 h-2 rounded-full bg-success animate-pulse" title="Live data" />
         </div>
       )}
     </div>

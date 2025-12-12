@@ -222,9 +222,9 @@ export function EnhancedPredictionDeepDive({ chain, forecast, isLoading }: Enhan
             </h3>
             <p className="text-sm text-muted-foreground">Analyzing {chain.name}...</p>
           </div>
-          <div className="flex items-center gap-2">
-            <RefreshCw className="h-4 w-4 animate-spin text-primary" />
-            <span className="text-xs text-muted-foreground">Loading predictions</span>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <div className="w-2 h-2 rounded-full bg-warning animate-pulse" />
+            Analyzing...
           </div>
         </div>
         <div className="grid md:grid-cols-3 gap-4">

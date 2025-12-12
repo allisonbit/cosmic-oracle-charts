@@ -230,13 +230,10 @@ export function EnhancedRiskAnalyzer({ chain }: EnhancedRiskAnalyzerProps) {
             <p className="text-sm text-muted-foreground">Deep token safety analysis on {chain.name}</p>
           </div>
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => refetch()}
-              disabled={isFetching}
-              className="p-2 rounded-lg bg-muted/20 hover:bg-muted/40 transition-colors disabled:opacity-50"
-            >
-              <RefreshCw className={cn("h-4 w-4 text-muted-foreground", isFetching && "animate-spin")} />
-            </button>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <div className={cn("w-2 h-2 rounded-full animate-pulse", isFetching ? "bg-warning" : "bg-success")} />
+              <span>Live</span>
+            </div>
             <button
               onClick={() => openRiskModal('methodology', 'Risk Methodology', {})}
               className="p-2 rounded-lg bg-muted/20 hover:bg-muted/40 transition-colors"
