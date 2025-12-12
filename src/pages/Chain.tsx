@@ -17,7 +17,7 @@ import { DailySummary } from "@/components/chain/DailySummary";
 import { ChainSidebar } from "@/components/chain/ChainSidebar";
 import { CryptoTicker } from "@/components/layout/CryptoTicker";
 import { Footer } from "@/components/layout/Footer";
-import { ChainHealthMetrics } from "@/components/chain/ChainHealthMetrics";
+import { EnhancedChainHealthMonitor } from "@/components/chain/EnhancedChainHealthMonitor";
 import { DeepFinancialMetrics } from "@/components/chain/DeepFinancialMetrics";
 import { AdvancedPredictionModels } from "@/components/chain/AdvancedPredictionModels";
 import { AnomalyDetection } from "@/components/chain/AnomalyDetection";
@@ -149,7 +149,7 @@ export default function Chain() {
                 </div>
 
                 {/* Health & Financial Metrics */}
-                <ChainHealthMetrics chain={chain} healthData={advancedData?.healthData} isLoading={advancedLoading} />
+                <EnhancedChainHealthMonitor chain={chain} healthData={advancedData?.healthData} isLoading={advancedLoading} onRefresh={refetchAdvanced} />
                 <DeepFinancialMetrics chain={chain} financialData={advancedData?.financialData} isLoading={advancedLoading} />
 
                 {/* AI Prediction Models */}
