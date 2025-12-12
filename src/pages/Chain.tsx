@@ -132,10 +132,8 @@ export default function Chain() {
                 {/* Chain Info Card */}
                 <ChainInfoCard chain={chain} />
 
-                {/* Real-time Price Ticker for supported chains */}
-                {["optimism", "sui", "ton", "avalanche", "polygon", "arbitrum"].includes(chain.id) && (
-                  <RealtimePriceTicker chain={chain} />
-                )}
+                {/* Real-time Price Ticker for all chains */}
+                <RealtimePriceTicker chain={chain} />
 
                 {/* Chain-specific Metrics */}
                 <ChainSpecificMetrics chain={chain} chainSpecificData={chainData?.chainSpecificData} />

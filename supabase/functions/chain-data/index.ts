@@ -320,6 +320,177 @@ function generateSmartMoneyFlow(chainId: string, tokens: { symbol: string; name:
 
 function getChainSpecificData(chainId: string) {
   const chainData: Record<string, any> = {
+    // ETHEREUM - Layer 1 Foundation
+    ethereum: {
+      type: "layer1",
+      consensus: "Proof of Stake",
+      language: "Solidity",
+      features: ["EVM", "Smart Contracts", "DeFi Hub", "NFT Standard"],
+      governance: "Ethereum Foundation",
+      bridges: [
+        { name: "Arbitrum Bridge", url: "https://bridge.arbitrum.io" },
+        { name: "Optimism Bridge", url: "https://app.optimism.io/bridge" },
+        { name: "Polygon Bridge", url: "https://portal.polygon.technology" },
+      ],
+      dexes: [
+        { name: "Uniswap", url: "https://app.uniswap.org", volume24h: 1.2e9 },
+        { name: "Curve", url: "https://curve.fi", volume24h: 450e6 },
+        { name: "1inch", url: "https://app.1inch.io", volume24h: 320e6 },
+        { name: "SushiSwap", url: "https://sushi.com", volume24h: 85e6 },
+      ],
+      defiProtocols: [
+        { name: "Lido", tvl: 25e9, category: "Liquid Staking" },
+        { name: "Aave", tvl: 12e9, category: "Lending" },
+        { name: "MakerDAO", tvl: 8e9, category: "CDP" },
+        { name: "Uniswap", tvl: 6e9, category: "DEX" },
+        { name: "Compound", tvl: 2.5e9, category: "Lending" },
+        { name: "EigenLayer", tvl: 15e9, category: "Restaking" },
+      ],
+      uniqueMetrics: {
+        validatorCount: 1000000,
+        stakingApr: 3.8,
+        gasUsedDaily: 110e9,
+        ethBurned24h: 2500,
+      },
+      ecosystemTokens: [
+        { symbol: "ETH", name: "Ethereum", address: "Native", category: "Native" },
+        { symbol: "LINK", name: "Chainlink", address: "0x514910771AF9Ca656af840dff83E8264EcF986CA", category: "Oracle" },
+        { symbol: "UNI", name: "Uniswap", address: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984", category: "DEX" },
+        { symbol: "AAVE", name: "Aave", address: "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9", category: "Lending" },
+        { symbol: "LDO", name: "Lido DAO", address: "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32", category: "Staking" },
+        { symbol: "MKR", name: "Maker", address: "0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2", category: "CDP" },
+        { symbol: "CRV", name: "Curve DAO", address: "0xD533a949740bb3306d119CC777fa900bA034cd52", category: "DEX" },
+        { symbol: "ENS", name: "ENS", address: "0xC18360217D8F7Ab5e7c516566761Ea12Ce7F9D72", category: "Identity" },
+        { symbol: "SNX", name: "Synthetix", address: "0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F", category: "Derivatives" },
+        { symbol: "RPL", name: "Rocket Pool", address: "0xD33526068D116cE69F19A9ee46F0bd304F21A51f", category: "Staking" },
+      ],
+    },
+    // SOLANA - High Performance L1
+    solana: {
+      type: "layer1",
+      consensus: "Proof of History + Proof of Stake",
+      language: "Rust",
+      features: ["Parallel Execution", "400ms Block Time", "Low Fees", "High TPS"],
+      governance: "Solana Foundation",
+      bridges: [
+        { name: "Wormhole", url: "https://wormhole.com" },
+        { name: "Portal Bridge", url: "https://portalbridge.com" },
+        { name: "Allbridge", url: "https://allbridge.io" },
+      ],
+      dexes: [
+        { name: "Jupiter", url: "https://jup.ag", volume24h: 1.8e9 },
+        { name: "Raydium", url: "https://raydium.io", volume24h: 450e6 },
+        { name: "Orca", url: "https://orca.so", volume24h: 180e6 },
+        { name: "Meteora", url: "https://meteora.ag", volume24h: 120e6 },
+      ],
+      defiProtocols: [
+        { name: "Marinade", tvl: 1.5e9, category: "Liquid Staking" },
+        { name: "Jupiter", tvl: 800e6, category: "DEX Aggregator" },
+        { name: "Kamino", tvl: 1.2e9, category: "Yield" },
+        { name: "Jito", tvl: 2e9, category: "MEV/Staking" },
+        { name: "Drift", tvl: 350e6, category: "Perpetuals" },
+      ],
+      uniqueMetrics: {
+        validatorCount: 1850,
+        stakingApr: 7.2,
+        tpsAverage: 3500,
+        slotTime: 400,
+      },
+      ecosystemTokens: [
+        { symbol: "SOL", name: "Solana", address: "Native", category: "Native" },
+        { symbol: "JUP", name: "Jupiter", address: "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN", category: "DEX" },
+        { symbol: "JTO", name: "Jito", address: "jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL", category: "MEV" },
+        { symbol: "RAY", name: "Raydium", address: "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R", category: "DEX" },
+        { symbol: "PYTH", name: "Pyth", address: "HZ1JovNiVvGrGNiiYvEozEVgZ58xaU3RKwX8eACQBCt3", category: "Oracle" },
+        { symbol: "BONK", name: "Bonk", address: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263", category: "Meme" },
+        { symbol: "WIF", name: "dogwifhat", address: "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm", category: "Meme" },
+        { symbol: "ORCA", name: "Orca", address: "orcaEKTdK7LKz57vaAYr9QeNsVEPfiu6QeMU1kektZE", category: "DEX" },
+        { symbol: "MNDE", name: "Marinade", address: "MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey", category: "Staking" },
+        { symbol: "RENDER", name: "Render", address: "rndrizKT3MK1iimdxRdWabcF7Zg7AR5T4nud4EkHBof", category: "AI/GPU" },
+      ],
+    },
+    // BNB Chain
+    bnb: {
+      type: "layer1",
+      consensus: "Proof of Staked Authority",
+      language: "Solidity (EVM)",
+      features: ["EVM Compatible", "Fast Finality", "Low Fees", "BEP-20"],
+      governance: "Binance",
+      bridges: [
+        { name: "BNB Bridge", url: "https://www.bnbchain.org/bridge" },
+        { name: "Multichain", url: "https://multichain.org" },
+        { name: "Stargate", url: "https://stargate.finance" },
+      ],
+      dexes: [
+        { name: "PancakeSwap", url: "https://pancakeswap.finance", volume24h: 350e6 },
+        { name: "Biswap", url: "https://biswap.org", volume24h: 45e6 },
+        { name: "DODO", url: "https://dodo.io", volume24h: 28e6 },
+      ],
+      defiProtocols: [
+        { name: "PancakeSwap", tvl: 1.8e9, category: "DEX" },
+        { name: "Venus", tvl: 1.2e9, category: "Lending" },
+        { name: "Alpaca Finance", tvl: 180e6, category: "Yield" },
+        { name: "Biswap", tvl: 120e6, category: "DEX" },
+      ],
+      uniqueMetrics: {
+        validatorCount: 29,
+        stakingApr: 2.8,
+        blockTime: 3,
+        dailyTransactions: 4500000,
+      },
+      ecosystemTokens: [
+        { symbol: "BNB", name: "BNB", address: "Native", category: "Native" },
+        { symbol: "CAKE", name: "PancakeSwap", address: "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82", category: "DEX" },
+        { symbol: "XVS", name: "Venus", address: "0xcF6BB5389c92Bdda8a3747Ddb454cB7a64626C63", category: "Lending" },
+        { symbol: "BAKE", name: "BakerySwap", address: "0xE02dF9e3e622DeBdD69fb838bB799E3F168902c5", category: "DEX" },
+        { symbol: "TWT", name: "Trust Wallet", address: "0x4B0F1812e5Df2A09796481Ff14017e6005508003", category: "Wallet" },
+        { symbol: "ALPACA", name: "Alpaca Finance", address: "0x8F0528cE5eF7B51152A59745bEfDD91D97091d2F", category: "Yield" },
+        { symbol: "BSW", name: "Biswap", address: "0x965F527D9159dCe6288a2219DB51fc6Eef120dD1", category: "DEX" },
+        { symbol: "BURGER", name: "BurgerSwap", address: "0xAe9269f27437f0fcBC232d39Ec814844a51d6b8f", category: "DEX" },
+      ],
+    },
+    // BASE - Coinbase L2
+    base: {
+      type: "layer2",
+      rollupType: "Optimistic Rollup",
+      parentChain: "Ethereum",
+      language: "Solidity (EVM)",
+      features: ["EVM Compatible", "Low Fees", "Coinbase Ecosystem", "OP Stack"],
+      governance: "Coinbase",
+      bridges: [
+        { name: "Base Bridge", url: "https://bridge.base.org" },
+        { name: "Hop Protocol", url: "https://hop.exchange" },
+        { name: "Stargate", url: "https://stargate.finance" },
+      ],
+      dexes: [
+        { name: "Aerodrome", url: "https://aerodrome.finance", volume24h: 180e6 },
+        { name: "Uniswap", url: "https://app.uniswap.org", volume24h: 120e6 },
+        { name: "BaseSwap", url: "https://baseswap.fi", volume24h: 25e6 },
+      ],
+      defiProtocols: [
+        { name: "Aerodrome", tvl: 850e6, category: "DEX" },
+        { name: "Aave", tvl: 280e6, category: "Lending" },
+        { name: "Compound", tvl: 180e6, category: "Lending" },
+        { name: "Extra Finance", tvl: 120e6, category: "Yield" },
+      ],
+      uniqueMetrics: {
+        sequencerUptime: 99.99,
+        batchesPosted24h: 1440,
+        l1DataCost: 0.0003,
+        avgTxCost: 0.02,
+      },
+      ecosystemTokens: [
+        { symbol: "ETH", name: "Ethereum", address: "Native", category: "Native" },
+        { symbol: "AERO", name: "Aerodrome", address: "0x940181a94A35A4569E4529A3CDfB74e38FD98631", category: "DEX" },
+        { symbol: "BRETT", name: "Brett", address: "0x532f27101965dd16442E59d40670FaF5eBB142E4", category: "Meme" },
+        { symbol: "DEGEN", name: "Degen", address: "0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed", category: "Meme" },
+        { symbol: "TOSHI", name: "Toshi", address: "0xAC1Bd2486aAf3B5C0fc3Fd868558b082a531B2B4", category: "Meme" },
+        { symbol: "HIGHER", name: "Higher", address: "0x0578d8A44db98B23BF096A382e016e29a5Ce0ffe", category: "Social" },
+        { symbol: "VIRTUAL", name: "Virtual Protocol", address: "0x0b3e328455c4059EEb9e3f84b5543F74E24e7E1b", category: "AI" },
+        { symbol: "WELL", name: "Moonwell", address: "0xA88594D404727625A9437C3f886C7643872296AE", category: "Lending" },
+      ],
+    },
+    // OPTIMISM
     optimism: {
       type: "layer2",
       rollupType: "Optimistic Rollup",
@@ -346,7 +517,18 @@ function getChainSpecificData(chainId: string) {
         { name: "Bedrock", date: "2023-06-06", description: "Major upgrade improving performance" },
         { name: "Ecotone", date: "2024-03-14", description: "EIP-4844 blob support" },
       ],
+      ecosystemTokens: [
+        { symbol: "OP", name: "Optimism", address: "0x4200000000000000000000000000000000000042", category: "Governance" },
+        { symbol: "VELO", name: "Velodrome", address: "0x9560e827aF36c94D2Ac33a39bCE1Fe78631088Db", category: "DEX" },
+        { symbol: "SNX", name: "Synthetix", address: "0x8700dAec35aF8Ff88c16BdF0418774CB3D7599B4", category: "Derivatives" },
+        { symbol: "PERP", name: "Perpetual", address: "0x9e1028F5F1D5eDE59748FFceE5532509976840E0", category: "Perpetuals" },
+        { symbol: "LYRA", name: "Lyra", address: "0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb", category: "Options" },
+        { symbol: "THALES", name: "Thales", address: "0x217D47011b23BB961eB6D93cA9945B7501a5BB11", category: "Markets" },
+        { symbol: "SONNE", name: "Sonne", address: "0x1DB2466d9F5e10D7090E7152B68d62703a2245F0", category: "Lending" },
+        { symbol: "EXTRA", name: "Extra Finance", address: "0x2dAD3a13ef0C6366220f989157009e501e7938F8", category: "Yield" },
+      ],
     },
+    // SUI
     sui: {
       type: "layer1",
       consensus: "Narwhal & Bullshark",
@@ -373,7 +555,18 @@ function getChainSpecificData(chainId: string) {
         movePackages: 45000,
         ptbExecutions24h: 8000000,
       },
+      ecosystemTokens: [
+        { symbol: "SUI", name: "Sui", address: "Native", category: "Native" },
+        { symbol: "CETUS", name: "Cetus", address: "0x06864a6f921804860930db6ddbe2e16acdf8504495ea7481637a1c8b9a8fe54b::cetus::CETUS", category: "DEX" },
+        { symbol: "NAVI", name: "NAVI Protocol", address: "0xa99b8952d4f7d947ea77fe0ecdcc9e5fc0bcab2841d6e2a5aa00c3044e5544b5::navx::NAVX", category: "Lending" },
+        { symbol: "TURBOS", name: "Turbos", address: "0x5d1f47ea69bb0de31c313d7acf89b890dbb8991ea8e03c6c355171f84bb1ba4a::turbos::TURBOS", category: "DEX" },
+        { symbol: "SCALLOP", name: "Scallop", address: "0x7016aae72cfc67f2fadf55769c0a7dd54291a583b63051a5ed71081cce836ac6::sca::SCA", category: "Lending" },
+        { symbol: "DEEP", name: "DeepBook", address: "0xdeeb7a4662eec9f2f3def03fb937a663dddaa2e215b8078a284d026b7946c270::deep::DEEP", category: "DEX" },
+        { symbol: "BUCK", name: "Bucket", address: "0xce7ff77a83ea0cb6fd39bd8748e2ec89a3f41e8efdc3f4eb123e0ca37b184db2::buck::BUCK", category: "Stablecoin" },
+        { symbol: "HASUI", name: "Haedal SUI", address: "0xbde4ba4c2e274a60ce15c1cfff9e5c42e41654ac8b6d906a57efa4bd3c29f47d::hasui::HASUI", category: "LST" },
+      ],
     },
+    // TON
     ton: {
       type: "layer1",
       consensus: "Proof of Stake",
@@ -406,6 +599,16 @@ function getChainSpecificData(chainId: string) {
         activeWallets7d: 8000000,
         jettonTypes: 15000,
       },
+      ecosystemTokens: [
+        { symbol: "TON", name: "Toncoin", address: "Native", category: "Native" },
+        { symbol: "NOT", name: "Notcoin", address: "EQAvlWFDxGF2lXm67y4yzC17wYKD9A0guwPkMs1gOsM__NOT", category: "Gaming" },
+        { symbol: "DOGS", name: "DOGS", address: "EQCvxJy4eG8hyHBFsZ7eePxrRsUQSFE_jpptRAYBmcG_DOGS", category: "Meme" },
+        { symbol: "HMSTR", name: "Hamster", address: "EQAJ8uWd7EBqsmpSWaRdf_I-8R8-XHwh3gsNKhy-UrdrPcUo", category: "Gaming" },
+        { symbol: "CATI", name: "Catizen", address: "EQD-cvR0Nz6XAyRBvbhz-abTrRC6sI5tvHvvpeQraV9UAAD7", category: "Gaming" },
+        { symbol: "STON", name: "STON.fi", address: "EQA2kCVNwVsil2EM2mB0SkXytxCqWLRStWGHq0bkVOBqG_rq", category: "DEX" },
+        { symbol: "SCALE", name: "Scale", address: "EQBlqsm144Dq6SjbPI4jjZvA1hqTIP3CvHovbIfW_t-SCALE", category: "DeFi" },
+        { symbol: "GRAM", name: "Gram", address: "EQC47093oX5Xhb0xuk2lCr2RhS8rj-vul61u4W2UH5ORmG_O", category: "Utility" },
+      ],
     },
     // AVALANCHE - C-Chain Layer 1
     avalanche: {
