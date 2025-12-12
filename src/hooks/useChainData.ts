@@ -42,11 +42,28 @@ export interface SmartMoneyFlow {
   liquidityRemoved: number;
 }
 
+export interface ChainSpecificData {
+  type?: string;
+  rollupType?: string;
+  parentChain?: string;
+  consensus?: string;
+  language?: string;
+  features?: string[];
+  governance?: string;
+  bridges?: { name: string; url: string }[];
+  dexes?: { name: string; url: string; volume24h: number }[];
+  defiProtocols?: { name: string; tvl: number; category: string }[];
+  telegramApps?: { name: string; users: number; category: string }[];
+  uniqueMetrics?: Record<string, number>;
+  recentUpgrades?: { name: string; date: string; description: string }[];
+}
+
 export interface ChainDataResponse {
   overview: ChainOverview;
   whaleActivity: WhaleActivity[];
   tokenHeat: TokenHeat[];
   smartMoneyFlow: SmartMoneyFlow;
+  chainSpecificData?: ChainSpecificData;
   timestamp: number;
 }
 
