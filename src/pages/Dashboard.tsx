@@ -6,14 +6,14 @@ import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 import { useMarketData } from "@/hooks/useMarketData";
 import { useAIForecast } from "@/hooks/useAIForecast";
 import { useMemo, useState, useEffect } from "react";
-import { MarketMomentum } from "@/components/dashboard/MarketMomentum";
-import { TrendingAlerts } from "@/components/dashboard/TrendingAlerts";
-import { VolumeLeaders } from "@/components/dashboard/VolumeLeaders";
-import { DominanceChart } from "@/components/dashboard/DominanceChart";
-import { QuickActions } from "@/components/dashboard/QuickActions";
+import { EnhancedMarketMomentum } from "@/components/dashboard/EnhancedMarketMomentum";
+import { EnhancedTrendingAlerts } from "@/components/dashboard/EnhancedTrendingAlerts";
+import { EnhancedVolumeLeaders } from "@/components/dashboard/EnhancedVolumeLeaders";
+import { EnhancedDominanceChart } from "@/components/dashboard/EnhancedDominanceChart";
+import { EnhancedQuickActions } from "@/components/dashboard/EnhancedQuickActions";
 import { CoinDetailModal } from "@/components/dashboard/CoinDetailModal";
-import { MarketInsightsPanel } from "@/components/dashboard/MarketInsightsPanel";
-import { TopPerformers } from "@/components/dashboard/TopPerformers";
+import { EnhancedMarketInsightsPanel } from "@/components/dashboard/EnhancedMarketInsightsPanel";
+import { EnhancedTopPerformers } from "@/components/dashboard/EnhancedTopPerformers";
 import { Link } from "react-router-dom";
 
 function formatNumber(num: number): string {
