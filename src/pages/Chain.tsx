@@ -66,8 +66,6 @@ export default function Chain() {
   }
 
   const chainPrice = pricesData?.prices?.find(p => p.symbol === chain.symbol);
-  // Only show loading on initial load, not on refetches
-  const showLoading = chainLoading && !chainData && !chainError;
 
   return (
     <SidebarProvider defaultOpen={false}>
@@ -76,117 +74,109 @@ export default function Chain() {
         <div className="flex-1 flex flex-col min-w-0">
           <CryptoTicker />
           
-          {showLoading && !chainData ? (
-            <div className="flex-1 flex items-center justify-center">
-              <div className="flex flex-col items-center gap-4">
-                <Loader2 className="w-10 h-10 sm:w-12 sm:h-12 animate-spin text-primary" />
-                <p className="text-muted-foreground font-display text-sm">Loading {chain.name} data...</p>
+          {/* Always render content - use placeholder data during loading */}
+          <main className="flex-1 overflow-y-auto pb-20 md:pb-0">
+            <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8 space-y-4 sm:space-y-6">
+              {/* Header with navigation */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <button onClick={() => navigate("/dashboard")} className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm w-fit">
+                  <ArrowLeft className="h-4 w-4" /><span>Back to Dashboard</span>
+                </button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleRefreshAll}
+                    disabled={chainFetching}
+                    className="text-xs"
+                  >
+                    <RefreshCw className={`h-3 w-3 mr-1.5 ${chainFetching ? 'animate-spin' : ''}`} />
+                    Refresh
+                  </Button>
+                  <a
+                    href={chain.explorerUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors text-xs font-medium"
+                  >
+                    <ExternalLink className="h-3 w-3" />
+                    Explorer
+                  </a>
+                </div>
               </div>
+
+              {/* Quick chain navigation */}
+              <ChainQuickNav />
+
+              {/* Refreshing indicator */}
+              {chainFetching && (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/20 px-3 py-2 rounded-lg w-fit">
+                  <Loader2 className="w-4 h-4 animate-spin" /><span>Refreshing data...</span>
+                </div>
+              )}
+
+              {/* Main Overview */}
+              <ChainOverviewPanel chain={chain} overview={chainData?.overview} isLoading={chainLoading} />
+
+              {/* External links */}
+              <ChainExternalLinks chain={chain} />
+
+              {/* Enhanced Network Info Panel */}
+              <NetworkInfoPanel chain={chain} overview={chainData?.overview} isLoading={chainLoading} />
+
+              {/* Real-time Price Ticker for all chains */}
+              <RealtimePriceTicker chain={chain} />
+
+              {/* Chain-specific Metrics */}
+              <ChainSpecificMetrics chain={chain} chainSpecificData={chainData?.chainSpecificData} />
+
+              {/* Live Token Search - DexScreener Style */}
+              <LiveTokenSearchPanel chain={chain} />
+
+              {/* Price Chart & Predictions */}
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
+                <EnhancedPriceAnalysis chain={chain} priceData={chainPrice} />
+                <EnhancedPredictionDeepDive chain={chain} forecast={forecastData?.forecast} isLoading={forecastLoading} />
+              </div>
+
+              {/* Health & Financial Metrics */}
+              <EnhancedChainHealthMonitor chain={chain} healthData={advancedData?.healthData} isLoading={advancedLoading} onRefresh={refetchAdvanced} />
+              <EnhancedDeepFinancialMetrics chain={chain} financialData={advancedData?.financialData} isLoading={advancedLoading} />
+
+              {/* AI Prediction Models */}
+              <EnhancedAdvancedPredictionModels chain={chain} predictionData={advancedData?.predictionData} isLoading={advancedLoading} />
+
+              {/* Anomaly Detection */}
+              <EnhancedAnomalyDetection chain={chain} anomalyData={advancedData?.anomalyData} isLoading={advancedLoading} />
+
+              {/* Whale & Token Analysis */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                <EnhancedWhaleActivityRadar chain={chain} whaleActivity={chainData?.whaleActivity} isLoading={chainLoading} />
+                <EnhancedTokenHeatScanner chain={chain} tokenHeat={chainData?.tokenHeat} isLoading={chainLoading} />
+              </div>
+
+              {/* Smart Money & Risk */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                <EnhancedSmartMoneyFlow chain={chain} smartMoneyFlow={chainData?.smartMoneyFlow} isLoading={chainLoading} />
+                <EnhancedRiskAnalyzer chain={chain} />
+              </div>
+
+              {/* Multi-chain Comparison */}
+              <EnhancedMultiChainComparison chain={chain} comparisonData={advancedData?.comparisonData} isLoading={advancedLoading} />
+
+              {/* Institutional View */}
+              <EnhancedInstitutionalView chain={chain} institutionalData={advancedData?.institutionalData} isLoading={advancedLoading} />
+
+              {/* Social Sentiment */}
+              <EnhancedSocialSentimentGalaxy chain={chain} socialSentiment={forecastData?.socialSentiment} isLoading={forecastLoading} />
+
+              {/* Token Discovery */}
+              <EnhancedTokenDiscoveryEngine chain={chain} />
+
+              {/* Daily Summary */}
+              <EnhancedDailySummary chain={chain} forecast={forecastData?.forecast} isLoading={forecastLoading} />
             </div>
-          ) : (
-            <main className="flex-1 overflow-y-auto pb-20 md:pb-0">
-              <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8 space-y-4 sm:space-y-6">
-                {/* Header with navigation */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <button onClick={() => navigate("/dashboard")} className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm w-fit">
-                    <ArrowLeft className="h-4 w-4" /><span>Back to Dashboard</span>
-                  </button>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleRefreshAll}
-                      disabled={chainFetching}
-                      className="text-xs"
-                    >
-                      <RefreshCw className={`h-3 w-3 mr-1.5 ${chainFetching ? 'animate-spin' : ''}`} />
-                      Refresh
-                    </Button>
-                    <a
-                      href={chain.explorerUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors text-xs font-medium"
-                    >
-                      <ExternalLink className="h-3 w-3" />
-                      Explorer
-                    </a>
-                  </div>
-                </div>
-
-                {/* Quick chain navigation */}
-                <ChainQuickNav />
-
-                {/* Refreshing indicator */}
-                {chainFetching && chainData && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/20 px-3 py-2 rounded-lg w-fit">
-                    <Loader2 className="w-4 h-4 animate-spin" /><span>Refreshing data...</span>
-                  </div>
-                )}
-
-                {/* Main Overview */}
-                <ChainOverviewPanel chain={chain} overview={chainData?.overview} isLoading={chainLoading} />
-
-                {/* External links */}
-                <ChainExternalLinks chain={chain} />
-
-                {/* Enhanced Network Info Panel */}
-                <NetworkInfoPanel chain={chain} overview={chainData?.overview} isLoading={chainLoading} />
-
-                {/* Real-time Price Ticker for all chains */}
-                <RealtimePriceTicker chain={chain} />
-
-                {/* Chain-specific Metrics */}
-                <ChainSpecificMetrics chain={chain} chainSpecificData={chainData?.chainSpecificData} />
-
-                {/* Live Token Search - DexScreener Style */}
-                <LiveTokenSearchPanel chain={chain} />
-
-                {/* Price Chart & Predictions */}
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
-                  <EnhancedPriceAnalysis chain={chain} priceData={chainPrice} />
-                  <EnhancedPredictionDeepDive chain={chain} forecast={forecastData?.forecast} isLoading={forecastLoading} />
-                </div>
-
-                {/* Health & Financial Metrics */}
-                <EnhancedChainHealthMonitor chain={chain} healthData={advancedData?.healthData} isLoading={advancedLoading} onRefresh={refetchAdvanced} />
-                <EnhancedDeepFinancialMetrics chain={chain} financialData={advancedData?.financialData} isLoading={advancedLoading} />
-
-                {/* AI Prediction Models */}
-                <EnhancedAdvancedPredictionModels chain={chain} predictionData={advancedData?.predictionData} isLoading={advancedLoading} />
-
-                {/* Anomaly Detection */}
-                <EnhancedAnomalyDetection chain={chain} anomalyData={advancedData?.anomalyData} isLoading={advancedLoading} />
-
-                {/* Whale & Token Analysis */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                  <EnhancedWhaleActivityRadar chain={chain} whaleActivity={chainData?.whaleActivity} isLoading={chainLoading} />
-                  <EnhancedTokenHeatScanner chain={chain} tokenHeat={chainData?.tokenHeat} isLoading={chainLoading} />
-                </div>
-
-                {/* Smart Money & Risk */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                  <EnhancedSmartMoneyFlow chain={chain} smartMoneyFlow={chainData?.smartMoneyFlow} isLoading={chainLoading} />
-                  <EnhancedRiskAnalyzer chain={chain} />
-                </div>
-
-                {/* Multi-chain Comparison */}
-                <EnhancedMultiChainComparison chain={chain} comparisonData={advancedData?.comparisonData} isLoading={advancedLoading} />
-
-                {/* Institutional View */}
-                <EnhancedInstitutionalView chain={chain} institutionalData={advancedData?.institutionalData} isLoading={advancedLoading} />
-
-                {/* Social Sentiment */}
-                <EnhancedSocialSentimentGalaxy chain={chain} socialSentiment={forecastData?.socialSentiment} isLoading={forecastLoading} />
-
-                {/* Token Discovery */}
-                <EnhancedTokenDiscoveryEngine chain={chain} />
-
-                {/* Daily Summary */}
-                <EnhancedDailySummary chain={chain} forecast={forecastData?.forecast} isLoading={forecastLoading} />
-              </div>
-            </main>
-          )}
+          </main>
           
           <Footer />
         </div>
