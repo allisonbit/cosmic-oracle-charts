@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-
-const SUPABASE_URL = "wss://qynszkirmcrldqmiplwh.functions.supabase.co/functions/v1";
+import { supabase } from "@/integrations/supabase/client";
 
 interface RealtimePrice {
   price: number;
@@ -24,85 +23,57 @@ interface WhaleAlert {
   impact: "low" | "medium" | "high";
 }
 
+// Stable polling-based implementation instead of WebSocket
 export function useRealtimePricesWS(chainIds: string[]) {
   const [prices, setPrices] = useState<Record<string, RealtimePrice>>({});
   const [isConnected, setIsConnected] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<number>(0);
-  const wsRef = useRef<WebSocket | null>(null);
-  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const mountedRef = useRef(true);
 
-  const connect = useCallback(() => {
-    if (wsRef.current?.readyState === WebSocket.OPEN) return;
+  const fetchPrices = useCallback(async () => {
+    if (!mountedRef.current || chainIds.length === 0) return;
 
-    console.log("Connecting to realtime prices WebSocket...");
-    const ws = new WebSocket(`${SUPABASE_URL}/realtime-prices`);
+    try {
+      const { data, error } = await supabase.functions.invoke("realtime-prices", {
+        body: { chains: chainIds },
+      });
 
-    ws.onopen = () => {
-      console.log("Realtime prices WebSocket connected");
-      setIsConnected(true);
-      
-      // Subscribe to specific chains
-      ws.send(JSON.stringify({
-        type: "subscribe",
-        chains: chainIds,
-      }));
-    };
-
-    ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        
-        if (data.type === "price_update") {
-          setPrices(data.prices);
-          setLastUpdate(data.timestamp);
-        }
-        
-        if (data.type === "pong") {
-          console.log("Received pong from server");
-        }
-      } catch (error) {
-        console.error("Error parsing WebSocket message:", error);
+      if (error) {
+        console.error("Error fetching realtime prices:", error);
+        setIsConnected(false);
+        return;
       }
-    };
 
-    ws.onclose = () => {
-      console.log("Realtime prices WebSocket closed");
-      setIsConnected(false);
-      
-      // Attempt to reconnect after 5 seconds
-      reconnectTimeoutRef.current = setTimeout(() => {
-        connect();
-      }, 5000);
-    };
-
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-      setIsConnected(false);
-    };
-
-    wsRef.current = ws;
+      if (data?.prices && mountedRef.current) {
+        setPrices(data.prices);
+        setLastUpdate(data.timestamp || Date.now());
+        setIsConnected(true);
+      }
+    } catch (err) {
+      console.error("Exception fetching realtime prices:", err);
+      if (mountedRef.current) {
+        setIsConnected(false);
+      }
+    }
   }, [chainIds]);
 
   useEffect(() => {
-    connect();
+    mountedRef.current = true;
+    
+    // Initial fetch
+    fetchPrices();
 
-    // Set up ping interval to keep connection alive
-    const pingInterval = setInterval(() => {
-      if (wsRef.current?.readyState === WebSocket.OPEN) {
-        wsRef.current.send(JSON.stringify({ type: "ping" }));
-      }
-    }, 30000);
+    // Set up polling every 8 seconds for stable updates
+    intervalRef.current = setInterval(fetchPrices, 8000);
 
     return () => {
-      clearInterval(pingInterval);
-      if (reconnectTimeoutRef.current) {
-        clearTimeout(reconnectTimeoutRef.current);
-      }
-      if (wsRef.current) {
-        wsRef.current.close();
+      mountedRef.current = false;
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
       }
     };
-  }, [connect]);
+  }, [fetchPrices]);
 
   return { prices, isConnected, lastUpdate };
 }
@@ -111,83 +82,67 @@ export function useWhaleAlertsWS(chainId: string) {
   const [alerts, setAlerts] = useState<WhaleAlert[]>([]);
   const [isConnected, setIsConnected] = useState(false);
   const [newAlert, setNewAlert] = useState<WhaleAlert | null>(null);
-  const wsRef = useRef<WebSocket | null>(null);
-  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const mountedRef = useRef(true);
+  const previousAlertsRef = useRef<string[]>([]);
 
-  const connect = useCallback(() => {
-    if (wsRef.current?.readyState === WebSocket.OPEN) return;
+  const fetchAlerts = useCallback(async () => {
+    if (!mountedRef.current || !chainId) return;
 
-    console.log("Connecting to whale alerts WebSocket...");
-    const ws = new WebSocket(`${SUPABASE_URL}/whale-alerts`);
+    try {
+      const { data, error } = await supabase.functions.invoke("whale-alerts", {
+        body: { chainId },
+      });
 
-    ws.onopen = () => {
-      console.log("Whale alerts WebSocket connected");
-      setIsConnected(true);
-      
-      // Subscribe to specific chain
-      ws.send(JSON.stringify({
-        type: "subscribe",
-        chainId,
-      }));
-    };
-
-    ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        
-        if (data.type === "whale_alerts") {
-          setAlerts(data.alerts);
-        }
-        
-        if (data.type === "new_whale_alert" && data.alerts.length > 0) {
-          const alert = data.alerts[0];
-          setNewAlert(alert);
-          setAlerts(prev => [alert, ...prev.slice(0, 19)]);
-          
-          // Clear new alert notification after 5 seconds
-          setTimeout(() => setNewAlert(null), 5000);
-        }
-      } catch (error) {
-        console.error("Error parsing WebSocket message:", error);
+      if (error) {
+        console.error("Error fetching whale alerts:", error);
+        setIsConnected(false);
+        return;
       }
-    };
 
-    ws.onclose = () => {
-      console.log("Whale alerts WebSocket closed");
-      setIsConnected(false);
-      
-      reconnectTimeoutRef.current = setTimeout(() => {
-        connect();
-      }, 5000);
-    };
-
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-      setIsConnected(false);
-    };
-
-    wsRef.current = ws;
+      if (data?.alerts && mountedRef.current) {
+        const alertsData = data.alerts as WhaleAlert[];
+        
+        // Check for new alerts
+        const currentIds = alertsData.map(a => a.id);
+        const newAlerts = alertsData.filter(a => !previousAlertsRef.current.includes(a.id));
+        
+        if (newAlerts.length > 0 && previousAlertsRef.current.length > 0) {
+          setNewAlert(newAlerts[0]);
+          setTimeout(() => {
+            if (mountedRef.current) setNewAlert(null);
+          }, 5000);
+        }
+        
+        previousAlertsRef.current = currentIds;
+        setAlerts(alertsData);
+        setIsConnected(true);
+      }
+    } catch (err) {
+      console.error("Exception fetching whale alerts:", err);
+      if (mountedRef.current) {
+        setIsConnected(false);
+      }
+    }
   }, [chainId]);
 
   useEffect(() => {
-    connect();
+    mountedRef.current = true;
+    previousAlertsRef.current = [];
+    
+    // Initial fetch
+    fetchAlerts();
 
-    const pingInterval = setInterval(() => {
-      if (wsRef.current?.readyState === WebSocket.OPEN) {
-        wsRef.current.send(JSON.stringify({ type: "ping" }));
-      }
-    }, 30000);
+    // Poll every 15 seconds for whale alerts
+    intervalRef.current = setInterval(fetchAlerts, 15000);
 
     return () => {
-      clearInterval(pingInterval);
-      if (reconnectTimeoutRef.current) {
-        clearTimeout(reconnectTimeoutRef.current);
-      }
-      if (wsRef.current) {
-        wsRef.current.close();
+      mountedRef.current = false;
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
       }
     };
-  }, [connect]);
+  }, [fetchAlerts]);
 
   return { alerts, isConnected, newAlert };
 }

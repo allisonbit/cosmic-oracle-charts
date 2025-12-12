@@ -5,101 +5,37 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// WebSocket handler for real-time price updates
+// Simple HTTP handler for price fetching (no WebSocket - more stable)
 serve(async (req) => {
-  const { headers } = req;
-  const upgradeHeader = headers.get("upgrade") || "";
-
-  // Handle regular HTTP requests for price snapshots
-  if (upgradeHeader.toLowerCase() !== "websocket") {
-    if (req.method === "OPTIONS") {
-      return new Response(null, { headers: corsHeaders });
-    }
-
-    try {
-      const { chains } = await req.json();
-      console.log("Fetching prices for chains:", chains);
-      
-      const prices = await fetchChainPrices(chains || ["ethereum", "solana", "optimism", "sui", "ton"]);
-      
-      return new Response(JSON.stringify({ prices, timestamp: Date.now() }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    } catch (error) {
-      console.error("Error:", error);
-      return new Response(JSON.stringify({ error: "Failed to fetch prices" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
   }
 
-  // Upgrade to WebSocket
-  const { socket, response } = Deno.upgradeWebSocket(req);
-  
-  let intervalId: number | null = null;
-  let subscribedChains: string[] = ["ethereum", "solana", "optimism", "sui", "ton"];
-
-  socket.onopen = () => {
-    console.log("WebSocket connection opened for realtime prices");
-    
-    // Send initial prices immediately
-    sendPrices(socket, subscribedChains);
-    
-    // Set up interval for continuous updates
-    intervalId = setInterval(() => {
-      sendPrices(socket, subscribedChains);
-    }, 5000); // Update every 5 seconds
-  };
-
-  socket.onmessage = async (event) => {
-    try {
-      const message = JSON.parse(event.data);
-      console.log("Received message:", message);
-      
-      if (message.type === "subscribe") {
-        subscribedChains = message.chains || subscribedChains;
-        console.log("Subscribed to chains:", subscribedChains);
-        sendPrices(socket, subscribedChains);
-      }
-      
-      if (message.type === "ping") {
-        socket.send(JSON.stringify({ type: "pong", timestamp: Date.now() }));
-      }
-    } catch (error) {
-      console.error("Error processing message:", error);
-    }
-  };
-
-  socket.onclose = () => {
-    console.log("WebSocket connection closed");
-    if (intervalId) {
-      clearInterval(intervalId);
-    }
-  };
-
-  socket.onerror = (error) => {
-    console.error("WebSocket error:", error);
-    if (intervalId) {
-      clearInterval(intervalId);
-    }
-  };
-
-  return response;
-});
-
-async function sendPrices(socket: WebSocket, chains: string[]) {
   try {
+    let chains = ["ethereum", "solana", "optimism", "sui", "ton"];
+    
+    try {
+      const body = await req.json();
+      if (body?.chains && Array.isArray(body.chains)) {
+        chains = body.chains;
+      }
+    } catch {
+      // Use default chains if no body
+    }
+
     const prices = await fetchChainPrices(chains);
-    socket.send(JSON.stringify({
-      type: "price_update",
-      prices,
-      timestamp: Date.now(),
-    }));
+    
+    return new Response(JSON.stringify({ prices, timestamp: Date.now() }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   } catch (error) {
-    console.error("Error fetching prices:", error);
+    console.error("Error:", error);
+    return new Response(JSON.stringify({ error: "Failed to fetch prices" }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
-}
+});
 
 async function fetchChainPrices(chains: string[]): Promise<Record<string, any>> {
   const coingeckoIds: Record<string, string> = {
@@ -136,10 +72,16 @@ async function fetchChainPrices(chains: string[]): Promise<Record<string, any>> 
       if (data[coingeckoId]) {
         prices[chain] = {
           price: data[coingeckoId].usd,
-          change24h: data[coingeckoId].usd_24h_change,
-          volume24h: data[coingeckoId].usd_24h_vol,
-          marketCap: data[coingeckoId].usd_market_cap,
+          change24h: data[coingeckoId].usd_24h_change || 0,
+          volume24h: data[coingeckoId].usd_24h_vol || 0,
+          marketCap: data[coingeckoId].usd_market_cap || 0,
         };
+      } else {
+        // Provide fallback for missing chains
+        const fallback = getFallbackPrices([chain]);
+        if (fallback[chain]) {
+          prices[chain] = fallback[chain];
+        }
       }
     }
 
