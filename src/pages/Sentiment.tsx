@@ -12,6 +12,9 @@ import { SocialSentimentPanel } from "@/components/sentiment/SocialSentimentPane
 import { NewsPanel } from "@/components/sentiment/NewsPanel";
 import { GoogleTrendsPanel } from "@/components/sentiment/GoogleTrendsPanel";
 import { GitHubActivityPanel } from "@/components/sentiment/GitHubActivityPanel";
+import { EnhancedOverviewPanel } from "@/components/sentiment/EnhancedOverviewPanel";
+import { EnhancedWhaleTracker } from "@/components/sentiment/EnhancedWhaleTracker";
+import { EnhancedSignalsPanel } from "@/components/sentiment/EnhancedSignalsPanel";
 
 function formatNumber(num: number): string {
   if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
