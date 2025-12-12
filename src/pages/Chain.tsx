@@ -5,8 +5,8 @@ import { useChainForecast } from "@/hooks/useChainForecast";
 import { useAdvancedChainData } from "@/hooks/useAdvancedChainData";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 import { ChainOverviewPanel } from "@/components/chain/ChainOverviewPanel";
-import { AdvancedPriceChart } from "@/components/chain/AdvancedPriceChart";
-import { PredictionDeepDive } from "@/components/chain/PredictionDeepDive";
+import { EnhancedPriceAnalysis } from "@/components/chain/EnhancedPriceAnalysis";
+import { EnhancedPredictionDeepDive } from "@/components/chain/EnhancedPredictionDeepDive";
 import { WhaleActivityRadar } from "@/components/chain/WhaleActivityRadar";
 import { TokenHeatScanner } from "@/components/chain/TokenHeatScanner";
 import { SmartMoneyFlow } from "@/components/chain/SmartMoneyFlow";
@@ -143,9 +143,9 @@ export default function Chain() {
                 <LiveTokenSearchPanel chain={chain} />
 
                 {/* Price Chart & Predictions */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                  <AdvancedPriceChart chain={chain} priceData={chainPrice} />
-                  <PredictionDeepDive chain={chain} forecast={forecastData?.forecast} isLoading={forecastLoading} />
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
+                  <EnhancedPriceAnalysis chain={chain} priceData={chainPrice} />
+                  <EnhancedPredictionDeepDive chain={chain} forecast={forecastData?.forecast} isLoading={forecastLoading} />
                 </div>
 
                 {/* Health & Financial Metrics */}
