@@ -1,7 +1,8 @@
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { ChainConfig } from "@/lib/chainConfig";
 import { WhaleActivity } from "@/hooks/useChainData";
-import { ArrowUpRight, ArrowDownRight, ArrowRight, ExternalLink, Copy } from "lucide-react";
+import { useWhaleAlertsWS } from "@/hooks/useRealtimeWebSocket";
+import { ArrowUpRight, ArrowDownRight, ArrowRight, ExternalLink, Copy, Wifi, WifiOff, AlertCircle, Bell } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -11,7 +12,40 @@ interface WhaleActivityRadarProps {
   isLoading: boolean;
 }
 
-export function WhaleActivityRadar({ chain, whaleActivity, isLoading }: WhaleActivityRadarProps) {
+export function WhaleActivityRadar({ chain, whaleActivity: initialWhaleActivity, isLoading }: WhaleActivityRadarProps) {
+  const { alerts: wsAlerts, isConnected, newAlert } = useWhaleAlertsWS(chain.id);
+  const [showNewAlertBanner, setShowNewAlertBanner] = useState(false);
+
+  // Combine WebSocket alerts with initial data
+  const whaleActivity = useMemo(() => {
+    if (wsAlerts.length > 0) {
+      return wsAlerts.map(alert => ({
+        type: alert.type,
+        amount: alert.amount,
+        token: alert.token,
+        timestamp: alert.timestamp,
+        value: alert.value,
+        wallet: alert.fromWallet,
+        txHash: alert.txHash,
+        explorerUrl: alert.explorerUrl,
+        impact: alert.impact,
+      }));
+    }
+    return initialWhaleActivity || [];
+  }, [wsAlerts, initialWhaleActivity]);
+
+  // Show new alert notification
+  useEffect(() => {
+    if (newAlert) {
+      setShowNewAlertBanner(true);
+      toast.info(`🐳 New whale ${newAlert.type}: ${newAlert.amount.toLocaleString()} ${newAlert.token}`, {
+        description: `Value: $${(newAlert.value / 1e6).toFixed(2)}M`,
+        duration: 5000,
+      });
+      setTimeout(() => setShowNewAlertBanner(false), 5000);
+    }
+  }, [newAlert]);
+
   const formatValue = (num: number) => {
     if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
     if (num >= 1e3) return `$${(num / 1e3).toFixed(0)}K`;
@@ -30,6 +64,13 @@ export function WhaleActivityRadar({ chain, whaleActivity, isLoading }: WhaleAct
     if (wallet) {
       navigator.clipboard.writeText(wallet);
       toast.success("Wallet address copied!");
+    }
+  };
+
+  const copyTxHash = (txHash: string | undefined) => {
+    if (txHash) {
+      navigator.clipboard.writeText(txHash);
+      toast.success("Transaction hash copied!");
     }
   };
 
@@ -61,10 +102,33 @@ export function WhaleActivityRadar({ chain, whaleActivity, isLoading }: WhaleAct
   }, [whaleActivity]);
 
   return (
-    <div className="holo-card p-4 sm:p-6">
-      <div className="flex items-center justify-between mb-4 sm:mb-6">
+    <div className="holo-card p-4 sm:p-6 relative overflow-hidden">
+      {/* New Alert Banner */}
+      {showNewAlertBanner && newAlert && (
+        <div className="absolute top-0 left-0 right-0 bg-warning/20 border-b border-warning/40 px-4 py-2 flex items-center gap-2 animate-pulse z-10">
+          <Bell className="h-4 w-4 text-warning" />
+          <span className="text-xs text-warning font-medium">
+            New whale alert: {newAlert.amount.toLocaleString()} {newAlert.token}
+          </span>
+        </div>
+      )}
+
+      <div className={cn("flex items-center justify-between mb-4 sm:mb-6", showNewAlertBanner && "mt-6")}>
         <div>
-          <h3 className="text-base sm:text-lg font-display text-foreground">Whale Activity Radar</h3>
+          <h3 className="text-base sm:text-lg font-display text-foreground flex items-center gap-2">
+            Whale Activity Radar
+            {isConnected ? (
+              <span className="flex items-center gap-1 text-[10px] text-success bg-success/10 px-1.5 py-0.5 rounded">
+                <Wifi className="h-2.5 w-2.5" />
+                LIVE
+              </span>
+            ) : (
+              <span className="flex items-center gap-1 text-[10px] text-muted-foreground bg-muted/30 px-1.5 py-0.5 rounded">
+                <WifiOff className="h-2.5 w-2.5" />
+                Offline
+              </span>
+            )}
+          </h3>
           <p className="text-xs sm:text-sm text-muted-foreground">Large transactions on {chain.name}</p>
         </div>
         <a
@@ -193,7 +257,8 @@ export function WhaleActivityRadar({ chain, whaleActivity, isLoading }: WhaleAct
                   "flex items-center justify-between p-1.5 sm:p-2 rounded-lg transition-all group",
                   activity.type === "buy" && "bg-success/5 border border-success/20",
                   activity.type === "sell" && "bg-danger/5 border border-danger/20",
-                  activity.type === "transfer" && "bg-warning/5 border border-warning/20"
+                  activity.type === "transfer" && "bg-warning/5 border border-warning/20",
+                  i === 0 && newAlert && "ring-2 ring-warning/50 animate-pulse"
                 )}
               >
                 <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
@@ -219,9 +284,12 @@ export function WhaleActivityRadar({ chain, whaleActivity, isLoading }: WhaleAct
                 </div>
                 <div className="flex items-center gap-1.5 flex-shrink-0 ml-2">
                   <span className="text-xs sm:text-sm font-medium text-foreground">{formatValue(activity.value)}</span>
-                  {activity.wallet && (
+                  {(activity as any).impact === "high" && (
+                    <AlertCircle className="h-3 w-3 text-danger" />
+                  )}
+                  {(activity as any).txHash && (
                     <a
-                      href={`${chain.explorerUrl}/address/${activity.wallet}`}
+                      href={(activity as any).explorerUrl || `${chain.explorerUrl}/tx/${(activity as any).txHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="opacity-0 group-hover:opacity-100 transition-opacity"
