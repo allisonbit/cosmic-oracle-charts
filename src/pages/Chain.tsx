@@ -40,7 +40,7 @@ export default function Chain() {
   const queryClient = useQueryClient();
   const chain = chainId ? getChainById(chainId) : undefined;
 
-  const { data: chainData, isLoading: chainLoading, isFetching: chainFetching, refetch: refetchChainData } = useChainData(chainId || "", !!chain);
+  const { data: chainData, isLoading: chainLoading, isFetching: chainFetching, refetch: refetchChainData, isError: chainError } = useChainData(chainId || "", !!chain);
   const { data: forecastData, isLoading: forecastLoading, refetch: refetchForecast } = useChainForecast(chainId || "", chainData, !!chain && !!chainData);
   const { data: advancedData, isLoading: advancedLoading, refetch: refetchAdvanced } = useAdvancedChainData(chainId || "", !!chain);
   const { data: pricesData } = useCryptoPrices();
@@ -66,7 +66,8 @@ export default function Chain() {
   }
 
   const chainPrice = pricesData?.prices?.find(p => p.symbol === chain.symbol);
-  const showLoading = chainLoading && !chainData;
+  // Only show loading on initial load, not on refetches
+  const showLoading = chainLoading && !chainData && !chainError;
 
   return (
     <SidebarProvider defaultOpen={false}>
@@ -75,7 +76,7 @@ export default function Chain() {
         <div className="flex-1 flex flex-col min-w-0">
           <CryptoTicker />
           
-          {showLoading ? (
+          {showLoading && !chainData ? (
             <div className="flex-1 flex items-center justify-center">
               <div className="flex flex-col items-center gap-4">
                 <Loader2 className="w-10 h-10 sm:w-12 sm:h-12 animate-spin text-primary" />
