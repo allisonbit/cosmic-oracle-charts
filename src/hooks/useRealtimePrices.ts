@@ -12,19 +12,21 @@ export function useRealtimePrices(symbols: string[]) {
   const [prices, setPrices] = useState<Record<string, RealtimePrice>>({});
   const [isConnected, setIsConnected] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const mountedRef = useRef(true);
 
   const fetchPrices = useCallback(async () => {
-    if (symbols.length === 0) return;
+    if (!mountedRef.current || symbols.length === 0) return;
 
     try {
       const { data, error } = await supabase.functions.invoke("crypto-prices");
       
       if (error) {
         console.error("Error fetching realtime prices:", error);
+        if (mountedRef.current) setIsConnected(false);
         return;
       }
 
-      if (data?.prices) {
+      if (data?.prices && mountedRef.current) {
         const priceMap: Record<string, RealtimePrice> = {};
         data.prices.forEach((p: any) => {
           if (symbols.includes(p.symbol)) {
@@ -41,18 +43,21 @@ export function useRealtimePrices(symbols: string[]) {
       }
     } catch (err) {
       console.error("Exception fetching realtime prices:", err);
-      setIsConnected(false);
+      if (mountedRef.current) setIsConnected(false);
     }
   }, [symbols]);
 
   useEffect(() => {
+    mountedRef.current = true;
+    
     // Initial fetch
     fetchPrices();
 
-    // Set up polling every 10 seconds for near-realtime updates
-    intervalRef.current = setInterval(fetchPrices, 10000);
+    // Set up polling every 12 seconds for stable updates
+    intervalRef.current = setInterval(fetchPrices, 12000);
 
     return () => {
+      mountedRef.current = false;
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
