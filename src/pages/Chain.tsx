@@ -25,10 +25,10 @@ import { MultiChainComparison } from "@/components/chain/MultiChainComparison";
 import { InstitutionalView } from "@/components/chain/InstitutionalView";
 import { ChainQuickNav } from "@/components/chain/ChainQuickNav";
 import { ChainExternalLinks } from "@/components/chain/ChainExternalLinks";
-import { ChainInfoCard } from "@/components/chain/ChainInfoCard";
 import { RealtimePriceTicker } from "@/components/chain/RealtimePriceTicker";
 import { ChainSpecificMetrics } from "@/components/chain/ChainSpecificMetrics";
-import { EcosystemTokenSearch } from "@/components/chain/EcosystemTokenSearch";
+import { NetworkInfoPanel } from "@/components/chain/NetworkInfoPanel";
+import { EcosystemTokensPanel } from "@/components/chain/EcosystemTokensPanel";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { ArrowLeft, Loader2, ExternalLink, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -130,8 +130,8 @@ export default function Chain() {
                 {/* External links */}
                 <ChainExternalLinks chain={chain} />
 
-                {/* Chain Info Card */}
-                <ChainInfoCard chain={chain} />
+                {/* Enhanced Network Info Panel */}
+                <NetworkInfoPanel chain={chain} overview={chainData?.overview} isLoading={chainLoading} />
 
                 {/* Real-time Price Ticker for all chains */}
                 <RealtimePriceTicker chain={chain} />
@@ -139,8 +139,8 @@ export default function Chain() {
                 {/* Chain-specific Metrics */}
                 <ChainSpecificMetrics chain={chain} chainSpecificData={chainData?.chainSpecificData} />
 
-                {/* Ecosystem Token Search */}
-                <EcosystemTokenSearch 
+                {/* Enhanced Ecosystem Tokens Panel */}
+                <EcosystemTokensPanel 
                   chain={chain} 
                   ecosystemTokens={chainData?.chainSpecificData?.ecosystemTokens} 
                 />
