@@ -30,12 +30,14 @@ export function Layout({ children, showTicker = true }: LayoutProps) {
           <CryptoTicker />
         </div>
       )}
-      <main className={`flex-1 ${showTicker ? "" : "mt-14 md:mt-16"} pb-20 md:pb-0 scroll-smooth-touch`}>
+      <main className={`flex-1 ${showTicker ? "" : "mt-14 md:mt-16"} pb-24 md:pb-0 scroll-smooth-touch`}>
         <Suspense fallback={<LoadingFallback />}>
           {children}
         </Suspense>
       </main>
-      <Footer />
+      <div className="hidden md:block">
+        <Footer />
+      </div>
       <MobileBottomNav />
     </div>
   );

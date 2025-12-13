@@ -94,28 +94,28 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-6 md:py-8">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 md:mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 sm:mb-6 md:mb-8">
           <div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-display font-bold">
               <span className="glow-text">ORACLE</span> <span className="text-gradient-cosmic">DASHBOARD</span>
             </h1>
-            <p className="text-muted-foreground text-xs sm:text-sm flex items-center gap-2 mt-1">
+            <p className="text-muted-foreground text-[10px] sm:text-xs flex items-center gap-1.5 mt-1">
               <Clock className="w-3 h-3" />
-              Last updated: {lastUpdate.toLocaleTimeString()}
+              Updated: {lastUpdate.toLocaleTimeString()}
             </p>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-              <span className="text-xs text-muted-foreground font-display">LIVE DATA</span>
+              <span className="text-[10px] sm:text-xs text-muted-foreground font-display">LIVE</span>
             </div>
             <Link 
               to="/chain/ethereum"
-              className="text-xs text-primary hover:text-primary/80 font-display flex items-center gap-1"
+              className="text-[10px] sm:text-xs text-primary hover:text-primary/80 font-display flex items-center gap-1"
             >
-              Advanced Analysis <ArrowRight className="w-3 h-3" />
+              Advanced <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
         </div>
@@ -123,43 +123,43 @@ const Dashboard = () => {
         {isLoading ? (
           <div className="flex justify-center items-center min-h-[50vh]">
             <div className="flex flex-col items-center gap-4">
-              <Loader2 className="w-10 h-10 md:w-12 md:h-12 animate-spin text-primary" />
-              <p className="text-muted-foreground font-display text-sm">Loading live market data...</p>
+              <Loader2 className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 animate-spin text-primary" />
+              <p className="text-muted-foreground font-display text-xs sm:text-sm">Loading live market data...</p>
             </div>
           </div>
         ) : (
           <>
             {/* Quick Actions */}
-            <div className="mb-6">
+            <div className="mb-4 sm:mb-6">
               <EnhancedQuickActions />
             </div>
 
             {/* Stats Row */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6">
               {[
-                { label: "Total Market Cap", value: global ? formatNumber(global.totalMarketCap) : "$3.2T", icon: Globe, change: global?.marketCapChange24h, link: "/sentiment" },
+                { label: "Market Cap", value: global ? formatNumber(global.totalMarketCap) : "$3.2T", icon: Globe, change: global?.marketCapChange24h, link: "/sentiment" },
                 { label: "24h Volume", value: global ? formatNumber(global.totalVolume24h) : "$120B", icon: Activity, link: "/dashboard" },
                 { label: "Active Coins", value: global ? global.activeCryptocurrencies.toLocaleString() : "14,500", icon: Zap, link: "/explorer" },
-                { label: "BTC Dominance", value: global ? `${global.btcDominance.toFixed(1)}%` : "55%", icon: TrendingUp, link: "/chain/bitcoin" },
+                { label: "BTC Dom", value: global ? `${global.btcDominance.toFixed(1)}%` : "55%", icon: TrendingUp, link: "/chain/bitcoin" },
               ].map((stat) => (
                 <Link 
                   key={stat.label} 
                   to={stat.link}
-                  className="holo-card p-3 md:p-4 hover:scale-[1.02] transition-transform group"
+                  className="holo-card p-2.5 sm:p-3 md:p-4 card-touch group"
                 >
-                  <div className="flex items-center gap-2 mb-2">
-                    <stat.icon className="w-4 h-4 text-primary" />
-                    <span className="text-[10px] md:text-xs text-muted-foreground font-display uppercase">{stat.label}</span>
-                    <ArrowRight className="w-3 h-3 text-primary ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+                    <stat.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+                    <span className="text-[8px] sm:text-[10px] md:text-xs text-muted-foreground font-display uppercase truncate">{stat.label}</span>
+                    <ArrowRight className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-primary ml-auto opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
                   </div>
-                  <div className="text-lg md:text-2xl font-bold text-foreground">{stat.value}</div>
+                  <div className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-foreground">{stat.value}</div>
                   {stat.change !== undefined && (
                     <div className={cn(
-                      "text-[10px] md:text-xs flex items-center gap-1 mt-1",
+                      "text-[9px] sm:text-[10px] md:text-xs flex items-center gap-0.5 sm:gap-1 mt-0.5 sm:mt-1",
                       stat.change >= 0 ? "text-success" : "text-danger"
                     )}>
-                      {stat.change >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                      {stat.change >= 0 ? "+" : ""}{stat.change.toFixed(1)}% 24h
+                      {stat.change >= 0 ? <TrendingUp className="w-2.5 h-2.5 sm:w-3 sm:h-3" /> : <TrendingDown className="w-2.5 h-2.5 sm:w-3 sm:h-3" />}
+                      {stat.change >= 0 ? "+" : ""}{stat.change.toFixed(1)}%
                     </div>
                   )}
                 </Link>
@@ -167,20 +167,20 @@ const Dashboard = () => {
             </div>
 
             {/* Main Grid */}
-            <div className="grid lg:grid-cols-3 gap-6 mb-6">
+            <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
               {/* Left Column */}
-              <div className="lg:col-span-2 space-y-6">
+              <div className="lg:col-span-2 space-y-4 sm:space-y-6">
                 {/* Fear & Greed + AI */}
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
                   {/* Fear & Greed - Clickable */}
-                  <Link to="/sentiment" className="holo-card p-4 md:p-6 hover:scale-[1.02] transition-transform group">
-                    <h3 className="font-display text-sm md:text-base font-bold mb-4 flex items-center gap-2">
-                      <Brain className="w-4 h-4 md:w-5 md:h-5 text-primary" />
-                      FEAR & GREED INDEX
-                      <ArrowRight className="w-4 h-4 text-primary ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <Link to="/sentiment" className="holo-card p-3 sm:p-4 md:p-6 card-touch group">
+                    <h3 className="font-display text-xs sm:text-sm md:text-base font-bold mb-3 sm:mb-4 flex items-center gap-2">
+                      <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                      <span className="truncate">FEAR & GREED</span>
+                      <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 text-primary ml-auto opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
                     </h3>
-                    <div className="flex items-center gap-4">
-                      <div className="relative w-24 h-24 flex-shrink-0">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 flex-shrink-0">
                         <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                           <circle cx="50" cy="50" r="42" stroke="hsl(230, 20%, 15%)" strokeWidth="8" fill="none" />
                           <circle 
@@ -194,51 +194,51 @@ const Dashboard = () => {
                         </svg>
                         <div className="absolute inset-0 flex items-center justify-center">
                           <span className={cn(
-                            "text-2xl font-display font-bold",
+                            "text-lg sm:text-xl md:text-2xl font-display font-bold",
                             fearGreedIndex >= 60 ? "text-success" : fearGreedIndex >= 40 ? "text-warning" : "text-danger"
                           )}>
                             {fearGreedIndex}
                           </span>
                         </div>
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         <div className={cn(
-                          "text-xl font-display font-bold mb-1",
+                          "text-sm sm:text-base md:text-xl font-display font-bold mb-0.5 sm:mb-1 truncate",
                           fearGreedIndex >= 60 ? "text-success" : fearGreedIndex >= 40 ? "text-warning" : "text-danger"
                         )}>
                           {fearGreedIndex >= 80 ? "Extreme Greed" : fearGreedIndex >= 60 ? "Greed" : fearGreedIndex >= 40 ? "Neutral" : fearGreedIndex >= 20 ? "Fear" : "Extreme Fear"}
                         </div>
-                        <p className="text-xs text-muted-foreground">Click for deep sentiment analysis</p>
+                        <p className="text-[10px] sm:text-xs text-muted-foreground hidden sm:block">Click for deep analysis</p>
                       </div>
                     </div>
                   </Link>
 
                   {/* AI Insights */}
-                  <div className="holo-card p-4 md:p-6">
-                    <h3 className="font-display text-sm md:text-base font-bold mb-4 flex items-center gap-2">
-                      <Zap className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+                  <div className="holo-card p-3 sm:p-4 md:p-6">
+                    <h3 className="font-display text-xs sm:text-sm md:text-base font-bold mb-3 sm:mb-4 flex items-center gap-2">
+                      <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                       AI INSIGHTS
                     </h3>
                     {aiData?.forecast ? (
-                      <div className="space-y-3">
-                        <div className="grid grid-cols-3 gap-2">
-                          <div className="text-center p-2 rounded-lg bg-muted/50">
-                            <div className="text-[10px] text-muted-foreground font-display">SENTIMENT</div>
+                      <div className="space-y-2 sm:space-y-3">
+                        <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
+                          <div className="text-center p-1.5 sm:p-2 rounded-lg bg-muted/50">
+                            <div className="text-[8px] sm:text-[10px] text-muted-foreground font-display">SENTIMENT</div>
                             <div className={cn(
-                              "text-sm font-bold",
+                              "text-[10px] sm:text-xs md:text-sm font-bold truncate",
                               aiData.forecast.overallSentiment === "bullish" ? "text-success" : aiData.forecast.overallSentiment === "bearish" ? "text-danger" : "text-warning"
                             )}>
                               {aiData.forecast.overallSentiment?.toUpperCase() || "NEUTRAL"}
                             </div>
                           </div>
-                          <div className="text-center p-2 rounded-lg bg-muted/50">
-                            <div className="text-[10px] text-muted-foreground font-display">CONFIDENCE</div>
-                            <div className="text-sm font-bold text-primary">{aiData.forecast.confidence || 65}%</div>
+                          <div className="text-center p-1.5 sm:p-2 rounded-lg bg-muted/50">
+                            <div className="text-[8px] sm:text-[10px] text-muted-foreground font-display">CONFIDENCE</div>
+                            <div className="text-[10px] sm:text-xs md:text-sm font-bold text-primary">{aiData.forecast.confidence || 65}%</div>
                           </div>
-                          <div className="text-center p-2 rounded-lg bg-muted/50">
-                            <div className="text-[10px] text-muted-foreground font-display">RISK</div>
+                          <div className="text-center p-1.5 sm:p-2 rounded-lg bg-muted/50">
+                            <div className="text-[8px] sm:text-[10px] text-muted-foreground font-display">RISK</div>
                             <div className={cn(
-                              "text-sm font-bold",
+                              "text-[10px] sm:text-xs md:text-sm font-bold truncate",
                               aiData.forecast.riskLevel === "low" ? "text-success" : aiData.forecast.riskLevel === "high" ? "text-danger" : "text-warning"
                             )}>
                               {aiData.forecast.riskLevel?.toUpperCase() || "MEDIUM"}
@@ -246,12 +246,12 @@ const Dashboard = () => {
                           </div>
                         </div>
                         {aiData.forecast.shortTermOutlook && (
-                          <p className="text-xs text-muted-foreground">{aiData.forecast.shortTermOutlook}</p>
+                          <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-2">{aiData.forecast.shortTermOutlook}</p>
                         )}
                       </div>
                     ) : (
-                      <div className="flex items-center justify-center h-20">
-                        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                      <div className="flex items-center justify-center h-16 sm:h-20">
+                        <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin text-primary" />
                       </div>
                     )}
                   </div>
@@ -262,26 +262,26 @@ const Dashboard = () => {
               </div>
 
               {/* Right Column */}
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 <EnhancedTrendingAlerts />
                 <EnhancedTopPerformers onCoinClick={setSelectedCoin} />
               </div>
             </div>
 
             {/* Volume & Dominance */}
-            <div className="grid md:grid-cols-2 gap-6 mb-6">
+            <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
               <EnhancedVolumeLeaders />
               <EnhancedDominanceChart />
             </div>
 
             {/* Coin Cards - Clickable */}
-            <div className="mb-6">
-              <h2 className="font-display text-lg md:text-xl font-bold mb-4 flex items-center gap-2">
-                <Flame className="w-5 h-5 text-warning" />
-                TOP CRYPTOCURRENCIES
-                <span className="ml-auto text-xs text-muted-foreground font-normal">Click for details</span>
+            <div className="mb-4 sm:mb-6">
+              <h2 className="font-display text-sm sm:text-base md:text-lg lg:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2">
+                <Flame className="w-4 h-4 sm:w-5 sm:h-5 text-warning" />
+                TOP CRYPTOS
+                <span className="ml-auto text-[10px] sm:text-xs text-muted-foreground font-normal hidden sm:inline">Click for details</span>
               </h2>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
                 {topCoins.map((coin) => {
                   const trend = coin.change24h >= 2 ? "BULLISH" : coin.change24h <= -2 ? "BEARISH" : "NEUTRAL";
                   
@@ -289,48 +289,50 @@ const Dashboard = () => {
                     <button 
                       key={coin.symbol} 
                       onClick={() => setSelectedCoin(coin)}
-                      className="holo-card p-4 space-y-3 hover:scale-[1.02] transition-transform text-left group"
+                      className="holo-card p-2.5 sm:p-3 md:p-4 space-y-2 sm:space-y-3 card-touch text-left group"
                     >
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                            <span className="font-display font-bold text-primary text-xs">{coin.symbol[0]}</span>
+                        <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                          <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                            <span className="font-display font-bold text-primary text-[10px] sm:text-xs">{coin.symbol[0]}</span>
                           </div>
-                          <div>
-                            <h3 className="font-display font-bold text-primary">{coin.symbol}</h3>
-                            <p className="text-[10px] text-muted-foreground">{coin.name}</p>
+                          <div className="min-w-0">
+                            <h3 className="font-display font-bold text-primary text-xs sm:text-sm truncate">{coin.symbol}</h3>
+                            <p className="text-[8px] sm:text-[10px] text-muted-foreground truncate">{coin.name}</p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-1">
-                          {Math.abs(coin.change24h) > 5 && <Flame className="w-4 h-4 text-warning" />}
-                          <ArrowRight className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="flex items-center gap-0.5 flex-shrink-0">
+                          {Math.abs(coin.change24h) > 5 && <Flame className="w-3 h-3 sm:w-4 sm:h-4 text-warning" />}
+                          <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
                         </div>
                       </div>
 
                       <div className="flex items-end justify-between">
-                        <div>
-                          <div className="text-lg font-bold">${coin.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
+                        <div className="min-w-0">
+                          <div className="text-sm sm:text-base md:text-lg font-bold truncate">${coin.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
                           <div className={cn(
-                            "flex items-center gap-1 text-xs font-medium",
+                            "flex items-center gap-0.5 text-[10px] sm:text-xs font-medium",
                             coin.change24h >= 0 ? "text-success" : "text-danger"
                           )}>
-                            {coin.change24h >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                            {coin.change24h >= 0 ? <TrendingUp className="w-2.5 h-2.5 sm:w-3 sm:h-3" /> : <TrendingDown className="w-2.5 h-2.5 sm:w-3 sm:h-3" />}
                             {coin.change24h >= 0 ? "+" : ""}{coin.change24h.toFixed(2)}%
                           </div>
                         </div>
                         <span className={cn(
-                          "text-[10px] font-display font-bold px-2 py-1 rounded",
+                          "text-[8px] sm:text-[10px] font-display font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded flex-shrink-0",
                           trend === "BULLISH" ? "text-success bg-success/20" : trend === "BEARISH" ? "text-danger bg-danger/20" : "text-warning bg-warning/20"
                         )}>
                           {trend}
                         </span>
                       </div>
 
-                      <CryptoChart price={coin.price} isPositive={coin.change24h >= 0} />
+                      <div className="hidden sm:block">
+                        <CryptoChart price={coin.price} isPositive={coin.change24h >= 0} />
+                      </div>
 
-                      <div className="flex justify-between text-[10px] text-muted-foreground pt-2 border-t border-border/50">
-                        <span>Vol: {formatNumber(coin.volume)}</span>
-                        <span>MCap: {formatNumber(coin.marketCap)}</span>
+                      <div className="flex justify-between text-[8px] sm:text-[10px] text-muted-foreground pt-1.5 sm:pt-2 border-t border-border/50">
+                        <span className="truncate">Vol: {formatNumber(coin.volume)}</span>
+                        <span className="truncate ml-1">MCap: {formatNumber(coin.marketCap)}</span>
                       </div>
                     </button>
                   );
@@ -339,62 +341,48 @@ const Dashboard = () => {
             </div>
 
             {/* Heat Map - Clickable */}
-            <div className="holo-card p-4 md:p-6">
-              <h2 className="font-display text-lg md:text-xl font-bold mb-4 flex items-center gap-2">
-                <BarChart3 className="w-5 h-5 text-primary" />
+            <div className="holo-card p-3 sm:p-4 md:p-6">
+              <h2 className="font-display text-sm sm:text-base md:text-lg lg:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2">
+                <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                 MARKET HEAT MAP
-                <span className="ml-auto text-xs text-muted-foreground font-normal">Click any coin for details</span>
+                <span className="ml-auto text-[10px] sm:text-xs text-muted-foreground font-normal hidden sm:inline">Click any coin</span>
               </h2>
-              <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
-                {(marketData?.topCoins?.slice(0, 16) || []).map((coin) => {
-                  const heat = 50 + coin.change24h * 5;
-                  return (
-                    <button
-                      key={coin.symbol}
-                      onClick={() => setSelectedCoin(coin)}
-                      className="aspect-square rounded-lg flex flex-col items-center justify-center font-display font-bold text-xs transition-all hover:scale-110 cursor-pointer p-1"
-                      style={{
-                        background: heat > 70
-                          ? `hsl(160 84% ${20 + heat * 0.3}% / 0.8)`
-                          : heat > 40
-                            ? `hsl(38 92% ${30 + heat * 0.2}% / 0.6)`
-                            : `hsl(0 84% ${25 + heat * 0.2}% / 0.6)`,
-                        boxShadow: heat > 70
-                          ? "0 0 15px hsl(160 84% 39% / 0.5)"
-                          : "none",
-                      }}
-                    >
-                      <span>{coin.symbol}</span>
-                      <span className="text-[8px] opacity-80">{coin.change24h >= 0 ? "+" : ""}{coin.change24h.toFixed(1)}%</span>
-                    </button>
-                  );
-                })}
-              </div>
-              <div className="flex justify-center gap-6 mt-4 text-xs">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded bg-danger/60" />
-                  <span className="text-muted-foreground">Bearish</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded bg-warning/60" />
-                  <span className="text-muted-foreground">Neutral</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded bg-success/80" />
-                  <span className="text-muted-foreground">Bullish</span>
-                </div>
+              <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-1.5 sm:gap-2">
+                {topCoins.slice(0, 16).map((coin) => (
+                  <button
+                    key={coin.symbol}
+                    onClick={() => setSelectedCoin(coin)}
+                    className={cn(
+                      "p-1.5 sm:p-2 md:p-3 rounded-lg text-center transition-all card-touch",
+                      coin.change24h >= 3 ? "bg-success/30 border border-success/50" :
+                      coin.change24h >= 0 ? "bg-success/20 border border-success/30" :
+                      coin.change24h >= -3 ? "bg-danger/20 border border-danger/30" :
+                      "bg-danger/30 border border-danger/50"
+                    )}
+                  >
+                    <div className="font-display font-bold text-[10px] sm:text-xs truncate">{coin.symbol}</div>
+                    <div className={cn(
+                      "text-[9px] sm:text-[10px] md:text-xs font-medium",
+                      coin.change24h >= 0 ? "text-success" : "text-danger"
+                    )}>
+                      {coin.change24h >= 0 ? "+" : ""}{coin.change24h.toFixed(1)}%
+                    </div>
+                  </button>
+                ))}
               </div>
             </div>
           </>
         )}
       </div>
 
-      {/* Coin Detail Modal */}
-      <CoinDetailModal
-        coin={selectedCoin}
-        open={!!selectedCoin}
-        onOpenChange={(open) => !open && setSelectedCoin(null)}
-      />
+      {/* Modal */}
+      {selectedCoin && (
+        <CoinDetailModal 
+          coin={selectedCoin} 
+          open={!!selectedCoin} 
+          onOpenChange={(open) => !open && setSelectedCoin(null)} 
+        />
+      )}
     </Layout>
   );
 };
