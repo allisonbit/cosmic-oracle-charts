@@ -42,12 +42,12 @@ export function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-background/95 border-b border-primary/20">
-      <div className="container mx-auto px-4">
+    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-background/95 border-b border-primary/20 safe-area-top">
+      <div className="container mx-auto px-3 sm:px-4">
         <div className="flex items-center justify-between h-14 md:h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 md:gap-3 group z-10">
-            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden shadow-lg shadow-primary/30 group-hover:shadow-primary/50 transition-shadow">
+          <Link to="/" className="flex items-center gap-2 group z-10">
+            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden shadow-lg shadow-primary/30 group-hover:shadow-primary/50 transition-shadow flex-shrink-0">
               <img src={oracleLogo} alt="Oracle" className="w-full h-full object-cover" />
             </div>
             <span className="font-display text-base md:text-lg font-bold glow-text">
@@ -56,7 +56,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-1">
+          <div className="hidden lg:flex items-center gap-0.5 xl:gap-1">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = isActivePath(item.path);
@@ -65,14 +65,14 @@ export function Navbar() {
                   key={item.path}
                   to={item.path}
                   className={cn(
-                    "flex items-center gap-2 px-3 py-2 rounded-lg font-display text-xs uppercase tracking-wider transition-all duration-300",
+                    "flex items-center gap-1.5 px-2.5 xl:px-3 py-2 rounded-lg font-display text-[10px] xl:text-xs uppercase tracking-wider transition-all duration-300",
                     isActive
                       ? "bg-primary/20 text-primary glow-text border border-primary/30"
                       : "text-muted-foreground hover:text-primary hover:bg-primary/10"
                   )}
                 >
-                  <Icon className="w-4 h-4" />
-                  {item.label}
+                  <Icon className="w-3.5 h-3.5 xl:w-4 xl:h-4" />
+                  <span className="hidden xl:inline">{item.label}</span>
                 </Link>
               );
             })}
@@ -82,7 +82,7 @@ export function Navbar() {
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden z-10"
+            className="lg:hidden z-10 h-10 w-10"
             onClick={() => setIsOpen(!isOpen)}
             aria-label={isOpen ? "Close menu" : "Open menu"}
           >
@@ -107,13 +107,13 @@ export function Navbar() {
                   to={item.path}
                   onClick={() => setIsOpen(false)}
                   className={cn(
-                    "flex items-center gap-4 px-4 py-4 rounded-xl font-display text-base uppercase tracking-wider transition-all duration-200 touch-target tap-highlight-none active:scale-[0.98]",
+                    "flex items-center gap-4 px-4 py-3.5 rounded-xl font-display text-sm uppercase tracking-wider transition-all duration-200 tap-highlight-none active:scale-[0.98]",
                     isActive
                       ? "bg-primary/20 text-primary border border-primary/30"
                       : "text-muted-foreground active:text-primary active:bg-primary/10"
                   )}
                 >
-                  <Icon className="w-6 h-6" />
+                  <Icon className="w-5 h-5" />
                   <span className="flex-1">{item.label}</span>
                   {isActive && <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />}
                 </Link>
