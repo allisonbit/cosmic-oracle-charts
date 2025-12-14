@@ -42,62 +42,64 @@ export function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-background/95 border-b border-primary/20 safe-area-top">
-      <div className="container mx-auto px-3 sm:px-4">
-        <div className="flex items-center justify-between h-14 md:h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group z-10">
-            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden shadow-lg shadow-primary/30 group-hover:shadow-primary/50 transition-shadow flex-shrink-0">
-              <img src={oracleLogo} alt="Oracle" className="w-full h-full object-cover" />
+    <>
+      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-background/95 border-b border-primary/20 safe-area-top">
+        <div className="container mx-auto px-3 sm:px-4">
+          <div className="flex items-center justify-between h-14 md:h-16">
+            {/* Logo */}
+            <Link to="/" className="flex items-center gap-2 group relative z-[60]">
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden shadow-lg shadow-primary/30 group-hover:shadow-primary/50 transition-shadow flex-shrink-0">
+                <img src={oracleLogo} alt="Oracle - AI Crypto Forecasting" className="w-full h-full object-cover" />
+              </div>
+              <span className="font-display text-base md:text-lg font-bold glow-text">
+                ORACLE
+              </span>
+            </Link>
+
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center gap-0.5 xl:gap-1">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = isActivePath(item.path);
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={cn(
+                      "flex items-center gap-1.5 px-2.5 xl:px-3 py-2 rounded-lg font-display text-[10px] xl:text-xs uppercase tracking-wider transition-all duration-300",
+                      isActive
+                        ? "bg-primary/20 text-primary glow-text border border-primary/30"
+                        : "text-muted-foreground hover:text-primary hover:bg-primary/10"
+                    )}
+                  >
+                    <Icon className="w-3.5 h-3.5 xl:w-4 xl:h-4" />
+                    <span className="hidden xl:inline">{item.label}</span>
+                  </Link>
+                );
+              })}
             </div>
-            <span className="font-display text-base md:text-lg font-bold glow-text">
-              ORACLE
-            </span>
-          </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-0.5 xl:gap-1">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = isActivePath(item.path);
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={cn(
-                    "flex items-center gap-1.5 px-2.5 xl:px-3 py-2 rounded-lg font-display text-[10px] xl:text-xs uppercase tracking-wider transition-all duration-300",
-                    isActive
-                      ? "bg-primary/20 text-primary glow-text border border-primary/30"
-                      : "text-muted-foreground hover:text-primary hover:bg-primary/10"
-                  )}
-                >
-                  <Icon className="w-3.5 h-3.5 xl:w-4 xl:h-4" />
-                  <span className="hidden xl:inline">{item.label}</span>
-                </Link>
-              );
-            })}
+            {/* Mobile Menu Button */}
+            <button
+              type="button"
+              className="lg:hidden relative z-[60] h-12 w-12 flex items-center justify-center rounded-lg bg-background/80 border border-primary/20 active:bg-primary/20 touch-manipulation"
+              onClick={() => setIsOpen(!isOpen)}
+              aria-label={isOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isOpen}
+            >
+              {isOpen ? <X className="w-6 h-6 text-primary" /> : <Menu className="w-6 h-6 text-foreground" />}
+            </button>
           </div>
-
-          {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="lg:hidden z-10 h-10 w-10"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label={isOpen ? "Close menu" : "Open menu"}
-          >
-            {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </Button>
         </div>
+      </nav>
 
-        {/* Mobile Navigation */}
+      {/* Mobile Navigation Overlay */}
+      {isOpen && (
         <div 
-          className={cn(
-            "lg:hidden fixed inset-0 top-14 bg-background/98 backdrop-blur-xl z-40 transition-all duration-300 overflow-y-auto scroll-smooth-touch",
-            isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-          )}
+          className="lg:hidden fixed inset-0 z-[55] bg-background/98 backdrop-blur-xl overflow-y-auto"
+          style={{ paddingTop: '56px' }}
         >
-          <div className="container mx-auto px-4 py-4 space-y-1 pb-24">
+          <nav className="container mx-auto px-4 py-6 space-y-2" aria-label="Mobile navigation">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = isActivePath(item.path);
@@ -107,21 +109,21 @@ export function Navbar() {
                   to={item.path}
                   onClick={() => setIsOpen(false)}
                   className={cn(
-                    "flex items-center gap-4 px-4 py-3.5 rounded-xl font-display text-sm uppercase tracking-wider transition-all duration-200 tap-highlight-none active:scale-[0.98]",
+                    "flex items-center gap-4 px-5 py-4 rounded-xl font-display text-base uppercase tracking-wider transition-all duration-200 touch-manipulation",
                     isActive
                       ? "bg-primary/20 text-primary border border-primary/30"
-                      : "text-muted-foreground active:text-primary active:bg-primary/10"
+                      : "text-muted-foreground hover:text-primary hover:bg-primary/10 active:bg-primary/20"
                   )}
                 >
-                  <Icon className="w-5 h-5" />
+                  <Icon className="w-6 h-6" />
                   <span className="flex-1">{item.label}</span>
-                  {isActive && <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />}
+                  {isActive && <div className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse" />}
                 </Link>
               );
             })}
-          </div>
+          </nav>
         </div>
-      </div>
-    </nav>
+      )}
+    </>
   );
 }
