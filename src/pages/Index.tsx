@@ -13,21 +13,27 @@ import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <div className="mt-16">
-        <CryptoTicker />
-      </div>
-      <HeroSection />
-      <QuickStats />
-      <ChainLinks />
-      <TopMovers />
-      <FeaturesSection />
-      <CTASection />
-      <MarketOverview />
+      <header>
+        <Navbar />
+        <div className="mt-16" aria-label="Live cryptocurrency prices">
+          <CryptoTicker />
+        </div>
+      </header>
+      
+      <main id="main-content">
+        <HeroSection />
+        <QuickStats />
+        <ChainLinks />
+        <TopMovers />
+        <FeaturesSection />
+        <CTASection />
+        <MarketOverview />
+      </main>
+      
       <Footer />
       <MobileBottomNav />
       {/* Bottom padding for mobile nav */}
-      <div className="h-20 md:hidden" />
+      <div className="h-20 md:hidden" aria-hidden="true" />
     </div>
   );
 };

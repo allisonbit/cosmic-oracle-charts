@@ -17,14 +17,14 @@ export function Footer() {
   };
 
   return (
-    <footer className="border-t border-primary/20 bg-card/50 backdrop-blur-xl">
+    <footer className="border-t border-primary/20 bg-card/50 backdrop-blur-xl" role="contentinfo">
       <div className="container mx-auto px-4 py-8 md:py-12">
         <div className="grid md:grid-cols-4 gap-6 md:gap-8">
           {/* Logo & Description */}
           <div className="md:col-span-2 space-y-4">
-            <Link to="/" className="flex items-center gap-3">
+            <Link to="/" className="flex items-center gap-3" aria-label="Oracle - Home">
               <div className="w-10 h-10 rounded-full overflow-hidden shadow-lg shadow-primary/30">
-                <img src={oracleLogo} alt="Oracle" className="w-full h-full object-cover" />
+                <img src={oracleLogo} alt="Oracle logo" className="w-full h-full object-cover" />
               </div>
               <span className="font-display text-lg font-bold glow-text">
                 ORACLE
@@ -45,36 +45,49 @@ export function Footer() {
                 onClick={copyCA}
                 className="p-1 hover:bg-primary/10 rounded transition-colors"
                 aria-label="Copy contract address"
+                type="button"
               >
-                {copied ? <Check className="w-3 h-3 text-green-500" /> : <Copy className="w-3 h-3 text-muted-foreground" />}
+                {copied ? <Check className="w-3 h-3 text-green-500" aria-hidden="true" /> : <Copy className="w-3 h-3 text-muted-foreground" aria-hidden="true" />}
               </button>
             </div>
           </div>
           
           {/* Quick Links */}
-          <div className="space-y-4">
+          <nav className="space-y-4" aria-label="Footer navigation">
             <h4 className="font-display font-bold text-foreground text-sm md:text-base">EXPLORE</h4>
-            <div className="space-y-2">
-              <Link to="/dashboard" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                Dashboard
-              </Link>
-              <Link to="/portfolio" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                Wallet Scanner
-              </Link>
-              <Link to="/chain/ethereum" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                Blockchain Analytics
-              </Link>
-              <Link to="/sentiment" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                Sentiment Scanner
-              </Link>
-              <Link to="/explorer" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                Token Explorer
-              </Link>
-              <Link to="/learn" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                Learning Zone
-              </Link>
-            </div>
-          </div>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/dashboard" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Dashboard
+                </Link>
+              </li>
+              <li>
+                <Link to="/portfolio" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Wallet Scanner
+                </Link>
+              </li>
+              <li>
+                <Link to="/chain/ethereum" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Blockchain Analytics
+                </Link>
+              </li>
+              <li>
+                <Link to="/sentiment" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Sentiment Scanner
+                </Link>
+              </li>
+              <li>
+                <Link to="/explorer" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Token Explorer
+                </Link>
+              </li>
+              <li>
+                <Link to="/learn" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Learning Zone
+                </Link>
+              </li>
+            </ul>
+          </nav>
           
           {/* Connect */}
           <div className="space-y-4">
@@ -85,18 +98,18 @@ export function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
-                aria-label="X (Twitter)"
+                aria-label="Follow us on X (Twitter)"
               >
-                <Twitter className="w-5 h-5" />
+                <Twitter className="w-5 h-5" aria-hidden="true" />
               </a>
               <a 
                 href="https://t.me/oracle_bulls"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
-                aria-label="Telegram"
+                aria-label="Join our Telegram community"
               >
-                <MessageCircle className="w-5 h-5" />
+                <MessageCircle className="w-5 h-5" aria-hidden="true" />
               </a>
             </div>
             <p className="text-xs text-muted-foreground/60">
@@ -106,7 +119,7 @@ export function Footer() {
         </div>
         
         <div className="border-t border-border mt-8 md:mt-12 pt-6 text-center text-xs md:text-sm text-muted-foreground">
-          <p>© 2025 Oracle. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Oracle. All rights reserved.</p>
         </div>
       </div>
     </footer>
