@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, TrendingUp, BookOpen, Globe, Radio, Mail, Layers, Wallet, Home } from "lucide-react";
+import { Menu, X, TrendingUp, BookOpen, Globe, Radio, Mail, Layers, Wallet, Home, Zap, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import oracleLogo from "@/assets/oracle-bull-logo.jpg";
@@ -8,6 +8,8 @@ import oracleLogo from "@/assets/oracle-bull-logo.jpg";
 const navItems = [
   { path: "/", label: "Home", icon: Home },
   { path: "/dashboard", label: "Dashboard", icon: TrendingUp },
+  { path: "/strength", label: "Strength", icon: Zap },
+  { path: "/factory", label: "Factory", icon: Calendar },
   { path: "/portfolio", label: "Scanner", icon: Wallet },
   { path: "/chain/ethereum", label: "Chains", icon: Layers },
   { path: "/sentiment", label: "Sentiment", icon: Radio },
