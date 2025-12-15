@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
-import { useStrengthMeter, StrengthData } from "@/hooks/useStrengthMeter";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useRealtimeStrength } from "@/hooks/useRealtimeStrength";
+import { StrengthData } from "@/hooks/useStrengthMeter";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
 import { 
@@ -18,7 +19,9 @@ import {
   Target,
   Activity,
   BarChart3,
-  ArrowRight
+  ArrowRight,
+  Wifi,
+  WifiOff
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -183,9 +186,10 @@ export default function StrengthMeter() {
   const [timeframe, setTimeframe] = useState('24h');
   const [view, setView] = useState<'assets' | 'chains'>('assets');
   
-  const { data, isLoading, refetch, isFetching } = useStrengthMeter(timeframe);
+  const { assets, chains, lastUpdate, isConnected, refresh } = useRealtimeStrength(timeframe);
 
-  const displayData = view === 'assets' ? data?.assets : data?.chains;
+  const displayData = view === 'assets' ? assets : chains;
+  const isLoading = displayData.length === 0;
 
   return (
     <Layout>
@@ -202,20 +206,35 @@ export default function StrengthMeter() {
               <Zap className="w-8 h-8 text-primary" />
               Crypto Strength Meter
             </h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-muted-foreground mt-1 flex items-center gap-2">
               Measure relative strength of cryptocurrencies and blockchains in real-time
+              <span className="flex items-center gap-1 text-xs">
+                {isConnected ? (
+                  <>
+                    <Wifi className="w-3 h-3 text-success animate-pulse" />
+                    <span className="text-success">LIVE</span>
+                  </>
+                ) : (
+                  <>
+                    <WifiOff className="w-3 h-3 text-danger" />
+                    <span className="text-danger">Disconnected</span>
+                  </>
+                )}
+              </span>
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-muted-foreground">
+              Updated: {new Date(lastUpdate).toLocaleTimeString()}
+            </span>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => refetch()}
-              disabled={isFetching}
+              onClick={refresh}
               className="gap-2"
             >
-              <RefreshCw className={cn("w-4 h-4", isFetching && "animate-spin")} />
+              <RefreshCw className="w-4 h-4" />
               Refresh
             </Button>
           </div>
@@ -273,7 +292,7 @@ export default function StrengthMeter() {
         </div>
 
         {/* Summary Stats */}
-        {data && (
+        {displayData.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Card className="glass-card">
               <CardContent className="p-4 text-center">

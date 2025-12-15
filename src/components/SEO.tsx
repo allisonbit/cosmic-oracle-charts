@@ -31,6 +31,16 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
     description: "Live cryptocurrency dashboard with real-time prices, market momentum, top performers, volume leaders, and AI-powered market insights. Track Bitcoin, Ethereum, and altcoins in one view.",
     keywords: "crypto dashboard, live crypto prices, market momentum, crypto gainers, volume leaders, AI market analysis, cryptocurrency tracker"
   },
+  "/strength-meter": {
+    title: "Crypto Strength Meter | Real-Time Asset & Chain Strength Rankings | Oracle",
+    description: "Measure and rank cryptocurrency strength in real-time. Compare Bitcoin, Ethereum, Solana, and 100+ assets using weighted momentum, volume, sentiment, and trend analysis. Live auto-refresh.",
+    keywords: "crypto strength meter, currency strength, bitcoin strength, ethereum momentum, crypto ranking, asset strength, chain comparison, market momentum"
+  },
+  "/crypto-factory": {
+    title: "Crypto Factory | Market Events Calendar & On-Chain Intelligence | Oracle",
+    description: "Your centralized crypto intelligence hub. Track token launches, protocol upgrades, whale movements, trending narratives, and market-moving events. Like Forex Factory for cryptocurrency.",
+    keywords: "crypto factory, crypto calendar, token launches, protocol upgrades, whale alerts, crypto events, market news, DeFi updates, narrative tracking"
+  },
   "/portfolio": {
     title: "Wallet Scanner | AI-Powered Portfolio Analysis | Oracle",
     description: "Scan any EVM or Solana wallet address for AI-powered portfolio analysis. Discover holdings, pump potential, risk levels, and trading opportunities. Free wallet research tool.",

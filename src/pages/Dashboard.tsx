@@ -1,5 +1,5 @@
 import { Layout } from "@/components/layout/Layout";
-import { TrendingUp, TrendingDown, Activity, Zap, BarChart3, Loader2, Brain, Flame, Globe, Clock, ArrowRight } from "lucide-react";
+import { TrendingUp, TrendingDown, Activity, Zap, BarChart3, Loader2, Brain, Flame, Globe, Clock, ArrowRight, Gauge } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
@@ -14,6 +14,8 @@ import { EnhancedQuickActions } from "@/components/dashboard/EnhancedQuickAction
 import { CoinDetailModal } from "@/components/dashboard/CoinDetailModal";
 import { EnhancedMarketInsightsPanel } from "@/components/dashboard/EnhancedMarketInsightsPanel";
 import { EnhancedTopPerformers } from "@/components/dashboard/EnhancedTopPerformers";
+import { StrengthMeterWidget } from "@/components/dashboard/StrengthMeterWidget";
+import { CryptoFactoryWidget } from "@/components/dashboard/CryptoFactoryWidget";
 import { Link } from "react-router-dom";
 
 function formatNumber(num: number): string {
@@ -266,6 +268,12 @@ const Dashboard = () => {
                 <EnhancedTrendingAlerts />
                 <EnhancedTopPerformers onCoinClick={setSelectedCoin} />
               </div>
+            </div>
+
+            {/* Strength Meter & Crypto Factory Widgets */}
+            <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
+              <StrengthMeterWidget />
+              <CryptoFactoryWidget />
             </div>
 
             {/* Volume & Dominance */}
