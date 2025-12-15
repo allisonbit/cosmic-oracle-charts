@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
-import { useCryptoFactory } from "@/hooks/useCryptoFactory";
+import { useCryptoFactory, TrendingCoin, GlobalStats } from "@/hooks/useCryptoFactory";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,17 +20,19 @@ import {
   Calendar,
   Activity,
   TrendingUp,
+  TrendingDown,
   Newspaper,
   Search,
-  Filter,
   ArrowUpRight,
   ArrowDownRight,
   Clock,
   Zap,
-  ExternalLink,
   Flame,
   RefreshCw,
-  ArrowRight
+  ArrowRight,
+  DollarSign,
+  BarChart3,
+  Wifi
 } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -38,6 +40,49 @@ import { format, formatDistanceToNow } from "date-fns";
 
 const chains = ['All', 'Ethereum', 'Solana', 'Arbitrum', 'Base', 'Polygon', 'Optimism', 'Avalanche'];
 const impacts = ['All', 'high', 'medium', 'low'];
+
+function GlobalStatsBar({ stats, trending }: { stats: GlobalStats; trending: TrendingCoin[] }) {
+  return (
+    <Card className="glass-card border-primary/20">
+      <CardContent className="p-4">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <div className="text-center">
+            <p className="text-xs text-muted-foreground">Market Cap</p>
+            <p className="text-lg font-bold text-primary">
+              ${(stats.totalMarketCap / 1e12).toFixed(2)}T
+            </p>
+            <p className={cn("text-xs", stats.marketCapChange24h >= 0 ? "text-green-400" : "text-red-400")}>
+              {stats.marketCapChange24h >= 0 ? '+' : ''}{stats.marketCapChange24h?.toFixed(2)}%
+            </p>
+          </div>
+          <div className="text-center">
+            <p className="text-xs text-muted-foreground">24h Volume</p>
+            <p className="text-lg font-bold">${(stats.totalVolume / 1e9).toFixed(0)}B</p>
+          </div>
+          <div className="text-center">
+            <p className="text-xs text-muted-foreground">BTC Dom</p>
+            <p className="text-lg font-bold text-amber-400">{stats.btcDominance?.toFixed(1)}%</p>
+          </div>
+          <div className="text-center">
+            <p className="text-xs text-muted-foreground">ETH Dom</p>
+            <p className="text-lg font-bold text-indigo-400">{stats.ethDominance?.toFixed(1)}%</p>
+          </div>
+          <div className="text-center col-span-2 md:col-span-1">
+            <p className="text-xs text-muted-foreground mb-1">Trending</p>
+            <div className="flex items-center justify-center gap-1 flex-wrap">
+              {trending?.slice(0, 3).map((t) => (
+                <Badge key={t.id} variant="outline" className="text-xs">
+                  <img src={t.logo} alt={t.symbol} className="w-3 h-3 mr-1 rounded-full" />
+                  {t.symbol}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
 function EventCard({ event }: { event: any }) {
   const impactColors = {
@@ -64,7 +109,12 @@ function EventCard({ event }: { event: any }) {
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-start gap-3 flex-1">
             {event.logo && (
-              <img src={event.logo} alt={event.asset} className="w-10 h-10 rounded-full" />
+              <img 
+                src={event.logo} 
+                alt={event.asset} 
+                className="w-10 h-10 rounded-full"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              />
             )}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
@@ -99,7 +149,7 @@ function EventCard({ event }: { event: any }) {
           </div>
         </div>
         <Link 
-          to={`/strength?asset=${event.asset}`}
+          to={`/strength-meter?asset=${event.asset}`}
           className="mt-3 flex items-center justify-end gap-1 text-xs text-primary hover:text-primary/80"
         >
           View Strength <ArrowRight className="w-3 h-3" />
@@ -281,6 +331,11 @@ export default function CryptoFactory() {
             Refresh
           </Button>
         </section>
+
+        {/* Global Stats */}
+        {data?.globalStats && (
+          <GlobalStatsBar stats={data.globalStats} trending={data.trending || []} />
+        )}
 
         {/* Filters */}
         <Card className="glass-card">

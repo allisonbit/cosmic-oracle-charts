@@ -39,3 +39,9 @@ verify_jwt = false
 
 [functions.whale-alerts]
 verify_jwt = false
+
+[functions.crypto-factory]
+verify_jwt = false
+
+[functions.ai-blog]
+verify_jwt = false
