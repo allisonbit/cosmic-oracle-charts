@@ -242,43 +242,65 @@ function NarrativeCard({ narrative }: { narrative: any }) {
 
 function NewsCard({ news }: { news: any }) {
   const sentimentColors = {
-    bullish: 'bg-green-500/20 text-green-400',
-    neutral: 'bg-yellow-500/20 text-yellow-400',
-    bearish: 'bg-red-500/20 text-red-400',
+    bullish: 'bg-green-500/20 text-green-400 border-green-500/30',
+    neutral: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+    bearish: 'bg-red-500/20 text-red-400 border-red-500/30',
   };
 
   return (
-    <Card className="glass-card hover:border-primary/40 transition-all">
+    <Card className="glass-card hover:border-primary/40 transition-all group">
       <CardContent className="p-4">
-        <div className="flex items-start gap-3">
-          <div className={cn(
-            "w-10 h-10 rounded-full flex items-center justify-center shrink-0",
-            sentimentColors[news.sentiment as keyof typeof sentimentColors]
-          )}>
-            <Newspaper className="w-5 h-5" />
-          </div>
+        <div className="flex items-start gap-4">
+          {/* News Image */}
+          {news.imageUrl && (
+            <div className="relative w-24 h-20 rounded-lg overflow-hidden shrink-0 hidden sm:block">
+              <img 
+                src={news.imageUrl} 
+                alt={news.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              />
+            </div>
+          )}
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold line-clamp-2">{news.title}</h3>
+            <div className="flex items-start justify-between gap-2">
+              <a 
+                href={news.url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="font-semibold line-clamp-2 hover:text-primary transition-colors"
+              >
+                {news.title}
+              </a>
+              <Badge className={cn("shrink-0 border text-xs", sentimentColors[news.sentiment as keyof typeof sentimentColors])}>
+                {news.sentiment}
+              </Badge>
+            </div>
             <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{news.summary}</p>
-            <div className="flex items-center gap-2 mt-2">
-              <span className="text-xs text-muted-foreground">{news.source}</span>
+            <div className="flex items-center gap-2 mt-2 flex-wrap">
+              <span className="text-xs text-muted-foreground font-medium">{news.source}</span>
               <span className="text-xs text-muted-foreground">•</span>
               <span className="text-xs text-muted-foreground">
                 {formatDistanceToNow(new Date(news.publishedAt), { addSuffix: true })}
               </span>
-              {news.relatedAssets.length > 0 && (
+              {news.impactScore > 70 && (
                 <>
                   <span className="text-xs text-muted-foreground">•</span>
-                  {news.relatedAssets.slice(0, 3).map((asset: string) => (
+                  <Badge variant="outline" className="text-xs bg-primary/10 text-primary border-primary/30">
+                    High Impact
+                  </Badge>
+                </>
+              )}
+              {news.relatedAssets && news.relatedAssets.length > 0 && (
+                <>
+                  <span className="text-xs text-muted-foreground">•</span>
+                  {news.relatedAssets.slice(0, 4).map((asset: string) => (
                     <Badge key={asset} variant="outline" className="text-xs">{asset}</Badge>
                   ))}
                 </>
               )}
             </div>
           </div>
-          <Badge className={cn("shrink-0", sentimentColors[news.sentiment as keyof typeof sentimentColors])}>
-            {news.sentiment}
-          </Badge>
         </div>
       </CardContent>
     </Card>

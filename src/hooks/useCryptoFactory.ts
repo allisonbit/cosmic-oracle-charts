@@ -66,6 +66,8 @@ export interface GlobalStats {
   btcDominance: number;
   ethDominance: number;
   marketCapChange24h: number;
+  activeCryptocurrencies?: number;
+  markets?: number;
 }
 
 export interface CryptoFactoryData {

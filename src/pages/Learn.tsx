@@ -4,16 +4,15 @@ import { useAIBlog, BlogPost } from "@/hooks/useAIBlog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { SocialShare, useShareMeta } from "@/components/ui/social-share";
 import { 
   BookOpen, 
   TrendingUp, 
   BarChart3, 
   Zap, 
-  Shield, 
   Brain, 
   Gamepad2,
   Scale,
@@ -25,11 +24,9 @@ import {
   RefreshCw,
   Lightbulb,
   CheckCircle,
-  Share2,
-  Bookmark,
   ArrowLeft
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 
@@ -105,10 +102,25 @@ function BlogPostCard({ post, onClick }: { post: BlogPost; onClick: () => void }
 }
 
 function BlogPostModal({ post, open, onClose }: { post: BlogPost | null; open: boolean; onClose: () => void }) {
+  const baseUrl = 'https://oraclebull.com';
+  
+  // Update OG meta tags when post is selected
+  useEffect(() => {
+    if (post && open) {
+      useShareMeta({
+        title: `${post.title} | Oracle Crypto Insights`,
+        description: post.content.substring(0, 160),
+        image: post.imageUrl,
+        url: `${baseUrl}/learn?post=${post.id}`,
+      });
+    }
+  }, [post, open]);
+
   if (!post) return null;
   
   const Icon = categoryIcons[post.category] || BookOpen;
   const colorClass = categoryColors[post.category] || 'bg-primary/20 text-primary border-primary/30';
+  const shareUrl = `${baseUrl}/learn?post=${post.id}`;
   
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -164,6 +176,18 @@ function BlogPostModal({ post, open, onClose }: { post: BlogPost | null; open: b
                 </ul>
               </div>
             )}
+
+            {/* Social Share Section */}
+            <div className="bg-muted/20 rounded-lg p-4">
+              <h4 className="text-sm font-medium mb-3">Share this article</h4>
+              <SocialShare 
+                title={post.title}
+                description={post.content.substring(0, 160)}
+                url={shareUrl}
+                imageUrl={post.imageUrl}
+                variant="buttons"
+              />
+            </div>
           </div>
         </ScrollArea>
         
@@ -172,14 +196,12 @@ function BlogPostModal({ post, open, onClose }: { post: BlogPost | null; open: b
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Articles
           </Button>
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm">
-              <Bookmark className="w-4 h-4" />
-            </Button>
-            <Button variant="ghost" size="sm">
-              <Share2 className="w-4 h-4" />
-            </Button>
-          </div>
+          <SocialShare 
+            title={post.title}
+            description={post.content.substring(0, 160)}
+            url={shareUrl}
+            imageUrl={post.imageUrl}
+          />
         </div>
       </DialogContent>
     </Dialog>
