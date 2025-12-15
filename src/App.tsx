@@ -19,6 +19,8 @@ const Learn = lazy(() => import("./pages/Learn"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Chain = lazy(() => import("./pages/Chain"));
 const Portfolio = lazy(() => import("./pages/Portfolio"));
+const StrengthMeter = lazy(() => import("./pages/StrengthMeter"));
+const CryptoFactory = lazy(() => import("./pages/CryptoFactory"));
 
 // Loading fallback component
 const PageLoader = memo(function PageLoader() {
@@ -69,6 +71,8 @@ const App = () => (
             <Route path="/learn" element={<Learn />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/chain/:chainId" element={<Chain />} />
+            <Route path="/strength" element={<StrengthMeter />} />
+            <Route path="/factory" element={<CryptoFactory />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
