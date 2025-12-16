@@ -12,31 +12,31 @@ const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 let cachedPosts: any = null;
 let cacheDate: string = '';
 
-// 20 rotating content themes for daily variety
+// 20 rotating content themes
 const contentThemes = [
   { category: 'Market Structure', topics: ['order flow analysis', 'market microstructure', 'liquidity dynamics', 'price discovery mechanisms'] },
   { category: 'On-Chain Analytics', topics: ['whale tracking patterns', 'exchange flow analysis', 'UTXO analysis', 'address clustering'] },
   { category: 'DeFi Deep Dive', topics: ['yield farming strategies', 'liquidity pool mechanics', 'protocol tokenomics', 'DEX aggregation'] },
   { category: 'Bitcoin Analysis', topics: ['halving cycle dynamics', 'miner behavior patterns', 'institutional accumulation', 'network health metrics'] },
   { category: 'Ethereum Ecosystem', topics: ['gas optimization strategies', 'L2 scaling solutions', 'EIP implementations', 'staking economics'] },
-  { category: 'Altcoin Research', topics: ['fundamental analysis frameworks', 'tokenomics evaluation', 'team and development assessment', 'market positioning'] },
+  { category: 'Altcoin Research', topics: ['fundamental analysis frameworks', 'tokenomics evaluation', 'team assessment', 'market positioning'] },
   { category: 'Risk Management', topics: ['position sizing strategies', 'portfolio diversification', 'volatility management', 'drawdown protection'] },
   { category: 'Market Sentiment', topics: ['fear and greed indicators', 'social sentiment analysis', 'funding rate signals', 'open interest patterns'] },
   { category: 'Technical Analysis', topics: ['support and resistance levels', 'trend identification methods', 'volume profile analysis', 'indicator confluence'] },
   { category: 'Macro Economics', topics: ['inflation impact on crypto', 'interest rate correlations', 'global liquidity cycles', 'currency devaluation hedging'] },
-  { category: 'Blockchain Technology', topics: ['consensus mechanism comparison', 'scalability solutions', 'interoperability protocols', 'zero-knowledge applications'] },
-  { category: 'Layer 2 Solutions', topics: ['rollup technology comparison', 'bridge security analysis', 'fee optimization strategies', 'ecosystem development'] },
-  { category: 'Stablecoin Analysis', topics: ['backing mechanism comparison', 'depegging risk assessment', 'regulatory considerations', 'yield opportunities'] },
-  { category: 'NFT & Digital Assets', topics: ['market cycle analysis', 'utility token frameworks', 'creator economy dynamics', 'marketplace comparison'] },
-  { category: 'Trading Psychology', topics: ['emotional discipline strategies', 'cognitive bias management', 'decision-making frameworks', 'risk tolerance assessment'] },
-  { category: 'Regulatory Landscape', topics: ['global regulatory comparison', 'compliance frameworks', 'institutional adoption barriers', 'policy impact analysis'] },
+  { category: 'Blockchain Technology', topics: ['consensus mechanisms', 'scalability solutions', 'interoperability protocols', 'zero-knowledge proofs'] },
+  { category: 'Layer 2 Solutions', topics: ['rollup technology', 'bridge security analysis', 'fee optimization', 'ecosystem development'] },
+  { category: 'Stablecoin Analysis', topics: ['backing mechanisms', 'depegging risk assessment', 'regulatory considerations', 'yield opportunities'] },
+  { category: 'NFT & Digital Assets', topics: ['market cycle analysis', 'utility token frameworks', 'creator economy', 'marketplace comparison'] },
+  { category: 'Trading Psychology', topics: ['emotional discipline', 'cognitive bias management', 'decision frameworks', 'risk tolerance'] },
+  { category: 'Regulatory Landscape', topics: ['global regulatory comparison', 'compliance frameworks', 'institutional barriers', 'policy impact'] },
   { category: 'Capital Rotation', topics: ['sector rotation patterns', 'narrative-driven flows', 'cross-chain migration', 'smart money tracking'] },
-  { category: 'Derivatives Analysis', topics: ['futures basis trading', 'options strategies', 'perpetual funding dynamics', 'liquidation cascade analysis'] },
-  { category: 'Network Fundamentals', topics: ['active address metrics', 'transaction volume analysis', 'network value indicators', 'developer activity tracking'] },
-  { category: 'Investment Strategies', topics: ['dollar cost averaging optimization', 'value averaging methods', 'momentum strategies', 'mean reversion approaches'] },
+  { category: 'Derivatives Analysis', topics: ['futures basis trading', 'options strategies', 'perpetual funding', 'liquidation cascades'] },
+  { category: 'Network Fundamentals', topics: ['active address metrics', 'transaction volume', 'network value indicators', 'developer activity'] },
+  { category: 'Investment Strategies', topics: ['dollar cost averaging', 'value averaging methods', 'momentum strategies', 'mean reversion'] },
 ];
 
-// Oracle Bull internal links for contextual linking
+// Internal links for Oracle Bull
 const internalLinks = [
   { text: 'Oracle Bull analytics dashboard', url: '/dashboard' },
   { text: 'real-time sentiment analysis', url: '/sentiment' },
@@ -44,8 +44,6 @@ const internalLinks = [
   { text: 'crypto strength meter', url: '/strength-meter' },
   { text: 'market event calendar', url: '/crypto-factory' },
   { text: 'token explorer', url: '/explorer' },
-  { text: 'whale activity tracker', url: '/sentiment' },
-  { text: 'market momentum indicators', url: '/dashboard' },
 ];
 
 serve(async (req) => {
@@ -66,66 +64,78 @@ serve(async (req) => {
 
     console.log('Generating 20 daily AI blog posts...');
 
-    // Fetch current market data for context
-    const [trendingRes, globalRes, newsRes] = await Promise.all([
-      fetch('https://api.coingecko.com/api/v3/search/trending'),
-      fetch('https://api.coingecko.com/api/v3/global'),
-      fetch('https://min-api.cryptocompare.com/data/v2/news/?lang=EN&sortOrder=popular'),
-    ]);
-
-    let trending: any[] = [];
-    let globalData: any = {};
-    let news: any[] = [];
-
-    if (trendingRes.ok) {
-      const data = await trendingRes.json();
-      trending = data.coins?.slice(0, 10) || [];
-    }
-
-    if (globalRes.ok) {
-      const data = await globalRes.json();
-      globalData = data.data || {};
-    }
-
-    if (newsRes.ok) {
-      const data = await newsRes.json();
-      news = data.Data?.slice(0, 10) || [];
-    }
-
-    // Create rich market context
-    const marketContext = {
-      totalMarketCap: globalData.total_market_cap?.usd || 0,
-      btcDominance: globalData.market_cap_percentage?.btc || 0,
-      ethDominance: globalData.market_cap_percentage?.eth || 0,
-      marketChange24h: globalData.market_cap_change_percentage_24h_usd || 0,
-      activeCoins: globalData.active_cryptocurrencies || 0,
-      totalVolume24h: globalData.total_volume?.usd || 0,
-      trending: trending.map((t: any) => ({
-        name: t.item?.name,
-        symbol: t.item?.symbol,
-        change: t.item?.data?.price_change_percentage_24h?.usd,
-        rank: t.item?.market_cap_rank,
-      })),
-      headlines: news.map((n: any) => n.title).slice(0, 10),
+    // Fetch market data for context
+    let marketContext = {
+      totalMarketCap: 2.5e12,
+      btcDominance: 52,
+      ethDominance: 18,
+      marketChange24h: 0.5,
+      activeCoins: 10000,
+      totalVolume24h: 80e9,
+      trending: [] as any[],
+      headlines: [] as string[],
     };
 
-    // Generate 20 blog posts - batch in groups of 5 for efficiency
-    const posts = [];
+    try {
+      const [trendingRes, globalRes] = await Promise.all([
+        fetch('https://api.coingecko.com/api/v3/search/trending'),
+        fetch('https://api.coingecko.com/api/v3/global'),
+      ]);
+
+      if (trendingRes.ok) {
+        const data = await trendingRes.json();
+        marketContext.trending = (data.coins?.slice(0, 5) || []).map((t: any) => ({
+          name: t.item?.name,
+          symbol: t.item?.symbol,
+          change: t.item?.data?.price_change_percentage_24h?.usd || 0,
+        }));
+      }
+
+      if (globalRes.ok) {
+        const data = await globalRes.json();
+        marketContext.totalMarketCap = data.data?.total_market_cap?.usd || marketContext.totalMarketCap;
+        marketContext.btcDominance = data.data?.market_cap_percentage?.btc || marketContext.btcDominance;
+        marketContext.ethDominance = data.data?.market_cap_percentage?.eth || marketContext.ethDominance;
+        marketContext.marketChange24h = data.data?.market_cap_change_percentage_24h_usd || marketContext.marketChange24h;
+        marketContext.totalVolume24h = data.data?.total_volume?.usd || marketContext.totalVolume24h;
+      }
+    } catch (e) {
+      console.log('Using fallback market data');
+    }
+
     const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
     
-    for (let i = 0; i < 20; i++) {
-      // Rotate themes based on day to ensure variety
-      const themeIndex = (dayOfYear + i) % contentThemes.length;
-      const theme = contentThemes[themeIndex];
-      const topicIndex = i % theme.topics.length;
-      
-      const post = await generateLongFormPost(theme, theme.topics[topicIndex], marketContext, i, dayOfYear);
-      posts.push(post);
-      
-      // Small delay between posts to avoid rate limiting
-      if (i > 0 && i % 5 === 0) {
-        await new Promise(resolve => setTimeout(resolve, 500));
+    // Generate posts - mix AI and fallback for reliability
+    const posts = [];
+    const aiPostCount = LOVABLE_API_KEY ? 8 : 0; // Generate 8 AI posts, rest are fallback for speed
+    
+    // Generate AI posts in parallel batches
+    if (LOVABLE_API_KEY && aiPostCount > 0) {
+      const aiPromises = [];
+      for (let i = 0; i < aiPostCount; i++) {
+        const themeIndex = (dayOfYear + i) % contentThemes.length;
+        const theme = contentThemes[themeIndex];
+        const topicIndex = i % theme.topics.length;
+        aiPromises.push(generateAIPost(theme, theme.topics[topicIndex], marketContext, i, dayOfYear));
       }
+      
+      const aiResults = await Promise.allSettled(aiPromises);
+      for (const result of aiResults) {
+        if (result.status === 'fulfilled') {
+          posts.push(result.value);
+        }
+      }
+    }
+    
+    // Fill remaining with fallback posts
+    const remaining = 20 - posts.length;
+    const currentCount = posts.length;
+    for (let i = 0; i < remaining; i++) {
+      const idx = currentCount + i;
+      const themeIdx = (dayOfYear + idx) % contentThemes.length;
+      const themeData = contentThemes[themeIdx];
+      const topicIdx = idx % themeData.topics.length;
+      posts.push(createFallbackPost(themeData.category, themeData.topics[topicIdx], marketContext, idx, dayOfYear));
     }
 
     const result = {
@@ -144,12 +154,12 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error('Error generating blog:', error);
+    const fallbackPosts = generateAllFallbackPosts();
     return new Response(JSON.stringify({ 
-      error: 'Failed to generate blog posts',
-      posts: generateFallbackPosts(),
+      posts: fallbackPosts,
       date: new Date().toISOString().split('T')[0],
       timestamp: Date.now(),
-      totalArticles: 20,
+      totalArticles: fallbackPosts.length,
     }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -157,7 +167,7 @@ serve(async (req) => {
   }
 });
 
-async function generateLongFormPost(
+async function generateAIPost(
   theme: { category: string; topics: string[] }, 
   specificTopic: string,
   context: any, 
@@ -165,66 +175,8 @@ async function generateLongFormPost(
   dayOfYear: number
 ) {
   try {
-    if (!LOVABLE_API_KEY) {
-      return createFallbackPost(theme.category, specificTopic, context, index);
-    }
-
-    // Determine if this post should reference Oracle Bull (30% of posts)
     const shouldReferenceOracle = index % 3 === 0;
-    const oracleReference = shouldReferenceOracle 
-      ? `\n\nNaturally reference how traders can use analytical tools like real-time dashboards, sentiment trackers, or strength meters to apply these concepts - without promotional language.`
-      : '';
-
-    const systemPrompt = `You are an expert crypto analyst and financial writer for Oracle Bull, a cryptocurrency intelligence platform. Your writing must be:
-- Professional, authoritative, and data-driven
-- 600-800 words minimum (CRITICAL: never below 500 words)
-- Educational and analytical, not promotional or hypey
-- Written in clear, accessible language for both beginners and experienced traders
-- Factually accurate based on provided market data
-- Structured with proper headings (H2, H3) and sections
-
-Current Market Context:
-- Total Market Cap: $${(context.totalMarketCap / 1e12).toFixed(2)} Trillion
-- BTC Dominance: ${context.btcDominance?.toFixed(1)}%
-- ETH Dominance: ${context.ethDominance?.toFixed(1)}%
-- 24h Market Change: ${context.marketChange24h?.toFixed(2)}%
-- Active Cryptocurrencies: ${context.activeCoins?.toLocaleString()}
-- 24h Trading Volume: $${(context.totalVolume24h / 1e9).toFixed(1)}B
-- Trending: ${context.trending?.map((t: any) => `${t.symbol} (${t.change?.toFixed(1)}%)`).join(', ')}
-
-STRICT RULES:
-- NO price predictions or financial advice
-- NO clickbait or sensationalized claims
-- NO AI disclosure language
-- NO generic filler content
-- Write as a real crypto analyst would
-- Include practical, actionable insights
-- Use bullet points where appropriate
-- Natural keyword placement for SEO`;
-
-    const userPrompt = `Write a comprehensive long-form article about "${specificTopic}" within the context of ${theme.category}.
-
-REQUIRED STRUCTURE:
-1. SEO-Optimized Title (clear, specific, keyword-rich - under 60 characters)
-2. Introduction (2-3 paragraphs explaining why this matters to crypto participants)
-3. Main Content with H2/H3 sections (detailed analysis, examples, data points)
-4. Practical Applications (how readers can use this information)
-5. Market Context (current relevance given market conditions)
-6. Conclusion (clear summary of key takeaways)
-${oracleReference}
-
-Target primary keyword: "${specificTopic}"
-Secondary keywords: ${theme.category.toLowerCase()}, crypto analysis, blockchain, market intelligence
-
-Format your response as JSON with these exact fields:
-{
-  "title": "SEO-optimized title under 60 chars",
-  "slug": "url-friendly-slug",
-  "metaTitle": "Meta title for SEO (50-60 chars)",
-  "metaDescription": "Compelling meta description under 160 chars with primary keyword",
-  "content": "Full article content with markdown formatting (## for H2, ### for H3, bullet points, etc.)",
-  "takeaways": ["Key takeaway 1", "Key takeaway 2", "Key takeaway 3", "Key takeaway 4"]
-}`;
+    const oracleRef = shouldReferenceOracle ? ' Reference analytical tools like dashboards or sentiment trackers naturally.' : '';
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -235,103 +187,86 @@ Format your response as JSON with these exact fields:
       body: JSON.stringify({
         model: 'google/gemini-2.5-flash',
         messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt },
+          { 
+            role: 'system', 
+            content: `You are a crypto analyst. Write professional, educational content. Market: $${(context.totalMarketCap / 1e12).toFixed(2)}T cap, ${context.btcDominance?.toFixed(1)}% BTC dominance.` 
+          },
+          { 
+            role: 'user', 
+            content: `Write a 600-word article about "${specificTopic}" in ${theme.category}.${oracleRef}
+
+Format as JSON:
+{"title":"SEO title under 60 chars","slug":"url-slug","metaTitle":"Meta title","metaDescription":"Meta description under 160 chars","content":"Full article with ## H2 and ### H3 headings, bullet points","takeaways":["takeaway1","takeaway2","takeaway3"]}` 
+          },
         ],
       }),
     });
 
     if (!response.ok) {
-      console.error('AI API error:', response.status);
-      return createFallbackPost(theme.category, specificTopic, context, index);
+      throw new Error(`API error: ${response.status}`);
     }
 
     const data = await response.json();
     const aiContent = data.choices?.[0]?.message?.content || '';
     
-    // Parse JSON from AI response
-    try {
-      const jsonMatch = aiContent.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        const parsed = JSON.parse(jsonMatch[0]);
-        
-        // Add internal links naturally to content
-        let enrichedContent = parsed.content || aiContent;
-        if (shouldReferenceOracle && enrichedContent.length > 200) {
-          const link = internalLinks[index % internalLinks.length];
-          enrichedContent = enrichedContent.replace(
-            /\n\n(?=##)/,
-            `\n\nFor deeper insights, traders often leverage [${link.text}](${link.url}) to track these patterns in real-time.\n\n`
-          );
-        }
-        
-        const wordCount = enrichedContent.split(/\s+/).length;
-        
-        return {
-          id: `post-${dayOfYear}-${index}`,
-          title: parsed.title || `${theme.category}: ${specificTopic}`,
-          slug: parsed.slug || generateSlug(parsed.title || specificTopic),
-          metaTitle: parsed.metaTitle || parsed.title?.substring(0, 60),
-          metaDescription: parsed.metaDescription || enrichedContent.substring(0, 155) + '...',
-          content: enrichedContent,
-          takeaways: parsed.takeaways || extractTakeaways(enrichedContent),
-          category: theme.category,
-          readTime: `${Math.max(3, Math.ceil(wordCount / 200))} min`,
-          wordCount,
-          publishedAt: new Date().toISOString(),
-          imageUrl: getCategoryImage(theme.category),
-          primaryKeyword: specificTopic,
-          secondaryKeywords: [theme.category.toLowerCase(), 'crypto', 'blockchain'],
-        };
+    const jsonMatch = aiContent.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      const parsed = JSON.parse(jsonMatch[0]);
+      let content = parsed.content || aiContent;
+      
+      // Add internal link
+      if (shouldReferenceOracle && content.length > 200) {
+        const link = internalLinks[index % internalLinks.length];
+        content = content.replace(/\n\n(?=##)/, `\n\nFor deeper insights, traders leverage [${link.text}](${link.url}) to track these patterns.\n\n`);
       }
-    } catch (e) {
-      console.error('JSON parsing error:', e);
+      
+      const wordCount = content.split(/\s+/).length;
+      
+      return {
+        id: `post-${dayOfYear}-${index}`,
+        title: parsed.title || `${theme.category}: ${specificTopic}`,
+        slug: parsed.slug || generateSlug(parsed.title || specificTopic),
+        metaTitle: parsed.metaTitle || parsed.title?.substring(0, 60),
+        metaDescription: parsed.metaDescription || content.substring(0, 155) + '...',
+        content,
+        takeaways: parsed.takeaways || ['Understand key concepts', 'Apply to your strategy', 'Monitor relevant metrics', 'Practice risk management'],
+        category: theme.category,
+        readTime: `${Math.max(3, Math.ceil(wordCount / 200))} min`,
+        wordCount,
+        publishedAt: new Date().toISOString(),
+        imageUrl: getCategoryImage(theme.category),
+        primaryKeyword: specificTopic,
+        secondaryKeywords: [theme.category.toLowerCase(), 'crypto', 'blockchain'],
+      };
     }
-
-    // Fallback parsing if JSON fails
-    const wordCount = aiContent.split(/\s+/).length;
-    return {
-      id: `post-${dayOfYear}-${index}`,
-      title: `${theme.category}: Understanding ${specificTopic}`,
-      slug: generateSlug(specificTopic),
-      metaTitle: `${specificTopic} Analysis | Oracle Bull`,
-      metaDescription: `Deep dive into ${specificTopic} within ${theme.category}. Expert analysis and insights for crypto traders.`,
-      content: aiContent.replace(/```json|```/g, '').trim(),
-      takeaways: extractTakeaways(aiContent),
-      category: theme.category,
-      readTime: `${Math.max(3, Math.ceil(wordCount / 200))} min`,
-      wordCount,
-      publishedAt: new Date().toISOString(),
-      imageUrl: getCategoryImage(theme.category),
-      primaryKeyword: specificTopic,
-      secondaryKeywords: [theme.category.toLowerCase(), 'crypto', 'blockchain'],
-    };
+    
+    throw new Error('Failed to parse AI response');
   } catch (error) {
-    console.error('Error generating post:', error);
-    return createFallbackPost(theme.category, specificTopic, context, index);
+    console.error('AI post error:', error);
+    return createFallbackPost(theme.category, specificTopic, context, index, dayOfYear);
   }
 }
 
-function createFallbackPost(category: string, topic: string, context: any, index: number) {
+function createFallbackPost(category: string, topic: string, context: any, index: number, dayOfYear: number) {
   const marketCap = ((context.totalMarketCap || 2.5e12) / 1e12).toFixed(2);
   const btcDom = (context.btcDominance || 52).toFixed(1);
   const change = (context.marketChange24h || 0).toFixed(2);
   
-  const content = generateDetailedFallbackContent(category, topic, marketCap, btcDom, change);
+  const content = generateContent(category, topic, marketCap, btcDom, change);
   const wordCount = content.split(/\s+/).length;
   
   return {
-    id: `post-fallback-${index}`,
-    title: `${category}: A Comprehensive Guide to ${topic}`,
-    slug: generateSlug(`${category}-${topic}`),
+    id: `post-${dayOfYear}-${index}`,
+    title: `Understanding ${topic} in ${category}`,
+    slug: generateSlug(`${category}-${topic}-guide`),
     metaTitle: `${topic} Guide | ${category} | Oracle Bull`,
-    metaDescription: `Expert analysis of ${topic} in ${category}. Learn key concepts, market implications, and practical applications for crypto traders.`,
+    metaDescription: `Expert analysis of ${topic} in ${category}. Learn key concepts and practical applications for crypto traders and investors.`,
     content,
     takeaways: [
-      `Understanding ${topic} is essential for informed trading decisions`,
-      `Current market conditions with $${marketCap}T market cap influence ${category.toLowerCase()} dynamics`,
-      `Apply analytical frameworks to evaluate ${topic} in your trading strategy`,
-      `Monitor relevant metrics and indicators for ${category.toLowerCase()} insights`,
+      `Understanding ${topic} is essential for informed decisions`,
+      `Current market conditions influence ${category.toLowerCase()} dynamics`,
+      `Apply analytical frameworks to evaluate ${topic}`,
+      `Monitor relevant metrics for ${category.toLowerCase()} insights`,
     ],
     category,
     readTime: `${Math.ceil(wordCount / 200)} min`,
@@ -343,109 +278,83 @@ function createFallbackPost(category: string, topic: string, context: any, index
   };
 }
 
-function generateDetailedFallbackContent(category: string, topic: string, marketCap: string, btcDom: string, change: string): string {
+function generateContent(category: string, topic: string, marketCap: string, btcDom: string, change: string): string {
+  const direction = parseFloat(change) > 0 ? 'positive' : 'negative';
+  
   return `## Introduction to ${topic}
 
-In the dynamic world of cryptocurrency markets, understanding ${topic} has become increasingly important for both retail and institutional participants. With the total crypto market capitalization at $${marketCap} trillion and Bitcoin dominance at ${btcDom}%, the landscape for ${category.toLowerCase()} continues to evolve rapidly.
+In the cryptocurrency markets, understanding ${topic} has become essential for participants at all levels. With the total market capitalization at $${marketCap} trillion and Bitcoin dominance at ${btcDom}%, the landscape for ${category.toLowerCase()} analysis continues to evolve.
 
-This comprehensive analysis explores the key aspects of ${topic}, providing practical insights that traders and investors can apply to their decision-making process.
+This analysis explores the key aspects of ${topic}, providing actionable insights for traders and investors navigating today's market environment.
 
 ## Understanding the Fundamentals
 
-${topic} represents a critical component of ${category.toLowerCase()} in cryptocurrency markets. At its core, this concept helps market participants understand price movements, identify opportunities, and manage risk effectively.
+${topic} represents a critical component within ${category.toLowerCase()}. At its core, this concept helps market participants understand price dynamics, identify opportunities, and manage risk effectively.
 
-The current market environment, characterized by a ${parseFloat(change) > 0 ? 'positive' : 'negative'} 24-hour change of ${change}%, provides an interesting backdrop for examining how ${topic} manifests in real trading conditions.
+The current market environment, characterized by a ${direction} 24-hour change of ${change}%, provides context for examining how ${topic} manifests in real trading conditions.
 
-### Key Components
+### Key Components to Monitor
 
 When analyzing ${topic}, several factors deserve attention:
 
-- **Market Structure**: How price levels form and break down over time
+- **Market Structure**: How price levels form and evolve over time
 - **Volume Dynamics**: The relationship between trading activity and price movements
 - **Participant Behavior**: How different market actors influence outcomes
-- **Technical Indicators**: Quantitative tools for measuring ${topic.toLowerCase()}
+- **Technical Indicators**: Quantitative tools for measuring ${topic.toLowerCase()} effectively
 
 ## Practical Applications
 
-For traders looking to incorporate ${topic} into their analysis, consider the following approaches:
+For traders looking to incorporate ${topic} into their analysis, consider these approaches:
 
 ### Framework for Analysis
 
-1. **Identify Key Levels**: Establish reference points based on historical data
-2. **Monitor Volume**: Validate movements with corresponding trading activity
-3. **Track Sentiment**: Gauge market participant positioning and expectations
-4. **Set Clear Parameters**: Define entry, exit, and risk management rules
+1. **Identify Key Levels**: Establish reference points based on historical data and current market structure
+2. **Monitor Volume**: Validate price movements with corresponding trading activity patterns
+3. **Track Sentiment**: Gauge market participant positioning and expectations through available indicators
+4. **Set Clear Parameters**: Define entry, exit, and risk management rules before executing any positions
 
-### Common Patterns
+### Common Patterns and Signals
 
 Market participants frequently observe certain patterns related to ${topic}:
 
-- Accumulation phases where large players build positions
-- Distribution phases preceding significant price movements
-- Consolidation periods that resolve into trending moves
-- Reversal signals that indicate potential direction changes
+- Accumulation phases where institutional players build positions gradually
+- Distribution phases that often precede significant directional moves
+- Consolidation periods that eventually resolve into trending movements
+- Reversal signals indicating potential changes in market direction
 
-## Market Context and Current Relevance
+## Market Context and Relevance
 
-Given the current market conditions with Bitcoin dominance at ${btcDom}% and overall market capitalization of $${marketCap} trillion, ${topic} takes on particular significance.
+Given the current conditions with Bitcoin dominance at ${btcDom}% and total market capitalization of $${marketCap} trillion, ${topic} takes on particular significance for active market participants.
 
-The relationship between ${category.toLowerCase()} and broader market trends creates opportunities for informed participants who understand these dynamics. By monitoring relevant metrics and maintaining disciplined analysis, traders can better navigate market conditions.
+The interplay between ${category.toLowerCase()} factors and broader market trends creates opportunities for informed traders who understand these dynamics thoroughly.
 
 ### Risk Considerations
 
-As with any market analysis approach, understanding ${topic} requires acknowledgment of inherent risks:
+As with any analytical approach, understanding ${topic} requires acknowledgment of inherent market risks:
 
 - Markets can behave unexpectedly despite thorough analysis
-- Past patterns may not repeat in future conditions
-- Liquidity variations can impact execution quality
+- Historical patterns may not repeat in future conditions
+- Liquidity variations can significantly impact execution quality
 - External factors can override technical considerations
 
 ## Conclusion
 
-${topic} remains a valuable analytical framework within ${category.toLowerCase()} for cryptocurrency market participants. By understanding the fundamental concepts, applying practical frameworks, and maintaining awareness of current market conditions, traders can enhance their decision-making process.
+${topic} remains a valuable analytical framework within ${category.toLowerCase()} for cryptocurrency market participants. By understanding fundamental concepts, applying practical frameworks, and maintaining awareness of current conditions, traders can enhance their decision-making process.
 
-The key to successful application lies in consistent methodology, proper risk management, and continuous learning as market conditions evolve. Whether you're a beginner or experienced trader, incorporating these concepts into your analysis can provide valuable perspective on market dynamics.`;
+The key to successful application lies in consistent methodology, proper risk management, and continuous learning as market conditions evolve. Whether beginner or experienced, incorporating these concepts provides valuable perspective on market dynamics.`;
 }
 
-function generateFallbackPosts() {
+function generateAllFallbackPosts() {
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
+  const context = { totalMarketCap: 2.5e12, btcDominance: 52, marketChange24h: 0.5 };
+  
   return contentThemes.map((theme, index) => 
-    createFallbackPost(theme.category, theme.topics[0], {
-      totalMarketCap: 2.5e12,
-      btcDominance: 52,
-      marketChange24h: 0.5,
-    }, index)
+    createFallbackPost(theme.category, theme.topics[index % theme.topics.length], context, index, dayOfYear)
   );
-}
-
-function extractTakeaways(content: string): string[] {
-  const lines = content.split('\n').filter(l => 
-    (l.trim().startsWith('-') || l.trim().startsWith('•') || l.trim().startsWith('*')) &&
-    l.length > 20 && l.length < 200
-  );
-  if (lines.length >= 3) {
-    return lines.slice(0, 4).map(l => l.replace(/^[-•*]\s*/, '').trim());
-  }
-  // Extract from numbered lists
-  const numbered = content.match(/\d+\.\s+\*\*[^*]+\*\*[^.]+\./g) || [];
-  if (numbered.length >= 3) {
-    return numbered.slice(0, 4).map(l => l.replace(/^\d+\.\s*\*\*/, '').replace(/\*\*.*/, '').trim());
-  }
-  return [
-    'Understand the fundamental concepts for informed decision-making',
-    'Apply analytical frameworks to current market conditions',
-    'Monitor relevant metrics and indicators for insights',
-    'Maintain disciplined risk management practices',
-  ];
 }
 
 function generateSlug(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .substring(0, 60)
-    .replace(/-$/, '');
+  return text.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').substring(0, 60).replace(/-$/, '');
 }
 
 function getCategoryImage(category: string): string {
