@@ -4,18 +4,25 @@ import { supabase } from "@/integrations/supabase/client";
 export interface BlogPost {
   id: string;
   title: string;
+  slug: string;
+  metaTitle: string;
+  metaDescription: string;
   content: string;
   takeaways: string[];
   category: string;
   readTime: string;
+  wordCount: number;
   publishedAt: string;
   imageUrl: string;
+  primaryKeyword: string;
+  secondaryKeywords: string[];
 }
 
 export interface AIBlogData {
   posts: BlogPost[];
   date: string;
   timestamp: number;
+  totalArticles: number;
 }
 
 export function useAIBlog() {
@@ -31,7 +38,8 @@ export function useAIBlog() {
 
       return data;
     },
-    staleTime: 300000, // 5 minutes
-    refetchInterval: 600000, // 10 minutes
+    staleTime: 600000, // 10 minutes
+    refetchInterval: 1800000, // 30 minutes
+    retry: 2,
   });
 }
