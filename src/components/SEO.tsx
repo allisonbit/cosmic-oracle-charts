@@ -265,7 +265,7 @@ export function StructuredData() {
       });
     }
 
-    // Learn page - Blog/Article schema
+    // Learn page - Blog/Article schema + FAQ
     if (currentPath === "/learn") {
       schemas.push({
         "@context": "https://schema.org",
@@ -282,6 +282,70 @@ export function StructuredData() {
           "headline": "Daily Crypto Market Insights",
           "description": "Fresh cryptocurrency analysis and education updated daily"
         }
+      });
+
+      // FAQ Schema for Learn page
+      schemas.push({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is Oracle Bull?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Oracle Bull is a free AI-powered cryptocurrency forecasting platform providing real-time price charts, market predictions, whale tracking, sentiment analysis, and blockchain analytics for Bitcoin, Ethereum, Solana, and 1000+ tokens."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does the crypto strength meter work?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The crypto strength meter measures and ranks cryptocurrency strength in real-time using a composite weighted model including price momentum, volume inflow/outflow, volatility, market dominance changes, relative performance vs BTC/ETH, sentiment scores, and trend consistency."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What blockchains does Oracle Bull support?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Oracle Bull supports multiple blockchains including Ethereum, Solana, Base, Arbitrum, Polygon, Optimism, Avalanche, and BNB Chain with real-time analytics, token discovery, and whale tracking for each."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is Oracle Bull free to use?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, Oracle Bull is completely free to use with no signup required. Access real-time crypto data, AI predictions, whale tracking, sentiment analysis, and blockchain analytics at no cost."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does the wallet scanner work?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The wallet scanner allows you to input any EVM or Solana wallet address to receive AI-powered analysis of holdings, including token breakdown, pump potential predictions, risk classifications, and actionable trading recommendations."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is the Fear and Greed Index?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The Fear and Greed Index is a market sentiment indicator that measures emotions driving the crypto market on a scale from 0 (Extreme Fear) to 100 (Extreme Greed), helping traders understand market psychology and potential turning points."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How often is the data updated?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Oracle Bull provides real-time data with automatic updates every 10-30 seconds depending on the metric. Price data, whale alerts, and market sentiment refresh continuously without requiring page reloads."
+            }
+          }
+        ]
       });
     }
 
