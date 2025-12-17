@@ -18,6 +18,7 @@ const routeLabels: Record<string, string> = {
   "explorer": "Explorer",
   "learn": "Learn",
   "contact": "Contact",
+  "sitemap": "Sitemap",
   "ethereum": "Ethereum",
   "solana": "Solana",
   "base": "Base",

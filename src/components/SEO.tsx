@@ -36,10 +36,25 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
     description: "Measure and rank cryptocurrency strength in real-time. Compare Bitcoin, Ethereum, Solana, and 100+ assets using weighted momentum, volume, sentiment, and trend analysis. Live auto-refresh.",
     keywords: "crypto strength meter, currency strength, bitcoin strength, ethereum momentum, crypto ranking, asset strength, chain comparison, market momentum"
   },
+  "/strength": {
+    title: "Crypto Strength Meter | Real-Time Asset & Chain Strength Rankings | Oracle Bull",
+    description: "Measure and rank cryptocurrency strength in real-time. Compare Bitcoin, Ethereum, Solana, and 100+ assets using weighted momentum, volume, sentiment, and trend analysis. Live auto-refresh.",
+    keywords: "crypto strength meter, currency strength, bitcoin strength, ethereum momentum, crypto ranking, asset strength, chain comparison, market momentum"
+  },
   "/crypto-factory": {
     title: "Crypto Factory | Market Events Calendar & On-Chain Intelligence | Oracle Bull",
     description: "Your centralized crypto intelligence hub. Track token launches, protocol upgrades, whale movements, trending narratives, and market-moving events. Like Forex Factory for cryptocurrency.",
     keywords: "crypto factory, crypto calendar, token launches, protocol upgrades, whale alerts, crypto events, market news, DeFi updates, narrative tracking"
+  },
+  "/factory": {
+    title: "Crypto Factory | Market Events Calendar & On-Chain Intelligence | Oracle Bull",
+    description: "Your centralized crypto intelligence hub. Track token launches, protocol upgrades, whale movements, trending narratives, and market-moving events. Like Forex Factory for cryptocurrency.",
+    keywords: "crypto factory, crypto calendar, token launches, protocol upgrades, whale alerts, crypto events, market news, DeFi updates, narrative tracking"
+  },
+  "/sitemap": {
+    title: "Sitemap | All Pages & Features | Oracle Bull",
+    description: "Complete sitemap of Oracle Bull - navigate to all crypto analytics pages, blockchain dashboards, tools, and educational resources. Find every feature in one place.",
+    keywords: "sitemap, navigation, oracle bull pages, crypto tools directory, blockchain analytics sitemap"
   },
   "/portfolio": {
     title: "Wallet Scanner | AI-Powered Portfolio Analysis | Oracle Bull",
