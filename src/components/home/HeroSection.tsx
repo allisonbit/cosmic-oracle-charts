@@ -56,7 +56,7 @@ export function HeroSection() {
             <div className="absolute w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full border-2 border-primary/30 animate-pulse pulse-glow" aria-hidden="true" />
             <div className="absolute w-56 h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 rounded-full border border-secondary/20" style={{ animationDelay: "0.5s" }} aria-hidden="true" />
             
-            {/* Oracle container */}
+            {/* Oracle container - optimized with responsive sizes */}
             <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-[450px] lg:h-[450px] rounded-full overflow-hidden float">
               <img
                 src={cosmicOracle}
@@ -64,6 +64,10 @@ export function HeroSection() {
                 className="w-full h-full object-cover"
                 loading="eager"
                 fetchPriority="high"
+                decoding="async"
+                width={450}
+                height={450}
+                sizes="(max-width: 768px) 256px, (max-width: 1024px) 320px, 450px"
               />
               {/* Overlay gradient */}
               <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" aria-hidden="true" />
