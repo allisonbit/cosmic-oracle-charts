@@ -19,9 +19,9 @@ export function Footer() {
   return (
     <footer className="border-t border-primary/20 bg-card/50 backdrop-blur-xl" role="contentinfo">
       <div className="container mx-auto px-4 py-8 md:py-12">
-        <div className="grid md:grid-cols-4 gap-6 md:gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8">
           {/* Logo & Description */}
-          <div className="md:col-span-2 space-y-4">
+          <div className="col-span-2 space-y-4">
             <Link to="/" className="flex items-center gap-3" aria-label="Oracle - Home">
               <div className="w-10 h-10 rounded-full overflow-hidden shadow-lg shadow-primary/30">
                 <img src={oracleLogo} alt="Oracle logo" className="w-full h-full object-cover" />
@@ -53,12 +53,22 @@ export function Footer() {
           </div>
           
           {/* Quick Links */}
-          <nav className="space-y-4" aria-label="Footer navigation">
-            <h4 className="font-display font-bold text-foreground text-sm md:text-base">EXPLORE</h4>
+          <nav className="space-y-4" aria-label="Footer navigation - Tools">
+            <h4 className="font-display font-bold text-foreground text-sm md:text-base">TOOLS</h4>
             <ul className="space-y-2">
               <li>
                 <Link to="/dashboard" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
                   Dashboard
+                </Link>
+              </li>
+              <li>
+                <Link to="/strength" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Strength Meter
+                </Link>
+              </li>
+              <li>
+                <Link to="/factory" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Crypto Factory
                 </Link>
               </li>
               <li>
@@ -67,13 +77,8 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/chain/ethereum" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Blockchain Analytics
-                </Link>
-              </li>
-              <li>
                 <Link to="/sentiment" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Sentiment Scanner
+                  Sentiment Analysis
                 </Link>
               </li>
               <li>
@@ -81,9 +86,41 @@ export function Footer() {
                   Token Explorer
                 </Link>
               </li>
+            </ul>
+          </nav>
+
+          {/* Chains & Resources */}
+          <nav className="space-y-4" aria-label="Footer navigation - Chains">
+            <h4 className="font-display font-bold text-foreground text-sm md:text-base">CHAINS</h4>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/chain/ethereum" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Ethereum
+                </Link>
+              </li>
+              <li>
+                <Link to="/chain/solana" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Solana
+                </Link>
+              </li>
+              <li>
+                <Link to="/chain/base" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Base
+                </Link>
+              </li>
+              <li>
+                <Link to="/chain/arbitrum" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Arbitrum
+                </Link>
+              </li>
               <li>
                 <Link to="/learn" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Learning Zone
+                  Learn Crypto
+                </Link>
+              </li>
+              <li>
+                <Link to="/sitemap" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Sitemap
                 </Link>
               </li>
             </ul>
