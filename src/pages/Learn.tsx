@@ -33,7 +33,8 @@ import {
   ArrowLeft,
   FileText,
   Search,
-  X
+  X,
+  HelpCircle
 } from "lucide-react";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { cn } from "@/lib/utils";
@@ -289,6 +290,44 @@ function BlogPostModal({ post, open, onClose }: { post: BlogPost | null; open: b
                   ))}
                 </ul>
               </div>
+            )}
+
+            {/* FAQ Section with Schema */}
+            {post.faqs && post.faqs.length > 0 && (
+              <>
+                <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 sm:p-5 mt-4 sm:mt-6">
+                  <h4 className="font-semibold flex items-center gap-2 mb-3 sm:mb-4 text-foreground text-sm sm:text-base">
+                    <HelpCircle className="w-4 sm:w-5 h-4 sm:h-5 text-primary" />
+                    Frequently Asked Questions
+                  </h4>
+                  <div className="space-y-3 sm:space-y-4">
+                    {post.faqs.map((faq, index) => (
+                      <div key={index} className="border-b border-border/30 pb-3 last:border-0 last:pb-0">
+                        <h5 className="font-medium text-sm sm:text-base text-foreground mb-1.5">{faq.question}</h5>
+                        <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{faq.answer}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {/* FAQ Schema */}
+                <script
+                  type="application/ld+json"
+                  dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                      "@context": "https://schema.org",
+                      "@type": "FAQPage",
+                      "mainEntity": post.faqs.map(faq => ({
+                        "@type": "Question",
+                        "name": faq.question,
+                        "acceptedAnswer": {
+                          "@type": "Answer",
+                          "text": faq.answer
+                        }
+                      }))
+                    })
+                  }}
+                />
+              </>
             )}
 
             {/* SEO Keywords Display */}

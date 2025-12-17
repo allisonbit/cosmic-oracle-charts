@@ -1,6 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
+export interface BlogFAQ {
+  question: string;
+  answer: string;
+}
+
 export interface BlogPost {
   id: string;
   title: string;
@@ -9,6 +14,7 @@ export interface BlogPost {
   metaDescription: string;
   content: string;
   takeaways: string[];
+  faqs?: BlogFAQ[];
   category: string;
   readTime: string;
   wordCount: number;

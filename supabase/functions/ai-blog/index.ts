@@ -196,7 +196,7 @@ async function generateAIPost(
             content: `Write a 600-word article about "${specificTopic}" in ${theme.category}.${oracleRef}
 
 Format as JSON:
-{"title":"SEO title under 60 chars","slug":"url-slug","metaTitle":"Meta title","metaDescription":"Meta description under 160 chars","content":"Full article with ## H2 and ### H3 headings, bullet points","takeaways":["takeaway1","takeaway2","takeaway3"]}` 
+{"title":"SEO title under 60 chars","slug":"url-slug","metaTitle":"Meta title","metaDescription":"Meta description under 160 chars","content":"Full article with ## H2 and ### H3 headings, bullet points","takeaways":["takeaway1","takeaway2","takeaway3"],"faqs":[{"question":"Q1?","answer":"A1"},{"question":"Q2?","answer":"A2"},{"question":"Q3?","answer":"A3"}]}` 
           },
         ],
       }),
@@ -230,6 +230,7 @@ Format as JSON:
         metaDescription: parsed.metaDescription || content.substring(0, 155) + '...',
         content,
         takeaways: parsed.takeaways || ['Understand key concepts', 'Apply to your strategy', 'Monitor relevant metrics', 'Practice risk management'],
+        faqs: parsed.faqs || generateDefaultFAQs(specificTopic, theme.category),
         category: theme.category,
         readTime: `${Math.max(3, Math.ceil(wordCount / 200))} min`,
         wordCount,
@@ -268,6 +269,7 @@ function createFallbackPost(category: string, topic: string, context: any, index
       `Apply analytical frameworks to evaluate ${topic}`,
       `Monitor relevant metrics for ${category.toLowerCase()} insights`,
     ],
+    faqs: generateDefaultFAQs(topic, category),
     category,
     readTime: `${Math.ceil(wordCount / 200)} min`,
     wordCount,
@@ -355,6 +357,23 @@ function generateAllFallbackPosts() {
 
 function generateSlug(text: string): string {
   return text.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').substring(0, 60).replace(/-$/, '');
+}
+
+function generateDefaultFAQs(topic: string, category: string): { question: string; answer: string }[] {
+  return [
+    {
+      question: `What is ${topic} in cryptocurrency?`,
+      answer: `${topic} refers to key analytical concepts within ${category.toLowerCase()} that help traders and investors understand market dynamics, identify opportunities, and make informed decisions based on data-driven insights.`
+    },
+    {
+      question: `Why is ${topic} important for crypto traders?`,
+      answer: `Understanding ${topic} is essential because it provides actionable insights into market behavior, helps identify potential opportunities and risks, and enables more informed decision-making in volatile cryptocurrency markets.`
+    },
+    {
+      question: `How can I learn more about ${topic}?`,
+      answer: `To deepen your understanding of ${topic}, explore comprehensive analytics platforms, study historical market data, follow industry research, and practice applying these concepts with smaller positions before scaling up.`
+    }
+  ];
 }
 
 function getCategoryImage(category: string): string {
