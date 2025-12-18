@@ -8,13 +8,13 @@ import oracleLogo from "@/assets/oracle-bull-logo.jpg";
 const navItems = [
   { path: "/", label: "Home", icon: Home },
   { path: "/dashboard", label: "Dashboard", icon: TrendingUp },
+  { path: "/insights", label: "Insights", icon: BookOpen },
   { path: "/strength", label: "Strength", icon: Zap },
   { path: "/factory", label: "Factory", icon: Calendar },
   { path: "/portfolio", label: "Scanner", icon: Wallet },
   { path: "/chain/ethereum", label: "Chains", icon: Layers },
   { path: "/sentiment", label: "Sentiment", icon: Radio },
   { path: "/explorer", label: "Explorer", icon: Globe },
-  { path: "/learn", label: "Learn", icon: BookOpen },
   { path: "/contact", label: "Contact", icon: Mail },
 ];
 

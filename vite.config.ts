@@ -16,6 +16,7 @@ const dynamicRoutes = [
   "/learn",
   "/contact",
   "/sitemap",
+  "/insights",
   "/chain/ethereum",
   "/chain/solana",
   "/chain/base",

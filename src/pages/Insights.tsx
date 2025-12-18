@@ -1,0 +1,331 @@
+import { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
+import { Layout } from "@/components/layout/Layout";
+import { useInsights } from "@/hooks/useInsights";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
+import { 
+  Search, 
+  Clock, 
+  ChevronLeft, 
+  ChevronRight,
+  FileText,
+  TrendingUp,
+  BarChart3,
+  Activity
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+
+const ARTICLES_PER_PAGE = 12;
+
+const categories = [
+  { id: "all", label: "All Articles", icon: FileText },
+  { id: "ethereum", label: "Ethereum", icon: Activity },
+  { id: "base", label: "Base", icon: BarChart3 },
+  { id: "solana", label: "Solana", icon: TrendingUp },
+  { id: "bitcoin", label: "Bitcoin", icon: Activity },
+  { id: "market", label: "Market Analysis", icon: BarChart3 },
+];
+
+export default function Insights() {
+  const { data, isLoading } = useInsights();
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const filteredArticles = useMemo(() => {
+    if (!data?.posts) return [];
+    
+    let filtered = data.posts;
+    
+    // Category filter
+    if (selectedCategory !== "all") {
+      filtered = filtered.filter(post => 
+        post.category.toLowerCase().includes(selectedCategory.toLowerCase())
+      );
+    }
+    
+    // Search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(post =>
+        post.title.toLowerCase().includes(query) ||
+        post.metaDescription.toLowerCase().includes(query) ||
+        post.primaryKeyword.toLowerCase().includes(query)
+      );
+    }
+    
+    return filtered;
+  }, [data?.posts, selectedCategory, searchQuery]);
+
+  const totalPages = Math.ceil(filteredArticles.length / ARTICLES_PER_PAGE);
+  const paginatedArticles = filteredArticles.slice(
+    (currentPage - 1) * ARTICLES_PER_PAGE,
+    currentPage * ARTICLES_PER_PAGE
+  );
+
+  const featuredArticle = data?.posts?.[0];
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    setCurrentPage(1);
+  };
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1);
+  };
+
+  // JSON-LD structured data
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "Oracle Bull Crypto Insights",
+    "description": "Expert cryptocurrency market analysis, on-chain data insights, and trading intelligence updated daily.",
+    "url": "https://oraclebull.com/insights",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Oracle Bull",
+      "url": "https://oraclebull.com"
+    },
+    "blogPost": paginatedArticles.map(post => ({
+      "@type": "BlogPosting",
+      "headline": post.title,
+      "description": post.metaDescription,
+      "url": `https://oraclebull.com/insights/${post.slug}`,
+      "datePublished": post.publishedAt,
+      "author": {
+        "@type": "Organization",
+        "name": "Oracle Bull"
+      }
+    }))
+  };
+
+  return (
+    <Layout>
+      <Helmet>
+        <title>Crypto Market Insights & Analysis | Oracle Bull</title>
+        <meta name="description" content="Daily cryptocurrency market analysis, on-chain data insights, Ethereum, Bitcoin, Solana, and Base network intelligence. Expert trading research updated every day." />
+        <meta name="keywords" content="crypto analysis, ethereum analysis, bitcoin prediction, solana insights, base network, on-chain data, market sentiment, crypto trading" />
+        <link rel="canonical" href="https://oraclebull.com/insights" />
+        <meta property="og:title" content="Crypto Market Insights & Analysis | Oracle Bull" />
+        <meta property="og:description" content="Daily cryptocurrency market analysis and trading intelligence. Expert insights on Ethereum, Bitcoin, Solana, Base, and more." />
+        <meta property="og:url" content="https://oraclebull.com/insights" />
+        <meta property="og:type" content="website" />
+        <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
+      </Helmet>
+
+      <div className="min-h-screen pt-20 pb-12">
+        <div className="container mx-auto px-4">
+          {/* Header */}
+          <header className="text-center mb-12">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-4">
+              Crypto Market <span className="text-primary glow-text">Insights</span>
+            </h1>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Expert cryptocurrency analysis, on-chain data insights, and market intelligence updated daily.
+            </p>
+          </header>
+
+          {/* Search and Filters */}
+          <div className="mb-8 space-y-4">
+            {/* Search */}
+            <div className="relative max-w-md mx-auto">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search articles..."
+                value={searchQuery}
+                onChange={handleSearch}
+                className="pl-10 bg-card/50 border-primary/20"
+              />
+            </div>
+
+            {/* Category Filters */}
+            <div className="flex flex-wrap justify-center gap-2">
+              {categories.map((cat) => {
+                const Icon = cat.icon;
+                return (
+                  <Button
+                    key={cat.id}
+                    variant={selectedCategory === cat.id ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => handleCategoryChange(cat.id)}
+                    className={cn(
+                      "gap-2 transition-all",
+                      selectedCategory === cat.id && "glow-text"
+                    )}
+                  >
+                    <Icon className="h-4 w-4" />
+                    {cat.label}
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Featured Article */}
+          {featuredArticle && selectedCategory === "all" && !searchQuery && currentPage === 1 && (
+            <Link to={`/insights/${featuredArticle.slug}`} className="block mb-8">
+              <Card className="group overflow-hidden border-primary/30 hover:border-primary/50 transition-all bg-gradient-to-br from-primary/5 to-transparent">
+                <CardContent className="p-6 md:p-8">
+                  <Badge variant="secondary" className="mb-4">Featured</Badge>
+                  <h2 className="text-2xl md:text-3xl font-display font-bold mb-3 group-hover:text-primary transition-colors">
+                    {featuredArticle.title}
+                  </h2>
+                  <p className="text-muted-foreground mb-4 line-clamp-2">
+                    {featuredArticle.metaDescription}
+                  </p>
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <Badge variant="outline">{featuredArticle.category}</Badge>
+                    <span className="flex items-center gap-1">
+                      <Clock className="h-4 w-4" />
+                      {featuredArticle.readTime}
+                    </span>
+                    <span>{featuredArticle.wordCount} words</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          )}
+
+          {/* Articles Grid */}
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <Card key={i} className="overflow-hidden">
+                  <CardContent className="p-0">
+                    <Skeleton className="h-40 w-full" />
+                    <div className="p-4 space-y-3">
+                      <Skeleton className="h-4 w-20" />
+                      <Skeleton className="h-6 w-full" />
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-2/3" />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {paginatedArticles.map((post, index) => (
+                  <Link 
+                    key={post.id} 
+                    to={`/insights/${post.slug}`}
+                    className="group"
+                  >
+                    <Card className="h-full overflow-hidden border-border/50 hover:border-primary/50 transition-all hover:shadow-lg hover:shadow-primary/10">
+                      <CardContent className="p-0">
+                        {/* Article Image Placeholder */}
+                        <div className="h-40 bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+                          <div className="text-4xl font-display font-bold text-primary/30">
+                            {post.category.charAt(0)}
+                          </div>
+                        </div>
+                        
+                        <div className="p-4 space-y-3">
+                          <Badge variant="outline" className="text-xs">
+                            {post.category}
+                          </Badge>
+                          
+                          <h3 className="font-display font-semibold text-lg line-clamp-2 group-hover:text-primary transition-colors">
+                            {post.title}
+                          </h3>
+                          
+                          <p className="text-sm text-muted-foreground line-clamp-2">
+                            {post.metaDescription}
+                          </p>
+                          
+                          <div className="flex items-center gap-3 text-xs text-muted-foreground pt-2 border-t border-border/50">
+                            <span className="flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              {post.readTime}
+                            </span>
+                            <span>{post.wordCount} words</span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+
+              {/* Empty State */}
+              {paginatedArticles.length === 0 && (
+                <div className="text-center py-12">
+                  <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">No articles found</h3>
+                  <p className="text-muted-foreground">
+                    Try adjusting your search or filter criteria.
+                  </p>
+                </div>
+              )}
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <nav className="flex justify-center items-center gap-2 mt-8" aria-label="Pagination">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    Previous
+                  </Button>
+                  
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                      let pageNum;
+                      if (totalPages <= 5) {
+                        pageNum = i + 1;
+                      } else if (currentPage <= 3) {
+                        pageNum = i + 1;
+                      } else if (currentPage >= totalPages - 2) {
+                        pageNum = totalPages - 4 + i;
+                      } else {
+                        pageNum = currentPage - 2 + i;
+                      }
+                      
+                      return (
+                        <Button
+                          key={pageNum}
+                          variant={currentPage === pageNum ? "default" : "ghost"}
+                          size="sm"
+                          onClick={() => setCurrentPage(pageNum)}
+                          className="w-10"
+                        >
+                          {pageNum}
+                        </Button>
+                      );
+                    })}
+                  </div>
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                    disabled={currentPage === totalPages}
+                  >
+                    Next
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </nav>
+              )}
+            </>
+          )}
+
+          {/* Article Count */}
+          <div className="text-center mt-8 text-sm text-muted-foreground">
+            Showing {paginatedArticles.length} of {filteredArticles.length} articles
+            {data?.totalArticles && ` • ${data.totalArticles} total published`}
+          </div>
+        </div>
+      </div>
+    </Layout>
+  );
+}

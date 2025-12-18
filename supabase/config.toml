@@ -51,3 +51,6 @@ verify_jwt = false
 
 [functions.content-refresh]
 verify_jwt = false
+
+[functions.insights-engine]
+verify_jwt = false
