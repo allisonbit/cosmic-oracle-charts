@@ -119,20 +119,20 @@ export default function Insights() {
         <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
       </Helmet>
 
-      <div className="min-h-screen pt-20 pb-12">
-        <div className="container mx-auto px-4">
+      <div className="min-h-screen pt-16 sm:pt-20 pb-24 sm:pb-12">
+        <div className="container mx-auto px-3 sm:px-4">
           {/* Header */}
-          <header className="text-center mb-12">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-4">
+          <header className="text-center mb-6 sm:mb-12">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-2 sm:mb-4">
               Crypto Market <span className="text-primary glow-text">Insights</span>
             </h1>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            <p className="text-muted-foreground text-sm sm:text-base lg:text-lg max-w-2xl mx-auto px-2">
               Expert cryptocurrency analysis, on-chain data insights, and market intelligence updated daily.
             </p>
           </header>
 
           {/* Search and Filters */}
-          <div className="mb-8 space-y-4">
+          <div className="mb-6 sm:mb-8 space-y-3 sm:space-y-4">
             {/* Search */}
             <div className="relative max-w-md mx-auto">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -140,52 +140,55 @@ export default function Insights() {
                 placeholder="Search articles..."
                 value={searchQuery}
                 onChange={handleSearch}
-                className="pl-10 bg-card/50 border-primary/20"
+                className="pl-10 bg-card/50 border-primary/20 h-10 sm:h-11 text-sm sm:text-base"
               />
             </div>
 
-            {/* Category Filters */}
-            <div className="flex flex-wrap justify-center gap-2">
-              {categories.map((cat) => {
-                const Icon = cat.icon;
-                return (
-                  <Button
-                    key={cat.id}
-                    variant={selectedCategory === cat.id ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => handleCategoryChange(cat.id)}
-                    className={cn(
-                      "gap-2 transition-all",
-                      selectedCategory === cat.id && "glow-text"
-                    )}
-                  >
-                    <Icon className="h-4 w-4" />
-                    {cat.label}
-                  </Button>
-                );
-              })}
+            {/* Category Filters - Scrollable on mobile */}
+            <div className="overflow-x-auto pb-2 -mx-3 px-3 sm:mx-0 sm:px-0 scrollbar-hide">
+              <div className="flex sm:flex-wrap sm:justify-center gap-2 min-w-max sm:min-w-0">
+                {categories.map((cat) => {
+                  const Icon = cat.icon;
+                  return (
+                    <Button
+                      key={cat.id}
+                      variant={selectedCategory === cat.id ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => handleCategoryChange(cat.id)}
+                      className={cn(
+                        "gap-1.5 sm:gap-2 transition-all text-xs sm:text-sm whitespace-nowrap touch-manipulation active:scale-95",
+                        selectedCategory === cat.id && "glow-text"
+                      )}
+                    >
+                      <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                      <span className="hidden xs:inline sm:inline">{cat.label}</span>
+                      <span className="xs:hidden">{cat.label.split(' ')[0]}</span>
+                    </Button>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
           {/* Featured Article */}
           {featuredArticle && selectedCategory === "all" && !searchQuery && currentPage === 1 && (
-            <Link to={`/insights/${featuredArticle.slug}`} className="block mb-8">
-              <Card className="group overflow-hidden border-primary/30 hover:border-primary/50 transition-all bg-gradient-to-br from-primary/5 to-transparent">
-                <CardContent className="p-6 md:p-8">
-                  <Badge variant="secondary" className="mb-4">Featured</Badge>
-                  <h2 className="text-2xl md:text-3xl font-display font-bold mb-3 group-hover:text-primary transition-colors">
+            <Link to={`/insights/${featuredArticle.slug}`} className="block mb-6 sm:mb-8">
+              <Card className="group overflow-hidden border-primary/30 hover:border-primary/50 active:scale-[0.99] transition-all bg-gradient-to-br from-primary/5 to-transparent touch-manipulation">
+                <CardContent className="p-4 sm:p-6 md:p-8">
+                  <Badge variant="secondary" className="mb-2 sm:mb-4 text-xs">Featured</Badge>
+                  <h2 className="text-lg sm:text-2xl md:text-3xl font-display font-bold mb-2 sm:mb-3 group-hover:text-primary transition-colors line-clamp-2">
                     {featuredArticle.title}
                   </h2>
-                  <p className="text-muted-foreground mb-4 line-clamp-2">
+                  <p className="text-muted-foreground mb-3 sm:mb-4 line-clamp-2 text-sm sm:text-base">
                     {featuredArticle.metaDescription}
                   </p>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <Badge variant="outline">{featuredArticle.category}</Badge>
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
+                    <Badge variant="outline" className="text-xs">{featuredArticle.category}</Badge>
                     <span className="flex items-center gap-1">
-                      <Clock className="h-4 w-4" />
+                      <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
                       {featuredArticle.readTime}
                     </span>
-                    <span>{featuredArticle.wordCount} words</span>
+                    <span className="hidden sm:inline">{featuredArticle.wordCount} words</span>
                   </div>
                 </CardContent>
               </Card>
@@ -194,16 +197,16 @@ export default function Insights() {
 
           {/* Articles Grid */}
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
               {Array.from({ length: 6 }).map((_, i) => (
                 <Card key={i} className="overflow-hidden">
                   <CardContent className="p-0">
-                    <Skeleton className="h-40 w-full" />
-                    <div className="p-4 space-y-3">
-                      <Skeleton className="h-4 w-20" />
-                      <Skeleton className="h-6 w-full" />
-                      <Skeleton className="h-4 w-full" />
-                      <Skeleton className="h-4 w-2/3" />
+                    <Skeleton className="h-28 sm:h-40 w-full" />
+                    <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
+                      <Skeleton className="h-3 sm:h-4 w-16 sm:w-20" />
+                      <Skeleton className="h-4 sm:h-6 w-full" />
+                      <Skeleton className="h-3 sm:h-4 w-full" />
+                      <Skeleton className="h-3 sm:h-4 w-2/3" />
                     </div>
                   </CardContent>
                 </Card>
@@ -211,41 +214,41 @@ export default function Insights() {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
                 {paginatedArticles.map((post, index) => (
                   <Link 
                     key={post.id} 
                     to={`/insights/${post.slug}`}
                     className="group"
                   >
-                    <Card className="h-full overflow-hidden border-border/50 hover:border-primary/50 transition-all hover:shadow-lg hover:shadow-primary/10">
+                    <Card className="h-full overflow-hidden border-border/50 hover:border-primary/50 active:scale-[0.98] transition-all hover:shadow-lg hover:shadow-primary/10 touch-manipulation">
                       <CardContent className="p-0">
                         {/* Article Image Placeholder */}
-                        <div className="h-40 bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-                          <div className="text-4xl font-display font-bold text-primary/30">
+                        <div className="h-24 sm:h-32 md:h-40 bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+                          <div className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-primary/30">
                             {post.category.charAt(0)}
                           </div>
                         </div>
                         
-                        <div className="p-4 space-y-3">
-                          <Badge variant="outline" className="text-xs">
+                        <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
+                          <Badge variant="outline" className="text-[10px] sm:text-xs">
                             {post.category}
                           </Badge>
                           
-                          <h3 className="font-display font-semibold text-lg line-clamp-2 group-hover:text-primary transition-colors">
+                          <h3 className="font-display font-semibold text-sm sm:text-base md:text-lg line-clamp-2 group-hover:text-primary transition-colors">
                             {post.title}
                           </h3>
                           
-                          <p className="text-sm text-muted-foreground line-clamp-2">
+                          <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 hidden sm:block">
                             {post.metaDescription}
                           </p>
                           
-                          <div className="flex items-center gap-3 text-xs text-muted-foreground pt-2 border-t border-border/50">
+                          <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-muted-foreground pt-2 border-t border-border/50">
                             <span className="flex items-center gap-1">
-                              <Clock className="h-3 w-3" />
+                              <Clock className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                               {post.readTime}
                             </span>
-                            <span>{post.wordCount} words</span>
+                            <span className="hidden sm:inline">{post.wordCount} words</span>
                           </div>
                         </div>
                       </CardContent>
@@ -256,10 +259,10 @@ export default function Insights() {
 
               {/* Empty State */}
               {paginatedArticles.length === 0 && (
-                <div className="text-center py-12">
-                  <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">No articles found</h3>
-                  <p className="text-muted-foreground">
+                <div className="text-center py-8 sm:py-12">
+                  <FileText className="h-10 w-10 sm:h-12 sm:w-12 mx-auto text-muted-foreground mb-3 sm:mb-4" />
+                  <h3 className="text-base sm:text-lg font-semibold mb-2">No articles found</h3>
+                  <p className="text-muted-foreground text-sm">
                     Try adjusting your search or filter criteria.
                   </p>
                 </div>
@@ -267,18 +270,19 @@ export default function Insights() {
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <nav className="flex justify-center items-center gap-2 mt-8" aria-label="Pagination">
+                <nav className="flex justify-center items-center gap-1 sm:gap-2 mt-6 sm:mt-8" aria-label="Pagination">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
+                    className="h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm"
                   >
-                    <ChevronLeft className="h-4 w-4" />
-                    Previous
+                    <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline ml-1">Previous</span>
                   </Button>
                   
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-0.5 sm:gap-1">
                     {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                       let pageNum;
                       if (totalPages <= 5) {
@@ -297,7 +301,7 @@ export default function Insights() {
                           variant={currentPage === pageNum ? "default" : "ghost"}
                           size="sm"
                           onClick={() => setCurrentPage(pageNum)}
-                          className="w-10"
+                          className="w-8 h-8 sm:w-10 sm:h-9 text-xs sm:text-sm p-0"
                         >
                           {pageNum}
                         </Button>
@@ -310,9 +314,10 @@ export default function Insights() {
                     size="sm"
                     onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                     disabled={currentPage === totalPages}
+                    className="h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm"
                   >
-                    Next
-                    <ChevronRight className="h-4 w-4" />
+                    <span className="hidden sm:inline mr-1">Next</span>
+                    <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
                   </Button>
                 </nav>
               )}
@@ -320,9 +325,9 @@ export default function Insights() {
           )}
 
           {/* Article Count */}
-          <div className="text-center mt-8 text-sm text-muted-foreground">
+          <div className="text-center mt-6 sm:mt-8 text-xs sm:text-sm text-muted-foreground">
             Showing {paginatedArticles.length} of {filteredArticles.length} articles
-            {data?.totalArticles && ` • ${data.totalArticles} total published`}
+            {data?.totalArticles && <span className="hidden sm:inline"> • {data.totalArticles} total published</span>}
           </div>
         </div>
       </div>
