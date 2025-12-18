@@ -31,9 +31,6 @@ verify_jwt = false
 [functions.oracle-token]
 verify_jwt = false
 
-[functions.telegram-bot]
-verify_jwt = false
-
 [functions.realtime-prices]
 verify_jwt = false
 

@@ -289,9 +289,10 @@ function createFallbackPost(category: string, topic: string, context: any, index
 }
 
 function generateSEOTitle(topic: string): string {
+  const year = new Date().getFullYear();
   const titles = [
     `${topic}: Complete Analysis Guide`,
-    `Understanding ${topic} in 2024`,
+    `Understanding ${topic} in ${year}`,
     `${topic}: What Traders Need to Know`,
     `${topic} Analysis and Market Insights`,
   ];
