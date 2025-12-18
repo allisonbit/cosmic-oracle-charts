@@ -35,7 +35,7 @@ export function HeroSection() {
               real-time charts, and market insights — all free and open access.
             </p>
             
-            <nav className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start" aria-label="Primary actions">
+            <nav className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start flex-wrap" aria-label="Primary actions">
               <Button asChild variant="cosmic" size="lg" className="text-sm md:text-base touch-target-lg tap-highlight-none active:scale-95 transition-transform">
                 <Link to="/dashboard">
                   Explore Dashboard
@@ -43,8 +43,9 @@ export function HeroSection() {
                 </Link>
               </Button>
               <Button asChild variant="glow" size="lg" className="text-sm md:text-base touch-target-lg tap-highlight-none active:scale-95 transition-transform">
-                <Link to="/learn">
-                  Learn More
+                <Link to="/insights">
+                  Market Insights
+                  <Sparkles className="w-4 h-4 md:w-5 md:h-5" aria-hidden="true" />
                 </Link>
               </Button>
             </nav>
