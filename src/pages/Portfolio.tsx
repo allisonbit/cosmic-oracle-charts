@@ -126,53 +126,53 @@ export default function Portfolio() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 pt-20 pb-12 cosmic-bg">
-        <div className="container mx-auto px-4">
+      <main className="flex-1 pt-16 sm:pt-20 pb-24 sm:pb-12 cosmic-bg">
+        <div className="container mx-auto px-3 sm:px-4">
           {/* Header */}
-          <div className="text-center mb-8 md:mb-12">
-            <h1 className="text-3xl md:text-5xl font-display font-bold mb-4">
+          <div className="text-center mb-6 sm:mb-8 md:mb-12">
+            <h1 className="text-2xl sm:text-3xl md:text-5xl font-display font-bold mb-2 sm:mb-4">
               <span className="glow-text">WALLET</span>{" "}
               <span className="text-gradient-cosmic">SCANNER</span>
             </h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-muted-foreground text-sm sm:text-base max-w-2xl mx-auto px-2">
               AI-powered analysis to find pumping tokens, assess risk, and get actionable insights for any wallet
             </p>
           </div>
 
           {/* Search */}
-          <div className="max-w-3xl mx-auto mb-8">
-            <div className="holo-card p-6">
-              <div className="flex flex-col sm:flex-row gap-4">
+          <div className="max-w-3xl mx-auto mb-6 sm:mb-8">
+            <div className="holo-card p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <div className="relative flex-1">
-                  <Wallet className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Wallet className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
                   <Input
-                    placeholder="Enter wallet address (EVM or Solana)..."
+                    placeholder="Enter wallet address..."
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
-                    className="pl-12 h-12 text-base"
+                    className="pl-10 sm:pl-12 h-11 sm:h-12 text-sm sm:text-base"
                     onKeyDown={(e) => e.key === "Enter" && analyzeWallet()}
                   />
                 </div>
                 <Button 
                   onClick={analyzeWallet} 
                   disabled={isAnalyzing}
-                  className="h-12 px-8 gap-2"
+                  className="h-11 sm:h-12 px-6 sm:px-8 gap-2 w-full sm:w-auto touch-manipulation active:scale-95"
                   variant="cosmic"
                 >
                   {isAnalyzing ? (
                     <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      Scanning...
+                      <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                      <span className="text-sm sm:text-base">Scanning...</span>
                     </>
                   ) : (
                     <>
-                      <Search className="w-5 h-5" />
-                      Scan Wallet
+                      <Search className="w-4 h-4 sm:w-5 sm:h-5" />
+                      <span className="text-sm sm:text-base">Scan Wallet</span>
                     </>
                   )}
                 </Button>
               </div>
-              <p className="text-xs text-muted-foreground mt-3 text-center">
+              <p className="text-[10px] sm:text-xs text-muted-foreground mt-2 sm:mt-3 text-center">
                 Supports Ethereum, Polygon, Arbitrum, Base, and Solana wallets
               </p>
             </div>
@@ -180,84 +180,87 @@ export default function Portfolio() {
 
           {/* Results */}
           {analysis && (
-            <div className="space-y-6 animate-fade-in">
+            <div className="space-y-4 sm:space-y-6 animate-fade-in">
               {/* Wallet Info Bar */}
-              <div className="holo-card p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="holo-card p-3 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                    <Wallet className="w-5 h-5 text-primary" />
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                    <Wallet className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                   </div>
                   <div>
-                    <div className="text-xs text-muted-foreground">Wallet Address</div>
-                    <div className="font-mono text-sm flex items-center gap-2">
-                      <span className="hidden sm:inline">{analysis.address}</span>
-                      <span className="sm:hidden">{analysis.address.slice(0, 8)}...{analysis.address.slice(-6)}</span>
-                      <Button variant="ghost" size="icon" className="h-6 w-6" onClick={copyWalletAddress}>
-                        {copiedAddress ? <Check className="w-3 h-3 text-success" /> : <Copy className="w-3 h-3" />}
+                    <div className="text-[10px] sm:text-xs text-muted-foreground">Wallet Address</div>
+                    <div className="font-mono text-xs sm:text-sm flex items-center gap-2">
+                      <span className="hidden md:inline">{analysis.address}</span>
+                      <span className="md:hidden">{analysis.address.slice(0, 8)}...{analysis.address.slice(-6)}</span>
+                      <Button variant="ghost" size="icon" className="h-5 w-5 sm:h-6 sm:w-6" onClick={copyWalletAddress}>
+                        {copiedAddress ? <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-success" /> : <Copy className="w-2.5 h-2.5 sm:w-3 sm:h-3" />}
                       </Button>
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <Clock className="w-4 h-4" />
+                <div className="flex items-center gap-2 text-[10px] sm:text-xs text-muted-foreground">
+                  <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
                   Scanned {new Date().toLocaleTimeString()}
                 </div>
               </div>
 
               {/* Overview Cards */}
-              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="holo-card p-6 hover:border-primary/50 transition-colors">
-                  <div className="text-muted-foreground text-sm mb-2 flex items-center gap-2">
-                    <Wallet className="w-4 h-4" />
-                    Total Value
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                <div className="holo-card p-4 sm:p-6 hover:border-primary/50 transition-colors">
+                  <div className="text-muted-foreground text-xs sm:text-sm mb-1 sm:mb-2 flex items-center gap-1 sm:gap-2">
+                    <Wallet className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <span className="hidden sm:inline">Total Value</span>
+                    <span className="sm:hidden">Value</span>
                   </div>
-                  <div className="text-2xl md:text-3xl font-display font-bold">
-                    ${analysis.totalValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                  <div className="text-lg sm:text-2xl md:text-3xl font-display font-bold">
+                    ${analysis.totalValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                   </div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    {analysis.holdings.length} tokens detected
+                  <div className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1">
+                    {analysis.holdings.length} tokens
                   </div>
                 </div>
-                <div className="holo-card p-6 hover:border-primary/50 transition-colors">
-                  <div className="text-muted-foreground text-sm mb-2 flex items-center gap-2">
-                    <AlertTriangle className="w-4 h-4" />
-                    Risk Score
+                <div className="holo-card p-4 sm:p-6 hover:border-primary/50 transition-colors">
+                  <div className="text-muted-foreground text-xs sm:text-sm mb-1 sm:mb-2 flex items-center gap-1 sm:gap-2">
+                    <AlertTriangle className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <span className="hidden sm:inline">Risk Score</span>
+                    <span className="sm:hidden">Risk</span>
                   </div>
                   <div className={cn(
-                    "text-2xl md:text-3xl font-display font-bold",
+                    "text-lg sm:text-2xl md:text-3xl font-display font-bold",
                     analysis.riskScore > 70 ? "text-danger" : analysis.riskScore > 40 ? "text-warning" : "text-success"
                   )}>
                     {analysis.riskScore}/100
                   </div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    {analysis.riskScore > 70 ? "High Risk" : analysis.riskScore > 40 ? "Moderate Risk" : "Low Risk"}
+                  <div className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1">
+                    {analysis.riskScore > 70 ? "High Risk" : analysis.riskScore > 40 ? "Moderate" : "Low Risk"}
                   </div>
                 </div>
-                <div className="holo-card p-6 hover:border-primary/50 transition-colors">
-                  <div className="text-muted-foreground text-sm mb-2 flex items-center gap-2">
-                    <BarChart3 className="w-4 h-4" />
-                    Diversification
+                <div className="holo-card p-4 sm:p-6 hover:border-primary/50 transition-colors">
+                  <div className="text-muted-foreground text-xs sm:text-sm mb-1 sm:mb-2 flex items-center gap-1 sm:gap-2">
+                    <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <span className="hidden sm:inline">Diversification</span>
+                    <span className="sm:hidden">Diverse</span>
                   </div>
                   <div className={cn(
-                    "text-2xl md:text-3xl font-display font-bold",
+                    "text-lg sm:text-2xl md:text-3xl font-display font-bold",
                     analysis.diversificationScore > 70 ? "text-success" : analysis.diversificationScore > 40 ? "text-warning" : "text-danger"
                   )}>
                     {analysis.diversificationScore}/100
                   </div>
-                  <div className="text-xs text-muted-foreground mt-1">
+                  <div className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1">
                     {analysis.diversificationScore > 70 ? "Well Diversified" : analysis.diversificationScore > 40 ? "Moderate" : "Concentrated"}
                   </div>
                 </div>
-                <div className="holo-card p-6 hover:border-primary/50 transition-colors">
-                  <div className="text-muted-foreground text-sm mb-2 flex items-center gap-2">
-                    <Rocket className="w-4 h-4" />
+                <div className="holo-card p-4 sm:p-6 hover:border-primary/50 transition-colors">
+                  <div className="text-muted-foreground text-xs sm:text-sm mb-1 sm:mb-2 flex items-center gap-1 sm:gap-2">
+                    <Rocket className="w-3 h-3 sm:w-4 sm:h-4" />
                     Top Picks
                   </div>
-                  <div className="text-xl md:text-2xl font-display font-bold text-success">
-                    {analysis.topPicks.length > 0 ? analysis.topPicks.slice(0, 3).join(", ") : "None"}
+                  <div className="text-sm sm:text-xl md:text-2xl font-display font-bold text-success truncate">
+                    {analysis.topPicks.length > 0 ? analysis.topPicks.slice(0, 2).join(", ") : "None"}
                   </div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    High potential tokens
+                  <div className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1">
+                    High potential
                   </div>
                 </div>
               </div>
@@ -295,18 +298,77 @@ export default function Portfolio() {
                 </div>
               </div>
 
-              {/* Holdings Table */}
+              {/* Holdings - Mobile Cards + Desktop Table */}
               <div className="holo-card overflow-hidden">
-                <div className="p-6 border-b border-border flex items-center justify-between">
-                  <h2 className="font-display font-bold text-xl flex items-center gap-2">
-                    <Zap className="w-5 h-5 text-primary" />
+                <div className="p-4 sm:p-6 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <h2 className="font-display font-bold text-lg sm:text-xl flex items-center gap-2">
+                    <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                     Holdings Analysis
                   </h2>
-                  <div className="text-sm text-muted-foreground">
-                    Click any token for details
+                  <div className="text-xs sm:text-sm text-muted-foreground">
+                    Tap any token for details
                   </div>
                 </div>
-                <div className="overflow-x-auto">
+                
+                {/* Mobile Cards View */}
+                <div className="block sm:hidden p-3 space-y-3">
+                  {displayedHoldings?.map((holding, index) => {
+                    const rec = getRecommendationStyle(holding.recommendation);
+                    const RecIcon = rec.icon;
+                    return (
+                      <button
+                        key={`mobile-${holding.symbol}-${index}`}
+                        className="w-full p-4 rounded-lg bg-muted/20 border border-border/50 active:border-primary/50 active:scale-[0.98] transition-all text-left touch-manipulation"
+                        onClick={() => setSelectedToken(holding)}
+                      >
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                              <span className="font-display font-bold text-primary text-sm">
+                                {holding.symbol[0]}
+                              </span>
+                            </div>
+                            <div>
+                              <div className="font-display font-bold">{holding.symbol}</div>
+                              <div className="text-xs text-muted-foreground">{holding.name}</div>
+                            </div>
+                          </div>
+                          <div className={cn("flex items-center gap-1 font-medium text-sm", holding.change24h >= 0 ? "text-success" : "text-danger")}>
+                            {holding.change24h >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                            {holding.change24h >= 0 ? "+" : ""}{holding.change24h.toFixed(2)}%
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 mb-3">
+                          <div>
+                            <div className="text-xs text-muted-foreground">Price</div>
+                            <div className="font-medium text-sm">${holding.price < 0.01 ? holding.price.toFixed(6) : holding.price.toLocaleString()}</div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-xs text-muted-foreground">Value</div>
+                            <div className="font-bold text-sm">${holding.value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className={cn("px-2 py-0.5 rounded-full text-[10px] font-bold uppercase", getPumpPotentialColor(holding.pumpPotential))}>
+                              {holding.pumpPotential}
+                            </span>
+                            <span className={cn("text-[10px] font-bold uppercase", getRiskColor(holding.riskLevel))}>
+                              {holding.riskLevel} RISK
+                            </span>
+                          </div>
+                          <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold", rec.bg, rec.color)}>
+                            <RecIcon className="w-2.5 h-2.5" />
+                            {rec.label}
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Desktop Table View */}
+                <div className="hidden sm:block overflow-x-auto">
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-border bg-muted/30">
