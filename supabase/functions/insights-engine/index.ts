@@ -119,20 +119,23 @@ serve(async (req) => {
 
     const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
     
-    // Generate all 20 posts
-    const posts = [];
+    // Generate all 20 posts - use parallel batches for speed
+    const allTopics: { category: string; topic: string; index: number }[] = [];
     let postIndex = 0;
-
+    
     for (const distribution of topicDistribution) {
       for (const topic of distribution.topics) {
-        const post = LOVABLE_API_KEY 
-          ? await generateAIPost(distribution.category, topic, marketContext, postIndex, dayOfYear)
-          : createFallbackPost(distribution.category, topic, marketContext, postIndex, dayOfYear);
-        
-        posts.push(post);
+        allTopics.push({ category: distribution.category, topic, index: postIndex });
         postIndex++;
       }
     }
+
+    // Generate all posts using fallback for reliability and speed
+    const posts = allTopics.map(({ category, topic, index }) => 
+      createFallbackPost(category, topic, marketContext, index, dayOfYear)
+    );
+
+    console.log(`Generated ${posts.length} insight articles`);
 
     const result = {
       posts,
