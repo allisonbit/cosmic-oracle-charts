@@ -22,6 +22,8 @@ const Portfolio = lazy(() => import("./pages/Portfolio"));
 const StrengthMeter = lazy(() => import("./pages/StrengthMeter"));
 const CryptoFactory = lazy(() => import("./pages/CryptoFactory"));
 const Sitemap = lazy(() => import("./pages/Sitemap"));
+const Insights = lazy(() => import("./pages/Insights"));
+const InsightArticle = lazy(() => import("./pages/InsightArticle"));
 
 // Loading fallback component
 const PageLoader = memo(function PageLoader() {
@@ -75,6 +77,8 @@ const App = () => (
             <Route path="/strength" element={<StrengthMeter />} />
             <Route path="/factory" element={<CryptoFactory />} />
             <Route path="/sitemap" element={<Sitemap />} />
+            <Route path="/insights" element={<Insights />} />
+            <Route path="/insights/:slug" element={<InsightArticle />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
