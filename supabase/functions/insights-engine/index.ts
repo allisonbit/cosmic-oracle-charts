@@ -12,44 +12,65 @@ const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 let cachedPosts: any = null;
 let cacheDate: string = '';
 
-// Topic distribution: 6 Ethereum, 4 Base, 4 Solana, 3 Bitcoin, 3 Market-wide = 20 total
-const topicDistribution = [
-  // Ethereum (6 articles)
-  { category: 'Ethereum Analysis', topics: ['Ethereum price prediction analysis', 'ETH gas fee optimization strategies', 'Ethereum staking rewards explained', 'ETH Layer 2 scaling solutions', 'Ethereum DeFi ecosystem trends', 'EIP upgrades and network changes'] },
+// Comprehensive crypto blog categories - 20 articles daily covering EVERYTHING
+const blogCategories = [
+  // Breaking News & Market Updates (4)
+  { category: 'Breaking News', topics: [
+    'Latest cryptocurrency market developments',
+    'Major exchange announcements today',
+    'Regulatory updates affecting crypto',
+    'Institutional crypto adoption news'
+  ]},
   
-  // Base (4 articles)
-  { category: 'Base Network', topics: ['Base network activity analysis', 'Base chain DeFi opportunities', 'Base ecosystem token trends', 'Base vs other L2 comparison'] },
+  // Bitcoin & Ethereum (4)
+  { category: 'Bitcoin & Ethereum', topics: [
+    'Bitcoin price movements and whale activity',
+    'Ethereum network updates and upgrades',
+    'BTC and ETH market analysis',
+    'Layer 2 solutions and scaling news'
+  ]},
   
-  // Solana (4 articles)
-  { category: 'Solana Analysis', topics: ['Solana price momentum indicators', 'SOL staking and validator metrics', 'Solana DeFi protocol analysis', 'Solana NFT market trends'] },
+  // Altcoins & New Projects (3)
+  { category: 'Altcoins & Projects', topics: [
+    'Trending altcoins and meme coins',
+    'New token launches and IDOs',
+    'Promising crypto projects to watch'
+  ]},
   
-  // Bitcoin (3 articles)
-  { category: 'Bitcoin Analysis', topics: ['Bitcoin price prediction today', 'BTC halving cycle dynamics', 'Bitcoin institutional accumulation patterns'] },
+  // DeFi & Yield (3)
+  { category: 'DeFi & Yield', topics: [
+    'DeFi protocol updates and TVL changes',
+    'Best yield farming opportunities',
+    'DEX trading volume and liquidity'
+  ]},
   
-  // Market-wide (3 articles)
-  { category: 'Market Analysis', topics: ['Crypto market sentiment today', 'On-chain volume analysis insights', 'Crypto strength meter explained'] },
+  // NFTs & Gaming (2)
+  { category: 'NFTs & Gaming', topics: [
+    'NFT market trends and top collections',
+    'Web3 gaming and metaverse updates'
+  ]},
+  
+  // Airdrops & Opportunities (2)
+  { category: 'Airdrops & Opportunities', topics: [
+    'Upcoming crypto airdrops and how to qualify',
+    'Staking rewards and passive income strategies'
+  ]},
+  
+  // Technical & Security (2)
+  { category: 'Security & Tech', topics: [
+    'Blockchain security alerts and hacks',
+    'Smart contract audits and safety tips'
+  ]},
 ];
-
-// Keywords for SEO targeting
-const targetKeywords = {
-  ethereum: ['ethereum price prediction', 'ETH analysis', 'ethereum gas fees', 'ethereum staking', 'ETH DeFi', 'ethereum layer 2'],
-  base: ['base network analysis', 'base chain crypto', 'base DeFi', 'base ecosystem'],
-  solana: ['solana price prediction', 'SOL analysis', 'solana staking', 'solana DeFi'],
-  bitcoin: ['bitcoin price prediction today', 'BTC analysis', 'bitcoin halving', 'bitcoin institutional'],
-  market: ['crypto market sentiment', 'crypto strength meter', 'on-chain analysis', 'market volume'],
-};
 
 // Internal links for Oracle Bull
 const internalLinks = [
-  { text: 'Ethereum analytics dashboard', url: '/chain/ethereum', keywords: ['ethereum', 'eth'] },
-  { text: 'Base network dashboard', url: '/chain/base', keywords: ['base'] },
-  { text: 'Solana analytics dashboard', url: '/chain/solana', keywords: ['solana', 'sol'] },
-  { text: 'real-time market dashboard', url: '/dashboard', keywords: ['market', 'bitcoin', 'btc'] },
-  { text: 'crypto strength meter', url: '/strength', keywords: ['strength', 'momentum'] },
-  { text: 'market event calendar', url: '/factory', keywords: ['events', 'calendar'] },
-  { text: 'sentiment analysis tools', url: '/sentiment', keywords: ['sentiment'] },
-  { text: 'token explorer', url: '/explorer', keywords: ['token', 'explore'] },
-  { text: 'wallet scanner', url: '/portfolio', keywords: ['wallet', 'portfolio'] },
+  { text: 'real-time market dashboard', url: '/dashboard' },
+  { text: 'blockchain analytics', url: '/chain/ethereum' },
+  { text: 'crypto strength meter', url: '/strength' },
+  { text: 'market event calendar', url: '/factory' },
+  { text: 'sentiment analysis', url: '/sentiment' },
+  { text: 'token explorer', url: '/explorer' },
 ];
 
 serve(async (req) => {
@@ -62,89 +83,106 @@ serve(async (req) => {
     
     // Return cached posts if same day
     if (cachedPosts && cacheDate === today) {
-      console.log('Returning cached insight posts');
+      console.log('Returning cached blog posts');
       return new Response(JSON.stringify(cachedPosts), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    console.log('Generating 20 daily insight articles...');
+    console.log('Generating 20 daily crypto blog posts...');
 
-    // Fetch market data for context
-    let marketContext = {
-      totalMarketCap: 3.2e12,
-      btcDominance: 54,
-      ethDominance: 17,
-      marketChange24h: 1.2,
+    // Fetch real market data and news
+    let marketData = {
       btcPrice: 97000,
       ethPrice: 3400,
       solPrice: 190,
+      totalMarketCap: 3.2e12,
+      btcDominance: 54,
+      marketChange24h: 1.5,
       trending: [] as any[],
+      news: [] as any[],
     };
 
     try {
-      const [trendingRes, globalRes] = await Promise.all([
+      const [trendingRes, globalRes, pricesRes] = await Promise.all([
         fetch('https://api.coingecko.com/api/v3/search/trending'),
         fetch('https://api.coingecko.com/api/v3/global'),
+        fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,dogecoin,pepe&vs_currencies=usd&include_24hr_change=true'),
       ]);
 
       if (trendingRes.ok) {
         const data = await trendingRes.json();
-        marketContext.trending = (data.coins?.slice(0, 5) || []).map((t: any) => ({
+        marketData.trending = (data.coins?.slice(0, 7) || []).map((t: any) => ({
           name: t.item?.name,
           symbol: t.item?.symbol,
+          price: t.item?.data?.price || 0,
           change: t.item?.data?.price_change_percentage_24h?.usd || 0,
+          marketCap: t.item?.data?.market_cap || 'N/A',
         }));
       }
 
       if (globalRes.ok) {
         const data = await globalRes.json();
-        marketContext.totalMarketCap = data.data?.total_market_cap?.usd || marketContext.totalMarketCap;
-        marketContext.btcDominance = data.data?.market_cap_percentage?.btc || marketContext.btcDominance;
-        marketContext.ethDominance = data.data?.market_cap_percentage?.eth || marketContext.ethDominance;
-        marketContext.marketChange24h = data.data?.market_cap_change_percentage_24h_usd || marketContext.marketChange24h;
+        marketData.totalMarketCap = data.data?.total_market_cap?.usd || marketData.totalMarketCap;
+        marketData.btcDominance = data.data?.market_cap_percentage?.btc || marketData.btcDominance;
+        marketData.marketChange24h = data.data?.market_cap_change_percentage_24h_usd || marketData.marketChange24h;
       }
 
-      // Get specific prices
-      const pricesRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd');
       if (pricesRes.ok) {
         const prices = await pricesRes.json();
-        marketContext.btcPrice = prices.bitcoin?.usd || marketContext.btcPrice;
-        marketContext.ethPrice = prices.ethereum?.usd || marketContext.ethPrice;
-        marketContext.solPrice = prices.solana?.usd || marketContext.solPrice;
+        marketData.btcPrice = prices.bitcoin?.usd || marketData.btcPrice;
+        marketData.ethPrice = prices.ethereum?.usd || marketData.ethPrice;
+        marketData.solPrice = prices.solana?.usd || marketData.solPrice;
+      }
+
+      // Fetch crypto news
+      try {
+        const newsRes = await fetch('https://api.coingecko.com/api/v3/status_updates?per_page=20');
+        if (newsRes.ok) {
+          const newsData = await newsRes.json();
+          marketData.news = newsData.status_updates?.slice(0, 10) || [];
+        }
+      } catch (e) {
+        console.log('News fetch failed, using generated content');
       }
     } catch (e) {
       console.log('Using fallback market data');
     }
 
     const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
+    const currentYear = new Date().getFullYear();
     
-    // Generate all 20 posts - use parallel batches for speed
+    // Generate all 20 posts
     const allTopics: { category: string; topic: string; index: number }[] = [];
     let postIndex = 0;
     
-    for (const distribution of topicDistribution) {
-      for (const topic of distribution.topics) {
-        allTopics.push({ category: distribution.category, topic, index: postIndex });
+    for (const cat of blogCategories) {
+      for (const topic of cat.topics) {
+        allTopics.push({ category: cat.category, topic, index: postIndex });
         postIndex++;
       }
     }
 
-    // Generate all posts using fallback for reliability and speed
+    // Generate posts using fallback for reliability
     const posts = allTopics.map(({ category, topic, index }) => 
-      createFallbackPost(category, topic, marketContext, index, dayOfYear)
+      createBlogPost(category, topic, marketData, index, dayOfYear, currentYear)
     );
 
-    console.log(`Generated ${posts.length} insight articles`);
+    console.log(`Generated ${posts.length} crypto blog posts`);
 
     const result = {
       posts,
       date: today,
       timestamp: Date.now(),
       totalArticles: posts.length,
+      marketSnapshot: {
+        btcPrice: marketData.btcPrice,
+        ethPrice: marketData.ethPrice,
+        totalMarketCap: marketData.totalMarketCap,
+        trending: marketData.trending.slice(0, 5),
+      }
     };
 
-    // Cache for the day
     cachedPosts = result;
     cacheDate = today;
 
@@ -152,7 +190,7 @@ serve(async (req) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error: unknown) {
-    console.error('Error generating insights:', error);
+    console.error('Error generating blog:', error);
     const fallbackPosts = generateAllFallbackPosts();
     return new Response(JSON.stringify({ 
       posts: fallbackPosts,
@@ -166,249 +204,411 @@ serve(async (req) => {
   }
 });
 
-async function generateAIPost(
-  category: string,
-  topic: string,
-  context: any, 
-  index: number,
-  dayOfYear: number
-) {
-  try {
-    // Get relevant internal link
-    const relevantLink = internalLinks.find(link => 
-      link.keywords.some(kw => topic.toLowerCase().includes(kw) || category.toLowerCase().includes(kw))
-    ) || internalLinks[0];
-
-    const prompt = `Write a professional 700-word crypto analysis article about "${topic}".
-
-Market context: BTC $${context.btcPrice.toLocaleString()}, ETH $${context.ethPrice.toLocaleString()}, SOL $${context.solPrice.toLocaleString()}. Total market cap $${(context.totalMarketCap / 1e12).toFixed(2)}T, BTC dominance ${context.btcDominance.toFixed(1)}%.
-
-Requirements:
-- SEO title under 60 characters targeting "${topic}"
-- 150-160 character meta description with primary keyword
-- 600-900 words, professional analyst tone
-- 4-6 H2 sections with detailed explanations
-- Include one data-driven analytical insight
-- Practical takeaway section
-- Natural reference to [${relevantLink.text}](${relevantLink.url}) for deeper analysis
-- No hype, no price guarantees, educational only
-
-Format as JSON:
-{
-  "title": "SEO title",
-  "slug": "url-slug-format",
-  "metaTitle": "Meta title under 60 chars",
-  "metaDescription": "Meta description 150-160 chars",
-  "content": "Full markdown article with ## H2 and ### H3 headings",
-  "takeaways": ["takeaway1", "takeaway2", "takeaway3", "takeaway4"],
-  "faqs": [
-    {"question": "Question about ${topic}?", "answer": "Detailed answer"},
-    {"question": "Second question?", "answer": "Detailed answer"},
-    {"question": "Third question?", "answer": "Detailed answer"}
-  ]
-}`;
-
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [
-          { 
-            role: 'system', 
-            content: 'You are an expert crypto analyst writing SEO-optimized educational content. Write like a professional financial analyst, not AI. No emojis, no hype, factual and educational.' 
-          },
-          { role: 'user', content: prompt },
-        ],
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-
-    const data = await response.json();
-    const aiContent = data.choices?.[0]?.message?.content || '';
-    
-    const jsonMatch = aiContent.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      const parsed = JSON.parse(jsonMatch[0]);
-      const content = parsed.content || '';
-      const wordCount = content.split(/\s+/).length;
-      
-      return {
-        id: `insight-${dayOfYear}-${index}`,
-        title: parsed.title || `${category}: ${topic}`,
-        slug: parsed.slug || generateSlug(parsed.title || topic),
-        metaTitle: (parsed.metaTitle || parsed.title || topic).substring(0, 60),
-        metaDescription: (parsed.metaDescription || content.substring(0, 155) + '...').substring(0, 160),
-        content,
-        takeaways: parsed.takeaways || generateDefaultTakeaways(topic, category),
-        faqs: parsed.faqs || generateDefaultFAQs(topic, category),
-        category,
-        readTime: `${Math.max(3, Math.ceil(wordCount / 200))} min`,
-        wordCount: Math.max(wordCount, 600),
-        publishedAt: new Date().toISOString(),
-        imageUrl: getCategoryImage(category),
-        primaryKeyword: topic.toLowerCase(),
-        secondaryKeywords: getSecondaryKeywords(category),
-      };
-    }
-    
-    throw new Error('Failed to parse AI response');
-  } catch (error: unknown) {
-    console.error('AI post error:', error);
-    return createFallbackPost(category, topic, context, index, dayOfYear);
-  }
-}
-
-function createFallbackPost(category: string, topic: string, context: any, index: number, dayOfYear: number) {
-  const content = generateDetailedContent(category, topic, context);
+function createBlogPost(category: string, topic: string, market: any, index: number, dayOfYear: number, year: number) {
+  const content = generateBlogContent(category, topic, market, year);
   const wordCount = content.split(/\s+/).length;
+  const link = internalLinks[index % internalLinks.length];
   
   return {
-    id: `insight-${dayOfYear}-${index}`,
-    title: generateSEOTitle(topic),
+    id: `blog-${dayOfYear}-${index}`,
+    title: generateTitle(topic, year),
     slug: generateSlug(topic),
-    metaTitle: `${topic} | Oracle Bull Analysis`.substring(0, 60),
-    metaDescription: `Expert analysis of ${topic}. Understand key trends, metrics, and what it means for crypto traders and investors.`.substring(0, 160),
+    metaTitle: `${topic} | Oracle Bull Crypto Blog`.substring(0, 60),
+    metaDescription: `${topic}. Get the latest updates, news, and insights on cryptocurrency markets, DeFi, NFTs, and more.`.substring(0, 160),
     content,
-    takeaways: generateDefaultTakeaways(topic, category),
-    faqs: generateDefaultFAQs(topic, category),
+    takeaways: generateTakeaways(category, topic),
+    faqs: generateFAQs(topic, category),
     category,
     readTime: `${Math.ceil(wordCount / 200)} min`,
     wordCount,
     publishedAt: new Date().toISOString(),
     imageUrl: getCategoryImage(category),
     primaryKeyword: topic.toLowerCase(),
-    secondaryKeywords: getSecondaryKeywords(category),
+    secondaryKeywords: getKeywords(category),
+    internalLink: link,
   };
 }
 
-function generateSEOTitle(topic: string): string {
-  const year = new Date().getFullYear();
-  const titles = [
-    `${topic}: Complete Analysis Guide`,
-    `Understanding ${topic} in ${year}`,
-    `${topic}: What Traders Need to Know`,
-    `${topic} Analysis and Market Insights`,
+function generateTitle(topic: string, year: number): string {
+  const formats = [
+    `${topic} - ${year} Update`,
+    `${topic}: What You Need to Know`,
+    `${topic} - Latest Developments`,
+    `${topic} Today: Key Updates`,
   ];
-  return titles[Math.floor(Math.random() * titles.length)].substring(0, 60);
+  return formats[Math.floor(Math.random() * formats.length)].substring(0, 60);
 }
 
-function generateDetailedContent(category: string, topic: string, context: any): string {
-  const btcPrice = context.btcPrice?.toLocaleString() || '97,000';
-  const ethPrice = context.ethPrice?.toLocaleString() || '3,400';
-  const solPrice = context.solPrice?.toLocaleString() || '190';
-  const marketCap = ((context.totalMarketCap || 3.2e12) / 1e12).toFixed(2);
-  const btcDom = (context.btcDominance || 54).toFixed(1);
-  const change = context.marketChange24h > 0 ? 'positive' : 'negative';
+function generateBlogContent(category: string, topic: string, market: any, year: number): string {
+  const btcPrice = market.btcPrice?.toLocaleString() || '97,000';
+  const ethPrice = market.ethPrice?.toLocaleString() || '3,400';
+  const solPrice = market.solPrice?.toLocaleString() || '190';
+  const marketCap = ((market.totalMarketCap || 3.2e12) / 1e12).toFixed(2);
+  const btcDom = (market.btcDominance || 54).toFixed(1);
+  const change = market.marketChange24h > 0 ? `+${market.marketChange24h.toFixed(2)}%` : `${market.marketChange24h.toFixed(2)}%`;
+  const trendingList = market.trending?.slice(0, 5).map((t: any) => `${t.name} (${t.symbol})`).join(', ') || 'Bitcoin, Ethereum, Solana';
   
-  // Get relevant internal link
-  const relevantLink = internalLinks.find(link => 
-    link.keywords.some(kw => topic.toLowerCase().includes(kw) || category.toLowerCase().includes(kw))
-  ) || internalLinks[0];
+  const link = internalLinks[Math.floor(Math.random() * internalLinks.length)];
 
-  return `## Introduction to ${topic}
+  // Different content styles based on category
+  if (category === 'Breaking News') {
+    return `## ${topic}
 
-In today's cryptocurrency landscape with Bitcoin at $${btcPrice}, Ethereum at $${ethPrice}, and Solana at $${solPrice}, understanding ${topic.toLowerCase()} has become essential for informed market participation. The total market capitalization of $${marketCap} trillion and Bitcoin dominance at ${btcDom}% provide important context for this analysis.
+The cryptocurrency market continues to evolve rapidly in ${year}, with Bitcoin trading at $${btcPrice} and Ethereum at $${ethPrice}. The total market capitalization stands at $${marketCap} trillion, with a ${change} change over the last 24 hours.
 
-This comprehensive guide examines the key aspects of ${topic.toLowerCase()}, offering actionable insights for traders and investors navigating current market conditions.
+### Current Market Overview
 
-## Understanding the Core Fundamentals
+Today's crypto landscape shows significant activity across multiple sectors. Bitcoin dominance remains at ${btcDom}%, while trending coins include ${trendingList}. Major exchanges are reporting elevated trading volumes as market participants respond to the latest developments.
 
-${topic} represents a critical analytical framework within the cryptocurrency ecosystem. At its foundation, this concept enables market participants to better understand price dynamics, identify emerging opportunities, and implement effective risk management strategies.
+### Key Developments to Watch
 
-The current ${change} market environment shapes how ${topic.toLowerCase()} manifests in real trading scenarios. Understanding these relationships provides valuable perspective for both short-term traders and long-term investors.
+Several important events are shaping the market today:
 
-### Key Metrics and Indicators
+- **Regulatory Updates**: Government agencies continue to refine their approach to cryptocurrency oversight, with new guidelines expected to impact both retail and institutional participants
+- **Exchange Activity**: Major trading platforms are seeing increased volume, with particular interest in trending altcoins and meme coins
+- **Institutional Moves**: Large-scale investors continue to show interest in digital assets, with reports of significant accumulation in key tokens
 
-When analyzing ${topic.toLowerCase()}, several quantitative factors warrant close attention:
+### What This Means for Traders
 
-- **Market Structure**: How price levels form, test, and evolve over different timeframes
-- **Volume Dynamics**: The relationship between trading activity and price momentum
-- **Network Activity**: On-chain metrics that provide insight into actual usage
-- **Participant Behavior**: How different market actors influence price discovery
-- **Technical Indicators**: Quantitative tools for systematic analysis
+For those actively participating in the market, these developments present both opportunities and considerations. The [${link.text}](${link.url}) provides real-time data to help track these movements.
 
-## Practical Application Framework
+Market volatility remains a constant factor, and participants should stay informed about the latest news and developments. Whether you're a long-term holder or an active trader, understanding these dynamics is crucial for making informed decisions.
 
-For traders seeking to incorporate ${topic.toLowerCase()} into their analytical toolkit, a structured approach yields the best results. The [${relevantLink.text}](${relevantLink.url}) provides real-time data for monitoring these patterns.
+### Looking Ahead
 
-### Step-by-Step Analysis Process
+The crypto market in ${year} continues to mature, with increasing integration into traditional finance and growing mainstream adoption. Stay tuned for more updates as the situation develops.
 
-1. **Identify Reference Points**: Establish key levels based on historical data and current market structure
-2. **Monitor Volume Patterns**: Validate price movements with corresponding activity metrics
-3. **Track Sentiment Indicators**: Gauge market participant positioning and expectations
-4. **Define Risk Parameters**: Set clear entry, exit, and position sizing rules before execution
-5. **Review and Adapt**: Continuously refine approach based on market feedback
+*This content is for informational purposes only and should not be considered financial advice.*`;
+  }
 
-### Common Patterns to Watch
+  if (category === 'Bitcoin & Ethereum') {
+    return `## ${topic}
 
-Market participants frequently observe recurring patterns related to ${topic.toLowerCase()}:
+Bitcoin is currently trading at $${btcPrice}, maintaining its position as the leading cryptocurrency with ${btcDom}% market dominance. Ethereum follows at $${ethPrice}, continuing to power the majority of DeFi and NFT activity in the ecosystem.
 
-- Accumulation phases where larger players build positions gradually over time
-- Distribution phases that typically precede significant directional price moves
-- Consolidation periods that eventually resolve into trending movements
-- Reversal signals that indicate potential changes in prevailing market direction
+### Bitcoin Market Analysis
 
-## Data-Driven Market Insights
+BTC has shown resilience in ${year}, with institutional interest remaining strong. Key factors influencing Bitcoin's price include:
 
-Current market conditions with Bitcoin dominance at ${btcDom}% and total capitalization of $${marketCap} trillion create specific dynamics for ${topic.toLowerCase()}. The interplay between ${category.toLowerCase()} factors and broader market trends reveals actionable opportunities.
+- **Whale Activity**: Large holders continue to accumulate, with on-chain data showing steady growth in wallets holding 1,000+ BTC
+- **Mining Dynamics**: The network hashrate remains at all-time highs, indicating strong miner confidence
+- **ETF Flows**: Bitcoin ETFs continue to see significant inflows from traditional investors
 
-Analysis of recent data suggests several key observations:
+### Ethereum Network Updates
 
-- Network activity metrics remain elevated relative to historical averages
-- Trading volume patterns indicate sustained institutional participation
-- Cross-market correlations continue to influence price behavior
-- Sentiment indicators suggest a cautiously constructive outlook
+Ethereum's ecosystem continues to expand with ongoing technical improvements:
 
-## Risk Management Considerations
+- **Layer 2 Adoption**: Solutions like Arbitrum, Optimism, and Base are seeing record transaction volumes
+- **Staking Growth**: Over 30 million ETH is now staked, providing network security and attractive yields
+- **DeFi Development**: New protocols continue to launch, expanding the possibilities for decentralized finance
 
-Effective analysis of ${topic.toLowerCase()} requires acknowledgment of inherent market risks:
+### Market Trends
 
-- Markets can behave unexpectedly despite thorough fundamental and technical analysis
-- Historical patterns may not repeat identically under different market conditions
-- Liquidity variations can significantly impact execution quality and slippage
-- External macroeconomic factors can override purely technical considerations
-- Position sizing and portfolio management remain paramount regardless of conviction
+The total crypto market cap of $${marketCap} trillion reflects growing confidence in digital assets. Trending tokens today include ${trendingList}, showing diverse interest across the market.
 
-## Practical Takeaways
+Track live prices and analytics on the [${link.text}](${link.url}) for real-time market insights.
 
-${topic} provides a valuable analytical framework for cryptocurrency market participants. By understanding fundamental concepts, applying structured analytical processes, and maintaining awareness of current conditions, traders can enhance their decision-making quality.
+### Technical Outlook
 
-The key to successful application lies in consistent methodology, disciplined risk management, and continuous learning as market conditions evolve. Whether you're a beginner or experienced trader, incorporating these principles provides meaningful perspective on market dynamics.
+Both Bitcoin and Ethereum are showing key technical levels that traders are watching closely. Support and resistance zones remain important for short-term trading decisions, while long-term holders focus on fundamental developments.
 
-Remember that this analysis is for educational purposes only and should not be considered financial advice. Always conduct your own research and consider consulting with qualified financial professionals before making investment decisions.`;
+*This analysis is for educational purposes only. Always do your own research before making investment decisions.*`;
+  }
+
+  if (category === 'Altcoins & Projects') {
+    return `## ${topic}
+
+The altcoin market is showing significant activity in ${year}, with many projects seeing renewed interest. While Bitcoin dominates at ${btcDom}%, altcoins continue to offer unique opportunities and innovations.
+
+### Trending Coins Today
+
+The following tokens are generating the most buzz: ${trendingList}. These projects range from established layer-1 blockchains to emerging meme coins capturing community attention.
+
+### New Project Launches
+
+Several new projects have launched recently, offering innovative solutions:
+
+- **DeFi Innovations**: New decentralized exchanges and lending protocols are improving capital efficiency
+- **Layer 2 Projects**: Scaling solutions continue to attract developers and users seeking lower fees
+- **AI x Crypto**: The intersection of artificial intelligence and blockchain is producing interesting new projects
+- **Real-World Assets**: Tokenization of traditional assets is gaining momentum
+
+### What to Watch
+
+When evaluating new altcoin projects, consider these factors:
+
+1. **Team and Development**: Active GitHub commits and transparent team communication
+2. **Tokenomics**: Fair distribution and sustainable token economics
+3. **Use Case**: Real utility beyond speculation
+4. **Community**: Active and growing user base
+5. **Partnerships**: Strategic relationships with established players
+
+### Market Snapshot
+
+With the total market cap at $${marketCap} trillion and ETH at $${ethPrice}, there's significant liquidity flowing through altcoin markets. Use the [${link.text}](${link.url}) to research tokens before investing.
+
+### Risk Considerations
+
+Altcoins typically carry higher risk than Bitcoin and Ethereum. Many projects fail, and volatility can be extreme. Never invest more than you can afford to lose, and always diversify your portfolio.
+
+*This content is informational only and not financial advice.*`;
+  }
+
+  if (category === 'DeFi & Yield') {
+    return `## ${topic}
+
+Decentralized Finance continues to be one of the most active sectors in crypto, with billions of dollars locked in various protocols. In ${year}, DeFi offers numerous opportunities for yield generation and financial innovation.
+
+### Current DeFi Landscape
+
+The DeFi ecosystem has matured significantly:
+
+- **Total Value Locked**: Billions remain deployed across lending, borrowing, and liquidity protocols
+- **DEX Volume**: Decentralized exchanges are processing significant daily volume
+- **Yield Opportunities**: Staking, liquidity provision, and lending continue to offer returns
+- **Cross-Chain DeFi**: Bridge protocols enable seamless asset movement between chains
+
+### Top Yield Strategies
+
+Current opportunities for earning yield include:
+
+1. **ETH Staking**: Earn approximately 3-5% APY by staking Ethereum
+2. **Liquid Staking**: Protocols like Lido offer staking with maintained liquidity
+3. **Stablecoin Yields**: Lending platforms offer yields on USDC, USDT, and DAI
+4. **Liquidity Provision**: Provide liquidity to DEXs for trading fee rewards
+5. **Yield Aggregators**: Automated protocols optimize yields across platforms
+
+### New Protocol Updates
+
+Several major DeFi protocols have announced updates:
+
+- Enhanced security measures following past exploits
+- Improved user interfaces for better accessibility
+- New features expanding protocol capabilities
+- Governance proposals shaping protocol direction
+
+### Risk Management
+
+DeFi carries specific risks including smart contract vulnerabilities, impermanent loss, and protocol failures. Track your positions using the [${link.text}](${link.url}) and always use audited protocols.
+
+With BTC at $${btcPrice} and ETH at $${ethPrice}, DeFi offers alternatives to traditional yield strategies but requires careful research.
+
+*DeFi investments carry significant risk. This is not financial advice.*`;
+  }
+
+  if (category === 'NFTs & Gaming') {
+    return `## ${topic}
+
+The NFT and Web3 gaming sectors continue to evolve in ${year}, with new collections, games, and use cases emerging regularly. Despite market fluctuations, builders remain active in these spaces.
+
+### NFT Market Overview
+
+The NFT landscape has shifted from pure speculation toward utility:
+
+- **Profile Pictures**: Blue-chip collections maintain cultural significance
+- **Digital Art**: Artists continue finding new audiences through blockchain
+- **Music NFTs**: Musicians are exploring direct-to-fan distribution
+- **Membership Tokens**: NFTs as access passes to communities and events
+
+### Trending Collections
+
+Top collections by volume and activity show diverse interests from digital art to gaming assets. Secondary market activity indicates ongoing collector interest in established and emerging projects.
+
+### Web3 Gaming Updates
+
+The blockchain gaming sector continues to develop:
+
+- **Play-to-Earn Evolution**: Games are focusing more on fun with earning as a bonus
+- **AAA Development**: Major studios are exploring blockchain integration
+- **Metaverse Projects**: Virtual worlds continue building despite broader market conditions
+- **Gaming Infrastructure**: Improved onboarding and reduced friction for mainstream gamers
+
+### What's Coming
+
+Upcoming developments to watch:
+
+1. New game launches with improved gameplay mechanics
+2. Enhanced NFT utility across platforms
+3. Better integration between Web2 and Web3 gaming
+4. Reduced transaction costs through Layer 2 solutions
+
+### Market Context
+
+With BTC at $${btcPrice} and the total crypto market at $${marketCap} trillion, NFTs and gaming represent a smaller but innovative segment. Use the [${link.text}](${link.url}) to track related tokens.
+
+*NFTs can be highly speculative. Do your own research before purchasing.*`;
+  }
+
+  if (category === 'Airdrops & Opportunities') {
+    return `## ${topic}
+
+Crypto airdrops remain one of the most exciting ways to earn free tokens in ${year}. By participating in protocol testing, providing liquidity, or being an active community member, users can potentially qualify for valuable token distributions.
+
+### How Airdrops Work
+
+Airdrops reward early adopters and active participants:
+
+- **Retroactive Rewards**: Protocols distribute tokens to past users
+- **Testnet Participation**: Using beta versions before mainnet launch
+- **Liquidity Provision**: Supplying liquidity to new protocols
+- **Governance Participation**: Voting and engaging with DAOs
+- **Social Tasks**: Following, sharing, and community engagement
+
+### Current Opportunities
+
+Several protocols are in stages that historically have led to airdrops:
+
+1. **Layer 2 Networks**: Use bridges and dApps on new L2s
+2. **New DEXs**: Provide liquidity and trade on emerging exchanges
+3. **Cross-Chain Protocols**: Interact with bridge and messaging protocols
+4. **DeFi Protocols**: Test new lending and borrowing platforms
+
+### Passive Income Strategies
+
+Beyond airdrops, consider these earning methods:
+
+- **Staking**: Lock tokens to earn rewards (ETH staking yields ~4-5% APY)
+- **Lending**: Supply assets to lending protocols for interest
+- **Liquidity Mining**: Earn additional tokens for providing liquidity
+- **Running Nodes**: Technical users can operate validator nodes
+
+### Safety Tips
+
+Protect yourself from airdrop scams:
+
+- Never share your seed phrase
+- Verify official links through trusted sources
+- Use separate wallets for airdrop hunting
+- Beware of phishing websites
+
+Track potential opportunities using the [${link.text}](${link.url}). With BTC at $${btcPrice}, successful airdrops can significantly boost your portfolio.
+
+*Airdrop eligibility is never guaranteed. This is not financial advice.*`;
+  }
+
+  if (category === 'Security & Tech') {
+    return `## ${topic}
+
+Security remains paramount in the crypto space in ${year}. With billions at stake across DeFi protocols and exchanges, understanding security best practices is essential for all participants.
+
+### Recent Security Developments
+
+The crypto security landscape continues to evolve:
+
+- **Audit Standards**: More protocols are undergoing multiple security audits
+- **Bug Bounties**: Major protocols offer significant rewards for vulnerability discoveries
+- **Insurance Options**: DeFi insurance protocols are growing in adoption
+- **Self-Custody Solutions**: Hardware wallet technology continues to improve
+
+### Common Threats to Watch
+
+Protect yourself from these common attack vectors:
+
+1. **Phishing**: Fake websites and emails targeting crypto users
+2. **Smart Contract Exploits**: Vulnerabilities in protocol code
+3. **Social Engineering**: Scammers impersonating support or team members
+4. **Malware**: Clipboard hijackers and wallet-draining software
+5. **Rug Pulls**: Projects abandoning users after raising funds
+
+### Security Best Practices
+
+Essential steps for protecting your crypto:
+
+- **Hardware Wallets**: Store significant holdings offline
+- **Separate Wallets**: Use different wallets for different purposes
+- **Verify Everything**: Double-check addresses and transaction details
+- **Regular Audits**: Review your wallet permissions and revoke unused approvals
+- **Stay Updated**: Follow security researchers and official announcements
+
+### Technical Developments
+
+Blockchain technology continues advancing security:
+
+- Formal verification of smart contracts
+- Multi-party computation for enhanced privacy
+- Zero-knowledge proofs for verification without exposure
+- Account abstraction for improved wallet security
+
+With the total market cap at $${marketCap} trillion and BTC at $${btcPrice}, protecting your assets is crucial. Use the [${link.text}](${link.url}) to stay informed about market conditions.
+
+*Security is your responsibility. Never share private keys or seed phrases.*`;
+  }
+
+  // Default comprehensive content
+  return `## ${topic}
+
+The cryptocurrency market in ${year} continues to offer diverse opportunities across multiple sectors. With Bitcoin at $${btcPrice}, Ethereum at $${ethPrice}, and Solana at $${solPrice}, the ecosystem remains active and dynamic.
+
+### Current Market Conditions
+
+Today's market shows the following characteristics:
+
+- **Total Market Cap**: $${marketCap} trillion
+- **BTC Dominance**: ${btcDom}%
+- **24h Change**: ${change}
+- **Trending**: ${trendingList}
+
+### Key Developments
+
+Several important trends are shaping the crypto landscape:
+
+1. **Institutional Adoption**: More traditional finance entities are entering the space
+2. **Regulatory Clarity**: Governments are providing clearer frameworks
+3. **Technical Innovation**: New scaling and privacy solutions are launching
+4. **DeFi Evolution**: Decentralized finance protocols are maturing
+5. **NFT Utility**: Non-fungible tokens are finding new use cases
+
+### What to Watch
+
+Market participants should monitor:
+
+- Major protocol upgrades and launches
+- Regulatory announcements from key jurisdictions
+- Institutional investment flows
+- On-chain metrics and network activity
+- Social sentiment and community developments
+
+### Practical Insights
+
+For those actively participating in the market, consider:
+
+- Diversifying across multiple assets and sectors
+- Staying informed through reliable news sources
+- Using proper security practices for all holdings
+- Understanding the risks inherent in crypto investments
+
+Track all these developments using the [${link.text}](${link.url}) for comprehensive market data and analytics.
+
+### Looking Forward
+
+The crypto space continues to evolve rapidly. Staying informed and adaptable is key to navigating this dynamic market successfully.
+
+*This content is for informational purposes only and should not be considered financial advice. Always conduct your own research.*`;
 }
 
-function generateDefaultTakeaways(topic: string, category: string): string[] {
+function generateTakeaways(category: string, topic: string): string[] {
   return [
-    `Understanding ${topic.toLowerCase()} fundamentals is essential for informed decision-making`,
-    `Current market conditions create specific dynamics for ${category.toLowerCase()} analysis`,
-    `Apply structured analytical frameworks to evaluate opportunities systematically`,
-    `Monitor relevant metrics and indicators for ${category.toLowerCase()} insights`,
-    `Practice disciplined risk management regardless of market conviction`,
+    `Stay updated on the latest ${category.toLowerCase()} developments`,
+    `Use proper security practices when interacting with crypto protocols`,
+    `Diversify your approach and never invest more than you can afford to lose`,
+    `Track market conditions using reliable analytics tools`,
   ];
 }
 
-function generateDefaultFAQs(topic: string, category: string): { question: string; answer: string }[] {
+function generateFAQs(topic: string, category: string): { question: string; answer: string }[] {
   return [
     {
-      question: `What is ${topic.toLowerCase()} in cryptocurrency markets?`,
-      answer: `${topic} refers to analytical concepts within ${category.toLowerCase()} that help traders understand market dynamics, identify opportunities, and make data-driven decisions based on objective metrics and indicators.`
+      question: `What is ${topic}?`,
+      answer: `${topic} refers to current developments and updates in the ${category.toLowerCase()} sector of the cryptocurrency market. Staying informed about these topics helps market participants make better decisions.`
     },
     {
-      question: `Why is ${topic.toLowerCase()} important for crypto traders?`,
-      answer: `Understanding ${topic.toLowerCase()} is essential because it provides actionable insights into market behavior, helps identify potential opportunities and risks, and enables more informed trading decisions in volatile cryptocurrency markets.`
+      question: `How can I stay updated on ${category.toLowerCase()}?`,
+      answer: `Follow reliable crypto news sources, use analytics platforms like Oracle Bull, join community channels, and monitor on-chain data for the most accurate and timely information.`
     },
     {
-      question: `How can I apply ${topic.toLowerCase()} analysis to my trading?`,
-      answer: `Apply ${topic.toLowerCase()} analysis by first establishing reference points, monitoring relevant volume and activity metrics, tracking sentiment indicators, and defining clear risk management parameters before executing any trades.`
-    },
+      question: `Is ${category.toLowerCase()} a good investment opportunity?`,
+      answer: `All cryptocurrency investments carry significant risk. While ${category.toLowerCase()} offers opportunities, it's essential to do thorough research, understand the risks, and never invest more than you can afford to lose.`
+    }
   ];
 }
 
@@ -423,44 +623,42 @@ function generateSlug(text: string): string {
 
 function getCategoryImage(category: string): string {
   const images: Record<string, string> = {
-    'Ethereum Analysis': '/placeholder.svg',
-    'Base Network': '/placeholder.svg',
-    'Solana Analysis': '/placeholder.svg',
-    'Bitcoin Analysis': '/placeholder.svg',
-    'Market Analysis': '/placeholder.svg',
+    'Breaking News': 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800',
+    'Bitcoin & Ethereum': 'https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=800',
+    'Altcoins & Projects': 'https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=800',
+    'DeFi & Yield': 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800',
+    'NFTs & Gaming': 'https://images.unsplash.com/photo-1569428034239-f9565e32e224?w=800',
+    'Airdrops & Opportunities': 'https://images.unsplash.com/photo-1516245834210-c4c142787335?w=800',
+    'Security & Tech': 'https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?w=800',
   };
-  return images[category] || '/placeholder.svg';
+  return images[category] || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800';
 }
 
-function getSecondaryKeywords(category: string): string[] {
+function getKeywords(category: string): string[] {
   const keywords: Record<string, string[]> = {
-    'Ethereum Analysis': ['ethereum', 'eth', 'defi', 'layer 2', 'staking'],
-    'Base Network': ['base', 'layer 2', 'coinbase', 'base chain'],
-    'Solana Analysis': ['solana', 'sol', 'high speed', 'low fees'],
-    'Bitcoin Analysis': ['bitcoin', 'btc', 'halving', 'institutional'],
-    'Market Analysis': ['crypto market', 'sentiment', 'volume', 'strength'],
+    'Breaking News': ['crypto news', 'cryptocurrency updates', 'market news'],
+    'Bitcoin & Ethereum': ['bitcoin', 'ethereum', 'BTC', 'ETH', 'crypto prices'],
+    'Altcoins & Projects': ['altcoins', 'new crypto', 'token launches', 'crypto projects'],
+    'DeFi & Yield': ['DeFi', 'yield farming', 'staking', 'liquidity'],
+    'NFTs & Gaming': ['NFTs', 'Web3 gaming', 'metaverse', 'digital collectibles'],
+    'Airdrops & Opportunities': ['crypto airdrops', 'free crypto', 'staking rewards'],
+    'Security & Tech': ['crypto security', 'blockchain technology', 'smart contracts'],
   };
-  return keywords[category] || ['crypto', 'blockchain', 'analysis'];
+  return keywords[category] || ['cryptocurrency', 'blockchain', 'crypto'];
 }
 
 function generateAllFallbackPosts() {
   const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
-  const context = { 
-    totalMarketCap: 3.2e12, 
-    btcDominance: 54, 
-    marketChange24h: 1.2,
-    btcPrice: 97000,
-    ethPrice: 3400,
-    solPrice: 190,
-  };
+  const year = new Date().getFullYear();
+  const market = { btcPrice: 97000, ethPrice: 3400, solPrice: 190, totalMarketCap: 3.2e12, btcDominance: 54, marketChange24h: 1.5, trending: [] };
   
   const posts: any[] = [];
-  let postIndex = 0;
+  let index = 0;
   
-  for (const distribution of topicDistribution) {
-    for (const topic of distribution.topics) {
-      posts.push(createFallbackPost(distribution.category, topic, context, postIndex, dayOfYear));
-      postIndex++;
+  for (const cat of blogCategories) {
+    for (const topic of cat.topics) {
+      posts.push(createBlogPost(cat.category, topic, market, index, dayOfYear, year));
+      index++;
     }
   }
   
