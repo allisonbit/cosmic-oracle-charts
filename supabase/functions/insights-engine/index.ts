@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -7,10 +8,11 @@ const corsHeaders = {
 };
 
 const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
-// Cache for daily posts
-let cachedPosts: any = null;
-let cacheDate: string = '';
+// Cache for today's generation check
+let todayGenerated: string = '';
 
 // Comprehensive crypto blog categories - 20 articles daily covering EVERYTHING
 const blogCategories = [
@@ -79,124 +81,175 @@ serve(async (req) => {
   }
 
   try {
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
     const today = new Date().toISOString().split('T')[0];
     
-    // Return cached posts if same day
-    if (cachedPosts && cacheDate === today) {
-      console.log('Returning cached blog posts');
-      return new Response(JSON.stringify(cachedPosts), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
+    // Check if we already generated today's articles
+    const { data: todayArticles } = await supabase
+      .from('blog_articles')
+      .select('id')
+      .eq('source', 'insights')
+      .gte('published_at', `${today}T00:00:00Z`)
+      .limit(1);
 
-    console.log('Generating 20 daily crypto blog posts...');
+    const needsGeneration = !todayArticles || todayArticles.length === 0;
 
-    // Fetch real market data and news
-    let marketData = {
-      btcPrice: 97000,
-      ethPrice: 3400,
-      solPrice: 190,
-      totalMarketCap: 3.2e12,
-      btcDominance: 54,
-      marketChange24h: 1.5,
-      trending: [] as any[],
-      news: [] as any[],
-    };
+    if (needsGeneration && todayGenerated !== today) {
+      console.log('Generating 20 new daily crypto blog posts...');
 
-    try {
-      const [trendingRes, globalRes, pricesRes] = await Promise.all([
-        fetch('https://api.coingecko.com/api/v3/search/trending'),
-        fetch('https://api.coingecko.com/api/v3/global'),
-        fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,dogecoin,pepe&vs_currencies=usd&include_24hr_change=true'),
-      ]);
+      // Fetch real market data
+      let marketData = {
+        btcPrice: 97000,
+        ethPrice: 3400,
+        solPrice: 190,
+        totalMarketCap: 3.2e12,
+        btcDominance: 54,
+        marketChange24h: 1.5,
+        trending: [] as any[],
+        news: [] as any[],
+      };
 
-      if (trendingRes.ok) {
-        const data = await trendingRes.json();
-        marketData.trending = (data.coins?.slice(0, 7) || []).map((t: any) => ({
-          name: t.item?.name,
-          symbol: t.item?.symbol,
-          price: t.item?.data?.price || 0,
-          change: t.item?.data?.price_change_percentage_24h?.usd || 0,
-          marketCap: t.item?.data?.market_cap || 'N/A',
-        }));
-      }
-
-      if (globalRes.ok) {
-        const data = await globalRes.json();
-        marketData.totalMarketCap = data.data?.total_market_cap?.usd || marketData.totalMarketCap;
-        marketData.btcDominance = data.data?.market_cap_percentage?.btc || marketData.btcDominance;
-        marketData.marketChange24h = data.data?.market_cap_change_percentage_24h_usd || marketData.marketChange24h;
-      }
-
-      if (pricesRes.ok) {
-        const prices = await pricesRes.json();
-        marketData.btcPrice = prices.bitcoin?.usd || marketData.btcPrice;
-        marketData.ethPrice = prices.ethereum?.usd || marketData.ethPrice;
-        marketData.solPrice = prices.solana?.usd || marketData.solPrice;
-      }
-
-      // Fetch crypto news
       try {
-        const newsRes = await fetch('https://api.coingecko.com/api/v3/status_updates?per_page=20');
-        if (newsRes.ok) {
-          const newsData = await newsRes.json();
-          marketData.news = newsData.status_updates?.slice(0, 10) || [];
+        const [trendingRes, globalRes, pricesRes] = await Promise.all([
+          fetch('https://api.coingecko.com/api/v3/search/trending'),
+          fetch('https://api.coingecko.com/api/v3/global'),
+          fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,dogecoin,pepe&vs_currencies=usd&include_24hr_change=true'),
+        ]);
+
+        if (trendingRes.ok) {
+          const data = await trendingRes.json();
+          marketData.trending = (data.coins?.slice(0, 7) || []).map((t: any) => ({
+            name: t.item?.name,
+            symbol: t.item?.symbol,
+            price: t.item?.data?.price || 0,
+            change: t.item?.data?.price_change_percentage_24h?.usd || 0,
+            marketCap: t.item?.data?.market_cap || 'N/A',
+          }));
+        }
+
+        if (globalRes.ok) {
+          const data = await globalRes.json();
+          marketData.totalMarketCap = data.data?.total_market_cap?.usd || marketData.totalMarketCap;
+          marketData.btcDominance = data.data?.market_cap_percentage?.btc || marketData.btcDominance;
+          marketData.marketChange24h = data.data?.market_cap_change_percentage_24h_usd || marketData.marketChange24h;
+        }
+
+        if (pricesRes.ok) {
+          const prices = await pricesRes.json();
+          marketData.btcPrice = prices.bitcoin?.usd || marketData.btcPrice;
+          marketData.ethPrice = prices.ethereum?.usd || marketData.ethPrice;
+          marketData.solPrice = prices.solana?.usd || marketData.solPrice;
         }
       } catch (e) {
-        console.log('News fetch failed, using generated content');
+        console.log('Using fallback market data');
       }
-    } catch (e) {
-      console.log('Using fallback market data');
+
+      const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
+      const currentYear = new Date().getFullYear();
+      
+      // Generate all 20 posts for today
+      const allTopics: { category: string; topic: string; index: number }[] = [];
+      let postIndex = 0;
+      
+      for (const cat of blogCategories) {
+        for (const topic of cat.topics) {
+          allTopics.push({ category: cat.category, topic, index: postIndex });
+          postIndex++;
+        }
+      }
+
+      const newPosts = allTopics.map(({ category, topic, index }) => 
+        createBlogPost(category, topic, marketData, index, dayOfYear, currentYear)
+      );
+
+      // Save new posts to database
+      const articlesToInsert = newPosts.map(post => ({
+        article_id: post.id,
+        title: post.title,
+        slug: post.slug,
+        meta_title: post.metaTitle,
+        meta_description: post.metaDescription,
+        content: post.content,
+        takeaways: post.takeaways,
+        faqs: post.faqs,
+        category: post.category,
+        read_time: post.readTime,
+        word_count: post.wordCount,
+        published_at: post.publishedAt,
+        image_url: post.imageUrl,
+        primary_keyword: post.primaryKeyword,
+        secondary_keywords: post.secondaryKeywords,
+        internal_link: post.internalLink,
+        source: 'insights'
+      }));
+
+      const { error: insertError } = await supabase
+        .from('blog_articles')
+        .upsert(articlesToInsert, { onConflict: 'article_id' });
+
+      if (insertError) {
+        console.error('Error saving articles:', insertError);
+      } else {
+        console.log(`Saved ${newPosts.length} new articles to database`);
+        todayGenerated = today;
+      }
     }
 
-    const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
-    const currentYear = new Date().getFullYear();
-    
-    // Generate all 20 posts
-    const allTopics: { category: string; topic: string; index: number }[] = [];
-    let postIndex = 0;
-    
-    for (const cat of blogCategories) {
-      for (const topic of cat.topics) {
-        allTopics.push({ category: cat.category, topic, index: postIndex });
-        postIndex++;
-      }
+    // Fetch ALL articles from database (old + new)
+    const { data: allArticles, error: fetchError } = await supabase
+      .from('blog_articles')
+      .select('*')
+      .eq('source', 'insights')
+      .order('published_at', { ascending: false });
+
+    if (fetchError) {
+      console.error('Error fetching articles:', fetchError);
+      throw fetchError;
     }
 
-    // Generate posts using fallback for reliability
-    const posts = allTopics.map(({ category, topic, index }) => 
-      createBlogPost(category, topic, marketData, index, dayOfYear, currentYear)
-    );
+    // Transform to expected format
+    const posts = (allArticles || []).map(article => ({
+      id: article.article_id,
+      title: article.title,
+      slug: article.slug,
+      metaTitle: article.meta_title,
+      metaDescription: article.meta_description,
+      content: article.content,
+      takeaways: article.takeaways || [],
+      faqs: article.faqs || [],
+      category: article.category,
+      readTime: article.read_time,
+      wordCount: article.word_count,
+      publishedAt: article.published_at,
+      imageUrl: article.image_url,
+      primaryKeyword: article.primary_keyword,
+      secondaryKeywords: article.secondary_keywords || [],
+      internalLink: article.internal_link,
+    }));
 
-    console.log(`Generated ${posts.length} crypto blog posts`);
+    // Count today's articles
+    const todayCount = posts.filter(p => p.publishedAt?.startsWith(today)).length;
 
     const result = {
       posts,
       date: today,
       timestamp: Date.now(),
       totalArticles: posts.length,
-      marketSnapshot: {
-        btcPrice: marketData.btcPrice,
-        ethPrice: marketData.ethPrice,
-        totalMarketCap: marketData.totalMarketCap,
-        trending: marketData.trending.slice(0, 5),
-      }
+      todayArticles: todayCount,
     };
-
-    cachedPosts = result;
-    cacheDate = today;
 
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error: unknown) {
-    console.error('Error generating blog:', error);
+    console.error('Error in insights-engine:', error);
     const fallbackPosts = generateAllFallbackPosts();
     return new Response(JSON.stringify({ 
       posts: fallbackPosts,
       date: new Date().toISOString().split('T')[0],
       timestamp: Date.now(),
       totalArticles: fallbackPosts.length,
+      todayArticles: fallbackPosts.length,
     }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

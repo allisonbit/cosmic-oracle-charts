@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -7,10 +8,11 @@ const corsHeaders = {
 };
 
 const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
-// Cache for daily posts
-let cachedPosts: any = null;
-let cacheDate: string = '';
+// Cache for today's generation check
+let todayGenerated: string = '';
 
 // 20 rotating content themes
 const contentThemes = [
@@ -52,114 +54,181 @@ serve(async (req) => {
   }
 
   try {
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
     const today = new Date().toISOString().split('T')[0];
     
-    // Return cached posts if same day
-    if (cachedPosts && cacheDate === today) {
-      console.log('Returning cached blog posts');
-      return new Response(JSON.stringify(cachedPosts), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
+    // Check if we already generated today's articles
+    const { data: todayArticles } = await supabase
+      .from('blog_articles')
+      .select('id')
+      .eq('source', 'learn')
+      .gte('published_at', `${today}T00:00:00Z`)
+      .limit(1);
 
-    console.log('Generating 20 daily AI blog posts...');
+    const needsGeneration = !todayArticles || todayArticles.length === 0;
 
-    // Fetch market data for context
-    let marketContext = {
-      totalMarketCap: 2.5e12,
-      btcDominance: 52,
-      ethDominance: 18,
-      marketChange24h: 0.5,
-      activeCoins: 10000,
-      totalVolume24h: 80e9,
-      trending: [] as any[],
-      headlines: [] as string[],
-    };
+    if (needsGeneration && todayGenerated !== today) {
+      console.log('Generating 20 new daily AI blog posts...');
 
-    try {
-      const [trendingRes, globalRes] = await Promise.all([
-        fetch('https://api.coingecko.com/api/v3/search/trending'),
-        fetch('https://api.coingecko.com/api/v3/global'),
-      ]);
+      // Fetch market data for context
+      let marketContext = {
+        totalMarketCap: 2.5e12,
+        btcDominance: 52,
+        ethDominance: 18,
+        marketChange24h: 0.5,
+        activeCoins: 10000,
+        totalVolume24h: 80e9,
+        trending: [] as any[],
+        headlines: [] as string[],
+      };
 
-      if (trendingRes.ok) {
-        const data = await trendingRes.json();
-        marketContext.trending = (data.coins?.slice(0, 5) || []).map((t: any) => ({
-          name: t.item?.name,
-          symbol: t.item?.symbol,
-          change: t.item?.data?.price_change_percentage_24h?.usd || 0,
-        }));
+      try {
+        const [trendingRes, globalRes] = await Promise.all([
+          fetch('https://api.coingecko.com/api/v3/search/trending'),
+          fetch('https://api.coingecko.com/api/v3/global'),
+        ]);
+
+        if (trendingRes.ok) {
+          const data = await trendingRes.json();
+          marketContext.trending = (data.coins?.slice(0, 5) || []).map((t: any) => ({
+            name: t.item?.name,
+            symbol: t.item?.symbol,
+            change: t.item?.data?.price_change_percentage_24h?.usd || 0,
+          }));
+        }
+
+        if (globalRes.ok) {
+          const data = await globalRes.json();
+          marketContext.totalMarketCap = data.data?.total_market_cap?.usd || marketContext.totalMarketCap;
+          marketContext.btcDominance = data.data?.market_cap_percentage?.btc || marketContext.btcDominance;
+          marketContext.ethDominance = data.data?.market_cap_percentage?.eth || marketContext.ethDominance;
+          marketContext.marketChange24h = data.data?.market_cap_change_percentage_24h_usd || marketContext.marketChange24h;
+          marketContext.totalVolume24h = data.data?.total_volume?.usd || marketContext.totalVolume24h;
+        }
+      } catch (e) {
+        console.log('Using fallback market data');
       }
 
-      if (globalRes.ok) {
-        const data = await globalRes.json();
-        marketContext.totalMarketCap = data.data?.total_market_cap?.usd || marketContext.totalMarketCap;
-        marketContext.btcDominance = data.data?.market_cap_percentage?.btc || marketContext.btcDominance;
-        marketContext.ethDominance = data.data?.market_cap_percentage?.eth || marketContext.ethDominance;
-        marketContext.marketChange24h = data.data?.market_cap_change_percentage_24h_usd || marketContext.marketChange24h;
-        marketContext.totalVolume24h = data.data?.total_volume?.usd || marketContext.totalVolume24h;
-      }
-    } catch (e) {
-      console.log('Using fallback market data');
-    }
-
-    const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
-    
-    // Generate posts - mix AI and fallback for reliability
-    const posts = [];
-    const aiPostCount = LOVABLE_API_KEY ? 8 : 0; // Generate 8 AI posts, rest are fallback for speed
-    
-    // Generate AI posts in parallel batches
-    if (LOVABLE_API_KEY && aiPostCount > 0) {
-      const aiPromises = [];
-      for (let i = 0; i < aiPostCount; i++) {
-        const themeIndex = (dayOfYear + i) % contentThemes.length;
-        const theme = contentThemes[themeIndex];
-        const topicIndex = i % theme.topics.length;
-        aiPromises.push(generateAIPost(theme, theme.topics[topicIndex], marketContext, i, dayOfYear));
-      }
+      const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
       
-      const aiResults = await Promise.allSettled(aiPromises);
-      for (const result of aiResults) {
-        if (result.status === 'fulfilled') {
-          posts.push(result.value);
+      // Generate posts - mix AI and fallback for reliability
+      const newPosts = [];
+      const aiPostCount = LOVABLE_API_KEY ? 8 : 0;
+      
+      if (LOVABLE_API_KEY && aiPostCount > 0) {
+        const aiPromises = [];
+        for (let i = 0; i < aiPostCount; i++) {
+          const themeIndex = (dayOfYear + i) % contentThemes.length;
+          const theme = contentThemes[themeIndex];
+          const topicIndex = i % theme.topics.length;
+          aiPromises.push(generateAIPost(theme, theme.topics[topicIndex], marketContext, i, dayOfYear));
+        }
+        
+        const aiResults = await Promise.allSettled(aiPromises);
+        for (const result of aiResults) {
+          if (result.status === 'fulfilled') {
+            newPosts.push(result.value);
+          }
         }
       }
+      
+      // Fill remaining with fallback posts
+      const remaining = 20 - newPosts.length;
+      const currentCount = newPosts.length;
+      for (let i = 0; i < remaining; i++) {
+        const idx = currentCount + i;
+        const themeIdx = (dayOfYear + idx) % contentThemes.length;
+        const themeData = contentThemes[themeIdx];
+        const topicIdx = idx % themeData.topics.length;
+        newPosts.push(createFallbackPost(themeData.category, themeData.topics[topicIdx], marketContext, idx, dayOfYear));
+      }
+
+      // Save new posts to database
+      const articlesToInsert = newPosts.map(post => ({
+        article_id: `learn-${post.id}`,
+        title: post.title,
+        slug: post.slug,
+        meta_title: post.metaTitle,
+        meta_description: post.metaDescription,
+        content: post.content,
+        takeaways: post.takeaways,
+        faqs: post.faqs,
+        category: post.category,
+        read_time: post.readTime,
+        word_count: post.wordCount,
+        published_at: post.publishedAt,
+        image_url: post.imageUrl,
+        primary_keyword: post.primaryKeyword,
+        secondary_keywords: post.secondaryKeywords,
+        source: 'learn'
+      }));
+
+      const { error: insertError } = await supabase
+        .from('blog_articles')
+        .upsert(articlesToInsert, { onConflict: 'article_id' });
+
+      if (insertError) {
+        console.error('Error saving articles:', insertError);
+      } else {
+        console.log(`Saved ${newPosts.length} new articles to database`);
+        todayGenerated = today;
+      }
     }
-    
-    // Fill remaining with fallback posts
-    const remaining = 20 - posts.length;
-    const currentCount = posts.length;
-    for (let i = 0; i < remaining; i++) {
-      const idx = currentCount + i;
-      const themeIdx = (dayOfYear + idx) % contentThemes.length;
-      const themeData = contentThemes[themeIdx];
-      const topicIdx = idx % themeData.topics.length;
-      posts.push(createFallbackPost(themeData.category, themeData.topics[topicIdx], marketContext, idx, dayOfYear));
+
+    // Fetch ALL articles from database (old + new)
+    const { data: allArticles, error: fetchError } = await supabase
+      .from('blog_articles')
+      .select('*')
+      .eq('source', 'learn')
+      .order('published_at', { ascending: false });
+
+    if (fetchError) {
+      console.error('Error fetching articles:', fetchError);
+      throw fetchError;
     }
+
+    // Transform to expected format
+    const posts = (allArticles || []).map(article => ({
+      id: article.article_id,
+      title: article.title,
+      slug: article.slug,
+      metaTitle: article.meta_title,
+      metaDescription: article.meta_description,
+      content: article.content,
+      takeaways: article.takeaways || [],
+      faqs: article.faqs || [],
+      category: article.category,
+      readTime: article.read_time,
+      wordCount: article.word_count,
+      publishedAt: article.published_at,
+      imageUrl: article.image_url,
+      primaryKeyword: article.primary_keyword,
+      secondaryKeywords: article.secondary_keywords || [],
+    }));
+
+    // Count today's articles
+    const todayCount = posts.filter(p => p.publishedAt?.startsWith(today)).length;
 
     const result = {
       posts,
       date: today,
       timestamp: Date.now(),
       totalArticles: posts.length,
+      todayArticles: todayCount,
     };
-
-    // Cache for the day
-    cachedPosts = result;
-    cacheDate = today;
 
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error('Error generating blog:', error);
+    console.error('Error in ai-blog:', error);
     const fallbackPosts = generateAllFallbackPosts();
     return new Response(JSON.stringify({ 
       posts: fallbackPosts,
       date: new Date().toISOString().split('T')[0],
       timestamp: Date.now(),
       totalArticles: fallbackPosts.length,
+      todayArticles: fallbackPosts.length,
     }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
