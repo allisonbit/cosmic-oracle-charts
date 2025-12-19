@@ -455,7 +455,7 @@ export default function Learn() {
               Crypto Insights
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 sm:mt-1">
-              AI-powered crypto intelligence • <span className="text-primary font-medium">{data?.totalArticles || 20} articles</span> daily
+              AI-powered crypto intelligence • <span className="text-primary font-medium">{data?.totalArticles || 20} new articles</span> today
             </p>
           </div>
 
@@ -481,12 +481,11 @@ export default function Learn() {
               )}
             </div>
             
-            {data?.date && (
-              <Badge variant="outline" className="hidden sm:flex items-center gap-1 shrink-0 text-xs">
-                <Calendar className="w-3 h-3" />
-                {format(new Date(data.date), 'MMM dd')}
-              </Badge>
-            )}
+            {/* Today's Date Badge - Always visible */}
+            <Badge variant="default" className="flex items-center gap-1 shrink-0 text-xs bg-primary/20 text-primary border-primary/30">
+              <Calendar className="w-3 h-3" />
+              <span className="hidden xs:inline">Today:</span> {format(new Date(), 'MMM dd, yyyy')}
+            </Badge>
             <Button
               variant="outline"
               size="sm"
@@ -503,8 +502,8 @@ export default function Learn() {
         {/* Stats Bar - Mobile optimized */}
         {data && (
           <div className="grid grid-cols-4 gap-2 sm:gap-3">
-            <Card className="glass-card p-2 sm:p-3">
-              <div className="text-[10px] sm:text-xs text-muted-foreground">Articles</div>
+            <Card className="glass-card p-2 sm:p-3 border-primary/30">
+              <div className="text-[10px] sm:text-xs text-muted-foreground">Today's Articles</div>
               <div className="text-base sm:text-xl font-bold text-primary">{data.totalArticles}</div>
             </Card>
             <Card className="glass-card p-2 sm:p-3">
@@ -516,8 +515,8 @@ export default function Learn() {
               <div className="text-base sm:text-xl font-bold">5 min</div>
             </Card>
             <Card className="glass-card p-2 sm:p-3">
-              <div className="text-[10px] sm:text-xs text-muted-foreground">Updated</div>
-              <div className="text-base sm:text-xl font-bold">Daily</div>
+              <div className="text-[10px] sm:text-xs text-muted-foreground">Fresh Daily</div>
+              <div className="text-base sm:text-xl font-bold text-green-400">20+</div>
             </Card>
           </div>
         )}

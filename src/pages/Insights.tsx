@@ -16,7 +16,8 @@ import {
   FileText,
   TrendingUp,
   BarChart3,
-  Activity
+  Activity,
+  Calendar
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -127,8 +128,15 @@ export default function Insights() {
               Crypto Market <span className="text-primary glow-text">Insights</span>
             </h1>
             <p className="text-muted-foreground text-sm sm:text-base lg:text-lg max-w-2xl mx-auto px-2">
-              Expert cryptocurrency analysis, on-chain data insights, and market intelligence updated daily.
+              Your comprehensive crypto blog • <span className="text-primary font-medium">{data?.totalArticles || 20} fresh articles</span> added today
             </p>
+            {/* Today's Date Banner */}
+            <div className="flex items-center justify-center gap-2 mt-3 sm:mt-4">
+              <Badge variant="default" className="bg-primary/20 text-primary border-primary/30 text-xs sm:text-sm px-3 py-1">
+                <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5" />
+                Today: {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+              </Badge>
+            </div>
           </header>
 
           {/* Search and Filters */}
