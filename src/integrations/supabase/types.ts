@@ -14,7 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      blog_articles: {
+        Row: {
+          article_id: string
+          category: string
+          content: string
+          created_at: string
+          faqs: Json | null
+          id: string
+          image_url: string | null
+          internal_link: Json | null
+          meta_description: string | null
+          meta_title: string | null
+          primary_keyword: string | null
+          published_at: string
+          read_time: string | null
+          secondary_keywords: Json | null
+          slug: string
+          source: string
+          takeaways: Json | null
+          title: string
+          word_count: number | null
+        }
+        Insert: {
+          article_id: string
+          category: string
+          content: string
+          created_at?: string
+          faqs?: Json | null
+          id?: string
+          image_url?: string | null
+          internal_link?: Json | null
+          meta_description?: string | null
+          meta_title?: string | null
+          primary_keyword?: string | null
+          published_at?: string
+          read_time?: string | null
+          secondary_keywords?: Json | null
+          slug: string
+          source?: string
+          takeaways?: Json | null
+          title: string
+          word_count?: number | null
+        }
+        Update: {
+          article_id?: string
+          category?: string
+          content?: string
+          created_at?: string
+          faqs?: Json | null
+          id?: string
+          image_url?: string | null
+          internal_link?: Json | null
+          meta_description?: string | null
+          meta_title?: string | null
+          primary_keyword?: string | null
+          published_at?: string
+          read_time?: string | null
+          secondary_keywords?: Json | null
+          slug?: string
+          source?: string
+          takeaways?: Json | null
+          title?: string
+          word_count?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
