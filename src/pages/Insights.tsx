@@ -8,6 +8,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { 
   Search, 
   Clock, 
@@ -20,6 +27,7 @@ import {
   Calendar
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { format, parseISO, isToday, isYesterday, subDays } from "date-fns";
 
 const ARTICLES_PER_PAGE = 12;
 
@@ -37,11 +45,34 @@ export default function Insights() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedDate, setSelectedDate] = useState("all");
+
+  // Get unique dates from articles
+  const availableDates = useMemo(() => {
+    if (!data?.posts) return [];
+    const dates = [...new Set(data.posts.map(p => format(parseISO(p.publishedAt), 'yyyy-MM-dd')))];
+    return dates.sort((a, b) => b.localeCompare(a));
+  }, [data?.posts]);
+
+  // Format date for display
+  const formatDateLabel = (dateStr: string) => {
+    const date = parseISO(dateStr);
+    if (isToday(date)) return `Today (${format(date, 'MMM dd')})`;
+    if (isYesterday(date)) return `Yesterday (${format(date, 'MMM dd')})`;
+    return format(date, 'MMM dd, yyyy');
+  };
 
   const filteredArticles = useMemo(() => {
     if (!data?.posts) return [];
     
     let filtered = data.posts;
+    
+    // Date filter
+    if (selectedDate !== "all") {
+      filtered = filtered.filter(post => 
+        format(parseISO(post.publishedAt), 'yyyy-MM-dd') === selectedDate
+      );
+    }
     
     // Category filter
     if (selectedCategory !== "all") {
@@ -61,7 +92,12 @@ export default function Insights() {
     }
     
     return filtered;
-  }, [data?.posts, selectedCategory, searchQuery]);
+  }, [data?.posts, selectedCategory, searchQuery, selectedDate]);
+
+  const handleDateChange = (date: string) => {
+    setSelectedDate(date);
+    setCurrentPage(1);
+  };
 
   const totalPages = Math.ceil(filteredArticles.length / ARTICLES_PER_PAGE);
   const paginatedArticles = filteredArticles.slice(
@@ -141,15 +177,34 @@ export default function Insights() {
 
           {/* Search and Filters */}
           <div className="mb-6 sm:mb-8 space-y-3 sm:space-y-4">
-            {/* Search */}
-            <div className="relative max-w-md mx-auto">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search articles..."
-                value={searchQuery}
-                onChange={handleSearch}
-                className="pl-10 bg-card/50 border-primary/20 h-10 sm:h-11 text-sm sm:text-base"
-              />
+            {/* Search and Date Filter Row */}
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-2xl mx-auto">
+              {/* Search */}
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search articles..."
+                  value={searchQuery}
+                  onChange={handleSearch}
+                  className="pl-10 bg-card/50 border-primary/20 h-10 sm:h-11 text-sm sm:text-base"
+                />
+              </div>
+              
+              {/* Date Filter Dropdown */}
+              <Select value={selectedDate} onValueChange={handleDateChange}>
+                <SelectTrigger className="w-full sm:w-[200px] h-10 sm:h-11 bg-card/50 border-primary/20">
+                  <Calendar className="w-4 h-4 mr-2 text-primary" />
+                  <SelectValue placeholder="Filter by date" />
+                </SelectTrigger>
+                <SelectContent className="bg-card border-border z-50">
+                  <SelectItem value="all">All Dates</SelectItem>
+                  {availableDates.map((date) => (
+                    <SelectItem key={date} value={date}>
+                      {formatDateLabel(date)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Category Filters - Scrollable on mobile */}
