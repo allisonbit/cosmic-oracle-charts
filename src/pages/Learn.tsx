@@ -7,6 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { SocialShare, useShareMeta } from "@/components/ui/social-share";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { 
   BookOpen, 
   TrendingUp, 
@@ -38,7 +45,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { format, parseISO, isToday, isYesterday } from "date-fns";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 
@@ -400,6 +407,7 @@ export default function Learn() {
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedDate, setSelectedDate] = useState('all');
 
   // Get unique categories from posts
   const categories = useMemo(() => {
@@ -407,10 +415,30 @@ export default function Learn() {
     const uniqueCats = [...new Set(data.posts.map(p => p.category))];
     return ['All', ...uniqueCats.sort()];
   }, [data?.posts]);
+
+  // Get unique dates from posts
+  const availableDates = useMemo(() => {
+    if (!data?.posts) return [];
+    const dates = [...new Set(data.posts.map(p => format(parseISO(p.publishedAt), 'yyyy-MM-dd')))];
+    return dates.sort((a, b) => b.localeCompare(a));
+  }, [data?.posts]);
+
+  // Format date for display
+  const formatDateLabel = (dateStr: string) => {
+    const date = parseISO(dateStr);
+    if (isToday(date)) return `Today (${format(date, 'MMM dd')})`;
+    if (isYesterday(date)) return `Yesterday (${format(date, 'MMM dd')})`;
+    return format(date, 'MMM dd, yyyy');
+  };
   
-  // Filter posts by category and search
+  // Filter posts by category, search, and date
   const filteredPosts = useMemo(() => {
     let posts = data?.posts || [];
+    
+    // Date filter
+    if (selectedDate !== 'all') {
+      posts = posts.filter(p => format(parseISO(p.publishedAt), 'yyyy-MM-dd') === selectedDate);
+    }
     
     if (activeCategory !== 'All') {
       posts = posts.filter(p => p.category === activeCategory);
@@ -427,7 +455,7 @@ export default function Learn() {
     }
     
     return posts;
-  }, [data?.posts, activeCategory, searchQuery]);
+  }, [data?.posts, activeCategory, searchQuery, selectedDate]);
 
   // Handle category change
   const handleCategoryChange = useCallback((category: string) => {
@@ -435,8 +463,13 @@ export default function Learn() {
     setSearchQuery('');
   }, []);
 
+  // Handle date change
+  const handleDateChange = useCallback((date: string) => {
+    setSelectedDate(date);
+  }, []);
+
   // Featured post is the first one when showing all
-  const featuredPost = activeCategory === 'All' && !searchQuery && filteredPosts.length > 0 ? filteredPosts[0] : null;
+  const featuredPost = activeCategory === 'All' && !searchQuery && selectedDate === 'all' && filteredPosts.length > 0 ? filteredPosts[0] : null;
   const gridPosts = featuredPost ? filteredPosts.slice(1) : filteredPosts;
 
   return (
@@ -459,9 +492,9 @@ export default function Learn() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             {/* Search */}
-            <div className="relative flex-1 sm:flex-none">
+            <div className="relative flex-1 min-w-[140px] sm:flex-none">
               <Search className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 w-3.5 sm:w-4 h-3.5 sm:h-4 text-muted-foreground" />
               <Input
                 placeholder="Search..."
@@ -481,11 +514,22 @@ export default function Learn() {
               )}
             </div>
             
-            {/* Today's Date Badge - Always visible */}
-            <Badge variant="default" className="flex items-center gap-1 shrink-0 text-xs bg-primary/20 text-primary border-primary/30">
-              <Calendar className="w-3 h-3" />
-              <span className="hidden xs:inline">Today:</span> {format(new Date(), 'MMM dd, yyyy')}
-            </Badge>
+            {/* Date Filter Dropdown */}
+            <Select value={selectedDate} onValueChange={handleDateChange}>
+              <SelectTrigger className="w-[140px] sm:w-[180px] h-8 sm:h-9 bg-card/50 border-primary/20 text-xs sm:text-sm">
+                <Calendar className="w-3 sm:w-4 h-3 sm:h-4 mr-1.5 text-primary" />
+                <SelectValue placeholder="Filter date" />
+              </SelectTrigger>
+              <SelectContent className="bg-card border-border z-50">
+                <SelectItem value="all">All Dates</SelectItem>
+                {availableDates.map((date) => (
+                  <SelectItem key={date} value={date}>
+                    {formatDateLabel(date)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            
             <Button
               variant="outline"
               size="sm"
