@@ -4,19 +4,24 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 import Sitemap from "vite-plugin-sitemap";
 
-// All routes for sitemap generation
-const dynamicRoutes = [
+// All static routes for sitemap generation
+const staticRoutes = [
   "/",
   "/dashboard",
   "/strength",
+  "/strength-meter",
   "/factory",
   "/portfolio",
   "/sentiment",
   "/explorer",
   "/learn",
+  "/insights",
   "/contact",
   "/sitemap",
-  "/insights",
+];
+
+// Chain routes
+const chainRoutes = [
   "/chain/ethereum",
   "/chain/solana",
   "/chain/base",
@@ -27,20 +32,8 @@ const dynamicRoutes = [
   "/chain/bnb",
 ];
 
-// Generate blog slug routes dynamically based on content themes
-const blogCategories = [
-  'market-structure', 'on-chain-analytics', 'defi-deep-dive', 'bitcoin-analysis',
-  'ethereum-ecosystem', 'altcoin-research', 'risk-management', 'market-sentiment',
-  'technical-analysis', 'macro-economics', 'blockchain-technology', 'layer-2-solutions',
-  'stablecoin-analysis', 'nft-digital-assets', 'trading-psychology', 'regulatory-landscape',
-  'capital-rotation', 'derivatives-analysis', 'network-fundamentals', 'investment-strategies'
-];
-
-// Add blog category routes for better SEO
-const allRoutes = [
-  ...dynamicRoutes,
-  ...blogCategories.map(cat => `/learn#${cat}`)
-];
+// All routes combined
+const allRoutes = [...staticRoutes, ...chainRoutes];
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -54,15 +47,29 @@ export default defineConfig(({ mode }) => ({
     Sitemap({
       hostname: "https://oraclebull.com",
       dynamicRoutes: allRoutes,
-      generateRobotsTxt: false, // We already have a custom robots.txt
+      generateRobotsTxt: false, // We have a custom robots.txt
       changefreq: "daily",
       priority: 0.8,
       lastmod: new Date(),
+      exclude: ["/404", "/**/404"],
+      outDir: "dist",
+      readable: true,
     }),
   ].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+    },
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          charts: ['recharts'],
+          ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-tabs'],
+        },
+      },
     },
   },
 }));

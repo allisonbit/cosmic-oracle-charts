@@ -1,6 +1,106 @@
-# Allow all search engines to crawl everything
+# Oracle Bull - Comprehensive robots.txt
+# https://oraclebull.com
+
+# Allow all major search engines
 User-agent: *
 Allow: /
+Allow: /dashboard
+Allow: /strength
+Allow: /strength-meter
+Allow: /factory
+Allow: /portfolio
+Allow: /sentiment
+Allow: /explorer
+Allow: /learn
+Allow: /insights
+Allow: /contact
+Allow: /sitemap
+Allow: /chain/
 
 # Sitemap location
 Sitemap: https://oraclebull.com/sitemap.xml
+
+# Google specific
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Googlebot-Mobile
+Allow: /
+
+# Bing specific
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# AI Search Engines
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Anthropic-AI
+Allow: /
+
+# Other search engines
+User-agent: Yandex
+Allow: /
+Crawl-delay: 2
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: facebot
+Allow: /
+
+User-agent: ia_archiver
+Allow: /
+
+# Social media crawlers
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+# Block known bad bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+# Block aggressive crawlers
+User-agent: Baiduspider
+Crawl-delay: 10
+
+# Host directive for canonicalization
+Host: https://oraclebull.com

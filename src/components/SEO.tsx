@@ -76,6 +76,11 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
     description: "Free cryptocurrency education with daily AI-generated articles, market insights, and blockchain analysis. Learn about Bitcoin, DeFi, NFTs, technical analysis, and crypto trading strategies.",
     keywords: "learn crypto, crypto education, blockchain course, bitcoin guide, DeFi tutorial, crypto for beginners, trading education, crypto blog"
   },
+  "/insights": {
+    title: "Crypto Market Insights & Analysis | Oracle Bull",
+    description: "Daily cryptocurrency market analysis, on-chain data insights, Ethereum, Bitcoin, Solana, and Base network intelligence. Expert trading research updated every day.",
+    keywords: "crypto analysis, ethereum analysis, bitcoin prediction, solana insights, base network, on-chain data, market sentiment, crypto trading"
+  },
   "/contact": {
     title: "Contact Oracle Bull | Community & Token Information",
     description: "Connect with the Oracle Bull community on Twitter and Telegram. View Oracle token ($ORACLE) information including price, market cap, and contract address on Ethereum.",
@@ -92,6 +97,10 @@ export function SEO({ title, description, keywords, image, type = "website", can
     title: `${currentPath.split("/chain/")[1]?.charAt(0).toUpperCase()}${currentPath.split("/chain/")[1]?.slice(1) || "Blockchain"} Analytics | Real-Time Chain Data | Oracle Bull`,
     description: `Comprehensive ${currentPath.split("/chain/")[1] || "blockchain"} analytics with real-time metrics, AI price predictions, whale tracking, token discovery, and DeFi data. Advanced chain health monitoring and risk analysis.`,
     keywords: `${currentPath.split("/chain/")[1]} analytics, ${currentPath.split("/chain/")[1]} price, ${currentPath.split("/chain/")[1]} tokens, ${currentPath.split("/chain/")[1]} DeFi, blockchain data, chain metrics`
+  } : currentPath.includes("/insights/") ? {
+    title: "Crypto Insight Article | Oracle Bull",
+    description: "Expert cryptocurrency market analysis and trading intelligence. Deep dive into blockchain data, market trends, and investment opportunities.",
+    keywords: "crypto analysis, market insight, trading research, blockchain intelligence"
   } : {
     title: defaultMeta.title,
     description: defaultMeta.description,
@@ -118,11 +127,15 @@ export function SEO({ title, description, keywords, image, type = "website", can
       meta.content = content;
     };
 
+    // Essential meta tags
     setMeta("description", finalDescription);
     setMeta("keywords", finalKeywords);
     setMeta("author", "Oracle Bull");
     setMeta("robots", "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1");
+    setMeta("googlebot", "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1");
+    setMeta("bingbot", "index, follow");
 
+    // Open Graph
     setMeta("og:title", finalTitle, true);
     setMeta("og:description", finalDescription, true);
     setMeta("og:image", finalImage, true);
@@ -131,6 +144,7 @@ export function SEO({ title, description, keywords, image, type = "website", can
     setMeta("og:site_name", defaultMeta.siteName, true);
     setMeta("og:locale", "en_US", true);
 
+    // Twitter Cards
     setMeta("twitter:card", "summary_large_image");
     setMeta("twitter:site", defaultMeta.twitterHandle);
     setMeta("twitter:creator", defaultMeta.twitterHandle);
@@ -138,6 +152,17 @@ export function SEO({ title, description, keywords, image, type = "website", can
     setMeta("twitter:description", finalDescription);
     setMeta("twitter:image", finalImage);
 
+    // AI Search Engine Optimization
+    setMeta("ai-summary", finalDescription);
+    setMeta("ai-keywords", finalKeywords);
+
+    // Additional SEO meta tags
+    setMeta("rating", "general");
+    setMeta("distribution", "global");
+    setMeta("revisit-after", "1 day");
+    setMeta("language", "en");
+
+    // Canonical URL
     let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
     if (!canonical) {
       canonical = document.createElement("link");
@@ -145,6 +170,16 @@ export function SEO({ title, description, keywords, image, type = "website", can
       document.head.appendChild(canonical);
     }
     canonical.href = canonicalUrl;
+
+    // Alternate language (for future i18n)
+    let alternate = document.querySelector('link[rel="alternate"][hreflang="en"]') as HTMLLinkElement;
+    if (!alternate) {
+      alternate = document.createElement("link");
+      alternate.rel = "alternate";
+      alternate.hreflang = "en";
+      document.head.appendChild(alternate);
+    }
+    alternate.href = canonicalUrl;
 
   }, [finalTitle, finalDescription, finalKeywords, finalImage, canonicalUrl, type]);
 
@@ -166,9 +201,16 @@ export function StructuredData() {
     schemas.push({
       "@context": "https://schema.org",
       "@type": "Organization",
+      "@id": `${defaultMeta.baseUrl}/#organization`,
       "name": "Oracle Bull",
       "url": defaultMeta.baseUrl,
-      "logo": defaultMeta.image,
+      "logo": {
+        "@type": "ImageObject",
+        "url": defaultMeta.image,
+        "width": 512,
+        "height": 512
+      },
+      "image": defaultMeta.image,
       "sameAs": [
         "https://x.com/oracle_bulls",
         "https://t.me/oracle_bulls"
@@ -178,7 +220,8 @@ export function StructuredData() {
       "contactPoint": {
         "@type": "ContactPoint",
         "contactType": "customer support",
-        "url": "https://t.me/oracle_bulls"
+        "url": "https://t.me/oracle_bulls",
+        "availableLanguage": "English"
       }
     });
 
@@ -186,21 +229,24 @@ export function StructuredData() {
     schemas.push({
       "@context": "https://schema.org",
       "@type": "WebSite",
+      "@id": `${defaultMeta.baseUrl}/#website`,
       "name": "Oracle Bull",
       "url": defaultMeta.baseUrl,
       "description": defaultMeta.description,
       "publisher": {
-        "@type": "Organization",
-        "name": "Oracle Bull"
+        "@id": `${defaultMeta.baseUrl}/#organization`
       },
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": {
-          "@type": "EntryPoint",
-          "urlTemplate": `${defaultMeta.baseUrl}/explorer?q={search_term_string}`
-        },
-        "query-input": "required name=search_term_string"
-      }
+      "inLanguage": "en-US",
+      "potentialAction": [
+        {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": `${defaultMeta.baseUrl}/explorer?q={search_term_string}`
+          },
+          "query-input": "required name=search_term_string"
+        }
+      ]
     });
 
     // SoftwareApplication Schema
@@ -223,13 +269,17 @@ export function StructuredData() {
         "Sentiment analysis",
         "Multi-chain analytics",
         "Token explorer",
-        "Wallet scanner"
+        "Wallet scanner",
+        "Crypto strength meter",
+        "Market events calendar"
       ],
       "screenshot": defaultMeta.image,
       "aggregateRating": {
         "@type": "AggregateRating",
         "ratingValue": "4.8",
-        "ratingCount": "1250"
+        "ratingCount": "1250",
+        "bestRating": "5",
+        "worstRating": "1"
       }
     });
 
@@ -239,18 +289,22 @@ export function StructuredData() {
       schemas.push({
         "@context": "https://schema.org",
         "@type": "WebPage",
+        "@id": `${defaultMeta.baseUrl}${currentPath}`,
         "name": pageInfo.title,
         "description": pageInfo.description,
         "url": `${defaultMeta.baseUrl}${currentPath}`,
         "isPartOf": {
-          "@type": "WebSite",
-          "name": "Oracle Bull",
-          "url": defaultMeta.baseUrl
+          "@id": `${defaultMeta.baseUrl}/#website`
+        },
+        "about": {
+          "@type": "Thing",
+          "name": "Cryptocurrency Analytics"
         },
         "publisher": {
-          "@type": "Organization",
-          "name": "Oracle Bull"
-        }
+          "@id": `${defaultMeta.baseUrl}/#organization`
+        },
+        "inLanguage": "en-US",
+        "dateModified": new Date().toISOString()
       });
     }
 
@@ -266,8 +320,7 @@ export function StructuredData() {
         "description": `Real-time ${chainDisplayName} blockchain analytics including price data, whale tracking, token discovery, and DeFi metrics.`,
         "url": `${defaultMeta.baseUrl}${currentPath}`,
         "provider": {
-          "@type": "Organization",
-          "name": "Oracle Bull"
+          "@id": `${defaultMeta.baseUrl}/#organization`
         },
         "featureList": [
           "Real-time price charts",
@@ -275,7 +328,8 @@ export function StructuredData() {
           "Whale activity radar",
           "Token heat scanner",
           "Risk analyzer",
-          "DeFi metrics"
+          "DeFi metrics",
+          "Social sentiment analysis"
         ]
       });
     }
@@ -285,18 +339,14 @@ export function StructuredData() {
       schemas.push({
         "@context": "https://schema.org",
         "@type": "Blog",
+        "@id": `${defaultMeta.baseUrl}/learn/#blog`,
         "name": "Oracle Bull Crypto Education",
         "description": "Daily AI-generated cryptocurrency articles, market insights, and blockchain education.",
         "url": `${defaultMeta.baseUrl}/learn`,
         "publisher": {
-          "@type": "Organization",
-          "name": "Oracle Bull"
+          "@id": `${defaultMeta.baseUrl}/#organization`
         },
-        "blogPost": {
-          "@type": "BlogPosting",
-          "headline": "Daily Crypto Market Insights",
-          "description": "Fresh cryptocurrency analysis and education updated daily"
-        }
+        "inLanguage": "en-US"
       });
 
       // FAQ Schema for Learn page
@@ -364,6 +414,22 @@ export function StructuredData() {
       });
     }
 
+    // Insights page - Blog schema
+    if (currentPath === "/insights") {
+      schemas.push({
+        "@context": "https://schema.org",
+        "@type": "Blog",
+        "@id": `${defaultMeta.baseUrl}/insights/#blog`,
+        "name": "Oracle Bull Crypto Insights",
+        "description": "Expert cryptocurrency market analysis, on-chain data insights, and trading intelligence updated daily.",
+        "url": `${defaultMeta.baseUrl}/insights`,
+        "publisher": {
+          "@id": `${defaultMeta.baseUrl}/#organization`
+        },
+        "inLanguage": "en-US"
+      });
+    }
+
     // Dashboard - Service schema
     if (currentPath === "/dashboard") {
       schemas.push({
@@ -373,8 +439,7 @@ export function StructuredData() {
         "description": "Live cryptocurrency dashboard with real-time prices, market momentum, and AI insights.",
         "url": `${defaultMeta.baseUrl}/dashboard`,
         "provider": {
-          "@type": "Organization",
-          "name": "Oracle Bull"
+          "@id": `${defaultMeta.baseUrl}/#organization`
         },
         "serviceType": "Financial Analytics",
         "areaServed": "Worldwide"
@@ -396,6 +461,70 @@ export function StructuredData() {
           "price": "0",
           "priceCurrency": "USD"
         }
+      });
+    }
+
+    // Strength Meter - Service schema
+    if (currentPath === "/strength" || currentPath === "/strength-meter") {
+      schemas.push({
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "Crypto Strength Meter",
+        "description": "Real-time cryptocurrency strength rankings using momentum, volume, and sentiment analysis.",
+        "url": `${defaultMeta.baseUrl}/strength`,
+        "provider": {
+          "@id": `${defaultMeta.baseUrl}/#organization`
+        },
+        "serviceType": "Financial Analytics",
+        "areaServed": "Worldwide"
+      });
+    }
+
+    // Factory - Service schema
+    if (currentPath === "/factory") {
+      schemas.push({
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "Crypto Factory",
+        "description": "Market events calendar and on-chain intelligence hub for cryptocurrency traders.",
+        "url": `${defaultMeta.baseUrl}/factory`,
+        "provider": {
+          "@id": `${defaultMeta.baseUrl}/#organization`
+        },
+        "serviceType": "Financial News & Events",
+        "areaServed": "Worldwide"
+      });
+    }
+
+    // Sentiment - Service schema
+    if (currentPath === "/sentiment") {
+      schemas.push({
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "Crypto Sentiment Analysis",
+        "description": "Real-time crypto sentiment from social media, whale tracking, and fear & greed index.",
+        "url": `${defaultMeta.baseUrl}/sentiment`,
+        "provider": {
+          "@id": `${defaultMeta.baseUrl}/#organization`
+        },
+        "serviceType": "Market Analysis",
+        "areaServed": "Worldwide"
+      });
+    }
+
+    // Portfolio/Wallet Scanner - Service schema
+    if (currentPath === "/portfolio") {
+      schemas.push({
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "Wallet Scanner",
+        "description": "AI-powered portfolio analysis for EVM and Solana wallets.",
+        "url": `${defaultMeta.baseUrl}/portfolio`,
+        "provider": {
+          "@id": `${defaultMeta.baseUrl}/#organization`
+        },
+        "serviceType": "Portfolio Analysis",
+        "areaServed": "Worldwide"
       });
     }
 
