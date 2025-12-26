@@ -1,0 +1,80 @@
+import { useParams, Navigate } from "react-router-dom";
+import { Layout } from "@/components/layout/Layout";
+import { usePricePrediction, getCryptoBySlug, TOP_CRYPTOS } from "@/hooks/usePricePrediction";
+import { PredictionSEO } from "@/components/prediction/PredictionSEO";
+import { PredictionHero } from "@/components/prediction/PredictionHero";
+import { TechnicalIndicatorsPanel, PriceTargetsPanel, TradingZonesPanel, ScenariosPanel, RiskAssessmentPanel } from "@/components/prediction/PredictionPanels";
+import { CoinList, TimeframeSelector, RelatedPredictions } from "@/components/prediction/PredictionNavigation";
+import { Disclaimer, FAQSection, Methodology } from "@/components/prediction/PredictionContent";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent } from "@/components/ui/card";
+
+export default function PricePrediction() {
+  const { coinId, timeframe = 'daily' } = useParams<{ coinId: string; timeframe: string }>();
+  
+  const crypto = coinId ? getCryptoBySlug(coinId) : TOP_CRYPTOS[0];
+  const validTimeframe = ['daily', 'weekly', 'monthly'].includes(timeframe) ? timeframe as 'daily' | 'weekly' | 'monthly' : 'daily';
+  
+  const { data, isLoading, error } = usePricePrediction(
+    crypto?.id || 'bitcoin',
+    crypto?.symbol || 'btc',
+    validTimeframe
+  );
+  
+  if (!crypto) {
+    return <Navigate to="/price-prediction/bitcoin/daily" replace />;
+  }
+  
+  return (
+    <Layout>
+      <PredictionSEO 
+        coinName={crypto.name}
+        symbol={crypto.symbol}
+        timeframe={validTimeframe}
+        currentPrice={data?.currentPrice}
+        bias={data?.bias}
+        confidence={data?.confidence}
+      />
+      
+      <div className="container mx-auto px-4 py-6 max-w-7xl">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Sidebar */}
+          <div className="lg:col-span-1 space-y-6 order-2 lg:order-1">
+            <TimeframeSelector coinId={crypto.id} coinName={crypto.name} currentTimeframe={validTimeframe} />
+            <CoinList currentCoin={crypto.id} currentTimeframe={validTimeframe} />
+          </div>
+          
+          {/* Main Content */}
+          <div className="lg:col-span-3 space-y-6 order-1 lg:order-2">
+            {isLoading ? (
+              <Card className="bg-card/50"><CardContent className="p-8"><Skeleton className="h-48 w-full" /></CardContent></Card>
+            ) : error ? (
+              <Card className="bg-red-500/10 border-red-500/20"><CardContent className="p-6 text-center text-red-400">Failed to load prediction. Please try again.</CardContent></Card>
+            ) : data ? (
+              <>
+                <PredictionHero coinName={crypto.name} symbol={crypto.symbol} timeframe={validTimeframe} data={data} />
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <PriceTargetsPanel data={data} timeframe={validTimeframe} />
+                  <TechnicalIndicatorsPanel data={data} />
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <TradingZonesPanel data={data} />
+                  <RiskAssessmentPanel data={data} />
+                </div>
+                
+                <ScenariosPanel data={data} />
+                <FAQSection coinName={crypto.name} symbol={crypto.symbol} timeframe={validTimeframe} />
+                <Methodology coinName={crypto.name} />
+                <Disclaimer coinName={crypto.name} />
+              </>
+            ) : null}
+            
+            <RelatedPredictions currentCoin={crypto.id} timeframe={validTimeframe} />
+          </div>
+        </div>
+      </div>
+    </Layout>
+  );
+}
