@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, TrendingUp, BookOpen, Globe, Radio, Mail, Layers, Wallet, Home, Zap, Calendar } from "lucide-react";
+import { Menu, X, TrendingUp, BookOpen, Globe, Radio, Mail, Layers, Wallet, Home, Zap, Calendar, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import oracleLogo from "@/assets/oracle-bull-logo.jpg";
@@ -8,6 +8,7 @@ import oracleLogo from "@/assets/oracle-bull-logo.jpg";
 const navItems = [
   { path: "/", label: "Home", icon: Home },
   { path: "/dashboard", label: "Dashboard", icon: TrendingUp },
+  { path: "/predictions", label: "Predictions", icon: Target },
   { path: "/insights", label: "Insights", icon: BookOpen },
   { path: "/strength", label: "Strength", icon: Zap },
   { path: "/factory", label: "Factory", icon: Calendar },
@@ -15,7 +16,6 @@ const navItems = [
   { path: "/chain/ethereum", label: "Chains", icon: Layers },
   { path: "/sentiment", label: "Sentiment", icon: Radio },
   { path: "/explorer", label: "Explorer", icon: Globe },
-  { path: "/contact", label: "Contact", icon: Mail },
 ];
 
 export function Navbar() {
@@ -40,6 +40,7 @@ export function Navbar() {
   const isActivePath = (path: string) => {
     if (path === "/") return location.pathname === "/";
     if (path.includes("/chain/")) return location.pathname.includes("/chain/");
+    if (path === "/predictions") return location.pathname.includes("/prediction");
     return location.pathname === path;
   };
 

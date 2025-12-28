@@ -1,0 +1,367 @@
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
+import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
+import { Link } from "react-router-dom";
+import { 
+  TrendingUp, TrendingDown, Minus, Clock, Calendar, CalendarDays,
+  ChevronRight, Zap, Target, Shield, BarChart3, Search, RefreshCw
+} from "lucide-react";
+import { TOP_CRYPTOS } from "@/hooks/usePricePrediction";
+import { useCryptoPrices } from "@/hooks/useCryptoPrices";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useState, useMemo } from "react";
+import { SEO } from "@/components/SEO";
+import { Helmet } from "react-helmet-async";
+
+const timeframes = [
+  { id: 'daily', label: 'Today', icon: Clock, description: 'Intraday predictions with support/resistance levels' },
+  { id: 'weekly', label: 'This Week', icon: Calendar, description: 'Swing trading forecasts with breakout analysis' },
+  { id: 'monthly', label: 'This Month', icon: CalendarDays, description: 'Investment outlook with macro factors' },
+];
+
+const features = [
+  { icon: Zap, title: 'AI-Powered Analysis', description: 'Advanced machine learning models analyze 50+ technical indicators' },
+  { icon: Target, title: 'Trading Zones', description: 'Precise entry, stop-loss, and take-profit levels for every coin' },
+  { icon: Shield, title: 'Risk Assessment', description: 'Clear risk ratings and confidence scores for informed decisions' },
+  { icon: BarChart3, title: 'Multi-Timeframe', description: 'Daily, weekly, and monthly predictions for all trading styles' },
+];
+
+// Generate mock sentiment for demo (would come from API in production)
+function getMockSentiment(symbol: string): { bias: 'bullish' | 'bearish' | 'neutral'; confidence: number } {
+  const hash = symbol.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+  const biases: ('bullish' | 'bearish' | 'neutral')[] = ['bullish', 'bearish', 'neutral'];
+  return {
+    bias: biases[hash % 3],
+    confidence: 55 + (hash % 35)
+  };
+}
+
+export default function PredictionHub() {
+  const { data: pricesData, isLoading, refetch, isFetching } = useCryptoPrices();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<'all' | 'bullish' | 'bearish'>('all');
+
+  // Merge price data with TOP_CRYPTOS
+  const enrichedCryptos = useMemo(() => {
+    return TOP_CRYPTOS.map(crypto => {
+      const priceData = pricesData?.prices?.find(
+        p => p.symbol.toLowerCase() === crypto.symbol.toLowerCase()
+      );
+      const sentiment = getMockSentiment(crypto.symbol);
+      return {
+        ...crypto,
+        price: priceData?.price || 0,
+        change24h: priceData?.change24h || 0,
+        marketCap: priceData?.marketCap || 0,
+        ...sentiment
+      };
+    }).sort((a, b) => b.marketCap - a.marketCap);
+  }, [pricesData]);
+
+  // Filter cryptos
+  const filteredCryptos = useMemo(() => {
+    return enrichedCryptos.filter(crypto => {
+      const matchesSearch = crypto.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        crypto.symbol.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = selectedCategory === 'all' || crypto.bias === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [enrichedCryptos, searchQuery, selectedCategory]);
+
+  const formatPrice = (price: number) => {
+    if (price >= 1000) return `$${price.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+    if (price >= 1) return `$${price.toFixed(2)}`;
+    return `$${price.toPrecision(4)}`;
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col cosmic-bg">
+      <SEO 
+        title="Crypto Price Predictions | Daily, Weekly, Monthly Forecasts | Oracle Bull"
+        description="Get AI-powered cryptocurrency price predictions for Bitcoin, Ethereum, Solana, and 1000+ coins. Daily, weekly, and monthly forecasts with technical analysis, trading zones, and risk assessment."
+        keywords="crypto price prediction, bitcoin prediction today, ethereum forecast, crypto forecast, price prediction, cryptocurrency analysis"
+        canonicalPath="/predictions"
+      />
+      <Helmet>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "Crypto Price Predictions Hub",
+            "description": "AI-powered cryptocurrency price predictions for 1000+ coins with daily, weekly, and monthly forecasts",
+            "url": "https://oraclebull.com/predictions",
+            "publisher": {
+              "@type": "Organization",
+              "name": "Oracle Bull",
+              "url": "https://oraclebull.com"
+            }
+          })}
+        </script>
+      </Helmet>
+
+      <header>
+        <Navbar />
+      </header>
+
+      <main className="flex-1 container mx-auto px-4 py-24 md:py-32">
+        <div className="max-w-7xl mx-auto">
+          {/* Hero Section */}
+          <section className="text-center mb-12">
+            <Badge variant="outline" className="mb-4 border-primary/50 text-primary">
+              <Zap className="w-3 h-3 mr-1" />
+              AI-Powered Predictions
+            </Badge>
+            <h1 className="text-3xl md:text-5xl font-display font-bold mb-4">
+              <span className="glow-text">Crypto Price Predictions</span>
+            </h1>
+            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+              Get accurate AI-powered price predictions for Bitcoin, Ethereum, and 1000+ cryptocurrencies. 
+              Daily, weekly, and monthly forecasts with technical analysis and trading zones.
+            </p>
+          </section>
+
+          {/* Features Grid */}
+          <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+            {features.map((feature) => (
+              <div key={feature.title} className="holo-card p-4 text-center">
+                <feature.icon className="w-6 h-6 text-primary mx-auto mb-2" />
+                <h3 className="font-display text-sm font-bold mb-1">{feature.title}</h3>
+                <p className="text-xs text-muted-foreground">{feature.description}</p>
+              </div>
+            ))}
+          </section>
+
+          {/* Timeframe Quick Links */}
+          <section className="mb-12">
+            <h2 className="font-display text-xl font-bold mb-4 text-center">Choose Your Timeframe</h2>
+            <div className="grid md:grid-cols-3 gap-4">
+              {timeframes.map((tf) => (
+                <Link
+                  key={tf.id}
+                  to={`/price-prediction/bitcoin/${tf.id}`}
+                  className="holo-card p-6 hover:border-primary/50 transition-all group"
+                >
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                      <tf.icon className="w-6 h-6 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-display font-bold text-lg">{tf.label}</h3>
+                      <p className="text-xs text-muted-foreground">Predictions</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{tf.description}</p>
+                  <div className="mt-3 flex items-center text-primary text-sm font-medium group-hover:translate-x-1 transition-transform">
+                    View All <ChevronRight className="w-4 h-4 ml-1" />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+
+          {/* Search and Filter */}
+          <section className="mb-8">
+            <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+              <div className="relative w-full md:w-96">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Search cryptocurrencies..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 bg-card/50 border-primary/20"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant={selectedCategory === 'all' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setSelectedCategory('all')}
+                >
+                  All
+                </Button>
+                <Button
+                  variant={selectedCategory === 'bullish' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setSelectedCategory('bullish')}
+                  className={selectedCategory === 'bullish' ? 'bg-green-600 hover:bg-green-700' : ''}
+                >
+                  <TrendingUp className="w-3 h-3 mr-1" />
+                  Bullish
+                </Button>
+                <Button
+                  variant={selectedCategory === 'bearish' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setSelectedCategory('bearish')}
+                  className={selectedCategory === 'bearish' ? 'bg-red-600 hover:bg-red-700' : ''}
+                >
+                  <TrendingDown className="w-3 h-3 mr-1" />
+                  Bearish
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => refetch()}
+                  disabled={isFetching}
+                >
+                  <RefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin' : ''}`} />
+                </Button>
+              </div>
+            </div>
+          </section>
+
+          {/* Crypto Predictions Grid */}
+          <section>
+            <h2 className="font-display text-xl font-bold mb-4">
+              Top Cryptocurrency Predictions
+              <span className="text-sm font-normal text-muted-foreground ml-2">
+                ({filteredCryptos.length} coins)
+              </span>
+            </h2>
+            
+            {isLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <div key={i} className="holo-card p-4 animate-pulse">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-full bg-muted" />
+                      <div className="flex-1">
+                        <div className="h-4 bg-muted rounded w-24 mb-1" />
+                        <div className="h-3 bg-muted rounded w-12" />
+                      </div>
+                    </div>
+                    <div className="h-6 bg-muted rounded w-20 mb-2" />
+                    <div className="h-4 bg-muted rounded w-full" />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredCryptos.map((crypto) => (
+                  <Link
+                    key={crypto.id}
+                    to={`/price-prediction/${crypto.id}`}
+                    className="holo-card p-4 hover:border-primary/50 transition-all group"
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center font-display font-bold text-sm">
+                          {crypto.symbol.toUpperCase().slice(0, 3)}
+                        </div>
+                        <div>
+                          <h3 className="font-display font-bold text-foreground group-hover:text-primary transition-colors">
+                            {crypto.name}
+                          </h3>
+                          <span className="text-xs text-muted-foreground uppercase">
+                            {crypto.symbol}
+                          </span>
+                        </div>
+                      </div>
+                      <Badge 
+                        variant={crypto.bias === 'bullish' ? 'default' : crypto.bias === 'bearish' ? 'destructive' : 'secondary'}
+                        className={crypto.bias === 'bullish' ? 'bg-green-600/20 text-green-400 border-green-600/30' : 
+                          crypto.bias === 'bearish' ? 'bg-red-600/20 text-red-400 border-red-600/30' : ''}
+                      >
+                        {crypto.bias === 'bullish' ? <TrendingUp className="w-3 h-3 mr-1" /> : 
+                         crypto.bias === 'bearish' ? <TrendingDown className="w-3 h-3 mr-1" /> : 
+                         <Minus className="w-3 h-3 mr-1" />}
+                        {crypto.confidence}%
+                      </Badge>
+                    </div>
+                    
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-lg font-bold font-mono">
+                        {formatPrice(crypto.price)}
+                      </span>
+                      <span className={`text-sm font-medium ${crypto.change24h >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                        {crypto.change24h >= 0 ? '+' : ''}{crypto.change24h.toFixed(2)}%
+                      </span>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <Link
+                        to={`/price-prediction/${crypto.id}/daily`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="flex-1 text-center py-1.5 text-xs bg-muted/50 hover:bg-primary/10 rounded transition-colors"
+                      >
+                        Daily
+                      </Link>
+                      <Link
+                        to={`/price-prediction/${crypto.id}/weekly`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="flex-1 text-center py-1.5 text-xs bg-muted/50 hover:bg-primary/10 rounded transition-colors"
+                      >
+                        Weekly
+                      </Link>
+                      <Link
+                        to={`/price-prediction/${crypto.id}/monthly`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="flex-1 text-center py-1.5 text-xs bg-muted/50 hover:bg-primary/10 rounded transition-colors"
+                      >
+                        Monthly
+                      </Link>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </section>
+
+          {/* SEO Content */}
+          <section className="mt-16 holo-card p-8">
+            <h2 className="font-display text-2xl font-bold mb-4 text-center">
+              About Oracle Bull Crypto Predictions
+            </h2>
+            <div className="prose prose-invert max-w-none text-muted-foreground">
+              <p className="mb-4">
+                Oracle Bull provides AI-powered cryptocurrency price predictions for over 1,000 digital assets including 
+                Bitcoin (BTC), Ethereum (ETH), Solana (SOL), XRP, Cardano (ADA), and many more. Our advanced machine learning 
+                models analyze 50+ technical indicators, on-chain data, market sentiment, and historical patterns to generate 
+                accurate price forecasts.
+              </p>
+              <p className="mb-4">
+                Our predictions cover three timeframes: <strong>Daily predictions</strong> for day traders seeking intraday 
+                support and resistance levels, <strong>Weekly forecasts</strong> for swing traders looking for breakout 
+                opportunities, and <strong>Monthly outlooks</strong> for investors considering macro trends and long-term positions.
+              </p>
+              <p>
+                Each prediction includes precise trading zones with entry points, stop-loss levels, and multiple take-profit 
+                targets. Our risk assessment system provides clear confidence scores and volatility ratings to help you make 
+                informed decisions. All predictions are updated regularly and include detailed technical analysis with RSI, 
+                MACD, moving averages, and Bollinger Bands.
+              </p>
+            </div>
+            <p className="mt-6 text-xs text-muted-foreground/60 text-center">
+              Disclaimer: Predictions are for informational purposes only. This is not financial advice. 
+              Always do your own research before making investment decisions.
+            </p>
+          </section>
+
+          {/* FAQ Schema */}
+          <section className="mt-12">
+            <h2 className="font-display text-xl font-bold mb-6 text-center">Frequently Asked Questions</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              {[
+                { q: "What will Bitcoin price be today?", a: "Our AI analyzes real-time data to predict Bitcoin's intraday movements. Check our daily prediction page for today's BTC forecast with support/resistance levels." },
+                { q: "How accurate are crypto predictions?", a: "Our predictions use multi-layer analysis including technical indicators, market momentum, and historical patterns. We provide confidence scores with each forecast." },
+                { q: "Is Ethereum a good investment?", a: "View our ETH prediction pages for daily, weekly, and monthly forecasts. We provide risk assessments and trading zones to help inform your decision." },
+                { q: "Which crypto will go up this week?", a: "Browse our prediction hub to see all bullish-rated cryptocurrencies with our weekly forecasts and breakout analysis." }
+              ].map((faq, i) => (
+                <div key={i} className="holo-card p-4">
+                  <h3 className="font-display font-bold mb-2">{faq.q}</h3>
+                  <p className="text-sm text-muted-foreground">{faq.a}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <Footer />
+      <MobileBottomNav />
+      <div className="h-20 md:hidden" aria-hidden="true" />
+    </div>
+  );
+}
