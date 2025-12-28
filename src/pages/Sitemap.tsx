@@ -15,6 +15,7 @@ const sitemapSections = [
     links: [
       { path: "/", label: "Home", description: "AI-powered crypto forecasts and market overview" },
       { path: "/dashboard", label: "Dashboard", description: "Real-time market data, top performers, and AI insights" },
+      { path: "/predictions", label: "Price Predictions", description: "AI-powered daily, weekly, monthly crypto forecasts" },
       { path: "/strength", label: "Strength Meter", description: "Crypto strength rankings and momentum analysis" },
       { path: "/factory", label: "Crypto Factory", description: "Market events calendar and on-chain intelligence" },
     ]
@@ -23,6 +24,9 @@ const sitemapSections = [
     title: "Analytics Tools",
     icon: BarChart3,
     links: [
+      { path: "/price-prediction/bitcoin", label: "Bitcoin Prediction", description: "BTC price forecast with trading zones" },
+      { path: "/price-prediction/ethereum", label: "Ethereum Prediction", description: "ETH price forecast with technical analysis" },
+      { path: "/price-prediction/solana", label: "Solana Prediction", description: "SOL price forecast with AI insights" },
       { path: "/portfolio", label: "Wallet Scanner", description: "AI-powered wallet analysis for EVM and Solana" },
       { path: "/sentiment", label: "Sentiment Analysis", description: "Social sentiment, whale tracking, and market signals" },
       { path: "/explorer", label: "Token Explorer", description: "Search any cryptocurrency by name or contract" },

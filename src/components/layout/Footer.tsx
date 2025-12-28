@@ -57,6 +57,11 @@ export function Footer() {
             <h4 className="font-display font-bold text-foreground text-sm md:text-base">TOOLS</h4>
             <ul className="space-y-2">
               <li>
+                <Link to="/predictions" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Price Predictions
+                </Link>
+              </li>
+              <li>
                 <Link to="/dashboard" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
                   Dashboard
                 </Link>
@@ -79,11 +84,6 @@ export function Footer() {
               <li>
                 <Link to="/sentiment" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
                   Sentiment Analysis
-                </Link>
-              </li>
-              <li>
-                <Link to="/explorer" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Token Explorer
                 </Link>
               </li>
             </ul>

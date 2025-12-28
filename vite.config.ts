@@ -8,6 +8,7 @@ import Sitemap from "vite-plugin-sitemap";
 const staticRoutes = [
   "/",
   "/dashboard",
+  "/predictions",
   "/strength",
   "/strength-meter",
   "/factory",
@@ -32,8 +33,44 @@ const chainRoutes = [
   "/chain/bnb",
 ];
 
+// Top crypto prediction routes (for SEO)
+const predictionRoutes = [
+  "/price-prediction/bitcoin",
+  "/price-prediction/bitcoin/daily",
+  "/price-prediction/bitcoin/weekly",
+  "/price-prediction/bitcoin/monthly",
+  "/price-prediction/ethereum",
+  "/price-prediction/ethereum/daily",
+  "/price-prediction/ethereum/weekly",
+  "/price-prediction/ethereum/monthly",
+  "/price-prediction/solana",
+  "/price-prediction/solana/daily",
+  "/price-prediction/solana/weekly",
+  "/price-prediction/solana/monthly",
+  "/price-prediction/binancecoin",
+  "/price-prediction/ripple",
+  "/price-prediction/cardano",
+  "/price-prediction/dogecoin",
+  "/price-prediction/polkadot",
+  "/price-prediction/chainlink",
+  "/price-prediction/avalanche-2",
+  "/price-prediction/matic-network",
+  "/price-prediction/shiba-inu",
+  "/price-prediction/litecoin",
+  "/price-prediction/uniswap",
+  "/price-prediction/cosmos",
+  "/price-prediction/near",
+  "/price-prediction/arbitrum",
+  "/price-prediction/optimism",
+  "/price-prediction/aptos",
+  "/price-prediction/sui",
+  "/price-prediction/pepe",
+  "/price-prediction/floki",
+  "/price-prediction/bonk",
+];
+
 // All routes combined
-const allRoutes = [...staticRoutes, ...chainRoutes];
+const allRoutes = [...staticRoutes, ...chainRoutes, ...predictionRoutes];
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
