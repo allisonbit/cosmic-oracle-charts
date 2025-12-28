@@ -80,6 +80,45 @@ export type Database = {
         }
         Relationships: []
       }
+      predictions_cache: {
+        Row: {
+          bias: string | null
+          coin_id: string
+          confidence: number | null
+          created_at: string
+          current_price: number | null
+          expires_at: string
+          id: string
+          prediction_data: Json
+          symbol: string
+          timeframe: string
+        }
+        Insert: {
+          bias?: string | null
+          coin_id: string
+          confidence?: number | null
+          created_at?: string
+          current_price?: number | null
+          expires_at: string
+          id?: string
+          prediction_data: Json
+          symbol: string
+          timeframe: string
+        }
+        Update: {
+          bias?: string | null
+          coin_id?: string
+          confidence?: number | null
+          created_at?: string
+          current_price?: number | null
+          expires_at?: string
+          id?: string
+          prediction_data?: Json
+          symbol?: string
+          timeframe?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

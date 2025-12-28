@@ -26,6 +26,7 @@ const Insights = lazy(() => import("./pages/Insights"));
 const InsightArticle = lazy(() => import("./pages/InsightArticle"));
 const PricePrediction = lazy(() => import("./pages/PricePrediction"));
 const PredictionHub = lazy(() => import("./pages/PredictionHub"));
+const QuestionIntent = lazy(() => import("./pages/QuestionIntent"));
 
 // Loading fallback component
 const PageLoader = memo(function PageLoader() {
@@ -85,6 +86,7 @@ const App = () => (
             <Route path="/price-prediction" element={<PredictionHub />} />
             <Route path="/price-prediction/:coinId" element={<PricePrediction />} />
             <Route path="/price-prediction/:coinId/:timeframe" element={<PricePrediction />} />
+            <Route path="/q/:slug" element={<QuestionIntent />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
