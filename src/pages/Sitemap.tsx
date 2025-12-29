@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { 
   Home, LayoutDashboard, TrendingUp, Factory, Wallet, 
   Activity, Search, BookOpen, Mail, Globe, ChevronRight,
-  Zap, BarChart3, Shield, Bot
+  Zap, BarChart3, Shield, Bot, Flame
 } from "lucide-react";
 
 const sitemapSections = [
@@ -40,6 +40,18 @@ const sitemapSections = [
       { path: "/q/what-will-ethereum-price-be-today", label: "What will Ethereum price be today?", description: "Daily ETH forecast" },
       { path: "/q/will-solana-go-up-this-week", label: "Will Solana go up this week?", description: "Weekly SOL outlook" },
       { path: "/q/is-bitcoin-a-good-investment-this-month", label: "Is Bitcoin a good investment this month?", description: "Monthly BTC analysis" },
+    ]
+  },
+  {
+    title: "Market Analysis",
+    icon: Flame,
+    links: [
+      { path: "/market/best-crypto-to-buy-today", label: "Best Crypto to Buy Today", description: "AI picks for today" },
+      { path: "/market/top-crypto-gainers-today", label: "Top Crypto Gainers Today", description: "Biggest winners" },
+      { path: "/market/next-crypto-to-explode", label: "Next Crypto to Explode", description: "High potential picks" },
+      { path: "/market/crypto-market-prediction-today", label: "Market Prediction Today", description: "Daily market outlook" },
+      { path: "/market/top-crypto-to-invest-2025", label: "Top Crypto to Invest 2025", description: "Long-term picks" },
+      { path: "/market/cheap-crypto-to-buy-now", label: "Cheap Crypto to Buy Now", description: "Affordable coins" },
     ]
   },
   {

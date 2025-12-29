@@ -69,8 +69,24 @@ const questionRoutes = questionIntentCoins.flatMap(coin =>
   questionPatterns.map(pattern => `/q/${pattern.replace('{coin}', coin)}`)
 );
 
+// Market question routes for SEO
+const marketQuestionRoutes = [
+  '/market/best-crypto-to-buy-today',
+  '/market/top-crypto-gainers-today',
+  '/market/crypto-market-prediction-today',
+  '/market/which-crypto-will-go-up-today',
+  '/market/best-crypto-to-buy-this-week',
+  '/market/crypto-prediction-this-week',
+  '/market/top-crypto-to-invest-2025',
+  '/market/crypto-losers-today',
+  '/market/is-crypto-going-up-today',
+  '/market/next-crypto-to-explode',
+  '/market/safest-crypto-to-invest',
+  '/market/cheap-crypto-to-buy-now',
+];
+
 // All routes combined
-const allRoutes = [...staticRoutes, ...chainRoutes, ...predictionRoutes, ...questionRoutes];
+const allRoutes = [...staticRoutes, ...chainRoutes, ...predictionRoutes, ...questionRoutes, ...marketQuestionRoutes];
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({

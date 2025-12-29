@@ -27,6 +27,7 @@ const InsightArticle = lazy(() => import("./pages/InsightArticle"));
 const PricePrediction = lazy(() => import("./pages/PricePrediction"));
 const PredictionHub = lazy(() => import("./pages/PredictionHub"));
 const QuestionIntent = lazy(() => import("./pages/QuestionIntent"));
+const MarketQuestion = lazy(() => import("./pages/MarketQuestion"));
 
 // Loading fallback component
 const PageLoader = memo(function PageLoader() {
@@ -87,6 +88,18 @@ const App = () => (
             <Route path="/price-prediction/:coinId" element={<PricePrediction />} />
             <Route path="/price-prediction/:coinId/:timeframe" element={<PricePrediction />} />
             <Route path="/q/:slug" element={<QuestionIntent />} />
+            <Route path="/market/best-crypto-to-buy-today" element={<MarketQuestion questionSlug="best-crypto-to-buy-today" />} />
+            <Route path="/market/top-crypto-gainers-today" element={<MarketQuestion questionSlug="top-crypto-gainers-today" />} />
+            <Route path="/market/crypto-market-prediction-today" element={<MarketQuestion questionSlug="crypto-market-prediction-today" />} />
+            <Route path="/market/which-crypto-will-go-up-today" element={<MarketQuestion questionSlug="which-crypto-will-go-up-today" />} />
+            <Route path="/market/best-crypto-to-buy-this-week" element={<MarketQuestion questionSlug="best-crypto-to-buy-this-week" />} />
+            <Route path="/market/crypto-prediction-this-week" element={<MarketQuestion questionSlug="crypto-prediction-this-week" />} />
+            <Route path="/market/top-crypto-to-invest-2025" element={<MarketQuestion questionSlug="top-crypto-to-invest-2025" />} />
+            <Route path="/market/crypto-losers-today" element={<MarketQuestion questionSlug="crypto-losers-today" />} />
+            <Route path="/market/is-crypto-going-up-today" element={<MarketQuestion questionSlug="is-crypto-going-up-today" />} />
+            <Route path="/market/next-crypto-to-explode" element={<MarketQuestion questionSlug="next-crypto-to-explode" />} />
+            <Route path="/market/safest-crypto-to-invest" element={<MarketQuestion questionSlug="safest-crypto-to-invest" />} />
+            <Route path="/market/cheap-crypto-to-buy-now" element={<MarketQuestion questionSlug="cheap-crypto-to-buy-now" />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
