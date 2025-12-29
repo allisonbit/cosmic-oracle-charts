@@ -6,7 +6,7 @@ import {
   TrendingUp, TrendingDown, Minus, Clock, Calendar, CalendarDays,
   ChevronRight, Zap, Target, Shield, BarChart3, Search, RefreshCw
 } from "lucide-react";
-import { TOP_CRYPTOS } from "@/hooks/usePricePrediction";
+import { TOP_50_CRYPTOS, searchCryptos } from "@/lib/extendedCryptos";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -43,9 +43,11 @@ export default function PredictionHub() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'bullish' | 'bearish'>('all');
 
-  // Merge price data with TOP_CRYPTOS
-  const enrichedCryptos = useMemo(() => {
-    return TOP_CRYPTOS.map(crypto => {
+  // Get cryptos based on search - top 50 by default, or search results
+  const displayCryptos = useMemo(() => {
+    const cryptos = searchQuery ? searchCryptos(searchQuery, 100) : TOP_50_CRYPTOS;
+    
+    return cryptos.map(crypto => {
       const priceData = pricesData?.prices?.find(
         p => p.symbol.toLowerCase() === crypto.symbol.toLowerCase()
       );
@@ -57,18 +59,16 @@ export default function PredictionHub() {
         marketCap: priceData?.marketCap || 0,
         ...sentiment
       };
-    }).sort((a, b) => b.marketCap - a.marketCap);
-  }, [pricesData]);
-
-  // Filter cryptos
-  const filteredCryptos = useMemo(() => {
-    return enrichedCryptos.filter(crypto => {
-      const matchesSearch = crypto.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        crypto.symbol.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory = selectedCategory === 'all' || crypto.bias === selectedCategory;
-      return matchesSearch && matchesCategory;
     });
-  }, [enrichedCryptos, searchQuery, selectedCategory]);
+  }, [pricesData, searchQuery]);
+
+  // Filter by category
+  const filteredCryptos = useMemo(() => {
+    return displayCryptos.filter(crypto => {
+      const matchesCategory = selectedCategory === 'all' || crypto.bias === selectedCategory;
+      return matchesCategory;
+    });
+  }, [displayCryptos, selectedCategory]);
 
   const formatPrice = (price: number) => {
     if (price >= 1000) return `$${price.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;

@@ -21,12 +21,31 @@ const sitemapSections = [
     ]
   },
   {
-    title: "Analytics Tools",
-    icon: BarChart3,
+    title: "Price Predictions",
+    icon: TrendingUp,
     links: [
       { path: "/price-prediction/bitcoin", label: "Bitcoin Prediction", description: "BTC price forecast with trading zones" },
       { path: "/price-prediction/ethereum", label: "Ethereum Prediction", description: "ETH price forecast with technical analysis" },
       { path: "/price-prediction/solana", label: "Solana Prediction", description: "SOL price forecast with AI insights" },
+      { path: "/price-prediction/ripple", label: "XRP Prediction", description: "XRP price forecast and analysis" },
+      { path: "/price-prediction/cardano", label: "Cardano Prediction", description: "ADA price forecast with signals" },
+      { path: "/price-prediction/dogecoin", label: "Dogecoin Prediction", description: "DOGE price forecast and sentiment" },
+    ]
+  },
+  {
+    title: "Question Pages",
+    icon: Search,
+    links: [
+      { path: "/q/what-will-bitcoin-price-be-today", label: "What will Bitcoin price be today?", description: "Daily BTC forecast" },
+      { path: "/q/what-will-ethereum-price-be-today", label: "What will Ethereum price be today?", description: "Daily ETH forecast" },
+      { path: "/q/will-solana-go-up-this-week", label: "Will Solana go up this week?", description: "Weekly SOL outlook" },
+      { path: "/q/is-bitcoin-a-good-investment-this-month", label: "Is Bitcoin a good investment this month?", description: "Monthly BTC analysis" },
+    ]
+  },
+  {
+    title: "Analytics Tools",
+    icon: BarChart3,
+    links: [
       { path: "/portfolio", label: "Wallet Scanner", description: "AI-powered wallet analysis for EVM and Solana" },
       { path: "/sentiment", label: "Sentiment Analysis", description: "Social sentiment, whale tracking, and market signals" },
       { path: "/explorer", label: "Token Explorer", description: "Search any cryptocurrency by name or contract" },
