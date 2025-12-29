@@ -67,66 +67,14 @@ export function usePricePrediction(
   });
 }
 
-// Top cryptocurrencies for prediction pages
-export const TOP_CRYPTOS = [
-  { id: 'bitcoin', symbol: 'btc', name: 'Bitcoin' },
-  { id: 'ethereum', symbol: 'eth', name: 'Ethereum' },
-  { id: 'binancecoin', symbol: 'bnb', name: 'BNB' },
-  { id: 'solana', symbol: 'sol', name: 'Solana' },
-  { id: 'ripple', symbol: 'xrp', name: 'XRP' },
-  { id: 'cardano', symbol: 'ada', name: 'Cardano' },
-  { id: 'avalanche-2', symbol: 'avax', name: 'Avalanche' },
-  { id: 'dogecoin', symbol: 'doge', name: 'Dogecoin' },
-  { id: 'polkadot', symbol: 'dot', name: 'Polkadot' },
-  { id: 'chainlink', symbol: 'link', name: 'Chainlink' },
-  { id: 'matic-network', symbol: 'matic', name: 'Polygon' },
-  { id: 'tron', symbol: 'trx', name: 'TRON' },
-  { id: 'shiba-inu', symbol: 'shib', name: 'Shiba Inu' },
-  { id: 'litecoin', symbol: 'ltc', name: 'Litecoin' },
-  { id: 'uniswap', symbol: 'uni', name: 'Uniswap' },
-  { id: 'cosmos', symbol: 'atom', name: 'Cosmos' },
-  { id: 'ethereum-classic', symbol: 'etc', name: 'Ethereum Classic' },
-  { id: 'stellar', symbol: 'xlm', name: 'Stellar' },
-  { id: 'near', symbol: 'near', name: 'NEAR Protocol' },
-  { id: 'aptos', symbol: 'apt', name: 'Aptos' },
-  { id: 'arbitrum', symbol: 'arb', name: 'Arbitrum' },
-  { id: 'optimism', symbol: 'op', name: 'Optimism' },
-  { id: 'filecoin', symbol: 'fil', name: 'Filecoin' },
-  { id: 'hedera-hashgraph', symbol: 'hbar', name: 'Hedera' },
-  { id: 'vechain', symbol: 'vet', name: 'VeChain' },
-  { id: 'aave', symbol: 'aave', name: 'Aave' },
-  { id: 'the-graph', symbol: 'grt', name: 'The Graph' },
-  { id: 'fantom', symbol: 'ftm', name: 'Fantom' },
-  { id: 'algorand', symbol: 'algo', name: 'Algorand' },
-  { id: 'sui', symbol: 'sui', name: 'Sui' },
-  { id: 'immutable-x', symbol: 'imx', name: 'Immutable' },
-  { id: 'injective-protocol', symbol: 'inj', name: 'Injective' },
-  { id: 'render-token', symbol: 'rndr', name: 'Render' },
-  { id: 'theta-token', symbol: 'theta', name: 'Theta Network' },
-  { id: 'mantle', symbol: 'mnt', name: 'Mantle' },
-  { id: 'flow', symbol: 'flow', name: 'Flow' },
-  { id: 'axie-infinity', symbol: 'axs', name: 'Axie Infinity' },
-  { id: 'decentraland', symbol: 'mana', name: 'Decentraland' },
-  { id: 'the-sandbox', symbol: 'sand', name: 'The Sandbox' },
-  { id: 'eos', symbol: 'eos', name: 'EOS' },
-  { id: 'neo', symbol: 'neo', name: 'Neo' },
-  { id: 'kucoin-shares', symbol: 'kcs', name: 'KuCoin Token' },
-  { id: 'maker', symbol: 'mkr', name: 'Maker' },
-  { id: 'pepe', symbol: 'pepe', name: 'Pepe' },
-  { id: 'floki', symbol: 'floki', name: 'Floki' },
-  { id: 'bonk', symbol: 'bonk', name: 'Bonk' },
-  { id: 'gala', symbol: 'gala', name: 'Gala' },
-  { id: 'sei-network', symbol: 'sei', name: 'Sei' },
-  { id: 'stacks', symbol: 'stx', name: 'Stacks' },
-  { id: 'celestia', symbol: 'tia', name: 'Celestia' }
-];
+// Re-export from extended cryptos for backward compatibility
+import { TOP_50_CRYPTOS, ALL_CRYPTOS, searchCryptos, getCryptoById } from '@/lib/extendedCryptos';
+
+export const TOP_CRYPTOS = TOP_50_CRYPTOS;
+export { ALL_CRYPTOS, searchCryptos };
 
 export function getCryptoBySlug(slug: string) {
-  return TOP_CRYPTOS.find(c => 
-    c.id === slug || 
-    c.symbol === slug.toLowerCase() || 
-    c.name.toLowerCase().replace(/\s+/g, '-') === slug.toLowerCase()
-  );
+  return getCryptoById(slug);
 }
 
 // Question intent templates for SEO pages

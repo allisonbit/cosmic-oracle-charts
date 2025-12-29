@@ -34,43 +34,43 @@ const chainRoutes = [
 ];
 
 // Top crypto prediction routes (for SEO)
-const predictionRoutes = [
-  "/price-prediction/bitcoin",
-  "/price-prediction/bitcoin/daily",
-  "/price-prediction/bitcoin/weekly",
-  "/price-prediction/bitcoin/monthly",
-  "/price-prediction/ethereum",
-  "/price-prediction/ethereum/daily",
-  "/price-prediction/ethereum/weekly",
-  "/price-prediction/ethereum/monthly",
-  "/price-prediction/solana",
-  "/price-prediction/solana/daily",
-  "/price-prediction/solana/weekly",
-  "/price-prediction/solana/monthly",
-  "/price-prediction/binancecoin",
-  "/price-prediction/ripple",
-  "/price-prediction/cardano",
-  "/price-prediction/dogecoin",
-  "/price-prediction/polkadot",
-  "/price-prediction/chainlink",
-  "/price-prediction/avalanche-2",
-  "/price-prediction/matic-network",
-  "/price-prediction/shiba-inu",
-  "/price-prediction/litecoin",
-  "/price-prediction/uniswap",
-  "/price-prediction/cosmos",
-  "/price-prediction/near",
-  "/price-prediction/arbitrum",
-  "/price-prediction/optimism",
-  "/price-prediction/aptos",
-  "/price-prediction/sui",
-  "/price-prediction/pepe",
-  "/price-prediction/floki",
-  "/price-prediction/bonk",
+const topCryptoIds = [
+  'bitcoin', 'ethereum', 'solana', 'binancecoin', 'ripple', 'cardano', 'dogecoin',
+  'polkadot', 'chainlink', 'avalanche-2', 'matic-network', 'shiba-inu', 'litecoin',
+  'uniswap', 'cosmos', 'near', 'arbitrum', 'optimism', 'aptos', 'sui', 'pepe', 'floki', 'bonk'
 ];
 
+const predictionRoutes = topCryptoIds.flatMap(id => [
+  `/price-prediction/${id}`,
+  `/price-prediction/${id}/daily`,
+  `/price-prediction/${id}/weekly`,
+  `/price-prediction/${id}/monthly`,
+]);
+
+// Question-intent routes for SEO
+const questionPatterns = [
+  'what-will-{coin}-price-be-today',
+  'will-{coin}-go-up-today',
+  '{coin}-price-prediction-today',
+  'is-{coin}-bullish-today',
+  'what-will-{coin}-price-be-this-week',
+  'will-{coin}-go-up-this-week',
+  '{coin}-price-prediction-this-week',
+  '{coin}-weekly-forecast',
+  'what-will-{coin}-price-be-this-month',
+  'is-{coin}-a-good-investment-this-month',
+  '{coin}-price-prediction-this-month',
+  '{coin}-monthly-forecast',
+];
+
+// Generate question-intent routes for top 10 coins
+const questionIntentCoins = ['bitcoin', 'ethereum', 'solana', 'ripple', 'cardano', 'dogecoin', 'shiba-inu', 'pepe', 'chainlink', 'polkadot'];
+const questionRoutes = questionIntentCoins.flatMap(coin => 
+  questionPatterns.map(pattern => `/q/${pattern.replace('{coin}', coin)}`)
+);
+
 // All routes combined
-const allRoutes = [...staticRoutes, ...chainRoutes, ...predictionRoutes];
+const allRoutes = [...staticRoutes, ...chainRoutes, ...predictionRoutes, ...questionRoutes];
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
