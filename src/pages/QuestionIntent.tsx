@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { usePricePrediction, getQuestionIntent, getCryptoBySlug, TOP_CRYPTOS, QUESTION_INTENTS } from "@/hooks/usePricePrediction";
+import { usePricePrediction, getQuestionIntent, TOP_CRYPTOS, QUESTION_INTENTS } from "@/hooks/usePricePrediction";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function QuestionIntent() {
@@ -21,16 +21,16 @@ export default function QuestionIntent() {
     return <Navigate to="/predictions" replace />;
   }
   
-  const cryptoData = getCryptoBySlug(questionData.coin);
+  const { crypto, question, timeframe } = questionData;
   const { data: prediction, isLoading, error } = usePricePrediction(
-    questionData.coin,
-    cryptoData?.symbol || '',
-    questionData.timeframe as 'daily' | 'weekly' | 'monthly',
-    !!cryptoData
+    crypto.id,
+    crypto.symbol,
+    timeframe,
+    true
   );
 
-  const timeframeIcon = questionData.timeframe === 'daily' ? Clock : 
-    questionData.timeframe === 'weekly' ? Calendar : CalendarDays;
+  const timeframeIcon = timeframe === 'daily' ? Clock : 
+    timeframe === 'weekly' ? Calendar : CalendarDays;
   const TimeIcon = timeframeIcon;
 
   const formatPrice = (price: number) => {
@@ -43,17 +43,48 @@ export default function QuestionIntent() {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
   });
 
-  // Related questions for internal linking
-  const relatedQuestions = QUESTION_INTENTS
-    .filter(q => q.slug !== slug && (q.coin === questionData.coin || q.timeframe === questionData.timeframe))
-    .slice(0, 6);
+  // Related questions for internal linking - generate them dynamically
+  const generateRelatedQuestions = () => {
+    const related: { pattern: string; question: string; timeframe: string }[] = [];
+    
+    // Same coin, different timeframes
+    QUESTION_INTENTS.forEach(intent => {
+      if (intent.timeframe !== timeframe) {
+        const pattern = intent.pattern.replace('{coin}', crypto.id);
+        related.push({
+          pattern,
+          question: intent.template.replace('{name}', crypto.name),
+          timeframe: intent.timeframe
+        });
+      }
+    });
+    
+    // Different coins, same timeframe
+    TOP_CRYPTOS.slice(0, 5).forEach(c => {
+      if (c.id !== crypto.id) {
+        const matchingIntent = QUESTION_INTENTS.find(i => i.timeframe === timeframe);
+        if (matchingIntent) {
+          const pattern = matchingIntent.pattern.replace('{coin}', c.id);
+          related.push({
+            pattern,
+            question: matchingIntent.template.replace('{name}', c.name),
+            timeframe: matchingIntent.timeframe
+          });
+        }
+      }
+    });
+    
+    return related.slice(0, 6);
+  };
+
+  const relatedQuestions = generateRelatedQuestions();
 
   return (
     <div className="min-h-screen flex flex-col cosmic-bg">
       <SEO 
-        title={`${questionData.title} | ${currentDate} | Oracle Bull`}
-        description={`${questionData.question} Get AI-powered ${cryptoData?.name || ''} price prediction for ${questionData.timeframe} with technical analysis, trading zones, and risk assessment. Updated ${currentDate}.`}
-        keywords={`${cryptoData?.name} prediction, ${cryptoData?.symbol} price today, ${cryptoData?.name} forecast, will ${cryptoData?.symbol} go up, ${cryptoData?.name} ${questionData.timeframe} prediction`}
+        title={`${question} | ${currentDate} | Oracle Bull`}
+        description={`${question} Get AI-powered ${crypto.name} price prediction for ${timeframe} with technical analysis, trading zones, and risk assessment. Updated ${currentDate}.`}
+        keywords={`${crypto.name} prediction, ${crypto.symbol} price today, ${crypto.name} forecast, will ${crypto.symbol} go up, ${crypto.name} ${timeframe} prediction`}
       />
       <Helmet>
         <script type="application/ld+json">
@@ -62,12 +93,12 @@ export default function QuestionIntent() {
             "@type": "FAQPage",
             "mainEntity": [{
               "@type": "Question",
-              "name": questionData.question,
+              "name": question,
               "acceptedAnswer": {
                 "@type": "Answer",
                 "text": prediction ? 
-                  `Based on our AI analysis, ${cryptoData?.name} shows a ${prediction.bias} bias with ${prediction.confidence}% confidence. Current price: ${formatPrice(prediction.currentPrice)}. ${prediction.summary}` :
-                  `Our AI is analyzing ${cryptoData?.name} price data. Check back for the latest ${questionData.timeframe} prediction.`
+                  `Based on our AI analysis, ${crypto.name} shows a ${prediction.bias} bias with ${prediction.confidence}% confidence. Current price: ${formatPrice(prediction.currentPrice)}. ${prediction.summary}` :
+                  `Our AI is analyzing ${crypto.name} price data. Check back for the latest ${timeframe} prediction.`
               }
             }],
             "dateModified": new Date().toISOString()
@@ -87,24 +118,24 @@ export default function QuestionIntent() {
             <ChevronRight className="w-4 h-4" />
             <Link to="/predictions" className="hover:text-primary">Predictions</Link>
             <ChevronRight className="w-4 h-4" />
-            <Link to={`/price-prediction/${questionData.coin}`} className="hover:text-primary capitalize">
-              {cryptoData?.name}
+            <Link to={`/price-prediction/${crypto.id}`} className="hover:text-primary capitalize">
+              {crypto.name}
             </Link>
             <ChevronRight className="w-4 h-4" />
-            <span className="text-foreground">{questionData.timeframe}</span>
+            <span className="text-foreground">{timeframe}</span>
           </nav>
 
           {/* Hero Section */}
           <section className="text-center mb-12">
             <Badge variant="outline" className="mb-4 border-primary/50 text-primary">
               <TimeIcon className="w-3 h-3 mr-1" />
-              {questionData.timeframe.charAt(0).toUpperCase() + questionData.timeframe.slice(1)} Prediction
+              {timeframe.charAt(0).toUpperCase() + timeframe.slice(1)} Prediction
             </Badge>
             <h1 className="text-3xl md:text-4xl font-display font-bold mb-4">
-              <span className="glow-text">{questionData.question}</span>
+              <span className="glow-text">{question}</span>
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              AI-powered {cryptoData?.name} ({cryptoData?.symbol?.toUpperCase()}) price prediction with technical analysis, 
+              AI-powered {crypto.name} ({crypto.symbol.toUpperCase()}) price prediction with technical analysis, 
               trading zones, and risk assessment. Last updated: {currentDate}
             </p>
           </section>
@@ -127,11 +158,11 @@ export default function QuestionIntent() {
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
                   <div>
                     <h2 className="font-display text-2xl font-bold mb-1">
-                      {cryptoData?.name} ({prediction.symbol})
+                      {crypto.name} ({prediction.symbol.toUpperCase()})
                     </h2>
                     <p className="text-muted-foreground">
-                      {questionData.timeframe === 'daily' ? 'Today\'s' : 
-                       questionData.timeframe === 'weekly' ? 'This Week\'s' : 'This Month\'s'} Outlook
+                      {timeframe === 'daily' ? 'Today\'s' : 
+                       timeframe === 'weekly' ? 'This Week\'s' : 'This Month\'s'} Outlook
                     </p>
                   </div>
                   <Badge 
@@ -229,13 +260,13 @@ export default function QuestionIntent() {
                 {/* CTA */}
                 <div className="flex flex-wrap gap-3">
                   <Button asChild>
-                    <Link to={`/price-prediction/${questionData.coin}/${questionData.timeframe}`}>
+                    <Link to={`/price-prediction/${crypto.id}/${timeframe}`}>
                       View Full Analysis <ArrowRight className="w-4 h-4 ml-2" />
                     </Link>
                   </Button>
                   <Button variant="outline" asChild>
-                    <Link to={`/price-prediction/${questionData.coin}`}>
-                      All {cryptoData?.name} Predictions
+                    <Link to={`/price-prediction/${crypto.id}`}>
+                      All {crypto.name} Predictions
                     </Link>
                   </Button>
                 </div>
@@ -247,10 +278,10 @@ export default function QuestionIntent() {
           <section className="mb-12">
             <h2 className="font-display text-xl font-bold mb-4">Related Questions</h2>
             <div className="grid md:grid-cols-2 gap-3">
-              {relatedQuestions.map((q) => (
+              {relatedQuestions.map((q, i) => (
                 <Link
-                  key={q.slug}
-                  to={`/q/${q.slug}`}
+                  key={i}
+                  to={`/q/${q.pattern}`}
                   className="holo-card p-4 hover:border-primary/50 transition-all group flex items-center justify-between"
                 >
                   <span className="font-medium group-hover:text-primary transition-colors">
@@ -266,16 +297,16 @@ export default function QuestionIntent() {
           <section className="mb-12">
             <h2 className="font-display text-xl font-bold mb-4">More Predictions</h2>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-              {TOP_CRYPTOS.slice(0, 10).filter(c => c.id !== questionData.coin).map((crypto) => (
+              {TOP_CRYPTOS.slice(0, 10).filter(c => c.id !== crypto.id).map((c) => (
                 <Link
-                  key={crypto.id}
-                  to={`/price-prediction/${crypto.id}/${questionData.timeframe}`}
+                  key={c.id}
+                  to={`/price-prediction/${c.id}/${timeframe}`}
                   className="holo-card p-3 text-center hover:border-primary/50 transition-all group"
                 >
                   <div className="font-display font-bold text-sm group-hover:text-primary transition-colors">
-                    {crypto.symbol.toUpperCase()}
+                    {c.symbol.toUpperCase()}
                   </div>
-                  <div className="text-xs text-muted-foreground">{crypto.name}</div>
+                  <div className="text-xs text-muted-foreground">{c.name}</div>
                 </Link>
               ))}
             </div>
@@ -284,12 +315,12 @@ export default function QuestionIntent() {
           {/* SEO Content */}
           <section className="holo-card p-6">
             <h2 className="font-display text-xl font-bold mb-4">
-              About {cryptoData?.name} {questionData.timeframe.charAt(0).toUpperCase() + questionData.timeframe.slice(1)} Predictions
+              About {crypto.name} {timeframe.charAt(0).toUpperCase() + timeframe.slice(1)} Predictions
             </h2>
             <div className="prose prose-invert max-w-none text-muted-foreground text-sm">
               <p>
-                Oracle Bull provides AI-powered {cryptoData?.name} ({cryptoData?.symbol?.toUpperCase()}) price predictions 
-                using advanced machine learning algorithms. Our {questionData.timeframe} forecasts analyze 50+ technical 
+                Oracle Bull provides AI-powered {crypto.name} ({crypto.symbol.toUpperCase()}) price predictions 
+                using advanced machine learning algorithms. Our {timeframe} forecasts analyze 50+ technical 
                 indicators including RSI, MACD, moving averages, Bollinger Bands, and volume patterns to generate 
                 accurate price predictions.
               </p>

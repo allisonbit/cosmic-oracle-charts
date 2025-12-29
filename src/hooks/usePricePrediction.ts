@@ -128,3 +128,42 @@ export function getCryptoBySlug(slug: string) {
     c.name.toLowerCase().replace(/\s+/g, '-') === slug.toLowerCase()
   );
 }
+
+// Question intent templates for SEO pages
+export const QUESTION_INTENTS = [
+  { pattern: 'what-will-{coin}-price-be-today', template: 'What will {name} price be today?', timeframe: 'daily' as const },
+  { pattern: 'will-{coin}-go-up-today', template: 'Will {name} go up today?', timeframe: 'daily' as const },
+  { pattern: '{coin}-price-prediction-today', template: '{name} price prediction today', timeframe: 'daily' as const },
+  { pattern: 'is-{coin}-bullish-today', template: 'Is {name} bullish today?', timeframe: 'daily' as const },
+  { pattern: 'what-will-{coin}-price-be-this-week', template: 'What will {name} price be this week?', timeframe: 'weekly' as const },
+  { pattern: 'will-{coin}-go-up-this-week', template: 'Will {name} go up this week?', timeframe: 'weekly' as const },
+  { pattern: '{coin}-price-prediction-this-week', template: '{name} price prediction this week', timeframe: 'weekly' as const },
+  { pattern: '{coin}-weekly-forecast', template: '{name} weekly forecast', timeframe: 'weekly' as const },
+  { pattern: 'what-will-{coin}-price-be-this-month', template: 'What will {name} price be this month?', timeframe: 'monthly' as const },
+  { pattern: 'is-{coin}-a-good-investment-this-month', template: 'Is {name} a good investment this month?', timeframe: 'monthly' as const },
+  { pattern: '{coin}-price-prediction-this-month', template: '{name} price prediction this month', timeframe: 'monthly' as const },
+  { pattern: '{coin}-monthly-forecast', template: '{name} monthly forecast', timeframe: 'monthly' as const },
+];
+
+export function getQuestionIntent(slug: string): { 
+  crypto: typeof TOP_CRYPTOS[0]; 
+  question: string; 
+  timeframe: 'daily' | 'weekly' | 'monthly';
+} | null {
+  for (const crypto of TOP_CRYPTOS) {
+    for (const intent of QUESTION_INTENTS) {
+      const coinVariants = [crypto.id, crypto.symbol, crypto.name.toLowerCase().replace(/\s+/g, '-')];
+      for (const coinVar of coinVariants) {
+        const pattern = intent.pattern.replace('{coin}', coinVar);
+        if (slug === pattern) {
+          return {
+            crypto,
+            question: intent.template.replace('{name}', crypto.name),
+            timeframe: intent.timeframe
+          };
+        }
+      }
+    }
+  }
+  return null;
+}
