@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { useState, useMemo } from "react";
 import { SEO } from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
+import { BannerAd, InArticleAd } from "@/components/ads";
 
 const timeframes = [
   { id: 'daily', label: 'Today', icon: Clock, description: 'Intraday predictions with support/resistance levels' },
@@ -160,6 +161,9 @@ export default function PredictionHub() {
               ))}
             </div>
           </section>
+          
+          {/* Ad placement after timeframe section */}
+          <BannerAd className="mb-8" priority="medium" />
 
           {/* Search and Filter */}
           <section className="mb-8">
@@ -309,8 +313,11 @@ export default function PredictionHub() {
             )}
           </section>
 
+          {/* In-article ad before SEO content */}
+          <InArticleAd className="mt-8 mb-8" />
+
           {/* SEO Content */}
-          <section className="mt-16 holo-card p-8">
+          <section className="mt-8 holo-card p-8">
             <h2 className="font-display text-2xl font-bold mb-4 text-center">
               About Oracle Bull Crypto Predictions
             </h2>

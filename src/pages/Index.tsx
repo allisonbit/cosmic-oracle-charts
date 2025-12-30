@@ -5,6 +5,7 @@ import { HeroSection } from "@/components/home/HeroSection";
 import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Skeleton } from "@/components/ui/skeleton";
+import { BannerAd, InArticleAd } from "@/components/ads";
 
 // Lazy load below-fold components for better LCP
 const QuickStats = lazy(() => import("@/components/home/QuickStats").then(m => ({ default: m.QuickStats })));
@@ -38,12 +39,20 @@ const Index = () => {
         <Suspense fallback={<SectionFallback />}>
           <ChainLinks />
         </Suspense>
+        
+        {/* Ad placement after ChainLinks - below fold */}
+        <BannerAd className="mt-4" priority="medium" />
+        
         <Suspense fallback={<SectionFallback />}>
           <TopMovers />
         </Suspense>
         <Suspense fallback={<SectionFallback />}>
           <FeaturesSection />
         </Suspense>
+        
+        {/* In-article ad between sections */}
+        <InArticleAd />
+        
         <Suspense fallback={<SectionFallback />}>
           <CTASection />
         </Suspense>

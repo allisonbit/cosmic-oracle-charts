@@ -17,6 +17,7 @@ import { EnhancedTopPerformers } from "@/components/dashboard/EnhancedTopPerform
 import { StrengthMeterWidget } from "@/components/dashboard/StrengthMeterWidget";
 import { CryptoFactoryWidget } from "@/components/dashboard/CryptoFactoryWidget";
 import { Link } from "react-router-dom";
+import { SidebarAd, InArticleAd } from "@/components/ads";
 
 function formatNumber(num: number): string {
   if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
@@ -267,8 +268,13 @@ const Dashboard = () => {
               <div className="space-y-4 sm:space-y-6">
                 <EnhancedTrendingAlerts />
                 <EnhancedTopPerformers onCoinClick={setSelectedCoin} />
+                {/* Sidebar ad */}
+                <SidebarAd />
               </div>
             </div>
+            
+            {/* In-article ad between major sections */}
+            <InArticleAd className="mb-4 sm:mb-6" />
 
             {/* Strength Meter & Crypto Factory Widgets */}
             <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
