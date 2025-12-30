@@ -62,6 +62,21 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/market/best-crypto-to-buy-today" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Best Crypto Today
+                </Link>
+              </li>
+              <li>
+                <Link to="/market/top-crypto-gainers-today" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Top Gainers
+                </Link>
+              </li>
+              <li>
+                <Link to="/market/next-crypto-to-explode" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Next to Explode
+                </Link>
+              </li>
+              <li>
                 <Link to="/dashboard" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
                   Dashboard
                 </Link>
@@ -72,18 +87,8 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/factory" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Crypto Factory
-                </Link>
-              </li>
-              <li>
                 <Link to="/portfolio" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
                   Wallet Scanner
-                </Link>
-              </li>
-              <li>
-                <Link to="/sentiment" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Sentiment Analysis
                 </Link>
               </li>
             </ul>
