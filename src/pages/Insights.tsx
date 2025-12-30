@@ -27,7 +27,8 @@ import {
   Calendar
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { format, parseISO, isToday, isYesterday, subDays } from "date-fns";
+import { format, parseISO, isToday, isYesterday } from "date-fns";
+import { BannerAd, InArticleAd } from "@/components/ads";
 
 const ARTICLES_PER_PAGE = 12;
 
@@ -257,6 +258,9 @@ export default function Insights() {
               </Card>
             </Link>
           )}
+          
+          {/* Ad placement before articles grid */}
+          <BannerAd className="mb-6 sm:mb-8" priority="medium" />
 
           {/* Articles Grid */}
           {isLoading ? (
@@ -386,6 +390,9 @@ export default function Insights() {
               )}
             </>
           )}
+
+          {/* In-article ad after article count */}
+          <InArticleAd className="mt-8" />
 
           {/* Article Count */}
           <div className="text-center mt-6 sm:mt-8 text-xs sm:text-sm text-muted-foreground">

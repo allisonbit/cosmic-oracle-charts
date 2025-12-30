@@ -26,6 +26,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
+import { InArticleAd, SidebarAd } from "@/components/ads";
 
 // Internal links configuration
 const internalLinks = [
@@ -293,6 +294,9 @@ export default function InsightArticle() {
             className="prose prose-invert max-w-none mb-8"
             dangerouslySetInnerHTML={{ __html: processedContent }}
           />
+          
+          {/* In-article ad after content */}
+          <InArticleAd className="my-8" />
 
           {/* Key Takeaways */}
           {article.takeaways?.length > 0 && (
