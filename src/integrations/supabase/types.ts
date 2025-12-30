@@ -124,7 +124,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      cleanup_expired_predictions: { Args: never; Returns: undefined }
     }
     Enums: {
       [_ in never]: never

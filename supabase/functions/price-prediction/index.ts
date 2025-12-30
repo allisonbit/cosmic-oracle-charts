@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -26,61 +27,71 @@ interface TechnicalIndicators {
   volumeAnalysis: { trend: 'increasing' | 'decreasing' | 'stable'; strength: number };
 }
 
-interface PredictionOutput {
-  coinId: string;
-  symbol: string;
-  timeframe: string;
-  timestamp: string;
-  currentPrice: number;
-  
-  // Prediction data
-  bias: 'bullish' | 'bearish' | 'neutral';
-  confidence: number;
-  probabilityBullish: number;
-  probabilityBearish: number;
-  
-  // Price targets
-  priceTargets: {
-    conservative: { low: number; high: number };
-    moderate: { low: number; high: number };
-    aggressive: { low: number; high: number };
-  };
-  
-  // Trading zones (for future bot integration)
-  tradingZones: {
-    entryZone: { min: number; max: number };
-    stopLoss: number;
-    takeProfit1: number;
-    takeProfit2: number;
-    takeProfit3: number;
-  };
-  
-  // Support & Resistance
-  supportLevels: number[];
-  resistanceLevels: number[];
-  
-  // Technical analysis
-  technicalIndicators: TechnicalIndicators;
-  
-  // Risk assessment
-  riskLevel: 'low' | 'medium' | 'high' | 'extreme';
-  volatilityIndex: number;
-  
-  // Analysis summary
-  summary: string;
-  keyFactors: string[];
-  
-  // Scenarios
-  bullScenario: { target: number; probability: number; triggers: string[] };
-  bearScenario: { target: number; probability: number; triggers: string[] };
-  
-  // Metadata
-  disclaimer: string;
+// Initialize Supabase client
+function getSupabaseClient() {
+  const supabaseUrl = Deno.env.get("SUPABASE_URL");
+  const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if (!supabaseUrl || !supabaseKey) return null;
+  return createClient(supabaseUrl, supabaseKey);
+}
+
+// Check cache for existing prediction
+async function getCachedPrediction(supabase: any, coinId: string, timeframe: string) {
+  try {
+    const { data, error } = await supabase
+      .from('predictions_cache')
+      .select('*')
+      .eq('coin_id', coinId)
+      .eq('timeframe', timeframe)
+      .gt('expires_at', new Date().toISOString())
+      .single();
+    
+    if (error || !data) return null;
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+// Save prediction to cache
+async function cachePrediction(supabase: any, prediction: any, coinId: string, symbol: string, timeframe: string) {
+  try {
+    // Calculate expiration based on timeframe
+    const now = new Date();
+    let expiresAt: Date;
+    if (timeframe === 'daily') {
+      expiresAt = new Date(now.getTime() + 4 * 60 * 60 * 1000); // 4 hours
+    } else if (timeframe === 'weekly') {
+      expiresAt = new Date(now.getTime() + 12 * 60 * 60 * 1000); // 12 hours
+    } else {
+      expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 hours
+    }
+
+    await supabase
+      .from('predictions_cache')
+      .upsert({
+        coin_id: coinId,
+        symbol: symbol.toUpperCase(),
+        timeframe,
+        prediction_data: prediction,
+        bias: prediction.bias,
+        confidence: prediction.confidence,
+        current_price: prediction.currentPrice,
+        expires_at: expiresAt.toISOString(),
+        created_at: now.toISOString()
+      }, { 
+        onConflict: 'coin_id,timeframe',
+        ignoreDuplicates: false 
+      });
+
+    console.log(`Cached prediction for ${symbol} (${timeframe})`);
+  } catch (error) {
+    console.error("Cache save error:", error);
+  }
 }
 
 // Calculate RSI simulation
-function calculateRSI(priceChange: number, volatility: number): { value: number; signal: 'oversold' | 'neutral' | 'overbought' } {
-  // Simulate RSI based on recent price action
+function calculateRSI(priceChange: number): { value: number; signal: 'oversold' | 'neutral' | 'overbought' } {
   let baseRSI = 50 + (priceChange * 2);
   baseRSI = Math.max(10, Math.min(90, baseRSI + (Math.random() - 0.5) * 15));
   
@@ -92,7 +103,7 @@ function calculateRSI(priceChange: number, volatility: number): { value: number;
 }
 
 // Calculate MACD simulation
-function calculateMACD(priceChange: number, trend: number): { value: number; signal: number; histogram: number; trend: 'bullish' | 'bearish' } {
+function calculateMACD(priceChange: number): { value: number; signal: number; histogram: number; trend: 'bullish' | 'bearish' } {
   const value = priceChange * 0.1 + (Math.random() - 0.5) * 0.05;
   const signal = value * 0.8 + (Math.random() - 0.5) * 0.02;
   const histogram = value - signal;
@@ -106,9 +117,9 @@ function calculateMACD(priceChange: number, trend: number): { value: number; sig
 }
 
 // Generate technical indicators
-function generateTechnicalIndicators(currentPrice: number, priceChange: number, volume: number): TechnicalIndicators {
-  const rsiData = calculateRSI(priceChange, Math.abs(priceChange));
-  const macdData = calculateMACD(priceChange, priceChange > 0 ? 1 : -1);
+function generateTechnicalIndicators(currentPrice: number, priceChange: number): TechnicalIndicators {
+  const rsiData = calculateRSI(priceChange);
+  const macdData = calculateMACD(priceChange);
   
   const ma20 = currentPrice * (1 + (Math.random() - 0.5) * 0.03);
   const ma50 = currentPrice * (1 + (Math.random() - 0.5) * 0.08);
@@ -164,7 +175,7 @@ function calculateLevels(currentPrice: number, high: number, low: number): { sup
   return { support, resistance };
 }
 
-// Generate prediction using AI
+// Generate AI analysis
 async function generateAIPrediction(
   coinId: string,
   symbol: string,
@@ -172,11 +183,10 @@ async function generateAIPrediction(
   currentPrice: number,
   technicals: TechnicalIndicators,
   levels: { support: number[]; resistance: number[] }
-): Promise<{ summary: string; keyFactors: string[]; bullTriggers: string[]; bearTriggers: string[] }> {
+) {
   const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
   
   if (!LOVABLE_API_KEY) {
-    // Fallback without AI
     return generateFallbackAnalysis(symbol, timeframe, technicals);
   }
   
@@ -228,7 +238,6 @@ Be professional, data-driven, avoid hype. Include specific price levels.`;
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content || '';
     
-    // Parse JSON from response
     const jsonMatch = content.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       const parsed = JSON.parse(jsonMatch[0]);
@@ -282,19 +291,31 @@ serve(async (req) => {
   }
 
   try {
-    const { coinId, symbol, timeframe, currentPrice, priceChange24h, volume24h, marketCap, high24h, low24h } = await req.json() as PredictionRequest;
+    const { coinId, symbol, timeframe, currentPrice, priceChange24h, high24h, low24h } = await req.json() as PredictionRequest;
     
-    console.log(`Generating ${timeframe} prediction for ${symbol}`);
+    console.log(`Processing ${timeframe} prediction for ${symbol}`);
+    
+    const supabase = getSupabaseClient();
+    
+    // Check cache first
+    if (supabase) {
+      const cached = await getCachedPrediction(supabase, coinId, timeframe);
+      if (cached) {
+        console.log(`Cache hit for ${symbol} (${timeframe})`);
+        return new Response(
+          JSON.stringify(cached.prediction_data),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+    }
     
     // Use provided data or fetch from CoinGecko
     let price = currentPrice || 0;
     let change = priceChange24h || 0;
-    let volume = volume24h || 0;
     let high = high24h || price * 1.05;
     let low = low24h || price * 0.95;
     
     if (!price) {
-      // Fetch current price from CoinGecko
       const cgResponse = await fetch(
         `https://api.coingecko.com/api/v3/simple/price?ids=${coinId}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true`
       );
@@ -304,7 +325,6 @@ serve(async (req) => {
         if (cgData[coinId]) {
           price = cgData[coinId].usd || 0;
           change = cgData[coinId].usd_24h_change || 0;
-          volume = cgData[coinId].usd_24h_vol || 0;
         }
       }
     }
@@ -317,7 +337,7 @@ serve(async (req) => {
     }
     
     // Generate technical indicators
-    const technicals = generateTechnicalIndicators(price, change, volume);
+    const technicals = generateTechnicalIndicators(price, change);
     
     // Calculate support and resistance
     const levels = calculateLevels(price, high, low);
@@ -395,7 +415,7 @@ serve(async (req) => {
       triggers: aiAnalysis.bearTriggers
     };
     
-    const prediction: PredictionOutput = {
+    const prediction = {
       coinId,
       symbol: symbol.toUpperCase(),
       timeframe,
@@ -418,6 +438,11 @@ serve(async (req) => {
       bearScenario,
       disclaimer: "This analysis is for informational purposes only and does not constitute financial advice. Cryptocurrency investments carry significant risk. Past performance does not guarantee future results. Always conduct your own research before making investment decisions."
     };
+    
+    // Cache the prediction in background
+    if (supabase) {
+      cachePrediction(supabase, prediction, coinId, symbol, timeframe).catch(console.error);
+    }
     
     return new Response(
       JSON.stringify(prediction),
