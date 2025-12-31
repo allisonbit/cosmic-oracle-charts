@@ -1,26 +1,26 @@
 # Oracle Bull - Comprehensive robots.txt
 # https://oraclebull.com
 
-# Allow all major search engines
+# Default: Allow full crawling for all bots
 User-agent: *
 Allow: /
-Allow: /dashboard
-Allow: /strength
-Allow: /strength-meter
-Allow: /factory
-Allow: /portfolio
-Allow: /sentiment
-Allow: /explorer
-Allow: /learn
-Allow: /insights
-Allow: /contact
-Allow: /sitemap
-Allow: /chain/
 
-# Sitemap location
+# Explicitly allow resources needed for rendering (AdSense requirement)
+Allow: /src/*.js
+Allow: /src/*.css
+Allow: /assets/*
+Allow: /*.js
+Allow: /*.css
+Allow: /*.jpg
+Allow: /*.png
+Allow: /*.webp
+Allow: /*.svg
+Allow: /*.woff2
+
+# Sitemap locations
 Sitemap: https://oraclebull.com/sitemap.xml
 
-# Google specific
+# Google specific - full access
 User-agent: Googlebot
 Allow: /
 Crawl-delay: 1
@@ -31,12 +31,30 @@ Allow: /
 User-agent: Googlebot-Mobile
 Allow: /
 
+User-agent: Googlebot-News
+Allow: /
+
+User-agent: AdsBot-Google
+Allow: /
+
+User-agent: AdsBot-Google-Mobile
+Allow: /
+
+User-agent: Mediapartners-Google
+Allow: /
+
 # Bing specific
 User-agent: Bingbot
 Allow: /
 Crawl-delay: 1
 
-# AI Search Engines
+User-agent: MSNBot
+Allow: /
+
+User-agent: adidxbot
+Allow: /
+
+# AI Search Engines - full access
 User-agent: GPTBot
 Allow: /
 
@@ -55,7 +73,13 @@ Allow: /
 User-agent: Anthropic-AI
 Allow: /
 
-# Other search engines
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Other major search engines
 User-agent: Yandex
 Allow: /
 Crawl-delay: 2
@@ -66,13 +90,14 @@ Allow: /
 User-agent: Slurp
 Allow: /
 
-User-agent: facebot
-Allow: /
-
 User-agent: ia_archiver
 Allow: /
 
-# Social media crawlers
+User-agent: Baiduspider
+Allow: /
+Crawl-delay: 5
+
+# Social media crawlers - full access
 User-agent: Twitterbot
 Allow: /
 
@@ -85,7 +110,22 @@ Allow: /
 User-agent: TelegramBot
 Allow: /
 
-# Block known bad bots
+User-agent: facebot
+Allow: /
+
+User-agent: Facebot
+Allow: /
+
+User-agent: FacebookExternalHit
+Allow: /
+
+User-agent: Pinterest
+Allow: /
+
+User-agent: Discordbot
+Allow: /
+
+# Block known SEO scrapers (not search engines)
 User-agent: AhrefsBot
 Disallow: /
 
@@ -98,9 +138,11 @@ Disallow: /
 User-agent: DotBot
 Disallow: /
 
-# Block aggressive crawlers
-User-agent: Baiduspider
-Crawl-delay: 10
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: DataForSeoBot
+Disallow: /
 
 # Host directive for canonicalization
 Host: https://oraclebull.com

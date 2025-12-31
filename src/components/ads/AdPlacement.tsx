@@ -13,9 +13,8 @@ type AdSize =
 interface AdPlacementProps {
   size: AdSize;
   className?: string;
-  slot?: string; // Google AdSense slot ID
-  lazyLoad?: boolean; // Enable lazy loading (default true)
-  priority?: 'low' | 'medium' | 'high'; // Loading priority
+  slot?: string; // Google AdSense slot ID (optional - Auto Ads handles most placements)
+  lazyLoad?: boolean; // Enable lazy loading (default true for performance)
 }
 
 const sizeConfig: Record<AdSize, { width: string; height: string; label: string; minHeight: string }> = {
@@ -24,45 +23,46 @@ const sizeConfig: Record<AdSize, { width: string; height: string; label: string;
   rectangle: { width: "300px", height: "250px", label: "Rectangle", minHeight: "250px" },
   skyscraper: { width: "160px", height: "600px", label: "Skyscraper", minHeight: "600px" },
   "mobile-banner": { width: "320px", height: "50px", label: "Mobile Banner", minHeight: "50px" },
-  "in-article": { width: "100%", height: "auto", label: "In-Article", minHeight: "250px" },
+  "in-article": { width: "100%", height: "auto", label: "In-Article", minHeight: "100px" },
   "sticky-footer": { width: "100%", height: "auto", label: "Sticky Footer", minHeight: "50px" },
 };
 
-// Maximum 3-4 ads per page - AdSense compliance
-const MAX_ADS_PER_PAGE = 4;
-let activeAdCount = 0;
-
+/**
+ * AdPlacement Component
+ * 
+ * This component provides ad slot containers that work with Google AdSense Auto Ads.
+ * Auto Ads automatically determines the best placement and number of ads.
+ * We only provide hints via data attributes - Google handles the rest.
+ * 
+ * NO artificial ad limits - AdSense Auto Ads self-regulates for policy compliance.
+ */
 export const AdPlacement = memo(function AdPlacement({ 
   size, 
   className, 
   slot,
-  lazyLoad = true,
-  priority = 'low'
+  lazyLoad = true
 }: AdPlacementProps) {
   const config = sizeConfig[size];
   const adRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(!lazyLoad);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const hasInitialized = useRef(false);
 
+  // Lazy load using Intersection Observer for Core Web Vitals
   useEffect(() => {
-    if (!lazyLoad) {
-      setIsVisible(true);
-      return;
-    }
+    if (!lazyLoad || isVisible) return;
 
-    // Use Intersection Observer for lazy loading
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && activeAdCount < MAX_ADS_PER_PAGE) {
+          if (entry.isIntersecting) {
             setIsVisible(true);
             observer.disconnect();
           }
         });
       },
       {
-        rootMargin: priority === 'high' ? '200px' : priority === 'medium' ? '100px' : '50px',
-        threshold: 0.1,
+        rootMargin: '200px', // Load 200px before entering viewport
+        threshold: 0,
       }
     );
 
@@ -71,44 +71,41 @@ export const AdPlacement = memo(function AdPlacement({
     }
 
     return () => observer.disconnect();
-  }, [lazyLoad, priority]);
+  }, [lazyLoad, isVisible]);
 
+  // Initialize AdSense slot when visible (for manual slot placements)
   useEffect(() => {
-    if (isVisible && !isLoaded) {
-      activeAdCount++;
-      setIsLoaded(true);
-      
-      // Defer ad initialization to prevent heavy CPU usage
-      const timeoutId = setTimeout(() => {
-        // Push ad to AdSense if available
-        try {
-          if (typeof window !== 'undefined' && (window as any).adsbygoogle && slot) {
-            ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
-          }
-        } catch (e) {
-          console.warn('AdSense push error:', e);
+    if (!isVisible || hasInitialized.current || !slot) return;
+    
+    hasInitialized.current = true;
+    
+    // Defer initialization to avoid blocking main thread
+    requestIdleCallback?.(() => {
+      try {
+        if (typeof window !== 'undefined' && (window as any).adsbygoogle) {
+          ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
         }
-      }, 100);
+      } catch (e) {
+        // AdSense errors are non-critical
+      }
+    }) ?? setTimeout(() => {
+      try {
+        if (typeof window !== 'undefined' && (window as any).adsbygoogle) {
+          ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
+        }
+      } catch (e) {
+        // AdSense errors are non-critical
+      }
+    }, 100);
+  }, [isVisible, slot]);
 
-      return () => {
-        clearTimeout(timeoutId);
-        activeAdCount = Math.max(0, activeAdCount - 1);
-      };
-    }
-  }, [isVisible, isLoaded, slot]);
-
-  // Don't render if max ads reached
-  if (activeAdCount >= MAX_ADS_PER_PAGE && !isLoaded) {
-    return null;
-  }
-
-  // Placeholder component - shows when not loaded yet
+  // Placeholder when lazy loading
   if (!isVisible) {
     return (
       <div
         ref={adRef}
         className={cn(
-          "flex items-center justify-center bg-muted/20 rounded-lg overflow-hidden",
+          "flex items-center justify-center bg-muted/10 rounded-lg overflow-hidden",
           className
         )}
         style={{
@@ -116,11 +113,12 @@ export const AdPlacement = memo(function AdPlacement({
           minHeight: config.minHeight,
         }}
         aria-hidden="true"
+        data-ad-placeholder="true"
       />
     );
   }
 
-  // Sticky footer has special positioning
+  // Sticky footer has special fixed positioning
   if (size === "sticky-footer") {
     return (
       <div
@@ -133,6 +131,7 @@ export const AdPlacement = memo(function AdPlacement({
         data-ad-slot={slot}
         data-ad-size={size}
         aria-label="Advertisement"
+        role="complementary"
       >
         {slot ? (
           <ins
@@ -144,7 +143,8 @@ export const AdPlacement = memo(function AdPlacement({
             data-full-width-responsive="true"
           />
         ) : (
-          <div className="text-muted-foreground/30 text-xs">Ad</div>
+          // Auto Ads will fill this container if appropriate
+          <div className="w-full max-w-3xl mx-auto" data-ad-container="auto" />
         )}
       </div>
     );
@@ -154,17 +154,18 @@ export const AdPlacement = memo(function AdPlacement({
     <div
       ref={adRef}
       className={cn(
-        "flex items-center justify-center bg-muted/10 rounded-lg overflow-hidden",
-        size === "in-article" && "my-6",
+        "flex items-center justify-center bg-muted/5 rounded-lg overflow-hidden",
+        size === "in-article" && "my-6 w-full",
         className
       )}
       style={{
-        maxWidth: config.width,
+        maxWidth: size === "in-article" ? "100%" : config.width,
         minHeight: config.minHeight,
       }}
       data-ad-slot={slot}
       data-ad-size={size}
       aria-label="Advertisement"
+      role="complementary"
     >
       {slot ? (
         <ins
@@ -181,7 +182,12 @@ export const AdPlacement = memo(function AdPlacement({
           data-full-width-responsive="true"
         />
       ) : (
-        <div className="text-muted-foreground/30 text-xs">{config.label}</div>
+        // Auto Ads placeholder - Google will fill if appropriate
+        <div 
+          className="w-full h-full" 
+          data-ad-container="auto"
+          style={{ minHeight: config.minHeight }}
+        />
       )}
     </div>
   );

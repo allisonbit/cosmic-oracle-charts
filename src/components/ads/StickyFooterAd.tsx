@@ -33,10 +33,10 @@ export const StickyFooterAd = memo(function StickyFooterAd({ className, slot }: 
         </Button>
         
         <div className="hidden md:block">
-          <LazyAd size="banner" slot={slot} priority="low" />
+          <LazyAd size="banner" slot={slot} />
         </div>
         <div className="block md:hidden">
-          <LazyAd size="mobile-banner" slot={slot} priority="low" />
+          <LazyAd size="mobile-banner" slot={slot} />
         </div>
       </div>
     </div>

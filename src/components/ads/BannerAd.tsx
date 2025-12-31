@@ -5,19 +5,18 @@ import { LazyAd } from "./LazyAd";
 interface BannerAdProps {
   className?: string;
   slot?: string;
-  priority?: 'low' | 'medium' | 'high';
 }
 
-export const BannerAd = memo(function BannerAd({ className, slot, priority = 'low' }: BannerAdProps) {
+export const BannerAd = memo(function BannerAd({ className, slot }: BannerAdProps) {
   return (
     <div className={cn("w-full flex justify-center py-4", className)}>
       {/* Desktop banner */}
       <div className="hidden md:block">
-        <LazyAd size="banner" slot={slot} priority={priority} />
+        <LazyAd size="banner" slot={slot} />
       </div>
       {/* Mobile banner */}
       <div className="block md:hidden">
-        <LazyAd size="mobile-banner" slot={slot} priority={priority} />
+        <LazyAd size="mobile-banner" slot={slot} />
       </div>
     </div>
   );

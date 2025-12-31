@@ -8,7 +8,6 @@ interface LazyAdProps {
   size: "banner" | "leaderboard" | "rectangle" | "skyscraper" | "mobile-banner" | "in-article" | "sticky-footer";
   className?: string;
   slot?: string;
-  priority?: 'low' | 'medium' | 'high';
 }
 
 // Minimal placeholder that reserves space to prevent CLS
@@ -25,7 +24,7 @@ const AdPlaceholder = memo(function AdPlaceholder({
     rectangle: "250px",
     skyscraper: "600px",
     "mobile-banner": "50px",
-    "in-article": "250px",
+    "in-article": "100px",
     "sticky-footer": "50px",
   };
 
@@ -38,7 +37,7 @@ const AdPlaceholder = memo(function AdPlaceholder({
   );
 });
 
-export const LazyAd = memo(function LazyAd({ size, className, slot, priority = 'low' }: LazyAdProps) {
+export const LazyAd = memo(function LazyAd({ size, className, slot }: LazyAdProps) {
   return (
     <Suspense fallback={<AdPlaceholder size={size} className={className} />}>
       <AdPlacement 
@@ -46,7 +45,6 @@ export const LazyAd = memo(function LazyAd({ size, className, slot, priority = '
         className={className} 
         slot={slot} 
         lazyLoad={true}
-        priority={priority}
       />
     </Suspense>
   );

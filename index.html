@@ -75,34 +75,38 @@
   </head>
 
   <body class="touch-manipulation">
+    <!-- Noscript fallback for SEO crawlers and accessibility -->
+    <noscript>
+      <div style="text-align: center; padding: 40px; font-family: system-ui, sans-serif; background: #0a0d14; color: #e2e8f0; min-height: 100vh;">
+        <h1 style="font-size: 2rem; margin-bottom: 1rem;">Oracle Bull - AI Crypto Analytics</h1>
+        <p style="max-width: 600px; margin: 0 auto 2rem; line-height: 1.6;">
+          Free AI-powered cryptocurrency forecasting platform with real-time price charts, market predictions, whale tracking, and sentiment analysis for Bitcoin, Ethereum, Solana, and 1000+ tokens.
+        </p>
+        <nav style="margin-bottom: 2rem;">
+          <a href="/" style="color: #f59e0b; margin: 0 10px;">Home</a>
+          <a href="/dashboard" style="color: #f59e0b; margin: 0 10px;">Dashboard</a>
+          <a href="/predictions" style="color: #f59e0b; margin: 0 10px;">Predictions</a>
+          <a href="/insights" style="color: #f59e0b; margin: 0 10px;">Insights</a>
+          <a href="/learn" style="color: #f59e0b; margin: 0 10px;">Learn</a>
+          <a href="/sitemap" style="color: #f59e0b; margin: 0 10px;">Sitemap</a>
+        </nav>
+        <p style="font-size: 0.875rem; color: #94a3b8;">Please enable JavaScript to use the full interactive experience.</p>
+      </div>
+    </noscript>
+    
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     
-    <!-- Deferred Analytics (non-blocking) -->
+    <!-- Google Analytics (deferred) -->
+    <script defer src="https://www.googletagmanager.com/gtag/js?id=G-B2T2RX6RHB"></script>
     <script>
-      // Defer Google Analytics and AdSense loading
-      window.addEventListener('load', function() {
-        // Google Analytics
-        var gtag = document.createElement('script');
-        gtag.async = true;
-        gtag.src = 'https://www.googletagmanager.com/gtag/js?id=G-B2T2RX6RHB';
-        document.head.appendChild(gtag);
-        
-        gtag.onload = function() {
-          window.dataLayer = window.dataLayer || [];
-          function gtagFn(){dataLayer.push(arguments);}
-          gtagFn('js', new Date());
-          gtagFn('config', 'G-B2T2RX6RHB');
-          window.gtag = gtagFn;
-        };
-        
-        // Google AdSense
-        var adsense = document.createElement('script');
-        adsense.async = true;
-        adsense.crossOrigin = 'anonymous';
-        adsense.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1336344158133611';
-        document.head.appendChild(adsense);
-      });
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-B2T2RX6RHB', { 'send_page_view': true });
     </script>
+    
+    <!-- Google AdSense Auto Ads (global, full control to Google) -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1336344158133611" crossorigin="anonymous"></script>
   </body>
 </html>
