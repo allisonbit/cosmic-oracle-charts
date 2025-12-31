@@ -41,7 +41,7 @@ const Index = () => {
         </Suspense>
         
         {/* Ad placement after ChainLinks - below fold */}
-        <BannerAd className="mt-4" priority="medium" />
+        <BannerAd className="mt-4" />
         
         <Suspense fallback={<SectionFallback />}>
           <TopMovers />

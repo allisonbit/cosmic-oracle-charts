@@ -260,7 +260,7 @@ export default function Insights() {
           )}
           
           {/* Ad placement before articles grid */}
-          <BannerAd className="mb-6 sm:mb-8" priority="medium" />
+          <BannerAd className="mb-6 sm:mb-8" />
 
           {/* Articles Grid */}
           {isLoading ? (

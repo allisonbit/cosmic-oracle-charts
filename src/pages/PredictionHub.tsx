@@ -163,7 +163,7 @@ export default function PredictionHub() {
           </section>
           
           {/* Ad placement after timeframe section */}
-          <BannerAd className="mb-8" priority="medium" />
+          <BannerAd className="mb-8" />
 
           {/* Search and Filter */}
           <section className="mb-8">
