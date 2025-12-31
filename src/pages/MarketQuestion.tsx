@@ -6,13 +6,15 @@ import { SEO } from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
 import { 
   TrendingUp, TrendingDown, Zap, Clock, Calendar, 
-  ChevronRight, Target, Shield, BarChart3, Flame, Award
+  ChevronRight, Target, Shield, BarChart3, Flame, Award, Activity
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TOP_50_CRYPTOS } from "@/lib/extendedCryptos";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 import { useMemo } from "react";
+import { RelatedToolsLinks } from "@/components/prediction/HighIntentLinks";
+import { InArticleAd } from "@/components/ads";
 
 interface MarketQuestionConfig {
   slug: string;
@@ -387,6 +389,12 @@ export default function MarketQuestionPage({ questionSlug }: MarketQuestionPageP
             </div>
           </section>
 
+          {/* Related Tools - Cross linking */}
+          <RelatedToolsLinks className="mb-8" />
+
+          {/* Ad placement */}
+          <InArticleAd className="mb-8" />
+
           {/* CTA */}
           <section className="text-center mb-8">
             <Button asChild size="lg">
@@ -410,6 +418,13 @@ export default function MarketQuestionPage({ questionSlug }: MarketQuestionPageP
                 social sentiment, developer activity, and institutional interest. Our confidence scores reflect 
                 the strength of bullish or bearish signals detected by our AI models.
               </p>
+              <h3 className="text-foreground font-semibold mt-4 mb-2">Related Market Tools</h3>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><Link to="/strength" className="text-primary hover:underline">Crypto Strength Meter</Link> - Real-time asset strength rankings</li>
+                <li><Link to="/factory" className="text-primary hover:underline">Crypto Factory</Link> - Market events and signals calendar</li>
+                <li><Link to="/sentiment" className="text-primary hover:underline">Sentiment Analysis</Link> - Social and whale activity tracking</li>
+                <li><Link to="/dashboard" className="text-primary hover:underline">Market Dashboard</Link> - Live market overview</li>
+              </ul>
             </div>
             <p className="mt-4 text-xs text-muted-foreground/60">
               Disclaimer: This is not financial advice. Cryptocurrency investments carry significant risk. 

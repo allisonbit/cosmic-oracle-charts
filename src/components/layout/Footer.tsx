@@ -54,36 +54,68 @@ export function Footer() {
           
           {/* Quick Links */}
           <nav className="space-y-4" aria-label="Footer navigation - Tools">
-            <h4 className="font-display font-bold text-foreground text-sm md:text-base">TOOLS</h4>
+            <h4 className="font-display font-bold text-foreground text-sm md:text-base">PREDICTIONS</h4>
             <ul className="space-y-2">
               <li>
-                <Link to="/predictions" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Price Predictions
+                <Link to="/price-prediction/bitcoin/daily" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Bitcoin Price Today
+                </Link>
+              </li>
+              <li>
+                <Link to="/price-prediction/ethereum/daily" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Ethereum Price Today
+                </Link>
+              </li>
+              <li>
+                <Link to="/price-prediction/solana/daily" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Solana Price Today
                 </Link>
               </li>
               <li>
                 <Link to="/market/best-crypto-to-buy-today" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Best Crypto Today
+                  Best Crypto to Buy Today
                 </Link>
               </li>
               <li>
                 <Link to="/market/top-crypto-gainers-today" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Top Gainers
+                  Top Gainers Today
                 </Link>
               </li>
               <li>
                 <Link to="/market/next-crypto-to-explode" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Next to Explode
+                  Next Crypto to Explode
                 </Link>
               </li>
               <li>
+                <Link to="/predictions" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  All Predictions →
+                </Link>
+              </li>
+            </ul>
+          </nav>
+
+          {/* Market Tools */}
+          <nav className="space-y-4" aria-label="Footer navigation - Tools">
+            <h4 className="font-display font-bold text-foreground text-sm md:text-base">TOOLS</h4>
+            <ul className="space-y-2">
+              <li>
                 <Link to="/dashboard" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Dashboard
+                  Market Dashboard
                 </Link>
               </li>
               <li>
                 <Link to="/strength" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Strength Meter
+                  Crypto Strength Meter
+                </Link>
+              </li>
+              <li>
+                <Link to="/factory" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Crypto Factory
+                </Link>
+              </li>
+              <li>
+                <Link to="/sentiment" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Sentiment Analysis
                 </Link>
               </li>
               <li>
@@ -91,31 +123,36 @@ export function Footer() {
                   Wallet Scanner
                 </Link>
               </li>
+              <li>
+                <Link to="/explorer" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Token Explorer
+                </Link>
+              </li>
             </ul>
           </nav>
-
+          
           {/* Chains & Resources */}
           <nav className="space-y-4" aria-label="Footer navigation - Chains">
             <h4 className="font-display font-bold text-foreground text-sm md:text-base">CHAINS</h4>
             <ul className="space-y-2">
               <li>
                 <Link to="/chain/ethereum" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Ethereum
+                  Ethereum Analytics
                 </Link>
               </li>
               <li>
                 <Link to="/chain/solana" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Solana
+                  Solana Analytics
                 </Link>
               </li>
               <li>
                 <Link to="/chain/base" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Base
+                  Base Analytics
                 </Link>
               </li>
               <li>
                 <Link to="/chain/arbitrum" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Arbitrum
+                  Arbitrum Analytics
                 </Link>
               </li>
               <li>

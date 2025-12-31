@@ -5,9 +5,13 @@ import { PredictionSEO } from "@/components/prediction/PredictionSEO";
 import { PredictionHero } from "@/components/prediction/PredictionHero";
 import { TechnicalIndicatorsPanel, PriceTargetsPanel, TradingZonesPanel, ScenariosPanel, RiskAssessmentPanel } from "@/components/prediction/PredictionPanels";
 import { CoinList, TimeframeSelector, RelatedPredictions } from "@/components/prediction/PredictionNavigation";
-import { Disclaimer, FAQSection, Methodology } from "@/components/prediction/PredictionContent";
+import { Disclaimer, Methodology } from "@/components/prediction/PredictionContent";
+import { InvestorActionSummary } from "@/components/prediction/InvestorActionSummary";
+import { EnhancedFAQ } from "@/components/prediction/EnhancedFAQ";
+import { MarketQuestionsLinks, RelatedToolsLinks, TimeframeCrossLinks, HighIntentCTA } from "@/components/prediction/HighIntentLinks";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
+import { InArticleAd } from "@/components/ads";
 
 export default function PricePrediction() {
   const { coinId, timeframe = 'daily' } = useParams<{ coinId: string; timeframe: string }>();
@@ -41,6 +45,9 @@ export default function PricePrediction() {
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-6 order-2 lg:order-1">
             <TimeframeSelector coinId={crypto.id} coinName={crypto.name} currentTimeframe={validTimeframe} />
+            <TimeframeCrossLinks coinId={crypto.id} coinName={crypto.name} currentTimeframe={validTimeframe} />
+            <MarketQuestionsLinks />
+            <RelatedToolsLinks />
             <CoinList currentCoin={crypto.id} currentTimeframe={validTimeframe} />
           </div>
           
@@ -54,6 +61,20 @@ export default function PricePrediction() {
               <>
                 <PredictionHero coinName={crypto.name} symbol={crypto.symbol} timeframe={validTimeframe} data={data} />
                 
+                {/* Investor Action Summary - High-intent component */}
+                <InvestorActionSummary
+                  coinName={crypto.name}
+                  symbol={crypto.symbol}
+                  bias={data.bias}
+                  confidence={data.confidence}
+                  riskLevel={data.riskLevel as 'low' | 'medium' | 'high' | 'extreme'}
+                  currentPrice={data.currentPrice}
+                  entryZone={data.tradingZones?.entryZone}
+                  stopLoss={data.tradingZones?.stopLoss}
+                  takeProfit={data.tradingZones?.takeProfit1}
+                  timeframe={validTimeframe}
+                />
+                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <PriceTargetsPanel data={data} timeframe={validTimeframe} />
                   <TechnicalIndicatorsPanel data={data} />
@@ -65,7 +86,23 @@ export default function PricePrediction() {
                 </div>
                 
                 <ScenariosPanel data={data} />
-                <FAQSection coinName={crypto.name} symbol={crypto.symbol} timeframe={validTimeframe} />
+                
+                {/* Ad placement after scenarios */}
+                <InArticleAd />
+                
+                {/* High-intent CTA */}
+                <HighIntentCTA coinName={crypto.name} symbol={crypto.symbol} />
+                
+                {/* Enhanced money-intent FAQ */}
+                <EnhancedFAQ 
+                  coinName={crypto.name} 
+                  symbol={crypto.symbol} 
+                  timeframe={validTimeframe}
+                  currentPrice={data.currentPrice}
+                  bias={data.bias}
+                  confidence={data.confidence}
+                />
+                
                 <Methodology coinName={crypto.name} />
                 <Disclaimer coinName={crypto.name} />
               </>
