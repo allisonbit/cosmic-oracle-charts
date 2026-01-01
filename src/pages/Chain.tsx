@@ -15,6 +15,7 @@ import { RealtimePriceTicker } from "@/components/chain/RealtimePriceTicker";
 import { ChainSpecificMetrics } from "@/components/chain/ChainSpecificMetrics";
 import { NetworkInfoPanel } from "@/components/chain/NetworkInfoPanel";
 import { LiveTokenSearchPanel } from "@/components/chain/LiveTokenSearchPanel";
+import { ChainFAQSchema, ChainFAQDisplay } from "@/components/chain/ChainFAQSchema";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { LazySection } from "@/components/ui/LazySection";
 import { ArrowLeft, Loader2, ExternalLink, RefreshCw } from "lucide-react";
@@ -123,6 +124,7 @@ export default function Chain() {
               )}
 
               {/* Critical above-fold components - load immediately */}
+              <ChainFAQSchema chain={chain} priceData={chainPrice} />
               <ChainOverviewPanel chain={chain} overview={chainData?.overview} isLoading={chainLoading} />
               <ChainExternalLinks chain={chain} />
               <NetworkInfoPanel chain={chain} overview={chainData?.overview} isLoading={chainLoading} />
@@ -216,6 +218,11 @@ export default function Chain() {
                 <Suspense fallback={<ComponentLoader />}>
                   <EnhancedDailySummary chain={chain} forecast={forecastData?.forecast} isLoading={forecastLoading} />
                 </Suspense>
+              </LazySection>
+
+              {/* FAQ Section for SEO */}
+              <LazySection fallbackHeight="h-48">
+                <ChainFAQDisplay chain={chain} priceData={chainPrice} />
               </LazySection>
             </div>
           </main>

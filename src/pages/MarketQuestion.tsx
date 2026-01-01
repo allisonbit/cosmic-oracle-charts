@@ -49,6 +49,7 @@ function getMockSentiment(symbol: string): { bias: 'bullish' | 'bearish' | 'neut
 
 // Market question configurations
 const MARKET_QUESTIONS: MarketQuestionConfig[] = [
+  // TODAY-focused questions
   {
     slug: 'best-crypto-to-buy-today',
     title: 'Best Crypto to Buy Today | Top Picks for Today',
@@ -86,6 +87,25 @@ const MARKET_QUESTIONS: MarketQuestionConfig[] = [
     filterFn: (cryptos) => cryptos.filter(c => c.bias === 'bullish').sort((a, b) => b.confidence - a.confidence)
   },
   {
+    slug: 'crypto-losers-today',
+    title: 'Crypto Losers Today | Biggest Decliners',
+    h1: 'Crypto Losers Today',
+    description: 'Track the biggest cryptocurrency losers today. Identify potential bounce opportunities or avoid falling knives with AI analysis.',
+    keywords: 'crypto losers today, biggest crypto losers, crypto declining, worst performing crypto',
+    category: 'gainers',
+    filterFn: (cryptos) => cryptos.sort((a, b) => a.change24h - b.change24h)
+  },
+  {
+    slug: 'is-crypto-going-up-today',
+    title: 'Is Crypto Going Up Today? | Market Direction',
+    h1: 'Is Crypto Going Up Today?',
+    description: 'Find out if crypto is going up today with real-time market analysis. Bitcoin dominance, market sentiment, and directional signals.',
+    keywords: 'is crypto going up, crypto direction today, market going up, crypto bullish today',
+    category: 'trend',
+    filterFn: (cryptos) => cryptos.sort((a, b) => b.change24h - a.change24h)
+  },
+  // WEEKLY-focused questions
+  {
     slug: 'best-crypto-to-buy-this-week',
     title: 'Best Crypto to Buy This Week | Weekly Top Picks',
     h1: 'Best Crypto to Buy This Week',
@@ -104,6 +124,43 @@ const MARKET_QUESTIONS: MarketQuestionConfig[] = [
     filterFn: (cryptos) => cryptos.sort((a, b) => b.marketCap - a.marketCap)
   },
   {
+    slug: 'crypto-to-watch-this-week',
+    title: 'Crypto to Watch This Week | Weekly Watchlist',
+    h1: 'Crypto to Watch This Week',
+    description: 'Top cryptocurrencies to watch this week based on momentum, volume, and breakout potential. AI-curated weekly watchlist.',
+    keywords: 'crypto to watch this week, weekly crypto watchlist, crypto momentum, breakout crypto',
+    category: 'trend',
+    filterFn: (cryptos) => cryptos.filter(c => c.change24h > 2).sort((a, b) => b.confidence - a.confidence)
+  },
+  {
+    slug: 'top-crypto-gainers-this-week',
+    title: 'Top Crypto Gainers This Week | Weekly Winners',
+    h1: 'Top Crypto Gainers This Week',
+    description: 'Track the top cryptocurrency gainers this week. Weekly performance leaders with 7-day price analysis and momentum indicators.',
+    keywords: 'top crypto gainers this week, weekly crypto gainers, best performing crypto this week',
+    category: 'gainers',
+    filterFn: (cryptos) => cryptos.sort((a, b) => b.change24h - a.change24h)
+  },
+  // MONTHLY / LONG-TERM questions
+  {
+    slug: 'crypto-prediction-january-2025',
+    title: 'Crypto Prediction January 2025 | Monthly Forecast',
+    h1: 'Crypto Prediction January 2025',
+    description: 'AI-powered crypto prediction for January 2025. Monthly market outlook, top coins to watch, and price targets for the month ahead.',
+    keywords: 'crypto prediction january 2025, january crypto forecast, crypto outlook january, monthly crypto prediction',
+    category: 'outlook',
+    filterFn: (cryptos) => cryptos.sort((a, b) => b.marketCap - a.marketCap)
+  },
+  {
+    slug: 'best-crypto-to-buy-january-2025',
+    title: 'Best Crypto to Buy in January 2025 | Monthly Picks',
+    h1: 'Best Crypto to Buy in January 2025',
+    description: 'Top cryptocurrencies to buy in January 2025 based on AI analysis. Monthly investment picks, market trends, and price predictions.',
+    keywords: 'best crypto january 2025, crypto to buy january 2025, monthly crypto picks, crypto investment january',
+    category: 'buy',
+    filterFn: (cryptos) => cryptos.filter(c => c.bias === 'bullish').sort((a, b) => b.marketCap - a.marketCap)
+  },
+  {
     slug: 'top-crypto-to-invest-2025',
     title: 'Top Crypto to Invest in 2025 | Best Long-Term Picks',
     h1: 'Top Crypto to Invest in 2025',
@@ -113,23 +170,15 @@ const MARKET_QUESTIONS: MarketQuestionConfig[] = [
     filterFn: (cryptos) => cryptos.filter(c => c.marketCap > 1000000000).sort((a, b) => b.marketCap - a.marketCap)
   },
   {
-    slug: 'crypto-losers-today',
-    title: 'Crypto Losers Today | Biggest Decliners',
-    h1: 'Crypto Losers Today',
-    description: 'Track the biggest cryptocurrency losers today. Identify potential bounce opportunities or avoid falling knives with AI analysis.',
-    keywords: 'crypto losers today, biggest crypto losers, crypto declining, worst performing crypto',
-    category: 'gainers',
-    filterFn: (cryptos) => cryptos.sort((a, b) => a.change24h - b.change24h)
+    slug: 'crypto-outlook-2025',
+    title: 'Crypto Outlook 2025 | Year-Ahead Forecast',
+    h1: 'Crypto Outlook 2025',
+    description: '2025 cryptocurrency market outlook. Full year predictions, bull and bear scenarios, key catalysts, and long-term investment thesis.',
+    keywords: 'crypto outlook 2025, cryptocurrency forecast 2025, crypto market 2025, bitcoin prediction 2025',
+    category: 'outlook',
+    filterFn: (cryptos) => cryptos.sort((a, b) => b.marketCap - a.marketCap)
   },
-  {
-    slug: 'is-crypto-going-up-today',
-    title: 'Is Crypto Going Up Today? | Market Direction',
-    h1: 'Is Crypto Going Up Today?',
-    description: 'Find out if crypto is going up today with real-time market analysis. Bitcoin dominance, market sentiment, and directional signals.',
-    keywords: 'is crypto going up, crypto direction today, market going up, crypto bullish today',
-    category: 'trend',
-    filterFn: (cryptos) => cryptos.sort((a, b) => b.change24h - a.change24h)
-  },
+  // GENERAL HIGH-INTENT questions
   {
     slug: 'next-crypto-to-explode',
     title: 'Next Crypto to Explode | High Potential Coins',
@@ -156,6 +205,24 @@ const MARKET_QUESTIONS: MarketQuestionConfig[] = [
     keywords: 'cheap crypto to buy, affordable crypto, low price crypto, cheap coins',
     category: 'buy',
     filterFn: (cryptos) => cryptos.filter(c => c.price < 1).sort((a, b) => b.change24h - a.change24h)
+  },
+  {
+    slug: 'undervalued-crypto-to-buy',
+    title: 'Undervalued Crypto to Buy | Hidden Gems',
+    h1: 'Undervalued Crypto to Buy',
+    description: 'Find undervalued cryptocurrencies with high growth potential. Hidden gems identified by AI analysis of fundamentals and market data.',
+    keywords: 'undervalued crypto, hidden gem crypto, crypto gems, underrated cryptocurrency',
+    category: 'buy',
+    filterFn: (cryptos) => cryptos.filter(c => c.bias === 'bullish' && c.change24h < 5).sort((a, b) => a.marketCap - b.marketCap)
+  },
+  {
+    slug: 'crypto-with-most-potential',
+    title: 'Crypto with Most Potential | High Growth Coins',
+    h1: 'Crypto with Most Potential',
+    description: 'Cryptocurrencies with the most upside potential based on AI analysis. High-growth opportunities with strong bullish signals.',
+    keywords: 'crypto with most potential, highest potential crypto, crypto growth potential, best crypto opportunity',
+    category: 'trend',
+    filterFn: (cryptos) => cryptos.filter(c => c.bias === 'bullish').sort((a, b) => b.confidence - a.confidence)
   },
 ];
 
