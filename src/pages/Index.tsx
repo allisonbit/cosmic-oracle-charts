@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { CryptoTicker } from "@/components/layout/CryptoTicker";
 import { HeroSection } from "@/components/home/HeroSection";
+import { InternalLinkHub } from "@/components/home/InternalLinkHub";
 import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -39,6 +40,9 @@ const Index = () => {
         <Suspense fallback={<SectionFallback />}>
           <ChainLinks />
         </Suspense>
+
+        {/* Internal link hub for SEO crawlability */}
+        <InternalLinkHub />
         
         {/* Ad placement after ChainLinks - below fold */}
         <BannerAd className="mt-4" />
