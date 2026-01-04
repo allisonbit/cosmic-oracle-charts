@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState, memo } from "react";
 
-type AdSize = 
+type AdSize =
   | "banner" // 728x90 - top/bottom of pages
   | "leaderboard" // 970x90 - wide banner
   | "rectangle" // 300x250 - sidebar/in-content
@@ -28,28 +28,63 @@ const sizeConfig: Record<AdSize, { width: string; height: string; label: string;
 };
 
 /**
- * AdPlacement Component
- * 
- * This component provides ad slot containers that work with Google AdSense Auto Ads.
- * Auto Ads automatically determines the best placement and number of ads.
- * We only provide hints via data attributes - Google handles the rest.
- * 
- * NO artificial ad limits - AdSense Auto Ads self-regulates for policy compliance.
+ * Soft budget to prevent too many manual ad placeholders on a single route.
+ * This helps reduce hangs/jank on lower-end devices when Auto Ads + multiple placements compete.
  */
-export const AdPlacement = memo(function AdPlacement({ 
-  size, 
-  className, 
-  slot,
-  lazyLoad = true
-}: AdPlacementProps) {
+const MAX_AD_PLACEMENTS_PER_PAGE = 4;
+
+type AdBudgetState = {
+  path: string;
+  used: number;
+};
+
+function allocateAdBudget(): boolean {
+  if (typeof window === "undefined") return true;
+
+  const w = window as any;
+  const path = window.location?.pathname || "/";
+  const state: AdBudgetState | undefined = w.__oracle_ad_budget;
+
+  if (!state || state.path !== path) {
+    w.__oracle_ad_budget = { path, used: 0 } satisfies AdBudgetState;
+  }
+
+  if (w.__oracle_ad_budget.used >= MAX_AD_PLACEMENTS_PER_PAGE) return false;
+  w.__oracle_ad_budget.used += 1;
+  return true;
+}
+
+function scheduleAdInit(cb: () => void) {
+  if (typeof window === "undefined") return;
+  const w = window as any;
+
+  const ric = w.requestIdleCallback as undefined | ((fn: () => void, opts?: { timeout: number }) => void);
+  if (typeof ric === "function") {
+    ric(cb, { timeout: 2000 });
+    return;
+  }
+
+  setTimeout(cb, 250);
+}
+
+export const AdPlacement = memo(function AdPlacement({ size, className, slot, lazyLoad = true }: AdPlacementProps) {
   const config = sizeConfig[size];
   const adRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(!lazyLoad);
   const hasInitialized = useRef(false);
+  const isAllowedRef = useRef<boolean | null>(null);
 
   // Lazy load using Intersection Observer for Core Web Vitals
   useEffect(() => {
     if (!lazyLoad || isVisible) return;
+
+    if (typeof window === "undefined") return;
+
+    // Avoid crashes on very old browsers
+    if (!("IntersectionObserver" in window)) {
+      setIsVisible(true);
+      return;
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -61,14 +96,12 @@ export const AdPlacement = memo(function AdPlacement({
         });
       },
       {
-        rootMargin: '200px', // Load 200px before entering viewport
+        rootMargin: "200px", // Load 200px before entering viewport
         threshold: 0,
       }
     );
 
-    if (adRef.current) {
-      observer.observe(adRef.current);
-    }
+    if (adRef.current) observer.observe(adRef.current);
 
     return () => observer.disconnect();
   }, [lazyLoad, isVisible]);
@@ -76,27 +109,33 @@ export const AdPlacement = memo(function AdPlacement({
   // Initialize AdSense slot when visible (for manual slot placements)
   useEffect(() => {
     if (!isVisible || hasInitialized.current || !slot) return;
-    
+    if (isAllowedRef.current === false) return;
+
+    const ins = adRef.current?.querySelector("ins.adsbygoogle");
+    const alreadyInitialized =
+      !!ins?.getAttribute("data-adsbygoogle-status") || !!ins?.getAttribute("data-ad-status");
+
+    if (alreadyInitialized) {
+      hasInitialized.current = true;
+      return;
+    }
+
     hasInitialized.current = true;
-    
-    // Defer initialization to avoid blocking main thread
-    requestIdleCallback?.(() => {
+
+    scheduleAdInit(() => {
       try {
-        if (typeof window !== 'undefined' && (window as any).adsbygoogle) {
-          ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
-        }
+        const w = window as any;
+        w.adsbygoogle = w.adsbygoogle || [];
+        w.adsbygoogle.push({});
       } catch (e) {
-        // AdSense errors are non-critical
-      }
-    }) ?? setTimeout(() => {
-      try {
-        if (typeof window !== 'undefined' && (window as any).adsbygoogle) {
-          ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
+        // AdSense errors are non-critical, but don't let them spam.
+        const w = window as any;
+        if (!w.__oracle_ad_init_warned) {
+          w.__oracle_ad_init_warned = true;
+          console.warn("Ad init skipped", e);
         }
-      } catch (e) {
-        // AdSense errors are non-critical
       }
-    }, 100);
+    });
   }, [isVisible, slot]);
 
   // Placeholder when lazy loading
@@ -104,16 +143,42 @@ export const AdPlacement = memo(function AdPlacement({
     return (
       <div
         ref={adRef}
-        className={cn(
-          "flex items-center justify-center bg-muted/10 rounded-lg overflow-hidden",
-          className
-        )}
+        className={cn("flex items-center justify-center bg-muted/10 rounded-lg overflow-hidden", className)}
         style={{
           maxWidth: config.width,
           minHeight: config.minHeight,
+          contain: "content",
         }}
         aria-hidden="true"
         data-ad-placeholder="true"
+      />
+    );
+  }
+
+  // Allocate per-route ad budget only when ad becomes eligible to render.
+  if (isAllowedRef.current === null) {
+    isAllowedRef.current = allocateAdBudget();
+  }
+
+  if (isAllowedRef.current === false) {
+    // Suppress extra placements but keep layout stable (no CLS).
+    if (size === "sticky-footer") return null;
+
+    return (
+      <div
+        ref={adRef}
+        className={cn(
+          "flex items-center justify-center bg-muted/5 rounded-lg overflow-hidden",
+          size === "in-article" && "my-6 w-full",
+          className
+        )}
+        style={{
+          maxWidth: size === "in-article" ? "100%" : config.width,
+          minHeight: config.minHeight,
+          contain: "content",
+        }}
+        aria-hidden="true"
+        data-ad-suppressed="true"
       />
     );
   }
@@ -124,7 +189,7 @@ export const AdPlacement = memo(function AdPlacement({
       <div
         ref={adRef}
         className={cn(
-          "fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-t border-border/50",
+          "fixed bottom-0 left-0 right-0 z-40 bg-background/95 border-t border-border/50",
           "flex items-center justify-center py-2 safe-area-bottom",
           className
         )}
@@ -132,11 +197,12 @@ export const AdPlacement = memo(function AdPlacement({
         data-ad-size={size}
         aria-label="Advertisement"
         role="complementary"
+        style={{ contain: "content" }}
       >
         {slot ? (
           <ins
             className="adsbygoogle"
-            style={{ display: 'block', textAlign: 'center' }}
+            style={{ display: "block", textAlign: "center" }}
             data-ad-client="ca-pub-1336344158133611"
             data-ad-slot={slot}
             data-ad-format="horizontal"
@@ -161,6 +227,7 @@ export const AdPlacement = memo(function AdPlacement({
       style={{
         maxWidth: size === "in-article" ? "100%" : config.width,
         minHeight: config.minHeight,
+        contain: "content",
       }}
       data-ad-slot={slot}
       data-ad-size={size}
@@ -170,24 +237,20 @@ export const AdPlacement = memo(function AdPlacement({
       {slot ? (
         <ins
           className="adsbygoogle"
-          style={{ 
-            display: 'block',
-            width: '100%',
-            height: 'auto',
-            minHeight: config.minHeight
+          style={{
+            display: "block",
+            width: "100%",
+            height: "auto",
+            minHeight: config.minHeight,
           }}
           data-ad-client="ca-pub-1336344158133611"
           data-ad-slot={slot}
-          data-ad-format={size === 'in-article' ? 'fluid' : 'auto'}
+          data-ad-format={size === "in-article" ? "fluid" : "auto"}
           data-full-width-responsive="true"
         />
       ) : (
         // Auto Ads placeholder - Google will fill if appropriate
-        <div 
-          className="w-full h-full" 
-          data-ad-container="auto"
-          style={{ minHeight: config.minHeight }}
-        />
+        <div className="w-full h-full" data-ad-container="auto" style={{ minHeight: config.minHeight }} />
       )}
     </div>
   );
