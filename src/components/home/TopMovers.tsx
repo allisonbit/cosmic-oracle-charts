@@ -1,12 +1,26 @@
-import { TrendingUp, TrendingDown, Flame, Loader2 } from "lucide-react";
+import { TrendingUp, TrendingDown, Flame, Loader2, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
+import { useFavorites } from "@/hooks/useFavorites";
 import { cn } from "@/lib/utils";
 import { useMemo } from "react";
+import { toast } from "sonner";
 
 export function TopMovers() {
   const { data, isLoading } = useCryptoPrices();
+  const { isFavorite, toggleFavorite } = useFavorites();
+
+  const handleFavoriteClick = (symbol: string, name: string) => {
+    toggleFavorite(symbol);
+    const wasFavorite = isFavorite(symbol);
+    toast.success(
+      wasFavorite 
+        ? `${name} removed from watchlist` 
+        : `${name} added to watchlist`,
+      { duration: 2000 }
+    );
+  };
 
   const { gainers, losers } = useMemo(() => {
     const prices = data?.prices || [];
@@ -56,6 +70,18 @@ export function TopMovers() {
                   className="flex items-center justify-between p-3 rounded-lg bg-success/5 border border-success/20 hover:border-success/40 transition-colors"
                 >
                   <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => handleFavoriteClick(coin.symbol, coin.name)}
+                      className="w-6 h-6 rounded-full flex items-center justify-center hover:bg-warning/20 transition-colors"
+                      aria-label={isFavorite(coin.symbol) ? `Remove ${coin.name} from watchlist` : `Add ${coin.name} to watchlist`}
+                    >
+                      <Star 
+                        className={cn(
+                          "w-4 h-4 transition-colors",
+                          isFavorite(coin.symbol) ? "fill-warning text-warning" : "text-muted-foreground hover:text-warning"
+                        )} 
+                      />
+                    </button>
                     <span className="w-6 h-6 rounded-full bg-success/20 flex items-center justify-center text-xs font-bold text-success">
                       {index + 1}
                     </span>
@@ -93,6 +119,18 @@ export function TopMovers() {
                   className="flex items-center justify-between p-3 rounded-lg bg-danger/5 border border-danger/20 hover:border-danger/40 transition-colors"
                 >
                   <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => handleFavoriteClick(coin.symbol, coin.name)}
+                      className="w-6 h-6 rounded-full flex items-center justify-center hover:bg-warning/20 transition-colors"
+                      aria-label={isFavorite(coin.symbol) ? `Remove ${coin.name} from watchlist` : `Add ${coin.name} to watchlist`}
+                    >
+                      <Star 
+                        className={cn(
+                          "w-4 h-4 transition-colors",
+                          isFavorite(coin.symbol) ? "fill-warning text-warning" : "text-muted-foreground hover:text-warning"
+                        )} 
+                      />
+                    </button>
                     <span className="w-6 h-6 rounded-full bg-danger/20 flex items-center justify-center text-xs font-bold text-danger">
                       {index + 1}
                     </span>

@@ -7,9 +7,12 @@ import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BannerAd, InArticleAd } from "@/components/ads";
+import { SEO, StructuredData } from "@/components/SEO";
+import { HomepageSchema } from "@/components/home/HomepageSchema";
 
 // Lazy load below-fold components for better LCP
 const QuickStats = lazy(() => import("@/components/home/QuickStats").then(m => ({ default: m.QuickStats })));
+const SEOContentBlock = lazy(() => import("@/components/home/SEOContentBlock").then(m => ({ default: m.SEOContentBlock })));
 const ChainLinks = lazy(() => import("@/components/home/ChainLinks").then(m => ({ default: m.ChainLinks })));
 const TopMovers = lazy(() => import("@/components/home/TopMovers").then(m => ({ default: m.TopMovers })));
 const FeaturesSection = lazy(() => import("@/components/home/FeaturesSection").then(m => ({ default: m.FeaturesSection })));
@@ -25,6 +28,10 @@ const SectionFallback = () => (
 const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
+      <SEO />
+      <StructuredData />
+      <HomepageSchema />
+      
       <header>
         <Navbar />
         <div className="mt-16" aria-label="Live cryptocurrency prices">
@@ -37,6 +44,12 @@ const Index = () => {
         <Suspense fallback={<SectionFallback />}>
           <QuickStats />
         </Suspense>
+        
+        {/* SEO content block with unique text for Google crawlability */}
+        <Suspense fallback={<SectionFallback />}>
+          <SEOContentBlock />
+        </Suspense>
+        
         <Suspense fallback={<SectionFallback />}>
           <ChainLinks />
         </Suspense>
