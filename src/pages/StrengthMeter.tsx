@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Layout } from "@/components/layout/Layout";
-import { SEO } from "@/components/SEO";
 import { useRealtimeStrength } from "@/hooks/useRealtimeStrength";
 import { StrengthData } from "@/hooks/useStrengthMeter";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,6 +24,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { StrengthMeterSchema } from "@/components/seo";
 
 const timeframes = [
   { value: '1h', label: '1H' },
@@ -193,10 +193,7 @@ export default function StrengthMeter() {
 
   return (
     <Layout>
-      <SEO 
-        title="Crypto Strength Meter - Oracle"
-        description="Real-time cryptocurrency strength analysis. Compare relative strength of crypto assets and blockchains."
-      />
+      <StrengthMeterSchema />
       
       <main className="container mx-auto px-4 py-6 space-y-6">
         {/* Header */}

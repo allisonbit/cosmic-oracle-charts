@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { PortfolioChart } from "@/components/portfolio/PortfolioChart";
 import { TokenDetailModal } from "@/components/portfolio/TokenDetailModal";
 import { HoldingsDistribution } from "@/components/portfolio/HoldingsDistribution";
+import { PortfolioSchema, PortfolioSEOContent } from "@/components/seo";
 
 interface TokenHolding {
   symbol: string;
@@ -125,6 +126,7 @@ export default function Portfolio() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <PortfolioSchema />
       <Navbar />
       <main className="flex-1 pt-16 sm:pt-20 pb-24 sm:pb-12 cosmic-bg">
         <div className="container mx-auto px-3 sm:px-4">
@@ -138,6 +140,9 @@ export default function Portfolio() {
               AI-powered analysis to find pumping tokens, assess risk, and get actionable insights for any wallet
             </p>
           </div>
+
+          {/* SEO Content Block - shown when no analysis */}
+          {!analysis && <PortfolioSEOContent />}
 
           {/* Search */}
           <div className="max-w-3xl mx-auto mb-6 sm:mb-8">

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Layout } from "@/components/layout/Layout";
-import { SEO } from "@/components/SEO";
 import { useCryptoFactory, TrendingCoin, GlobalStats } from "@/hooks/useCryptoFactory";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -37,6 +36,7 @@ import {
 import { Link, useSearchParams } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { format, formatDistanceToNow } from "date-fns";
+import { CryptoFactorySchema } from "@/components/seo";
 
 const chains = ['All', 'Ethereum', 'Solana', 'Arbitrum', 'Base', 'Polygon', 'Optimism', 'Avalanche'];
 const impacts = ['All', 'high', 'medium', 'low'];
@@ -324,10 +324,7 @@ export default function CryptoFactory() {
 
   return (
     <Layout>
-      <SEO 
-        title="Crypto Factory - Oracle"
-        description="Centralized crypto intelligence hub. Track market events, on-chain activity, narratives, and news."
-      />
+      <CryptoFactorySchema />
       
       <main className="container mx-auto px-4 py-6 space-y-6">
         {/* Header */}
