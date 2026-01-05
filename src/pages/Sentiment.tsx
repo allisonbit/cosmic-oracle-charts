@@ -15,6 +15,7 @@ import { GitHubActivityPanel } from "@/components/sentiment/GitHubActivityPanel"
 import { EnhancedOverviewPanel } from "@/components/sentiment/EnhancedOverviewPanel";
 import { EnhancedWhaleTracker } from "@/components/sentiment/EnhancedWhaleTracker";
 import { EnhancedSignalsPanel } from "@/components/sentiment/EnhancedSignalsPanel";
+import { SentimentSchema, SentimentSEOContent } from "@/components/seo";
 
 function formatNumber(num: number): string {
   if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
@@ -143,6 +144,7 @@ const SentimentPage = () => {
 
   return (
     <Layout>
+      <SentimentSchema fearGreedIndex={fearGreedIndex} marketMomentum={marketMomentum} />
       <div className="container mx-auto px-4 py-6 md:py-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
@@ -165,6 +167,9 @@ const SentimentPage = () => {
             MARKET: {marketMomentum}
           </div>
         </div>
+
+        {/* SEO Content Block */}
+        <SentimentSEOContent />
 
         {/* Navigation Tabs */}
         <div className="flex gap-2 mb-6 overflow-x-auto pb-2">

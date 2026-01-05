@@ -13,6 +13,7 @@ import { TrendingTokensPanel } from "@/components/explorer/TrendingTokensPanel";
 import { MarketStatsBar } from "@/components/explorer/MarketStatsBar";
 import { TopTokensTable } from "@/components/explorer/TopTokensTable";
 import { ALL_CHAINS, getChainById } from "@/lib/explorerChains";
+import { ExplorerSchema, ExplorerSEOContent } from "@/components/seo";
 
 function formatNumber(num: number): string {
   if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
@@ -87,6 +88,7 @@ const ExplorerPage = () => {
 
   return (
     <Layout>
+      <ExplorerSchema chainCount={ALL_CHAINS.length} />
       <div className="container mx-auto px-4 py-6 md:py-8">
         {/* Header */}
         <div className="text-center mb-8">
@@ -267,6 +269,11 @@ const ExplorerPage = () => {
               <p className="text-muted-foreground font-display">Loading market data...</p>
             </div>
           </div>
+        )}
+
+        {/* SEO Content Block */}
+        {!selectedToken && !isSearching && !marketLoading && (
+          <ExplorerSEOContent />
         )}
       </div>
     </Layout>

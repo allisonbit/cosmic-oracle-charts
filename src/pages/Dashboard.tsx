@@ -18,6 +18,7 @@ import { StrengthMeterWidget } from "@/components/dashboard/StrengthMeterWidget"
 import { CryptoFactoryWidget } from "@/components/dashboard/CryptoFactoryWidget";
 import { Link } from "react-router-dom";
 import { SidebarAd, InArticleAd } from "@/components/ads";
+import { DashboardSchema, DashboardSEOContent } from "@/components/seo";
 
 function formatNumber(num: number): string {
   if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
@@ -97,6 +98,7 @@ const Dashboard = () => {
 
   return (
     <Layout>
+      <DashboardSchema marketCap={global ? `$${(global.totalMarketCap / 1e12).toFixed(2)}T` : undefined} fearGreedIndex={fearGreedIndex} />
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 sm:mb-6 md:mb-8">
@@ -281,6 +283,8 @@ const Dashboard = () => {
               <StrengthMeterWidget />
               <CryptoFactoryWidget />
             </div>
+            {/* SEO Content Block */}
+            <DashboardSEOContent />
 
             {/* Volume & Dominance */}
             <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
