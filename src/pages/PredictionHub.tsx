@@ -15,6 +15,7 @@ import { useState, useMemo } from "react";
 import { SEO } from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
 import { BannerAd, InArticleAd } from "@/components/ads";
+import { PredictionHubSEOContent } from "@/components/seo";
 
 const timeframes = [
   { id: 'daily', label: 'Today', icon: Clock, description: 'Intraday predictions with support/resistance levels' },
@@ -315,6 +316,9 @@ export default function PredictionHub() {
 
           {/* In-article ad before SEO content */}
           <InArticleAd className="mt-8 mb-8" />
+          
+          {/* How Our Predictions Work - SEO Content */}
+          <PredictionHubSEOContent />
 
           {/* SEO Content */}
           <section className="mt-8 holo-card p-8">

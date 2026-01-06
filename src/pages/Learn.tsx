@@ -48,6 +48,7 @@ import { cn } from "@/lib/utils";
 import { format, parseISO, isToday, isYesterday } from "date-fns";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
+import { LearnSEOContent } from "@/components/seo";
 
 // Category icons mapping for 20 themes
 const categoryIcons: Record<string, typeof BookOpen> = {
@@ -737,6 +738,11 @@ export default function Learn() {
           onClose={() => setSelectedPost(null)}
         />
       </main>
+
+      {/* SEO Content Section */}
+      <div className="container mx-auto px-4 mt-8">
+        <LearnSEOContent />
+      </div>
 
       {/* Add styles for hiding scrollbar while maintaining scroll functionality */}
       <style>{`

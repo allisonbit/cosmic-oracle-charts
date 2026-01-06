@@ -29,6 +29,7 @@ import {
 import { cn } from "@/lib/utils";
 import { format, parseISO, isToday, isYesterday } from "date-fns";
 import { BannerAd, InArticleAd } from "@/components/ads";
+import { InsightsSEOContent } from "@/components/seo";
 
 const ARTICLES_PER_PAGE = 12;
 
@@ -393,6 +394,9 @@ export default function Insights() {
 
           {/* In-article ad after article count */}
           <InArticleAd className="mt-8" />
+          
+          {/* SEO Content Section */}
+          <InsightsSEOContent />
 
           {/* Article Count */}
           <div className="text-center mt-6 sm:mt-8 text-xs sm:text-sm text-muted-foreground">

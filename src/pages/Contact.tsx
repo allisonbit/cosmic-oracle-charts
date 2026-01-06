@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts";
 import { useOracleToken } from "@/hooks/useOracleToken";
+import { ContactSEOContent } from "@/components/seo";
 
 const CONTRACT_ADDRESS = "0x08ae73a4c4881ac59087d752831ca7677a33e5ba";
 
@@ -450,6 +451,9 @@ const ContactPage = () => {
             </div>
           </div>
         </div>
+        
+        {/* SEO Content Section */}
+        <ContactSEOContent />
       </div>
     </Layout>
   );
