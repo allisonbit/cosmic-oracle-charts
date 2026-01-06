@@ -16,6 +16,7 @@ import { ChainSpecificMetrics } from "@/components/chain/ChainSpecificMetrics";
 import { NetworkInfoPanel } from "@/components/chain/NetworkInfoPanel";
 import { LiveTokenSearchPanel } from "@/components/chain/LiveTokenSearchPanel";
 import { ChainFAQSchema, ChainFAQDisplay } from "@/components/chain/ChainFAQSchema";
+import { ChainSEOContent } from "@/components/seo";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { LazySection } from "@/components/ui/LazySection";
 import { ArrowLeft, Loader2, ExternalLink, RefreshCw } from "lucide-react";
@@ -223,6 +224,15 @@ export default function Chain() {
               {/* FAQ Section for SEO */}
               <LazySection fallbackHeight="h-48">
                 <ChainFAQDisplay chain={chain} priceData={chainPrice} />
+              </LazySection>
+              
+              {/* Chain SEO Content Section */}
+              <LazySection fallbackHeight="h-48">
+                <ChainSEOContent 
+                  chainName={chain.name} 
+                  chainSymbol={chain.symbol} 
+                  chainId={chain.id} 
+                />
               </LazySection>
             </div>
           </main>

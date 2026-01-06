@@ -18,7 +18,7 @@ import { StrengthMeterWidget } from "@/components/dashboard/StrengthMeterWidget"
 import { CryptoFactoryWidget } from "@/components/dashboard/CryptoFactoryWidget";
 import { Link } from "react-router-dom";
 import { SidebarAd, InArticleAd } from "@/components/ads";
-import { DashboardSchema, DashboardSEOContent } from "@/components/seo";
+import { DashboardSchema, DashboardSEOContent, HowToReadDashboard, WhatMakesUsDifferent, RelatedMarketInsights } from "@/components/seo";
 
 function formatNumber(num: number): string {
   if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
@@ -283,13 +283,27 @@ const Dashboard = () => {
               <StrengthMeterWidget />
               <CryptoFactoryWidget />
             </div>
+            
             {/* SEO Content Block */}
             <DashboardSEOContent />
+            
+            {/* How to Read the Dashboard - SEO friendly explanations */}
+            <HowToReadDashboard />
 
-            {/* Volume & Dominance */}
+            {/* Volume & Dominance with explanatory text */}
             <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
-              <EnhancedVolumeLeaders />
-              <EnhancedDominanceChart />
+              <div>
+                <EnhancedVolumeLeaders />
+                <p className="text-xs text-muted-foreground mt-2 p-3 bg-muted/10 rounded-lg">
+                  <strong className="text-foreground">Volume Leaders:</strong> Cryptocurrencies with the highest 24-hour trading activity. High volume confirms price movements and indicates strong market interest.
+                </p>
+              </div>
+              <div>
+                <EnhancedDominanceChart />
+                <p className="text-xs text-muted-foreground mt-2 p-3 bg-muted/10 rounded-lg">
+                  <strong className="text-foreground">Market Dominance:</strong> Shows percentage of total market cap held by each cryptocurrency. BTC dominance above 50% typically indicates a risk-off environment.
+                </p>
+              </div>
             </div>
 
             {/* Coin Cards - Clickable */}
@@ -359,17 +373,22 @@ const Dashboard = () => {
             </div>
 
             {/* Heat Map - Clickable */}
-            <div className="holo-card p-3 sm:p-4 md:p-6">
+            <div className="holo-card p-3 sm:p-4 md:p-6 mb-4 sm:mb-6">
               <h2 className="font-display text-sm sm:text-base md:text-lg lg:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2">
                 <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                 MARKET HEAT MAP
                 <span className="ml-auto text-[10px] sm:text-xs text-muted-foreground font-normal hidden sm:inline">Click any coin</span>
               </h2>
+              <p className="text-xs text-muted-foreground mb-4">
+                The heat map provides a visual overview of market performance. Green indicates positive 24-hour price changes (bullish), 
+                while red indicates negative changes (bearish). Color intensity reflects the magnitude of the price movement.
+              </p>
               <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-1.5 sm:gap-2">
                 {topCoins.slice(0, 16).map((coin) => (
-                  <button
+                  <Link
                     key={coin.symbol}
-                    onClick={() => setSelectedCoin(coin)}
+                    to={`/price-prediction/${coin.symbol.toLowerCase()}/daily`}
+                    onClick={(e) => { e.preventDefault(); setSelectedCoin(coin); }}
                     className={cn(
                       "p-1.5 sm:p-2 md:p-3 rounded-lg text-center transition-all card-touch",
                       coin.change24h >= 3 ? "bg-success/30 border border-success/50" :
@@ -385,10 +404,16 @@ const Dashboard = () => {
                     )}>
                       {coin.change24h >= 0 ? "+" : ""}{coin.change24h.toFixed(1)}%
                     </div>
-                  </button>
+                  </Link>
                 ))}
               </div>
             </div>
+            
+            {/* What Makes Oracle Bull Different */}
+            <WhatMakesUsDifferent />
+            
+            {/* Related Market Insights with internal links */}
+            <RelatedMarketInsights />
           </>
         )}
       </div>

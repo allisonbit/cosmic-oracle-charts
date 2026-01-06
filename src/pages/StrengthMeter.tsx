@@ -25,6 +25,7 @@ import {
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { StrengthMeterSchema } from "@/components/seo";
+import { StrengthMeterSEOHeader, StrengthMeterSEOContent } from "@/components/seo";
 
 const timeframes = [
   { value: '1h', label: '1H' },
@@ -194,6 +195,7 @@ export default function StrengthMeter() {
   return (
     <Layout>
       <StrengthMeterSchema />
+      <StrengthMeterSEOHeader />
       
       <main className="container mx-auto px-4 py-6 space-y-6">
         {/* Header */}
@@ -336,8 +338,17 @@ export default function StrengthMeter() {
             {view === 'assets' ? <Target className="w-5 h-5 text-primary" /> : <Activity className="w-5 h-5 text-primary" />}
             {view === 'assets' ? 'Asset Strength Rankings' : 'Chain Strength Rankings'}
           </h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            {view === 'assets' 
+              ? 'Rankings show individual cryptocurrency strength scores based on price momentum, volume, and trend consistency. Click any asset for detailed analysis.'
+              : 'Chain rankings compare blockchain network strength using DeFi TVL, transaction volume, active addresses, and ecosystem growth metrics.'
+            }
+          </p>
           <StrengthTable data={displayData || []} isLoading={isLoading} />
         </section>
+        
+        {/* SEO Content Section */}
+        <StrengthMeterSEOContent />
       </main>
     </Layout>
   );
