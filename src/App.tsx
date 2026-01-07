@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { lazy, Suspense, memo } from "react";
 import { Loader2 } from "lucide-react";
 import { SEO, StructuredData } from "@/components/SEO";
+import { AdSenseManager } from "@/components/ads/AdSenseManager";
+import { usePageTracking } from "@/hooks/usePageTracking";
 
 // Eager load critical pages
 import Index from "./pages/Index";
@@ -61,12 +63,20 @@ const queryClient = new QueryClient({
   },
 });
 
+// Page tracking wrapper component
+const PageTracker = memo(function PageTracker() {
+  usePageTracking();
+  return null;
+});
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider delayDuration={300}>
       <Toaster />
       <Sonner position="top-right" closeButton richColors />
       <BrowserRouter>
+        <PageTracker />
+        <AdSenseManager />
         <SEO />
         <StructuredData />
         <Suspense fallback={<PageLoader />}>

@@ -63,8 +63,23 @@
     <meta name="twitter:site" content="@oracle_bulls" />
     <meta name="twitter:creator" content="@oracle_bulls" />
     
-    <!-- Google AdSense -->
+    <!-- Google AdSense - Account verification -->
     <meta name="google-adsense-account" content="ca-pub-1336344158133611">
+    
+    <!-- Google AdSense - Auto Ads (loaded in head for optimal performance) -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1336344158133611" crossorigin="anonymous"></script>
+    
+    <!-- Google Analytics 4 - Loaded async in head for accurate tracking -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-B2T2RX6RHB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-B2T2RX6RHB', { 
+        send_page_view: true,
+        cookie_flags: 'SameSite=None;Secure'
+      });
+    </script>
     
     <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="https://storage.googleapis.com/gpt-engineer-file-uploads/uDg0k7BDXGRxsHZqK6gSbdN9o0l1/uploads/1765566955909-WhatsApp Image 2025-12-12 at 10.50.30_d13b6f53.jpg" />
@@ -123,17 +138,5 @@
     
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    
-    <!-- Google Analytics (deferred) -->
-    <script defer src="https://www.googletagmanager.com/gtag/js?id=G-B2T2RX6RHB"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-B2T2RX6RHB', { 'send_page_view': true });
-    </script>
-    
-    <!-- Google AdSense Auto Ads (global, full control to Google) -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1336344158133611" crossorigin="anonymous"></script>
   </body>
 </html>

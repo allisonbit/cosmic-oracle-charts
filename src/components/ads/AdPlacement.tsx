@@ -124,15 +124,19 @@ export const AdPlacement = memo(function AdPlacement({ size, className, slot, la
 
     scheduleAdInit(() => {
       try {
-        const w = window as any;
-        w.adsbygoogle = w.adsbygoogle || [];
+        const w = window as { adsbygoogle?: unknown[] };
+        // Ensure array exists before pushing
+        if (!w.adsbygoogle) {
+          w.adsbygoogle = [];
+        }
+        // Push empty object to initialize the ad slot
         w.adsbygoogle.push({});
       } catch (e) {
-        // AdSense errors are non-critical, but don't let them spam.
-        const w = window as any;
+        // AdSense errors are non-critical - log once per session
+        const w = window as { __oracle_ad_init_warned?: boolean };
         if (!w.__oracle_ad_init_warned) {
           w.__oracle_ad_init_warned = true;
-          console.warn("Ad init skipped", e);
+          console.debug("AdSense init info:", e);
         }
       }
     });
