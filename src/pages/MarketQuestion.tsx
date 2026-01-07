@@ -15,6 +15,13 @@ import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 import { useMemo } from "react";
 import { RelatedToolsLinks } from "@/components/prediction/HighIntentLinks";
 import { InArticleAd } from "@/components/ads";
+import { 
+  MarketIntroduction, 
+  CoinAnalysisSection, 
+  CryptoSummaryTable, 
+  MarketFAQ,
+  EnhancedInternalLinks 
+} from "@/components/market";
 
 interface MarketQuestionConfig {
   slug: string;
@@ -278,6 +285,7 @@ export default function MarketQuestionPage({ questionSlug }: MarketQuestionPageP
   }, [enrichedCryptos]);
 
   const formatPrice = (price: number) => {
+    if (price <= 0) return "Price loading...";
     if (price >= 1000) return `$${price.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
     if (price >= 1) return `$${price.toFixed(2)}`;
     if (price >= 0.0001) return `$${price.toFixed(4)}`;
@@ -322,15 +330,83 @@ export default function MarketQuestionPage({ questionSlug }: MarketQuestionPageP
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "FAQPage",
-            "mainEntity": [{
-              "@type": "Question",
-              "name": question.h1,
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": `Based on our AI analysis as of ${currentDate}, the top picks are: ${filteredCryptos.slice(0, 5).map(c => `${c.name} (${c.symbol.toUpperCase()})`).join(', ')}. ${question.description}`
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": `What is the ${question.h1.toLowerCase()} right now?`,
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": `As of ${currentDate}, our AI analysis identifies ${filteredCryptos[0]?.name || "Bitcoin"} as the top pick with ${filteredCryptos[0]?.confidence || 75}% confidence. Other top contenders include ${filteredCryptos.slice(1, 4).map(c => c.name).join(", ")}.`
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How do you determine which crypto to buy today?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "We use a multi-factor AI model analyzing: Technical indicators (RSI, MACD, moving averages), market sentiment from 100+ sources, on-chain data (whale movements, exchange flows), and historical price patterns. Assets must show bullish alignment across at least 3 of these categories to rank highly."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How often are these crypto predictions updated?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Our AI models run continuously, updating rankings every 5 minutes based on real-time price data, every hour for sentiment analysis, and daily for comprehensive technical and on-chain metrics."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Which cryptocurrencies have the highest potential today?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": `Based on current analysis, the highest potential assets are: ${filteredCryptos.slice(0, 5).map((c, i) => `${i + 1}. ${c.name} (${c.symbol.toUpperCase()})`).join(", ")}. These show the strongest bullish alignment across technical, sentiment, and on-chain indicators.`
+                }
               }
-            }],
+            ],
             "dateModified": new Date().toISOString()
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": question.title,
+            "description": question.description,
+            "url": `https://oraclebull.com/market/${question.slug}`,
+            "dateModified": new Date().toISOString(),
+            "publisher": {
+              "@type": "Organization",
+              "name": "Oracle Bull",
+              "url": "https://oraclebull.com"
+            },
+            "breadcrumb": {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://oraclebull.com" },
+                { "@type": "ListItem", "position": 2, "name": "Predictions", "item": "https://oraclebull.com/predictions" },
+                { "@type": "ListItem", "position": 3, "name": question.h1, "item": `https://oraclebull.com/market/${question.slug}` }
+              ]
+            }
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "name": question.h1,
+            "description": question.description,
+            "numberOfItems": filteredCryptos.length,
+            "itemListElement": filteredCryptos.slice(0, 10).map((crypto, index) => ({
+              "@type": "ListItem",
+              "position": index + 1,
+              "item": {
+                "@type": "FinancialProduct",
+                "name": crypto.name,
+                "description": `${crypto.name} (${crypto.symbol.toUpperCase()}) - ${crypto.bias} outlook with ${crypto.confidence}% confidence`,
+                "url": `https://oraclebull.com/price-prediction/${crypto.id}/daily`
+              }
+            }))
           })}
         </script>
       </Helmet>
@@ -382,11 +458,21 @@ export default function MarketQuestionPage({ questionSlug }: MarketQuestionPageP
             </div>
           </section>
 
-          {/* Top Picks */}
-          <section className="holo-card p-6 mb-8">
-            <h2 className="font-display text-xl font-bold mb-4 flex items-center gap-2">
+          {/* SEO: Market Introduction - 200-300 word crawlable intro */}
+          <MarketIntroduction 
+            questionTitle={question.h1}
+            category={question.category}
+            currentDate={currentDate}
+            bullishCount={marketStats.bullish}
+            bearishCount={marketStats.bearish}
+            avgChange={marketStats.avgChange}
+          />
+
+          {/* Top Picks - Visual cards with links */}
+          <section className="holo-card p-6 mb-8" aria-labelledby="top-picks-heading">
+            <h2 id="top-picks-heading" className="font-display text-xl font-bold mb-4 flex items-center gap-2">
               <Target className="w-5 h-5 text-primary" />
-              Top Picks
+              Top Picks for Today
             </h2>
             
             {isLoading ? (
@@ -400,7 +486,7 @@ export default function MarketQuestionPage({ questionSlug }: MarketQuestionPageP
                 {filteredCryptos.map((crypto, i) => (
                   <Link
                     key={crypto.id}
-                    to={`/price-prediction/${crypto.id}`}
+                    to={`/price-prediction/${crypto.id}/daily`}
                     className="flex items-center justify-between p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors group"
                   >
                     <div className="flex items-center gap-4">
@@ -437,6 +523,32 @@ export default function MarketQuestionPage({ questionSlug }: MarketQuestionPageP
             )}
           </section>
 
+          {/* SEO: Semantic Summary Table */}
+          {!isLoading && <CryptoSummaryTable cryptos={filteredCryptos} />}
+
+          {/* Ad placement */}
+          <InArticleAd className="mb-8" />
+
+          {/* SEO: Detailed Coin Analysis with H3 sections */}
+          {!isLoading && <CoinAnalysisSection cryptos={filteredCryptos} questionSlug={question.slug} />}
+
+          {/* SEO: FAQ Section for Featured Snippets */}
+          {!isLoading && (
+            <MarketFAQ 
+              questionTitle={question.h1}
+              topCryptos={filteredCryptos}
+              currentDate={currentDate}
+            />
+          )}
+
+          {/* SEO: Enhanced Internal Links */}
+          {!isLoading && (
+            <EnhancedInternalLinks 
+              currentSlug={question.slug}
+              topCryptos={filteredCryptos}
+            />
+          )}
+
           {/* Related Questions */}
           <section className="mb-8">
             <h2 className="font-display text-xl font-bold mb-4">Related Questions</h2>
@@ -458,9 +570,6 @@ export default function MarketQuestionPage({ questionSlug }: MarketQuestionPageP
 
           {/* Related Tools - Cross linking */}
           <RelatedToolsLinks className="mb-8" />
-
-          {/* Ad placement */}
-          <InArticleAd className="mb-8" />
 
           {/* CTA */}
           <section className="text-center mb-8">
