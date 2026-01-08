@@ -23,6 +23,10 @@ const Chain = lazy(() => import("./pages/Chain"));
 const Portfolio = lazy(() => import("./pages/Portfolio"));
 const StrengthMeter = lazy(() => import("./pages/StrengthMeter"));
 const CryptoFactory = lazy(() => import("./pages/CryptoFactory"));
+const FactoryEvents = lazy(() => import("./pages/FactoryEvents"));
+const FactoryOnchain = lazy(() => import("./pages/FactoryOnchain"));
+const FactoryNarratives = lazy(() => import("./pages/FactoryNarratives"));
+const FactoryNews = lazy(() => import("./pages/FactoryNews"));
 const Sitemap = lazy(() => import("./pages/Sitemap"));
 const Insights = lazy(() => import("./pages/Insights"));
 const InsightArticle = lazy(() => import("./pages/InsightArticle"));
@@ -92,6 +96,10 @@ const App = () => (
             <Route path="/strength" element={<StrengthMeter />} />
             <Route path="/strength-meter" element={<StrengthMeter />} />
             <Route path="/factory" element={<CryptoFactory />} />
+            <Route path="/factory/events" element={<FactoryEvents />} />
+            <Route path="/factory/onchain" element={<FactoryOnchain />} />
+            <Route path="/factory/narratives" element={<FactoryNarratives />} />
+            <Route path="/factory/news" element={<FactoryNews />} />
             <Route path="/sitemap" element={<Sitemap />} />
             <Route path="/insights" element={<Insights />} />
             <Route path="/insights/:slug" element={<InsightArticle />} />
