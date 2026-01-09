@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { useCryptoFactory } from "@/hooks/useCryptoFactory";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,6 +21,7 @@ import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow, format } from "date-fns";
 import { Helmet } from "react-helmet-async";
+import { TopCryptoPredictionLinks, MarketPagesLinks } from "@/components/factory/AssetPredictionLinks";
 
 const sentiments = ['All', 'bullish', 'neutral', 'bearish'];
 
@@ -194,6 +195,15 @@ export default function FactoryNews() {
     
     return matchesSearch && matchesSentiment;
   });
+
+  // Collect all unique assets mentioned in news
+  const allMentionedAssets = useMemo(() => {
+    const assets = new Set<string>();
+    (data?.news || []).forEach(n => {
+      n.relatedAssets?.forEach((a: string) => assets.add(a));
+    });
+    return Array.from(assets);
+  }, [data?.news]);
 
   const bullishCount = filteredNews.filter(n => n.sentiment === 'bullish').length;
   const bearishCount = filteredNews.filter(n => n.sentiment === 'bearish').length;
@@ -401,6 +411,12 @@ export default function FactoryNews() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Top Crypto Predictions */}
+            <TopCryptoPredictionLinks />
+
+            {/* Market Pages */}
+            <MarketPagesLinks />
 
             {/* News Trading Tips */}
             <Card className="glass-card">

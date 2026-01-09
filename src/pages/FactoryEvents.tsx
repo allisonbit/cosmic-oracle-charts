@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { useCryptoFactory } from "@/hooks/useCryptoFactory";
 import { Card, CardContent } from "@/components/ui/card";
@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 import { format, formatDistanceToNow } from "date-fns";
 import { SEO } from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
+import { TopCryptoPredictionLinks, MarketPagesLinks } from "@/components/factory/AssetPredictionLinks";
 
 const chains = ['All', 'Ethereum', 'Solana', 'Arbitrum', 'Base', 'Polygon', 'Optimism', 'Avalanche'];
 const impacts = ['All', 'high', 'medium', 'low'];
@@ -388,6 +389,12 @@ export default function FactoryEvents() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Top Crypto Predictions */}
+            <TopCryptoPredictionLinks />
+
+            {/* Market Pages */}
+            <MarketPagesLinks />
 
             {/* How to Use */}
             <Card className="glass-card">

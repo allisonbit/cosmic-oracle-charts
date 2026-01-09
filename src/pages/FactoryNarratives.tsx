@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { useCryptoFactory } from "@/hooks/useCryptoFactory";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,6 +13,7 @@ import {
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Helmet } from "react-helmet-async";
+import { TopCryptoPredictionLinks, MarketPagesLinks } from "@/components/factory/AssetPredictionLinks";
 
 function FactoryNarrativesSchema() {
   const schema = {
@@ -361,6 +362,12 @@ export default function FactoryNarratives() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Top Crypto Predictions */}
+            <TopCryptoPredictionLinks />
+
+            {/* Market Pages */}
+            <MarketPagesLinks />
 
             {/* Trading Tips */}
             <Card className="glass-card">
