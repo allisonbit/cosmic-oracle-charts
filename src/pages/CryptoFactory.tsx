@@ -353,6 +353,57 @@ export default function CryptoFactory() {
           </Button>
         </section>
 
+        {/* Quick Navigation to Sub-Pages - MarketWatch Style */}
+        <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <Link 
+            to="/factory/events" 
+            className="glass-card p-4 hover:border-primary/50 transition-all group flex flex-col items-center text-center"
+          >
+            <div className="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center mb-2 group-hover:bg-red-500/30 transition-colors">
+              <Calendar className="w-6 h-6 text-red-400" />
+            </div>
+            <h3 className="font-display font-bold text-sm">Events</h3>
+            <p className="text-xs text-muted-foreground mt-1">Market calendar</p>
+            <Badge variant="outline" className="mt-2 text-xs">{data?.events?.length || 0} live</Badge>
+          </Link>
+          
+          <Link 
+            to="/factory/onchain" 
+            className="glass-card p-4 hover:border-primary/50 transition-all group flex flex-col items-center text-center"
+          >
+            <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center mb-2 group-hover:bg-green-500/30 transition-colors">
+              <Activity className="w-6 h-6 text-green-400" />
+            </div>
+            <h3 className="font-display font-bold text-sm">On-Chain</h3>
+            <p className="text-xs text-muted-foreground mt-1">Whale movements</p>
+            <Badge variant="outline" className="mt-2 text-xs">{data?.onChainActivity?.length || 0} flows</Badge>
+          </Link>
+          
+          <Link 
+            to="/factory/narratives" 
+            className="glass-card p-4 hover:border-primary/50 transition-all group flex flex-col items-center text-center"
+          >
+            <div className="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center mb-2 group-hover:bg-orange-500/30 transition-colors">
+              <TrendingUp className="w-6 h-6 text-orange-400" />
+            </div>
+            <h3 className="font-display font-bold text-sm">Narratives</h3>
+            <p className="text-xs text-muted-foreground mt-1">Trending themes</p>
+            <Badge variant="outline" className="mt-2 text-xs">{data?.narratives?.length || 0} active</Badge>
+          </Link>
+          
+          <Link 
+            to="/factory/news" 
+            className="glass-card p-4 hover:border-primary/50 transition-all group flex flex-col items-center text-center"
+          >
+            <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center mb-2 group-hover:bg-blue-500/30 transition-colors">
+              <Newspaper className="w-6 h-6 text-blue-400" />
+            </div>
+            <h3 className="font-display font-bold text-sm">News</h3>
+            <p className="text-xs text-muted-foreground mt-1">Latest headlines</p>
+            <Badge variant="outline" className="mt-2 text-xs">{data?.news?.length || 0} articles</Badge>
+          </Link>
+        </section>
+
         {/* Global Stats */}
         {data?.globalStats && (
           <GlobalStatsBar stats={data.globalStats} trending={data.trending || []} />

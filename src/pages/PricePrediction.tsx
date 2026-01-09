@@ -42,14 +42,14 @@ export default function PricePrediction() {
       
       <div className="container mx-auto px-4 py-6 max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Sidebar */}
-          <div className="lg:col-span-1 space-y-6 order-2 lg:order-1">
+          {/* Sidebar - Hidden on mobile to prevent overlap, shown after main content */}
+          <aside className="hidden lg:block lg:col-span-1 space-y-6 order-2 lg:order-1">
             <TimeframeSelector coinId={crypto.id} coinName={crypto.name} currentTimeframe={validTimeframe} />
             <TimeframeCrossLinks coinId={crypto.id} coinName={crypto.name} currentTimeframe={validTimeframe} />
             <MarketQuestionsLinks />
             <RelatedToolsLinks />
             <CoinList currentCoin={crypto.id} currentTimeframe={validTimeframe} />
-          </div>
+          </aside>
           
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-6 order-1 lg:order-2">
@@ -110,6 +110,14 @@ export default function PricePrediction() {
             
             <RelatedPredictions currentCoin={crypto.id} timeframe={validTimeframe} />
           </div>
+          
+          {/* Mobile Sidebar - Shown below main content on mobile */}
+          <aside className="lg:hidden space-y-6 order-3">
+            <TimeframeSelector coinId={crypto.id} coinName={crypto.name} currentTimeframe={validTimeframe} />
+            <MarketQuestionsLinks />
+            <RelatedToolsLinks />
+            <CoinList currentCoin={crypto.id} currentTimeframe={validTimeframe} />
+          </aside>
         </div>
       </div>
     </Layout>
