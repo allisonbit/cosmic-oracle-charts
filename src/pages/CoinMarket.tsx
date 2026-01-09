@@ -7,21 +7,26 @@ import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { SEO } from "@/components/SEO";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { 
   TrendingUp, TrendingDown, ChevronRight, Target, BarChart3, 
-  Activity, Clock, Calendar, Zap, Shield, ExternalLink, ArrowUpRight
+  Activity, Clock, Calendar, Zap, Shield, ExternalLink, ArrowUpRight,
+  Newspaper, Flame
 } from "lucide-react";
 import { getCryptoById, TOP_50_CRYPTOS } from "@/lib/extendedCryptos";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
+import { useCryptoFactory } from "@/hooks/useCryptoFactory";
 import { InArticleAd } from "@/components/ads";
 import { RelatedToolsLinks, TimeframeCrossLinks, MarketQuestionsLinks } from "@/components/prediction/HighIntentLinks";
 import { InvestorActionSummary } from "@/components/prediction/InvestorActionSummary";
 import { EnhancedFAQ } from "@/components/prediction/EnhancedFAQ";
+import { formatDistanceToNow } from "date-fns";
 
 export default function CoinMarket() {
   const { coinId } = useParams<{ coinId: string }>();
   const crypto = coinId ? getCryptoById(coinId) : undefined;
   const { data: pricesData, isLoading } = useCryptoPrices();
+  const { data: factoryData } = useCryptoFactory();
 
   const currentDate = new Date().toLocaleDateString('en-US', { 
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
@@ -52,6 +57,33 @@ export default function CoinMarket() {
       .filter(c => c.id !== coinId)
       .slice(0, 8);
   }, [coinId]);
+
+  // Filter news related to this coin
+  const relatedNews = useMemo(() => {
+    if (!crypto || !factoryData?.news) return [];
+    return factoryData.news
+      .filter(n => 
+        n.relatedAssets?.some((a: string) => 
+          a.toLowerCase() === crypto.symbol.toLowerCase() ||
+          a.toLowerCase() === crypto.name.toLowerCase()
+        ) ||
+        n.title.toLowerCase().includes(crypto.symbol.toLowerCase()) ||
+        n.title.toLowerCase().includes(crypto.name.toLowerCase())
+      )
+      .slice(0, 3);
+  }, [crypto, factoryData?.news]);
+
+  // Get related narratives
+  const relatedNarratives = useMemo(() => {
+    if (!crypto || !factoryData?.narratives) return [];
+    return factoryData.narratives
+      .filter(n => 
+        n.topAssets?.some((a: string) => 
+          a.toLowerCase() === crypto.symbol.toLowerCase()
+        )
+      )
+      .slice(0, 2);
+  }, [crypto, factoryData?.narratives]);
 
   const formatPrice = (price: number) => {
     if (price >= 1000) return `$${price.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
@@ -327,6 +359,94 @@ export default function CoinMarket() {
               </p>
             </div>
           </section>
+
+          {/* Latest News for This Coin */}
+          {relatedNews.length > 0 && (
+            <section className="mb-8">
+              <h2 className="font-display text-xl font-bold mb-4 flex items-center gap-2">
+                <Newspaper className="w-5 h-5 text-primary" />
+                Latest {crypto.name} News
+              </h2>
+              <div className="space-y-4">
+                {relatedNews.map((news, idx) => (
+                  <Card key={idx} className="glass-card">
+                    <CardContent className="p-4">
+                      <div className="flex items-start justify-between gap-3 mb-2">
+                        <a 
+                          href={news.url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="font-semibold hover:text-primary transition-colors flex items-start gap-2"
+                        >
+                          {news.title}
+                          <ExternalLink className="w-4 h-4 shrink-0 mt-1" />
+                        </a>
+                        <Badge className={`shrink-0 ${
+                          news.sentiment === 'bullish' ? 'bg-green-500/20 text-green-400' :
+                          news.sentiment === 'bearish' ? 'bg-red-500/20 text-red-400' :
+                          'bg-yellow-500/20 text-yellow-400'
+                        }`}>
+                          {news.sentiment}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-2">{news.summary}</p>
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                        <span>{news.source}</span>
+                        <span>•</span>
+                        <span>{formatDistanceToNow(new Date(news.publishedAt), { addSuffix: true })}</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+              <Link 
+                to="/factory/news" 
+                className="inline-flex items-center gap-1 text-primary hover:text-primary/80 mt-4 text-sm"
+              >
+                View All Crypto News <ChevronRight className="w-4 h-4" />
+              </Link>
+            </section>
+          )}
+
+          {/* Related Narratives */}
+          {relatedNarratives.length > 0 && (
+            <section className="mb-8">
+              <h2 className="font-display text-xl font-bold mb-4 flex items-center gap-2">
+                <Flame className="w-5 h-5 text-orange-400" />
+                {crypto.name} Market Narratives
+              </h2>
+              <div className="grid md:grid-cols-2 gap-4">
+                {relatedNarratives.map((narrative, idx) => (
+                  <Card key={idx} className="glass-card">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-semibold">{narrative.narrative}</h3>
+                        <Badge className={`${
+                          narrative.sentiment === 'bullish' ? 'bg-green-500/20 text-green-400' :
+                          narrative.sentiment === 'bearish' ? 'bg-red-500/20 text-red-400' :
+                          'bg-yellow-500/20 text-yellow-400'
+                        }`}>
+                          {narrative.sentiment}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-3">{narrative.description}</p>
+                      <div className="flex items-center gap-2">
+                        <Zap className="w-4 h-4 text-primary" />
+                        <span className="font-bold text-primary">{narrative.momentum}</span>
+                        <span className="text-xs text-muted-foreground">momentum score</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+              <Link 
+                to="/factory/narratives" 
+                className="inline-flex items-center gap-1 text-primary hover:text-primary/80 mt-4 text-sm"
+              >
+                View All Market Narratives <ChevronRight className="w-4 h-4" />
+              </Link>
+            </section>
+          )}
 
           {/* Related Tools */}
           <RelatedToolsLinks className="mb-8" />
