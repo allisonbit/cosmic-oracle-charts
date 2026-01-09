@@ -9,15 +9,15 @@ import { cn } from "@/lib/utils";
 const primaryNavItems = [
   { icon: Home, label: "Home", path: "/" },
   { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
+  { icon: TrendingUp, label: "Predict", path: "/predictions" },
   { icon: Zap, label: "Strength", path: "/strength" },
-  { icon: Layers, label: "Chains", path: "/chain/ethereum" },
 ];
 
 const moreNavItems = [
   { icon: Calendar, label: "Factory", path: "/factory" },
-  { icon: Wallet, label: "Scanner", path: "/portfolio" },
-  { icon: TrendingUp, label: "Sentiment", path: "/sentiment" },
+  { icon: Layers, label: "Chains", path: "/chain/ethereum" },
   { icon: Search, label: "Explorer", path: "/explorer" },
+  { icon: Wallet, label: "Scanner", path: "/portfolio" },
   { icon: BookOpen, label: "Learn", path: "/learn" },
   { icon: Mail, label: "Contact", path: "/contact" },
 ];

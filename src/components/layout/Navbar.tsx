@@ -10,13 +10,13 @@ const navItems = [
   { path: "/dashboard", label: "Dashboard", icon: TrendingUp },
   { path: "/predictions", label: "Predictions", icon: Target },
   { path: "/market/best-crypto-to-buy-today", label: "Hot Picks", icon: Sparkles },
-  { path: "/insights", label: "Insights", icon: BookOpen },
   { path: "/strength", label: "Strength", icon: Zap },
   { path: "/factory", label: "Factory", icon: Calendar },
-  { path: "/portfolio", label: "Scanner", icon: Wallet },
   { path: "/chain/ethereum", label: "Chains", icon: Layers },
   { path: "/sentiment", label: "Sentiment", icon: Radio },
   { path: "/explorer", label: "Explorer", icon: Globe },
+  { path: "/insights", label: "Insights", icon: BookOpen },
+  { path: "/portfolio", label: "Scanner", icon: Wallet },
 ];
 
 export function Navbar() {
