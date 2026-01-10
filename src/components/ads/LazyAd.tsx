@@ -10,7 +10,7 @@ interface LazyAdProps {
   slot?: string;
 }
 
-// Minimal placeholder that reserves space to prevent CLS
+// Fixed placeholder dimensions to prevent CLS
 const AdPlaceholder = memo(function AdPlaceholder({ 
   size, 
   className 
@@ -18,22 +18,35 @@ const AdPlaceholder = memo(function AdPlaceholder({
   size: string; 
   className?: string;
 }) {
-  const heights: Record<string, string> = {
-    banner: "90px",
-    leaderboard: "90px",
-    rectangle: "250px",
-    skyscraper: "600px",
-    "mobile-banner": "50px",
-    "in-article": "100px",
-    "sticky-footer": "50px",
+  // Fixed heights matching AdPlacement for zero CLS
+  const dimensions: Record<string, { height: string; mobileHeight?: string }> = {
+    banner: { height: "90px", mobileHeight: "50px" },
+    leaderboard: { height: "90px", mobileHeight: "50px" },
+    rectangle: { height: "250px" },
+    skyscraper: { height: "600px" },
+    "mobile-banner": { height: "50px" },
+    "in-article": { height: "120px" },
+    "sticky-footer": { height: "50px" },
   };
+
+  const config = dimensions[size] || { height: "90px" };
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const height = isMobile && config.mobileHeight ? config.mobileHeight : config.height;
 
   return (
     <div 
-      className={cn("bg-muted/10 rounded-lg", className)}
-      style={{ minHeight: heights[size] || "90px" }}
+      className={cn(
+        "bg-muted/10 rounded-lg flex items-center justify-center",
+        className
+      )}
+      style={{ 
+        minHeight: height,
+        contain: "layout style",
+      }}
       aria-hidden="true"
-    />
+    >
+      <span className="text-muted-foreground/20 text-xs animate-pulse">Loading...</span>
+    </div>
   );
 });
 

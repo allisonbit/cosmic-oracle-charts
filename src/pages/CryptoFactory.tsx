@@ -38,6 +38,7 @@ import { cn } from "@/lib/utils";
 import { format, formatDistanceToNow } from "date-fns";
 import { CryptoFactorySchema } from "@/components/seo";
 import { CryptoFactorySEOHeader, CryptoFactorySEOContent } from "@/components/seo";
+import { InArticleAd } from "@/components/ads";
 
 const chains = ['All', 'Ethereum', 'Solana', 'Arbitrum', 'Base', 'Polygon', 'Optimism', 'Avalanche'];
 const impacts = ['All', 'high', 'medium', 'low'];
@@ -576,6 +577,9 @@ export default function CryptoFactory() {
             )}
           </TabsContent>
         </Tabs>
+        
+        {/* Strategic ad placement */}
+        <InArticleAd className="my-8" />
         
         {/* SEO Content Section */}
         <CryptoFactorySEOContent />

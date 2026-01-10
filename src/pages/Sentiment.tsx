@@ -16,6 +16,7 @@ import { EnhancedOverviewPanel } from "@/components/sentiment/EnhancedOverviewPa
 import { EnhancedWhaleTracker } from "@/components/sentiment/EnhancedWhaleTracker";
 import { EnhancedSignalsPanel } from "@/components/sentiment/EnhancedSignalsPanel";
 import { SentimentSchema, SentimentSEOContent } from "@/components/seo";
+import { InArticleAd, SidebarAd } from "@/components/ads";
 
 function formatNumber(num: number): string {
   if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
@@ -648,7 +649,9 @@ const SentimentPage = () => {
           </div>
         )}
       </div>
-
+      
+      {/* Strategic ad placement after main content */}
+      <InArticleAd className="mt-8" />
       {/* Modals */}
       <CoinDetailModal
         open={coinModalOpen}

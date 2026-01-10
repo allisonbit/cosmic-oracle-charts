@@ -26,6 +26,7 @@ import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { StrengthMeterSchema } from "@/components/seo";
 import { StrengthMeterSEOHeader, StrengthMeterSEOContent } from "@/components/seo";
+import { InArticleAd } from "@/components/ads";
 
 const timeframes = [
   { value: '1h', label: '1H' },
@@ -346,6 +347,9 @@ export default function StrengthMeter() {
           </p>
           <StrengthTable data={displayData || []} isLoading={isLoading} />
         </section>
+        
+        {/* Strategic ad placement */}
+        <InArticleAd className="my-8" />
         
         {/* SEO Content Section */}
         <StrengthMeterSEOContent />
