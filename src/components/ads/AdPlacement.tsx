@@ -2,35 +2,72 @@ import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState, memo } from "react";
 
 type AdSize =
-  | "banner" // 728x90 - top/bottom of pages
-  | "leaderboard" // 970x90 - wide banner
-  | "rectangle" // 300x250 - sidebar/in-content
-  | "skyscraper" // 160x600 - sidebar vertical
+  | "banner"        // 728x90 - top/bottom of pages
+  | "leaderboard"   // 970x90 - wide banner
+  | "rectangle"     // 300x250 - sidebar/in-content
+  | "skyscraper"    // 160x600 - sidebar vertical
   | "mobile-banner" // 320x50 - mobile header/footer
-  | "in-article" // responsive - between content
+  | "in-article"    // responsive - between content
   | "sticky-footer"; // 320x50/728x90 - sticky bottom
 
 interface AdPlacementProps {
   size: AdSize;
   className?: string;
-  slot?: string; // Google AdSense slot ID (optional - Auto Ads handles most placements)
-  lazyLoad?: boolean; // Enable lazy loading (default true for performance)
+  slot?: string;
+  lazyLoad?: boolean;
 }
 
-const sizeConfig: Record<AdSize, { width: string; height: string; label: string; minHeight: string }> = {
-  banner: { width: "728px", height: "90px", label: "Banner", minHeight: "90px" },
-  leaderboard: { width: "970px", height: "90px", label: "Leaderboard", minHeight: "90px" },
-  rectangle: { width: "300px", height: "250px", label: "Rectangle", minHeight: "250px" },
-  skyscraper: { width: "160px", height: "600px", label: "Skyscraper", minHeight: "600px" },
-  "mobile-banner": { width: "320px", height: "50px", label: "Mobile Banner", minHeight: "50px" },
-  "in-article": { width: "100%", height: "auto", label: "In-Article", minHeight: "100px" },
-  "sticky-footer": { width: "100%", height: "auto", label: "Sticky Footer", minHeight: "50px" },
+// Fixed dimensions for CLS prevention - CRITICAL for viewability & RPM
+const sizeConfig: Record<AdSize, { 
+  width: string; 
+  height: string; 
+  minHeight: string;
+  mobileWidth?: string;
+  mobileHeight?: string;
+}> = {
+  banner: { 
+    width: "728px", 
+    height: "90px", 
+    minHeight: "90px",
+    mobileWidth: "320px",
+    mobileHeight: "50px"
+  },
+  leaderboard: { 
+    width: "970px", 
+    height: "90px", 
+    minHeight: "90px",
+    mobileWidth: "320px",
+    mobileHeight: "50px"
+  },
+  rectangle: { 
+    width: "300px", 
+    height: "250px", 
+    minHeight: "250px" 
+  },
+  skyscraper: { 
+    width: "160px", 
+    height: "600px", 
+    minHeight: "600px" 
+  },
+  "mobile-banner": { 
+    width: "320px", 
+    height: "50px", 
+    minHeight: "50px" 
+  },
+  "in-article": { 
+    width: "100%", 
+    height: "auto", 
+    minHeight: "120px" // Fixed minimum to prevent CLS
+  },
+  "sticky-footer": { 
+    width: "100%", 
+    height: "auto", 
+    minHeight: "50px",
+    mobileHeight: "50px"
+  },
 };
 
-/**
- * Soft budget to prevent too many manual ad placeholders on a single route.
- * This helps reduce hangs/jank on lower-end devices when Auto Ads + multiple placements compete.
- */
+// Per-page ad budget to prevent heavy-ad Chrome intervention
 const MAX_AD_PLACEMENTS_PER_PAGE = 4;
 
 type AdBudgetState = {
@@ -41,24 +78,24 @@ type AdBudgetState = {
 function allocateAdBudget(): boolean {
   if (typeof window === "undefined") return true;
 
-  const w = window as any;
+  const w = window as Window & { __oracle_ad_budget?: AdBudgetState };
   const path = window.location?.pathname || "/";
-  const state: AdBudgetState | undefined = w.__oracle_ad_budget;
+  const state = w.__oracle_ad_budget;
 
   if (!state || state.path !== path) {
-    w.__oracle_ad_budget = { path, used: 0 } satisfies AdBudgetState;
+    w.__oracle_ad_budget = { path, used: 0 };
   }
 
-  if (w.__oracle_ad_budget.used >= MAX_AD_PLACEMENTS_PER_PAGE) return false;
-  w.__oracle_ad_budget.used += 1;
+  if (w.__oracle_ad_budget!.used >= MAX_AD_PLACEMENTS_PER_PAGE) return false;
+  w.__oracle_ad_budget!.used += 1;
   return true;
 }
 
+// Schedule ad init with low priority to prevent main thread blocking
 function scheduleAdInit(cb: () => void) {
   if (typeof window === "undefined") return;
-  const w = window as any;
 
-  const ric = w.requestIdleCallback as undefined | ((fn: () => void, opts?: { timeout: number }) => void);
+  const ric = (window as Window & { requestIdleCallback?: (fn: () => void, opts?: { timeout: number }) => number }).requestIdleCallback;
   if (typeof ric === "function") {
     ric(cb, { timeout: 2000 });
     return;
@@ -67,21 +104,37 @@ function scheduleAdInit(cb: () => void) {
   setTimeout(cb, 250);
 }
 
-export const AdPlacement = memo(function AdPlacement({ size, className, slot, lazyLoad = true }: AdPlacementProps) {
+/**
+ * Professional AdPlacement component optimized for:
+ * - Core Web Vitals (CLS = 0 with fixed dimensions)
+ * - Active View / Viewability (≥50% visible tracking)
+ * - Heavy-ad intervention prevention (budget system)
+ * - Responsive design (mobile/desktop dimensions)
+ */
+export const AdPlacement = memo(function AdPlacement({ 
+  size, 
+  className, 
+  slot, 
+  lazyLoad = true 
+}: AdPlacementProps) {
   const config = sizeConfig[size];
   const adRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(!lazyLoad);
+  const [isViewable, setIsViewable] = useState(false);
   const hasInitialized = useRef(false);
   const isAllowedRef = useRef<boolean | null>(null);
+  const viewabilityTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Lazy load using Intersection Observer for Core Web Vitals
+  // Responsive dimension detection
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const effectiveWidth = isMobile && config.mobileWidth ? config.mobileWidth : config.width;
+  const effectiveHeight = isMobile && config.mobileHeight ? config.mobileHeight : config.height;
+  const effectiveMinHeight = isMobile && config.mobileHeight ? config.mobileHeight : config.minHeight;
+
+  // Lazy load + viewability tracking with Intersection Observer
   useEffect(() => {
     if (!lazyLoad || isVisible) return;
-
-    if (typeof window === "undefined") return;
-
-    // Avoid crashes on very old browsers
-    if (!("IntersectionObserver" in window)) {
+    if (typeof window === "undefined" || !("IntersectionObserver" in window)) {
       setIsVisible(true);
       return;
     }
@@ -89,24 +142,44 @@ export const AdPlacement = memo(function AdPlacement({ size, className, slot, la
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
+          // Load when entering viewport
           if (entry.isIntersecting) {
             setIsVisible(true);
-            observer.disconnect();
+            
+            // Track viewability (≥50% visible for ≥1 second)
+            if (entry.intersectionRatio >= 0.5) {
+              if (!viewabilityTimerRef.current) {
+                viewabilityTimerRef.current = setTimeout(() => {
+                  setIsViewable(true);
+                }, 1000);
+              }
+            }
+          } else {
+            // Clear viewability timer if not visible
+            if (viewabilityTimerRef.current) {
+              clearTimeout(viewabilityTimerRef.current);
+              viewabilityTimerRef.current = null;
+            }
           }
         });
       },
       {
-        rootMargin: "200px", // Load 200px before entering viewport
-        threshold: 0,
+        rootMargin: "200px 0px", // Preload 200px before viewport
+        threshold: [0, 0.25, 0.5, 0.75, 1.0],
       }
     );
 
     if (adRef.current) observer.observe(adRef.current);
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      if (viewabilityTimerRef.current) {
+        clearTimeout(viewabilityTimerRef.current);
+      }
+    };
   }, [lazyLoad, isVisible]);
 
-  // Initialize AdSense slot when visible (for manual slot placements)
+  // Initialize AdSense slot when visible
   useEffect(() => {
     if (!isVisible || hasInitialized.current || !slot) return;
     if (isAllowedRef.current === false) return;
@@ -124,16 +197,13 @@ export const AdPlacement = memo(function AdPlacement({ size, className, slot, la
 
     scheduleAdInit(() => {
       try {
-        const w = window as { adsbygoogle?: unknown[] };
-        // Ensure array exists before pushing
+        const w = window as Window & { adsbygoogle?: unknown[] };
         if (!w.adsbygoogle) {
           w.adsbygoogle = [];
         }
-        // Push empty object to initialize the ad slot
         w.adsbygoogle.push({});
       } catch (e) {
-        // AdSense errors are non-critical - log once per session
-        const w = window as { __oracle_ad_init_warned?: boolean };
+        const w = window as Window & { __oracle_ad_init_warned?: boolean };
         if (!w.__oracle_ad_init_warned) {
           w.__oracle_ad_init_warned = true;
           console.debug("AdSense init info:", e);
@@ -142,16 +212,22 @@ export const AdPlacement = memo(function AdPlacement({ size, className, slot, la
     });
   }, [isVisible, slot]);
 
-  // Placeholder when lazy loading
+  // Placeholder with fixed dimensions (CLS prevention)
   if (!isVisible) {
     return (
       <div
         ref={adRef}
-        className={cn("flex items-center justify-center bg-muted/10 rounded-lg overflow-hidden", className)}
+        className={cn(
+          "flex items-center justify-center bg-muted/10 rounded-lg overflow-hidden",
+          "transition-opacity duration-300",
+          className
+        )}
         style={{
-          maxWidth: config.width,
-          minHeight: config.minHeight,
-          contain: "content",
+          width: effectiveWidth === "100%" ? "100%" : undefined,
+          maxWidth: effectiveWidth,
+          height: effectiveHeight === "auto" ? undefined : effectiveHeight,
+          minHeight: effectiveMinHeight,
+          contain: "layout style",
         }}
         aria-hidden="true"
         data-ad-placeholder="true"
@@ -159,13 +235,13 @@ export const AdPlacement = memo(function AdPlacement({ size, className, slot, la
     );
   }
 
-  // Allocate per-route ad budget only when ad becomes eligible to render.
+  // Allocate per-route ad budget
   if (isAllowedRef.current === null) {
     isAllowedRef.current = allocateAdBudget();
   }
 
+  // Suppress extra placements but keep layout stable
   if (isAllowedRef.current === false) {
-    // Suppress extra placements but keep layout stable (no CLS).
     if (size === "sticky-footer") return null;
 
     return (
@@ -177,9 +253,9 @@ export const AdPlacement = memo(function AdPlacement({ size, className, slot, la
           className
         )}
         style={{
-          maxWidth: size === "in-article" ? "100%" : config.width,
-          minHeight: config.minHeight,
-          contain: "content",
+          maxWidth: size === "in-article" ? "100%" : effectiveWidth,
+          minHeight: effectiveMinHeight,
+          contain: "layout style",
         }}
         aria-hidden="true"
         data-ad-suppressed="true"
@@ -187,54 +263,71 @@ export const AdPlacement = memo(function AdPlacement({ size, className, slot, la
     );
   }
 
-  // Sticky footer has special fixed positioning
+  // Sticky footer with fixed positioning
   if (size === "sticky-footer") {
     return (
       <div
         ref={adRef}
         className={cn(
-          "fixed bottom-0 left-0 right-0 z-40 bg-background/95 border-t border-border/50",
-          "flex items-center justify-center py-2 safe-area-bottom",
+          "fixed bottom-0 left-0 right-0 z-40",
+          "bg-background/95 backdrop-blur-sm border-t border-border/50",
+          "flex items-center justify-center py-2 pb-safe",
           className
         )}
+        style={{ 
+          minHeight: parseInt(effectiveMinHeight) + 16,
+          contain: "layout style",
+        }}
         data-ad-slot={slot}
         data-ad-size={size}
         aria-label="Advertisement"
         role="complementary"
-        style={{ contain: "content" }}
       >
         {slot ? (
           <ins
             className="adsbygoogle"
-            style={{ display: "block", textAlign: "center" }}
+            style={{ 
+              display: "block", 
+              textAlign: "center",
+              width: isMobile ? "320px" : "728px",
+              height: isMobile ? "50px" : "90px",
+            }}
             data-ad-client="ca-pub-1336344158133611"
             data-ad-slot={slot}
             data-ad-format="horizontal"
-            data-full-width-responsive="true"
+            data-full-width-responsive="false"
           />
         ) : (
-          // Auto Ads will fill this container if appropriate
-          <div className="w-full max-w-3xl mx-auto" data-ad-container="auto" />
+          <div 
+            className="w-full max-w-3xl mx-auto" 
+            data-ad-container="auto"
+            style={{ height: isMobile ? "50px" : "90px" }}
+          />
         )}
       </div>
     );
   }
 
+  // Standard ad placement
   return (
     <div
       ref={adRef}
       className={cn(
         "flex items-center justify-center bg-muted/5 rounded-lg overflow-hidden",
+        "border border-border/20",
         size === "in-article" && "my-6 w-full",
         className
       )}
       style={{
-        maxWidth: size === "in-article" ? "100%" : config.width,
-        minHeight: config.minHeight,
-        contain: "content",
+        width: effectiveWidth === "100%" ? "100%" : undefined,
+        maxWidth: size === "in-article" ? "100%" : effectiveWidth,
+        height: effectiveHeight === "auto" ? undefined : effectiveHeight,
+        minHeight: effectiveMinHeight,
+        contain: "layout style",
       }}
       data-ad-slot={slot}
       data-ad-size={size}
+      data-ad-viewable={isViewable}
       aria-label="Advertisement"
       role="complementary"
     >
@@ -244,17 +337,22 @@ export const AdPlacement = memo(function AdPlacement({ size, className, slot, la
           style={{
             display: "block",
             width: "100%",
-            height: "auto",
-            minHeight: config.minHeight,
+            height: effectiveHeight === "auto" ? "auto" : effectiveHeight,
+            minHeight: effectiveMinHeight,
           }}
           data-ad-client="ca-pub-1336344158133611"
           data-ad-slot={slot}
           data-ad-format={size === "in-article" ? "fluid" : "auto"}
-          data-full-width-responsive="true"
+          data-full-width-responsive={size === "in-article" ? "true" : "false"}
         />
       ) : (
-        // Auto Ads placeholder - Google will fill if appropriate
-        <div className="w-full h-full" data-ad-container="auto" style={{ minHeight: config.minHeight }} />
+        <div 
+          className="w-full h-full flex items-center justify-center text-muted-foreground/30 text-xs font-display"
+          data-ad-container="auto" 
+          style={{ minHeight: effectiveMinHeight }}
+        >
+          <span>Ad</span>
+        </div>
       )}
     </div>
   );

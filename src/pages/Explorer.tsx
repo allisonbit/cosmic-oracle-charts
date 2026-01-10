@@ -14,6 +14,7 @@ import { MarketStatsBar } from "@/components/explorer/MarketStatsBar";
 import { TopTokensTable } from "@/components/explorer/TopTokensTable";
 import { ALL_CHAINS, getChainById } from "@/lib/explorerChains";
 import { ExplorerSchema, ExplorerSEOContent } from "@/components/seo";
+import { InArticleAd } from "@/components/ads";
 
 function formatNumber(num: number): string {
   if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
@@ -273,7 +274,10 @@ const ExplorerPage = () => {
 
         {/* SEO Content Block */}
         {!selectedToken && !isSearching && !marketLoading && (
-          <ExplorerSEOContent />
+          <>
+            <InArticleAd className="my-8" />
+            <ExplorerSEOContent />
+          </>
         )}
       </div>
     </Layout>
