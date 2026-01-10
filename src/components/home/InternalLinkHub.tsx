@@ -66,7 +66,7 @@ export function InternalLinkHub({ className }: InternalLinkHubProps) {
               {featuredCoins.map((coin) => (
                 <Link
                   key={coin!.id}
-                  to={`/markets/${coin!.id}`}
+                  to={`/market/${coin!.id}`}
                   reloadDocument
                   className="flex items-center justify-between rounded-lg border border-border/40 bg-muted/10 px-3 py-2 text-sm hover:bg-muted/20 hover:border-primary/30 transition-colors"
                 >

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { 
   Home, LayoutDashboard, Search, TrendingUp, Layers, Wallet, 
-  Zap, Calendar, BookOpen, Mail, MoreHorizontal, X 
+  Zap, Calendar, BookOpen, Mail, MoreHorizontal, X, FileText, Brain
 } from "lucide-react";
 import { NavLink as RouterNavLink, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -10,15 +10,17 @@ const primaryNavItems = [
   { icon: Home, label: "Home", path: "/" },
   { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
   { icon: TrendingUp, label: "Predict", path: "/predictions" },
-  { icon: Zap, label: "Strength", path: "/strength" },
+  { icon: Brain, label: "Sentiment", path: "/sentiment" },
 ];
 
 const moreNavItems = [
+  { icon: Zap, label: "Strength", path: "/strength" },
   { icon: Calendar, label: "Factory", path: "/factory" },
   { icon: Layers, label: "Chains", path: "/chain/ethereum" },
   { icon: Search, label: "Explorer", path: "/explorer" },
   { icon: Wallet, label: "Scanner", path: "/portfolio" },
   { icon: BookOpen, label: "Learn", path: "/learn" },
+  { icon: FileText, label: "Insights", path: "/insights" },
   { icon: Mail, label: "Contact", path: "/contact" },
 ];
 
