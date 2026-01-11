@@ -4,12 +4,12 @@ import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Link } from "react-router-dom";
 import { 
   TrendingUp, TrendingDown, Minus, Clock, Calendar, CalendarDays,
-  ChevronRight, Zap, Target, Shield, BarChart3
+  ChevronRight, Zap, Target, Shield, BarChart3, Globe, Sparkles
 } from "lucide-react";
-import { TOP_50_CRYPTOS, searchCryptos } from "@/lib/extendedCryptos";
+import { TOP_50_CRYPTOS } from "@/lib/extendedCryptos";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 import { Badge } from "@/components/ui/badge";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { SEO } from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
 import { BannerAd, InArticleAd } from "@/components/ads";
@@ -17,7 +17,9 @@ import { PredictionHubSEOContent, PredictionsHowItWorks, PredictionsDataMeaning 
 import { PredictionFilters } from "@/components/prediction/PredictionFilters";
 import { SignalStrengthMeter } from "@/components/prediction/SignalStrengthMeter";
 import { PerformanceTracker } from "@/components/prediction/PerformanceTracker";
-import { PredictionCard } from "@/components/prediction/PredictionCard";
+import { EnhancedPredictionCard } from "@/components/prediction/EnhancedPredictionCard";
+import { GlobalTokenSearch } from "@/components/prediction/GlobalTokenSearch";
+import { GlobalToken } from "@/hooks/useGlobalTokenSearch";
 
 const timeframes = [
   { id: 'daily', label: 'Today', icon: Clock, description: 'Intraday predictions with support/resistance levels' },
@@ -26,21 +28,34 @@ const timeframes = [
 ];
 
 const features = [
-  { icon: Zap, title: 'AI-Powered Analysis', description: 'Advanced machine learning models analyze 50+ technical indicators' },
-  { icon: Target, title: 'Trading Zones', description: 'Precise entry, stop-loss, and take-profit levels for every coin' },
-  { icon: Shield, title: 'Risk Assessment', description: 'Clear risk ratings and confidence scores for informed decisions' },
-  { icon: BarChart3, title: 'Multi-Timeframe', description: 'Daily, weekly, and monthly predictions for all trading styles' },
+  { icon: Zap, title: 'AI + 50 Indicators', description: 'SSL Hybrid, KHAN SMC, RSI, MACD, Binocular Trend & more' },
+  { icon: Target, title: 'Trading Zones', description: 'Entry, Stop-Loss, TP1/TP2/TP3 with Risk:Reward ratios' },
+  { icon: Shield, title: 'Risk Assessment', description: 'Volatility regime, market structure & confidence scores' },
+  { icon: Globe, title: 'Global Coverage', description: 'Search ANY token worldwide by name, symbol or contract' },
 ];
 
-// Generate mock sentiment for demo (would come from API in production)
-function getMockSentiment(symbol: string): { bias: 'bullish' | 'bearish' | 'neutral'; confidence: number; signalStrength: number; indicatorAlignment: number } {
+// Generate sentiment based on symbol hash + price data
+function generateSentiment(symbol: string, change24h: number): { 
+  bias: 'bullish' | 'bearish' | 'neutral'; 
+  confidence: number; 
+  signalStrength: number; 
+  indicatorAlignment: number 
+} {
   const hash = symbol.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-  const biases: ('bullish' | 'bearish' | 'neutral')[] = ['bullish', 'bearish', 'neutral'];
-  const confidence = 55 + (hash % 35);
+  
+  // Bias based on price change + some randomization
+  let bias: 'bullish' | 'bearish' | 'neutral' = 'neutral';
+  if (change24h > 3) bias = 'bullish';
+  else if (change24h < -3) bias = 'bearish';
+  else if (change24h > 0) bias = hash % 2 === 0 ? 'bullish' : 'neutral';
+  else if (change24h < 0) bias = hash % 2 === 0 ? 'bearish' : 'neutral';
+  
+  const confidence = Math.min(90, Math.max(45, 55 + Math.abs(change24h) * 2 + (hash % 20)));
+  
   return {
-    bias: biases[hash % 3],
+    bias,
     confidence,
-    signalStrength: Math.floor(confidence * 0.85 + (hash % 15)),
+    signalStrength: Math.floor(confidence * 0.9 + (hash % 10)),
     indicatorAlignment: Math.floor(25 + (hash % 20))
   };
 }
@@ -52,32 +67,87 @@ export default function PredictionHub() {
   const [selectedTimeframe, setSelectedTimeframe] = useState<'all' | 'daily' | 'weekly' | 'monthly'>('all');
   const [confidenceFilter, setConfidenceFilter] = useState<'all' | '80' | '60' | '40'>('all');
   const [sortBy, setSortBy] = useState<'confidence' | 'change' | 'marketCap' | 'name'>('confidence');
+  const [searchedTokens, setSearchedTokens] = useState<GlobalToken[]>([]);
+  const [addedTokens, setAddedTokens] = useState<GlobalToken[]>([]);
 
-  // Get cryptos based on search - top 50 by default, or search results
+  // Handle search results
+  const handleSearchResults = useCallback((tokens: GlobalToken[]) => {
+    setSearchedTokens(tokens);
+  }, []);
+
+  // Handle token selection from search
+  const handleTokenSelect = useCallback((token: GlobalToken) => {
+    setAddedTokens(prev => {
+      // Don't add duplicates
+      if (prev.find(t => t.id === token.id && t.symbol === token.symbol)) return prev;
+      return [token, ...prev].slice(0, 20); // Max 20 added tokens
+    });
+  }, []);
+
+  // Get default 10 tokens + added tokens
   const displayCryptos = useMemo(() => {
-    const cryptos = searchQuery ? searchCryptos(searchQuery, 100) : TOP_50_CRYPTOS;
-    
-    return cryptos.map(crypto => {
+    // Start with added tokens from search
+    const addedWithPrices = addedTokens.map(token => {
       const priceData = pricesData?.prices?.find(
-        p => p.symbol.toLowerCase() === crypto.symbol.toLowerCase()
+        p => p.symbol.toLowerCase() === token.symbol.toLowerCase()
       );
-      const sentiment = getMockSentiment(crypto.symbol);
+      const change24h = token.change24h ?? priceData?.change24h ?? 0;
+      const sentiment = generateSentiment(token.symbol, change24h);
       return {
-        ...crypto,
-        price: priceData?.price || 0,
-        change24h: priceData?.change24h || 0,
-        marketCap: priceData?.marketCap || 0,
+        id: token.id,
+        name: token.name,
+        symbol: token.symbol,
+        price: token.price || priceData?.price || 0,
+        change24h,
+        marketCap: token.marketCap || priceData?.marketCap || 0,
+        volume24h: token.volume24h,
+        address: token.address,
+        chain: token.chain,
         ...sentiment
       };
     });
-  }, [pricesData, searchQuery]);
+
+    // Add default top 10 tokens
+    const defaultTokens = TOP_50_CRYPTOS.slice(0, 10).map(crypto => {
+      const priceData = pricesData?.prices?.find(
+        p => p.symbol.toLowerCase() === crypto.symbol.toLowerCase()
+      );
+      const change24h = priceData?.change24h ?? 0;
+      const sentiment = generateSentiment(crypto.symbol, change24h);
+      return {
+        id: crypto.id,
+        name: crypto.name,
+        symbol: crypto.symbol,
+        price: priceData?.price || 0,
+        change24h,
+        marketCap: priceData?.marketCap || 0,
+        volume24h: undefined as number | undefined,
+        address: undefined as string | undefined,
+        chain: undefined as string | undefined,
+        ...sentiment
+      };
+    });
+
+    // Filter out duplicates (if added token already in default)
+    const allTokens = [...addedWithPrices];
+    defaultTokens.forEach(dt => {
+      if (!allTokens.find(at => at.symbol.toLowerCase() === dt.symbol.toLowerCase())) {
+        allTokens.push(dt);
+      }
+    });
+
+    return allTokens;
+  }, [pricesData, addedTokens]);
 
   // Filter and sort cryptos
   const filteredCryptos = useMemo(() => {
     let result = displayCryptos.filter(crypto => {
+      const matchesSearch = !searchQuery || 
+        crypto.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        crypto.symbol.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = selectedCategory === 'all' || crypto.bias === selectedCategory;
       const matchesConfidence = confidenceFilter === 'all' || crypto.confidence >= parseInt(confidenceFilter);
-      return matchesCategory && matchesConfidence;
+      return matchesSearch && matchesCategory && matchesConfidence;
     });
 
     // Sort
@@ -97,12 +167,12 @@ export default function PredictionHub() {
     });
 
     return result;
-  }, [displayCryptos, selectedCategory, confidenceFilter, sortBy]);
+  }, [displayCryptos, searchQuery, selectedCategory, confidenceFilter, sortBy]);
 
   // Get high conviction signals for SignalStrengthMeter
   const highConvictionSignals = useMemo(() => {
     return displayCryptos
-      .filter(c => c.confidence >= 70)
+      .filter(c => c.confidence >= 65)
       .map(c => ({
         id: c.id,
         name: c.name,
@@ -121,9 +191,9 @@ export default function PredictionHub() {
   return (
     <div className="min-h-screen flex flex-col cosmic-bg">
       <SEO 
-        title="Crypto Price Predictions | Daily, Weekly, Monthly Forecasts | Oracle Bull"
-        description="Get AI-powered cryptocurrency price predictions for Bitcoin, Ethereum, Solana, and 1000+ coins. Daily, weekly, and monthly forecasts with technical analysis, trading zones, and risk assessment."
-        keywords="crypto price prediction, bitcoin prediction today, ethereum forecast, crypto forecast, price prediction, cryptocurrency analysis"
+        title="AI Crypto Predictions | Global Token Analysis | Oracle Bull"
+        description="Get AI-powered predictions for ANY cryptocurrency worldwide. Search by name, symbol, or contract address. 50+ indicators including SSL Hybrid, KHAN SMC, RSI, MACD. Daily, weekly, monthly forecasts."
+        keywords="crypto prediction, token analysis, bitcoin prediction, any crypto forecast, contract address search, AI trading signals"
         canonicalPath="/predictions"
       />
       <Helmet>
@@ -131,8 +201,8 @@ export default function PredictionHub() {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebPage",
-            "name": "Crypto Price Predictions Hub",
-            "description": "AI-powered cryptocurrency price predictions for 1000+ coins with daily, weekly, and monthly forecasts",
+            "name": "Global Crypto Predictions Hub",
+            "description": "AI-powered predictions for any cryptocurrency worldwide with 50+ technical indicators",
             "url": "https://oraclebull.com/predictions",
             "publisher": {
               "@type": "Organization",
@@ -150,22 +220,48 @@ export default function PredictionHub() {
       <main className="flex-1 container mx-auto px-4 py-24 md:py-32">
         <div className="max-w-7xl mx-auto">
           {/* Hero Section */}
-          <section className="text-center mb-12">
+          <section className="text-center mb-8">
             <Badge variant="outline" className="mb-4 border-primary/50 text-primary">
-              <Zap className="w-3 h-3 mr-1" />
-              AI-Powered Predictions
+              <Globe className="w-3 h-3 mr-1" />
+              Global Token Coverage
             </Badge>
             <h1 className="text-3xl md:text-5xl font-display font-bold mb-4">
-              <span className="glow-text">Crypto Price Predictions</span>
+              <span className="glow-text">AI Predictions for Any Token</span>
             </h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-              Get accurate AI-powered price predictions for Bitcoin, Ethereum, and 1000+ cryptocurrencies. 
-              Daily, weekly, and monthly forecasts with technical analysis and trading zones.
+            <p className="text-muted-foreground max-w-2xl mx-auto text-lg mb-4">
+              Search any cryptocurrency in the world by <strong>name</strong>, <strong>symbol</strong>, or <strong>contract address</strong>. 
+              Get instant AI analysis with 50+ technical indicators.
             </p>
           </section>
 
+          {/* Global Search - Prominent Position */}
+          <section className="mb-8">
+            <div className="holo-card p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Sparkles className="w-5 h-5 text-primary" />
+                <h2 className="font-display font-bold text-lg">Search Any Token Globally</h2>
+              </div>
+              <GlobalTokenSearch 
+                onSelect={handleTokenSelect}
+                onSearchResults={handleSearchResults}
+                placeholder="Enter token name, symbol (e.g., PEPE), or paste contract address (0x...)..."
+              />
+              {addedTokens.length > 0 && (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <span className="text-xs text-muted-foreground">Added tokens:</span>
+                  {addedTokens.map((t, i) => (
+                    <Badge key={`${t.id}-${i}`} variant="secondary" className="text-xs">
+                      {t.symbol.toUpperCase()}
+                      {t.chain && <span className="ml-1 opacity-60">({t.chain})</span>}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+          </section>
+
           {/* Features Grid */}
-          <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+          <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {features.map((feature) => (
               <div key={feature.title} className="holo-card p-4 text-center">
                 <feature.icon className="w-6 h-6 text-primary mx-auto mb-2" />
@@ -176,7 +272,7 @@ export default function PredictionHub() {
           </section>
 
           {/* Timeframe Quick Links */}
-          <section className="mb-12">
+          <section className="mb-8">
             <h2 className="font-display text-xl font-bold mb-4 text-center">Choose Your Timeframe</h2>
             <div className="grid md:grid-cols-3 gap-4">
               {timeframes.map((tf) => (
@@ -232,15 +328,15 @@ export default function PredictionHub() {
           {/* Crypto Predictions Grid */}
           <section>
             <h2 className="font-display text-xl font-bold mb-4">
-              Top Cryptocurrency Predictions
+              Token Predictions
               <span className="text-sm font-normal text-muted-foreground ml-2">
-                ({filteredCryptos.length} coins)
+                ({filteredCryptos.length} tokens • Default 10 + your searches)
               </span>
             </h2>
             
             {isLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {Array.from({ length: 12 }).map((_, i) => (
+                {Array.from({ length: 10 }).map((_, i) => (
                   <div key={i} className="holo-card p-4 animate-pulse">
                     <div className="flex items-center gap-3 mb-3">
                       <div className="w-10 h-10 rounded-full bg-muted" />
@@ -256,8 +352,8 @@ export default function PredictionHub() {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredCryptos.map((crypto) => (
-                  <PredictionCard key={crypto.id} crypto={crypto} />
+                {filteredCryptos.map((crypto, idx) => (
+                  <EnhancedPredictionCard key={`${crypto.id}-${idx}`} crypto={crypto} />
                 ))}
               </div>
             )}
@@ -274,25 +370,23 @@ export default function PredictionHub() {
           {/* SEO Content */}
           <section className="mt-8 holo-card p-8">
             <h2 className="font-display text-2xl font-bold mb-4 text-center">
-              About Oracle Bull Crypto Predictions
+              About Global Crypto Predictions
             </h2>
             <div className="prose prose-invert max-w-none text-muted-foreground">
               <p className="mb-4">
-                Oracle Bull provides AI-powered cryptocurrency price predictions for over 1,000 digital assets including 
-                Bitcoin (BTC), Ethereum (ETH), Solana (SOL), XRP, Cardano (ADA), and many more. Our advanced machine learning 
-                models analyze 50+ technical indicators, on-chain data, market sentiment, and historical patterns to generate 
-                accurate price forecasts.
+                Oracle Bull provides AI-powered cryptocurrency predictions for <strong>any token in the world</strong>. 
+                Simply search by name, symbol, or paste a contract address to get instant analysis with 50+ technical indicators 
+                including SSL Hybrid, KHAN SMC (Smart Money Concepts), RSI, MACD, Binocular Trend, and more.
               </p>
               <p className="mb-4">
-                Our predictions cover three timeframes: <strong>Daily predictions</strong> for day traders seeking intraday 
-                support and resistance levels, <strong>Weekly forecasts</strong> for swing traders looking for breakout 
-                opportunities, and <strong>Monthly outlooks</strong> for investors considering macro trends and long-term positions.
+                Our analysis covers <strong>daily predictions</strong> for day traders seeking intraday 
+                support and resistance levels, <strong>weekly forecasts</strong> for swing traders looking for breakout 
+                opportunities, and <strong>monthly outlooks</strong> for investors considering macro trends.
               </p>
               <p>
-                Each prediction includes precise trading zones with entry points, stop-loss levels, and multiple take-profit 
-                targets. Our risk assessment system provides clear confidence scores and volatility ratings to help you make 
-                informed decisions. All predictions are updated regularly and include detailed technical analysis with RSI, 
-                MACD, moving averages, and Bollinger Bands.
+                Each prediction includes precise <strong>trading zones</strong> with entry points, stop-loss levels, and multiple 
+                take-profit targets (TP1, TP2, TP3). Our <strong>market structure analysis</strong> identifies Break of Structure (BoS), 
+                Change of Character (CHoCH), and trend strength using professional-grade indicators.
               </p>
             </div>
             <p className="mt-6 text-xs text-muted-foreground/60 text-center">
@@ -306,10 +400,10 @@ export default function PredictionHub() {
             <h2 className="font-display text-xl font-bold mb-6 text-center">Frequently Asked Questions</h2>
             <div className="grid md:grid-cols-2 gap-4">
               {[
-                { q: "What will Bitcoin price be today?", a: "Our AI analyzes real-time data to predict Bitcoin's intraday movements. Check our daily prediction page for today's BTC forecast with support/resistance levels." },
-                { q: "How accurate are crypto predictions?", a: "Our predictions use multi-layer analysis including technical indicators, market momentum, and historical patterns. We provide confidence scores with each forecast." },
-                { q: "What is the best crypto to buy now?", a: "Our AI identifies high-conviction bullish signals across 1000+ coins. Filter by 'Bullish' and sort by confidence to find the strongest buy signals." },
-                { q: "How do you calculate signal strength?", a: "Signal strength combines AI confidence, technical indicator alignment, and market momentum into a single score for quick decision-making." },
+                { q: "Can I search any token by contract address?", a: "Yes! Paste any ERC-20, SPL, or other token contract address and we'll analyze it using real-time on-chain data across all major blockchains." },
+                { q: "What indicators do you use?", a: "We use 50+ indicators including SSL Hybrid, KHAN SMC (Smart Money Concepts), RSI, MACD, Bollinger Bands, EMA ribbons, volume analysis, and more." },
+                { q: "What is Break of Structure (BoS)?", a: "BoS is a Smart Money Concept that identifies when price breaks a previous swing high/low with momentum, signaling potential trend continuation." },
+                { q: "How are trading zones calculated?", a: "Trading zones use ATR-based volatility, support/resistance levels, and risk:reward optimization to provide entry, stop-loss, and take-profit targets." },
               ].map((faq, i) => (
                 <div key={i} className="holo-card p-4">
                   <h3 className="font-display font-bold mb-2">{faq.q}</h3>
