@@ -84,3 +84,6 @@ verify_jwt = false
 
 [functions.funding-rates]
 verify_jwt = false
+
+[functions.liquidation-data]
+verify_jwt = false

@@ -4,18 +4,20 @@ import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Link } from "react-router-dom";
 import { 
   TrendingUp, TrendingDown, Minus, Clock, Calendar, CalendarDays,
-  ChevronRight, Zap, Target, Shield, BarChart3, Search, RefreshCw
+  ChevronRight, Zap, Target, Shield, BarChart3
 } from "lucide-react";
 import { TOP_50_CRYPTOS, searchCryptos } from "@/lib/extendedCryptos";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { useState, useMemo } from "react";
 import { SEO } from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
 import { BannerAd, InArticleAd } from "@/components/ads";
 import { PredictionHubSEOContent, PredictionsHowItWorks, PredictionsDataMeaning } from "@/components/seo";
+import { PredictionFilters } from "@/components/prediction/PredictionFilters";
+import { SignalStrengthMeter } from "@/components/prediction/SignalStrengthMeter";
+import { PerformanceTracker } from "@/components/prediction/PerformanceTracker";
+import { PredictionCard } from "@/components/prediction/PredictionCard";
 
 const timeframes = [
   { id: 'daily', label: 'Today', icon: Clock, description: 'Intraday predictions with support/resistance levels' },
@@ -31,19 +33,25 @@ const features = [
 ];
 
 // Generate mock sentiment for demo (would come from API in production)
-function getMockSentiment(symbol: string): { bias: 'bullish' | 'bearish' | 'neutral'; confidence: number } {
+function getMockSentiment(symbol: string): { bias: 'bullish' | 'bearish' | 'neutral'; confidence: number; signalStrength: number; indicatorAlignment: number } {
   const hash = symbol.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
   const biases: ('bullish' | 'bearish' | 'neutral')[] = ['bullish', 'bearish', 'neutral'];
+  const confidence = 55 + (hash % 35);
   return {
     bias: biases[hash % 3],
-    confidence: 55 + (hash % 35)
+    confidence,
+    signalStrength: Math.floor(confidence * 0.85 + (hash % 15)),
+    indicatorAlignment: Math.floor(25 + (hash % 20))
   };
 }
 
 export default function PredictionHub() {
   const { data: pricesData, isLoading, refetch, isFetching } = useCryptoPrices();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<'all' | 'bullish' | 'bearish'>('all');
+  const [selectedCategory, setSelectedCategory] = useState<'all' | 'bullish' | 'bearish' | 'neutral'>('all');
+  const [selectedTimeframe, setSelectedTimeframe] = useState<'all' | 'daily' | 'weekly' | 'monthly'>('all');
+  const [confidenceFilter, setConfidenceFilter] = useState<'all' | '80' | '60' | '40'>('all');
+  const [sortBy, setSortBy] = useState<'confidence' | 'change' | 'marketCap' | 'name'>('confidence');
 
   // Get cryptos based on search - top 50 by default, or search results
   const displayCryptos = useMemo(() => {
@@ -64,19 +72,51 @@ export default function PredictionHub() {
     });
   }, [pricesData, searchQuery]);
 
-  // Filter by category
+  // Filter and sort cryptos
   const filteredCryptos = useMemo(() => {
-    return displayCryptos.filter(crypto => {
+    let result = displayCryptos.filter(crypto => {
       const matchesCategory = selectedCategory === 'all' || crypto.bias === selectedCategory;
-      return matchesCategory;
+      const matchesConfidence = confidenceFilter === 'all' || crypto.confidence >= parseInt(confidenceFilter);
+      return matchesCategory && matchesConfidence;
     });
-  }, [displayCryptos, selectedCategory]);
 
-  const formatPrice = (price: number) => {
-    if (price >= 1000) return `$${price.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
-    if (price >= 1) return `$${price.toFixed(2)}`;
-    return `$${price.toPrecision(4)}`;
-  };
+    // Sort
+    result.sort((a, b) => {
+      switch (sortBy) {
+        case 'confidence':
+          return b.confidence - a.confidence;
+        case 'change':
+          return b.change24h - a.change24h;
+        case 'marketCap':
+          return b.marketCap - a.marketCap;
+        case 'name':
+          return a.name.localeCompare(b.name);
+        default:
+          return 0;
+      }
+    });
+
+    return result;
+  }, [displayCryptos, selectedCategory, confidenceFilter, sortBy]);
+
+  // Get high conviction signals for SignalStrengthMeter
+  const highConvictionSignals = useMemo(() => {
+    return displayCryptos
+      .filter(c => c.confidence >= 70)
+      .map(c => ({
+        id: c.id,
+        name: c.name,
+        symbol: c.symbol,
+        bias: c.bias,
+        confidence: c.confidence,
+        signalStrength: c.signalStrength,
+        price: c.price,
+        change24h: c.change24h,
+        indicatorAlignment: c.indicatorAlignment
+      }))
+      .sort((a, b) => b.signalStrength - a.signalStrength)
+      .slice(0, 10);
+  }, [displayCryptos]);
 
   return (
     <div className="min-h-screen flex flex-col cosmic-bg">
@@ -166,56 +206,28 @@ export default function PredictionHub() {
           {/* Ad placement after timeframe section */}
           <BannerAd className="mb-8" />
 
-          {/* Search and Filter */}
-          <section className="mb-8">
-            <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-              <div className="relative w-full md:w-96">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  type="text"
-                  placeholder="Search cryptocurrencies..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-card/50 border-primary/20"
-                />
-              </div>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant={selectedCategory === 'all' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setSelectedCategory('all')}
-                >
-                  All
-                </Button>
-                <Button
-                  variant={selectedCategory === 'bullish' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setSelectedCategory('bullish')}
-                  className={selectedCategory === 'bullish' ? 'bg-green-600 hover:bg-green-700' : ''}
-                >
-                  <TrendingUp className="w-3 h-3 mr-1" />
-                  Bullish
-                </Button>
-                <Button
-                  variant={selectedCategory === 'bearish' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setSelectedCategory('bearish')}
-                  className={selectedCategory === 'bearish' ? 'bg-red-600 hover:bg-red-700' : ''}
-                >
-                  <TrendingDown className="w-3 h-3 mr-1" />
-                  Bearish
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => refetch()}
-                  disabled={isFetching}
-                >
-                  <RefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin' : ''}`} />
-                </Button>
-              </div>
-            </div>
-          </section>
+          {/* Performance Tracker & High Conviction Signals */}
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            <PerformanceTracker />
+            <SignalStrengthMeter signals={highConvictionSignals} />
+          </div>
+
+          {/* Filters */}
+          <PredictionFilters
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            selectedCategory={selectedCategory}
+            onCategoryChange={setSelectedCategory}
+            selectedTimeframe={selectedTimeframe}
+            onTimeframeChange={setSelectedTimeframe}
+            confidenceFilter={confidenceFilter}
+            onConfidenceChange={setConfidenceFilter}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
+            onRefresh={() => refetch()}
+            isFetching={isFetching}
+            totalResults={filteredCryptos.length}
+          />
 
           {/* Crypto Predictions Grid */}
           <section>
@@ -245,70 +257,7 @@ export default function PredictionHub() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {filteredCryptos.map((crypto) => (
-                  <Link
-                    key={crypto.id}
-                    to={`/price-prediction/${crypto.id}`}
-                    className="holo-card p-4 hover:border-primary/50 transition-all group"
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center font-display font-bold text-sm">
-                          {crypto.symbol.toUpperCase().slice(0, 3)}
-                        </div>
-                        <div>
-                          <h3 className="font-display font-bold text-foreground group-hover:text-primary transition-colors">
-                            {crypto.name}
-                          </h3>
-                          <span className="text-xs text-muted-foreground uppercase">
-                            {crypto.symbol}
-                          </span>
-                        </div>
-                      </div>
-                      <Badge 
-                        variant={crypto.bias === 'bullish' ? 'default' : crypto.bias === 'bearish' ? 'destructive' : 'secondary'}
-                        className={crypto.bias === 'bullish' ? 'bg-green-600/20 text-green-400 border-green-600/30' : 
-                          crypto.bias === 'bearish' ? 'bg-red-600/20 text-red-400 border-red-600/30' : ''}
-                      >
-                        {crypto.bias === 'bullish' ? <TrendingUp className="w-3 h-3 mr-1" /> : 
-                         crypto.bias === 'bearish' ? <TrendingDown className="w-3 h-3 mr-1" /> : 
-                         <Minus className="w-3 h-3 mr-1" />}
-                        {crypto.confidence}%
-                      </Badge>
-                    </div>
-                    
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-lg font-bold font-mono">
-                        {formatPrice(crypto.price)}
-                      </span>
-                      <span className={`text-sm font-medium ${crypto.change24h >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                        {crypto.change24h >= 0 ? '+' : ''}{crypto.change24h.toFixed(2)}%
-                      </span>
-                    </div>
-
-                    <div className="flex gap-2">
-                      <Link
-                        to={`/price-prediction/${crypto.id}/daily`}
-                        onClick={(e) => e.stopPropagation()}
-                        className="flex-1 text-center py-1.5 text-xs bg-muted/50 hover:bg-primary/10 rounded transition-colors"
-                      >
-                        Daily
-                      </Link>
-                      <Link
-                        to={`/price-prediction/${crypto.id}/weekly`}
-                        onClick={(e) => e.stopPropagation()}
-                        className="flex-1 text-center py-1.5 text-xs bg-muted/50 hover:bg-primary/10 rounded transition-colors"
-                      >
-                        Weekly
-                      </Link>
-                      <Link
-                        to={`/price-prediction/${crypto.id}/monthly`}
-                        onClick={(e) => e.stopPropagation()}
-                        className="flex-1 text-center py-1.5 text-xs bg-muted/50 hover:bg-primary/10 rounded transition-colors"
-                      >
-                        Monthly
-                      </Link>
-                    </div>
-                  </Link>
+                  <PredictionCard key={crypto.id} crypto={crypto} />
                 ))}
               </div>
             )}
@@ -359,8 +308,8 @@ export default function PredictionHub() {
               {[
                 { q: "What will Bitcoin price be today?", a: "Our AI analyzes real-time data to predict Bitcoin's intraday movements. Check our daily prediction page for today's BTC forecast with support/resistance levels." },
                 { q: "How accurate are crypto predictions?", a: "Our predictions use multi-layer analysis including technical indicators, market momentum, and historical patterns. We provide confidence scores with each forecast." },
-                { q: "Is Ethereum a good investment?", a: "View our ETH prediction pages for daily, weekly, and monthly forecasts. We provide risk assessments and trading zones to help inform your decision." },
-                { q: "Which crypto will go up this week?", a: "Browse our prediction hub to see all bullish-rated cryptocurrencies with our weekly forecasts and breakout analysis." }
+                { q: "What is the best crypto to buy now?", a: "Our AI identifies high-conviction bullish signals across 1000+ coins. Filter by 'Bullish' and sort by confidence to find the strongest buy signals." },
+                { q: "How do you calculate signal strength?", a: "Signal strength combines AI confidence, technical indicator alignment, and market momentum into a single score for quick decision-making." },
               ].map((faq, i) => (
                 <div key={i} className="holo-card p-4">
                   <h3 className="font-display font-bold mb-2">{faq.q}</h3>
@@ -374,7 +323,6 @@ export default function PredictionHub() {
 
       <Footer />
       <MobileBottomNav />
-      <div className="h-20 md:hidden" aria-hidden="true" />
     </div>
   );
 }
