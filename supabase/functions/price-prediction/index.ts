@@ -72,15 +72,15 @@ async function getCachedPrediction(supabase: any, coinId: string, timeframe: str
 // Save prediction to cache
 async function cachePrediction(supabase: any, prediction: any, coinId: string, symbol: string, timeframe: string) {
   try {
-    // Calculate expiration based on timeframe
+    // Shorter cache times for fresher data
     const now = new Date();
     let expiresAt: Date;
     if (timeframe === 'daily') {
-      expiresAt = new Date(now.getTime() + 4 * 60 * 60 * 1000); // 4 hours
+      expiresAt = new Date(now.getTime() + 5 * 60 * 1000); // 5 minutes for daily (real-time feel)
     } else if (timeframe === 'weekly') {
-      expiresAt = new Date(now.getTime() + 12 * 60 * 60 * 1000); // 12 hours
+      expiresAt = new Date(now.getTime() + 30 * 60 * 1000); // 30 minutes for weekly
     } else {
-      expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 hours
+      expiresAt = new Date(now.getTime() + 60 * 60 * 1000); // 1 hour for monthly
     }
 
     await supabase
@@ -171,31 +171,44 @@ function generateTechnicalIndicators(currentPrice: number, priceChange: number):
   };
 }
 
-// Calculate support and resistance levels based on current price and volatility
+// Calculate support and resistance levels using Fibonacci and pivot points
 function calculateLevels(currentPrice: number, high: number, low: number, priceChange: number): { support: number[]; resistance: number[] } {
-  // Use actual price range if available, otherwise estimate from volatility
-  const actualRange = high - low;
-  const volatilityRange = currentPrice * (Math.abs(priceChange) / 100 + 0.03); // At least 3% range
-  const range = Math.max(actualRange, volatilityRange);
+  // Use actual 24h range for accurate calculations
+  const range = high - low;
   
-  // Calculate pivot point
+  // Classic pivot point calculation
   const pivot = (high + low + currentPrice) / 3;
   
-  // Support levels - below current price
+  // Support levels using Fibonacci retracements from the 24h range
   const support = [
-    Math.round((currentPrice - range * 0.382) * 100) / 100,    // First support
-    Math.round((currentPrice - range * 0.618) * 100) / 100,    // Second support
-    Math.round((currentPrice - range * 1.0) * 100) / 100       // Third support
-  ].map(s => Math.max(s, currentPrice * 0.85)).sort((a, b) => b - a); // Ensure reasonable bounds
+    Math.round((pivot - range * 0.382) * 100) / 100,  // S1: Pivot - 38.2% range
+    Math.round((pivot - range * 0.618) * 100) / 100,  // S2: Pivot - 61.8% range  
+    Math.round((pivot - range * 1.0) * 100) / 100     // S3: Pivot - 100% range
+  ].filter(s => s > 0 && s < currentPrice).sort((a, b) => b - a);
   
-  // Resistance levels - above current price
+  // Ensure we have at least 3 support levels
+  while (support.length < 3) {
+    const lastSupport = support[support.length - 1] || currentPrice * 0.95;
+    support.push(Math.round(lastSupport * 0.98 * 100) / 100);
+  }
+  
+  // Resistance levels using Fibonacci extensions
   const resistance = [
-    Math.round((currentPrice + range * 0.382) * 100) / 100,    // First resistance
-    Math.round((currentPrice + range * 0.618) * 100) / 100,    // Second resistance
-    Math.round((currentPrice + range * 1.0) * 100) / 100       // Third resistance
-  ].map(r => Math.min(r, currentPrice * 1.15)).sort((a, b) => a - b); // Ensure reasonable bounds
+    Math.round((pivot + range * 0.382) * 100) / 100,  // R1: Pivot + 38.2% range
+    Math.round((pivot + range * 0.618) * 100) / 100,  // R2: Pivot + 61.8% range
+    Math.round((pivot + range * 1.0) * 100) / 100     // R3: Pivot + 100% range
+  ].filter(r => r > currentPrice).sort((a, b) => a - b);
   
-  return { support, resistance };
+  // Ensure we have at least 3 resistance levels
+  while (resistance.length < 3) {
+    const lastResistance = resistance[resistance.length - 1] || currentPrice * 1.05;
+    resistance.push(Math.round(lastResistance * 1.02 * 100) / 100);
+  }
+  
+  return { 
+    support: support.slice(0, 3), 
+    resistance: resistance.slice(0, 3) 
+  };
 }
 
 // Generate AI analysis
@@ -363,37 +376,59 @@ serve(async (req) => {
       }
     }
     
-    // Use provided data or fetch from CoinGecko
+    // Fetch comprehensive market data from CoinGecko for accuracy
     let price = currentPrice || 0;
     let change = priceChange24h || 0;
-    let high = high24h || price * 1.05;
-    let low = low24h || price * 0.95;
+    let high = high24h || 0;
+    let low = low24h || 0;
+    let marketCap = 0;
+    let volume24h = 0;
+    let ath = 0;
+    let atl = 0;
     
-    if (!price) {
+    // Always fetch fresh data from CoinGecko for accurate real-time values
+    try {
       const cgResponse = await fetch(
-        `https://api.coingecko.com/api/v3/simple/price?ids=${coinId}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true`
+        `https://api.coingecko.com/api/v3/coins/${coinId}?localization=false&tickers=false&community_data=false&developer_data=false&sparkline=false`
       );
       
       if (cgResponse.ok) {
         const cgData = await cgResponse.json();
-        if (cgData[coinId]) {
-          price = cgData[coinId].usd || 0;
-          change = cgData[coinId].usd_24h_change || 0;
+        if (cgData?.market_data) {
+          price = cgData.market_data.current_price?.usd || price;
+          change = cgData.market_data.price_change_percentage_24h || change;
+          high = cgData.market_data.high_24h?.usd || high;
+          low = cgData.market_data.low_24h?.usd || low;
+          marketCap = cgData.market_data.market_cap?.usd || 0;
+          volume24h = cgData.market_data.total_volume?.usd || 0;
+          ath = cgData.market_data.ath?.usd || 0;
+          atl = cgData.market_data.atl?.usd || 0;
         }
       }
+    } catch (e) {
+      console.error("CoinGecko fetch error:", e);
     }
     
-    if (!price) {
+    // Fallback: If no high/low, estimate from volatility
+    if (!high || !low) {
+      const estimatedVolatility = Math.max(Math.abs(change) / 100, 0.02); // At least 2% range
+      high = price * (1 + estimatedVolatility);
+      low = price * (1 - estimatedVolatility);
+    }
+    
+    if (!price || price <= 0) {
       return new Response(
         JSON.stringify({ error: "Could not fetch price data" }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
     
+    console.log(`Real-time data: ${symbol} Price=$${price}, 24h Change=${change.toFixed(2)}%, High=$${high}, Low=$${low}`);
+    
     // Generate technical indicators
     const technicals = generateTechnicalIndicators(price, change);
     
-    // Calculate support and resistance
+    // Calculate support and resistance based on real data
     const levels = calculateLevels(price, high, low, change);
     
     // Determine bias based on technicals
@@ -436,23 +471,38 @@ serve(async (req) => {
       }
     };
     
-    // Trading zones relative to current price (professional institutional-grade zones)
-    const entryRangePct = timeframe === 'daily' ? 0.02 : timeframe === 'weekly' ? 0.03 : 0.05;
-    const stopLossPct = timeframe === 'daily' ? 0.03 : timeframe === 'weekly' ? 0.05 : 0.08;
-    const tp1Pct = timeframe === 'daily' ? 0.05 : timeframe === 'weekly' ? 0.08 : 0.12;
-    const tp2Pct = timeframe === 'daily' ? 0.08 : timeframe === 'weekly' ? 0.12 : 0.18;
-    const tp3Pct = timeframe === 'daily' ? 0.12 : timeframe === 'weekly' ? 0.18 : 0.25;
+    // Calculate trading zones using real 24h volatility for professional accuracy
+    const actualVolatility = high > 0 && low > 0 ? (high - low) / price : Math.abs(change) / 100;
+    const volatilityMultiplier = Math.max(actualVolatility, 0.01); // At least 1% volatility base
+    
+    // Timeframe-based scaling factors (shorter = tighter zones)
+    const timeframeScale = timeframe === 'daily' ? 1 : timeframe === 'weekly' ? 2.5 : 5;
+    
+    // Entry zone: Current support area (buy the dip zone)
+    const entryBuffer = volatilityMultiplier * 0.5 * timeframeScale;
+    const entryMin = Math.round(price * (1 - entryBuffer) * 100) / 100;
+    const entryMax = Math.round(price * 100) / 100; // Entry up to current price
+    
+    // Stop loss: Below the 24h low with buffer based on timeframe
+    const stopLossBuffer = volatilityMultiplier * 0.75 * timeframeScale;
+    const stopLoss = Math.round(Math.min(low * 0.99, price * (1 - stopLossBuffer)) * 100) / 100;
+    
+    // Take profit levels based on volatility and resistance
+    const tpBase = volatilityMultiplier * timeframeScale;
+    const takeProfit1 = Math.round(price * (1 + tpBase * 1.0) * 100) / 100;
+    const takeProfit2 = Math.round(price * (1 + tpBase * 2.0) * 100) / 100;
+    const takeProfit3 = Math.round(price * (1 + tpBase * 3.0) * 100) / 100;
     
     const tradingZones = {
-      entryZone: {
-        min: Math.round(price * (1 - entryRangePct) * 100) / 100,
-        max: Math.round(price * (1 + entryRangePct * 0.5) * 100) / 100
-      },
-      stopLoss: Math.round(price * (1 - stopLossPct) * 100) / 100,
-      takeProfit1: Math.round(price * (1 + tp1Pct) * 100) / 100,
-      takeProfit2: Math.round(price * (1 + tp2Pct) * 100) / 100,
-      takeProfit3: Math.round(price * (1 + tp3Pct) * 100) / 100
+      entryZone: { min: entryMin, max: entryMax },
+      stopLoss,
+      takeProfit1,
+      takeProfit2,
+      takeProfit3
     };
+    
+    // Log trading zones for debugging
+    console.log(`Trading Zones for ${symbol} (${timeframe}): Entry $${entryMin}-$${entryMax}, SL $${stopLoss}, TP1 $${takeProfit1}, TP2 $${takeProfit2}, TP3 $${takeProfit3}`);
     
     // Risk assessment
     const volatility = Math.abs(change) + (high - low) / price * 100;
