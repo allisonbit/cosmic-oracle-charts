@@ -11,10 +11,12 @@ export function HeroSection() {
     link.rel = 'preload';
     link.as = 'image';
     link.href = cosmicOracle;
-    link.fetchPriority = 'high';
+    link.setAttribute('fetchpriority', 'high');
     document.head.appendChild(link);
     return () => {
-      document.head.removeChild(link);
+      if (document.head.contains(link)) {
+        document.head.removeChild(link);
+      }
     };
   }, []);
   return (
@@ -77,7 +79,6 @@ export function HeroSection() {
                 alt="Oracle Bull - AI-powered cryptocurrency forecasting mascot"
                 className="w-full h-full object-cover"
                 loading="eager"
-                fetchPriority="high"
                 decoding="async"
                 width={450}
                 height={450}

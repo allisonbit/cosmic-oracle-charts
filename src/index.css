@@ -180,22 +180,10 @@
   }
 }
 
-/* Content visibility for below-fold sections - reduces initial layout work */
-.content-auto {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 500px;
-}
-
 /* GPU-accelerated animations to reduce main thread work */
 .gpu-accelerated {
   will-change: transform;
-  transform: translateZ(0);
   backface-visibility: hidden;
-}
-
-/* Reduce paint complexity for animated elements */
-.animate-optimized {
-  contain: layout style paint;
 }
 
 @layer components {
