@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { usePricePrediction, getCryptoBySlug, TOP_CRYPTOS } from "@/hooks/usePricePrediction";
@@ -12,6 +12,8 @@ import { InvestorActionSummary } from "@/components/prediction/InvestorActionSum
 import { EnhancedFAQ } from "@/components/prediction/EnhancedFAQ";
 import { MarketQuestionsLinks, RelatedToolsLinks, TimeframeCrossLinks, HighIntentCTA } from "@/components/prediction/HighIntentLinks";
 import { SignalChart } from "@/components/prediction/SignalChart";
+import { GlobalTokenSearch } from "@/components/prediction/GlobalTokenSearch";
+import { GlobalToken } from "@/hooks/useGlobalTokenSearch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { InArticleAd } from "@/components/ads";
@@ -24,7 +26,7 @@ interface DynamicToken {
 
 export default function PricePrediction() {
   const { coinId, timeframe = 'daily' } = useParams<{ coinId: string; timeframe: string }>();
-  
+  const navigate = useNavigate();
   
   // First check if token is in our predefined list
   const predefinedCrypto = coinId ? getCryptoBySlug(coinId) : TOP_CRYPTOS[0];
@@ -32,6 +34,12 @@ export default function PricePrediction() {
   // State for dynamically searched tokens
   const [dynamicToken, setDynamicToken] = useState<DynamicToken | null>(null);
   const [isLoadingToken, setIsLoadingToken] = useState(false);
+  
+  // Handle token selection from search
+  const handleTokenSelect = (token: GlobalToken) => {
+    const tokenSlug = token.id.toLowerCase().replace(/\s+/g, '-');
+    navigate(`/price-prediction/${tokenSlug}/daily`);
+  };
   
   // If token not in predefined list, try to fetch it from API
   useEffect(() => {
@@ -157,6 +165,17 @@ export default function PricePrediction() {
           
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-6 order-1 lg:order-2">
+            {/* Token Search Bar */}
+            <Card className="bg-card/50 border-border">
+              <CardContent className="p-4">
+                <GlobalTokenSearch
+                  onSelect={handleTokenSelect}
+                  onSearchResults={() => {}}
+                  placeholder="Search any token (name, symbol, or contract address)..."
+                />
+              </CardContent>
+            </Card>
+            
             {isLoading ? (
               <Card className="bg-card/50"><CardContent className="p-8"><Skeleton className="h-48 w-full" /></CardContent></Card>
             ) : error ? (
