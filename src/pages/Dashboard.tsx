@@ -16,6 +16,14 @@ import { EnhancedMarketInsightsPanel } from "@/components/dashboard/EnhancedMark
 import { EnhancedTopPerformers } from "@/components/dashboard/EnhancedTopPerformers";
 import { StrengthMeterWidget } from "@/components/dashboard/StrengthMeterWidget";
 import { CryptoFactoryWidget } from "@/components/dashboard/CryptoFactoryWidget";
+import { OrderBookPanel } from "@/components/dashboard/OrderBookPanel";
+import { FundingRatesPanel } from "@/components/dashboard/FundingRatesPanel";
+import { CorrelationMatrix } from "@/components/dashboard/CorrelationMatrix";
+import { LiquidationHeatmap } from "@/components/dashboard/LiquidationHeatmap";
+import { MarketRegimeIndicator } from "@/components/dashboard/MarketRegimeIndicator";
+import { WhaleActivityPanel } from "@/components/dashboard/WhaleActivityPanel";
+import { OptionsFlowPanel } from "@/components/dashboard/OptionsFlowPanel";
+import { CustomAlertsPanel } from "@/components/dashboard/CustomAlertsPanel";
 import { Link } from "react-router-dom";
 import { SidebarAd, InArticleAd } from "@/components/ads";
 import { DashboardSchema, DashboardSEOContent, HowToReadDashboard, WhatMakesUsDifferent, RelatedMarketInsights, DashboardHowItWorks } from "@/components/seo";
@@ -264,12 +272,22 @@ const Dashboard = () => {
 
                 <EnhancedMarketMomentum />
                 <EnhancedMarketInsightsPanel />
+                
+                {/* Order Book and Funding Rates */}
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <OrderBookPanel />
+                  <FundingRatesPanel />
+                </div>
+                
+                {/* Correlation Matrix */}
+                <CorrelationMatrix />
               </div>
 
               {/* Right Column */}
               <div className="space-y-4 sm:space-y-6">
                 <EnhancedTrendingAlerts />
                 <EnhancedTopPerformers onCoinClick={setSelectedCoin} />
+                <MarketRegimeIndicator />
                 {/* Sidebar ad */}
                 <SidebarAd />
               </div>
@@ -277,6 +295,38 @@ const Dashboard = () => {
             
             {/* In-article ad between major sections */}
             <InArticleAd className="mb-4 sm:mb-6" />
+            
+            {/* Advanced Analytics Section */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
+              <LiquidationHeatmap />
+              <WhaleActivityPanel />
+              <OptionsFlowPanel />
+            </div>
+            
+            {/* Custom Alerts */}
+            <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
+              <CustomAlertsPanel />
+              <div className="holo-card p-4 sm:p-6">
+                <h3 className="font-display text-sm sm:text-base font-bold mb-4 flex items-center gap-2">
+                  <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                  ADVANCED ANALYTICS
+                </h3>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-4">
+                  Access professional-grade market analysis tools including order book depth, funding rates, 
+                  correlation matrices, and liquidation heatmaps to make informed trading decisions.
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-muted/30 p-3 rounded-lg text-center">
+                    <div className="text-lg sm:text-xl font-bold text-primary">8+</div>
+                    <div className="text-[10px] sm:text-xs text-muted-foreground">Analytics Tools</div>
+                  </div>
+                  <div className="bg-muted/30 p-3 rounded-lg text-center">
+                    <div className="text-lg sm:text-xl font-bold text-success">24/7</div>
+                    <div className="text-[10px] sm:text-xs text-muted-foreground">Live Updates</div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             {/* Strength Meter & Crypto Factory Widgets */}
             <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
