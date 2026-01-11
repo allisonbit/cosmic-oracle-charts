@@ -133,15 +133,62 @@
     </noscript>
     
     <div id="root">
-      <div role="status" aria-live="polite" style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center;">
+      <div id="boot-fallback" role="status" aria-live="polite" style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center;background:#0a0d14;color:#e2e8f0;">
         <div style="max-width:520px;">
           <div style="font-size:14px;opacity:.8;margin-bottom:10px;">Loading…</div>
           <div style="font-size:20px;font-weight:600;letter-spacing:.2px;">Oracle Bull is starting</div>
-          <div style="font-size:13px;opacity:.65;margin-top:10px;line-height:1.5;">If this stays blank, refresh the page (Ctrl/⌘+Shift+R).</div>
+          <div style="font-size:13px;opacity:.7;margin-top:10px;line-height:1.5;">If this stays blank, refresh the page (Ctrl/⌘+Shift+R).</div>
         </div>
       </div>
     </div>
-    <script type="module" src="/src/main.tsx"></script>
+
+    <script>
+      (function () {
+        var root = document.getElementById('root');
+        function setHtml(html) {
+          if (!root) return;
+          root.innerHTML = html;
+        }
+
+        window.__oracleBoot = {
+          markMounted: function () {
+            document.documentElement.dataset.appMounted = '1';
+          },
+          showError: function (reason) {
+            document.documentElement.dataset.appMounted = '0';
+            setHtml(
+              '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center;background:#0a0d14;color:#e2e8f0;">' +
+                '<div style="max-width:560px;">' +
+                  '<div style="font-size:18px;font-weight:700;margin-bottom:8px;">Site failed to load</div>' +
+                  '<div style="font-size:13px;opacity:.75;line-height:1.6;">' +
+                    'Your browser could not load the app scripts. Please do a hard refresh (Ctrl/⌘+Shift+R) or try an incognito window.' +
+                  '</div>' +
+                  (reason ? '<div style="margin-top:10px;font-size:12px;opacity:.55;">' + String(reason).slice(0, 140) + '</div>' : '') +
+                  '<div style="margin-top:16px;">' +
+                    '<button onclick="location.reload()" style="padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#e2e8f0;cursor:pointer;">Reload</button>' +
+                  '</div>' +
+                '</div>' +
+              '</div>'
+            );
+          }
+        };
+
+        // If React never mounts, show a clearer recovery hint.
+        setTimeout(function () {
+          if (document.documentElement.dataset.appMounted === '1') return;
+          var el = document.getElementById('boot-fallback');
+          if (el) {
+            el.innerHTML =
+              '<div style="max-width:560px;">' +
+                '<div style="font-size:18px;font-weight:700;margin-bottom:8px;">Still loading…</div>' +
+                '<div style="font-size:13px;opacity:.75;line-height:1.6;">If you see a blank screen, your browser may have cached an old version. Please hard refresh (Ctrl/⌘+Shift+R) or reopen the site.</div>' +
+              '</div>';
+          }
+        }, 8000);
+      })();
+    </script>
+
+    <script type="module" src="/src/main.tsx" onerror="window.__oracleBoot && window.__oracleBoot.showError('entry script failed')"></script>
     
     <!-- Defer non-critical scripts after page load for better FCP -->
     <script>
