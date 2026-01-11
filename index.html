@@ -173,18 +173,45 @@
           }
         };
 
-        // If React never mounts, show a clearer recovery hint.
+        // If React never mounts, try one safe auto-reload (common after deployments with stale caches).
         setTimeout(function () {
           if (document.documentElement.dataset.appMounted === '1') return;
+
+          try {
+            var k = '__oracle_boot_reload_v1';
+            if (sessionStorage.getItem(k) !== '1') {
+              sessionStorage.setItem(k, '1');
+              location.reload();
+              return;
+            }
+          } catch (e) {
+            // ignore
+          }
+
           var el = document.getElementById('boot-fallback');
           if (el) {
             el.innerHTML =
               '<div style="max-width:560px;">' +
                 '<div style="font-size:18px;font-weight:700;margin-bottom:8px;">Still loading…</div>' +
-                '<div style="font-size:13px;opacity:.75;line-height:1.6;">If you see a blank screen, your browser may have cached an old version. Please hard refresh (Ctrl/⌘+Shift+R) or reopen the site.</div>' +
+                '<div style="font-size:13px;opacity:.75;line-height:1.6;">If you see a blank screen, your browser may have cached an old version. Please hard refresh (Ctrl/⌘+Shift+R) or try an incognito window.</div>' +
               '</div>';
           }
         }, 8000);
+
+        // If a global error happens before React mounts, show a helpful message (instead of black screen).
+        window.addEventListener('error', function (e) {
+          if (document.documentElement.dataset.appMounted === '1') return;
+          if (window.__oracleBoot && window.__oracleBoot.showError) {
+            window.__oracleBoot.showError((e && e.message) || 'script error');
+          }
+        });
+        window.addEventListener('unhandledrejection', function (e) {
+          if (document.documentElement.dataset.appMounted === '1') return;
+          var reason = (e && e.reason && e.reason.message) ? e.reason.message : String(e && e.reason ? e.reason : 'promise rejection');
+          if (window.__oracleBoot && window.__oracleBoot.showError) {
+            window.__oracleBoot.showError(reason);
+          }
+        });
       })();
     </script>
 
