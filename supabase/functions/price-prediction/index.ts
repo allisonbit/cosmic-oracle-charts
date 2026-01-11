@@ -171,22 +171,29 @@ function generateTechnicalIndicators(currentPrice: number, priceChange: number):
   };
 }
 
-// Calculate support and resistance levels
-function calculateLevels(currentPrice: number, high: number, low: number): { support: number[]; resistance: number[] } {
-  const range = high - low;
+// Calculate support and resistance levels based on current price and volatility
+function calculateLevels(currentPrice: number, high: number, low: number, priceChange: number): { support: number[]; resistance: number[] } {
+  // Use actual price range if available, otherwise estimate from volatility
+  const actualRange = high - low;
+  const volatilityRange = currentPrice * (Math.abs(priceChange) / 100 + 0.03); // At least 3% range
+  const range = Math.max(actualRange, volatilityRange);
+  
+  // Calculate pivot point
   const pivot = (high + low + currentPrice) / 3;
   
+  // Support levels - below current price
   const support = [
-    Math.round((pivot - range * 0.382) * 100) / 100,
-    Math.round((pivot - range * 0.618) * 100) / 100,
-    Math.round(low * 0.98 * 100) / 100
-  ].sort((a, b) => b - a);
+    Math.round((currentPrice - range * 0.382) * 100) / 100,    // First support
+    Math.round((currentPrice - range * 0.618) * 100) / 100,    // Second support
+    Math.round((currentPrice - range * 1.0) * 100) / 100       // Third support
+  ].map(s => Math.max(s, currentPrice * 0.85)).sort((a, b) => b - a); // Ensure reasonable bounds
   
+  // Resistance levels - above current price
   const resistance = [
-    Math.round((pivot + range * 0.382) * 100) / 100,
-    Math.round((pivot + range * 0.618) * 100) / 100,
-    Math.round(high * 1.02 * 100) / 100
-  ].sort((a, b) => a - b);
+    Math.round((currentPrice + range * 0.382) * 100) / 100,    // First resistance
+    Math.round((currentPrice + range * 0.618) * 100) / 100,    // Second resistance
+    Math.round((currentPrice + range * 1.0) * 100) / 100       // Third resistance
+  ].map(r => Math.min(r, currentPrice * 1.15)).sort((a, b) => a - b); // Ensure reasonable bounds
   
   return { support, resistance };
 }
@@ -387,7 +394,7 @@ serve(async (req) => {
     const technicals = generateTechnicalIndicators(price, change);
     
     // Calculate support and resistance
-    const levels = calculateLevels(price, high, low);
+    const levels = calculateLevels(price, high, low, change);
     
     // Determine bias based on technicals
     let bullishScore = 0;
@@ -429,16 +436,22 @@ serve(async (req) => {
       }
     };
     
-    // Trading zones for future bot integration
+    // Trading zones relative to current price (professional institutional-grade zones)
+    const entryRangePct = timeframe === 'daily' ? 0.02 : timeframe === 'weekly' ? 0.03 : 0.05;
+    const stopLossPct = timeframe === 'daily' ? 0.03 : timeframe === 'weekly' ? 0.05 : 0.08;
+    const tp1Pct = timeframe === 'daily' ? 0.05 : timeframe === 'weekly' ? 0.08 : 0.12;
+    const tp2Pct = timeframe === 'daily' ? 0.08 : timeframe === 'weekly' ? 0.12 : 0.18;
+    const tp3Pct = timeframe === 'daily' ? 0.12 : timeframe === 'weekly' ? 0.18 : 0.25;
+    
     const tradingZones = {
       entryZone: {
-        min: levels.support[0],
-        max: Math.round((levels.support[0] + price) / 2 * 100) / 100
+        min: Math.round(price * (1 - entryRangePct) * 100) / 100,
+        max: Math.round(price * (1 + entryRangePct * 0.5) * 100) / 100
       },
-      stopLoss: Math.round(levels.support[1] * 0.98 * 100) / 100,
-      takeProfit1: levels.resistance[0],
-      takeProfit2: levels.resistance[1],
-      takeProfit3: levels.resistance[2]
+      stopLoss: Math.round(price * (1 - stopLossPct) * 100) / 100,
+      takeProfit1: Math.round(price * (1 + tp1Pct) * 100) / 100,
+      takeProfit2: Math.round(price * (1 + tp2Pct) * 100) / 100,
+      takeProfit3: Math.round(price * (1 + tp3Pct) * 100) / 100
     };
     
     // Risk assessment
