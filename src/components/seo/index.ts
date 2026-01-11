@@ -14,3 +14,14 @@ export {
   ChainSEOContent,
   ContactSEOContent
 } from './PageSEOContent';
+export {
+  SentimentHowItWorks,
+  SentimentDataMeaning,
+  ExplorerHowItWorks,
+  ExplorerDataMeaning,
+  PredictionsHowItWorks,
+  PredictionsDataMeaning,
+  DashboardHowItWorks,
+  StrengthMeterHowItWorks,
+  FactoryHowItWorks
+} from './ToolPageContent';
