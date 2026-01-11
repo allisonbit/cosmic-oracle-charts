@@ -1,6 +1,8 @@
-import { useParams, Navigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { usePricePrediction, getCryptoBySlug, TOP_CRYPTOS } from "@/hooks/usePricePrediction";
+
 import { PredictionSEO } from "@/components/prediction/PredictionSEO";
 import { PredictionHero } from "@/components/prediction/PredictionHero";
 import { TechnicalIndicatorsPanel, PriceTargetsPanel, TradingZonesPanel, ScenariosPanel, RiskAssessmentPanel } from "@/components/prediction/PredictionPanels";
@@ -13,20 +15,122 @@ import { SignalChart } from "@/components/prediction/SignalChart";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { InArticleAd } from "@/components/ads";
+
+interface DynamicToken {
+  id: string;
+  symbol: string;
+  name: string;
+}
+
 export default function PricePrediction() {
   const { coinId, timeframe = 'daily' } = useParams<{ coinId: string; timeframe: string }>();
   
-  const crypto = coinId ? getCryptoBySlug(coinId) : TOP_CRYPTOS[0];
+  
+  // First check if token is in our predefined list
+  const predefinedCrypto = coinId ? getCryptoBySlug(coinId) : TOP_CRYPTOS[0];
+  
+  // State for dynamically searched tokens
+  const [dynamicToken, setDynamicToken] = useState<DynamicToken | null>(null);
+  const [isLoadingToken, setIsLoadingToken] = useState(false);
+  
+  // If token not in predefined list, try to fetch it from API
+  useEffect(() => {
+    if (!predefinedCrypto && coinId && coinId !== 'bitcoin') {
+      setIsLoadingToken(true);
+      
+      // Try to fetch token info from CoinGecko
+      const fetchTokenInfo = async () => {
+        try {
+          // First try CoinGecko direct lookup
+          const cgResponse = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}`);
+          if (cgResponse.ok) {
+            const data = await cgResponse.json();
+            setDynamicToken({
+              id: data.id,
+              symbol: data.symbol?.toUpperCase() || coinId.toUpperCase(),
+              name: data.name || coinId
+            });
+            setIsLoadingToken(false);
+            return;
+          }
+          
+          // Fallback: search by the coinId
+          const searchResponse = await fetch(`https://api.coingecko.com/api/v3/search?query=${encodeURIComponent(coinId)}`);
+          if (searchResponse.ok) {
+            const searchData = await searchResponse.json();
+            if (searchData.coins && searchData.coins.length > 0) {
+              const match = searchData.coins[0];
+              setDynamicToken({
+                id: match.id,
+                symbol: match.symbol?.toUpperCase() || coinId.toUpperCase(),
+                name: match.name || coinId
+              });
+              setIsLoadingToken(false);
+              return;
+            }
+          }
+          
+          // Last resort: use the coinId as the identifier
+          // Format nicely: "pepe-2" -> "Pepe 2"
+          const formattedName = coinId
+            .split('-')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+          
+          setDynamicToken({
+            id: coinId,
+            symbol: coinId.toUpperCase().substring(0, 6),
+            name: formattedName
+          });
+        } catch (error) {
+          console.error('Error fetching token info:', error);
+          // Use coinId as fallback
+          const formattedName = coinId
+            .split('-')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+          
+          setDynamicToken({
+            id: coinId,
+            symbol: coinId.toUpperCase().substring(0, 6),
+            name: formattedName
+          });
+        }
+        setIsLoadingToken(false);
+      };
+      
+      fetchTokenInfo();
+    } else {
+      setDynamicToken(null);
+    }
+  }, [coinId, predefinedCrypto]);
+  
+  // Use predefined crypto or dynamic token
+  const crypto = predefinedCrypto || dynamicToken || { id: coinId || 'bitcoin', symbol: coinId?.toUpperCase() || 'BTC', name: coinId || 'Bitcoin' };
   const validTimeframe = ['daily', 'weekly', 'monthly'].includes(timeframe) ? timeframe as 'daily' | 'weekly' | 'monthly' : 'daily';
   
+  // Fetch prediction data for the token
   const { data, isLoading, error } = usePricePrediction(
     crypto?.id || 'bitcoin',
     crypto?.symbol || 'btc',
-    validTimeframe
+    validTimeframe,
+    !isLoadingToken // Only enable when we have the token info
   );
   
-  if (!crypto) {
-    return <Navigate to="/price-prediction/bitcoin/daily" replace />;
+  // Show loading state while fetching token info
+  if (isLoadingToken) {
+    return (
+      <Layout>
+        <div className="container mx-auto px-4 py-6 max-w-7xl">
+          <Card className="bg-card/50">
+            <CardContent className="p-8">
+              <Skeleton className="h-48 w-full" />
+              <p className="text-center text-muted-foreground mt-4">Loading token information...</p>
+            </CardContent>
+          </Card>
+        </div>
+      </Layout>
+    );
   }
   
   return (
