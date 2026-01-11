@@ -23,6 +23,7 @@ import { SectorHeatmap } from "@/components/sentiment/SectorHeatmap";
 import { DivergenceScanner } from "@/components/sentiment/DivergenceScanner";
 import { AdvancedWhaleTracker } from "@/components/sentiment/AdvancedWhaleTracker";
 import { LiveAlertsFeed } from "@/components/sentiment/LiveAlertsFeed";
+import { TellMeTheStory } from "@/components/sentiment/TellMeTheStory";
 
 function formatNumber(num: number): string {
   if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
@@ -140,6 +141,21 @@ const SentimentPage = () => {
              marketMomentum === "BEARISH" ? <TrendingDown className="w-4 h-4" /> : <Activity className="w-4 h-4" />}
             MARKET: {marketMomentum}
           </div>
+          {/* Tell Me the Story for top coin */}
+          {topCoins[0] && (
+            <TellMeTheStory
+              token={topCoins[0]}
+              sentimentData={{
+                fearGreedIndex,
+                socialSentiment,
+                volatilityIndex,
+                whaleActivity,
+                marketMomentum,
+                whaleMood,
+                netflow,
+              }}
+            />
+          )}
         </div>
 
         {/* Sentiment Context Bar */}
