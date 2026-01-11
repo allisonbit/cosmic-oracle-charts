@@ -40,6 +40,7 @@ const About = lazy(() => import("./pages/About"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const RiskDisclaimer = lazy(() => import("./pages/RiskDisclaimer"));
+const Admin = lazy(() => import("./pages/Admin"));
 
 // Loading fallback component
 const PageLoader = memo(function PageLoader() {
@@ -143,6 +144,7 @@ const App = () => (
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/risk-disclaimer" element={<RiskDisclaimer />} />
+            <Route path="/admin" element={<Admin />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

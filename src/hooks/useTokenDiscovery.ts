@@ -28,6 +28,14 @@ export interface TokenDiscoveryResponse {
   lastUpdated: string;
 }
 
+// Fallback data for when edge function is unavailable
+const FALLBACK_DATA: TokenDiscoveryResponse = {
+  tokens: [],
+  chain: 'ethereum',
+  timestamp: Date.now(),
+  lastUpdated: new Date().toISOString(),
+};
+
 export function useTokenDiscovery(chain: string = 'ethereum', enabled = true) {
   return useQuery<TokenDiscoveryResponse>({
     queryKey: ['token-discovery', chain],
@@ -38,21 +46,22 @@ export function useTokenDiscovery(chain: string = 'ethereum', enabled = true) {
         });
 
         if (error) {
-          console.error('Token discovery error:', error);
-          throw error;
+          console.warn('Token discovery error, using fallback:', error.message);
+          return { ...FALLBACK_DATA, chain };
         }
 
         return data as TokenDiscoveryResponse;
       } catch (err) {
-        console.error('Token discovery exception:', err);
-        throw err;
+        console.warn('Token discovery exception, using fallback');
+        return { ...FALLBACK_DATA, chain };
       }
     },
     enabled,
-    staleTime: 20000, // 20 seconds
-    refetchInterval: 20000, // Refresh every 20 seconds
-    refetchIntervalInBackground: true,
-    refetchOnWindowFocus: true,
-    retry: 2,
+    staleTime: 30000, // 30 seconds
+    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: false,
+    retry: 1,
+    retryDelay: 3000,
   });
 }

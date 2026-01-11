@@ -181,6 +181,11 @@ export function Footer() {
                   <AlertTriangle className="w-3 h-3" /> Risk Disclaimer
                 </Link>
               </li>
+              <li>
+                <Link to="/admin" className="block text-sm text-muted-foreground/50 hover:text-primary transition-colors">
+                  Admin
+                </Link>
+              </li>
             </ul>
           </nav>
         </div>

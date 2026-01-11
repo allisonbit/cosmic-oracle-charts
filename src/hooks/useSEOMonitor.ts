@@ -23,6 +23,12 @@ export interface SEOReport {
   slowPages: string[];
   results: SEOHealthResult[];
   recommendations: string[];
+  seoScore?: number;
+  coreWebVitals?: {
+    averageResponseTime: number;
+    fastPages: number;
+    slowPages: number;
+  };
 }
 
 export interface ContentRefreshResult {
@@ -48,7 +54,9 @@ export function useSEOMonitor() {
     },
     enabled: false, // Only run when explicitly triggered
     staleTime: 86400000, // 24 hours
-    retry: 1,
+    retry: 2,
+    retryDelay: 3000,
+    gcTime: 1000 * 60 * 60, // 1 hour cache
   });
 }
 
