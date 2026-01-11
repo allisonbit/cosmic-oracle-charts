@@ -19,20 +19,20 @@ export function HeroSection() {
           <article className="text-center lg:text-left space-y-6 md:space-y-8 animate-fade-in">
             <div className="inline-flex items-center gap-2 px-3 md:px-4 py-2 rounded-full bg-primary/10 border border-primary/30 text-primary font-display text-xs md:text-sm">
               <Sparkles className="w-3 h-3 md:w-4 md:h-4" aria-hidden="true" />
-              <span>AI-Powered Crypto Forecasts</span>
+              <span>Market Intelligence Platform</span>
             </div>
             
-            <h1 id="hero-heading" className="text-4xl md:text-6xl lg:text-7xl font-display font-bold leading-tight">
-              <span className="glow-text">ORACLE</span>
+            <h1 id="hero-heading" className="text-3xl md:text-5xl lg:text-6xl font-display font-bold leading-tight">
+              <span className="text-gradient-cosmic">AI-Powered</span>
               <br />
-              <span className="text-gradient-cosmic">CRYPTO</span>
+              <span className="glow-text">Crypto & Market</span>
               <br />
-              <span className="text-foreground">FORECASTS</span>
+              <span className="text-foreground">Intelligence Platform</span>
             </h1>
             
-            <p className="text-base md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0">
-              Your AI guide through the crypto universe. Beautiful predictions, 
-              real-time charts, and market insights — all free and open access.
+            <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0">
+              OracleBull provides comprehensive market analysis, sentiment tracking, and educational insights 
+              for crypto and forex markets. Free access to institutional-grade analytics—no signup required.
             </p>
             
             <nav className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start flex-wrap" aria-label="Primary actions">
