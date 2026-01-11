@@ -35,6 +35,10 @@ const PredictionHub = lazy(() => import("./pages/PredictionHub"));
 const QuestionIntent = lazy(() => import("./pages/QuestionIntent"));
 const MarketQuestion = lazy(() => import("./pages/MarketQuestion"));
 const CoinMarket = lazy(() => import("./pages/CoinMarket"));
+const About = lazy(() => import("./pages/About"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const Terms = lazy(() => import("./pages/Terms"));
+const RiskDisclaimer = lazy(() => import("./pages/RiskDisclaimer"));
 
 // Loading fallback component
 const PageLoader = memo(function PageLoader() {
@@ -132,6 +136,11 @@ const App = () => (
             <Route path="/market/crypto-with-most-potential" element={<MarketQuestion questionSlug="crypto-with-most-potential" />} />
             {/* Coin market pages */}
             <Route path="/markets/:coinId" element={<CoinMarket />} />
+            {/* Legal & About pages */}
+            <Route path="/about" element={<About />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/risk-disclaimer" element={<RiskDisclaimer />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
