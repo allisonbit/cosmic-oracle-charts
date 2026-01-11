@@ -1,10 +1,25 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Input validation schema
+const walletRequestSchema = z.object({
+  address: z.string()
+    .trim()
+    .min(26, 'Address too short')
+    .max(66, 'Address too long')
+    .regex(
+      /^(0x[a-fA-F0-9]{40}|[1-9A-HJ-NP-Za-km-z]{32,44})$/,
+      'Invalid wallet address format'
+    )
+});
+
+const MAX_BODY_SIZE = 10 * 1024; // 10KB max
 
 interface TokenBalance {
   contractAddress: string;
@@ -48,14 +63,38 @@ serve(async (req) => {
   }
 
   try {
-    const { address } = await req.json();
-
-    if (!address) {
+    // Check body size limit
+    const contentLength = parseInt(req.headers.get('content-length') || '0');
+    if (contentLength > MAX_BODY_SIZE) {
       return new Response(
-        JSON.stringify({ error: 'Wallet address is required' }),
+        JSON.stringify({ error: 'Request body too large. Maximum size is 10KB.' }),
+        { status: 413, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Parse and validate input
+    let body;
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(
+        JSON.stringify({ error: 'Invalid JSON format' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+
+    const validationResult = walletRequestSchema.safeParse(body);
+    if (!validationResult.success) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Invalid input',
+          details: validationResult.error.errors.map(e => e.message)
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const { address } = validationResult.data;
 
     console.log(`Scanning wallet: ${address}`);
 

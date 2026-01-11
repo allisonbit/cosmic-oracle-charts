@@ -8,6 +8,9 @@ verify_jwt = false
 
 [functions.ai-forecast]
 verify_jwt = false
+[functions.ai-forecast.rate_limit]
+requests = 50
+per = 3600
 
 [functions.token-discovery]
 enabled = true
@@ -18,12 +21,18 @@ verify_jwt = false
 
 [functions.chain-forecast]
 verify_jwt = false
+[functions.chain-forecast.rate_limit]
+requests = 50
+per = 3600
 
 [functions.token-search]
 verify_jwt = false
 
 [functions.wallet-scanner]
 verify_jwt = false
+[functions.wallet-scanner.rate_limit]
+requests = 150
+per = 3600
 
 [functions.chain-health]
 verify_jwt = false
@@ -42,15 +51,30 @@ verify_jwt = false
 
 [functions.ai-blog]
 verify_jwt = false
+[functions.ai-blog.rate_limit]
+requests = 20
+per = 3600
 
 [functions.seo-monitor]
 verify_jwt = false
 
 [functions.content-refresh]
 verify_jwt = false
+[functions.content-refresh.rate_limit]
+requests = 10
+per = 3600
 
 [functions.insights-engine]
 verify_jwt = false
+[functions.insights-engine.rate_limit]
+requests = 20
+per = 3600
 
 [functions.price-prediction]
+verify_jwt = false
+[functions.price-prediction.rate_limit]
+requests = 100
+per = 3600
+
+[functions.prediction-prewarm]
 verify_jwt = false

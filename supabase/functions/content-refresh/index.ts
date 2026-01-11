@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -6,6 +7,12 @@ const corsHeaders = {
 };
 
 const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+const MAX_BODY_SIZE = 10 * 1024; // 10KB
+
+// Input validation schema
+const contentRefreshSchema = z.object({
+  count: z.number().int().min(1).max(10).optional().default(3)
+});
 
 interface RefreshedArticle {
   id: string;
@@ -294,7 +301,38 @@ serve(async (req) => {
   }
 
   try {
-    const { count = 3 } = await req.json().catch(() => ({}));
+    // Check body size limit
+    const contentLength = parseInt(req.headers.get('content-length') || '0');
+    if (contentLength > MAX_BODY_SIZE) {
+      return new Response(
+        JSON.stringify({ error: 'Request body too large. Maximum size is 10KB.' }),
+        { status: 413, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Parse and validate input
+    let body = {};
+    try {
+      const text = await req.text();
+      if (text) {
+        body = JSON.parse(text);
+      }
+    } catch {
+      // Empty body is fine, use defaults
+    }
+
+    const validationResult = contentRefreshSchema.safeParse(body);
+    if (!validationResult.success) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Invalid input',
+          details: validationResult.error.errors.map(e => e.message)
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const { count } = validationResult.data;
     
     console.log(`Generating ${count} refreshed articles...`);
     
