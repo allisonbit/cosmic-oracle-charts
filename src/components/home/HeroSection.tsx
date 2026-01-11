@@ -79,8 +79,9 @@ export function HeroSection() {
                 loading="eager"
                 fetchPriority="high"
                 decoding="async"
-                width={448}
-                height={448}
+                width={450}
+                height={450}
+                sizes="(max-width: 768px) 256px, (max-width: 1024px) 320px, 450px"
               />
               {/* Overlay gradient */}
               <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" aria-hidden="true" />

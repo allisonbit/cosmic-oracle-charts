@@ -2,12 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
-@import '@fontsource/orbitron/400.css';
-@import '@fontsource/orbitron/500.css';
-@import '@fontsource/orbitron/700.css';
-@import '@fontsource/inter/400.css';
-@import '@fontsource/inter/500.css';
-@import '@fontsource/inter/600.css';
+/* Font imports with swap for faster text rendering */
+@font-face {
+  font-family: 'Orbitron';
+  font-weight: 400;
+  font-display: swap;
+  src: local('Orbitron'), url('@fontsource/orbitron/files/orbitron-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Orbitron';
+  font-weight: 500;
+  font-display: swap;
+  src: local('Orbitron'), url('@fontsource/orbitron/files/orbitron-latin-500-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Orbitron';
+  font-weight: 700;
+  font-display: swap;
+  src: local('Orbitron'), url('@fontsource/orbitron/files/orbitron-latin-700-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-weight: 400;
+  font-display: swap;
+  src: local('Inter'), url('@fontsource/inter/files/inter-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-weight: 500;
+  font-display: swap;
+  src: local('Inter'), url('@fontsource/inter/files/inter-latin-500-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-weight: 600;
+  font-display: swap;
+  src: local('Inter'), url('@fontsource/inter/files/inter-latin-600-normal.woff2') format('woff2');
+}
 
 @layer base {
   :root {
