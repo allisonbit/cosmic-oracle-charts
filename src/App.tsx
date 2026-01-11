@@ -3,11 +3,12 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { lazy, Suspense, memo } from "react";
+import { lazy, Suspense, memo, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { SEO, StructuredData } from "@/components/SEO";
 import { AdSenseManager } from "@/components/ads/AdSenseManager";
 import { usePageTracking } from "@/hooks/usePageTracking";
+import { AppErrorBoundary } from "@/components/system/AppErrorBoundary";
 
 // Eager load critical pages
 import Index from "./pages/Index";
@@ -79,76 +80,177 @@ const PageTracker = memo(function PageTracker() {
   return null;
 });
 
+// Auto-recover from stale chunk cache after deployments (prevents blank screens)
+const ChunkLoadRecovery = memo(function ChunkLoadRecovery() {
+  useEffect(() => {
+    const key = "__oracle_chunk_recover_v1";
+
+    const shouldRecover = (message: string) =>
+      /ChunkLoadError|Loading chunk|Failed to fetch dynamically imported module|Importing a module script failed/i.test(
+        message
+      );
+
+    const recoverOnce = () => {
+      try {
+        if (sessionStorage.getItem(key) === "1") return;
+        sessionStorage.setItem(key, "1");
+      } catch {
+        // ignore
+      }
+      window.location.reload();
+    };
+
+    const onError = (event: ErrorEvent) => {
+      const msg = event?.message || "";
+      if (shouldRecover(msg)) recoverOnce();
+    };
+
+    const onUnhandledRejection = (event: PromiseRejectionEvent) => {
+      const reason = (event?.reason as any)?.message || String(event?.reason || "");
+      if (shouldRecover(reason)) recoverOnce();
+    };
+
+    window.addEventListener("error", onError);
+    window.addEventListener("unhandledrejection", onUnhandledRejection);
+    return () => {
+      window.removeEventListener("error", onError);
+      window.removeEventListener("unhandledrejection", onUnhandledRejection);
+    };
+  }, []);
+
+  return null;
+});
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider delayDuration={300}>
       <Toaster />
       <Sonner position="top-right" closeButton richColors />
-      <BrowserRouter>
-        <PageTracker />
-        <AdSenseManager />
-        <SEO />
-        <StructuredData />
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/portfolio" element={<Portfolio />} />
-            <Route path="/sentiment" element={<Sentiment />} />
-            <Route path="/explorer" element={<Explorer />} />
-            <Route path="/learn" element={<Learn />} />
-            <Route path="/learn/:slug" element={<LearnArticle />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/chain/:chainId" element={<Chain />} />
-            <Route path="/strength" element={<StrengthMeter />} />
-            <Route path="/strength-meter" element={<StrengthMeter />} />
-            <Route path="/factory" element={<CryptoFactory />} />
-            <Route path="/factory/events" element={<FactoryEvents />} />
-            <Route path="/factory/onchain" element={<FactoryOnchain />} />
-            <Route path="/factory/narratives" element={<FactoryNarratives />} />
-            <Route path="/factory/news" element={<FactoryNews />} />
-            <Route path="/sitemap" element={<Sitemap />} />
-            <Route path="/insights" element={<Insights />} />
-            <Route path="/insights/:slug" element={<InsightArticle />} />
-            <Route path="/predictions" element={<PredictionHub />} />
-            <Route path="/price-prediction" element={<PredictionHub />} />
-            <Route path="/price-prediction/:coinId" element={<PricePrediction />} />
-            <Route path="/price-prediction/:coinId/:timeframe" element={<PricePrediction />} />
-            <Route path="/q/:slug" element={<QuestionIntent />} />
-            <Route path="/market/best-crypto-to-buy-today" element={<MarketQuestion questionSlug="best-crypto-to-buy-today" />} />
-            <Route path="/market/top-crypto-gainers-today" element={<MarketQuestion questionSlug="top-crypto-gainers-today" />} />
-            <Route path="/market/crypto-market-prediction-today" element={<MarketQuestion questionSlug="crypto-market-prediction-today" />} />
-            <Route path="/market/which-crypto-will-go-up-today" element={<MarketQuestion questionSlug="which-crypto-will-go-up-today" />} />
-            <Route path="/market/crypto-losers-today" element={<MarketQuestion questionSlug="crypto-losers-today" />} />
-            <Route path="/market/is-crypto-going-up-today" element={<MarketQuestion questionSlug="is-crypto-going-up-today" />} />
-            {/* Weekly market questions */}
-            <Route path="/market/best-crypto-to-buy-this-week" element={<MarketQuestion questionSlug="best-crypto-to-buy-this-week" />} />
-            <Route path="/market/crypto-prediction-this-week" element={<MarketQuestion questionSlug="crypto-prediction-this-week" />} />
-            <Route path="/market/crypto-to-watch-this-week" element={<MarketQuestion questionSlug="crypto-to-watch-this-week" />} />
-            <Route path="/market/top-crypto-gainers-this-week" element={<MarketQuestion questionSlug="top-crypto-gainers-this-week" />} />
-            {/* Monthly market questions */}
-            <Route path="/market/crypto-prediction-january-2025" element={<MarketQuestion questionSlug="crypto-prediction-january-2025" />} />
-            <Route path="/market/best-crypto-to-buy-january-2025" element={<MarketQuestion questionSlug="best-crypto-to-buy-january-2025" />} />
-            <Route path="/market/top-crypto-to-invest-2025" element={<MarketQuestion questionSlug="top-crypto-to-invest-2025" />} />
-            <Route path="/market/crypto-outlook-2025" element={<MarketQuestion questionSlug="crypto-outlook-2025" />} />
-            {/* General high-intent questions */}
-            <Route path="/market/next-crypto-to-explode" element={<MarketQuestion questionSlug="next-crypto-to-explode" />} />
-            <Route path="/market/safest-crypto-to-invest" element={<MarketQuestion questionSlug="safest-crypto-to-invest" />} />
-            <Route path="/market/cheap-crypto-to-buy-now" element={<MarketQuestion questionSlug="cheap-crypto-to-buy-now" />} />
-            <Route path="/market/undervalued-crypto-to-buy" element={<MarketQuestion questionSlug="undervalued-crypto-to-buy" />} />
-            <Route path="/market/crypto-with-most-potential" element={<MarketQuestion questionSlug="crypto-with-most-potential" />} />
-            {/* Coin market pages */}
-            <Route path="/markets/:coinId" element={<CoinMarket />} />
-            {/* Legal & About pages */}
-            <Route path="/about" element={<About />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/risk-disclaimer" element={<RiskDisclaimer />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
-      </BrowserRouter>
+      <AppErrorBoundary>
+        <BrowserRouter>
+          <ChunkLoadRecovery />
+          <PageTracker />
+          <AdSenseManager />
+          <SEO />
+          <StructuredData />
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/portfolio" element={<Portfolio />} />
+              <Route path="/sentiment" element={<Sentiment />} />
+              <Route path="/explorer" element={<Explorer />} />
+              <Route path="/learn" element={<Learn />} />
+              <Route path="/learn/:slug" element={<LearnArticle />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/chain/:chainId" element={<Chain />} />
+              <Route path="/strength" element={<StrengthMeter />} />
+              <Route path="/strength-meter" element={<StrengthMeter />} />
+              <Route path="/factory" element={<CryptoFactory />} />
+              <Route path="/factory/events" element={<FactoryEvents />} />
+              <Route path="/factory/onchain" element={<FactoryOnchain />} />
+              <Route path="/factory/narratives" element={<FactoryNarratives />} />
+              <Route path="/factory/news" element={<FactoryNews />} />
+              <Route path="/sitemap" element={<Sitemap />} />
+              <Route path="/insights" element={<Insights />} />
+              <Route path="/insights/:slug" element={<InsightArticle />} />
+              <Route path="/predictions" element={<PredictionHub />} />
+              <Route path="/price-prediction" element={<PredictionHub />} />
+              <Route path="/price-prediction/:coinId" element={<PricePrediction />} />
+              <Route path="/price-prediction/:coinId/:timeframe" element={<PricePrediction />} />
+              <Route path="/q/:slug" element={<QuestionIntent />} />
+              <Route
+                path="/market/best-crypto-to-buy-today"
+                element={<MarketQuestion questionSlug="best-crypto-to-buy-today" />}
+              />
+              <Route
+                path="/market/top-crypto-gainers-today"
+                element={<MarketQuestion questionSlug="top-crypto-gainers-today" />}
+              />
+              <Route
+                path="/market/crypto-market-prediction-today"
+                element={<MarketQuestion questionSlug="crypto-market-prediction-today" />}
+              />
+              <Route
+                path="/market/which-crypto-will-go-up-today"
+                element={<MarketQuestion questionSlug="which-crypto-will-go-up-today" />}
+              />
+              <Route
+                path="/market/crypto-losers-today"
+                element={<MarketQuestion questionSlug="crypto-losers-today" />}
+              />
+              <Route
+                path="/market/is-crypto-going-up-today"
+                element={<MarketQuestion questionSlug="is-crypto-going-up-today" />}
+              />
+              {/* Weekly market questions */}
+              <Route
+                path="/market/best-crypto-to-buy-this-week"
+                element={<MarketQuestion questionSlug="best-crypto-to-buy-this-week" />}
+              />
+              <Route
+                path="/market/crypto-prediction-this-week"
+                element={<MarketQuestion questionSlug="crypto-prediction-this-week" />}
+              />
+              <Route
+                path="/market/crypto-to-watch-this-week"
+                element={<MarketQuestion questionSlug="crypto-to-watch-this-week" />}
+              />
+              <Route
+                path="/market/top-crypto-gainers-this-week"
+                element={<MarketQuestion questionSlug="top-crypto-gainers-this-week" />}
+              />
+              {/* Monthly market questions */}
+              <Route
+                path="/market/crypto-prediction-january-2025"
+                element={<MarketQuestion questionSlug="crypto-prediction-january-2025" />}
+              />
+              <Route
+                path="/market/best-crypto-to-buy-january-2025"
+                element={<MarketQuestion questionSlug="best-crypto-to-buy-january-2025" />}
+              />
+              <Route
+                path="/market/top-crypto-to-invest-2025"
+                element={<MarketQuestion questionSlug="top-crypto-to-invest-2025" />}
+              />
+              <Route
+                path="/market/crypto-outlook-2025"
+                element={<MarketQuestion questionSlug="crypto-outlook-2025" />}
+              />
+              {/* General high-intent questions */}
+              <Route
+                path="/market/next-crypto-to-explode"
+                element={<MarketQuestion questionSlug="next-crypto-to-explode" />}
+              />
+              <Route
+                path="/market/safest-crypto-to-invest"
+                element={<MarketQuestion questionSlug="safest-crypto-to-invest" />}
+              />
+              <Route
+                path="/market/cheap-crypto-to-buy-now"
+                element={<MarketQuestion questionSlug="cheap-crypto-to-buy-now" />}
+              />
+              <Route
+                path="/market/undervalued-crypto-to-buy"
+                element={<MarketQuestion questionSlug="undervalued-crypto-to-buy" />}
+              />
+              <Route
+                path="/market/crypto-with-most-potential"
+                element={<MarketQuestion questionSlug="crypto-with-most-potential" />}
+              />
+              {/* Coin market pages */}
+              <Route path="/markets/:coinId" element={<CoinMarket />} />
+              {/* Legal & About pages */}
+              <Route path="/about" element={<About />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/risk-disclaimer" element={<RiskDisclaimer />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </BrowserRouter>
+      </AppErrorBoundary>
     </TooltipProvider>
   </QueryClientProvider>
 );

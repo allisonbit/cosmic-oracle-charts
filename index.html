@@ -132,7 +132,15 @@
       </div>
     </noscript>
     
-    <div id="root"></div>
+    <div id="root">
+      <div role="status" aria-live="polite" style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center;">
+        <div style="max-width:520px;">
+          <div style="font-size:14px;opacity:.8;margin-bottom:10px;">Loading…</div>
+          <div style="font-size:20px;font-weight:600;letter-spacing:.2px;">Oracle Bull is starting</div>
+          <div style="font-size:13px;opacity:.65;margin-top:10px;line-height:1.5;">If this stays blank, refresh the page (Ctrl/⌘+Shift+R).</div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
     
     <!-- Defer non-critical scripts after page load for better FCP -->
