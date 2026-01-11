@@ -45,7 +45,7 @@ const ViewportSection = ({ children, fallback }: { children: React.ReactNode; fa
   }, []);
 
   return (
-    <div ref={ref} className="content-auto">
+    <div ref={ref}>
       {isVisible ? children : fallback}
     </div>
   );
