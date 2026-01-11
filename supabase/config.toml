@@ -90,3 +90,9 @@ verify_jwt = false
 
 [functions.whale-tracker]
 verify_jwt = false
+
+[functions.token-story]
+verify_jwt = false
+[functions.token-story.rate_limit]
+requests = 30
+per = 3600
