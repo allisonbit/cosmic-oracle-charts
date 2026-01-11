@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useState, useEffect, useRef } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { CryptoTicker } from "@/components/layout/CryptoTicker";
 import { HeroSection } from "@/components/home/HeroSection";
@@ -24,6 +24,32 @@ const SectionFallback = () => (
     <Skeleton className="h-48 w-full rounded-xl" />
   </div>
 );
+
+// Viewport-triggered lazy section to defer chart JS loading
+const ViewportSection = ({ children, fallback }: { children: React.ReactNode; fallback: React.ReactNode }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '200px' }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref}>
+      {isVisible ? children : fallback}
+    </div>
+  );
+};
 
 const Index = () => {
   return (
@@ -60,9 +86,12 @@ const Index = () => {
         {/* Ad placement after ChainLinks - below fold */}
         <BannerAd className="mt-4" />
         
-        <Suspense fallback={<SectionFallback />}>
-          <TopMovers />
-        </Suspense>
+        {/* TopMovers uses recharts - defer loading until visible */}
+        <ViewportSection fallback={<SectionFallback />}>
+          <Suspense fallback={<SectionFallback />}>
+            <TopMovers />
+          </Suspense>
+        </ViewportSection>
         <Suspense fallback={<SectionFallback />}>
           <FeaturesSection />
         </Suspense>
@@ -73,9 +102,12 @@ const Index = () => {
         <Suspense fallback={<SectionFallback />}>
           <CTASection />
         </Suspense>
-        <Suspense fallback={<SectionFallback />}>
-          <MarketOverview />
-        </Suspense>
+        {/* MarketOverview uses recharts - defer loading until visible */}
+        <ViewportSection fallback={<SectionFallback />}>
+          <Suspense fallback={<SectionFallback />}>
+            <MarketOverview />
+          </Suspense>
+        </ViewportSection>
       </main>
       
       <Footer />
