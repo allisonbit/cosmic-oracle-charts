@@ -1,6 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -10,6 +11,15 @@ const corsHeaders = {
 const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+
+// Input validation schema
+const aiBlogRequestSchema = z.object({
+  forceRefresh: z.boolean().optional().default(false),
+  limit: z.number().min(1).max(50).optional().default(20),
+}).optional();
+
+// Max request body size (8KB)
+const MAX_BODY_SIZE = 8 * 1024;
 
 // Cache for today's generation check
 let todayGenerated: string = '';
@@ -54,6 +64,35 @@ serve(async (req) => {
   }
 
   try {
+    // Validate request body size
+    const contentLength = parseInt(req.headers.get('content-length') || '0');
+    if (contentLength > MAX_BODY_SIZE) {
+      return new Response(
+        JSON.stringify({ error: 'Request body too large', maxSize: MAX_BODY_SIZE }),
+        { status: 413, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Parse and validate request body
+    let params = { forceRefresh: false, limit: 20 };
+    if (req.method === 'POST') {
+      try {
+        const body = await req.json();
+        const validated = aiBlogRequestSchema.parse(body);
+        if (validated) {
+          params = { ...params, ...validated };
+        }
+      } catch (parseError) {
+        if (parseError instanceof z.ZodError) {
+          return new Response(
+            JSON.stringify({ error: 'Invalid request parameters', details: parseError.errors }),
+            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+        // If JSON parsing fails, continue with defaults
+      }
+    }
+
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
     const today = new Date().toISOString().split('T')[0];
     

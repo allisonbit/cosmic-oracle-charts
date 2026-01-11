@@ -1,9 +1,19 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Input validation schema
+const seoMonitorRequestSchema = z.object({
+  routes: z.array(z.string().max(200)).max(50).optional(),
+  fullCheck: z.boolean().optional().default(true),
+}).optional();
+
+// Max request body size (8KB)
+const MAX_BODY_SIZE = 8 * 1024;
 
 const SITE_URL = 'https://oraclebull.com';
 
@@ -360,14 +370,46 @@ serve(async (req) => {
   }
 
   try {
+    // Validate request body size
+    const contentLength = parseInt(req.headers.get('content-length') || '0');
+    if (contentLength > MAX_BODY_SIZE) {
+      return new Response(
+        JSON.stringify({ error: 'Request body too large', maxSize: MAX_BODY_SIZE }),
+        { status: 413, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Parse and validate request body
+    let params = { routes: undefined as string[] | undefined, fullCheck: true };
+    if (req.method === 'POST') {
+      try {
+        const body = await req.json();
+        const validated = seoMonitorRequestSchema.parse(body);
+        if (validated) {
+          params = { ...params, ...validated };
+        }
+      } catch (parseError) {
+        if (parseError instanceof z.ZodError) {
+          return new Response(
+            JSON.stringify({ error: 'Invalid request parameters', details: parseError.errors }),
+            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+        // If JSON parsing fails, continue with defaults
+      }
+    }
+
+    // Use custom routes if provided, otherwise use default ALL_ROUTES
+    const routesToCheck = params.routes || ALL_ROUTES;
+
     console.log('Starting comprehensive SEO health check...');
     
     const results: HealthCheckResult[] = [];
     
     // Check all routes in parallel batches of 5
     const batchSize = 5;
-    for (let i = 0; i < ALL_ROUTES.length; i += batchSize) {
-      const batch = ALL_ROUTES.slice(i, i + batchSize);
+    for (let i = 0; i < routesToCheck.length; i += batchSize) {
+      const batch = routesToCheck.slice(i, i + batchSize);
       console.log(`Checking batch: ${batch.join(', ')}`);
       
       const batchResults = await Promise.all(batch.map(route => checkPageHealth(route)));
