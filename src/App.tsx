@@ -18,6 +18,7 @@ const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Sentiment = lazy(() => import("./pages/Sentiment"));
 const Explorer = lazy(() => import("./pages/Explorer"));
 const Learn = lazy(() => import("./pages/Learn"));
+const LearnArticle = lazy(() => import("./pages/LearnArticle"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Chain = lazy(() => import("./pages/Chain"));
 const Portfolio = lazy(() => import("./pages/Portfolio"));
@@ -95,6 +96,7 @@ const App = () => (
             <Route path="/sentiment" element={<Sentiment />} />
             <Route path="/explorer" element={<Explorer />} />
             <Route path="/learn" element={<Learn />} />
+            <Route path="/learn/:slug" element={<LearnArticle />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/chain/:chainId" element={<Chain />} />
             <Route path="/strength" element={<StrengthMeter />} />

@@ -13,7 +13,7 @@ import { TrendingTokensPanel } from "@/components/explorer/TrendingTokensPanel";
 import { MarketStatsBar } from "@/components/explorer/MarketStatsBar";
 import { TopTokensTable } from "@/components/explorer/TopTokensTable";
 import { ALL_CHAINS, getChainById } from "@/lib/explorerChains";
-import { ExplorerSchema, ExplorerSEOContent } from "@/components/seo";
+import { ExplorerSchema, ExplorerSEOContent, ExplorerHowItWorks, ExplorerDataMeaning } from "@/components/seo";
 import { InArticleAd } from "@/components/ads";
 
 function formatNumber(num: number): string {
@@ -276,6 +276,8 @@ const ExplorerPage = () => {
         {!selectedToken && !isSearching && !marketLoading && (
           <>
             <InArticleAd className="my-8" />
+            <ExplorerHowItWorks />
+            <ExplorerDataMeaning />
             <ExplorerSEOContent />
           </>
         )}
