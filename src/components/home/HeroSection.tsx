@@ -1,9 +1,22 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 import cosmicOracle from "@/assets/oracle-bull-logo.jpg";
 
 export function HeroSection() {
+  // Preload LCP image dynamically with correct bundled path
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.as = 'image';
+    link.href = cosmicOracle;
+    link.fetchPriority = 'high';
+    document.head.appendChild(link);
+    return () => {
+      document.head.removeChild(link);
+    };
+  }, []);
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden cosmic-bg" aria-labelledby="hero-heading">
       {/* Star field overlay */}
