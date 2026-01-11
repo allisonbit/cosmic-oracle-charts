@@ -78,3 +78,9 @@ per = 3600
 
 [functions.prediction-prewarm]
 verify_jwt = false
+
+[functions.orderbook]
+verify_jwt = false
+
+[functions.funding-rates]
+verify_jwt = false
