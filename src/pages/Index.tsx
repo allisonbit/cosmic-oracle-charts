@@ -3,6 +3,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { CryptoTicker } from "@/components/layout/CryptoTicker";
 import { HeroSection } from "@/components/home/HeroSection";
 import { InternalLinkHub } from "@/components/home/InternalLinkHub";
+import { QuickAccessBar } from "@/components/home/QuickAccessBar";
 import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -18,6 +19,7 @@ const TopMovers = lazy(() => import("@/components/home/TopMovers").then(m => ({ 
 const FeaturesSection = lazy(() => import("@/components/home/FeaturesSection").then(m => ({ default: m.FeaturesSection })));
 const CTASection = lazy(() => import("@/components/home/CTASection").then(m => ({ default: m.CTASection })));
 const MarketOverview = lazy(() => import("@/components/home/MarketOverview").then(m => ({ default: m.MarketOverview })));
+const TrendingSearches = lazy(() => import("@/components/home/TrendingSearches").then(m => ({ default: m.TrendingSearches })));
 
 const SectionFallback = () => (
   <div className="container mx-auto px-4 py-8">
@@ -60,7 +62,8 @@ const Index = () => {
       
       <header>
         <Navbar />
-        <div className="mt-16" aria-label="Live cryptocurrency prices">
+        <div className="mt-14 md:mt-16" aria-label="Live cryptocurrency prices">
+          <QuickAccessBar />
           <CryptoTicker />
         </div>
       </header>
@@ -98,6 +101,13 @@ const Index = () => {
         
         {/* In-article ad between sections */}
         <InArticleAd />
+        
+        {/* Trending Searches Section */}
+        <ViewportSection fallback={<SectionFallback />}>
+          <Suspense fallback={<SectionFallback />}>
+            <TrendingSearches />
+          </Suspense>
+        </ViewportSection>
         
         <Suspense fallback={<SectionFallback />}>
           <CTASection />
