@@ -87,3 +87,6 @@ verify_jwt = false
 
 [functions.liquidation-data]
 verify_jwt = false
+
+[functions.whale-tracker]
+verify_jwt = false

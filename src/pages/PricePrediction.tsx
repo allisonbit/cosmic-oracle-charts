@@ -9,10 +9,10 @@ import { Disclaimer, Methodology } from "@/components/prediction/PredictionConte
 import { InvestorActionSummary } from "@/components/prediction/InvestorActionSummary";
 import { EnhancedFAQ } from "@/components/prediction/EnhancedFAQ";
 import { MarketQuestionsLinks, RelatedToolsLinks, TimeframeCrossLinks, HighIntentCTA } from "@/components/prediction/HighIntentLinks";
+import { SignalChart } from "@/components/prediction/SignalChart";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { InArticleAd } from "@/components/ads";
-
 export default function PricePrediction() {
   const { coinId, timeframe = 'daily' } = useParams<{ coinId: string; timeframe: string }>();
   
@@ -73,6 +73,23 @@ export default function PricePrediction() {
                   stopLoss={data.tradingZones?.stopLoss}
                   takeProfit={data.tradingZones?.takeProfit1}
                   timeframe={validTimeframe}
+                />
+                
+                {/* Live Signal Chart with AI Overlays */}
+                <SignalChart
+                  symbol={crypto.symbol}
+                  name={crypto.name}
+                  currentPrice={data.currentPrice}
+                  bias={data.bias}
+                  confidence={data.confidence}
+                  tradingZones={data.tradingZones ? {
+                    entryLow: (data.tradingZones.entryZone as any)?.low || (data.tradingZones.entryZone as any)?.min || data.currentPrice * 0.98,
+                    entryHigh: (data.tradingZones.entryZone as any)?.high || (data.tradingZones.entryZone as any)?.max || data.currentPrice * 1.01,
+                    stopLoss: data.tradingZones.stopLoss || data.currentPrice * 0.95,
+                    takeProfit1: data.tradingZones.takeProfit1 || data.currentPrice * 1.05,
+                    takeProfit2: data.tradingZones.takeProfit2 || data.currentPrice * 1.10,
+                    takeProfit3: data.tradingZones.takeProfit3 || data.currentPrice * 1.15,
+                  } : undefined}
                 />
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
