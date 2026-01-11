@@ -163,33 +163,8 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          // Keep vendor separate and minimal
-          if (id.includes('node_modules/react-dom')) {
-            return 'vendor';
-          }
-          if (id.includes('node_modules/react/') || id.includes('node_modules/react-router-dom')) {
-            return 'vendor';
-          }
-          // Isolate recharts completely - only loaded when charts are used
-          if (id.includes('recharts') || id.includes('d3-')) {
-            return 'charts';
-          }
-          // Isolate heavy radix components
-          if (id.includes('@radix-ui/react-dialog') || 
-              id.includes('@radix-ui/react-dropdown-menu') || 
-              id.includes('@radix-ui/react-select') ||
-              id.includes('@radix-ui/react-popover')) {
-            return 'ui-heavy';
-          }
-          // Keep other radix components together
-          if (id.includes('@radix-ui')) {
-            return 'ui';
-          }
-        },
-      },
-    },
+    // Let Vite/Rollup handle chunking automatically.
+    // Our previous manualChunks split introduced a production-only TDZ error
+    // ("Cannot access 'S' before initialization"), resulting in a black screen after deploy.
   },
 }));
