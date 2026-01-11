@@ -25,7 +25,7 @@ const SectionFallback = () => (
   </div>
 );
 
-// Viewport-triggered lazy section to defer chart JS loading
+// Viewport-triggered lazy section with content-visibility optimization
 const ViewportSection = ({ children, fallback }: { children: React.ReactNode; fallback: React.ReactNode }) => {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -45,7 +45,7 @@ const ViewportSection = ({ children, fallback }: { children: React.ReactNode; fa
   }, []);
 
   return (
-    <div ref={ref}>
+    <div ref={ref} className="content-auto">
       {isVisible ? children : fallback}
     </div>
   );

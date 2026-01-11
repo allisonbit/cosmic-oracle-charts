@@ -22,9 +22,9 @@ export function HeroSection() {
       {/* Star field overlay */}
       <div className="absolute inset-0 stars opacity-50" aria-hidden="true" />
       
-      {/* Gradient orbs */}
-      <div className="absolute top-1/4 left-1/4 w-64 md:w-96 h-64 md:h-96 bg-primary/20 rounded-full blur-3xl animate-pulse" aria-hidden="true" />
-      <div className="absolute bottom-1/4 right-1/4 w-56 md:w-80 h-56 md:h-80 bg-secondary/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }} aria-hidden="true" />
+      {/* Gradient orbs - GPU accelerated to reduce main thread work */}
+      <div className="absolute top-1/4 left-1/4 w-64 md:w-96 h-64 md:h-96 bg-primary/20 rounded-full blur-3xl animate-pulse gpu-accelerated" aria-hidden="true" />
+      <div className="absolute bottom-1/4 right-1/4 w-56 md:w-80 h-56 md:h-80 bg-secondary/20 rounded-full blur-3xl animate-pulse gpu-accelerated" style={{ animationDelay: "1s" }} aria-hidden="true" />
       
       <div className="container mx-auto px-4 py-16 md:py-20 relative z-10">
         <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
@@ -66,9 +66,9 @@ export function HeroSection() {
           
           {/* Oracle Image */}
           <figure className="relative flex justify-center items-center mt-8 lg:mt-0">
-            {/* Glow ring */}
-            <div className="absolute w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full border-2 border-primary/30 animate-pulse pulse-glow" aria-hidden="true" />
-            <div className="absolute w-56 h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 rounded-full border border-secondary/20" style={{ animationDelay: "0.5s" }} aria-hidden="true" />
+            {/* Glow ring - GPU accelerated */}
+            <div className="absolute w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full border-2 border-primary/30 animate-pulse pulse-glow gpu-accelerated" aria-hidden="true" />
+            <div className="absolute w-56 h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 rounded-full border border-secondary/20 gpu-accelerated" style={{ animationDelay: "0.5s" }} aria-hidden="true" />
             
             {/* Oracle container - optimized with responsive sizes */}
             <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-[448px] lg:h-[448px] rounded-full overflow-hidden float">
