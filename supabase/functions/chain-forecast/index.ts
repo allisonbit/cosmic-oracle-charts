@@ -1,10 +1,27 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+const MAX_BODY_SIZE = 50 * 1024; // 50KB
+
+// Input validation schema
+const chainForecastSchema = z.object({
+  chainId: z.string().max(50),
+  chainData: z.object({
+    overview: z.object({
+      marketCap: z.number().positive().max(1e15).optional(),
+      volume24h: z.number().nonnegative().max(1e15).optional(),
+      activeWallets: z.number().int().nonnegative().max(1e9).optional(),
+      defiTvl: z.number().nonnegative().max(1e15).optional(),
+      priceChange24h: z.number().min(-100).max(1000).optional()
+    }).passthrough().optional()
+  }).passthrough().optional()
+});
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -12,14 +29,49 @@ serve(async (req) => {
   }
 
   try {
-    const { chainId, chainData } = await req.json();
+    // Check body size limit
+    const contentLength = parseInt(req.headers.get('content-length') || '0');
+    if (contentLength > MAX_BODY_SIZE) {
+      return new Response(
+        JSON.stringify({ error: 'Request body too large. Maximum size is 50KB.' }),
+        { status: 413, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Parse and validate input
+    let body;
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(
+        JSON.stringify({ error: 'Invalid JSON format' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const validationResult = chainForecastSchema.safeParse(body);
+    if (!validationResult.success) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Invalid input',
+          details: validationResult.error.errors.map(e => e.message)
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const { chainId, chainData } = validationResult.data;
     const openAIApiKey = Deno.env.get("OPENAI_API_KEY");
 
     let analysis = "";
     
     if (openAIApiKey) {
       try {
-        const prompt = `Analyze ${chainId} blockchain with current metrics: Market Cap ${(chainData?.overview?.marketCap / 1e9).toFixed(1)}B, 24h Volume ${(chainData?.overview?.volume24h / 1e9).toFixed(2)}B, Active Wallets ${chainData?.overview?.activeWallets?.toLocaleString()}, DeFi TVL ${(chainData?.overview?.defiTvl / 1e9).toFixed(2)}B. Provide a brief 2-sentence market analysis and outlook.`;
+        const marketCap = (chainData?.overview?.marketCap ?? 0) / 1e9;
+        const volume = (chainData?.overview?.volume24h ?? 0) / 1e9;
+        const wallets = chainData?.overview?.activeWallets ?? 0;
+        const tvl = (chainData?.overview?.defiTvl ?? 0) / 1e9;
+        const prompt = `Analyze ${chainId} blockchain with current metrics: Market Cap ${marketCap.toFixed(1)}B, 24h Volume ${volume.toFixed(2)}B, Active Wallets ${wallets.toLocaleString()}, DeFi TVL ${tvl.toFixed(2)}B. Provide a brief 2-sentence market analysis and outlook.`;
 
         const response = await fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",

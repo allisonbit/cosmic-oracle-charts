@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -7,6 +8,24 @@ const corsHeaders = {
 };
 
 const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+const MAX_BODY_SIZE = 100 * 1024; // 100KB
+
+// Input validation schema
+const coinDataSchema = z.object({
+  symbol: z.string().max(20).optional(),
+  price: z.number().positive().max(1e12).optional(),
+  change24h: z.number().min(-100).max(10000).optional(),
+  volume: z.number().nonnegative().max(1e15).optional(),
+  marketCap: z.number().positive().max(1e15).optional(),
+}).passthrough();
+
+const forecastRequestSchema = z.object({
+  coinData: z.union([
+    z.array(coinDataSchema).max(50, 'Too many coins. Maximum 50 per request.'),
+    coinDataSchema
+  ]).optional(),
+  analysisType: z.enum(['market_sentiment', 'coin_forecast']).optional()
+});
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -14,8 +33,39 @@ serve(async (req) => {
   }
 
   try {
-    const { coinData, analysisType } = await req.json();
-    console.log('AI Forecast request:', { analysisType, coins: coinData?.length });
+    // Check body size limit
+    const contentLength = parseInt(req.headers.get('content-length') || '0');
+    if (contentLength > MAX_BODY_SIZE) {
+      return new Response(
+        JSON.stringify({ error: 'Request body too large. Maximum size is 100KB.' }),
+        { status: 413, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Parse and validate input
+    let body;
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(
+        JSON.stringify({ error: 'Invalid JSON format' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const validationResult = forecastRequestSchema.safeParse(body);
+    if (!validationResult.success) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Invalid input',
+          details: validationResult.error.errors.map(e => e.message)
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const { coinData, analysisType } = validationResult.data;
+    console.log('AI Forecast request:', { analysisType, coins: Array.isArray(coinData) ? coinData.length : 1 });
 
     if (!OPENAI_API_KEY) {
       throw new Error('OpenAI API key not configured');

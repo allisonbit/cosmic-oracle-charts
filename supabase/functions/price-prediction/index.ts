@@ -1,10 +1,26 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+const MAX_BODY_SIZE = 10 * 1024; // 10KB
+
+// Input validation schema
+const predictionRequestSchema = z.object({
+  coinId: z.string().min(1).max(100),
+  symbol: z.string().min(1).max(20),
+  timeframe: z.enum(['daily', 'weekly', 'monthly']),
+  currentPrice: z.number().positive().max(1e12).optional(),
+  priceChange24h: z.number().min(-100).max(10000).optional(),
+  volume24h: z.number().nonnegative().max(1e15).optional(),
+  marketCap: z.number().positive().max(1e15).optional(),
+  high24h: z.number().positive().max(1e12).optional(),
+  low24h: z.number().positive().max(1e12).optional(),
+});
 
 interface PredictionRequest {
   coinId: string;
@@ -291,7 +307,38 @@ serve(async (req) => {
   }
 
   try {
-    const { coinId, symbol, timeframe, currentPrice, priceChange24h, high24h, low24h } = await req.json() as PredictionRequest;
+    // Check body size limit
+    const contentLength = parseInt(req.headers.get('content-length') || '0');
+    if (contentLength > MAX_BODY_SIZE) {
+      return new Response(
+        JSON.stringify({ error: 'Request body too large. Maximum size is 10KB.' }),
+        { status: 413, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Parse and validate input
+    let body;
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(
+        JSON.stringify({ error: 'Invalid JSON format' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const validationResult = predictionRequestSchema.safeParse(body);
+    if (!validationResult.success) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Invalid input',
+          details: validationResult.error.errors.map(e => e.message)
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const { coinId, symbol, timeframe, currentPrice, priceChange24h, high24h, low24h } = validationResult.data;
     
     console.log(`Processing ${timeframe} prediction for ${symbol}`);
     
