@@ -70,27 +70,21 @@
     <!-- Google AdSense - Account verification -->
     <meta name="google-adsense-account" content="ca-pub-1336344158133611">
     
-    <!-- Google AdSense - Auto Ads (loaded in head for optimal performance) -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1336344158133611" crossorigin="anonymous"></script>
-    
-    <!-- Google Analytics 4 - Loaded async in head for accurate tracking -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-B2T2RX6RHB"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-B2T2RX6RHB', { 
-        send_page_view: true,
-        cookie_flags: 'SameSite=None;Secure'
-      });
-    </script>
-    
     <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="https://storage.googleapis.com/gpt-engineer-file-uploads/uDg0k7BDXGRxsHZqK6gSbdN9o0l1/uploads/1765566955909-WhatsApp Image 2025-12-12 at 10.50.30_d13b6f53.jpg" />
     <link rel="apple-touch-icon" sizes="180x180" href="https://storage.googleapis.com/gpt-engineer-file-uploads/uDg0k7BDXGRxsHZqK6gSbdN9o0l1/uploads/1765566955909-WhatsApp Image 2025-12-12 at 10.50.30_d13b6f53.jpg" />
     
     <!-- Sitemap reference for crawlers -->
     <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+    
+    <!-- Critical CSS for faster FCP -->
+    <style>
+      :root{--background:222.2 47.4% 5.2%;--foreground:210 40% 98%}
+      *,::before,::after{box-sizing:border-box;border-width:0;border-style:solid}
+      html{line-height:1.5;-webkit-text-size-adjust:100%;font-family:system-ui,sans-serif}
+      body{margin:0;line-height:inherit;background-color:hsl(var(--background));color:hsl(var(--foreground))}
+      #root{min-height:100vh;display:flex;flex-direction:column}
+    </style>
   </head>
 
   <body class="touch-manipulation">
@@ -142,5 +136,35 @@
     
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Defer non-critical scripts after page load for better FCP -->
+    <script>
+      // Load AdSense and Analytics after page becomes interactive
+      function loadDeferredScripts() {
+        // Google Analytics
+        var ga = document.createElement('script');
+        ga.src = 'https://www.googletagmanager.com/gtag/js?id=G-B2T2RX6RHB';
+        ga.async = true;
+        document.head.appendChild(ga);
+        
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-B2T2RX6RHB', { send_page_view: true, cookie_flags: 'SameSite=None;Secure' });
+        
+        // Google AdSense
+        var ads = document.createElement('script');
+        ads.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1336344158133611';
+        ads.async = true;
+        ads.crossOrigin = 'anonymous';
+        document.head.appendChild(ads);
+      }
+      
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(loadDeferredScripts, { timeout: 3000 });
+      } else {
+        setTimeout(loadDeferredScripts, 2000);
+      }
+    </script>
   </body>
 </html>
