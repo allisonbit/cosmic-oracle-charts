@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { 
   TrendingUp, TrendingDown, Minus, Clock, Calendar, CalendarDays,
   ChevronRight, Zap, Target, Shield, BarChart3, Globe, Sparkles
@@ -61,6 +61,7 @@ function generateSentiment(symbol: string, change24h: number): {
 }
 
 export default function PredictionHub() {
+  const navigate = useNavigate();
   const { data: pricesData, isLoading, refetch, isFetching } = useCryptoPrices();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'bullish' | 'bearish' | 'neutral'>('all');
@@ -75,14 +76,12 @@ export default function PredictionHub() {
     setSearchedTokens(tokens);
   }, []);
 
-  // Handle token selection from search
+  // Handle token selection from search - navigate to prediction detail page
   const handleTokenSelect = useCallback((token: GlobalToken) => {
-    setAddedTokens(prev => {
-      // Don't add duplicates
-      if (prev.find(t => t.id === token.id && t.symbol === token.symbol)) return prev;
-      return [token, ...prev].slice(0, 20); // Max 20 added tokens
-    });
-  }, []);
+    // Navigate to the prediction detail page for this token
+    const tokenSlug = token.id || token.name.toLowerCase().replace(/\s+/g, '-');
+    navigate(`/price-prediction/${tokenSlug}/daily`);
+  }, [navigate]);
 
   // Get default 10 tokens + added tokens
   const displayCryptos = useMemo(() => {
