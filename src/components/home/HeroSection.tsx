@@ -58,7 +58,7 @@ export function HeroSection() {
             <div className="absolute w-56 h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 rounded-full border border-secondary/20" style={{ animationDelay: "0.5s" }} aria-hidden="true" />
             
             {/* Oracle container - optimized with responsive sizes */}
-            <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-[450px] lg:h-[450px] rounded-full overflow-hidden float">
+            <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-[448px] lg:h-[448px] rounded-full overflow-hidden float">
               <img
                 src={cosmicOracle}
                 alt="Oracle Bull - AI-powered cryptocurrency forecasting mascot"
@@ -66,9 +66,8 @@ export function HeroSection() {
                 loading="eager"
                 fetchPriority="high"
                 decoding="async"
-                width={450}
-                height={450}
-                sizes="(max-width: 768px) 256px, (max-width: 1024px) 320px, 450px"
+                width={448}
+                height={448}
               />
               {/* Overlay gradient */}
               <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" aria-hidden="true" />
