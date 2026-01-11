@@ -1172,6 +1172,1658 @@ Liquidity is a crucial but often overlooked factor in crypto trading. Understand
       { text: "Chain Analytics", url: "/chain/ethereum" },
       { text: "Risk Management", url: "/insights/risk-management-in-volatile-crypto-markets" }
     ]
+  },
+  // ========== FOREX ARTICLES ==========
+  {
+    id: "what-is-forex-market",
+    slug: "what-is-the-forex-market-and-how-does-it-work",
+    title: "What Is the Forex Market and How Does It Work?",
+    metaTitle: "What Is Forex Trading? Complete Beginner's Guide 2025",
+    metaDescription: "Learn what the forex market is, how currency trading works, and why it's the world's largest financial market. Comprehensive guide for beginners.",
+    category: "Forex",
+    readTime: "12 min read",
+    primaryKeyword: "forex market",
+    secondaryKeywords: ["currency trading", "forex trading", "fx market"],
+    content: `
+## What Is the Forex Market?
+
+The foreign exchange market (forex or FX) is the global marketplace for trading national currencies. With over $7.5 trillion in daily volume, it's the largest and most liquid financial market in the world—dwarfing stock markets by comparison.
+
+### How Forex Trading Works
+
+Unlike stock markets, forex operates through a global network of banks, institutions, and individual traders. There's no central exchange—trading happens electronically over-the-counter (OTC) 24 hours a day, 5 days a week.
+
+#### Currency Pairs
+
+Currencies are always traded in pairs:
+- **EUR/USD**: Euro vs US Dollar
+- **GBP/USD**: British Pound vs US Dollar
+- **USD/JPY**: US Dollar vs Japanese Yen
+- **USD/CHF**: US Dollar vs Swiss Franc
+
+The first currency is the "base," the second is the "quote." When EUR/USD rises, the euro is strengthening against the dollar.
+
+### Major Market Participants
+
+#### Central Banks
+Central banks like the Federal Reserve and ECB influence currencies through monetary policy, interest rates, and quantitative easing.
+
+#### Commercial Banks
+Large banks handle the majority of forex volume, providing liquidity and setting exchange rates.
+
+#### Institutional Investors
+Hedge funds, pension funds, and asset managers trade currencies for speculation or hedging.
+
+#### Corporations
+Multinational companies trade forex to hedge business operations across different currencies.
+
+#### Retail Traders
+Individual traders access forex through brokers, representing a growing portion of daily volume.
+
+### Forex Trading Sessions
+
+The forex market follows the sun around the globe:
+
+- **Sydney Session**: 5:00 PM - 2:00 AM EST
+- **Tokyo Session**: 7:00 PM - 4:00 AM EST
+- **London Session**: 3:00 AM - 12:00 PM EST
+- **New York Session**: 8:00 AM - 5:00 PM EST
+
+The highest liquidity occurs when sessions overlap, particularly London-New York.
+
+### What Moves Currency Prices?
+
+#### Interest Rates
+Higher rates attract foreign capital, strengthening the currency.
+
+#### Economic Data
+GDP, employment, inflation, and trade balance affect currency valuations.
+
+#### Political Events
+Elections, policy changes, and geopolitical tensions create volatility.
+
+#### Market Sentiment
+Risk appetite drives flows between safe-haven and risk currencies.
+
+### Forex vs Cryptocurrency Markets
+
+| Aspect | Forex | Crypto |
+|--------|-------|--------|
+| Daily Volume | $7.5T | ~$100B |
+| Volatility | Lower | Higher |
+| Regulation | Heavy | Evolving |
+| Trading Hours | 24/5 | 24/7 |
+| Leverage | Up to 50:1 | Varies |
+
+### Getting Started with Forex Analysis
+
+Understanding forex market structure helps you:
+- Interpret currency movements
+- Understand global economic relationships
+- Diversify beyond cryptocurrency
+- Apply similar analytical frameworks
+
+### Conclusion
+
+The forex market offers unique opportunities for traders who understand its mechanics. Whether you're trading currencies directly or simply want to understand how global economics affects crypto, forex knowledge is valuable.
+    `,
+    faqs: [
+      {
+        question: "Is forex trading risky?",
+        answer: "Yes, forex trading carries significant risk due to leverage and market volatility. Most retail forex traders lose money. Never trade with money you can't afford to lose, and consider your risk tolerance carefully."
+      },
+      {
+        question: "How much money do you need to start forex trading?",
+        answer: "You can open forex accounts with as little as $100-500, but many experts recommend starting with $2,000-5,000 for proper position sizing and risk management."
+      },
+      {
+        question: "What's the best currency pair to trade?",
+        answer: "EUR/USD is the most traded pair with the tightest spreads and highest liquidity. Beginners often start here before exploring other major pairs like GBP/USD or USD/JPY."
+      }
+    ],
+    relatedLinks: [
+      { text: "Forex Sentiment Analysis", url: "/sentiment" },
+      { text: "Market Dashboard", url: "/dashboard" },
+      { text: "Risk Management Guide", url: "/learn/risk-management-in-volatile-crypto-markets" }
+    ]
+  },
+  {
+    id: "forex-market-structure",
+    slug: "forex-market-structure-explained",
+    title: "Forex Market Structure Explained: Understanding the FX Hierarchy",
+    metaTitle: "Forex Market Structure Explained | Complete Guide 2025",
+    metaDescription: "Understand how the forex market is structured, from interbank trading to retail brokers. Learn about liquidity providers, market makers, and ECNs.",
+    category: "Forex",
+    readTime: "10 min read",
+    primaryKeyword: "forex market structure",
+    secondaryKeywords: ["interbank market", "forex liquidity", "market makers"],
+    content: `
+## Understanding Forex Market Structure
+
+The forex market operates differently from centralized exchanges. Understanding its structure helps you navigate trading more effectively and understand where your orders actually go.
+
+### The Forex Hierarchy
+
+#### Tier 1: The Interbank Market
+At the top are major global banks that trade directly with each other:
+- JPMorgan, Citibank, Deutsche Bank, UBS
+- Trade in millions/billions per transaction
+- Set the "real" market rates
+- Access the deepest liquidity
+
+#### Tier 2: Smaller Banks & Institutions
+- Regional banks and financial institutions
+- Access interbank rates through prime brokers
+- Trade smaller volumes than Tier 1
+- Include central banks and large corporations
+
+#### Tier 3: Retail Market
+- Individual traders
+- Access through retail brokers
+- Smallest average trade sizes
+- Prices derived from interbank market
+
+### Types of Forex Brokers
+
+#### Market Makers (Dealing Desk)
+- Quote their own prices
+- Take the opposite side of your trade
+- May have conflict of interest
+- Often fixed spreads
+- Guaranteed fills in normal conditions
+
+#### ECN Brokers (Electronic Communication Network)
+- Pass orders to liquidity providers
+- Variable spreads based on market
+- Commission-based pricing
+- No conflict of interest
+- May reject orders in fast markets
+
+#### STP Brokers (Straight Through Processing)
+- Hybrid model
+- Route orders to liquidity providers
+- May mark up spreads
+- No dealing desk intervention
+
+### How Prices Are Determined
+
+The interbank market establishes prices through:
+
+1. **Bid-Ask Quotes**: Banks quote prices at which they'll buy/sell
+2. **Competition**: Multiple quotes create tight spreads
+3. **Order Flow**: Large orders move prices
+4. **News Events**: Information quickly gets priced in
+
+### Liquidity in Forex
+
+Forex liquidity varies by:
+
+#### Currency Pair
+- Major pairs (EUR/USD, GBP/USD): Highest liquidity
+- Minor pairs (EUR/GBP, AUD/NZD): Moderate liquidity
+- Exotic pairs (USD/TRY, EUR/HUF): Lower liquidity
+
+#### Time of Day
+- Session overlaps: Highest liquidity
+- Asian session: Lower for non-Asian pairs
+- Weekend gaps: No liquidity
+
+#### Market Conditions
+- Normal markets: Deep liquidity
+- News events: Liquidity can evaporate
+- Market stress: Spreads widen significantly
+
+### Understanding Spreads
+
+The spread is the difference between bid and ask prices:
+- **Tight spreads**: 0.1-1 pips for majors
+- **Wide spreads**: 3-10+ pips for exotics
+- **Variable spreads**: Change with market conditions
+- **Cost of trading**: Wider spread = higher cost
+
+### Why Structure Matters
+
+Understanding market structure helps you:
+- Choose the right broker type
+- Trade at optimal times
+- Understand execution quality
+- Manage slippage expectations
+- Avoid manipulation
+
+### Conclusion
+
+The forex market's decentralized structure creates opportunities and challenges. Understanding the hierarchy from interbank to retail helps you make better trading decisions and choose appropriate brokers.
+    `,
+    faqs: [
+      {
+        question: "What is the interbank forex market?",
+        answer: "The interbank market is where major banks trade currencies directly with each other. It's the most liquid level of the forex market, setting the base prices that eventually filter down to retail traders."
+      },
+      {
+        question: "Should I use an ECN or market maker broker?",
+        answer: "ECN brokers offer no conflict of interest and variable spreads, ideal for active traders. Market makers may offer fixed spreads and guaranteed fills, which can suit beginners. Consider your trading style, volume, and priorities."
+      },
+      {
+        question: "Why do forex spreads widen during news?",
+        answer: "During major news events, uncertainty increases and liquidity providers widen their quotes to protect against sudden price moves. This increased spread is the market's way of pricing in higher risk."
+      }
+    ],
+    relatedLinks: [
+      { text: "Forex Market Overview", url: "/learn/what-is-the-forex-market-and-how-does-it-work" },
+      { text: "Currency Sentiment", url: "/sentiment" },
+      { text: "Market Dashboard", url: "/dashboard" }
+    ]
+  },
+  {
+    id: "currency-sentiment-analysis",
+    slug: "currency-sentiment-analysis-explained",
+    title: "Currency Sentiment Analysis Explained: Reading Market Psychology",
+    metaTitle: "Currency Sentiment Analysis | How to Read Forex Psychology 2025",
+    metaDescription: "Learn how to analyze currency sentiment using COT reports, positioning data, and sentiment indicators. Understand market psychology in forex trading.",
+    category: "Forex",
+    readTime: "11 min read",
+    primaryKeyword: "currency sentiment analysis",
+    secondaryKeywords: ["forex sentiment", "COT report", "market positioning"],
+    content: `
+## Currency Sentiment Analysis: Understanding Market Psychology
+
+Sentiment analysis in forex reveals how traders are positioned and what they expect from the market. This psychological insight can provide valuable trading edge when combined with technical and fundamental analysis.
+
+### What Is Currency Sentiment?
+
+Currency sentiment measures the collective mood and positioning of market participants. Unlike crypto, forex has more established sentiment indicators and institutional transparency.
+
+### Key Sentiment Indicators
+
+#### Commitment of Traders (COT) Report
+Published weekly by the CFTC, the COT report shows futures positioning by trader type:
+
+- **Commercial Hedgers**: Corporations hedging currency exposure
+- **Large Speculators**: Hedge funds and institutions
+- **Small Speculators**: Retail traders
+
+**How to use it:**
+- Extreme positioning often precedes reversals
+- Commercials tend to be contrarian indicators
+- Large speculator positioning shows trend strength
+
+#### Retail Sentiment Data
+Many brokers publish their clients' positions:
+- Shows long/short ratio for retail traders
+- Retail is often wrong at extremes
+- Contrarian indicator potential
+
+#### Options Market Data
+Currency options reveal expectations:
+- Risk reversals show put/call skew
+- Implied volatility indicates expected movement
+- Large option strikes can act as magnets
+
+### Reading Sentiment Extremes
+
+#### Crowded Trades
+When everyone is positioned one way:
+- Risk of sudden reversal increases
+- New information has asymmetric impact
+- Watch for positioning unwinds
+
+#### Divergences
+When sentiment conflicts with price action:
+- Sentiment bullish but price falling = potential continuation
+- Sentiment bearish but price rising = potential trend strength
+
+### Central Bank Communication
+
+Central banks heavily influence currency sentiment:
+
+#### Forward Guidance
+- Rate expectations drive currency flows
+- Watch for hawkish/dovish language
+- Changes in guidance create volatility
+
+#### Meeting Minutes
+- Reveal policy debates
+- Show voting splits
+- Indicate future direction
+
+#### Speeches and Interviews
+- Policymaker comments move markets
+- Off-script remarks cause volatility
+- Market interprets every word
+
+### Economic Sentiment Indicators
+
+#### Purchasing Managers Index (PMI)
+- Above 50: Expansion, currency positive
+- Below 50: Contraction, currency negative
+- Trend changes are more important than levels
+
+#### Consumer/Business Confidence
+- Leading indicators for economic activity
+- Affect consumption and investment
+- Impact currency through growth expectations
+
+#### Interest Rate Expectations
+- Fed funds futures show rate probabilities
+- Changes drive currency movements
+- Hawkish surprises strengthen currency
+
+### Building a Sentiment Framework
+
+Combine multiple sources:
+1. **COT positioning**: Weekly strategic view
+2. **Retail sentiment**: Contrarian signals
+3. **Central bank communication**: Medium-term direction
+4. **Economic sentiment**: Fundamental backdrop
+
+### Sentiment vs Crypto Markets
+
+| Aspect | Forex | Crypto |
+|--------|-------|--------|
+| Data Quality | Institutional | Social-focused |
+| COT Reports | Available | Not available |
+| Central Banks | Major driver | No direct equivalent |
+| Retail Impact | Minimal | Significant |
+
+### Conclusion
+
+Currency sentiment analysis provides insight into market psychology that pure technical or fundamental analysis might miss. Using multiple sentiment sources helps identify crowded trades and potential reversals.
+    `,
+    faqs: [
+      {
+        question: "How do I read the COT report?",
+        answer: "Focus on positioning extremes and changes. When large speculators reach extreme long or short positions, reversals become more likely. Track week-over-week changes to spot trend shifts early."
+      },
+      {
+        question: "Is retail forex sentiment a good indicator?",
+        answer: "Retail sentiment works best as a contrarian indicator at extremes. When 80%+ of retail is positioned one way, the opposite move often occurs. Don't use it alone—combine with other analysis."
+      },
+      {
+        question: "How do central banks affect currency sentiment?",
+        answer: "Central banks influence sentiment through interest rate decisions, forward guidance, and policy statements. Hawkish (rate-raising) signals typically strengthen a currency, while dovish signals weaken it."
+      }
+    ],
+    relatedLinks: [
+      { text: "Sentiment Analysis Tool", url: "/sentiment" },
+      { text: "Market Dashboard", url: "/dashboard" },
+      { text: "Crypto Sentiment Guide", url: "/learn/what-is-crypto-market-sentiment" }
+    ]
+  },
+  {
+    id: "forex-vs-crypto",
+    slug: "forex-vs-crypto-key-market-differences",
+    title: "Forex vs Crypto: Key Market Differences Every Trader Should Know",
+    metaTitle: "Forex vs Crypto Trading: Complete Comparison Guide 2025",
+    metaDescription: "Compare forex and cryptocurrency markets. Understand key differences in volatility, regulation, trading hours, and strategies between FX and crypto.",
+    category: "Forex",
+    readTime: "10 min read",
+    primaryKeyword: "forex vs crypto",
+    secondaryKeywords: ["currency vs cryptocurrency", "forex crypto comparison", "fx trading vs crypto"],
+    content: `
+## Forex vs Crypto: Understanding the Key Differences
+
+Both forex and cryptocurrency markets attract traders seeking profit from price movements. However, these markets operate very differently. Understanding these differences helps you adapt strategies and manage risk appropriately.
+
+### Market Size and Liquidity
+
+#### Forex Market
+- **Daily volume**: $7.5 trillion
+- **Liquidity**: Extremely deep, especially majors
+- **Slippage**: Minimal on major pairs
+- **Market impact**: Nearly impossible for individuals
+
+#### Crypto Market
+- **Daily volume**: ~$100 billion
+- **Liquidity**: Varies greatly by coin
+- **Slippage**: Can be significant on smaller coins
+- **Market impact**: Whales can move markets
+
+### Volatility Comparison
+
+#### Forex
+- Major pairs: 0.5-1% daily average
+- Exotic pairs: 1-3% daily average
+- Extreme events: 3-5% moves rare
+- Predictable volatility patterns
+
+#### Crypto
+- Bitcoin: 2-5% daily average
+- Altcoins: 5-20% daily average
+- Extreme events: 10-50% moves occur
+- Unpredictable volatility spikes
+
+### Trading Hours
+
+#### Forex
+- 24 hours, 5 days (Sunday 5pm - Friday 5pm EST)
+- Session-based liquidity patterns
+- Weekend gaps common
+- No trading Saturday-Sunday
+
+#### Crypto
+- 24 hours, 7 days, 365 days
+- No market close
+- Weekend volatility common
+- Always monitoring required
+
+### Regulation
+
+#### Forex
+- Heavily regulated globally
+- Strict broker requirements
+- Client fund protection
+- Leverage limits in many jurisdictions
+
+#### Crypto
+- Regulatory landscape evolving
+- Varies dramatically by region
+- Less client protection
+- Higher exchange risks
+
+### Leverage
+
+#### Forex
+- US: 50:1 max for majors
+- EU: 30:1 max for majors
+- Some offshore: 500:1+
+- Standardized margin requirements
+
+#### Crypto
+- Varies by exchange
+- Some offer 100x+
+- Less regulation
+- Liquidation risks higher
+
+### What Drives Prices?
+
+#### Forex
+- Central bank policy
+- Interest rate differentials
+- Economic data (GDP, employment, inflation)
+- Geopolitical events
+- Trade flows
+
+#### Crypto
+- Adoption and use cases
+- Regulatory news
+- Technical developments
+- Social media sentiment
+- Whale activity
+- Macro liquidity conditions
+
+### Analysis Approaches
+
+#### Technical Analysis
+- Works in both markets
+- Forex: More reliable patterns
+- Crypto: More noise, needs adaptation
+
+#### Fundamental Analysis
+- Forex: Economic data focus
+- Crypto: Network metrics, adoption
+
+#### Sentiment Analysis
+- Forex: COT reports, positioning data
+- Crypto: Social media, on-chain data
+
+### Risk Management Differences
+
+#### Forex
+- Tighter stops possible
+- More predictable volatility
+- Lower overnight gap risk
+- Established risk frameworks
+
+#### Crypto
+- Wider stops needed
+- Flash crashes occur
+- 24/7 monitoring ideal
+- Higher position sizing caution
+
+### Which Market Is Right for You?
+
+**Choose Forex if you:**
+- Prefer lower volatility
+- Want regulated environment
+- Trade during market hours
+- Use leverage responsibly
+
+**Choose Crypto if you:**
+- Can handle higher volatility
+- Want 24/7 market access
+- Believe in blockchain technology
+- Accept regulatory uncertainty
+
+### Conclusion
+
+Both markets offer opportunities for informed traders. Many trade both, using forex for steadier returns and crypto for higher-risk/reward plays. Understanding each market's unique characteristics is essential for success.
+    `,
+    faqs: [
+      {
+        question: "Is forex safer than crypto?",
+        answer: "Forex has more regulation and less volatility, making it 'safer' in those respects. However, both markets carry significant risk of loss. Forex's higher leverage can also increase risk substantially."
+      },
+      {
+        question: "Can I use forex strategies for crypto?",
+        answer: "Many forex strategies translate to crypto, but require adaptation. Wider stops, different timeframes, and accounting for higher volatility are essential modifications."
+      },
+      {
+        question: "Which has better returns, forex or crypto?",
+        answer: "Crypto has historically offered higher potential returns, but with much higher risk and volatility. Most traders lose money in both markets. Focus on risk management regardless of market choice."
+      }
+    ],
+    relatedLinks: [
+      { text: "Crypto Market Sentiment", url: "/sentiment" },
+      { text: "AI Predictions", url: "/predictions" },
+      { text: "Risk Management Guide", url: "/learn/risk-management-in-volatile-crypto-markets" }
+    ]
+  },
+  {
+    id: "macro-factors-forex",
+    slug: "macroeconomic-factors-that-move-forex-markets",
+    title: "Macroeconomic Factors That Move Forex Markets: A Complete Guide",
+    metaTitle: "Macroeconomic Factors Affecting Forex | Trading Guide 2025",
+    metaDescription: "Learn how GDP, inflation, interest rates, and employment data affect currency values. Essential macroeconomic knowledge for forex traders.",
+    category: "Forex",
+    readTime: "12 min read",
+    primaryKeyword: "macroeconomic factors forex",
+    secondaryKeywords: ["forex fundamentals", "economic indicators forex", "interest rates currency"],
+    content: `
+## Macroeconomic Factors That Move Forex Markets
+
+Currency values are ultimately determined by economic fundamentals. Understanding these macroeconomic factors helps you anticipate currency movements and trade with the broader trend.
+
+### Interest Rates: The Primary Driver
+
+Interest rates are the single most important factor for currencies.
+
+#### Why Rates Matter
+- Higher rates attract foreign capital
+- Capital inflows strengthen the currency
+- Carry trade opportunities develop
+- Rate differentials drive pairs
+
+#### Central Bank Decisions
+- Federal Reserve (USD)
+- European Central Bank (EUR)
+- Bank of Japan (JPY)
+- Bank of England (GBP)
+
+#### What to Watch
+- Actual rate decisions
+- Forward guidance
+- Dot plots and projections
+- Meeting minutes
+
+### Inflation
+
+Inflation erodes purchasing power and affects currency valuation.
+
+#### CPI and PPI
+- Consumer Price Index: Main inflation measure
+- Producer Price Index: Leading indicator
+- Core vs headline inflation
+- Year-over-year vs month-over-month
+
+#### Inflation's Currency Impact
+- High inflation: Often negative for currency
+- But: May prompt rate hikes (positive)
+- Real interest rates matter most
+- Inflation expectations drive markets
+
+### Economic Growth (GDP)
+
+Gross Domestic Product measures economic output.
+
+#### GDP Components
+- Consumer spending
+- Business investment
+- Government spending
+- Net exports
+
+#### Currency Impact
+- Strong growth: Generally positive
+- Attracts investment
+- Suggests future rate hikes
+- But: Trade deficit effects can offset
+
+### Employment Data
+
+Labor market health indicates economic strength.
+
+#### Key Reports
+- Non-Farm Payrolls (US)
+- Unemployment rate
+- Wage growth
+- Labor force participation
+
+#### Why It Matters
+- Consumer spending power
+- Inflation implications
+- Central bank mandate
+- Economic confidence
+
+### Trade Balance
+
+The difference between exports and imports.
+
+#### Trade Surplus
+- Exports > imports
+- Foreign currency demand for purchases
+- Generally strengthens currency
+- Japan historically example
+
+#### Trade Deficit
+- Imports > exports
+- Domestic currency sold for purchases
+- Generally weakens currency
+- US historically example
+
+### Political Stability
+
+Political events significantly impact currencies.
+
+#### Elections
+- Policy uncertainty
+- Potential economic shifts
+- Market volatility increases
+- Safe haven flows
+
+#### Geopolitical Risk
+- War and conflict
+- Sanctions
+- Trade tensions
+- Regional instability
+
+### Current Account Balance
+
+Broader measure than trade balance.
+
+#### Components
+- Trade in goods/services
+- Investment income
+- Transfers
+
+#### Implications
+- Surplus countries often see currency strength
+- Deficits require capital inflows to finance
+- Sustainability questions matter
+
+### Connecting to Currency Pairs
+
+#### EUR/USD Example
+To analyze EUR/USD, compare:
+- Fed vs ECB policy
+- US vs Eurozone growth
+- Relative inflation
+- Political stability
+
+#### Using Economic Calendars
+- High impact events cause volatility
+- Trade around or avoid releases
+- Focus on surprises vs expectations
+- Multiple data points build picture
+
+### Macroeconomics and Crypto
+
+Increasingly, macro affects crypto:
+- Risk-on/risk-off sentiment
+- Dollar strength correlation
+- Liquidity conditions
+- Rate impact on growth assets
+
+### Conclusion
+
+Macroeconomic analysis provides the foundation for understanding currency movements. While short-term trading may rely more on technicals, longer-term trends are driven by these fundamental factors.
+    `,
+    faqs: [
+      {
+        question: "Which economic indicator is most important for forex?",
+        answer: "Interest rate decisions and expectations are typically the most impactful. However, the importance varies by situation—during high inflation periods, CPI becomes critical; during slowdowns, employment data dominates."
+      },
+      {
+        question: "How do I trade economic news releases?",
+        answer: "Many traders avoid trading during major releases due to volatility and spread widening. Others trade the aftermath once direction is established. Focus on the surprise vs expectation, not the absolute number."
+      },
+      {
+        question: "Do macroeconomics affect cryptocurrency?",
+        answer: "Increasingly yes. Crypto has shown correlation with risk assets and inverse correlation with the dollar. Interest rate expectations, liquidity conditions, and risk sentiment all impact crypto prices."
+      }
+    ],
+    relatedLinks: [
+      { text: "Market Dashboard", url: "/dashboard" },
+      { text: "Sentiment Analysis", url: "/sentiment" },
+      { text: "Forex Market Overview", url: "/learn/what-is-the-forex-market-and-how-does-it-work" }
+    ]
+  },
+  // ========== AI & ANALYTICS ARTICLES ==========
+  {
+    id: "ai-forecasting-models",
+    slug: "how-ai-forecasting-models-work-in-finance",
+    title: "How AI Forecasting Models Work in Finance: A Technical Overview",
+    metaTitle: "AI Forecasting Models in Finance | Technical Guide 2025",
+    metaDescription: "Understand how machine learning and AI models are used for financial forecasting. Learn about neural networks, time series analysis, and model limitations.",
+    category: "AI & Analytics",
+    readTime: "14 min read",
+    primaryKeyword: "AI forecasting models",
+    secondaryKeywords: ["machine learning finance", "AI trading", "predictive analytics"],
+    content: `
+## How AI Forecasting Models Work in Finance
+
+Artificial Intelligence has transformed financial analysis, from high-frequency trading to long-term investment decisions. Understanding how these models work helps you use them more effectively—and recognize their limitations.
+
+### Types of AI Models in Finance
+
+#### Time Series Models
+
+##### ARIMA and Traditional Methods
+- Autoregressive Integrated Moving Average
+- Based on historical patterns
+- Good for stationary data
+- Foundation for more complex models
+
+##### LSTM Networks
+Long Short-Term Memory networks:
+- Designed for sequence data
+- Remember long-term patterns
+- Handle non-linear relationships
+- Popular for price prediction
+
+##### Transformer Models
+- Attention-based architecture
+- Excel at finding relevant patterns
+- Can process parallel sequences
+- State-of-the-art performance
+
+#### Classification Models
+
+##### Random Forests
+- Ensemble of decision trees
+- Good for feature importance
+- Robust to outliers
+- Easy to interpret
+
+##### Gradient Boosting
+- XGBoost, LightGBM, CatBoost
+- Often best tabular data performance
+- Used for direction prediction
+- Feature engineering crucial
+
+#### Deep Learning
+
+##### Convolutional Neural Networks
+- Originally for images
+- Applied to chart patterns
+- Can detect visual formations
+- Technical analysis automation
+
+##### Reinforcement Learning
+- Learning through interaction
+- Optimizes trading strategies
+- Adapts to market conditions
+- Used in algorithmic trading
+
+### How Models Make Predictions
+
+#### Feature Engineering
+Models learn from input features:
+- Price and volume history
+- Technical indicators
+- Sentiment scores
+- On-chain metrics
+- Macroeconomic data
+
+#### Training Process
+1. Historical data split (train/validate/test)
+2. Model learns patterns
+3. Validation prevents overfitting
+4. Testing on unseen data
+
+#### Prediction Types
+- **Regression**: Exact price targets
+- **Classification**: Direction (up/down)
+- **Probability**: Confidence intervals
+
+### Model Evaluation Metrics
+
+#### For Price Predictions
+- Mean Absolute Error (MAE)
+- Root Mean Square Error (RMSE)
+- Mean Absolute Percentage Error (MAPE)
+
+#### For Direction Predictions
+- Accuracy: Correct predictions / total
+- Precision: True positives / predicted positives
+- Recall: True positives / actual positives
+- F1 Score: Harmonic mean of precision/recall
+
+### Challenges and Limitations
+
+#### Overfitting
+- Model memorizes noise
+- Great training, poor testing
+- The biggest risk in AI finance
+
+#### Non-Stationarity
+- Markets change over time
+- Past patterns may not repeat
+- Regime changes break models
+
+#### Black Swan Events
+- Unprecedented events
+- Outside training distribution
+- Models fail completely
+
+#### Data Snooping
+- Finding patterns in hindsight
+- Multiple testing problem
+- Leads to false discoveries
+
+### Best Practices for AI Models
+
+#### Proper Backtesting
+- Walk-forward validation
+- Out-of-sample testing
+- Account for transaction costs
+- Realistic slippage modeling
+
+#### Ensemble Approaches
+- Combine multiple models
+- Reduces individual model risk
+- Different models catch different patterns
+
+#### Continuous Monitoring
+- Track real-time performance
+- Detect model degradation
+- Retrain when needed
+
+### OracleBull's AI Approach
+
+Our platform uses multiple AI systems:
+- Separate models for different timeframes
+- Ensemble predictions for robustness
+- Continuous retraining on new data
+- Confidence scores for transparency
+
+### The Human Element
+
+AI is a tool, not a replacement for judgment:
+- Models can't predict the unpredictable
+- Human oversight essential
+- Risk management still crucial
+- Use AI as one input among many
+
+### Conclusion
+
+AI forecasting models are powerful tools that can identify patterns humans might miss. However, understanding their limitations is as important as leveraging their strengths. The best approach combines AI insights with human judgment and rigorous risk management.
+    `,
+    faqs: [
+      {
+        question: "Can AI predict stock and crypto prices accurately?",
+        answer: "AI can identify patterns and probabilities, but cannot predict prices with certainty. Good models might be right 55-60% of the time on direction, which can be profitable with proper risk management. Be skeptical of claims of high accuracy."
+      },
+      {
+        question: "What is overfitting in AI trading?",
+        answer: "Overfitting occurs when a model learns noise in historical data rather than genuine patterns. The model performs great on past data but fails on new data. It's the most common failure mode for trading algorithms."
+      },
+      {
+        question: "Should I trust AI trading predictions?",
+        answer: "Use AI predictions as one input among many, not as the sole basis for decisions. Verify with other analysis, use proper risk management, and never invest more than you can afford to lose."
+      }
+    ],
+    relatedLinks: [
+      { text: "AI Predictions Tool", url: "/predictions" },
+      { text: "How AI Analyzes Crypto", url: "/learn/how-ai-is-used-in-crypto-market-analysis" },
+      { text: "Risk Management", url: "/learn/risk-management-in-volatile-crypto-markets" }
+    ]
+  },
+  {
+    id: "ai-limitations-finance",
+    slug: "limitations-of-ai-market-predictions",
+    title: "Limitations of AI Market Predictions: What You Need to Know",
+    metaTitle: "AI Trading Limitations | What AI Can't Predict 2025",
+    metaDescription: "Understand the limitations of AI in market predictions. Learn about model failures, black swan events, and why AI can't replace human judgment.",
+    category: "AI & Analytics",
+    readTime: "10 min read",
+    primaryKeyword: "AI prediction limitations",
+    secondaryKeywords: ["AI trading failures", "machine learning limits", "algorithmic trading risks"],
+    content: `
+## The Limitations of AI Market Predictions
+
+AI has revolutionized market analysis, but it's crucial to understand what it cannot do. Overconfidence in AI predictions can lead to significant losses. Here's an honest look at AI's limitations.
+
+### Markets Are Not Purely Predictable
+
+#### The Efficient Market Hypothesis
+If patterns were perfectly predictable:
+- Everyone would exploit them
+- The patterns would disappear
+- Profits would vanish
+
+Markets exist on a spectrum of efficiency, and AI pushes them toward more efficiency.
+
+#### Reflexivity
+Markets are reflexive:
+- Predictions affect behavior
+- Behavior affects outcomes
+- Self-fulfilling/defeating prophecies
+- Models change the game
+
+### Black Swan Events
+
+#### What AI Can't See
+AI learns from history, but:
+- COVID-19 pandemic
+- Terra/Luna collapse
+- FTX implosion
+- 9/11 attacks
+- 2008 financial crisis
+
+These events were outside any training data.
+
+#### The Problem of Unknown Unknowns
+- AI extrapolates from known patterns
+- Cannot imagine unprecedented events
+- Fails catastrophically at extremes
+- When you need models most, they fail
+
+### Technical Limitations
+
+#### Overfitting: The Silent Killer
+- Models that memorize noise
+- Perfect backtest, terrible live
+- The most common failure mode
+- More parameters = more risk
+
+#### Data Quality Issues
+- Garbage in, garbage out
+- Survivorship bias
+- Look-ahead bias
+- Changing data definitions
+
+#### Regime Changes
+- Markets behave differently in different eras
+- Bull vs bear dynamics
+- High vs low volatility regimes
+- Interest rate environments
+
+### Human-Driven Phenomena
+
+#### Irrational Behavior
+- Fear and greed cycles
+- Panic selling
+- FOMO buying
+- Herd mentality
+
+AI can identify sentiment, but humans are unpredictable.
+
+#### Market Manipulation
+- Pump and dump schemes
+- Whale manipulation
+- Spoofing and layering
+- Designed to fool algorithms
+
+#### Political Events
+- Regulatory announcements
+- Elections
+- Wars
+- Policy changes
+
+No AI can predict political decisions.
+
+### Practical Failures
+
+#### Flash Crashes
+- August 2015 equity crash
+- May 2010 Flash Crash
+- Multiple crypto flash crashes
+- Algorithms amplify volatility
+
+#### Crowded Trades
+- Many AIs find same patterns
+- Everyone exits at once
+- Massive drawdowns
+- Renaissance vs everyone else
+
+#### Model Degradation
+- Alpha decays over time
+- Patterns get arbitraged away
+- Continuous updating required
+- Yesterday's edge is today's loss
+
+### Misleading Claims
+
+#### Be Skeptical Of:
+- "90%+ accuracy" claims
+- "Always profitable" systems
+- "Risk-free" strategies
+- Unverifiable backtests
+
+#### Questions to Ask:
+- What's the drawdown history?
+- How does it perform in crashes?
+- Is it paper traded or real money?
+- How long has it been live?
+
+### Using AI Responsibly
+
+#### Best Practices
+1. **Diversify models**: Don't rely on one system
+2. **Limit exposure**: Position size for failure
+3. **Human oversight**: Override when needed
+4. **Continuous monitoring**: Watch for degradation
+5. **Risk management**: Always use stops
+
+#### The Right Mindset
+- AI is a tool, not a crystal ball
+- Edge is probabilistic, not guaranteed
+- Losses are inevitable
+- Long-term thinking required
+
+### Conclusion
+
+AI is powerful but imperfect. The best traders use AI as one tool among many, always maintaining human judgment and rigorous risk management. Understanding limitations is as important as leveraging capabilities.
+    `,
+    faqs: [
+      {
+        question: "Why do AI trading bots fail?",
+        answer: "Common failures include overfitting to historical data, inability to handle unprecedented events, regime changes that invalidate patterns, and crowded trades where many bots act similarly, causing cascade failures."
+      },
+      {
+        question: "Can AI predict market crashes?",
+        answer: "AI can identify increased risk indicators and unusual patterns, but cannot reliably predict crashes. The nature of crashes—sudden, unexpected events—makes them inherently unpredictable. Focus on surviving crashes rather than predicting them."
+      },
+      {
+        question: "Should I use AI trading signals?",
+        answer: "AI signals can be useful as one input, but never rely on them exclusively. Verify with your own analysis, use proper position sizing, and always maintain stop losses. The best traders combine AI with human judgment."
+      }
+    ],
+    relatedLinks: [
+      { text: "How AI Works in Finance", url: "/learn/how-ai-forecasting-models-work-in-finance" },
+      { text: "Risk Management", url: "/learn/risk-management-in-volatile-crypto-markets" },
+      { text: "AI Predictions", url: "/predictions" }
+    ]
+  },
+  {
+    id: "indicators-vs-ai",
+    slug: "indicators-vs-ai-models-whats-the-difference",
+    title: "Indicators vs AI Models: What's the Difference and Which Is Better?",
+    metaTitle: "Trading Indicators vs AI Models | Complete Comparison 2025",
+    metaDescription: "Compare traditional technical indicators with AI-powered models. Understand when to use each approach and how to combine them effectively.",
+    category: "AI & Analytics",
+    readTime: "11 min read",
+    primaryKeyword: "indicators vs AI",
+    secondaryKeywords: ["technical indicators", "AI trading models", "trading tools comparison"],
+    content: `
+## Indicators vs AI Models: Understanding the Difference
+
+Traders have more tools than ever—from classic indicators to sophisticated AI models. Understanding how each works helps you choose the right tool for your situation.
+
+### What Are Technical Indicators?
+
+Technical indicators are mathematical calculations based on price, volume, or open interest.
+
+#### Types of Indicators
+
+##### Trend Indicators
+- Moving Averages (SMA, EMA)
+- MACD
+- ADX
+- Parabolic SAR
+
+##### Momentum Indicators
+- RSI (Relative Strength Index)
+- Stochastic Oscillator
+- CCI (Commodity Channel Index)
+- Momentum
+
+##### Volatility Indicators
+- Bollinger Bands
+- ATR (Average True Range)
+- VIX (for traditional markets)
+
+##### Volume Indicators
+- On-Balance Volume (OBV)
+- Volume Profile
+- Money Flow Index
+
+#### How Indicators Work
+- Fixed mathematical formulas
+- Same input = same output
+- No learning or adaptation
+- Human interprets signals
+
+### What Are AI Models?
+
+AI models learn patterns from data rather than following fixed rules.
+
+#### How AI Differs
+- Learns from examples
+- Can adapt over time
+- Finds non-obvious patterns
+- Can combine multiple inputs
+
+#### Types of AI in Trading
+- Classification: Up/down prediction
+- Regression: Price targets
+- Pattern recognition: Chart patterns
+- Sentiment analysis: Text processing
+
+### Key Differences
+
+| Aspect | Indicators | AI Models |
+|--------|------------|-----------|
+| Logic | Fixed formulas | Learned patterns |
+| Interpretability | Clear and transparent | Often "black box" |
+| Adaptation | Static | Can retrain |
+| Complexity | Single dimension | Multi-dimensional |
+| Computing | Simple | Resource intensive |
+| Consistency | Always same | May vary |
+
+### Advantages of Indicators
+
+#### Transparency
+- You know exactly how they work
+- Can understand every signal
+- Easy to debug issues
+- No hidden complexity
+
+#### Reliability
+- Same calculation every time
+- No model drift
+- Decades of testing
+- Well-documented performance
+
+#### Simplicity
+- Quick to implement
+- No training required
+- Works on any platform
+- Easy to combine
+
+### Advantages of AI Models
+
+#### Pattern Discovery
+- Finds non-linear relationships
+- Combines multiple factors
+- Detects subtle patterns
+- Adapts to new data
+
+#### Multi-Dimensional Analysis
+- Processes many inputs simultaneously
+- Weighs factors automatically
+- Handles complexity better
+- Can include alternative data
+
+#### Potential Edge
+- Less crowded strategies
+- More sophisticated analysis
+- Can process unstructured data
+- Competitive advantage
+
+### Disadvantages of Each
+
+#### Indicator Limitations
+- Based on past price only
+- Lagging by nature
+- Same signals everyone sees
+- Can't adapt to regime changes
+
+#### AI Model Limitations
+- Overfitting risk
+- "Black box" opacity
+- Requires quality data
+- Model degradation over time
+- Expensive to develop/maintain
+
+### When to Use Which
+
+#### Use Indicators When:
+- You need transparent signals
+- Quick analysis required
+- Limited data available
+- Combining with discretionary trading
+- Learning the markets
+
+#### Use AI Models When:
+- Processing large data sets
+- Multiple factors involved
+- Looking for hidden patterns
+- Have resources for development
+- Need automation
+
+### The Best Approach: Combination
+
+Most successful traders combine both:
+
+1. **Indicators for context**: Overall trend, momentum
+2. **AI for signals**: Entry/exit timing
+3. **Indicators for confirmation**: Validate AI signals
+4. **AI for alternative data**: Sentiment, on-chain
+
+### OracleBull's Approach
+
+Our platform uses both:
+- Traditional indicators for trend context
+- AI for pattern recognition
+- Machine learning for sentiment
+- Human oversight for final decisions
+
+### Conclusion
+
+Neither indicators nor AI models are inherently "better." Each has strengths and weaknesses. The most effective approach combines both, using indicators for transparent context and AI for pattern discovery, always with proper risk management.
+    `,
+    faqs: [
+      {
+        question: "Are AI trading models better than indicators?",
+        answer: "Not necessarily. AI can find complex patterns but is prone to overfitting and opacity. Indicators are transparent and reliable but simpler. The best approach often combines both—indicators for context, AI for pattern discovery."
+      },
+      {
+        question: "Which indicator is best for trading?",
+        answer: "There's no single best indicator. Moving averages work well for trend identification, RSI for overbought/oversold conditions, and Bollinger Bands for volatility. Combine multiple indicators rather than relying on one."
+      },
+      {
+        question: "Can AI replace technical analysis?",
+        answer: "AI can automate and enhance technical analysis, but doesn't fully replace it. Many successful AI models incorporate traditional indicator values as features. Understanding technicals helps you evaluate AI outputs."
+      }
+    ],
+    relatedLinks: [
+      { text: "AI Analysis Tool", url: "/predictions" },
+      { text: "Market Dashboard", url: "/dashboard" },
+      { text: "How AI Works", url: "/learn/how-ai-forecasting-models-work-in-finance" }
+    ]
+  },
+  {
+    id: "data-sources-market-intelligence",
+    slug: "data-sources-used-in-market-intelligence-platforms",
+    title: "Data Sources Used in Market Intelligence Platforms: A Complete Guide",
+    metaTitle: "Market Intelligence Data Sources | Complete Guide 2025",
+    metaDescription: "Discover the data sources powering modern market intelligence platforms. From on-chain metrics to social sentiment, understand where trading insights come from.",
+    category: "AI & Analytics",
+    readTime: "12 min read",
+    primaryKeyword: "market intelligence data sources",
+    secondaryKeywords: ["trading data sources", "on-chain analytics", "market data"],
+    content: `
+## Data Sources Powering Market Intelligence Platforms
+
+Modern market intelligence platforms aggregate and analyze data from dozens of sources. Understanding these inputs helps you evaluate the quality of insights and build your own analytical framework.
+
+### Price and Market Data
+
+#### Exchange Data
+- Real-time price feeds
+- Order book depth
+- Trade history
+- Volume metrics
+
+#### Aggregated Prices
+- Cross-exchange averages
+- VWAP (Volume Weighted Average Price)
+- Index prices
+- Reference rates
+
+#### Derivatives Data
+- Futures prices and curves
+- Options data (calls/puts)
+- Open interest
+- Funding rates
+
+### On-Chain Data (Crypto)
+
+#### Transaction Metrics
+- Transaction volume
+- Active addresses
+- New addresses
+- Transaction count
+
+#### Holder Analysis
+- Whale wallets
+- Exchange balances
+- Distribution metrics
+- Long-term vs short-term holders
+
+#### Network Health
+- Hash rate (PoW)
+- Staking metrics (PoS)
+- Node count
+- Network difficulty
+
+#### DeFi Metrics
+- Total Value Locked (TVL)
+- Protocol revenue
+- Liquidity pool data
+- Yield rates
+
+### Social and Sentiment Data
+
+#### Social Media
+- Twitter/X activity
+- Reddit discussions
+- Telegram/Discord activity
+- YouTube and TikTok
+
+#### News and Media
+- News article sentiment
+- Headlines analysis
+- Publication frequency
+- Source credibility scoring
+
+#### Search Data
+- Google Trends
+- Search volume
+- Related queries
+- Geographic distribution
+
+### Economic Data
+
+#### Macroeconomic Indicators
+- GDP releases
+- Inflation data (CPI/PPI)
+- Employment reports
+- Central bank decisions
+
+#### Financial Market Data
+- Stock indices
+- Bond yields
+- Currency rates
+- Commodity prices
+
+#### Alternative Economic Data
+- Satellite imagery
+- Credit card spending
+- Shipping data
+- Energy consumption
+
+### Technical Data
+
+#### Calculated Indicators
+- Moving averages
+- RSI, MACD, etc.
+- Bollinger Bands
+- Custom indicators
+
+#### Pattern Recognition
+- Chart patterns
+- Support/resistance
+- Trend lines
+- Volume patterns
+
+### Specialized Data Sources
+
+#### For Crypto
+- Glassnode (on-chain)
+- Santiment (social + on-chain)
+- CryptoQuant (exchange flows)
+- Whale Alert (large transactions)
+
+#### For Traditional Markets
+- Bloomberg Terminal
+- Reuters Eikon
+- S&P Capital IQ
+- FactSet
+
+### Data Quality Considerations
+
+#### Accuracy
+- Real-time vs delayed
+- Source reliability
+- Error rates
+- Consistency checks
+
+#### Coverage
+- Number of exchanges
+- Asset coverage
+- Historical depth
+- Geographic scope
+
+#### Timeliness
+- Latency
+- Update frequency
+- Gap handling
+- After-hours data
+
+### How OracleBull Uses Data
+
+Our platform integrates multiple sources:
+
+1. **Price Data**: Real-time from major exchanges
+2. **On-Chain**: Blockchain metrics for supported networks
+3. **Sentiment**: Social media and news analysis
+4. **Technical**: Calculated indicators and patterns
+5. **AI Analysis**: Machine learning on combined data
+
+### Building Your Own Data Stack
+
+For individual analysis:
+1. Start with free price data (CoinGecko, TradingView)
+2. Add on-chain (Glassnode free tier, etherscan)
+3. Monitor social (Twitter, Reddit manually)
+4. Use news aggregators
+5. Create simple dashboards
+
+### Conclusion
+
+Quality market intelligence depends on quality data. Understanding the sources behind insights helps you evaluate their reliability and identify gaps in your analysis. The best platforms combine multiple data types for comprehensive views.
+    `,
+    faqs: [
+      {
+        question: "What is the best data source for crypto trading?",
+        answer: "No single source is best. Combine exchange price data with on-chain analytics (like Glassnode) and social sentiment for comprehensive analysis. Different trading styles prioritize different data types."
+      },
+      {
+        question: "Is free market data reliable?",
+        answer: "Free data can be reliable for basic analysis. CoinGecko, CoinMarketCap, and TradingView offer quality free data. However, paid sources often provide more depth, speed, and specialized metrics."
+      },
+      {
+        question: "How important is on-chain data?",
+        answer: "On-chain data is unique to crypto and provides insights impossible in traditional markets—seeing whale movements, exchange flows, and holder behavior. It's increasingly important for serious crypto analysis."
+      }
+    ],
+    relatedLinks: [
+      { text: "Token Explorer", url: "/explorer" },
+      { text: "Chain Analytics", url: "/chain/ethereum" },
+      { text: "Sentiment Analysis", url: "/sentiment" }
+    ]
+  },
+  {
+    id: "reading-analytics-dashboards",
+    slug: "how-to-read-market-analytics-dashboards",
+    title: "How to Read Market Analytics Dashboards: A Practical Guide",
+    metaTitle: "How to Read Market Analytics Dashboards | Practical Guide 2025",
+    metaDescription: "Learn how to interpret market analytics dashboards effectively. Understand key metrics, visualizations, and how to extract actionable insights.",
+    category: "AI & Analytics",
+    readTime: "10 min read",
+    primaryKeyword: "market analytics dashboard",
+    secondaryKeywords: ["trading dashboard", "analytics interpretation", "market metrics"],
+    content: `
+## How to Read Market Analytics Dashboards
+
+Market analytics dashboards present vast amounts of data in condensed visual formats. Knowing how to interpret them effectively can dramatically improve your analysis and decision-making.
+
+### Dashboard Layout Best Practices
+
+#### Information Hierarchy
+Most dashboards follow a pattern:
+- **Top**: Critical metrics at a glance
+- **Middle**: Detailed analysis
+- **Bottom**: Supporting data
+
+#### Time Frame Context
+Always check:
+- What period does data cover?
+- Is it real-time or delayed?
+- Are comparisons appropriate?
+
+### Key Metric Categories
+
+#### Price Metrics
+
+##### Current Price
+- Last traded price
+- Bid/ask spread
+- VWAP reference
+
+##### Price Changes
+- Percentage change (24h, 7d, 30d)
+- Absolute change
+- High/low ranges
+
+##### Historical Context
+- 52-week high/low
+- All-time high
+- Distance from ATH
+
+#### Volume Metrics
+
+##### Trading Volume
+- 24h dollar volume
+- Comparison to average
+- Volume trends
+
+##### Volume Analysis
+- Buy vs sell volume
+- Exchange distribution
+- Unusual volume alerts
+
+#### Market Cap and Supply
+
+##### Market Capitalization
+- Current market cap
+- Fully diluted valuation
+- Rank by market cap
+
+##### Supply Metrics
+- Circulating supply
+- Total supply
+- Max supply
+- Inflation rate
+
+### Visualization Types
+
+#### Line Charts
+**What they show**: Trends over time
+**How to read**: 
+- Direction indicates trend
+- Slope shows momentum
+- Breaks indicate changes
+
+#### Candlestick Charts
+**What they show**: OHLC data
+**How to read**:
+- Body shows open/close
+- Wicks show high/low
+- Color indicates direction
+
+#### Bar Charts
+**What they show**: Comparisons
+**How to read**:
+- Height = magnitude
+- Compare relative sizes
+- Watch for scale manipulation
+
+#### Pie/Donut Charts
+**What they show**: Composition
+**How to read**:
+- Proportions of whole
+- Dominance identification
+- Diversification level
+
+#### Heatmaps
+**What they show**: Multi-dimensional data
+**How to read**:
+- Color intensity = magnitude
+- Patterns and clusters
+- Outlier identification
+
+### Sentiment Indicators
+
+#### Fear & Greed Index
+- 0-25: Extreme Fear (potential buy)
+- 26-45: Fear
+- 46-55: Neutral
+- 56-75: Greed
+- 76-100: Extreme Greed (potential sell)
+
+#### Social Sentiment Scores
+- Positive/negative ratios
+- Trend direction
+- Comparison to price
+
+### On-Chain Metrics
+
+#### Exchange Flows
+- Inflows: Potential selling
+- Outflows: Accumulation
+- Net flows: Overall direction
+
+#### Whale Activity
+- Large transaction alerts
+- Wallet tracking
+- Concentration changes
+
+### Common Dashboard Mistakes
+
+#### Scale Manipulation
+- Truncated axes exaggerate moves
+- Different scales confuse comparisons
+- Always check axis labels
+
+#### Missing Context
+- Absolute vs percentage
+- Short vs long timeframes
+- Cherry-picked periods
+
+#### Confirmation Bias
+- Seeing patterns that aren't there
+- Ignoring contradictory data
+- Over-interpreting noise
+
+### Actionable Dashboard Analysis
+
+#### Step-by-Step Process
+1. **Overview scan**: Get the big picture
+2. **Key metrics check**: Critical numbers
+3. **Trend identification**: Direction and momentum
+4. **Anomaly detection**: Unusual readings
+5. **Cross-reference**: Confirm with other data
+6. **Synthesis**: Form coherent view
+
+#### Questions to Ask
+- What's the primary trend?
+- Are there confirming/contradicting signals?
+- What's changed recently?
+- What could this lead to?
+
+### OracleBull Dashboard Tips
+
+Our dashboard is designed for efficiency:
+- Top cards: Key metrics at a glance
+- Charts: Interactive exploration
+- Sentiment: Market psychology
+- Links: Quick navigation to details
+
+### Conclusion
+
+Effective dashboard reading combines technical understanding with critical thinking. Don't take visualizations at face value—always check context, verify scales, and cross-reference with other data sources.
+    `,
+    faqs: [
+      {
+        question: "What's the most important metric on a trading dashboard?",
+        answer: "It depends on your strategy. Price and volume are fundamental. For trend trading, focus on moving averages and momentum. For sentiment-based trading, fear/greed indicators matter most. Build a hierarchy based on your approach."
+      },
+      {
+        question: "How often should I check market dashboards?",
+        answer: "Depends on your trading style. Day traders may check constantly. Swing traders might check a few times daily. Long-term investors may only need weekly reviews. Avoid over-checking, which leads to emotional decisions."
+      },
+      {
+        question: "How do I know if dashboard data is reliable?",
+        answer: "Check the data source and update frequency. Compare with other sources for consistency. Look for clear methodology explanations. Be skeptical of outliers and verify unusual readings."
+      }
+    ],
+    relatedLinks: [
+      { text: "Market Dashboard", url: "/dashboard" },
+      { text: "Sentiment Analysis", url: "/sentiment" },
+      { text: "Token Explorer", url: "/explorer" }
+    ]
   }
 ];
 
@@ -1183,4 +2835,19 @@ export function getEducationalArticle(slug: string): EducationalArticle | undefi
 // Export function to get all articles
 export function getAllEducationalArticles(): EducationalArticle[] {
   return EDUCATIONAL_ARTICLES;
+}
+
+// Get articles by category
+export function getArticlesByCategory(category: string): EducationalArticle[] {
+  return EDUCATIONAL_ARTICLES.filter(article => article.category === category);
+}
+
+// Get forex articles
+export function getForexArticles(): EducationalArticle[] {
+  return EDUCATIONAL_ARTICLES.filter(article => article.category === "Forex");
+}
+
+// Get AI articles
+export function getAIArticles(): EducationalArticle[] {
+  return EDUCATIONAL_ARTICLES.filter(article => article.category === "AI & Analytics");
 }
