@@ -23,6 +23,10 @@ const staticRoutes = [
   "/insights",
   "/contact",
   "/sitemap",
+  "/about",
+  "/privacy-policy",
+  "/terms",
+  "/risk-disclaimer",
 ];
 
 // Chain routes
@@ -35,6 +39,32 @@ const chainRoutes = [
   "/chain/optimism",
   "/chain/avalanche",
   "/chain/bnb",
+];
+
+// Educational article routes for SEO
+const educationalRoutes = [
+  "/learn/what-is-crypto-market-sentiment",
+  "/learn/how-ai-is-used-in-crypto-market-analysis",
+  "/learn/bitcoin-market-cycles-explained",
+  "/learn/risk-management-in-volatile-crypto-markets",
+  "/learn/how-to-analyze-altcoins-using-market-data",
+  "/learn/technical-analysis-vs-sentiment-analysis",
+  "/learn/on-chain-data-explained-for-beginners",
+  "/learn/how-market-psychology-affects-crypto-prices",
+  "/learn/how-whales-influence-market-trends",
+  "/learn/understanding-liquidity-in-crypto-markets",
+  // Forex articles
+  "/learn/what-is-the-forex-market-and-how-does-it-work",
+  "/learn/forex-market-structure-explained",
+  "/learn/currency-sentiment-analysis-explained",
+  "/learn/forex-vs-crypto-key-market-differences",
+  "/learn/macroeconomic-factors-that-move-forex-markets",
+  // AI articles
+  "/learn/how-ai-forecasting-models-work-in-finance",
+  "/learn/limitations-of-ai-market-predictions",
+  "/learn/indicators-vs-ai-models-whats-the-difference",
+  "/learn/data-sources-used-in-market-intelligence-platforms",
+  "/learn/how-to-read-market-analytics-dashboards",
 ];
 
 // Top crypto prediction routes (for SEO)
@@ -104,7 +134,7 @@ const marketQuestionRoutes = [
 const coinMarketRoutes = topCryptoIds.map(id => `/markets/${id}`);
 
 // All routes combined
-const allRoutes = [...staticRoutes, ...chainRoutes, ...predictionRoutes, ...questionRoutes, ...marketQuestionRoutes, ...coinMarketRoutes];
+const allRoutes = [...staticRoutes, ...chainRoutes, ...predictionRoutes, ...questionRoutes, ...marketQuestionRoutes, ...coinMarketRoutes, ...educationalRoutes];
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
