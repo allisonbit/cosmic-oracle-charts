@@ -210,7 +210,7 @@ const SentimentPage = () => {
         {activeTab === "social" && (
           <div className="space-y-6">
             <div className="grid lg:grid-cols-2 gap-6">
-              <SocialSentimentPanel tokens={topCoins.slice(0, 10).map(c => c.symbol)} />
+              <SocialSentimentPanel tokens={topCoins.slice(0, 10)} />
               <NewsPanel />
             </div>
             <InArticleAd />
