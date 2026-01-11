@@ -235,8 +235,8 @@ export default function PredictionHub() {
           </section>
 
           {/* Global Search - Prominent Position */}
-          <section className="mb-8">
-            <div className="holo-card p-6">
+          <section className="mb-8 relative" style={{ zIndex: 100 }}>
+            <div className="holo-card p-6 overflow-visible">
               <div className="flex items-center gap-2 mb-4">
                 <Sparkles className="w-5 h-5 text-primary" />
                 <h2 className="font-display font-bold text-lg">Search Any Token Globally</h2>

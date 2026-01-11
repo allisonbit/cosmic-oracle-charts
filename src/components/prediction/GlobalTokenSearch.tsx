@@ -49,7 +49,7 @@ export function GlobalTokenSearch({ onSelect, onSearchResults, placeholder }: Gl
   const isContractSearch = query.startsWith('0x') || query.length > 30;
 
   return (
-    <div className="relative">
+    <div className="relative" style={{ zIndex: 100 }}>
       {/* Search Input */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -57,8 +57,9 @@ export function GlobalTokenSearch({ onSelect, onSearchResults, placeholder }: Gl
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={placeholder || "Search any token globally (name, symbol, or contract address)..."}
-          className="pl-10 pr-20 bg-muted/50 border-border/50 focus:border-primary/50"
+          className="pl-10 pr-20 bg-background border-border focus:border-primary"
           onFocus={() => searchResults.length > 0 && setShowDropdown(true)}
+          onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
         />
         <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
           {isSearching && <Loader2 className="w-4 h-4 animate-spin text-primary" />}
@@ -89,7 +90,7 @@ export function GlobalTokenSearch({ onSelect, onSearchResults, placeholder }: Gl
 
       {/* Dropdown Results */}
       {showDropdown && searchResults.length > 0 && (
-        <div className="absolute z-50 w-full mt-2 max-h-80 overflow-y-auto bg-background border border-border rounded-lg shadow-xl">
+        <div className="absolute left-0 right-0 mt-2 max-h-80 overflow-y-auto bg-card border border-border rounded-lg shadow-2xl" style={{ zIndex: 9999 }}>
           <div className="p-2 border-b border-border/50 text-xs text-muted-foreground flex items-center justify-between">
             <span className="flex items-center gap-1">
               <Coins className="w-3 h-3" />
@@ -146,8 +147,8 @@ export function GlobalTokenSearch({ onSelect, onSearchResults, placeholder }: Gl
 
       {/* No Results */}
       {showDropdown && query.length >= 2 && !isSearching && searchResults.length === 0 && (
-        <div className="absolute z-50 w-full mt-2 p-4 bg-background border border-border rounded-lg shadow-xl text-center">
-          <div className="text-muted-foreground text-sm">No tokens found</div>
+        <div className="absolute left-0 right-0 mt-2 p-4 bg-card border border-border rounded-lg shadow-2xl text-center" style={{ zIndex: 9999 }}>
+          <div className="text-foreground text-sm">No tokens found</div>
           <div className="text-xs text-muted-foreground mt-1">
             Try a different name, symbol, or paste a contract address
           </div>
