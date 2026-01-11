@@ -78,10 +78,11 @@ export function useMarketData() {
       }
     },
     refetchInterval: 30000, // Refresh every 30 seconds
-    staleTime: 20000,
+    staleTime: 25000, // Increased to reduce refetch pressure
     refetchIntervalInBackground: false,
     refetchOnWindowFocus: false,
     retry: 1,
     retryDelay: 3000,
+    networkMode: 'offlineFirst', // Use cache first to avoid blocking render
   });
 }
