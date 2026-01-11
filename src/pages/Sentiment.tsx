@@ -15,7 +15,7 @@ import { GitHubActivityPanel } from "@/components/sentiment/GitHubActivityPanel"
 import { EnhancedOverviewPanel } from "@/components/sentiment/EnhancedOverviewPanel";
 import { EnhancedWhaleTracker } from "@/components/sentiment/EnhancedWhaleTracker";
 import { EnhancedSignalsPanel } from "@/components/sentiment/EnhancedSignalsPanel";
-import { SentimentSchema, SentimentSEOContent } from "@/components/seo";
+import { SentimentSchema, SentimentSEOContent, SentimentHowItWorks, SentimentDataMeaning } from "@/components/seo";
 import { InArticleAd, SidebarAd } from "@/components/ads";
 
 function formatNumber(num: number): string {
@@ -648,6 +648,12 @@ const SentimentPage = () => {
             </div>
           </div>
         )}
+      </div>
+      
+      {/* Educational Content */}
+      <div className="container mx-auto px-4 py-8">
+        <SentimentHowItWorks />
+        <SentimentDataMeaning />
       </div>
       
       {/* Strategic ad placement after main content */}

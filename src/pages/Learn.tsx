@@ -49,6 +49,7 @@ import { format, parseISO, isToday, isYesterday } from "date-fns";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import { LearnSEOContent } from "@/components/seo";
+import { EDUCATIONAL_ARTICLES } from "@/lib/educationalArticles";
 
 // Category icons mapping for 20 themes
 const categoryIcons: Record<string, typeof BookOpen> = {
@@ -739,8 +740,45 @@ export default function Learn() {
         />
       </main>
 
-      {/* SEO Content Section */}
+      {/* Educational Fundamentals Section */}
       <div className="container mx-auto px-4 mt-8">
+        <section className="mb-8">
+          <h2 className="font-display text-lg sm:text-xl font-bold mb-4 flex items-center gap-2">
+            <BookOpen className="w-5 h-5 text-primary" />
+            Crypto Fundamentals Library
+          </h2>
+          <p className="text-muted-foreground text-sm mb-6">
+            Master cryptocurrency investing with our comprehensive educational guides.
+          </p>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {EDUCATIONAL_ARTICLES.slice(0, 8).map((article) => (
+              <Link
+                key={article.id}
+                to={`/learn/${article.slug}`}
+                className="group"
+              >
+                <Card className="h-full border-border/50 hover:border-primary/50 transition-all">
+                  <CardContent className="p-4">
+                    <Badge variant="outline" className="text-[10px] mb-2">
+                      {article.category}
+                    </Badge>
+                    <h3 className="font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors">
+                      {article.title}
+                    </h3>
+                    <p className="text-xs text-muted-foreground mt-2 line-clamp-2">
+                      {article.metaDescription}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      {article.readTime}
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </section>
+        
+        {/* SEO Content Section */}
         <LearnSEOContent />
       </div>
 

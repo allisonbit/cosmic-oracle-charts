@@ -18,7 +18,7 @@ import { StrengthMeterWidget } from "@/components/dashboard/StrengthMeterWidget"
 import { CryptoFactoryWidget } from "@/components/dashboard/CryptoFactoryWidget";
 import { Link } from "react-router-dom";
 import { SidebarAd, InArticleAd } from "@/components/ads";
-import { DashboardSchema, DashboardSEOContent, HowToReadDashboard, WhatMakesUsDifferent, RelatedMarketInsights } from "@/components/seo";
+import { DashboardSchema, DashboardSEOContent, HowToReadDashboard, WhatMakesUsDifferent, RelatedMarketInsights, DashboardHowItWorks } from "@/components/seo";
 
 function formatNumber(num: number): string {
   if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
@@ -414,6 +414,9 @@ const Dashboard = () => {
             
             {/* Related Market Insights with internal links */}
             <RelatedMarketInsights />
+            
+            {/* Educational How It Works Section */}
+            <DashboardHowItWorks />
           </>
         )}
       </div>
