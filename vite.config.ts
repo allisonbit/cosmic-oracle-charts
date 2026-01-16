@@ -71,7 +71,9 @@ const educationalRoutes = [
 const topCryptoIds = [
   'bitcoin', 'ethereum', 'solana', 'binancecoin', 'ripple', 'cardano', 'dogecoin',
   'polkadot', 'chainlink', 'avalanche-2', 'matic-network', 'shiba-inu', 'litecoin',
-  'uniswap', 'cosmos', 'near', 'arbitrum', 'optimism', 'aptos', 'sui', 'pepe', 'floki', 'bonk'
+  'uniswap', 'cosmos', 'near', 'arbitrum', 'optimism', 'aptos', 'sui', 'pepe', 'floki', 'bonk',
+  'toncoin', 'tron', 'stellar', 'monero', 'okb', 'hedera', 'filecoin', 'vechain',
+  'internet-computer', 'render-token', 'fetch-ai', 'injective-protocol', 'kaspa', 'theta-token'
 ];
 
 const predictionRoutes = topCryptoIds.flatMap(id => [
@@ -103,7 +105,9 @@ const questionRoutes = questionIntentCoins.flatMap(coin =>
   questionPatterns.map(pattern => `/q/${pattern.replace('{coin}', coin)}`)
 );
 
-// Market question routes for SEO
+// Market question routes for SEO - updated with current dates
+const currentYear = new Date().getFullYear();
+const currentMonth = new Date().toLocaleString('en-US', { month: 'long' }).toLowerCase();
 const marketQuestionRoutes = [
   // Today
   '/market/best-crypto-to-buy-today',
@@ -117,17 +121,21 @@ const marketQuestionRoutes = [
   '/market/crypto-prediction-this-week',
   '/market/crypto-to-watch-this-week',
   '/market/top-crypto-gainers-this-week',
-  // Monthly / Long-term
-  '/market/crypto-prediction-january-2025',
-  '/market/best-crypto-to-buy-january-2025',
-  '/market/top-crypto-to-invest-2025',
-  '/market/crypto-outlook-2025',
+  // Monthly / Long-term - dynamic dates
+  `/market/crypto-prediction-${currentMonth}-${currentYear}`,
+  `/market/best-crypto-to-buy-${currentMonth}-${currentYear}`,
+  `/market/top-crypto-to-invest-${currentYear}`,
+  `/market/crypto-outlook-${currentYear}`,
   // General high-intent
   '/market/next-crypto-to-explode',
   '/market/safest-crypto-to-invest',
   '/market/cheap-crypto-to-buy-now',
   '/market/undervalued-crypto-to-buy',
   '/market/crypto-with-most-potential',
+  '/market/best-altcoins-to-buy',
+  '/market/top-meme-coins',
+  '/market/best-defi-tokens',
+  '/market/top-ai-crypto-tokens',
 ];
 
 // Coin market landing pages for SEO

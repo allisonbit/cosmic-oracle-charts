@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { usePricePrediction, getCryptoBySlug, TOP_CRYPTOS } from "@/hooks/usePricePrediction";
 
@@ -17,6 +17,8 @@ import { GlobalToken } from "@/hooks/useGlobalTokenSearch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { InArticleAd } from "@/components/ads";
+import { Button } from "@/components/ui/button";
+import { RefreshCw, AlertTriangle } from "lucide-react";
 
 interface DynamicToken {
   id: string;
@@ -34,23 +36,38 @@ export default function PricePrediction() {
   // State for dynamically searched tokens
   const [dynamicToken, setDynamicToken] = useState<DynamicToken | null>(null);
   const [isLoadingToken, setIsLoadingToken] = useState(false);
+  const [tokenError, setTokenError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
   
   // Handle token selection from search
-  const handleTokenSelect = (token: GlobalToken) => {
+  const handleTokenSelect = useCallback((token: GlobalToken) => {
     const tokenSlug = token.id.toLowerCase().replace(/\s+/g, '-');
     navigate(`/price-prediction/${tokenSlug}/daily`);
-  };
+  }, [navigate]);
+  
+  // Retry handler
+  const handleRetry = useCallback(() => {
+    setRetryCount(prev => prev + 1);
+    setTokenError(null);
+    setIsLoadingToken(true);
+  }, []);
   
   // If token not in predefined list, try to fetch it from API
   useEffect(() => {
     if (!predefinedCrypto && coinId && coinId !== 'bitcoin') {
       setIsLoadingToken(true);
+      setTokenError(null);
       
-      // Try to fetch token info from CoinGecko
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      
+      // Try to fetch token info from CoinGecko with retries
       const fetchTokenInfo = async () => {
         try {
           // First try CoinGecko direct lookup
-          const cgResponse = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}`);
+          const cgResponse = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}`, {
+            signal: controller.signal
+          });
           if (cgResponse.ok) {
             const data = await cgResponse.json();
             setDynamicToken({
@@ -63,7 +80,9 @@ export default function PricePrediction() {
           }
           
           // Fallback: search by the coinId
-          const searchResponse = await fetch(`https://api.coingecko.com/api/v3/search?query=${encodeURIComponent(coinId)}`);
+          const searchResponse = await fetch(`https://api.coingecko.com/api/v3/search?query=${encodeURIComponent(coinId)}`, {
+            signal: controller.signal
+          });
           if (searchResponse.ok) {
             const searchData = await searchResponse.json();
             if (searchData.coins && searchData.coins.length > 0) {
@@ -79,7 +98,6 @@ export default function PricePrediction() {
           }
           
           // Last resort: use the coinId as the identifier
-          // Format nicely: "pepe-2" -> "Pepe 2"
           const formattedName = coinId
             .split('-')
             .map(word => word.charAt(0).toUpperCase() + word.slice(1))
@@ -91,27 +109,37 @@ export default function PricePrediction() {
             name: formattedName
           });
         } catch (error) {
-          console.error('Error fetching token info:', error);
-          // Use coinId as fallback
-          const formattedName = coinId
-            .split('-')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
-          
-          setDynamicToken({
-            id: coinId,
-            symbol: coinId.toUpperCase().substring(0, 6),
-            name: formattedName
-          });
+          if ((error as Error).name === 'AbortError') {
+            setTokenError('Request timed out. Please try again.');
+          } else {
+            console.error('Error fetching token info:', error);
+            // Use coinId as fallback
+            const formattedName = coinId
+              .split('-')
+              .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ');
+            
+            setDynamicToken({
+              id: coinId,
+              symbol: coinId.toUpperCase().substring(0, 6),
+              name: formattedName
+            });
+          }
         }
+        clearTimeout(timeoutId);
         setIsLoadingToken(false);
       };
       
       fetchTokenInfo();
+      
+      return () => {
+        controller.abort();
+        clearTimeout(timeoutId);
+      };
     } else {
       setDynamicToken(null);
     }
-  }, [coinId, predefinedCrypto]);
+  }, [coinId, predefinedCrypto, retryCount]);
   
   // Use predefined crypto or dynamic token
   const crypto = predefinedCrypto || dynamicToken || { id: coinId || 'bitcoin', symbol: coinId?.toUpperCase() || 'BTC', name: coinId || 'Bitcoin' };
@@ -130,10 +158,36 @@ export default function PricePrediction() {
     return (
       <Layout>
         <div className="container mx-auto px-4 py-6 max-w-7xl">
-          <Card className="bg-card/50">
-            <CardContent className="p-8">
+          <Card className="bg-card/50 border-border">
+            <CardContent className="p-8 space-y-4">
+              <Skeleton className="h-12 w-3/4 mx-auto" />
               <Skeleton className="h-48 w-full" />
-              <p className="text-center text-muted-foreground mt-4">Loading token information...</p>
+              <Skeleton className="h-8 w-1/2 mx-auto" />
+              <p className="text-center text-muted-foreground mt-4 flex items-center justify-center gap-2">
+                <RefreshCw className="h-4 w-4 animate-spin" />
+                Loading token information...
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </Layout>
+    );
+  }
+  
+  // Show error state with retry option
+  if (tokenError) {
+    return (
+      <Layout>
+        <div className="container mx-auto px-4 py-6 max-w-7xl">
+          <Card className="bg-red-500/10 border-red-500/20">
+            <CardContent className="p-8 text-center space-y-4">
+              <AlertTriangle className="h-12 w-12 text-red-400 mx-auto" />
+              <h2 className="text-lg font-semibold text-red-400">{tokenError}</h2>
+              <p className="text-muted-foreground">Unable to load token information. This might be a temporary issue.</p>
+              <Button onClick={handleRetry} variant="outline" className="mt-4">
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Try Again
+              </Button>
             </CardContent>
           </Card>
         </div>
