@@ -53,17 +53,37 @@ export function usePricePrediction(
   return useQuery<PredictionData>({
     queryKey: ['price-prediction', coinId, timeframe],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke('price-prediction', {
-        body: { coinId, symbol, timeframe }
-      });
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
       
-      if (error) throw error;
-      return data;
+      try {
+        const { data, error } = await supabase.functions.invoke('price-prediction', {
+          body: { coinId, symbol, timeframe }
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (error) {
+          console.error('Price prediction error:', error);
+          throw new Error(error.message || 'Failed to fetch prediction');
+        }
+        
+        if (!data) {
+          throw new Error('No prediction data received');
+        }
+        
+        return data;
+      } catch (err) {
+        clearTimeout(timeoutId);
+        throw err;
+      }
     },
-    enabled: enabled && !!coinId,
+    enabled: enabled && !!coinId && coinId.length > 0,
     staleTime: timeframe === 'daily' ? 5 * 60 * 1000 : timeframe === 'weekly' ? 30 * 60 * 1000 : 60 * 60 * 1000,
     refetchInterval: timeframe === 'daily' ? 5 * 60 * 1000 : false,
-    retry: 2
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
+    gcTime: 1000 * 60 * 30, // Keep in cache for 30 minutes
   });
 }
 

@@ -9,6 +9,7 @@ import { SEO, StructuredData } from "@/components/SEO";
 import { AdSenseManager } from "@/components/ads/AdSenseManager";
 import { usePageTracking } from "@/hooks/usePageTracking";
 import { AppErrorBoundary } from "@/components/system/AppErrorBoundary";
+import { GlobalSchemas } from "@/components/seo/RichSchemas";
 
 // Eager load critical pages
 import Index from "./pages/Index";
@@ -133,6 +134,7 @@ const App = () => (
           <AdSenseManager />
           <SEO />
           <StructuredData />
+          <GlobalSchemas />
           <Suspense fallback={<PageLoader />}>
             <Routes>
               <Route path="/" element={<Index />} />
