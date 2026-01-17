@@ -2,25 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Font imports with swap for faster text rendering */
-@font-face {
-  font-family: 'Orbitron';
-  font-weight: 400;
-  font-display: swap;
-  src: local('Orbitron'), url('@fontsource/orbitron/files/orbitron-latin-400-normal.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Orbitron';
-  font-weight: 500;
-  font-display: swap;
-  src: local('Orbitron'), url('@fontsource/orbitron/files/orbitron-latin-500-normal.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Orbitron';
-  font-weight: 700;
-  font-display: swap;
-  src: local('Orbitron'), url('@fontsource/orbitron/files/orbitron-latin-700-normal.woff2') format('woff2');
-}
+/* Clean, modern font stack using Inter for everything */
 @font-face {
   font-family: 'Inter';
   font-weight: 400;
@@ -38,6 +20,12 @@
   font-weight: 600;
   font-display: swap;
   src: local('Inter'), url('@fontsource/inter/files/inter-latin-600-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-weight: 700;
+  font-display: swap;
+  src: local('Inter'), url('@fontsource/inter/files/inter-latin-700-normal.woff2') format('woff2');
 }
 
 @layer base {
@@ -148,17 +136,18 @@
   }
 
   body {
-    @apply bg-background text-foreground font-body antialiased;
+    @apply bg-background text-foreground font-sans antialiased;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     overflow-x: hidden;
     min-height: 100vh;
     min-height: 100dvh;
+    line-height: 1.6;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display;
+    @apply font-semibold tracking-tight;
   }
 
   /* Improve touch targets globally */

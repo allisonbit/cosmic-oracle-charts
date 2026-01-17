@@ -16,7 +16,7 @@ function LoadingFallback() {
     <div className="flex-1 flex items-center justify-center min-h-[50vh]" role="status" aria-label="Loading content">
       <div className="flex flex-col items-center gap-3">
         <Loader2 className="w-8 h-8 animate-spin text-primary" aria-hidden="true" />
-        <p className="text-muted-foreground text-sm font-display">Loading...</p>
+        <p className="text-muted-foreground text-sm">Loading...</p>
       </div>
     </div>
   );

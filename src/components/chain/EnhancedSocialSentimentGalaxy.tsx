@@ -296,13 +296,13 @@ export function EnhancedSocialSentimentGalaxy({ chain, socialSentiment, isLoadin
                   <ellipse cx="300" cy="90" rx="80" ry="55" fill="url(#nebula-red)" />
 
                   {/* Labels */}
-                  <text x="100" y="170" textAnchor="middle" fill="hsl(160 84% 39%)" fontSize="14" fontFamily="Orbitron">
+                  <text x="100" y="170" textAnchor="middle" fill="hsl(160 84% 39%)" fontSize="14" fontFamily="Inter, sans-serif" fontWeight="600">
                     Positive
                   </text>
-                  <text x="200" y="170" textAnchor="middle" fill="hsl(38 92% 50%)" fontSize="14" fontFamily="Orbitron">
+                  <text x="200" y="170" textAnchor="middle" fill="hsl(38 92% 50%)" fontSize="14" fontFamily="Inter, sans-serif" fontWeight="600">
                     Neutral
                   </text>
-                  <text x="300" y="170" textAnchor="middle" fill="hsl(0 84% 60%)" fontSize="14" fontFamily="Orbitron">
+                  <text x="300" y="170" textAnchor="middle" fill="hsl(0 84% 60%)" fontSize="14" fontFamily="Inter, sans-serif" fontWeight="600">
                     Negative
                   </text>
 
