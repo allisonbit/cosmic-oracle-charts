@@ -57,11 +57,13 @@ export function useTokenDiscovery(chain: string = 'ethereum', enabled = true) {
       }
     },
     enabled,
-    staleTime: 30000, // 30 seconds
-    refetchInterval: 30000, // Refresh every 30 seconds
-    refetchIntervalInBackground: false,
-    refetchOnWindowFocus: false,
-    retry: 1,
-    retryDelay: 3000,
+    staleTime: 20000,
+    refetchInterval: 25000, // Refresh every 25 seconds 24/7
+    gcTime: 1000 * 60 * 10,
+    refetchIntervalInBackground: true, // Keep updating in background
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    retry: 3,
+    retryDelay: 2000,
   });
 }

@@ -59,17 +59,19 @@ const PageLoader = memo(function PageLoader() {
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: false, // Disable to reduce unnecessary fetches
-      refetchOnReconnect: true,
-      refetchOnMount: false, // Use cached data on mount
-      retry: 2,
-      retryDelay: (attemptIndex) => Math.min(2000 * 2 ** attemptIndex, 15000),
-      staleTime: 30000, // 30 seconds stale time
-      gcTime: 1000 * 60 * 10, // 10 minutes cache
+      refetchOnWindowFocus: true, // Refetch on window focus for fresh data
+      refetchOnReconnect: true, // Refetch when network reconnects
+      refetchOnMount: true, // Always get fresh data on mount
+      refetchInterval: false, // Individual hooks control their own intervals
+      refetchIntervalInBackground: true, // Keep fetching when tab not focused - 24/7 updates
+      retry: 3,
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
+      staleTime: 15000, // 15 seconds stale time for fresher data
+      gcTime: 1000 * 60 * 15, // 15 minutes cache
       networkMode: 'offlineFirst',
     },
     mutations: {
-      retry: 1,
+      retry: 2,
       networkMode: 'offlineFirst',
     },
   },

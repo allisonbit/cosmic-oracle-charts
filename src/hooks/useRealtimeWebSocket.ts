@@ -68,8 +68,8 @@ export function useRealtimePricesWS(chainIds: string[]) {
     // Initial fetch
     fetchPrices();
 
-    // Set up polling every 15 seconds (reduced from 6s to prevent rate limiting)
-    intervalRef.current = setInterval(fetchPrices, 15000);
+    // Set up polling every 8 seconds for 24/7 real-time updates
+    intervalRef.current = setInterval(fetchPrices, 8000);
 
     return () => {
       mountedRef.current = false;
@@ -144,8 +144,8 @@ export function useWhaleAlertsWS(chainId: string, enableNotifications = false) {
     // Initial fetch
     fetchAlerts();
 
-    // Poll every 30 seconds for whale alerts (reduced from 10s)
-    intervalRef.current = setInterval(fetchAlerts, 30000);
+    // Poll every 15 seconds for whale alerts - 24/7 updates
+    intervalRef.current = setInterval(fetchAlerts, 15000);
 
     return () => {
       mountedRef.current = false;

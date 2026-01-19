@@ -53,8 +53,8 @@ export function useRealtimePrices(symbols: string[]) {
     // Initial fetch
     fetchPrices();
 
-    // Set up polling every 8 seconds for smoother updates
-    intervalRef.current = setInterval(fetchPrices, 8000);
+    // Set up polling every 5 seconds for real-time 24/7 updates
+    intervalRef.current = setInterval(fetchPrices, 5000);
 
     return () => {
       mountedRef.current = false;

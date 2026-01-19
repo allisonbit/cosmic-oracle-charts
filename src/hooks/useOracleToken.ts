@@ -45,9 +45,12 @@ export function useOracleToken() {
         throw err;
       }
     },
-    staleTime: 15000, // 15 seconds
-    refetchInterval: 15000, // Auto-refresh every 15 seconds
-    refetchIntervalInBackground: true,
-    retry: 2,
+    staleTime: 10000,
+    refetchInterval: 15000, // Auto-refresh every 15 seconds 24/7
+    gcTime: 1000 * 60 * 10,
+    refetchIntervalInBackground: true, // Keep updating in background
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    retry: 3,
   });
 }

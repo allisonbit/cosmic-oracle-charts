@@ -205,8 +205,8 @@ export function useRealtimeStrength(timeframe: string = '24h') {
       fetchData();
     }
 
-    // Set up real-time polling every 15 seconds
-    intervalRef.current = setInterval(fetchData, 15000);
+    // Set up real-time polling every 10 seconds for 24/7 updates
+    intervalRef.current = setInterval(fetchData, 10000);
 
     return () => {
       if (intervalRef.current) {

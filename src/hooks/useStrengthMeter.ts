@@ -151,8 +151,13 @@ export function useStrengthMeter(timeframe: string = '24h') {
         throw err;
       }
     },
-    staleTime: 30000,
-    refetchInterval: 30000,
+    staleTime: 20000,
+    refetchInterval: 20000, // Refresh every 20 seconds 24/7
+    gcTime: 1000 * 60 * 10,
+    refetchIntervalInBackground: true, // Keep updating in background
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    retry: 3,
   });
 }
 

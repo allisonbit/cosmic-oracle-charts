@@ -39,10 +39,13 @@ export function useAIForecast(coinData: any, analysisType: "coin_forecast" | "ma
       }
     },
     enabled: enabled && !!coinData,
-    staleTime: 120000, // 2 minutes
+    staleTime: 90000, // 1.5 minutes
     refetchInterval: 120000, // Refresh every 2 minutes
-    refetchIntervalInBackground: true,
-    retry: 2,
+    gcTime: 1000 * 60 * 15, // 15 min cache
+    refetchIntervalInBackground: true, // Keep updating 24/7
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    retry: 3,
     retryDelay: 2000,
   });
 }

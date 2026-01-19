@@ -45,13 +45,14 @@ export function useCryptoPrices() {
         return { ...FALLBACK_DATA, timestamp: Date.now() };
       }
     },
-    refetchInterval: 30000, // 30 seconds - balanced for live feel without rate limiting
-    staleTime: 25000, // Increased to reduce refetch pressure
-    gcTime: 1000 * 60 * 5, // 5 min cache
-    refetchIntervalInBackground: false,
-    refetchOnWindowFocus: false,
-    retry: 1,
-    retryDelay: 3000,
-    networkMode: 'offlineFirst', // Use cache first to avoid blocking render
+    refetchInterval: 15000, // 15 seconds - live updates 24/7
+    staleTime: 10000,
+    gcTime: 1000 * 60 * 10, // 10 min cache
+    refetchIntervalInBackground: true, // Keep updating in background
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    retry: 3,
+    retryDelay: 2000,
+    networkMode: 'offlineFirst',
   });
 }
