@@ -137,7 +137,12 @@ export function useCryptoFactory(filters?: {
         timestamp,
       };
     },
-    staleTime: 60000,
-    refetchInterval: 60000,
+    staleTime: 45000,
+    refetchInterval: 60000, // Refresh every 60 seconds 24/7
+    gcTime: 1000 * 60 * 15, // 15 min cache
+    refetchIntervalInBackground: true, // Keep updating in background
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    retry: 3,
   });
 }

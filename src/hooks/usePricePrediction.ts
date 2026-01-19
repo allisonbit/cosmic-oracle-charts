@@ -79,11 +79,14 @@ export function usePricePrediction(
       }
     },
     enabled: enabled && !!coinId && coinId.length > 0,
-    staleTime: timeframe === 'daily' ? 5 * 60 * 1000 : timeframe === 'weekly' ? 30 * 60 * 1000 : 60 * 60 * 1000,
-    refetchInterval: timeframe === 'daily' ? 5 * 60 * 1000 : false,
+    staleTime: timeframe === 'daily' ? 3 * 60 * 1000 : timeframe === 'weekly' ? 15 * 60 * 1000 : 30 * 60 * 1000,
+    refetchInterval: timeframe === 'daily' ? 5 * 60 * 1000 : timeframe === 'weekly' ? 15 * 60 * 1000 : 30 * 60 * 1000, // All timeframes auto-refresh 24/7
+    gcTime: 1000 * 60 * 60, // Keep in cache for 60 minutes
+    refetchIntervalInBackground: true, // Keep updating in background
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
-    gcTime: 1000 * 60 * 30, // Keep in cache for 30 minutes
   });
 }
 

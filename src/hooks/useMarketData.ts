@@ -77,12 +77,14 @@ export function useMarketData() {
         return { ...FALLBACK_DATA, timestamp: Date.now() };
       }
     },
-    refetchInterval: 30000, // Refresh every 30 seconds
-    staleTime: 25000, // Increased to reduce refetch pressure
-    refetchIntervalInBackground: false,
-    refetchOnWindowFocus: false,
-    retry: 1,
-    retryDelay: 3000,
-    networkMode: 'offlineFirst', // Use cache first to avoid blocking render
+    refetchInterval: 20000, // Refresh every 20 seconds 24/7
+    staleTime: 15000,
+    gcTime: 1000 * 60 * 10, // 10 min cache
+    refetchIntervalInBackground: true, // Keep updating in background
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    retry: 3,
+    retryDelay: 2000,
+    networkMode: 'offlineFirst',
   });
 }

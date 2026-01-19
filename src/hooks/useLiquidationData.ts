@@ -34,8 +34,12 @@ export function useLiquidationData() {
   return useQuery({
     queryKey: ['liquidation-data'],
     queryFn: fetchLiquidationData,
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: 20000, // Refresh every 20 seconds 24/7
     staleTime: 15000,
-    retry: 2,
+    gcTime: 1000 * 60 * 10,
+    refetchIntervalInBackground: true, // Keep updating in background
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    retry: 3,
   });
 }

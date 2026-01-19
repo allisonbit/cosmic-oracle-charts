@@ -44,9 +44,13 @@ export function useInsights() {
 
       return data;
     },
-    staleTime: 600000, // 10 minutes
-    refetchInterval: 1800000, // 30 minutes
-    retry: 2,
+    staleTime: 300000, // 5 minutes
+    refetchInterval: 600000, // 10 minutes - auto refresh
+    gcTime: 1000 * 60 * 30, // 30 min cache
+    refetchIntervalInBackground: true, // Keep updating in background
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    retry: 3,
   });
 }
 

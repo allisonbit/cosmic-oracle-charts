@@ -24,7 +24,7 @@ interface UseFundingRatesOptions {
 }
 
 export function useFundingRates(options: UseFundingRatesOptions = {}) {
-  const { refreshInterval = 30000 } = options;
+  const { refreshInterval = 15000 } = options; // 15 seconds default for 24/7 updates
 
   const [data, setData] = useState<FundingRatesData | null>(null);
   const [isLoading, setIsLoading] = useState(true);

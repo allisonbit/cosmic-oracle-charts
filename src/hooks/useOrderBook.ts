@@ -30,7 +30,7 @@ export function useOrderBook(options: UseOrderBookOptions = {}) {
     pair = 'BTCUSDT',
     exchange = 'binance',
     limit = 10,
-    refreshInterval = 3000
+    refreshInterval = 2000 // 2 seconds for real-time order book updates
   } = options;
 
   const [data, setData] = useState<OrderBookData | null>(null);

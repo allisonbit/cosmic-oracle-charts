@@ -165,11 +165,13 @@ export function useChainData(chainId: string, enabled = true) {
       }
     },
     enabled: enabled && !!chainId,
-    refetchInterval: 30000, // 30 seconds - reduced to prevent rate limiting
-    staleTime: 25000,
-    gcTime: 1000 * 60 * 5, // 5 min cache
-    refetchIntervalInBackground: false, // Don't refetch when tab not focused
-    retry: 2,
+    refetchInterval: 20000, // 20 seconds - live 24/7 updates
+    staleTime: 15000,
+    gcTime: 1000 * 60 * 10, // 10 min cache
+    refetchIntervalInBackground: true, // Keep updating in background 24/7
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    retry: 3,
     retryDelay: 2000,
     placeholderData: (previousData) => previousData || generateFallbackData(chainId),
   });
