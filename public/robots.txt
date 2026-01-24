@@ -1,5 +1,5 @@
 # Oracle Bull - Comprehensive robots.txt
-# https://oraclebull.com
+# https://cosmic-oracle-charts.lovable.app
 
 # Default: Allow full crawling for all bots
 User-agent: *
@@ -18,7 +18,7 @@ Allow: /*.svg
 Allow: /*.woff2
 
 # Sitemap locations
-Sitemap: https://oraclebull.com/sitemap.xml
+Sitemap: https://cosmic-oracle-charts.lovable.app/sitemap.xml
 
 # Google specific - full access
 User-agent: Googlebot
@@ -145,4 +145,4 @@ User-agent: DataForSeoBot
 Disallow: /
 
 # Host directive for canonicalization
-Host: https://oraclebull.com
+Host: https://cosmic-oracle-charts.lovable.app

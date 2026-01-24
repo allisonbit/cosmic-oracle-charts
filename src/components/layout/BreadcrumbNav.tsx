@@ -54,7 +54,7 @@ export function BreadcrumbNav() {
       "@type": "ListItem",
       "position": index + 1,
       "name": item.label,
-      "item": `https://oraclebull.com${item.path}`
+      "item": `https://cosmic-oracle-charts.lovable.app${item.path}`
     }))
   }), [breadcrumbs]);
 

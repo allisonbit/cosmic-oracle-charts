@@ -17,7 +17,7 @@ const defaultMeta = {
   keywords: "crypto forecast, bitcoin prediction, ethereum price, crypto analytics, blockchain data, whale tracking, crypto sentiment, AI trading signals, cryptocurrency market, DeFi analytics, token scanner, real-time crypto prices",
   image: "https://storage.googleapis.com/gpt-engineer-file-uploads/uDg0k7BDXGRxsHZqK6gSbdN9o0l1/social-images/social-1765566965381-WhatsApp Image 2025-12-12 at 10.50.30_d13b6f53.jpg",
   twitterHandle: "@oracle_bulls",
-  baseUrl: "https://oraclebull.com"
+  baseUrl: "https://cosmic-oracle-charts.lovable.app"
 };
 
 const pageSEO: Record<string, { title: string; description: string; keywords: string }> = {

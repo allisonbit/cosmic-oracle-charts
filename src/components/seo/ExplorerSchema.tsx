@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import { SITE_URL } from "@/lib/siteConfig";
 
 interface ExplorerSchemaProps {
   chainCount?: number;
@@ -11,7 +12,7 @@ export function ExplorerSchema({ chainCount = 30 }: ExplorerSchemaProps) {
     "name": "Oracle Bull Token Explorer",
     "applicationCategory": "FinanceApplication",
     "operatingSystem": "Web Browser",
-    "url": "https://oraclebull.com/explorer",
+    "url": `${SITE_URL}/explorer`,
     "description": `Universal cryptocurrency token explorer supporting ${chainCount}+ blockchains. Search any token by contract address, name, or symbol with AI-powered analysis.`,
     "offers": {
       "@type": "Offer",
@@ -21,7 +22,7 @@ export function ExplorerSchema({ chainCount = 30 }: ExplorerSchemaProps) {
     "provider": {
       "@type": "Organization",
       "name": "Oracle Bull",
-      "url": "https://oraclebull.com"
+      "url": SITE_URL
     },
     "featureList": [
       "Multi-chain token search",
@@ -69,10 +70,10 @@ export function ExplorerSchema({ chainCount = 30 }: ExplorerSchemaProps) {
       <title>Universal Token Explorer | Multi-Chain Search | Oracle Bull</title>
       <meta name="description" content={`Search any cryptocurrency token across ${chainCount}+ blockchains. Find tokens by contract address, name, or symbol with real-time price data and AI analysis.`} />
       <meta name="keywords" content="token explorer, contract address lookup, token search, multi-chain explorer, defi token finder, crypto token info" />
-      <link rel="canonical" href="https://oraclebull.com/explorer" />
+      <link rel="canonical" href={`${SITE_URL}/explorer`} />
       <meta property="og:title" content="Universal Token Explorer | Oracle Bull" />
       <meta property="og:description" content={`Search any token across ${chainCount}+ blockchains with AI-powered analysis.`} />
-      <meta property="og:url" content="https://oraclebull.com/explorer" />
+      <meta property="og:url" content={`${SITE_URL}/explorer`} />
       <script type="application/ld+json">{JSON.stringify(schema)}</script>
       <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
     </Helmet>

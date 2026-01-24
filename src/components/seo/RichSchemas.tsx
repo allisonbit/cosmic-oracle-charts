@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-const baseUrl = "https://oraclebull.com";
+const baseUrl = "https://cosmic-oracle-charts.lovable.app";
 
 // Organization schema for site-wide authority
 export function OrganizationSchema() {

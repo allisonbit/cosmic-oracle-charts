@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import { SITE_URL } from "@/lib/siteConfig";
 
 interface SentimentSchemaProps {
   fearGreedIndex?: number;
@@ -12,7 +13,7 @@ export function SentimentSchema({ fearGreedIndex = 50, marketMomentum = 'NEUTRAL
     "name": "Oracle Bull Sentiment Scanner",
     "applicationCategory": "FinanceApplication",
     "operatingSystem": "Web Browser",
-    "url": "https://oraclebull.com/sentiment",
+    "url": `${SITE_URL}/sentiment`,
     "description": "Advanced cryptocurrency sentiment analysis with fear & greed index, whale tracking, social sentiment monitoring, and AI-powered market signals.",
     "offers": {
       "@type": "Offer",
@@ -22,7 +23,7 @@ export function SentimentSchema({ fearGreedIndex = 50, marketMomentum = 'NEUTRAL
     "provider": {
       "@type": "Organization",
       "name": "Oracle Bull",
-      "url": "https://oraclebull.com"
+      "url": SITE_URL
     },
     "featureList": [
       "Fear & Greed Index tracking",
@@ -70,10 +71,10 @@ export function SentimentSchema({ fearGreedIndex = 50, marketMomentum = 'NEUTRAL
       <title>Crypto Sentiment Analysis | Fear & Greed Index | Oracle Bull</title>
       <meta name="description" content="Track crypto market sentiment with our Fear & Greed Index, whale alerts, social sentiment analysis, and AI-powered market signals. Real-time updates." />
       <meta name="keywords" content="crypto sentiment, fear greed index, whale alerts, crypto social sentiment, market sentiment analysis, bitcoin sentiment" />
-      <link rel="canonical" href="https://oraclebull.com/sentiment" />
+      <link rel="canonical" href={`${SITE_URL}/sentiment`} />
       <meta property="og:title" content="Crypto Sentiment Analysis | Oracle Bull" />
       <meta property="og:description" content="Advanced sentiment analysis with fear & greed index, whale tracking, and AI signals." />
-      <meta property="og:url" content="https://oraclebull.com/sentiment" />
+      <meta property="og:url" content={`${SITE_URL}/sentiment`} />
       <script type="application/ld+json">{JSON.stringify(schema)}</script>
       <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
     </Helmet>

@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import { SITE_URL } from "@/lib/siteConfig";
 
 // Strength Meter Schema
 export function StrengthMeterSchema() {
@@ -7,12 +8,12 @@ export function StrengthMeterSchema() {
     "@type": "WebApplication",
     "name": "Crypto Strength Meter",
     "applicationCategory": "FinanceApplication",
-    "url": "https://oraclebull.com/strength-meter",
+    "url": `${SITE_URL}/strength-meter`,
     "description": "Real-time cryptocurrency strength analysis tool. Compare relative strength of crypto assets and blockchains using our composite weighted model.",
     "provider": {
       "@type": "Organization",
       "name": "Oracle Bull",
-      "url": "https://oraclebull.com"
+      "url": SITE_URL
     },
     "featureList": [
       "Real-time strength scoring",
@@ -51,7 +52,7 @@ export function StrengthMeterSchema() {
       <title>Crypto Strength Meter | Relative Strength Analysis | Oracle Bull</title>
       <meta name="description" content="Compare crypto strength in real-time. Analyze relative performance of cryptocurrencies and blockchains with our AI-powered strength scoring system." />
       <meta name="keywords" content="crypto strength, relative strength, momentum analysis, crypto comparison, strength indicator, market momentum" />
-      <link rel="canonical" href="https://oraclebull.com/strength-meter" />
+      <link rel="canonical" href={`${SITE_URL}/strength-meter`} />
       <script type="application/ld+json">{JSON.stringify(schema)}</script>
       <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
     </Helmet>
@@ -65,12 +66,12 @@ export function CryptoFactorySchema() {
     "@type": "WebApplication",
     "name": "Crypto Factory",
     "applicationCategory": "FinanceApplication",
-    "url": "https://oraclebull.com/crypto-factory",
+    "url": `${SITE_URL}/factory`,
     "description": "Centralized crypto intelligence hub tracking market events, on-chain activity, narratives, and news. Your command center for market-moving information.",
     "provider": {
       "@type": "Organization",
       "name": "Oracle Bull",
-      "url": "https://oraclebull.com"
+      "url": SITE_URL
     },
     "featureList": [
       "Market events calendar",
@@ -87,7 +88,7 @@ export function CryptoFactorySchema() {
       <title>Crypto Factory | Market Events & News Hub | Oracle Bull</title>
       <meta name="description" content="Your centralized crypto intelligence hub. Track market events, on-chain activity, emerging narratives, and curated news all in one place." />
       <meta name="keywords" content="crypto events, blockchain calendar, crypto news, market events, on-chain data, crypto narratives" />
-      <link rel="canonical" href="https://oraclebull.com/crypto-factory" />
+      <link rel="canonical" href={`${SITE_URL}/factory`} />
       <script type="application/ld+json">{JSON.stringify(schema)}</script>
     </Helmet>
   );
@@ -100,11 +101,11 @@ export function TokenSchema({ symbol, name, price }: { symbol: string; name: str
     "@type": "FinancialProduct",
     "name": `${name} (${symbol})`,
     "description": `${name} (${symbol}) cryptocurrency token with real-time price data, charts, and market information.`,
-    "url": "https://oraclebull.com/contact",
+    "url": `${SITE_URL}/contact`,
     "provider": {
       "@type": "Organization",
       "name": "Oracle Bull",
-      "url": "https://oraclebull.com"
+      "url": SITE_URL
     }
   };
 
@@ -112,7 +113,7 @@ export function TokenSchema({ symbol, name, price }: { symbol: string; name: str
     <Helmet>
       <title>{symbol} Token | Price & Market Data | Oracle Bull</title>
       <meta name="description" content={`${name} (${symbol}) live price, market data, and community information. Track ${symbol} performance and join the community.`} />
-      <link rel="canonical" href="https://oraclebull.com/contact" />
+      <link rel="canonical" href={`${SITE_URL}/contact`} />
       <script type="application/ld+json">{JSON.stringify(schema)}</script>
     </Helmet>
   );
