@@ -149,7 +149,7 @@ function BlogPostCard({ post, onClick }: { post: BlogPost; onClick: () => void }
 }
 
 function BlogPostModal({ post, open, onClose }: { post: BlogPost | null; open: boolean; onClose: () => void }) {
-  const baseUrl = 'https://oraclebull.com';
+  const baseUrl = 'https://cosmic-oracle-charts.lovable.app';
   
   useEffect(() => {
     if (post && open) {

@@ -71,11 +71,11 @@ export default function LearnArticle() {
     "publisher": {
       "@type": "Organization",
       "name": "Oracle Bull",
-      "url": "https://oraclebull.com"
+      "url": "https://cosmic-oracle-charts.lovable.app"
     },
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": `https://oraclebull.com/learn/${article.slug}`
+      "@id": `https://cosmic-oracle-charts.lovable.app/learn/${article.slug}`
     }
   };
 
@@ -85,10 +85,10 @@ export default function LearnArticle() {
         <title>{article.metaTitle}</title>
         <meta name="description" content={article.metaDescription} />
         <meta name="keywords" content={[article.primaryKeyword, ...article.secondaryKeywords].join(", ")} />
-        <link rel="canonical" href={`https://oraclebull.com/learn/${article.slug}`} />
+        <link rel="canonical" href={`https://cosmic-oracle-charts.lovable.app/learn/${article.slug}`} />
         <meta property="og:title" content={article.metaTitle} />
         <meta property="og:description" content={article.metaDescription} />
-        <meta property="og:url" content={`https://oraclebull.com/learn/${article.slug}`} />
+        <meta property="og:url" content={`https://cosmic-oracle-charts.lovable.app/learn/${article.slug}`} />
         <meta property="og:type" content="article" />
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>

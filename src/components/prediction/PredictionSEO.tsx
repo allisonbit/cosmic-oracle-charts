@@ -1,5 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 
+const baseUrl = "https://cosmic-oracle-charts.lovable.app";
+
 interface PredictionSEOProps {
   coinName: string;
   symbol: string;
@@ -18,7 +20,7 @@ export function PredictionSEO({ coinName, symbol, timeframe, currentPrice, bias,
   
   const currentDate = new Date();
   const dateStr = currentDate.toISOString().split('T')[0];
-  const canonicalUrl = `https://oraclebull.com/price-prediction/${coinName.toLowerCase().replace(/\s+/g, '-')}/${timeframe}`;
+  const canonicalUrl = `${baseUrl}/price-prediction/${coinName.toLowerCase().replace(/\s+/g, '-')}/${timeframe}`;
   
   // Enhanced FAQ Schema with more questions for rich snippets
   const faqSchema = {
@@ -74,18 +76,18 @@ export function PredictionSEO({ coinName, symbol, timeframe, currentPrice, bias,
     "@type": "Article",
     "headline": title,
     "description": description,
-    "image": "https://oraclebull.com/oracle-bull-logo.jpg",
+    "image": `${baseUrl}/oracle-bull-logo.jpg`,
     "author": {
       "@type": "Organization",
       "name": "Oracle Bull",
-      "url": "https://oraclebull.com"
+      "url": baseUrl
     },
     "publisher": {
       "@type": "Organization",
       "name": "Oracle Bull",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://oraclebull.com/oracle-bull-logo.jpg",
+        "url": `${baseUrl}/oracle-bull-logo.jpg`,
         "width": 512,
         "height": 512
       }
@@ -109,7 +111,7 @@ export function PredictionSEO({ coinName, symbol, timeframe, currentPrice, bias,
     "provider": {
       "@type": "Organization",
       "name": "Oracle Bull",
-      "url": "https://oraclebull.com"
+      "url": baseUrl
     },
     "url": canonicalUrl,
     ...(currentPrice && {
@@ -132,19 +134,19 @@ export function PredictionSEO({ coinName, symbol, timeframe, currentPrice, bias,
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://oraclebull.com"
+        "item": baseUrl
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Predictions",
-        "item": "https://oraclebull.com/predictions"
+        "item": `${baseUrl}/predictions`
       },
       {
         "@type": "ListItem",
         "position": 3,
         "name": `${coinName} Prediction`,
-        "item": `https://oraclebull.com/price-prediction/${coinName.toLowerCase().replace(/\s+/g, '-')}`
+        "item": `${baseUrl}/price-prediction/${coinName.toLowerCase().replace(/\s+/g, '-')}`
       },
       {
         "@type": "ListItem",
@@ -169,7 +171,7 @@ export function PredictionSEO({ coinName, symbol, timeframe, currentPrice, bias,
       <meta property="og:description" content={description} />
       <meta property="og:type" content="article" />
       <meta property="og:url" content={canonicalUrl} />
-      <meta property="og:image" content="https://oraclebull.com/oracle-bull-logo.jpg" />
+      <meta property="og:image" content={`${baseUrl}/oracle-bull-logo.jpg`} />
       <meta property="og:site_name" content="Oracle Bull" />
       <meta property="article:published_time" content={dateStr} />
       <meta property="article:modified_time" content={dateStr} />
@@ -179,7 +181,7 @@ export function PredictionSEO({ coinName, symbol, timeframe, currentPrice, bias,
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content="https://oraclebull.com/oracle-bull-logo.jpg" />
+      <meta name="twitter:image" content={`${baseUrl}/oracle-bull-logo.jpg`} />
       <meta name="twitter:site" content="@oracle_bulls" />
       
       {/* AI Search Optimization */}

@@ -154,7 +154,7 @@ export default defineConfig(({ mode }) => ({
     react(),
     mode === "development" && componentTagger(),
     Sitemap({
-      hostname: "https://oraclebull.com",
+      hostname: "https://cosmic-oracle-charts.lovable.app",
       dynamicRoutes: allRoutes,
       generateRobotsTxt: false, // We have a custom robots.txt
       changefreq: "daily",

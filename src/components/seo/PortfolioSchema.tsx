@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import { SITE_URL } from "@/lib/siteConfig";
 
 export function PortfolioSchema() {
   const schema = {
@@ -7,7 +8,7 @@ export function PortfolioSchema() {
     "name": "Oracle Bull Wallet Scanner",
     "applicationCategory": "FinanceApplication",
     "operatingSystem": "Web Browser",
-    "url": "https://oraclebull.com/portfolio",
+    "url": `${SITE_URL}/portfolio`,
     "description": "AI-powered cryptocurrency wallet scanner and portfolio analyzer. Analyze any wallet address to find high-potential tokens, assess risk, and get actionable investment insights.",
     "offers": {
       "@type": "Offer",
@@ -17,7 +18,7 @@ export function PortfolioSchema() {
     "provider": {
       "@type": "Organization",
       "name": "Oracle Bull",
-      "url": "https://oraclebull.com"
+      "url": SITE_URL
     },
     "featureList": [
       "Multi-chain wallet scanning",
@@ -65,10 +66,10 @@ export function PortfolioSchema() {
       <title>Wallet Scanner | AI Portfolio Analysis | Oracle Bull</title>
       <meta name="description" content="AI-powered crypto wallet scanner. Analyze any wallet to find pumping tokens, assess portfolio risk, and get actionable investment insights. Free, no login required." />
       <meta name="keywords" content="wallet scanner, crypto portfolio analyzer, wallet analysis, token scanner, defi portfolio, crypto holdings tracker" />
-      <link rel="canonical" href="https://oraclebull.com/portfolio" />
+      <link rel="canonical" href={`${SITE_URL}/portfolio`} />
       <meta property="og:title" content="AI Wallet Scanner | Oracle Bull" />
       <meta property="og:description" content="Analyze any crypto wallet with AI. Get risk scores, pump potential, and investment insights." />
-      <meta property="og:url" content="https://oraclebull.com/portfolio" />
+      <meta property="og:url" content={`${SITE_URL}/portfolio`} />
       <script type="application/ld+json">{JSON.stringify(schema)}</script>
       <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
     </Helmet>
