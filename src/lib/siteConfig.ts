@@ -1,5 +1,6 @@
 // Central site configuration - single source of truth for all URLs
-export const SITE_URL = "https://cosmic-oracle-charts.lovable.app";
+// IMPORTANT: This is the canonical domain for SEO - all URLs should use this
+export const SITE_URL = "https://oraclebull.com";
 export const SITE_NAME = "Oracle Bull";
 export const TWITTER_HANDLE = "@oracle_bulls";
 

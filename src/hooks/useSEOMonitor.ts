@@ -1,5 +1,6 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { SITE_URL } from "@/lib/siteConfig";
 
 export interface SEOHealthResult {
   url: string;

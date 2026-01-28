@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { SITE_URL, SITE_NAME, TWITTER_HANDLE } from "@/lib/siteConfig";
 
 interface SEOProps {
   title?: string;
@@ -11,13 +12,13 @@ interface SEOProps {
 }
 
 const defaultMeta = {
-  siteName: "Oracle Bull",
+  siteName: SITE_NAME,
   title: "Oracle Bull | AI-Powered Crypto Forecasts & Blockchain Analytics",
   description: "Free AI-powered crypto forecasting platform. Real-time price charts, market predictions, whale tracking, sentiment analysis, and blockchain analytics for Bitcoin, Ethereum, Solana, and 1000+ tokens.",
   keywords: "crypto forecast, bitcoin prediction, ethereum price, crypto analytics, blockchain data, whale tracking, crypto sentiment, AI trading signals, cryptocurrency market, DeFi analytics, token scanner, real-time crypto prices",
   image: "https://storage.googleapis.com/gpt-engineer-file-uploads/uDg0k7BDXGRxsHZqK6gSbdN9o0l1/social-images/social-1765566965381-WhatsApp Image 2025-12-12 at 10.50.30_d13b6f53.jpg",
-  twitterHandle: "@oracle_bulls",
-  baseUrl: "https://cosmic-oracle-charts.lovable.app"
+  twitterHandle: TWITTER_HANDLE,
+  baseUrl: SITE_URL
 };
 
 const pageSEO: Record<string, { title: string; description: string; keywords: string }> = {
