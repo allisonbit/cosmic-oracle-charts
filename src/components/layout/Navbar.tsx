@@ -72,7 +72,7 @@ function NavDropdown({ label, items, isChain = false }: DropdownProps) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <button className="flex items-center gap-1 px-3 py-2 text-muted-foreground hover:text-foreground font-display text-xs uppercase tracking-wider transition-colors">
+      <button className="flex items-center gap-1 px-3 py-2 text-muted-foreground hover:text-foreground text-sm font-medium transition-colors">
         {label}
         <ChevronDown className={cn("w-3 h-3 transition-transform", isOpen && "rotate-180")} />
       </button>
@@ -152,8 +152,8 @@ export function Navbar() {
               <div className="w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden shadow-lg shadow-primary/30 group-hover:shadow-primary/50 transition-shadow flex-shrink-0">
                 <img src={oracleLogo} alt="Oracle - AI Crypto Forecasting" className="w-full h-full object-cover" />
               </div>
-              <span className="font-display text-base md:text-lg font-bold glow-text hidden sm:block">
-                ORACLE
+              <span className="text-base md:text-lg font-bold glow-text hidden sm:block">
+                Oracle Bull
               </span>
             </Link>
 
@@ -167,7 +167,7 @@ export function Navbar() {
               <Link
                 to="/"
                 className={cn(
-                  "px-3 py-2 rounded-lg font-display text-xs uppercase tracking-wider transition-all",
+                  "px-3 py-2 rounded-lg text-sm font-medium transition-all",
                   isActivePath("/")
                     ? "bg-primary/20 text-primary"
                     : "text-muted-foreground hover:text-foreground"
@@ -178,7 +178,7 @@ export function Navbar() {
               <Link
                 to="/dashboard"
                 className={cn(
-                  "px-3 py-2 rounded-lg font-display text-xs uppercase tracking-wider transition-all",
+                  "px-3 py-2 rounded-lg text-sm font-medium transition-all",
                   isActivePath("/dashboard")
                     ? "bg-primary/20 text-primary"
                     : "text-muted-foreground hover:text-foreground"
@@ -194,7 +194,7 @@ export function Navbar() {
               <Link
                 to="/market/best-crypto-to-buy-today"
                 className={cn(
-                  "px-3 py-2 rounded-lg font-display text-xs uppercase tracking-wider transition-all flex items-center gap-1",
+                  "px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1",
                   isActivePath("/market/")
                     ? "bg-primary/20 text-primary"
                     : "text-muted-foreground hover:text-foreground"
@@ -207,7 +207,7 @@ export function Navbar() {
               <Link
                 to="/insights"
                 className={cn(
-                  "px-3 py-2 rounded-lg font-display text-xs uppercase tracking-wider transition-all",
+                  "px-3 py-2 rounded-lg text-sm font-medium transition-all",
                   isActivePath("/insights")
                     ? "bg-primary/20 text-primary"
                     : "text-muted-foreground hover:text-foreground"
@@ -252,7 +252,7 @@ export function Navbar() {
                   to={item.path}
                   onClick={() => setIsOpen(false)}
                   className={cn(
-                    "flex items-center gap-4 px-5 py-4 rounded-xl font-display text-base uppercase tracking-wider transition-all duration-200 touch-manipulation",
+                    "flex items-center gap-4 px-5 py-4 rounded-xl text-base font-medium transition-all duration-200 touch-manipulation",
                     isActive
                       ? "bg-primary/20 text-primary border border-primary/30"
                       : "text-muted-foreground hover:text-primary hover:bg-primary/10 active:bg-primary/20"

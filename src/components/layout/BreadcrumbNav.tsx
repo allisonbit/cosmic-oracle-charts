@@ -1,6 +1,7 @@
 import { ChevronRight, Home } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useMemo } from "react";
+import { SITE_URL } from "@/lib/siteConfig";
 
 interface BreadcrumbItem {
   label: string;
@@ -54,7 +55,7 @@ export function BreadcrumbNav() {
       "@type": "ListItem",
       "position": index + 1,
       "name": item.label,
-      "item": `https://cosmic-oracle-charts.lovable.app${item.path}`
+      "item": `${SITE_URL}${item.path}`
     }))
   }), [breadcrumbs]);
 

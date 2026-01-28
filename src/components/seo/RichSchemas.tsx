@@ -1,6 +1,7 @@
 import { useEffect } from "react";
+import { SITE_URL } from "@/lib/siteConfig";
 
-const baseUrl = "https://cosmic-oracle-charts.lovable.app";
+const baseUrl = SITE_URL;
 
 // Organization schema for site-wide authority
 export function OrganizationSchema() {

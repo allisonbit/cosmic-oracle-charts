@@ -15,7 +15,7 @@ const seoMonitorRequestSchema = z.object({
 // Max request body size (8KB)
 const MAX_BODY_SIZE = 8 * 1024;
 
-const SITE_URL = 'https://cosmic-oracle-charts.lovable.app';
+const SITE_URL = 'https://oraclebull.com';
 
 // All routes to monitor - comprehensive list
 const ALL_ROUTES = [
