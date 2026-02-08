@@ -1,5 +1,6 @@
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
+import { SITE_URL } from "@/lib/siteConfig";
 import { useAIBlog, BlogPost } from "@/hooks/useAIBlog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -149,7 +150,7 @@ function BlogPostCard({ post, onClick }: { post: BlogPost; onClick: () => void }
 }
 
 function BlogPostModal({ post, open, onClose }: { post: BlogPost | null; open: boolean; onClose: () => void }) {
-  const baseUrl = 'https://cosmic-oracle-charts.lovable.app';
+  const baseUrl = SITE_URL;
   
   useEffect(() => {
     if (post && open) {

@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
+import { SITE_URL } from "@/lib/siteConfig";
 
-const baseUrl = "https://cosmic-oracle-charts.lovable.app";
+const baseUrl = SITE_URL;
 
 interface PredictionSEOProps {
   coinName: string;
