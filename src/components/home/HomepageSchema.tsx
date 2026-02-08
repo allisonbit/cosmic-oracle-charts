@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
+import { SITE_URL } from "@/lib/siteConfig";
 
-const baseUrl = "https://cosmic-oracle-charts.lovable.app";
+const baseUrl = SITE_URL;
 
 export function HomepageSchema() {
   const { data } = useCryptoPrices();
