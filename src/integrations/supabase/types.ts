@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      automation_logs: {
+        Row: {
+          action: string
+          agent_type: string
+          created_at: string
+          details: Json | null
+          duration_ms: number | null
+          error_message: string | null
+          id: string
+          status: string
+        }
+        Insert: {
+          action: string
+          agent_type: string
+          created_at?: string
+          details?: Json | null
+          duration_ms?: number | null
+          error_message?: string | null
+          id?: string
+          status?: string
+        }
+        Update: {
+          action?: string
+          agent_type?: string
+          created_at?: string
+          details?: Json | null
+          duration_ms?: number | null
+          error_message?: string | null
+          id?: string
+          status?: string
+        }
+        Relationships: []
+      }
       blog_articles: {
         Row: {
           article_id: string
@@ -77,6 +110,96 @@ export type Database = {
           takeaways?: Json | null
           title?: string
           word_count?: number | null
+        }
+        Relationships: []
+      }
+      content_drafts: {
+        Row: {
+          agent_type: string
+          ai_model: string | null
+          category: string
+          content: string
+          created_at: string
+          id: string
+          keywords: Json | null
+          meta_description: string | null
+          meta_title: string | null
+          published_at: string | null
+          scheduled_at: string | null
+          slug: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          agent_type?: string
+          ai_model?: string | null
+          category?: string
+          content: string
+          created_at?: string
+          id?: string
+          keywords?: Json | null
+          meta_description?: string | null
+          meta_title?: string | null
+          published_at?: string | null
+          scheduled_at?: string | null
+          slug: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          agent_type?: string
+          ai_model?: string | null
+          category?: string
+          content?: string
+          created_at?: string
+          id?: string
+          keywords?: Json | null
+          meta_description?: string | null
+          meta_title?: string | null
+          published_at?: string | null
+          scheduled_at?: string | null
+          slug?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      performance_metrics: {
+        Row: {
+          avg_time_on_page: number | null
+          bounce_rate: number | null
+          created_at: string
+          id: string
+          page_path: string
+          page_views: number | null
+          recorded_at: string
+          source: string | null
+          visitors: number | null
+        }
+        Insert: {
+          avg_time_on_page?: number | null
+          bounce_rate?: number | null
+          created_at?: string
+          id?: string
+          page_path: string
+          page_views?: number | null
+          recorded_at?: string
+          source?: string | null
+          visitors?: number | null
+        }
+        Update: {
+          avg_time_on_page?: number | null
+          bounce_rate?: number | null
+          created_at?: string
+          id?: string
+          page_path?: string
+          page_views?: number | null
+          recorded_at?: string
+          source?: string | null
+          visitors?: number | null
         }
         Relationships: []
       }

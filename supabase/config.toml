@@ -96,3 +96,21 @@ verify_jwt = false
 [functions.token-story.rate_limit]
 requests = 30
 per = 3600
+
+[functions.trigger-content]
+verify_jwt = false
+[functions.trigger-content.rate_limit]
+requests = 10
+per = 3600
+
+[functions.trigger-restructure]
+verify_jwt = false
+[functions.trigger-restructure.rate_limit]
+requests = 10
+per = 3600
+
+[functions.trigger-full]
+verify_jwt = false
+[functions.trigger-full.rate_limit]
+requests = 5
+per = 3600
