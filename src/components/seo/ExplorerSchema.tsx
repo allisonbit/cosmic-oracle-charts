@@ -86,7 +86,7 @@ export function ExplorerSEOContent() {
       <h2 className="font-display text-lg font-bold mb-3">
         Universal Multi-Chain Token Discovery
       </h2>
-      <div className="prose prose-invert max-w-none text-sm text-muted-foreground space-y-3">
+      <div className="prose max-w-none text-sm text-muted-foreground space-y-3">
         <p>
           Oracle Bull's Token Explorer provides DexScreener-like functionality with AI enhancements. 
           Search any token across 30+ blockchains using contract addresses, token names, or symbols. 

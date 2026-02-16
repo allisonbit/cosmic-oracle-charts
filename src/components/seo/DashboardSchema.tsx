@@ -70,7 +70,7 @@ export function DashboardSEOContent() {
       <h2 className="font-display text-lg font-bold mb-3">
         Real-Time Crypto Market Intelligence
       </h2>
-      <div className="prose prose-invert max-w-none text-sm text-muted-foreground space-y-3">
+      <div className="prose max-w-none text-sm text-muted-foreground space-y-3">
         <p>
           Oracle Bull's Market Dashboard provides institutional-grade cryptocurrency analytics updated in real-time. 
           Track live prices for Bitcoin, Ethereum, and 100+ top cryptocurrencies with our AI-powered market intelligence.

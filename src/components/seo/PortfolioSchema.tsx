@@ -82,7 +82,7 @@ export function PortfolioSEOContent() {
       <h2 className="font-display text-lg font-bold mb-3">
         AI-Powered Wallet Intelligence
       </h2>
-      <div className="prose prose-invert max-w-none text-sm text-muted-foreground space-y-3">
+      <div className="prose max-w-none text-sm text-muted-foreground space-y-3">
         <p>
           Enter any Ethereum, Polygon, Arbitrum, Base, or Solana wallet address to get instant AI analysis. 
           Our scanner evaluates every token in the wallet, calculating risk scores, pump potential, 

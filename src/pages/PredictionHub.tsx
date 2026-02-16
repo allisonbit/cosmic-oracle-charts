@@ -371,7 +371,7 @@ export default function PredictionHub() {
             <h2 className="font-display text-2xl font-bold mb-4 text-center">
               About Global Crypto Predictions
             </h2>
-            <div className="prose prose-invert max-w-none text-muted-foreground">
+            <div className="prose max-w-none text-muted-foreground">
               <p className="mb-4">
                 Oracle Bull provides AI-powered cryptocurrency predictions for <strong>any token in the world</strong>. 
                 Simply search by name, symbol, or paste a contract address to get instant analysis with 50+ technical indicators 

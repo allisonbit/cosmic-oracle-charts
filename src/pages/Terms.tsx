@@ -19,7 +19,7 @@ const Terms = () => {
           <p className="text-muted-foreground">Last updated: January 2025</p>
         </header>
 
-        <div className="prose prose-invert max-w-none space-y-8">
+        <div className="prose max-w-none space-y-8">
           <section className="holo-card p-6 md:p-8">
             <h2 className="text-xl font-display font-bold mb-4">1. Acceptance of Terms</h2>
             <p className="text-muted-foreground">

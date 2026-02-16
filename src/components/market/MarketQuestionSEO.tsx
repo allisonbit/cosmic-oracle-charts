@@ -40,7 +40,7 @@ export function MarketIntroduction({
         Understanding {questionTitle}
       </h2>
       
-      <div className="prose prose-invert max-w-none text-muted-foreground">
+      <div className="prose max-w-none text-muted-foreground">
         <p>
           <strong>{questionTitle}</strong> refers to identifying cryptocurrencies with the strongest upside potential 
           based on current market conditions, technical analysis, and AI-driven sentiment evaluation. As of {currentDate}, 

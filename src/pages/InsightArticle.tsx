@@ -291,7 +291,7 @@ export default function InsightArticle() {
 
           {/* Article Content */}
           <div 
-            className="prose prose-invert max-w-none mb-8"
+            className="prose max-w-none mb-8"
             dangerouslySetInnerHTML={{ __html: processedContent }}
           />
           

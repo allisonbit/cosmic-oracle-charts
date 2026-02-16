@@ -208,7 +208,7 @@ export default function FactoryEvents() {
         {/* SEO Introduction */}
         <section className="holo-card p-6 mb-6">
           <h2 className="text-xl font-semibold mb-3">What Are Crypto Market Events?</h2>
-          <div className="prose prose-invert max-w-none text-muted-foreground">
+          <div className="prose max-w-none text-muted-foreground">
             <p className="mb-3">
               Cryptocurrency market events are scheduled occurrences that can significantly impact token prices 
               and market sentiment. Understanding these events helps traders anticipate volatility and identify 

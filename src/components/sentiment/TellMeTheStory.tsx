@@ -185,7 +185,7 @@ export function TellMeTheStory({ token, sentimentData, className }: TellMeTheSto
 
                   {/* AI Story */}
                   <div className="p-4 rounded-xl bg-gradient-to-br from-card/80 to-card/40 border border-border/30">
-                    <div className="prose prose-invert prose-sm max-w-none">
+                    <div className="prose prose-sm max-w-none">
                       {story.split('\n').map((paragraph, idx) => (
                         paragraph.trim() ? (
                           <p key={idx} className="text-foreground/90 leading-relaxed mb-3 last:mb-0">

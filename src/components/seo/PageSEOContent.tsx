@@ -24,7 +24,7 @@ export function StrengthMeterSEOContent() {
   return (
     <section className="holo-card p-6 mt-6">
       <h2 className="font-display text-lg font-bold mb-4">Understanding the Crypto Strength Meter</h2>
-      <div className="prose prose-invert max-w-none text-sm text-muted-foreground space-y-3">
+      <div className="prose max-w-none text-sm text-muted-foreground space-y-3">
         <p>
           The Crypto Strength Meter is a proprietary tool that measures the relative strength of cryptocurrencies 
           compared to the overall market. Unlike simple price change metrics, our strength score incorporates 
@@ -83,7 +83,7 @@ export function CryptoFactorySEOContent() {
   return (
     <section className="holo-card p-6 mt-6">
       <h2 className="font-display text-lg font-bold mb-4">About Crypto Factory Intelligence</h2>
-      <div className="prose prose-invert max-w-none text-sm text-muted-foreground space-y-3">
+      <div className="prose max-w-none text-sm text-muted-foreground space-y-3">
         <p>
           Crypto Factory aggregates the most important market-moving events across the cryptocurrency ecosystem. 
           From token unlocks that can impact prices to network upgrades that signal project development, 
@@ -128,7 +128,7 @@ export function LearnSEOContent() {
   return (
     <section className="holo-card p-6 mt-6">
       <h2 className="font-display text-lg font-bold mb-4">Crypto Education & Market Analysis</h2>
-      <div className="prose prose-invert max-w-none text-sm text-muted-foreground space-y-3">
+      <div className="prose max-w-none text-sm text-muted-foreground space-y-3">
         <p>
           The Oracle Bull Learn section provides comprehensive cryptocurrency education and market analysis. 
           Our AI-generated articles cover 20 different topics including technical analysis, on-chain analytics, 
@@ -167,7 +167,7 @@ export function InsightsSEOContent() {
   return (
     <section className="holo-card p-6 mt-6">
       <h2 className="font-display text-lg font-bold mb-4">Daily AI-Powered Market Insights</h2>
-      <div className="prose prose-invert max-w-none text-sm text-muted-foreground space-y-3">
+      <div className="prose max-w-none text-sm text-muted-foreground space-y-3">
         <p>
           Oracle Bull Insights delivers fresh, AI-generated cryptocurrency market analysis every day. 
           Our articles cover Ethereum ecosystem updates, Bitcoin price analysis, Solana network developments, 
@@ -210,7 +210,7 @@ export function PredictionHubSEOContent() {
   return (
     <section className="holo-card p-6 mt-6">
       <h2 className="font-display text-lg font-bold mb-4">How Our AI Predictions Work</h2>
-      <div className="prose prose-invert max-w-none text-sm text-muted-foreground space-y-3">
+      <div className="prose max-w-none text-sm text-muted-foreground space-y-3">
         <p>
           Oracle Bull's price prediction system uses a multi-layer analysis approach combining technical indicators, 
           market sentiment, on-chain metrics, and macro economic factors to generate forecasts for over 1,000 
@@ -261,7 +261,7 @@ export function ChainSEOContent({ chainName, chainSymbol, chainId }: ChainSEOCon
   return (
     <section className="holo-card p-6 mt-6">
       <h2 className="font-display text-lg font-bold mb-4">{chainName} Network Analysis & Intelligence</h2>
-      <div className="prose prose-invert max-w-none text-sm text-muted-foreground space-y-3">
+      <div className="prose max-w-none text-sm text-muted-foreground space-y-3">
         <p>
           Oracle Bull provides comprehensive {chainName} ({chainSymbol}) network analysis including real-time 
           price data, on-chain metrics, DeFi TVL tracking, whale activity monitoring, and AI-powered price 
@@ -308,7 +308,7 @@ export function ContactSEOContent() {
   return (
     <section className="holo-card p-6 mt-6">
       <h2 className="font-display text-lg font-bold mb-4">About Oracle Bull</h2>
-      <div className="prose prose-invert max-w-none text-sm text-muted-foreground space-y-3">
+      <div className="prose max-w-none text-sm text-muted-foreground space-y-3">
         <p>
           Oracle Bull is an AI-powered cryptocurrency analytics platform providing institutional-grade market 
           intelligence to traders and investors worldwide. Our platform combines real-time data, advanced 

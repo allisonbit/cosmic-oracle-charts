@@ -583,7 +583,7 @@ export default function MarketQuestionPage({ questionSlug }: MarketQuestionPageP
           {/* SEO Content */}
           <section className="holo-card p-6">
             <h2 className="font-display text-xl font-bold mb-4">About This Analysis</h2>
-            <div className="prose prose-invert max-w-none text-muted-foreground text-sm">
+            <div className="prose max-w-none text-muted-foreground text-sm">
               <p>
                 Oracle Bull uses advanced AI algorithms to analyze cryptocurrency markets and provide data-driven insights. 
                 Our {question.h1.toLowerCase()} analysis combines technical indicators (RSI, MACD, Moving Averages), 
