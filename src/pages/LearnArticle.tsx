@@ -139,7 +139,7 @@ export default function LearnArticle() {
 
           {/* Main Content */}
           <div 
-            className="prose prose-invert prose-lg max-w-none mb-12"
+            className="prose prose-lg max-w-none mb-12"
             style={{
               '--tw-prose-headings': 'hsl(var(--foreground))',
               '--tw-prose-body': 'hsl(var(--muted-foreground))',

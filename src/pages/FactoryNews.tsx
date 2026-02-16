@@ -268,7 +268,7 @@ export default function FactoryNews() {
         {/* SEO Introduction */}
         <section className="holo-card p-6 mb-6">
           <h2 className="text-xl font-semibold mb-3">How We Analyze Crypto News</h2>
-          <div className="prose prose-invert max-w-none text-muted-foreground">
+          <div className="prose max-w-none text-muted-foreground">
             <p className="mb-3">
               Oracle Bull aggregates cryptocurrency news from 50+ sources and applies AI-powered sentiment 
               analysis to determine market impact. Each article is scored for bullish, neutral, or bearish 

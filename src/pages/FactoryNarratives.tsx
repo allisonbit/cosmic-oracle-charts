@@ -235,7 +235,7 @@ export default function FactoryNarratives() {
         {/* SEO Introduction */}
         <section className="holo-card p-6 mb-6">
           <h2 className="text-xl font-semibold mb-3">What Are Crypto Narratives?</h2>
-          <div className="prose prose-invert max-w-none text-muted-foreground">
+          <div className="prose max-w-none text-muted-foreground">
             <p className="mb-3">
               Crypto narratives are thematic investment trends that drive capital flows in the cryptocurrency market. 
               Understanding which narratives are gaining momentum helps traders identify potential winners 

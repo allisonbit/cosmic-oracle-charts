@@ -15,7 +15,7 @@ export function SentimentHowItWorks() {
         How Market Sentiment Analysis Works
       </h2>
       
-      <div className="prose prose-invert max-w-none text-muted-foreground space-y-4">
+      <div className="prose max-w-none text-muted-foreground space-y-4">
         <p>
           Market sentiment analysis is the process of measuring the overall attitude of market participants 
           toward a particular asset or the market as a whole. At OracleBull, we combine multiple data sources 
@@ -164,7 +164,7 @@ export function ExplorerHowItWorks() {
         How Token Tracking Works
       </h2>
       
-      <div className="prose prose-invert max-w-none text-muted-foreground space-y-4">
+      <div className="prose max-w-none text-muted-foreground space-y-4">
         <p>
           The Token Explorer is your universal gateway to cryptocurrency data across 30+ blockchains. 
           Whether you're researching a new DeFi token, tracking your portfolio holdings, or discovering 
@@ -288,7 +288,7 @@ export function PredictionsHowItWorks() {
         How AI Market Analysis Works
       </h2>
       
-      <div className="prose prose-invert max-w-none text-muted-foreground space-y-4">
+      <div className="prose max-w-none text-muted-foreground space-y-4">
         <p>
           OracleBull's AI market analysis system combines technical analysis, on-chain data, and sentiment 
           indicators to generate comprehensive market insights for over 1,000 cryptocurrencies. Our models 
@@ -438,7 +438,7 @@ export function DashboardHowItWorks() {
         Understanding the Market Dashboard
       </h2>
       
-      <div className="prose prose-invert max-w-none text-muted-foreground space-y-4">
+      <div className="prose max-w-none text-muted-foreground space-y-4">
         <p>
           The OracleBull Dashboard is your command center for cryptocurrency market intelligence. 
           We've designed it to deliver institutional-grade data in an accessible format, helping 
@@ -504,7 +504,7 @@ export function StrengthMeterHowItWorks() {
         How the Crypto Strength Meter Works
       </h2>
       
-      <div className="prose prose-invert max-w-none text-muted-foreground space-y-4">
+      <div className="prose max-w-none text-muted-foreground space-y-4">
         <p>
           The Crypto Strength Meter is a real-time ranking system that measures the relative 
           strength of cryptocurrencies based on multiple weighted factors. Unlike simple price 
@@ -555,7 +555,7 @@ export function FactoryHowItWorks() {
         How Market Intelligence Works
       </h2>
       
-      <div className="prose prose-invert max-w-none text-muted-foreground space-y-4">
+      <div className="prose max-w-none text-muted-foreground space-y-4">
         <p>
           The Crypto Factory is OracleBull's market intelligence aggregator, combining multiple 
           data streams into actionable insights. We monitor over 50 news sources, on-chain events, 

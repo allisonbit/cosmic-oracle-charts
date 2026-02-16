@@ -19,7 +19,7 @@ const PrivacyPolicy = () => {
           <p className="text-muted-foreground">Last updated: January 2025</p>
         </header>
 
-        <div className="prose prose-invert max-w-none space-y-8">
+        <div className="prose max-w-none space-y-8">
           <section className="holo-card p-6 md:p-8">
             <div className="flex items-center gap-3 mb-4">
               <Eye className="w-6 h-6 text-primary" />

@@ -87,7 +87,7 @@ export function SentimentSEOContent() {
       <h2 className="font-display text-lg font-bold mb-3">
         AI-Powered Sentiment Intelligence
       </h2>
-      <div className="prose prose-invert max-w-none text-sm text-muted-foreground space-y-3">
+      <div className="prose max-w-none text-sm text-muted-foreground space-y-3">
         <p>
           Our Sentiment Scanner aggregates real-time data from across the crypto ecosystem to give you 
           a complete picture of market psychology. Monitor whale movements, track social buzz, and 

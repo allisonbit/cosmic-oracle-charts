@@ -342,7 +342,7 @@ export default function CoinMarket() {
               <Zap className="w-5 h-5 text-primary" />
               {crypto.name} Market Analysis
             </h2>
-            <div className="prose prose-invert max-w-none">
+            <div className="prose max-w-none">
               <p className="text-muted-foreground leading-relaxed">
                 {crypto.name} ({crypto.symbol.toUpperCase()}) is currently trading at {formatPrice(priceData?.price || 0)} with a 
                 24-hour price change of {(priceData?.change24h || 0) >= 0 ? '+' : ''}{priceData?.change24h?.toFixed(2) || '0'}%. 

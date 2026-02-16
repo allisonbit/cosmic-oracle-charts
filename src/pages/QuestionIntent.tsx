@@ -317,7 +317,7 @@ export default function QuestionIntent() {
             <h2 className="font-display text-xl font-bold mb-4">
               About {crypto.name} {timeframe.charAt(0).toUpperCase() + timeframe.slice(1)} Predictions
             </h2>
-            <div className="prose prose-invert max-w-none text-muted-foreground text-sm">
+            <div className="prose max-w-none text-muted-foreground text-sm">
               <p>
                 Oracle Bull provides AI-powered {crypto.name} ({crypto.symbol.toUpperCase()}) price predictions 
                 using advanced machine learning algorithms. Our {timeframe} forecasts analyze 50+ technical 
