@@ -2,213 +2,369 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Link } from "react-router-dom";
-import { 
-  Home, LayoutDashboard, TrendingUp, Factory, Wallet, 
-  Activity, Search, BookOpen, Mail, Globe, ChevronRight,
-  Zap, BarChart3, Shield, Bot, Flame
-} from "lucide-react";
+import { SEO } from "@/components/SEO";
 
-const sitemapSections = [
-  {
-    title: "Main Pages",
-    icon: Home,
-    links: [
-      { path: "/", label: "Home", description: "AI-powered crypto forecasts and market overview" },
-      { path: "/dashboard", label: "Dashboard", description: "Real-time market data, top performers, and AI insights" },
-      { path: "/predictions", label: "Price Predictions", description: "AI-powered daily, weekly, monthly crypto forecasts" },
-      { path: "/strength", label: "Strength Meter", description: "Crypto strength rankings and momentum analysis" },
-      { path: "/factory", label: "Crypto Factory", description: "Market events calendar and on-chain intelligence" },
-    ]
-  },
-  {
-    title: "Price Predictions",
-    icon: TrendingUp,
-    links: [
-      { path: "/price-prediction/bitcoin", label: "Bitcoin Prediction", description: "BTC price forecast with trading zones" },
-      { path: "/price-prediction/ethereum", label: "Ethereum Prediction", description: "ETH price forecast with technical analysis" },
-      { path: "/price-prediction/solana", label: "Solana Prediction", description: "SOL price forecast with AI insights" },
-      { path: "/price-prediction/ripple", label: "XRP Prediction", description: "XRP price forecast and analysis" },
-      { path: "/price-prediction/cardano", label: "Cardano Prediction", description: "ADA price forecast with signals" },
-      { path: "/price-prediction/dogecoin", label: "Dogecoin Prediction", description: "DOGE price forecast and sentiment" },
-    ]
-  },
-  {
-    title: "Question Pages",
-    icon: Search,
-    links: [
-      { path: "/q/what-will-bitcoin-price-be-today", label: "What will Bitcoin price be today?", description: "Daily BTC forecast" },
-      { path: "/q/what-will-ethereum-price-be-today", label: "What will Ethereum price be today?", description: "Daily ETH forecast" },
-      { path: "/q/will-solana-go-up-this-week", label: "Will Solana go up this week?", description: "Weekly SOL outlook" },
-      { path: "/q/is-bitcoin-a-good-investment-this-month", label: "Is Bitcoin a good investment this month?", description: "Monthly BTC analysis" },
-    ]
-  },
-  {
-    title: "Market Analysis",
-    icon: Flame,
-    links: [
-      { path: "/market/best-crypto-to-buy-today", label: "Best Crypto to Buy Today", description: "AI picks for today" },
-      { path: "/market/top-crypto-gainers-today", label: "Top Crypto Gainers Today", description: "Biggest winners" },
-      { path: "/market/next-crypto-to-explode", label: "Next Crypto to Explode", description: "High potential picks" },
-      { path: "/market/crypto-market-prediction-today", label: "Market Prediction Today", description: "Daily market outlook" },
-      { path: "/market/top-crypto-to-invest-2025", label: "Top Crypto to Invest 2025", description: "Long-term picks" },
-      { path: "/market/cheap-crypto-to-buy-now", label: "Cheap Crypto to Buy Now", description: "Affordable coins" },
-    ]
-  },
-  {
-    title: "Analytics Tools",
-    icon: BarChart3,
-    links: [
-      { path: "/portfolio", label: "Wallet Scanner", description: "AI-powered wallet analysis for EVM and Solana" },
-      { path: "/sentiment", label: "Sentiment Analysis", description: "Social sentiment, whale tracking, and market signals" },
-      { path: "/explorer", label: "Token Explorer", description: "Search any cryptocurrency by name or contract" },
-    ]
-  },
-  {
-    title: "Blockchain Analytics",
-    icon: Globe,
-    links: [
-      { path: "/chain/ethereum", label: "Ethereum Analytics", description: "ETH price, DeFi TVL, whale activity, and token discovery" },
-      { path: "/chain/solana", label: "Solana Analytics", description: "SOL metrics, TPS, validator health, and ecosystem tokens" },
-      { path: "/chain/base", label: "Base Analytics", description: "Base chain metrics, L2 analytics, and native tokens" },
-      { path: "/chain/arbitrum", label: "Arbitrum Analytics", description: "ARB network stats, DeFi data, and token heat maps" },
-      { path: "/chain/polygon", label: "Polygon Analytics", description: "MATIC chain health, gas fees, and ecosystem overview" },
-      { path: "/chain/optimism", label: "Optimism Analytics", description: "OP network metrics, L2 performance, and token analysis" },
-      { path: "/chain/avalanche", label: "Avalanche Analytics", description: "AVAX subnet data, validator stats, and DeFi metrics" },
-      { path: "/chain/bnb", label: "BNB Chain Analytics", description: "BNB network data, BSC tokens, and whale tracking" },
-    ]
-  },
-  {
-    title: "Resources",
-    icon: BookOpen,
-    links: [
-      { path: "/learn", label: "Learn Crypto", description: "Daily AI-generated crypto education and market insights" },
-      { path: "/contact", label: "Contact & Token Info", description: "Community links and Oracle token information" },
-    ]
-  }
+// All top crypto IDs for prediction links
+const topCryptos = [
+  { id: 'bitcoin', name: 'Bitcoin', symbol: 'BTC' },
+  { id: 'ethereum', name: 'Ethereum', symbol: 'ETH' },
+  { id: 'solana', name: 'Solana', symbol: 'SOL' },
+  { id: 'binancecoin', name: 'BNB', symbol: 'BNB' },
+  { id: 'ripple', name: 'XRP', symbol: 'XRP' },
+  { id: 'cardano', name: 'Cardano', symbol: 'ADA' },
+  { id: 'dogecoin', name: 'Dogecoin', symbol: 'DOGE' },
+  { id: 'polkadot', name: 'Polkadot', symbol: 'DOT' },
+  { id: 'chainlink', name: 'Chainlink', symbol: 'LINK' },
+  { id: 'avalanche-2', name: 'Avalanche', symbol: 'AVAX' },
+  { id: 'matic-network', name: 'Polygon', symbol: 'MATIC' },
+  { id: 'shiba-inu', name: 'Shiba Inu', symbol: 'SHIB' },
+  { id: 'litecoin', name: 'Litecoin', symbol: 'LTC' },
+  { id: 'uniswap', name: 'Uniswap', symbol: 'UNI' },
+  { id: 'cosmos', name: 'Cosmos', symbol: 'ATOM' },
+  { id: 'near', name: 'NEAR Protocol', symbol: 'NEAR' },
+  { id: 'arbitrum', name: 'Arbitrum', symbol: 'ARB' },
+  { id: 'optimism', name: 'Optimism', symbol: 'OP' },
+  { id: 'aptos', name: 'Aptos', symbol: 'APT' },
+  { id: 'sui', name: 'Sui', symbol: 'SUI' },
+  { id: 'pepe', name: 'Pepe', symbol: 'PEPE' },
+  { id: 'floki', name: 'Floki', symbol: 'FLOKI' },
+  { id: 'bonk', name: 'Bonk', symbol: 'BONK' },
+  { id: 'toncoin', name: 'Toncoin', symbol: 'TON' },
+  { id: 'tron', name: 'TRON', symbol: 'TRX' },
+  { id: 'stellar', name: 'Stellar', symbol: 'XLM' },
+  { id: 'monero', name: 'Monero', symbol: 'XMR' },
+  { id: 'okb', name: 'OKB', symbol: 'OKB' },
+  { id: 'hedera', name: 'Hedera', symbol: 'HBAR' },
+  { id: 'filecoin', name: 'Filecoin', symbol: 'FIL' },
+  { id: 'vechain', name: 'VeChain', symbol: 'VET' },
+  { id: 'internet-computer', name: 'Internet Computer', symbol: 'ICP' },
+  { id: 'render-token', name: 'Render', symbol: 'RNDR' },
+  { id: 'fetch-ai', name: 'Fetch.ai', symbol: 'FET' },
+  { id: 'injective-protocol', name: 'Injective', symbol: 'INJ' },
+  { id: 'kaspa', name: 'Kaspa', symbol: 'KAS' },
+  { id: 'theta-token', name: 'Theta', symbol: 'THETA' },
 ];
 
-const features = [
-  { icon: Zap, title: "Real-Time Data", description: "Live prices, volume, and market metrics updated every 10-30 seconds" },
-  { icon: Bot, title: "AI Predictions", description: "Machine learning models for price forecasts and risk analysis" },
-  { icon: Activity, title: "Whale Tracking", description: "Monitor large transactions and smart money movements" },
-  { icon: Shield, title: "Risk Analysis", description: "AI-powered token risk scoring and security checks" },
+const chains = [
+  { id: 'ethereum', name: 'Ethereum', desc: 'Smart contracts, DeFi TVL, whale activity, ERC-20 token discovery, gas tracker' },
+  { id: 'solana', name: 'Solana', desc: 'High-speed transactions, TPS metrics, validator health, SPL tokens, Raydium DEX' },
+  { id: 'base', name: 'Base', desc: 'Coinbase L2, low gas fees, native token ecosystem, bridge analytics' },
+  { id: 'arbitrum', name: 'Arbitrum', desc: 'Ethereum L2 rollup, DeFi protocols, ARB governance, sequencer data' },
+  { id: 'polygon', name: 'Polygon', desc: 'EVM sidechain, MATIC staking, zkEVM, gaming tokens, low-cost transactions' },
+  { id: 'optimism', name: 'Optimism', desc: 'Optimistic rollup, OP Stack, retroactive public goods, L2 performance' },
+  { id: 'avalanche', name: 'Avalanche', desc: 'Subnet architecture, sub-second finality, AVAX staking, C-Chain analytics' },
+  { id: 'bnb', name: 'BNB Chain', desc: 'Binance ecosystem, BSC tokens, PancakeSwap, high throughput, low fees' },
 ];
+
+const marketQuestions = [
+  { slug: 'best-crypto-to-buy-today', label: 'Best Crypto to Buy Today', desc: 'AI-curated daily picks based on momentum, volume, and sentiment signals' },
+  { slug: 'top-crypto-gainers-today', label: 'Top Crypto Gainers Today', desc: 'Biggest percentage winners in the last 24 hours with volume analysis' },
+  { slug: 'crypto-market-prediction-today', label: 'Crypto Market Prediction Today', desc: 'Overall market outlook with BTC dominance and altcoin rotation analysis' },
+  { slug: 'which-crypto-will-go-up-today', label: 'Which Crypto Will Go Up Today?', desc: 'Technical and sentiment-based predictions for today\'s movers' },
+  { slug: 'crypto-losers-today', label: 'Crypto Losers Today', desc: 'Biggest decliners and potential bounce-back opportunities' },
+  { slug: 'is-crypto-going-up-today', label: 'Is Crypto Going Up Today?', desc: 'Market-wide bullish or bearish analysis for the current session' },
+  { slug: 'best-crypto-to-buy-this-week', label: 'Best Crypto to Buy This Week', desc: 'Weekly picks with swing trading entry and exit zones' },
+  { slug: 'crypto-prediction-this-week', label: 'Crypto Prediction This Week', desc: 'Weekly market forecast with support and resistance levels' },
+  { slug: 'crypto-to-watch-this-week', label: 'Crypto to Watch This Week', desc: 'Tokens with upcoming catalysts, events, or technical breakouts' },
+  { slug: 'top-crypto-gainers-this-week', label: 'Top Crypto Gainers This Week', desc: 'Weekly performance leaders across all market cap tiers' },
+  { slug: 'next-crypto-to-explode', label: 'Next Crypto to Explode', desc: 'High-potential altcoins with strong fundamentals and growing communities' },
+  { slug: 'safest-crypto-to-invest', label: 'Safest Crypto to Invest', desc: 'Low-risk blue-chip cryptocurrencies for conservative portfolios' },
+  { slug: 'cheap-crypto-to-buy-now', label: 'Cheap Crypto to Buy Now', desc: 'Affordable tokens under $1 with strong growth potential' },
+  { slug: 'undervalued-crypto-to-buy', label: 'Undervalued Crypto to Buy', desc: 'Fundamentally strong tokens trading below fair value estimates' },
+  { slug: 'crypto-with-most-potential', label: 'Crypto with Most Potential', desc: 'Highest upside tokens based on technology, team, and market positioning' },
+  { slug: 'best-altcoins-to-buy', label: 'Best Altcoins to Buy', desc: 'Top non-Bitcoin cryptocurrencies ranked by investment potential' },
+  { slug: 'top-meme-coins', label: 'Top Meme Coins', desc: 'Trending meme tokens with community strength and viral potential' },
+  { slug: 'best-defi-tokens', label: 'Best DeFi Tokens', desc: 'Leading decentralized finance protocols by TVL and revenue' },
+  { slug: 'top-ai-crypto-tokens', label: 'Top AI Crypto Tokens', desc: 'Artificial intelligence blockchain projects leading the AI narrative' },
+];
+
+const learnArticles = [
+  { slug: 'what-is-crypto-market-sentiment', title: 'What Is Crypto Market Sentiment?', desc: 'Complete guide to understanding fear & greed index, social signals, and market psychology in cryptocurrency trading' },
+  { slug: 'how-ai-is-used-in-crypto-market-analysis', title: 'How AI Is Used in Crypto Market Analysis', desc: 'Machine learning models, neural networks, and natural language processing applied to cryptocurrency forecasting' },
+  { slug: 'bitcoin-market-cycles-explained', title: 'Bitcoin Market Cycles Explained', desc: 'Understanding Bitcoin halving cycles, accumulation phases, bull runs, and bear markets with historical data' },
+  { slug: 'risk-management-in-volatile-crypto-markets', title: 'Risk Management in Volatile Crypto Markets', desc: 'Position sizing, stop-loss strategies, portfolio diversification, and risk-reward ratios for crypto traders' },
+  { slug: 'how-to-analyze-altcoins-using-market-data', title: 'How to Analyze Altcoins Using Market Data', desc: 'Fundamental and technical analysis framework for evaluating altcoin investment opportunities' },
+  { slug: 'technical-analysis-vs-sentiment-analysis', title: 'Technical Analysis vs Sentiment Analysis', desc: 'Comparing chart patterns and indicators with social media and news-based trading signals' },
+  { slug: 'on-chain-data-explained-for-beginners', title: 'On-Chain Data Explained for Beginners', desc: 'Understanding blockchain metrics like active addresses, transaction volume, and whale movements' },
+  { slug: 'how-market-psychology-affects-crypto-prices', title: 'How Market Psychology Affects Crypto Prices', desc: 'FOMO, FUD, herd behavior, and cognitive biases that drive cryptocurrency market movements' },
+  { slug: 'how-whales-influence-market-trends', title: 'How Whales Influence Market Trends', desc: 'Tracking large holders, understanding accumulation and distribution patterns, and whale alert systems' },
+  { slug: 'understanding-liquidity-in-crypto-markets', title: 'Understanding Liquidity in Crypto Markets', desc: 'Order book depth, slippage, market making, and how liquidity affects price stability' },
+  { slug: 'what-is-the-forex-market-and-how-does-it-work', title: 'What Is the Forex Market and How Does It Work?', desc: 'Introduction to foreign exchange trading, currency pairs, and global market structure' },
+  { slug: 'forex-market-structure-explained', title: 'Forex Market Structure Explained', desc: 'Interbank market, retail brokers, market makers, and ECN trading explained' },
+  { slug: 'currency-sentiment-analysis-explained', title: 'Currency Sentiment Analysis Explained', desc: 'How to measure and interpret currency market sentiment using COT reports and positioning data' },
+  { slug: 'forex-vs-crypto-key-market-differences', title: 'Forex vs Crypto: Key Market Differences', desc: 'Comparing trading hours, volatility, regulation, leverage, and market participants' },
+  { slug: 'macroeconomic-factors-that-move-forex-markets', title: 'Macroeconomic Factors That Move Forex Markets', desc: 'Interest rates, GDP, inflation, employment data, and central bank policies' },
+  { slug: 'how-ai-forecasting-models-work-in-finance', title: 'How AI Forecasting Models Work in Finance', desc: 'LSTM networks, transformer models, ensemble methods, and backtesting for financial predictions' },
+  { slug: 'limitations-of-ai-market-predictions', title: 'Limitations of AI Market Predictions', desc: 'Overfitting, black swan events, data quality issues, and why AI predictions are probabilities not certainties' },
+  { slug: 'indicators-vs-ai-models-whats-the-difference', title: 'Indicators vs AI Models: What\'s the Difference?', desc: 'Traditional RSI, MACD, and moving averages compared to machine learning approaches' },
+  { slug: 'data-sources-used-in-market-intelligence-platforms', title: 'Data Sources Used in Market Intelligence Platforms', desc: 'Exchange APIs, social media feeds, on-chain data providers, and news aggregation for market analysis' },
+  { slug: 'how-to-read-market-analytics-dashboards', title: 'How to Read Market Analytics Dashboards', desc: 'Interpreting charts, heat maps, correlation matrices, and real-time data feeds for trading decisions' },
+];
+
+const questionIntentCoins = ['bitcoin', 'ethereum', 'solana', 'ripple', 'cardano', 'dogecoin', 'shiba-inu', 'pepe', 'chainlink', 'polkadot'];
+const questionPatterns = [
+  { pattern: 'what-will-{coin}-price-be-today', label: 'What will {name} price be today?' },
+  { pattern: 'will-{coin}-go-up-today', label: 'Will {name} go up today?' },
+  { pattern: '{coin}-price-prediction-today', label: '{name} price prediction today' },
+  { pattern: 'is-{coin}-bullish-today', label: 'Is {name} bullish today?' },
+  { pattern: 'what-will-{coin}-price-be-this-week', label: 'What will {name} price be this week?' },
+  { pattern: 'will-{coin}-go-up-this-week', label: 'Will {name} go up this week?' },
+  { pattern: '{coin}-price-prediction-this-week', label: '{name} price prediction this week' },
+  { pattern: '{coin}-weekly-forecast', label: '{name} weekly forecast' },
+  { pattern: 'what-will-{coin}-price-be-this-month', label: 'What will {name} price be this month?' },
+  { pattern: 'is-{coin}-a-good-investment-this-month', label: 'Is {name} a good investment this month?' },
+  { pattern: '{coin}-price-prediction-this-month', label: '{name} price prediction this month' },
+  { pattern: '{coin}-monthly-forecast', label: '{name} monthly forecast' },
+];
+
+const coinNames: Record<string, string> = {
+  bitcoin: 'Bitcoin', ethereum: 'Ethereum', solana: 'Solana', ripple: 'XRP',
+  cardano: 'Cardano', dogecoin: 'Dogecoin', 'shiba-inu': 'Shiba Inu',
+  pepe: 'Pepe', chainlink: 'Chainlink', polkadot: 'Polkadot',
+};
+
+const SectionTitle = ({ id, children }: { id: string; children: React.ReactNode }) => (
+  <h2 id={id} className="text-xl font-bold text-foreground mt-10 mb-4 border-b border-border pb-2">{children}</h2>
+);
 
 export default function Sitemap() {
   return (
-    <div className="min-h-screen flex flex-col cosmic-bg">
+    <div className="min-h-screen flex flex-col bg-background">
+      <SEO
+        title="Complete Sitemap | All Pages & Content | Oracle Bull"
+        description="Full sitemap of Oracle Bull with every page, prediction, market analysis, blockchain dashboard, educational article, and tool. Navigate the entire platform."
+        keywords="oracle bull sitemap, crypto sitemap, all pages, complete navigation"
+      />
       <header>
         <Navbar />
       </header>
-      
-      <main className="flex-1 container mx-auto px-4 py-24 md:py-32">
-        <div className="max-w-5xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-12">
-            <h1 className="text-3xl md:text-4xl font-display font-bold mb-4">
-              <span className="glow-text">Site Map</span>
-            </h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Navigate to all Oracle Bull features, blockchain dashboards, analytics tools, and educational resources. 
-              Every page is designed for fast, comprehensive crypto intelligence.
-            </p>
-          </div>
 
-          {/* Quick Features */}
-          <section className="mb-12" aria-labelledby="features-heading">
-            <h2 id="features-heading" className="sr-only">Platform Features</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {features.map((feature) => (
-                <div key={feature.title} className="holo-card p-4 text-center">
-                  <feature.icon className="w-6 h-6 text-primary mx-auto mb-2" />
-                  <h3 className="font-display text-sm font-bold mb-1">{feature.title}</h3>
-                  <p className="text-xs text-muted-foreground">{feature.description}</p>
-                </div>
-              ))}
+      <main className="flex-1 container mx-auto px-4 py-24 md:py-32 max-w-5xl">
+        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">Oracle Bull — Complete Sitemap</h1>
+        <p className="text-muted-foreground mb-8 max-w-3xl">
+          Every page, tool, prediction, market analysis, blockchain dashboard, and educational article on Oracle Bull.
+          This is the full index of our AI-powered cryptocurrency analytics platform — nothing is left out.
+        </p>
+
+        {/* ── Core Pages ── */}
+        <SectionTitle id="core">Core Pages</SectionTitle>
+        <ul className="grid md:grid-cols-2 gap-2">
+          {[
+            { path: '/', label: 'Home', desc: 'AI-powered crypto forecasts, real-time market overview, trending coins, and quick access to all tools' },
+            { path: '/dashboard', label: 'Dashboard', desc: 'Live market data, top performers, volume leaders, AI insights, Fear & Greed Index, and market momentum' },
+            { path: '/predictions', label: 'Prediction Hub', desc: 'Browse all AI price predictions for 1000+ cryptocurrencies with daily, weekly, and monthly forecasts' },
+            { path: '/strength', label: 'Strength Meter', desc: 'Real-time asset strength rankings using momentum, volume, sentiment, and trend analysis' },
+            { path: '/factory', label: 'Crypto Factory', desc: 'Market events calendar, on-chain intelligence, narratives, and breaking crypto news' },
+            { path: '/portfolio', label: 'Wallet Scanner', desc: 'AI-powered portfolio analysis for any EVM or Solana wallet address' },
+            { path: '/sentiment', label: 'Sentiment Analysis', desc: 'Social sentiment from Twitter, Reddit, Telegram — whale tracking and market signals' },
+            { path: '/explorer', label: 'Token Explorer', desc: 'Search any cryptocurrency by name, symbol, or contract address across all blockchains' },
+            { path: '/learn', label: 'Learn Crypto', desc: 'Free cryptocurrency education with daily AI-generated articles and in-depth guides' },
+            { path: '/insights', label: 'Market Insights', desc: 'Daily AI-generated market analysis, on-chain data insights, and trading research' },
+            { path: '/contact', label: 'Contact & Community', desc: 'Connect with Oracle Bull community on Twitter and Telegram, Oracle token information' },
+            { path: '/about', label: 'About Oracle Bull', desc: 'Our mission, team, and the technology behind our AI-powered analytics platform' },
+            { path: '/sitemap', label: 'Sitemap', desc: 'This page — complete index of all Oracle Bull content' },
+          ].map(p => (
+            <li key={p.path} className="p-3 rounded-lg border border-border hover:border-primary/30 transition-colors">
+              <Link to={p.path} className="block">
+                <span className="font-medium text-primary hover:underline">{p.label}</span>
+                <p className="text-sm text-muted-foreground mt-1">{p.desc}</p>
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        {/* ── Factory Sub-Pages ── */}
+        <SectionTitle id="factory">Crypto Factory Sub-Pages</SectionTitle>
+        <ul className="grid md:grid-cols-2 gap-2">
+          {[
+            { path: '/factory/events', label: 'Factory Events', desc: 'Token launches, protocol upgrades, airdrops, and market-moving crypto events calendar' },
+            { path: '/factory/onchain', label: 'On-Chain Intelligence', desc: 'Whale movements, smart money flows, large transactions, and on-chain analytics' },
+            { path: '/factory/narratives', label: 'Market Narratives', desc: 'Trending crypto narratives — AI, DeFi, RWA, meme coins, L2s, and sector rotation' },
+            { path: '/factory/news', label: 'Crypto News', desc: 'Breaking cryptocurrency news from 50+ sources with sentiment analysis' },
+          ].map(p => (
+            <li key={p.path} className="p-3 rounded-lg border border-border hover:border-primary/30 transition-colors">
+              <Link to={p.path} className="block">
+                <span className="font-medium text-primary hover:underline">{p.label}</span>
+                <p className="text-sm text-muted-foreground mt-1">{p.desc}</p>
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        {/* ── Legal Pages ── */}
+        <SectionTitle id="legal">Legal & Trust Pages</SectionTitle>
+        <ul className="grid md:grid-cols-2 gap-2">
+          {[
+            { path: '/privacy-policy', label: 'Privacy Policy', desc: 'How Oracle Bull collects, uses, and protects your data' },
+            { path: '/terms', label: 'Terms of Service', desc: 'Terms and conditions for using Oracle Bull platform' },
+            { path: '/risk-disclaimer', label: 'Risk Disclaimer', desc: 'Cryptocurrency investment risks and disclaimer notice' },
+          ].map(p => (
+            <li key={p.path} className="p-3 rounded-lg border border-border hover:border-primary/30 transition-colors">
+              <Link to={p.path} className="block">
+                <span className="font-medium text-primary hover:underline">{p.label}</span>
+                <p className="text-sm text-muted-foreground mt-1">{p.desc}</p>
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        {/* ── Blockchain Analytics ── */}
+        <SectionTitle id="chains">Blockchain Analytics — 8 Networks</SectionTitle>
+        <p className="text-muted-foreground mb-4">Deep-dive analytics for every supported blockchain. Each page includes real-time metrics (TPS, gas fees, TVL), AI price predictions, whale activity radar, token heat scanner, risk analyzer, and ecosystem token discovery.</p>
+        <ul className="grid md:grid-cols-2 gap-2">
+          {chains.map(c => (
+            <li key={c.id} className="p-3 rounded-lg border border-border hover:border-primary/30 transition-colors">
+              <Link to={`/chain/${c.id}`} className="block">
+                <span className="font-medium text-primary hover:underline">{c.name} Analytics</span>
+                <p className="text-sm text-muted-foreground mt-1">{c.desc}</p>
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        {/* ── Price Predictions ── */}
+        <SectionTitle id="predictions">AI Price Predictions — {topCryptos.length} Cryptocurrencies × 3 Timeframes</SectionTitle>
+        <p className="text-muted-foreground mb-4">Each cryptocurrency has dedicated daily, weekly, and monthly prediction pages with AI-generated forecasts, entry zones, stop-loss levels, take-profit targets, bull/bear scenarios, technical indicators (RSI, MACD, moving averages), and confidence scores.</p>
+        <div className="space-y-4">
+          {topCryptos.map(coin => (
+            <div key={coin.id} className="p-3 rounded-lg border border-border">
+              <h3 className="font-medium text-foreground mb-2">{coin.name} ({coin.symbol}) Predictions</h3>
+              <div className="flex flex-wrap gap-2">
+                <Link to={`/price-prediction/${coin.id}`} className="text-sm text-primary hover:underline">Overview</Link>
+                <span className="text-muted-foreground">·</span>
+                <Link to={`/price-prediction/${coin.id}/daily`} className="text-sm text-primary hover:underline">Daily Forecast</Link>
+                <span className="text-muted-foreground">·</span>
+                <Link to={`/price-prediction/${coin.id}/weekly`} className="text-sm text-primary hover:underline">Weekly Forecast</Link>
+                <span className="text-muted-foreground">·</span>
+                <Link to={`/price-prediction/${coin.id}/monthly`} className="text-sm text-primary hover:underline">Monthly Forecast</Link>
+              </div>
             </div>
-          </section>
+          ))}
+        </div>
 
-          {/* Sitemap Sections */}
-          <div className="grid md:grid-cols-2 gap-8">
-            {sitemapSections.map((section) => (
-              <section key={section.title} className="holo-card p-6" aria-labelledby={`section-${section.title}`}>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <section.icon className="w-5 h-5 text-primary" />
-                  </div>
-                  <h2 id={`section-${section.title}`} className="font-display text-lg font-bold">{section.title}</h2>
-                </div>
-                
-                <ul className="space-y-3">
-                  {section.links.map((link) => (
-                    <li key={link.path}>
-                      <Link 
-                        to={link.path}
-                        className="flex items-start gap-3 p-3 rounded-lg hover:bg-primary/5 transition-colors group"
-                      >
-                        <ChevronRight className="w-4 h-4 text-primary mt-0.5 group-hover:translate-x-1 transition-transform" />
-                        <div>
-                          <span className="font-medium text-foreground group-hover:text-primary transition-colors">
-                            {link.label}
-                          </span>
-                          <p className="text-sm text-muted-foreground mt-0.5">{link.description}</p>
-                        </div>
-                      </Link>
+        {/* ── Coin Market Pages ── */}
+        <SectionTitle id="markets">Coin Market Landing Pages — {topCryptos.length} Assets</SectionTitle>
+        <p className="text-muted-foreground mb-4">Dedicated market pages for each cryptocurrency with live price data, investor action summaries (Buy/Hold/Wait signals), risk levels, contextual news, related assets, and links to daily/weekly/monthly predictions.</p>
+        <ul className="grid md:grid-cols-3 gap-2">
+          {topCryptos.map(coin => (
+            <li key={coin.id}>
+              <Link to={`/markets/${coin.id}`} className="block p-2 rounded border border-border hover:border-primary/30 transition-colors">
+                <span className="text-sm font-medium text-primary hover:underline">{coin.name} ({coin.symbol})</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        {/* ── Market Analysis Questions ── */}
+        <SectionTitle id="market-questions">Market Analysis & Investment Questions — {marketQuestions.length} Pages</SectionTitle>
+        <p className="text-muted-foreground mb-4">High-intent investment analysis pages targeting specific market questions. Each page combines live technical data with AI analysis, semantic HTML tables, FAQ structured data, and internal links to prediction pages.</p>
+        <ul className="grid md:grid-cols-2 gap-2">
+          {marketQuestions.map(q => (
+            <li key={q.slug} className="p-3 rounded-lg border border-border hover:border-primary/30 transition-colors">
+              <Link to={`/market/${q.slug}`} className="block">
+                <span className="font-medium text-primary hover:underline">{q.label}</span>
+                <p className="text-sm text-muted-foreground mt-1">{q.desc}</p>
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        {/* ── Question Intent Pages ── */}
+        <SectionTitle id="questions">Question-Intent SEO Pages — {questionIntentCoins.length * questionPatterns.length} Pages</SectionTitle>
+        <p className="text-muted-foreground mb-4">Direct-answer pages for specific cryptocurrency questions people search on Google. Each page provides AI-generated answers with technical analysis, FAQ schema for rich snippets, and links to full prediction pages.</p>
+        {questionIntentCoins.map(coinId => {
+          const name = coinNames[coinId] || coinId;
+          return (
+            <div key={coinId} className="mb-4">
+              <h3 className="font-medium text-foreground mb-2">{name} Questions</h3>
+              <ul className="grid md:grid-cols-2 gap-1">
+                {questionPatterns.map(q => {
+                  const slug = q.pattern.replace('{coin}', coinId);
+                  const label = q.label.replace('{name}', name);
+                  return (
+                    <li key={slug}>
+                      <Link to={`/q/${slug}`} className="text-sm text-primary hover:underline block py-1">{label}</Link>
                     </li>
-                  ))}
-                </ul>
-              </section>
-            ))}
-          </div>
-
-          {/* External Resources */}
-          <section className="mt-12 holo-card p-6" aria-labelledby="external-heading">
-            <h2 id="external-heading" className="font-display text-lg font-bold mb-4">External Resources</h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              <a 
-                href="https://x.com/oracle_bulls" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 p-4 rounded-lg bg-muted/50 hover:bg-primary/10 transition-colors"
-              >
-                <div className="w-10 h-10 rounded-lg bg-background flex items-center justify-center">
-                  <span className="text-lg">𝕏</span>
-                </div>
-                <div>
-                  <span className="font-medium">Twitter / X</span>
-                  <p className="text-sm text-muted-foreground">@oracle_bulls - Latest updates and alerts</p>
-                </div>
-              </a>
-              <a 
-                href="https://t.me/oracle_bulls" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 p-4 rounded-lg bg-muted/50 hover:bg-primary/10 transition-colors"
-              >
-                <div className="w-10 h-10 rounded-lg bg-background flex items-center justify-center">
-                  <span className="text-lg">✈️</span>
-                </div>
-                <div>
-                  <span className="font-medium">Telegram</span>
-                  <p className="text-sm text-muted-foreground">Join the Oracle community</p>
-                </div>
-              </a>
+                  );
+                })}
+              </ul>
             </div>
-          </section>
+          );
+        })}
 
-          {/* SEO Text */}
-          <section className="mt-12 text-center" aria-labelledby="about-heading">
-            <h2 id="about-heading" className="font-display text-xl font-bold mb-4">About Oracle Bull</h2>
-            <p className="text-muted-foreground max-w-3xl mx-auto text-sm leading-relaxed">
-              Oracle Bull is a free, AI-powered cryptocurrency forecasting platform providing real-time analytics 
-              for Bitcoin, Ethereum, Solana, and 1000+ tokens. Our tools include live price charts, market predictions, 
-              whale tracking, sentiment analysis, wallet scanning, and comprehensive blockchain dashboards. 
-              No signup required — access institutional-grade crypto intelligence instantly.
-            </p>
-          </section>
+        {/* ── Educational Articles ── */}
+        <SectionTitle id="learn">Educational Articles — {learnArticles.length} In-Depth Guides</SectionTitle>
+        <p className="text-muted-foreground mb-4">Comprehensive educational content covering cryptocurrency fundamentals, forex market intelligence, AI forecasting methods, and trading strategies. Each article is 1,200–2,000 words with FAQ schema and internal links to platform tools.</p>
+        <ul className="space-y-2">
+          {learnArticles.map(a => (
+            <li key={a.slug} className="p-3 rounded-lg border border-border hover:border-primary/30 transition-colors">
+              <Link to={`/learn/${a.slug}`} className="block">
+                <span className="font-medium text-primary hover:underline">{a.title}</span>
+                <p className="text-sm text-muted-foreground mt-1">{a.desc}</p>
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        {/* ── Platform Features Description ── */}
+        <SectionTitle id="features">Platform Features & Tools</SectionTitle>
+        <div className="prose prose-sm max-w-none text-muted-foreground space-y-4">
+          <h3 className="text-foreground font-semibold text-base">AI Price Predictions</h3>
+          <p>Oracle Bull uses machine learning models including LSTM neural networks, gradient boosting, and ensemble methods to generate daily, weekly, and monthly cryptocurrency price forecasts. Each prediction includes bull and bear scenarios, entry zones, stop-loss levels, take-profit targets, confidence scores, and technical indicators like RSI, MACD, Bollinger Bands, and moving average crossovers.</p>
+
+          <h3 className="text-foreground font-semibold text-base">Real-Time Dashboard</h3>
+          <p>The live dashboard tracks 1,000+ cryptocurrencies with real-time price updates, 24h volume, market cap changes, Fear & Greed Index, market dominance charts, top gainers and losers, volume leaders, and AI-powered market momentum analysis. Data refreshes every 10–30 seconds from multiple exchange APIs.</p>
+
+          <h3 className="text-foreground font-semibold text-base">Crypto Strength Meter</h3>
+          <p>A composite weighted model ranks cryptocurrency strength using price momentum (30%), volume inflow/outflow (25%), volatility (15%), market dominance changes (10%), relative performance vs BTC/ETH (10%), sentiment scores (5%), and trend consistency (5%). Assets are ranked from strongest to weakest with auto-refresh.</p>
+
+          <h3 className="text-foreground font-semibold text-base">Whale Tracking & Smart Money</h3>
+          <p>Monitor large holder transactions across all supported blockchains. The whale activity radar detects accumulation and distribution patterns, tracks smart money wallet movements, and alerts on significant transfers. Whale alerts include transaction size, wallet labels, and historical behavior analysis.</p>
+
+          <h3 className="text-foreground font-semibold text-base">Sentiment Analysis Engine</h3>
+          <p>Multi-source sentiment aggregation from Twitter, Reddit, Telegram, and news outlets. The engine processes thousands of posts per hour using natural language processing to generate sentiment scores, detect trending topics, identify FUD/FOMO patterns, and correlate social activity with price movements.</p>
+
+          <h3 className="text-foreground font-semibold text-base">Token Explorer & Search</h3>
+          <p>Search any cryptocurrency by name, symbol, or contract address across Ethereum, Solana, Base, Arbitrum, Polygon, and other supported chains. Each token page shows price history, holder distribution, liquidity depth, security audit status, and related tokens. Powered by CoinGecko and DexScreener APIs.</p>
+
+          <h3 className="text-foreground font-semibold text-base">Wallet Scanner</h3>
+          <p>Enter any EVM or Solana wallet address to get AI-powered portfolio analysis. The scanner identifies holdings, calculates portfolio concentration risk, estimates pump potential, detects diamond hands vs paper hands patterns, and provides actionable recommendations.</p>
+
+          <h3 className="text-foreground font-semibold text-base">Crypto Factory</h3>
+          <p>The centralized intelligence hub aggregates market events (token launches, protocol upgrades, airdrops), on-chain activity (whale movements, smart contract deployments), trending narratives (AI tokens, DeFi 2.0, RWA), and breaking news from 50+ crypto news sources. Like Forex Factory, but for cryptocurrency.</p>
+
+          <h3 className="text-foreground font-semibold text-base">Multi-Chain Analytics</h3>
+          <p>Deep-dive analytics for 8+ blockchain networks including real-time TPS, gas fees, TVL, active addresses, transaction counts, validator health, DeFi protocol rankings, and ecosystem token discovery. Each chain page features AI price predictions, whale activity radar, token heat scanner, and risk analyzer.</p>
+
+          <h3 className="text-foreground font-semibold text-base">Daily AI-Generated Content</h3>
+          <p>The autonomous content engine generates 20 new market analysis articles daily covering on-chain data insights, technical analysis breakdowns, sector rotation analysis, and market commentary. Articles are stored in an append-only database for compounding SEO authority. Supplemented by 20 cornerstone educational guides covering crypto fundamentals, forex market intelligence, and AI forecasting methods.</p>
+        </div>
+
+        {/* ── External Resources ── */}
+        <SectionTitle id="external">External Resources & Community</SectionTitle>
+        <ul className="grid md:grid-cols-2 gap-2">
+          <li className="p-3 rounded-lg border border-border">
+            <a href="https://x.com/oracle_bulls" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">Twitter / X — @oracle_bulls</a>
+            <p className="text-sm text-muted-foreground mt-1">Latest market updates, prediction alerts, and community discussion</p>
+          </li>
+          <li className="p-3 rounded-lg border border-border">
+            <a href="https://t.me/oracle_bulls" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">Telegram — Oracle Bulls Community</a>
+            <p className="text-sm text-muted-foreground mt-1">Join the community for real-time alerts and market discussion</p>
+          </li>
+        </ul>
+
+        {/* ── Total Page Count ── */}
+        <div className="mt-12 p-6 rounded-lg bg-muted/50 border border-border text-center">
+          <p className="text-lg font-bold text-foreground">
+            Total Indexed Pages: {13 + 4 + 3 + chains.length + (topCryptos.length * 4) + topCryptos.length + marketQuestions.length + (questionIntentCoins.length * questionPatterns.length) + learnArticles.length}+
+          </p>
+          <p className="text-sm text-muted-foreground mt-1">
+            All pages are fully crawlable, have unique titles and meta descriptions, canonical URLs, and structured data (JSON-LD).
+            This sitemap is continuously updated as new content is generated.
+          </p>
         </div>
       </main>
-      
+
       <Footer />
       <MobileBottomNav />
       <div className="h-20 md:hidden" aria-hidden="true" />
