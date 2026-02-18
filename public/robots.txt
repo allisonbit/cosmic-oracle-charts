@@ -19,6 +19,7 @@ Allow: /*.woff2
 
 # Sitemap locations
 Sitemap: https://oraclebull.com/sitemap.xml
+Sitemap: https://oraclebull.com/html-sitemap.html
 
 # Google specific - full access
 User-agent: Googlebot

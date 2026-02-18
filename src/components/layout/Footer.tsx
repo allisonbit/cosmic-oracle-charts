@@ -145,9 +145,12 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/sitemap" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Sitemap
-                </Link>
+              <Link to="/sitemap" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                Sitemap
+              </Link>
+              <a href="/html-sitemap.html" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                HTML Sitemap
+              </a>
               </li>
             </ul>
           </nav>
