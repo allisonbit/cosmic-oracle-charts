@@ -91,17 +91,31 @@ function allocateAdBudget(): boolean {
   return true;
 }
 
-// Schedule ad init with low priority to prevent main thread blocking
+// Wait for AdSense script to be ready then fire callback
 function scheduleAdInit(cb: () => void) {
   if (typeof window === "undefined") return;
 
-  const ric = (window as Window & { requestIdleCallback?: (fn: () => void, opts?: { timeout: number }) => number }).requestIdleCallback;
-  if (typeof ric === "function") {
-    ric(cb, { timeout: 2000 });
+  const w = window as Window & { adsbygoogle?: unknown[] };
+
+  // If adsbygoogle array already exists the script is loaded — fire immediately
+  if (Array.isArray(w.adsbygoogle)) {
+    cb();
     return;
   }
 
-  setTimeout(cb, 250);
+  // Otherwise wait up to 5 seconds for script to load
+  let attempts = 0;
+  const interval = setInterval(() => {
+    attempts++;
+    if (Array.isArray((window as Window & { adsbygoogle?: unknown[] }).adsbygoogle)) {
+      clearInterval(interval);
+      cb();
+    } else if (attempts >= 50) {
+      // 5 s timeout — try anyway
+      clearInterval(interval);
+      cb();
+    }
+  }, 100);
 }
 
 /**
@@ -179,14 +193,16 @@ export const AdPlacement = memo(function AdPlacement({
     };
   }, [lazyLoad, isVisible]);
 
-  // Initialize AdSense slot when visible
+  // Initialize AdSense slot when visible (works for both slotted and auto ads)
   useEffect(() => {
-    if (!isVisible || hasInitialized.current || !slot) return;
+    if (!isVisible || hasInitialized.current) return;
     if (isAllowedRef.current === false) return;
 
     const ins = adRef.current?.querySelector("ins.adsbygoogle");
+    if (!ins) return;
+
     const alreadyInitialized =
-      !!ins?.getAttribute("data-adsbygoogle-status") || !!ins?.getAttribute("data-ad-status");
+      !!ins.getAttribute("data-adsbygoogle-status") || !!ins.getAttribute("data-ad-status");
 
     if (alreadyInitialized) {
       hasInitialized.current = true;
@@ -198,9 +214,7 @@ export const AdPlacement = memo(function AdPlacement({
     scheduleAdInit(() => {
       try {
         const w = window as Window & { adsbygoogle?: unknown[] };
-        if (!w.adsbygoogle) {
-          w.adsbygoogle = [];
-        }
+        w.adsbygoogle = w.adsbygoogle || [];
         w.adsbygoogle.push({});
       } catch (e) {
         const w = window as Window & { __oracle_ad_init_warned?: boolean };
@@ -210,7 +224,7 @@ export const AdPlacement = memo(function AdPlacement({
         }
       }
     });
-  }, [isVisible, slot]);
+  }, [isVisible]);
 
   // Placeholder with fixed dimensions (CLS prevention)
   if (!isVisible) {
@@ -218,7 +232,7 @@ export const AdPlacement = memo(function AdPlacement({
       <div
         ref={adRef}
         className={cn(
-          "flex items-center justify-center bg-muted/10 rounded-lg overflow-hidden",
+          "flex items-center justify-center bg-muted/10 rounded-lg",
           "transition-opacity duration-300",
           className
         )}
@@ -248,7 +262,7 @@ export const AdPlacement = memo(function AdPlacement({
       <div
         ref={adRef}
         className={cn(
-          "flex items-center justify-center bg-muted/5 rounded-lg overflow-hidden",
+          "flex items-center justify-center bg-muted/5 rounded-lg",
           size === "in-article" && "my-6 w-full",
           className
         )}
@@ -308,12 +322,12 @@ export const AdPlacement = memo(function AdPlacement({
     );
   }
 
-  // Standard ad placement
+  // Standard ad placement — NO overflow-hidden (clips ad iframes)
   return (
     <div
       ref={adRef}
       className={cn(
-        "flex items-center justify-center bg-muted/5 rounded-lg overflow-hidden",
+        "flex items-center justify-center bg-muted/5 rounded-lg",
         "border border-border/20",
         size === "in-article" && "my-6 w-full",
         className
@@ -323,7 +337,8 @@ export const AdPlacement = memo(function AdPlacement({
         maxWidth: size === "in-article" ? "100%" : effectiveWidth,
         height: effectiveHeight === "auto" ? undefined : effectiveHeight,
         minHeight: effectiveMinHeight,
-        contain: "layout style",
+        position: "relative",
+        zIndex: 1,
       }}
       data-ad-slot={slot}
       data-ad-size={size}
@@ -346,13 +361,17 @@ export const AdPlacement = memo(function AdPlacement({
           data-full-width-responsive={size === "in-article" ? "true" : "false"}
         />
       ) : (
-        <div 
-          className="w-full h-full flex items-center justify-center text-muted-foreground/30 text-xs font-display"
-          data-ad-container="auto" 
-          style={{ minHeight: effectiveMinHeight }}
-        >
-          <span>Ad</span>
-        </div>
+        <ins
+          className="adsbygoogle"
+          style={{
+            display: "block",
+            width: "100%",
+            minHeight: effectiveMinHeight,
+          }}
+          data-ad-client="ca-pub-1336344158133611"
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        />
       )}
     </div>
   );
