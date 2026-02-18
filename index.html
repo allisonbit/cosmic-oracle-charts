@@ -65,8 +65,9 @@
     <meta name="twitter:site" content="@oracle_bulls" />
     <meta name="twitter:creator" content="@oracle_bulls" />
     
-    <!-- Google AdSense - Account verification -->
+    <!-- Google AdSense - Account verification & script (must be in head for Auto Ads) -->
     <meta name="google-adsense-account" content="ca-pub-1336344158133611">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1336344158133611" crossorigin="anonymous"></script>
     
     <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="https://storage.googleapis.com/gpt-engineer-file-uploads/uDg0k7BDXGRxsHZqK6gSbdN9o0l1/uploads/1765566955909-WhatsApp Image 2025-12-12 at 10.50.30_d13b6f53.jpg" />
@@ -217,9 +218,8 @@
 
     <script type="module" src="/src/main.tsx" onerror="window.__oracleBoot && window.__oracleBoot.showError('entry script failed')"></script>
     
-    <!-- Defer non-critical scripts after page load for better FCP -->
+    <!-- Defer Google Analytics only (AdSense now in <head>) -->
     <script>
-      // Load AdSense and Analytics after page becomes interactive
       function loadDeferredScripts() {
         // Google Analytics
         var ga = document.createElement('script');
@@ -231,13 +231,6 @@
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', 'G-B2T2RX6RHB', { send_page_view: true, cookie_flags: 'SameSite=None;Secure' });
-        
-        // Google AdSense
-        var ads = document.createElement('script');
-        ads.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1336344158133611';
-        ads.async = true;
-        ads.crossOrigin = 'anonymous';
-        document.head.appendChild(ads);
       }
       
       if ('requestIdleCallback' in window) {
