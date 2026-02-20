@@ -192,7 +192,7 @@ CRITICAL: The content field must be complete HTML with proper heading hierarchy.
     method: "POST",
     headers: reqHeaders,
     body: JSON.stringify({
-      model: "claude-opus-4-5",
+      model: "claude-sonnet-4-20250514",
       max_tokens: 8192,
       system: systemPrompt,
       messages: [{ role: "user", content: userPrompt }],
