@@ -45,9 +45,9 @@ export function HeroSection() {
               <span className="text-foreground">Intelligence Platform</span>
             </h1>
             
-            <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0">
-              OracleBull provides comprehensive market analysis, sentiment tracking, and educational insights 
-              for crypto and forex markets. Free access to institutional-grade analytics—no signup required.
+            <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0">Oracle provides comprehensive market analysis, sentiment tracking, and educational insights for crypto and forex markets. Free access to institutional-grade analytics no signup required.
+
+
             </p>
             
             <nav className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start flex-wrap" aria-label="Primary actions">
@@ -82,8 +82,8 @@ export function HeroSection() {
                 decoding="async"
                 width={450}
                 height={450}
-                sizes="(max-width: 768px) 256px, (max-width: 1024px) 320px, 450px"
-              />
+                sizes="(max-width: 768px) 256px, (max-width: 1024px) 320px, 450px" />
+
               {/* Overlay gradient */}
               <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" aria-hidden="true" />
             </div>
@@ -101,6 +101,6 @@ export function HeroSection() {
           </figure>
         </div>
       </div>
-    </section>
-  );
+    </section>);
+
 }
