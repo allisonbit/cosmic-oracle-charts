@@ -27,12 +27,17 @@ const SectionFallback = () => (
   </div>
 );
 
-// Viewport-triggered lazy section with content-visibility optimization
+// Detect if visitor is likely a bot/crawler — render everything immediately for SEO
+const isBot = typeof navigator !== "undefined" &&
+  /Googlebot|bingbot|Baiduspider|yandex|DuckDuckBot|Slurp|ia_archiver|AhrefsBot|facebookexternalhit|Twitterbot|LinkedInBot|GPTBot|ClaudeBot|ChatGPT/i.test(navigator.userAgent);
+
+// Viewport-triggered lazy section — crawlers see content immediately
 const ViewportSection = ({ children, fallback }: { children: React.ReactNode; fallback: React.ReactNode }) => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(isBot); // bots see everything immediately
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (isVisible) return; // already visible (bot or triggered)
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -44,7 +49,7 @@ const ViewportSection = ({ children, fallback }: { children: React.ReactNode; fa
     );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
-  }, []);
+  }, [isVisible]);
 
   return (
     <div ref={ref}>
