@@ -72,7 +72,7 @@ export function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link to="/predictions" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  AI Market Analysis
+                  AI Price Predictions
                 </Link>
               </li>
               <li>
@@ -81,13 +81,23 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/strength" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Market Strength Meter
+                <Link to="/strength-meter" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Crypto Strength Meter
                 </Link>
               </li>
               <li>
                 <Link to="/factory" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Market Intelligence
+                  Crypto Factory
+                </Link>
+              </li>
+              <li>
+                <Link to="/factory/events" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Market Events
+                </Link>
+              </li>
+              <li>
+                <Link to="/factory/news" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Crypto News
                 </Link>
               </li>
               <li>
@@ -119,13 +129,33 @@ export function Footer() {
               </li>
               <li>
                 <Link to="/chain/ethereum" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Chain Analytics
+                  Ethereum Analytics
+                </Link>
+              </li>
+              <li>
+                <Link to="/chain/bitcoin" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Bitcoin Analytics
+                </Link>
+              </li>
+              <li>
+                <Link to="/chain/solana" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Solana Analytics
+                </Link>
+              </li>
+              <li>
+                <Link to="/price-prediction/bitcoin" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Bitcoin Prediction
+                </Link>
+              </li>
+              <li>
+                <Link to="/price-prediction/ethereum" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Ethereum Prediction
                 </Link>
               </li>
             </ul>
           </nav>
           
-          {/* Learn */}
+          {/* Learn & Market */}
           <nav className="space-y-4" aria-label="Footer navigation - Learn">
             <h4 className="font-display font-bold text-foreground text-sm md:text-base">LEARN</h4>
             <ul className="space-y-2">
@@ -136,21 +166,33 @@ export function Footer() {
               </li>
               <li>
                 <Link to="/insights" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Crypto Insights
+                  Daily AI Insights
                 </Link>
               </li>
               <li>
                 <Link to="/market/best-crypto-to-buy-today" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Market Trends
+                  Best Crypto to Buy Today
                 </Link>
               </li>
               <li>
-              <Link to="/sitemap" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                Sitemap
-              </Link>
-              <a href="/html-sitemap.html" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                HTML Sitemap
-              </a>
+                <Link to="/market/next-crypto-to-explode" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Next Crypto to Explode
+                </Link>
+              </li>
+              <li>
+                <Link to="/market/top-crypto-gainers-today" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Top Crypto Gainers
+                </Link>
+              </li>
+              <li>
+                <Link to="/sitemap" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Sitemap
+                </Link>
+              </li>
+              <li>
+                <a href="/html-sitemap.html" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  HTML Sitemap
+                </a>
               </li>
             </ul>
           </nav>
