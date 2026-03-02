@@ -34,32 +34,31 @@ export function HeroSection() {
           <article className="text-center lg:text-left space-y-6 md:space-y-8 animate-fade-in">
             <div className="inline-flex items-center gap-2 px-3 md:px-4 py-2 rounded-full bg-primary/10 border border-primary/30 text-primary text-xs md:text-sm font-medium">
               <Sparkles className="w-3 h-3 md:w-4 md:h-4" aria-hidden="true" />
-              <span>Market Intelligence Platform</span>
+              <span>100% Free — No Signup Required</span>
             </div>
             
             <h1 id="hero-heading" className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight">
-              <span className="text-gradient-cosmic">AI-Powered</span>
+              <span className="text-gradient-cosmic">Institutional-Grade</span>
               <br />
-              <span className="glow-text">Crypto & Market</span>
+              <span className="glow-text">Crypto Analytics</span>
               <br />
-              <span className="text-foreground">Intelligence Platform</span>
+              <span className="text-foreground">Powered by AI</span>
             </h1>
             
-            <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0">Oracle provides comprehensive market analysis, sentiment tracking, and educational insights for crypto and forex markets. Free access to institutional-grade analytics no signup required.
-
-
+            <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0">
+              Real-time price predictions, whale tracking, sentiment analysis, and on-chain intelligence across 18,000+ cryptocurrencies. Access the same tools institutions use — completely free, no account needed.
             </p>
             
             <nav className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start flex-wrap" aria-label="Primary actions">
               <Button asChild variant="cosmic" size="lg" className="text-sm md:text-base touch-target-lg tap-highlight-none active:scale-95 transition-transform">
                 <Link to="/dashboard">
-                  Explore Dashboard
+                  Open Live Dashboard
                   <ArrowRight className="w-4 h-4 md:w-5 md:h-5" aria-hidden="true" />
                 </Link>
               </Button>
               <Button asChild variant="glow" size="lg" className="text-sm md:text-base touch-target-lg tap-highlight-none active:scale-95 transition-transform">
-                <Link to="/insights">
-                  Market Insights
+                <Link to="/predictions">
+                  AI Price Predictions
                   <Sparkles className="w-4 h-4 md:w-5 md:h-5" aria-hidden="true" />
                 </Link>
               </Button>
