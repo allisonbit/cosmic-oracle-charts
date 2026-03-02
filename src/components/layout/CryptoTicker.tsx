@@ -1,7 +1,8 @@
 import { TrendingUp, TrendingDown, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
-import { memo } from "react";
+import { useMarketData } from "@/hooks/useMarketData";
+import { memo, useMemo } from "react";
 
 interface TickerItemProps {
   symbol: string;
@@ -12,13 +13,17 @@ interface TickerItemProps {
 const TickerItem = memo(function TickerItem({ symbol, price, change24h }: TickerItemProps) {
   const isPositive = change24h >= 0;
   
+  const formattedPrice = price >= 1
+    ? price.toLocaleString(undefined, { maximumFractionDigits: 2 })
+    : price.toLocaleString(undefined, { maximumSignificantDigits: 4 });
+  
   return (
     <div className="flex items-center gap-2 md:gap-3 whitespace-nowrap shrink-0 touch-manipulation">
       <span className="font-display font-bold text-primary text-xs md:text-sm">
         {symbol}
       </span>
       <span className="text-foreground font-medium text-xs md:text-sm tabular-nums">
-        ${price.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+        ${formattedPrice}
       </span>
       <span
         className={cn(
@@ -39,11 +44,43 @@ const TickerItem = memo(function TickerItem({ symbol, price, change24h }: Ticker
 });
 
 export function CryptoTicker() {
-  const { data, isLoading, error } = useCryptoPrices();
+  const { data: pricesData, isLoading: pricesLoading } = useCryptoPrices();
+  const { data: marketData, isLoading: marketLoading } = useMarketData();
 
-  const tickerData = data?.prices || [];
-  // Triple the data for smoother infinite scroll
-  const duplicatedData = [...tickerData, ...tickerData, ...tickerData];
+  const tickerData = useMemo(() => {
+    const seen = new Set<string>();
+    const coins: { symbol: string; price: number; change24h: number }[] = [];
+
+    // Primary source: crypto-prices (more accurate per-coin data)
+    if (pricesData?.prices) {
+      for (const coin of pricesData.prices) {
+        if (coin.price > 0 && !seen.has(coin.symbol)) {
+          seen.add(coin.symbol);
+          coins.push({ symbol: coin.symbol, price: coin.price, change24h: coin.change24h });
+        }
+      }
+    }
+
+    // Secondary source: market data top coins (fills up to 50)
+    if (marketData?.topCoins) {
+      for (const coin of marketData.topCoins) {
+        if (coin.price > 0 && !seen.has(coin.symbol) && coins.length < 50) {
+          // Skip stablecoins and obscure tokens for the ticker
+          const skipSymbols = ['USDT', 'USDC', 'USDS', 'DAI', 'USDE', 'PYUSD', 'USD1', 'USDG', 'USDF', 'BUIDL', 'USYC', 'FIGR_HELOC', 'XAUT', 'PAXG'];
+          if (skipSymbols.includes(coin.symbol)) continue;
+          seen.add(coin.symbol);
+          coins.push({ symbol: coin.symbol, price: coin.price, change24h: coin.change24h });
+        }
+      }
+    }
+
+    return coins;
+  }, [pricesData, marketData]);
+
+  // Duplicate twice for seamless infinite scroll
+  const duplicatedData = useMemo(() => [...tickerData, ...tickerData], [tickerData]);
+
+  const isLoading = pricesLoading && marketLoading;
 
   if (isLoading && tickerData.length === 0) {
     return (
@@ -53,7 +90,7 @@ export function CryptoTicker() {
     );
   }
 
-  if (error && tickerData.length === 0) {
+  if (tickerData.length === 0) {
     return (
       <div className="w-full overflow-hidden bg-muted/50 border-y border-primary/20 py-2 md:py-3 text-center text-muted-foreground text-xs md:text-sm stable-layout">
         Loading market data...
