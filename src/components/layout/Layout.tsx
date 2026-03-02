@@ -41,9 +41,7 @@ export function Layout({ children, showTicker = true }: LayoutProps) {
         </Suspense>
       </main>
       
-      <div className="hidden md:block">
-        <Footer />
-      </div>
+      <Footer />
       <MobileBottomNav />
     </div>
   );
