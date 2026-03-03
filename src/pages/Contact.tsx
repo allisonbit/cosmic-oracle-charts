@@ -1,458 +1,137 @@
 import { Layout } from "@/components/layout/Layout";
-import { 
-  MessageCircle, Twitter, Copy, Check, ExternalLink, 
-  TrendingUp, TrendingDown, Activity, BarChart3, Users,
-  Coins, Globe, Zap, Shield, Loader2, RefreshCw
-} from "lucide-react";
+import { Mail, MessageCircle, Twitter, MapPin, Clock, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import oracleLogo from "@/assets/oracle-logo.jpg";
-import { useState } from "react";
-import { toast } from "sonner";
-import { cn } from "@/lib/utils";
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts";
-import { useOracleToken } from "@/hooks/useOracleToken";
+import { SEO } from "@/components/SEO";
 import { ContactSEOContent } from "@/components/seo";
 
-const CONTRACT_ADDRESS = "0x08ae73a4c4881ac59087d752831ca7677a33e5ba";
-
 const ContactPage = () => {
-  const [copied, setCopied] = useState(false);
-  const { data: tokenData, isLoading, error, refetch, isRefetching } = useOracleToken();
-
-  // Generate price history based on current price
-  const priceHistory = tokenData ? Array.from({ length: 24 }, (_, i) => {
-    const base = tokenData.price || 0.00001;
-    const variance = 0.15; // 15% variance
-    return {
-      time: `${i}h`,
-      price: base * (1 - variance + Math.random() * variance * 2),
-      volume: (tokenData.volume24h || 1000) / 24 * (0.5 + Math.random()),
-    };
-  }).map((item, i, arr) => {
-    // Last point is current price
-    if (i === arr.length - 1) return { ...item, price: tokenData.price };
-    return item;
-  }) : [];
-
-  const copyCA = () => {
-    navigator.clipboard.writeText(CONTRACT_ADDRESS);
-    setCopied(true);
-    toast.success("Contract address copied!");
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const formatNumber = (num: number) => {
-    if (!num || isNaN(num)) return '0';
-    if (num >= 1e9) return `${(num / 1e9).toFixed(2)}B`;
-    if (num >= 1e6) return `${(num / 1e6).toFixed(2)}M`;
-    if (num >= 1e3) return `${(num / 1e3).toFixed(2)}K`;
-    return num.toFixed(2);
-  };
-
-  const formatPrice = (price: number) => {
-    if (!price || isNaN(price)) return '$0';
-    if (price < 0.00000001) return `$${price.toFixed(12)}`;
-    if (price < 0.0001) return `$${price.toFixed(8)}`;
-    if (price < 0.01) return `$${price.toFixed(6)}`;
-    if (price < 1) return `$${price.toFixed(4)}`;
-    return `$${price.toFixed(2)}`;
-  };
-
-  if (isLoading) {
-    return (
-      <Layout>
-        <div className="container mx-auto px-4 py-12 flex justify-center items-center min-h-[60vh]">
-          <div className="flex flex-col items-center gap-4">
-            <Loader2 className="w-10 h-10 animate-spin text-primary" />
-            <p className="text-muted-foreground font-display">Loading Oracle token data...</p>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
-
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-8">
+      <SEO
+        title="Contact Us | OracleBull Market Intelligence"
+        description="Get in touch with the OracleBull team. Reach out for support, feedback, partnership inquiries, or general questions about our AI-powered market analytics platform."
+      />
+
+      <div className="container mx-auto px-4 py-12">
         {/* Header */}
-        <div className="text-center mb-8 space-y-3">
-          <h1 className="text-3xl md:text-5xl font-display font-bold">
-            <span className="text-gradient-cosmic">${tokenData?.symbol || 'ORACLE'}</span> TOKEN
+        <header className="text-center mb-12">
+          <h1 className="text-3xl md:text-5xl font-display font-bold mb-4">
+            Contact <span className="text-gradient-cosmic">OracleBull</span>
           </h1>
-          <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto">
-            {tokenData?.name || 'Oracle Token'} - Real-time market data
+          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+            Have a question, feedback, or partnership inquiry? We'd love to hear from you.
+            Reach out through any of the channels below.
           </p>
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/20 text-xs text-muted-foreground">
-            <div className={cn("w-2 h-2 rounded-full animate-pulse", isRefetching ? "bg-warning" : "bg-success")} />
-            Live Data
+        </header>
+
+        {/* Contact Methods */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto mb-16">
+          {/* Email */}
+          <div className="holo-card p-6 text-center space-y-4">
+            <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center mx-auto">
+              <Mail className="w-7 h-7 text-primary" />
+            </div>
+            <h2 className="font-display font-bold text-lg">Email Us</h2>
+            <p className="text-sm text-muted-foreground">
+              For general inquiries, support questions, or partnership proposals.
+            </p>
+            <a
+              href="mailto:contact@oraclebull.com"
+              className="inline-block text-primary hover:underline font-medium"
+            >
+              contact@oraclebull.com
+            </a>
+          </div>
+
+          {/* Twitter / X */}
+          <div className="holo-card p-6 text-center space-y-4">
+            <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center mx-auto">
+              <Twitter className="w-7 h-7 text-primary" />
+            </div>
+            <h2 className="font-display font-bold text-lg">X (Twitter)</h2>
+            <p className="text-sm text-muted-foreground">
+              Follow us for real-time updates, market highlights, and community discussions.
+            </p>
+            <a
+              href="https://x.com/oracle_bulls"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block text-primary hover:underline font-medium"
+            >
+              @oracle_bulls
+            </a>
+          </div>
+
+          {/* Telegram */}
+          <div className="holo-card p-6 text-center space-y-4">
+            <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center mx-auto">
+              <MessageCircle className="w-7 h-7 text-primary" />
+            </div>
+            <h2 className="font-display font-bold text-lg">Telegram</h2>
+            <p className="text-sm text-muted-foreground">
+              Join our Telegram community for discussions, feature requests, and support.
+            </p>
+            <a
+              href="https://t.me/oracle_bulls"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block text-primary hover:underline font-medium"
+            >
+              t.me/oracle_bulls
+            </a>
           </div>
         </div>
 
-        {error && (
-          <div className="max-w-2xl mx-auto mb-6 p-4 rounded-lg bg-danger/10 border border-danger/30 text-danger text-center">
-            <p>Failed to load token data. Please try again.</p>
-          </div>
-        )}
-
-        {/* Main Grid */}
-        <div className="grid lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-          
-          {/* Left Column - Token Info & Chart */}
-          <div className="lg:col-span-2 space-y-6">
-            
-            {/* Price Header Card */}
-            <div className="holo-card p-6">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-primary/50">
-                    <img src={oracleLogo} alt="Oracle" className="w-full h-full object-cover" />
-                  </div>
-                  <div>
-                    <h2 className="font-display font-bold text-2xl">{tokenData?.name || 'Oracle Token'}</h2>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-primary font-bold">${tokenData?.symbol || 'ORACLE'}</span>
-                      <span className="text-xs px-2 py-0.5 rounded bg-primary/20 text-primary">ERC-20</span>
-                      <span className="text-xs px-2 py-0.5 rounded bg-success/20 text-success flex items-center gap-1">
-                        <Shield className="w-3 h-3" /> On-Chain
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="text-left md:text-right">
-                  <div className="text-3xl md:text-4xl font-bold">
-                    {formatPrice(tokenData?.price || 0)}
-                  </div>
-                  {tokenData?.change24h !== undefined && tokenData.change24h !== 0 && (
-                    <div className={cn(
-                      "flex items-center gap-1 text-lg font-medium",
-                      tokenData.change24h >= 0 ? "text-success" : "text-danger"
-                    )}>
-                      {tokenData.change24h >= 0 ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
-                      {tokenData.change24h >= 0 ? "+" : ""}{tokenData.change24h.toFixed(2)}% (24h)
-                    </div>
-                  )}
-                  {tokenData?.lastUpdated && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Updated: {new Date(tokenData.lastUpdated).toLocaleTimeString()}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* Contract Address */}
-              <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50 border border-primary/20">
-                <span className="text-xs text-muted-foreground shrink-0">CA:</span>
-                <code className="flex-1 text-xs md:text-sm font-mono text-primary truncate">{CONTRACT_ADDRESS}</code>
-                <Button variant="ghost" size="sm" onClick={copyCA} className="shrink-0">
-                  {copied ? <Check className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={() => window.open(`https://etherscan.io/token/${CONTRACT_ADDRESS}`, '_blank')}
-                  className="shrink-0"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-
-            {/* Price Chart */}
-            <div className="holo-card p-6">
-              <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
-                <BarChart3 className="w-4 h-4 text-primary" />
-                PRICE CHART (24H)
-              </h3>
-              {priceHistory.length > 0 && tokenData?.price ? (
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={priceHistory}>
-                      <defs>
-                        <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
-                          <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
-                        </linearGradient>
-                      </defs>
-                      <XAxis dataKey="time" stroke="hsl(var(--muted-foreground))" fontSize={10} />
-                      <YAxis 
-                        stroke="hsl(var(--muted-foreground))" 
-                        fontSize={10} 
-                        domain={['dataMin * 0.9', 'dataMax * 1.1']} 
-                        tickFormatter={(v) => formatPrice(v)}
-                      />
-                      <Tooltip
-                        contentStyle={{
-                          background: "hsl(var(--card))",
-                          border: "1px solid hsl(var(--border))",
-                          borderRadius: "8px",
-                        }}
-                        formatter={(value: number) => [formatPrice(value), "Price"]}
-                      />
-                      <Area 
-                        type="monotone" 
-                        dataKey="price" 
-                        stroke="hsl(var(--primary))" 
-                        strokeWidth={2} 
-                        fill="url(#colorPrice)" 
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
-              ) : (
-                <div className="h-64 flex items-center justify-center text-muted-foreground">
-                  <p>No price data available</p>
-                </div>
-              )}
-            </div>
-
-            {/* Volume Chart */}
-            <div className="holo-card p-6">
-              <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
-                <Activity className="w-4 h-4 text-secondary" />
-                TRADING VOLUME (24H): ${formatNumber(tokenData?.volume24h || 0)}
-              </h3>
-              {priceHistory.length > 0 ? (
-                <div className="h-40">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={priceHistory}>
-                      <XAxis dataKey="time" stroke="hsl(var(--muted-foreground))" fontSize={10} />
-                      <YAxis 
-                        stroke="hsl(var(--muted-foreground))" 
-                        fontSize={10}
-                        tickFormatter={(v) => `$${formatNumber(v)}`}
-                      />
-                      <Tooltip
-                        contentStyle={{
-                          background: "hsl(var(--card))",
-                          border: "1px solid hsl(var(--border))",
-                          borderRadius: "8px",
-                        }}
-                        formatter={(value: number) => [`$${formatNumber(value)}`, "Volume"]}
-                      />
-                      <Bar dataKey="volume" fill="hsl(var(--secondary))" radius={[4, 4, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              ) : (
-                <div className="h-40 flex items-center justify-center text-muted-foreground">
-                  <p>No volume data available</p>
-                </div>
-              )}
-            </div>
-
-            {/* Token Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {[
-                { label: "Market Cap", value: `$${formatNumber(tokenData?.marketCap || 0)}`, icon: Coins, color: "text-primary" },
-                { label: "24h Volume", value: `$${formatNumber(tokenData?.volume24h || 0)}`, icon: Activity, color: "text-secondary" },
-                { label: "Holders", value: formatNumber(tokenData?.holders || 0), icon: Users, color: "text-success" },
-                { label: "Liquidity", value: `$${formatNumber(tokenData?.liquidity || 0)}`, icon: Zap, color: "text-warning" },
-              ].map((stat) => (
-                <div key={stat.label} className="holo-card p-4 text-center">
-                  <stat.icon className={cn("w-5 h-5 mx-auto mb-2", stat.color)} />
-                  <div className="text-xs text-muted-foreground font-display mb-1">{stat.label}</div>
-                  <div className="text-lg font-bold">{stat.value}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* Recent Transfers */}
-            {tokenData?.recentTransfers && tokenData.recentTransfers.length > 0 && (
-              <div className="holo-card p-6">
-                <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
-                  <Activity className="w-4 h-4 text-primary" />
-                  RECENT TRANSFERS
-                </h3>
-                <div className="space-y-2 max-h-60 overflow-y-auto">
-                  {tokenData.recentTransfers.slice(0, 5).map((tx, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-muted/30 text-sm">
-                      <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground">From:</span>
-                        <code className="text-xs font-mono text-primary">
-                          {tx.from.slice(0, 6)}...{tx.from.slice(-4)}
-                        </code>
-                        <span className="text-muted-foreground">→</span>
-                        <code className="text-xs font-mono text-secondary">
-                          {tx.to.slice(0, 6)}...{tx.to.slice(-4)}
-                        </code>
-                      </div>
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={() => window.open(`https://etherscan.io/tx/${tx.hash}`, '_blank')}
-                      >
-                        <ExternalLink className="w-3 h-3" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Right Column - Community & Details */}
+        {/* FAQ / Common Questions */}
+        <section className="max-w-3xl mx-auto mb-16">
+          <h2 className="text-2xl md:text-3xl font-display font-bold text-center mb-8">
+            Frequently Asked Questions
+          </h2>
           <div className="space-y-6">
-            
-            {/* Oracle Image */}
-            <div className="holo-card p-6 flex justify-center">
-              <div className="relative">
-                <div className="absolute inset-0 w-40 h-40 rounded-full border border-primary/30 pulse-glow" />
-                <div className="relative w-40 h-40 rounded-full overflow-hidden float">
-                  <img src={oracleLogo} alt="Cosmic Oracle" className="w-full h-full object-cover" />
-                </div>
-              </div>
-            </div>
-
-            {/* Social Links */}
             <div className="holo-card p-6">
-              <h3 className="font-display font-bold text-sm mb-4">JOIN COMMUNITY</h3>
-              <div className="grid grid-cols-2 gap-3">
-                <a
-                  href="https://x.com/oracle_bulls"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex flex-col items-center gap-2 p-4 rounded-lg bg-muted/50 hover:bg-primary/10 hover:border-primary border border-transparent transition-all group"
-                >
-                  <Twitter className="w-8 h-8 text-muted-foreground group-hover:text-primary transition-colors" />
-                  <span className="text-xs font-medium">X (Twitter)</span>
-                </a>
-                <a
-                  href="https://t.me/oracle_bulls"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex flex-col items-center gap-2 p-4 rounded-lg bg-muted/50 hover:bg-primary/10 hover:border-primary border border-transparent transition-all group"
-                >
-                  <MessageCircle className="w-8 h-8 text-muted-foreground group-hover:text-primary transition-colors" />
-                  <span className="text-xs font-medium">Telegram</span>
-                </a>
-              </div>
+              <h3 className="font-bold text-foreground mb-2">Is OracleBull free to use?</h3>
+              <p className="text-sm text-muted-foreground">
+                Yes! All of our analytics tools, predictions, and educational content are 100% free 
+                with no signup required. We believe market intelligence should be accessible to everyone.
+              </p>
             </div>
-
-            {/* Token Details */}
             <div className="holo-card p-6">
-              <h3 className="font-display font-bold text-sm mb-4">TOKEN DETAILS</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center p-2 rounded bg-muted/30">
-                  <span className="text-xs text-muted-foreground">Decimals</span>
-                  <span className="text-sm font-bold">{tokenData?.decimals || 18}</span>
-                </div>
-                <div className="flex justify-between items-center p-2 rounded bg-muted/30">
-                  <span className="text-xs text-muted-foreground">Total Supply</span>
-                  <span className="text-sm font-bold">{formatNumber(tokenData?.totalSupply || 0)}</span>
-                </div>
-                <div className="flex justify-between items-center p-2 rounded bg-muted/30">
-                  <span className="text-xs text-muted-foreground">Circulating</span>
-                  <span className="text-sm font-bold">{formatNumber(tokenData?.circulatingSupply || 0)}</span>
-                </div>
-                <div className="flex justify-between items-center p-2 rounded bg-muted/30">
-                  <span className="text-xs text-muted-foreground">All-Time High</span>
-                  <span className="text-sm font-bold text-success">{formatPrice(tokenData?.allTimeHigh || 0)}</span>
-                </div>
-                <div className="flex justify-between items-center p-2 rounded bg-muted/30">
-                  <span className="text-xs text-muted-foreground">All-Time Low</span>
-                  <span className="text-sm font-bold text-danger">{formatPrice(tokenData?.allTimeLow || 0)}</span>
-                </div>
-              </div>
+              <h3 className="font-bold text-foreground mb-2">Do you provide financial advice?</h3>
+              <p className="text-sm text-muted-foreground">
+                No. OracleBull is a market intelligence and analytics platform that provides educational 
+                insights and data-driven analysis. Nothing on our platform constitutes financial advice. 
+                Always do your own research and consult a qualified financial advisor.
+              </p>
             </div>
-
-            {/* Supply Distribution */}
             <div className="holo-card p-6">
-              <h3 className="font-display font-bold text-sm mb-4">SUPPLY DISTRIBUTION</h3>
-              <div className="space-y-3">
-                <div>
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="text-muted-foreground">Circulating</span>
-                    <span className="font-medium">65%</span>
-                  </div>
-                  <Progress value={65} className="h-2" />
-                </div>
-                <div>
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="text-muted-foreground">Locked</span>
-                    <span className="font-medium">20%</span>
-                  </div>
-                  <Progress value={20} className="h-2" />
-                </div>
-                <div>
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="text-muted-foreground">Team</span>
-                    <span className="font-medium">10%</span>
-                  </div>
-                  <Progress value={10} className="h-2" />
-                </div>
-                <div>
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="text-muted-foreground">Treasury</span>
-                    <span className="font-medium">5%</span>
-                  </div>
-                  <Progress value={5} className="h-2" />
-                </div>
-              </div>
+              <h3 className="font-bold text-foreground mb-2">How can I report an issue or bug?</h3>
+              <p className="text-sm text-muted-foreground">
+                Please email us at contact@oraclebull.com with a description of the issue, the page URL, 
+                and any screenshots if possible. We typically respond within 24-48 hours.
+              </p>
             </div>
-
-            {/* External Links - Enhanced */}
             <div className="holo-card p-6">
-              <h3 className="font-display font-bold text-sm mb-4">EXPLORE & VERIFY</h3>
-              <div className="space-y-2">
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-start gap-2"
-                  onClick={() => window.open(`https://etherscan.io/token/${CONTRACT_ADDRESS}`, '_blank')}
-                >
-                  <Globe className="w-4 h-4" />
-                  Etherscan
-                  <ExternalLink className="w-3 h-3 ml-auto" />
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-start gap-2"
-                  onClick={() => window.open(`https://dexscreener.com/ethereum/${CONTRACT_ADDRESS}`, '_blank')}
-                >
-                  <BarChart3 className="w-4 h-4" />
-                  DexScreener
-                  <ExternalLink className="w-3 h-3 ml-auto" />
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-start gap-2"
-                  onClick={() => window.open(`https://www.dextools.io/app/en/ether/pair-explorer/${CONTRACT_ADDRESS}`, '_blank')}
-                >
-                  <Activity className="w-4 h-4" />
-                  DexTools
-                  <ExternalLink className="w-3 h-3 ml-auto" />
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-start gap-2"
-                  onClick={() => window.open(`https://www.coingecko.com/en/coins/oracle-ai`, '_blank')}
-                >
-                  <Coins className="w-4 h-4" />
-                  CoinGecko
-                  <ExternalLink className="w-3 h-3 ml-auto" />
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-start gap-2"
-                  onClick={() => window.open(`https://tokensniffer.com/token/eth/${CONTRACT_ADDRESS}`, '_blank')}
-                >
-                  <Shield className="w-4 h-4" />
-                  TokenSniffer
-                  <ExternalLink className="w-3 h-3 ml-auto" />
-                </Button>
-              </div>
-            </div>
-
-            {/* Disclaimer */}
-            <div className="text-center text-muted-foreground text-xs p-4">
-              <p>
-                Always DYOR. Not financial advice.
+              <h3 className="font-bold text-foreground mb-2">Are you open to partnerships?</h3>
+              <p className="text-sm text-muted-foreground">
+                Yes! We welcome partnerships with data providers, educational platforms, and crypto 
+                projects. Reach out via email with your proposal and we'll get back to you promptly.
               </p>
             </div>
           </div>
-        </div>
-        
-        {/* SEO Content Section */}
+        </section>
+
+        {/* Response Time */}
+        <section className="text-center max-w-xl mx-auto">
+          <div className="flex items-center justify-center gap-2 text-muted-foreground mb-4">
+            <Clock className="w-5 h-5" />
+            <span className="text-sm font-medium">Typical response time: 24-48 hours</span>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            We read every message and do our best to respond as quickly as possible. 
+            For urgent matters, reach out on Telegram for faster communication.
+          </p>
+        </section>
+
         <ContactSEOContent />
       </div>
     </Layout>

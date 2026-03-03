@@ -1,20 +1,8 @@
-import { Twitter, MessageCircle, Copy, Check, Shield, FileText, AlertTriangle, Info } from "lucide-react";
+import { Twitter, MessageCircle, Shield, FileText, AlertTriangle, Info } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
-import { toast } from "sonner";
 import oracleLogo from "@/assets/oracle-bull-logo.jpg";
 
-const CONTRACT_ADDRESS = "0x08ae73a4c4881ac59087d752831ca7677a33e5ba";
-
 export function Footer() {
-  const [copied, setCopied] = useState(false);
-
-  const copyCA = () => {
-    navigator.clipboard.writeText(CONTRACT_ADDRESS);
-    setCopied(true);
-    toast.success("Contract address copied!");
-    setTimeout(() => setCopied(false), 2000);
-  };
 
   return (
     <footer className="border-t border-primary/20 bg-card/50 backdrop-blur-xl" role="contentinfo">
@@ -48,22 +36,6 @@ export function Footer() {
               AI-Powered Market Intelligence & Analytics Platform. 
               Comprehensive crypto and forex market analysis, sentiment tracking, and educational insights.
             </p>
-            
-            {/* Contract Address */}
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs text-muted-foreground">CA:</span>
-              <code className="text-xs font-mono text-primary bg-muted/50 px-2 py-1 rounded border border-primary/20">
-                {CONTRACT_ADDRESS.slice(0, 8)}...{CONTRACT_ADDRESS.slice(-6)}
-              </code>
-              <button
-                onClick={copyCA}
-                className="p-1 hover:bg-primary/10 rounded transition-colors"
-                aria-label="Copy contract address"
-                type="button"
-              >
-                {copied ? <Check className="w-3 h-3 text-green-500" aria-hidden="true" /> : <Copy className="w-3 h-3 text-muted-foreground" aria-hidden="true" />}
-              </button>
-            </div>
           </div>
           
           {/* Analysis & Insights */}
