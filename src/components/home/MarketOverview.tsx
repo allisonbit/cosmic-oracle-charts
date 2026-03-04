@@ -35,7 +35,7 @@ export function MarketOverview() {
     <section className="py-16 md:py-24 relative cosmic-bg">
       <div className="container mx-auto px-4">
         <div className="text-center mb-10 md:mb-16 space-y-2 md:space-y-4">
-          <h2 className="text-2xl sm:text-3xl md:text-5xl font-display font-bold">
+          <h2 className="text-[clamp(1.375rem,4vw,3rem)] font-display font-bold">
             MARKET <span className="glow-text">OVERVIEW</span>
           </h2>
           <p className="text-muted-foreground text-sm md:text-lg">

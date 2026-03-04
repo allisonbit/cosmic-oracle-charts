@@ -82,7 +82,7 @@ function AnimatedStat({ label, target, suffix, color }: { label: string; target:
   const { count, ref } = useCountUp(target, 2200);
   return (
     <div ref={ref} className="text-center p-4">
-      <div className={`text-3xl md:text-4xl font-display font-bold ${color} tabular-nums`}>
+      <div className={`text-[clamp(1.5rem,5vw,2.25rem)] font-display font-bold ${color} tabular-nums`}>
         {count.toLocaleString()}{suffix}
       </div>
       <div className="text-xs md:text-sm text-muted-foreground mt-1">{label}</div>
@@ -132,7 +132,7 @@ export function SEOContentBlock() {
           <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-medium tracking-wide uppercase mb-4">
             Trusted Platform
           </span>
-          <h2 id="seo-content-heading" className="text-2xl md:text-3xl font-display font-bold">
+          <h2 id="seo-content-heading" className="text-[clamp(1.25rem,4vw,1.875rem)] font-display font-bold">
             Why Traders Choose <span className="glow-text">Oracle Bull</span>
           </h2>
           <p className="text-muted-foreground mt-3 max-w-3xl mx-auto text-sm md:text-base">

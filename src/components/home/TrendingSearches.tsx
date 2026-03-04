@@ -26,8 +26,8 @@ export function TrendingSearches() {
   const trendingCoins: CryptoPrice[] = data?.prices?.slice(0, 3) || [];
 
   return (
-    <section className="container mx-auto px-4 py-8">
-      <div className="grid md:grid-cols-2 gap-6">
+    <section className="container mx-auto px-3 sm:px-4 py-6 sm:py-8">
+      <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
         {/* Trending Searches */}
         <div className="holo-card p-6">
           <div className="flex items-center justify-between mb-4">
@@ -106,28 +106,28 @@ export function TrendingSearches() {
             <Zap className="w-5 h-5 text-primary" />
             Platform Stats
           </h3>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-muted/30 p-4 rounded-lg">
-              <div className="text-xs text-muted-foreground mb-1">Tokens Tracked</div>
-              <div className="text-2xl font-bold text-foreground">1,250+</div>
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
+            <div className="bg-muted/30 p-3 sm:p-4 rounded-lg">
+              <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">Tokens Tracked</div>
+              <div className="text-xl sm:text-2xl font-bold text-foreground">1,250+</div>
               <div className="text-xs text-primary flex items-center gap-1">
                 <TrendingUp className="w-3 h-3" />
                 +25 this week
               </div>
             </div>
-            <div className="bg-muted/30 p-4 rounded-lg">
-              <div className="text-xs text-muted-foreground mb-1">Chains Supported</div>
-              <div className="text-2xl font-bold text-foreground">15</div>
+            <div className="bg-muted/30 p-3 sm:p-4 rounded-lg">
+              <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">Chains Supported</div>
+              <div className="text-xl sm:text-2xl font-bold text-foreground">15</div>
               <div className="text-xs text-success">All major chains</div>
             </div>
-            <div className="bg-muted/30 p-4 rounded-lg">
-              <div className="text-xs text-muted-foreground mb-1">AI Accuracy</div>
-              <div className="text-2xl font-bold text-foreground">85.4%</div>
+            <div className="bg-muted/30 p-3 sm:p-4 rounded-lg">
+              <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">AI Accuracy</div>
+              <div className="text-xl sm:text-2xl font-bold text-foreground">85.4%</div>
               <div className="text-xs text-success">30-day average</div>
             </div>
-            <div className="bg-muted/30 p-4 rounded-lg">
-              <div className="text-xs text-muted-foreground mb-1">Daily Predictions</div>
-              <div className="text-2xl font-bold text-foreground">3,000+</div>
+            <div className="bg-muted/30 p-3 sm:p-4 rounded-lg">
+              <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">Daily Predictions</div>
+              <div className="text-xl sm:text-2xl font-bold text-foreground">3,000+</div>
               <div className="text-xs text-secondary">Updated hourly</div>
             </div>
           </div>

@@ -84,7 +84,7 @@ export function FeaturesSection() {
           <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-medium tracking-wide uppercase">
             Platform Features
           </span>
-          <h2 className="text-2xl sm:text-3xl md:text-5xl font-display font-bold">
+          <h2 className="text-[clamp(1.375rem,4vw,3rem)] font-display font-bold">
             Why Choose <span className="text-gradient-cosmic">Oracle Bull</span>?
           </h2>
           <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">
@@ -101,7 +101,7 @@ export function FeaturesSection() {
               <Link
                 key={feature.title}
                 to={feature.link}
-                className="group relative overflow-hidden rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm p-6 md:p-7 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 animate-fade-in block"
+                className="group relative overflow-hidden rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm p-5 sm:p-6 md:p-7 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 animate-fade-in block tap-highlight-none active:scale-[0.98] touch-manipulation"
                 style={{ animationDelay: `${index * 0.08}s` }}
               >
                 {/* Gradient background accent */}
