@@ -99,7 +99,7 @@ export function CryptoTicker() {
   }
 
   return (
-    <div className="w-full overflow-hidden bg-muted/50 border-y border-primary/20 py-2 md:py-3 stable-layout">
+    <div className="w-full overflow-hidden bg-muted/50 border-y border-primary/20 py-2 md:py-3 stable-layout touch-action-pan scroll-smooth-touch">
       <div className="ticker flex gap-6 md:gap-12 gpu-accelerated will-change-transform">
         {duplicatedData.map((coin, index) => (
           <TickerItem

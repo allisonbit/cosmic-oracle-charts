@@ -21,7 +21,7 @@ export function Footer() {
       </div>
 
       <div className="container mx-auto px-4 py-8 md:py-12">
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-6 md:gap-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6 md:gap-8">
           {/* Logo & Description */}
           <div className="col-span-2 space-y-4">
             <Link to="/" className="flex items-center gap-3" aria-label="OracleBull - Home">

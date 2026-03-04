@@ -149,7 +149,7 @@ export function ChainLinks() {
             <Sparkles className="w-3 h-3" />
             AI-Powered Chain Analysis
           </div>
-          <h2 className="text-2xl md:text-4xl font-display font-bold">
+          <h2 className="text-[clamp(1.25rem,4vw,2.25rem)] font-display font-bold">
             EXPLORE <span className="glow-text">CHAINS</span>
           </h2>
           <p className="text-muted-foreground mt-2 text-sm md:text-base max-w-lg mx-auto">

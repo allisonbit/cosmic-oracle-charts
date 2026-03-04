@@ -96,7 +96,7 @@ export function CTASection() {
     <section className="py-16 md:py-24 cosmic-bg">
       <div className="container mx-auto px-4">
         <div className="text-center mb-10">
-          <h2 className="text-2xl md:text-4xl font-display font-bold">
+          <h2 className="text-[clamp(1.25rem,4vw,2.25rem)] font-display font-bold">
             START <span className="glow-text">EXPLORING</span>
           </h2>
           <p className="text-muted-foreground mt-2 max-w-xl mx-auto text-sm md:text-base">

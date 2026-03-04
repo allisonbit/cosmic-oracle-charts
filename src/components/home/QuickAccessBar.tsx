@@ -48,7 +48,7 @@ const quickLinks = [
 
 export function QuickAccessBar() {
   return (
-    <div className="bg-card/50 border-b border-border py-2 px-4 overflow-x-auto scrollbar-hide">
+    <div className="bg-card/50 border-b border-border py-2 px-3 sm:px-4 overflow-x-auto scrollbar-hide scroll-smooth-touch tap-highlight-none">
       <div className="container mx-auto">
         <div className="flex items-center justify-between gap-4 min-w-max">
           <div className="flex items-center gap-4 text-sm">

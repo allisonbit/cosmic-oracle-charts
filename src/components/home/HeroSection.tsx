@@ -20,7 +20,7 @@ export function HeroSection() {
     };
   }, []);
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden cosmic-bg" aria-labelledby="hero-heading">
+    <section className="relative min-h-[85vh] md:min-h-screen flex items-center justify-center overflow-hidden cosmic-bg" aria-labelledby="hero-heading">
       {/* Star field overlay */}
       <div className="absolute inset-0 stars opacity-50" aria-hidden="true" />
       
@@ -37,7 +37,7 @@ export function HeroSection() {
               <span>100% Free — No Signup Required</span>
             </div>
             
-            <h1 id="hero-heading" className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight">
+            <h1 id="hero-heading" className="text-[clamp(1.75rem,5vw,3.75rem)] font-bold leading-tight">
               <span className="text-gradient-cosmic">Institutional-Grade</span>
               <br />
               <span className="glow-text">Crypto Analytics</span>
@@ -45,7 +45,7 @@ export function HeroSection() {
               <span className="text-foreground">Powered by AI</span>
             </h1>
             
-            <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0">
+            <p className="text-[clamp(0.875rem,2vw,1.125rem)] text-muted-foreground max-w-xl mx-auto lg:mx-0">
               Real-time price predictions, whale tracking, sentiment analysis, and on-chain intelligence across 18,000+ cryptocurrencies. Access the same tools institutions use — completely free, no account needed.
             </p>
             

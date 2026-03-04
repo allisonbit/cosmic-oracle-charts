@@ -47,7 +47,7 @@ export function TopMovers() {
     <section className="py-12 md:py-16 cosmic-bg">
       <div className="container mx-auto px-4">
         <div className="text-center mb-8 md:mb-12">
-          <h2 className="text-2xl md:text-4xl font-display font-bold">
+          <h2 className="text-[clamp(1.25rem,4vw,2.25rem)] font-display font-bold">
             TOP <span className="glow-text">MOVERS</span>
           </h2>
           <p className="text-muted-foreground mt-2">
@@ -72,7 +72,7 @@ export function TopMovers() {
                   <div className="flex items-center gap-3">
                     <button
                       onClick={() => handleFavoriteClick(coin.symbol, coin.name)}
-                      className="w-6 h-6 rounded-full flex items-center justify-center hover:bg-warning/20 transition-colors"
+                      className="w-8 h-8 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center hover:bg-warning/20 transition-colors tap-highlight-none touch-manipulation"
                       aria-label={isFavorite(coin.symbol) ? `Remove ${coin.name} from watchlist` : `Add ${coin.name} to watchlist`}
                     >
                       <Star 
@@ -121,7 +121,7 @@ export function TopMovers() {
                   <div className="flex items-center gap-3">
                     <button
                       onClick={() => handleFavoriteClick(coin.symbol, coin.name)}
-                      className="w-6 h-6 rounded-full flex items-center justify-center hover:bg-warning/20 transition-colors"
+                      className="w-8 h-8 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center hover:bg-warning/20 transition-colors tap-highlight-none touch-manipulation"
                       aria-label={isFavorite(coin.symbol) ? `Remove ${coin.name} from watchlist` : `Add ${coin.name} to watchlist`}
                     >
                       <Star 
