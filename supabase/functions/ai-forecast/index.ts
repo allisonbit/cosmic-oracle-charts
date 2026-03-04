@@ -1,16 +1,13 @@
-import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
-const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
-const MAX_BODY_SIZE = 100 * 1024; // 100KB
+const MAX_BODY_SIZE = 100 * 1024;
 
-// Input validation schema
 const coinDataSchema = z.object({
   symbol: z.string().max(20).optional(),
   price: z.number().positive().max(1e12).optional(),
@@ -21,7 +18,7 @@ const coinDataSchema = z.object({
 
 const forecastRequestSchema = z.object({
   coinData: z.union([
-    z.array(coinDataSchema).max(50, 'Too many coins. Maximum 50 per request.'),
+    z.array(coinDataSchema).max(50),
     coinDataSchema
   ]).optional(),
   analysisType: z.enum(['market_sentiment', 'coin_forecast']).optional()
@@ -33,16 +30,14 @@ serve(async (req) => {
   }
 
   try {
-    // Check body size limit
     const contentLength = parseInt(req.headers.get('content-length') || '0');
     if (contentLength > MAX_BODY_SIZE) {
       return new Response(
-        JSON.stringify({ error: 'Request body too large. Maximum size is 100KB.' }),
+        JSON.stringify({ error: 'Request body too large.' }),
         { status: 413, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Parse and validate input
     let body;
     try {
       body = await req.json();
@@ -56,10 +51,7 @@ serve(async (req) => {
     const validationResult = forecastRequestSchema.safeParse(body);
     if (!validationResult.success) {
       return new Response(
-        JSON.stringify({ 
-          error: 'Invalid input',
-          details: validationResult.error.errors.map(e => e.message)
-        }),
+        JSON.stringify({ error: 'Invalid input', details: validationResult.error.errors.map(e => e.message) }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -67,8 +59,9 @@ serve(async (req) => {
     const { coinData, analysisType } = validationResult.data;
     console.log('AI Forecast request:', { analysisType, coins: Array.isArray(coinData) ? coinData.length : 1 });
 
-    if (!OPENAI_API_KEY) {
-      throw new Error('OpenAI API key not configured');
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY is not configured');
     }
 
     let systemPrompt = '';
@@ -100,15 +93,15 @@ serve(async (req) => {
       userPrompt = `Analyze: ${JSON.stringify(coinData)}`;
     }
 
-    console.log('Calling OpenAI API...');
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    console.log('Calling Lovable AI Gateway...');
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'google/gemini-2.5-flash-lite',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
@@ -120,18 +113,28 @@ serve(async (req) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('OpenAI API error:', response.status, errorText);
-      throw new Error(`OpenAI API error: ${response.status}`);
+      console.error('AI Gateway error:', response.status, errorText);
+      if (response.status === 429) {
+        return new Response(
+          JSON.stringify({ error: 'Rate limit exceeded, please try again later.' }),
+          { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      if (response.status === 402) {
+        return new Response(
+          JSON.stringify({ error: 'AI credits exhausted.' }),
+          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      throw new Error(`AI Gateway error: ${response.status}`);
     }
 
     const data = await response.json();
     const content = data.choices[0]?.message?.content;
-    console.log('OpenAI response received');
+    console.log('AI response received');
 
-    // Try to parse as JSON, fallback to text
     let result;
     try {
-      // Extract JSON from the response (in case it's wrapped in markdown)
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         result = JSON.parse(jsonMatch[0]);
