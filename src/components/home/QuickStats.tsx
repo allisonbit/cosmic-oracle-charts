@@ -10,27 +10,27 @@ export function QuickStats() {
       label: "Market Cap",
       value: data?.global?.totalMarketCap 
         ? `$${(data.global.totalMarketCap / 1e12).toFixed(2)}T`
-        : "$3.2T",
-      change: data?.global?.marketCapChange24h || 2.4,
+        : null,
+      change: data?.global?.marketCapChange24h ?? null,
       icon: Globe,
     },
     {
       label: "24h Volume",
       value: data?.global?.totalVolume24h
         ? `$${(data.global.totalVolume24h / 1e9).toFixed(0)}B`
-        : "$120B",
+        : null,
       icon: Activity,
     },
     {
       label: "BTC Dominance",
       value: data?.global?.btcDominance
         ? `${data.global.btcDominance.toFixed(1)}%`
-        : "55%",
+        : null,
       icon: Zap,
     },
     {
       label: "Active Cryptos",
-      value: data?.global?.activeCryptocurrencies?.toLocaleString() || "10,000+",
+      value: data?.global?.activeCryptocurrencies?.toLocaleString() || null,
       icon: Users,
     },
   ];
@@ -52,13 +52,13 @@ export function QuickStats() {
                   {stat.label}
                 </div>
                 <div className="text-xl md:text-2xl font-display font-bold">
-                  {isLoading ? (
+                  {isLoading || stat.value === null ? (
                     <div className="h-6 w-24 bg-muted animate-pulse rounded" />
                   ) : (
                     stat.value
                   )}
                 </div>
-                {stat.change !== undefined && (
+                {stat.change !== undefined && stat.change !== null && (
                   <div
                     className={cn(
                       "flex items-center gap-1 text-xs md:text-sm mt-1",
