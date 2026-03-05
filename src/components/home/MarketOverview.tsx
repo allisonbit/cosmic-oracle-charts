@@ -16,7 +16,7 @@ export function MarketOverview() {
   const topCoins = useMemo(() => data?.topCoins?.slice(0, 5) || [], [data]);
   const trendingCoins = useMemo(() => data?.trending || [], [data]);
   const global = data?.global;
-  const fearGreedIndex = data?.fearGreedIndex || 50;
+  const fearGreedIndex = data?.fearGreedIndex ?? null;
 
   if (isLoading) {
     return (
@@ -138,19 +138,19 @@ export function MarketOverview() {
                 <div>
                   <div className="text-muted-foreground text-[10px] md:text-sm">Total Market Cap</div>
                   <div className="text-base md:text-xl font-bold text-foreground">
-                    {global ? formatNumber(global.totalMarketCap) : "$3.2T"}
+                    {global ? formatNumber(global.totalMarketCap) : <span className="inline-block h-5 w-20 bg-muted animate-pulse rounded" />}
                   </div>
                 </div>
                 <div>
                   <div className="text-muted-foreground text-[10px] md:text-sm">24h Volume</div>
                   <div className="text-base md:text-xl font-bold text-foreground">
-                    {global ? formatNumber(global.totalVolume24h) : "$120B"}
+                    {global ? formatNumber(global.totalVolume24h) : <span className="inline-block h-5 w-20 bg-muted animate-pulse rounded" />}
                   </div>
                 </div>
                 <div>
                   <div className="text-muted-foreground text-[10px] md:text-sm">BTC Dominance</div>
                   <div className="text-base md:text-xl font-bold text-primary">
-                    {global ? `${global.btcDominance.toFixed(1)}%` : "55%"}
+                    {global ? `${global.btcDominance.toFixed(1)}%` : <span className="inline-block h-5 w-16 bg-muted animate-pulse rounded" />}
                   </div>
                 </div>
               </div>
@@ -159,21 +159,30 @@ export function MarketOverview() {
             {/* Sentiment */}
             <div className="holo-card p-4 md:p-6">
               <h3 className="font-display font-bold text-sm md:text-base mb-3 md:mb-4">MARKET SENTIMENT</h3>
-              <div className="relative h-3 md:h-4 bg-muted rounded-full overflow-hidden">
-                <div 
-                  className="absolute inset-y-0 left-0 bg-gradient-to-r from-danger via-warning to-success transition-all duration-1000"
-                  style={{ width: `${fearGreedIndex}%` }}
-                />
-              </div>
-              <div className="flex justify-between mt-2 text-[10px] md:text-sm">
-                <span className="text-danger">Fear</span>
-                <span className={cn(
-                  "font-bold",
-                  fearGreedIndex >= 60 ? "text-success" : fearGreedIndex >= 40 ? "text-warning" : "text-danger"
-                )}>
-                  {fearGreedIndex} - {fearGreedIndex >= 60 ? "Greed" : fearGreedIndex >= 40 ? "Neutral" : "Fear"}
-                </span>
-              </div>
+              {fearGreedIndex !== null ? (
+                <>
+                  <div className="relative h-3 md:h-4 bg-muted rounded-full overflow-hidden">
+                    <div 
+                      className="absolute inset-y-0 left-0 bg-gradient-to-r from-danger via-warning to-success transition-all duration-1000"
+                      style={{ width: `${fearGreedIndex}%` }}
+                    />
+                  </div>
+                  <div className="flex justify-between mt-2 text-[10px] md:text-sm">
+                    <span className="text-danger">Fear</span>
+                    <span className={cn(
+                      "font-bold",
+                      fearGreedIndex >= 60 ? "text-success" : fearGreedIndex >= 40 ? "text-warning" : "text-danger"
+                    )}>
+                      {fearGreedIndex} - {fearGreedIndex >= 60 ? "Greed" : fearGreedIndex >= 40 ? "Neutral" : "Fear"}
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <div className="space-y-2">
+                  <div className="h-4 bg-muted animate-pulse rounded-full" />
+                  <div className="h-4 w-24 bg-muted animate-pulse rounded ml-auto" />
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -54,7 +54,7 @@ export function CryptoTicker() {
     // Primary source: crypto-prices (more accurate per-coin data)
     if (pricesData?.prices) {
       for (const coin of pricesData.prices) {
-        if (coin.price > 0 && !seen.has(coin.symbol)) {
+        if (coin.price > 0 && coin.change24h !== 0 && !seen.has(coin.symbol)) {
           seen.add(coin.symbol);
           coins.push({ symbol: coin.symbol, price: coin.price, change24h: coin.change24h });
         }
