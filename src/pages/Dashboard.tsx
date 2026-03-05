@@ -1,11 +1,11 @@
 import { Layout } from "@/components/layout/Layout";
-import { TrendingUp, TrendingDown, Activity, Zap, BarChart3, Loader2, Brain, Flame, Globe, Clock, ArrowRight, Gauge } from "lucide-react";
+import { TrendingUp, TrendingDown, Activity, Zap, BarChart3, Loader2, Brain, Flame, Globe, Clock, ArrowRight, Gauge, ChevronUp, ChevronDown, ArrowUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 import { useMarketData } from "@/hooks/useMarketData";
 import { useAIForecast } from "@/hooks/useAIForecast";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import { EnhancedMarketMomentum } from "@/components/dashboard/EnhancedMarketMomentum";
 import { EnhancedTrendingAlerts } from "@/components/dashboard/EnhancedTrendingAlerts";
 import { EnhancedVolumeLeaders } from "@/components/dashboard/EnhancedVolumeLeaders";
@@ -81,6 +81,136 @@ function CryptoChart({ price, isPositive }: { price: number; isPositive: boolean
     </ResponsiveContainer>
   );
 }
+type SortKey = 'rank' | 'price' | 'change24h' | 'volume' | 'marketCap';
+type SortDir = 'asc' | 'desc';
+
+function SortableCryptoTable({ coins, onCoinClick }: { coins: any[]; onCoinClick: (c: any) => void }) {
+  const [sortKey, setSortKey] = useState<SortKey>('rank');
+  const [sortDir, setSortDir] = useState<SortDir>('asc');
+  const [visibleCount, setVisibleCount] = useState(20);
+
+  const handleSort = useCallback((key: SortKey) => {
+    if (sortKey === key) {
+      setSortDir(d => d === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortKey(key);
+      setSortDir(key === 'rank' ? 'asc' : 'desc');
+    }
+  }, [sortKey]);
+
+  const sorted = useMemo(() => {
+    const filtered = coins.filter((c: any) => c.price > 0 && !['BUIDL', 'USYC', 'FIGR_HELOC'].includes(c.symbol));
+    return [...filtered].sort((a: any, b: any) => {
+      let av: number, bv: number;
+      switch (sortKey) {
+        case 'rank': av = a.rank; bv = b.rank; break;
+        case 'price': av = a.price; bv = b.price; break;
+        case 'change24h': av = a.change24h; bv = b.change24h; break;
+        case 'volume': av = a.volume; bv = b.volume; break;
+        case 'marketCap': av = a.marketCap; bv = b.marketCap; break;
+        default: av = a.rank; bv = b.rank;
+      }
+      return sortDir === 'asc' ? av - bv : bv - av;
+    });
+  }, [coins, sortKey, sortDir]);
+
+  const visible = sorted.slice(0, visibleCount);
+
+  const SortHeader = ({ label, k, className = '' }: { label: string; k: SortKey; className?: string }) => (
+    <th
+      className={cn("py-2 sm:py-3 px-1.5 sm:px-3 cursor-pointer select-none hover:text-primary transition-colors group", className)}
+      onClick={() => handleSort(k)}
+    >
+      <span className="inline-flex items-center gap-1">
+        {label}
+        {sortKey === k ? (
+          sortDir === 'asc' ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />
+        ) : (
+          <ArrowUpDown className="w-3 h-3 opacity-0 group-hover:opacity-50" />
+        )}
+      </span>
+    </th>
+  );
+
+  if (coins.length === 0) return null;
+
+  return (
+    <div className="holo-card p-3 sm:p-4 md:p-6 mb-4 sm:mb-6">
+      <h2 className="font-display text-sm sm:text-base md:text-lg lg:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2">
+        <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+        ALL CRYPTOCURRENCIES
+        <span className="ml-auto text-[10px] sm:text-xs text-muted-foreground font-normal">{sorted.length} coins • Click headers to sort</span>
+      </h2>
+      <div className="overflow-x-auto -mx-3 sm:mx-0 px-3 sm:px-0">
+        <table className="w-full min-w-[600px]">
+          <thead>
+            <tr className="text-muted-foreground text-[10px] sm:text-xs font-display border-b border-border uppercase">
+              <SortHeader label="#" k="rank" className="text-left w-10" />
+              <th className="py-2 sm:py-3 px-1.5 sm:px-3 text-left">Coin</th>
+              <SortHeader label="Price" k="price" className="text-right" />
+              <SortHeader label="24h %" k="change24h" className="text-right" />
+              <SortHeader label="Volume" k="volume" className="text-right hidden sm:table-cell" />
+              <SortHeader label="Market Cap" k="marketCap" className="text-right hidden md:table-cell" />
+            </tr>
+          </thead>
+          <tbody>
+            {visible.map((coin: any) => (
+              <tr
+                key={coin.symbol}
+                onClick={() => onCoinClick(coin)}
+                className="border-b border-border/30 hover:bg-primary/5 cursor-pointer transition-colors"
+              >
+                <td className="py-2.5 sm:py-3 px-1.5 sm:px-3 text-muted-foreground text-xs sm:text-sm">{coin.rank}</td>
+                <td className="py-2.5 sm:py-3 px-1.5 sm:px-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                      <span className="text-[10px] font-bold text-primary">{coin.symbol[0]}</span>
+                    </div>
+                    <div className="min-w-0">
+                      <span className="font-display font-bold text-xs sm:text-sm text-primary">{coin.symbol}</span>
+                      <span className="text-muted-foreground text-[10px] sm:text-xs ml-1.5 hidden sm:inline">{coin.name}</span>
+                    </div>
+                    {Math.abs(coin.change24h) > 5 && <Flame className="w-3 h-3 text-warning flex-shrink-0" />}
+                  </div>
+                </td>
+                <td className="py-2.5 sm:py-3 px-1.5 sm:px-3 text-right font-medium text-xs sm:text-sm">
+                  ${coin.price >= 1
+                    ? coin.price.toLocaleString(undefined, { maximumFractionDigits: 2 })
+                    : coin.price.toLocaleString(undefined, { maximumSignificantDigits: 4 })}
+                </td>
+                <td className={cn(
+                  "py-2.5 sm:py-3 px-1.5 sm:px-3 text-right font-medium text-xs sm:text-sm",
+                  coin.change24h >= 0 ? "text-success" : "text-danger"
+                )}>
+                  <span className="inline-flex items-center gap-0.5">
+                    {coin.change24h >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                    {coin.change24h >= 0 ? "+" : ""}{coin.change24h.toFixed(2)}%
+                  </span>
+                </td>
+                <td className="py-2.5 sm:py-3 px-1.5 sm:px-3 text-right text-muted-foreground text-xs sm:text-sm hidden sm:table-cell">
+                  {formatNumber(coin.volume)}
+                </td>
+                <td className="py-2.5 sm:py-3 px-1.5 sm:px-3 text-right text-muted-foreground text-xs sm:text-sm hidden md:table-cell">
+                  {formatNumber(coin.marketCap)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {visibleCount < sorted.length && (
+        <div className="text-center mt-4">
+          <button
+            onClick={() => setVisibleCount(v => Math.min(v + 20, sorted.length))}
+            className="px-6 py-2 rounded-lg bg-primary/10 border border-primary/30 text-primary text-xs sm:text-sm font-display hover:bg-primary/20 transition-colors"
+          >
+            Show More ({sorted.length - visibleCount} remaining)
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
 
 const Dashboard = () => {
   const { data: pricesData, isLoading: pricesLoading } = useCryptoPrices();
@@ -89,8 +219,9 @@ const Dashboard = () => {
   const [selectedCoin, setSelectedCoin] = useState<any>(null);
   
   const topCoins = useMemo(() => marketData?.topCoins?.slice(0, 8) || [], [marketData]);
+  const allCoins = useMemo(() => marketData?.topCoins || [], [marketData]);
   const global = marketData?.global;
-  const fearGreedIndex = marketData?.fearGreedIndex || 50;
+  const fearGreedIndex = marketData?.fearGreedIndex ?? null;
   
   const { data: aiData } = useAIForecast(
     topCoins.length > 0 ? topCoins : null,
@@ -106,7 +237,7 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <DashboardSchema marketCap={global ? `$${(global.totalMarketCap / 1e12).toFixed(2)}T` : undefined} fearGreedIndex={fearGreedIndex} />
+      <DashboardSchema marketCap={global ? `$${(global.totalMarketCap / 1e12).toFixed(2)}T` : undefined} fearGreedIndex={fearGreedIndex ?? 50} />
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 sm:mb-6 md:mb-8">
@@ -150,10 +281,10 @@ const Dashboard = () => {
             {/* Stats Row */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6">
               {[
-                { label: "Market Cap", value: global ? formatNumber(global.totalMarketCap) : "$3.2T", icon: Globe, change: global?.marketCapChange24h, link: "/sentiment" },
-                { label: "24h Volume", value: global ? formatNumber(global.totalVolume24h) : "$120B", icon: Activity, link: "/dashboard" },
-                { label: "Active Coins", value: global ? global.activeCryptocurrencies.toLocaleString() : "14,500", icon: Zap, link: "/explorer" },
-                { label: "BTC Dom", value: global ? `${global.btcDominance.toFixed(1)}%` : "55%", icon: TrendingUp, link: "/chain/bitcoin" },
+                { label: "Market Cap", value: global ? formatNumber(global.totalMarketCap) : null, icon: Globe, change: global?.marketCapChange24h, link: "/sentiment" },
+                { label: "24h Volume", value: global ? formatNumber(global.totalVolume24h) : null, icon: Activity, link: "/dashboard" },
+                { label: "Active Coins", value: global ? global.activeCryptocurrencies.toLocaleString() : null, icon: Zap, link: "/explorer" },
+                { label: "BTC Dom", value: global ? `${global.btcDominance.toFixed(1)}%` : null, icon: TrendingUp, link: "/chain/bitcoin" },
               ].map((stat) => (
                 <Link 
                   key={stat.label} 
@@ -165,7 +296,9 @@ const Dashboard = () => {
                     <span className="text-[8px] sm:text-[10px] md:text-xs text-muted-foreground font-display uppercase truncate">{stat.label}</span>
                     <ArrowRight className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-primary ml-auto opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
                   </div>
-                  <div className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-foreground">{stat.value}</div>
+                  <div className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-foreground">
+                    {stat.value ?? <span className="inline-block h-6 w-20 bg-muted animate-pulse rounded" />}
+                  </div>
                   {stat.change !== undefined && (
                     <div className={cn(
                       "text-[9px] sm:text-[10px] md:text-xs flex items-center gap-0.5 sm:gap-1 mt-0.5 sm:mt-1",
@@ -192,6 +325,7 @@ const Dashboard = () => {
                       <span className="truncate">FEAR & GREED</span>
                       <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 text-primary ml-auto opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
                     </h3>
+                    {fearGreedIndex !== null ? (
                     <div className="flex items-center gap-3 sm:gap-4">
                       <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 flex-shrink-0">
                         <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
@@ -224,6 +358,11 @@ const Dashboard = () => {
                         <p className="text-[10px] sm:text-xs text-muted-foreground hidden sm:block">Click for deep analysis</p>
                       </div>
                     </div>
+                    ) : (
+                      <div className="flex items-center justify-center h-20">
+                        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                      </div>
+                    )}
                   </Link>
 
                   {/* AI Insights */}
@@ -333,6 +472,9 @@ const Dashboard = () => {
               <StrengthMeterWidget />
               <CryptoFactoryWidget />
             </div>
+            
+            {/* Full Sortable Crypto Table */}
+            <SortableCryptoTable coins={allCoins} onCoinClick={setSelectedCoin} />
             
             {/* SEO Content Block */}
             <DashboardSEOContent />
