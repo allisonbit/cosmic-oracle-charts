@@ -19,6 +19,8 @@ import { SignalStrengthMeter } from "@/components/prediction/SignalStrengthMeter
 import { PerformanceTracker } from "@/components/prediction/PerformanceTracker";
 import { EnhancedPredictionCard } from "@/components/prediction/EnhancedPredictionCard";
 import { GlobalTokenSearch } from "@/components/prediction/GlobalTokenSearch";
+import { PredictionLeaderboard } from "@/components/prediction/PredictionLeaderboard";
+import { ComparisonView } from "@/components/prediction/ComparisonView";
 import { GlobalToken } from "@/hooks/useGlobalTokenSearch";
 
 const timeframes = [
