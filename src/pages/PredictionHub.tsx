@@ -303,6 +303,23 @@ export default function PredictionHub() {
           {/* Ad placement after timeframe section */}
           <BannerAd className="mb-8" />
 
+          {/* Prediction Leaderboard - Real tracked predictions */}
+          <section className="mb-8">
+            <PredictionLeaderboard />
+          </section>
+
+          {/* AI vs Technical Comparison View */}
+          <section className="mb-8">
+            <ComparisonView tokens={displayCryptos.map(c => ({
+              symbol: c.symbol,
+              name: c.name,
+              price: c.price,
+              change24h: c.change24h,
+              bias: c.bias,
+              confidence: c.confidence,
+            }))} />
+          </section>
+
           {/* Performance Tracker & High Conviction Signals */}
           <div className="grid md:grid-cols-2 gap-6 mb-8">
             <PerformanceTracker />
