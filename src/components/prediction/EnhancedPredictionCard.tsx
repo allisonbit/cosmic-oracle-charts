@@ -311,6 +311,46 @@ export function EnhancedPredictionCard({ crypto, showFullDetails = false }: Enha
         <span className="text-red-400">{indicators.bearishIndicators}</span>
       </div>
 
+      {/* Key Influencing Factors */}
+      <div className="mb-3">
+        <div className="text-[9px] text-muted-foreground mb-1.5 font-medium uppercase tracking-wide">Key Factors</div>
+        <div className="flex flex-wrap gap-1">
+          {indicators.rsi < 30 && (
+            <Badge variant="outline" className="text-[9px] py-0 px-1.5 text-success border-success/30">RSI Oversold</Badge>
+          )}
+          {indicators.rsi > 70 && (
+            <Badge variant="outline" className="text-[9px] py-0 px-1.5 text-danger border-danger/30">RSI Overbought</Badge>
+          )}
+          {indicators.sslSignal === 'bullish' && (
+            <Badge variant="outline" className="text-[9px] py-0 px-1.5 text-success border-success/30">SSL Buy</Badge>
+          )}
+          {indicators.sslSignal === 'bearish' && (
+            <Badge variant="outline" className="text-[9px] py-0 px-1.5 text-danger border-danger/30">SSL Sell</Badge>
+          )}
+          {indicators.khanStructure === 'bos_bullish' && (
+            <Badge variant="outline" className="text-[9px] py-0 px-1.5 text-success border-success/30">Break of Structure ↑</Badge>
+          )}
+          {indicators.khanStructure === 'bos_bearish' && (
+            <Badge variant="outline" className="text-[9px] py-0 px-1.5 text-danger border-danger/30">Break of Structure ↓</Badge>
+          )}
+          {indicators.khanStructure === 'choch' && (
+            <Badge variant="outline" className="text-[9px] py-0 px-1.5 text-warning border-warning/30">CHoCH Detected</Badge>
+          )}
+          {indicators.seasonalFactor > 0.5 && (
+            <Badge variant="outline" className="text-[9px] py-0 px-1.5 text-success border-success/30">Seasonal Bullish</Badge>
+          )}
+          {indicators.seasonalFactor < 0 && (
+            <Badge variant="outline" className="text-[9px] py-0 px-1.5 text-danger border-danger/30">Seasonal Bearish</Badge>
+          )}
+          {indicators.volatilityRegime === 'extreme' && (
+            <Badge variant="outline" className="text-[9px] py-0 px-1.5 text-danger border-danger/30">⚠ High Vol</Badge>
+          )}
+          {Math.abs(crypto.change24h || 0) > 5 && (
+            <Badge variant="outline" className="text-[9px] py-0 px-1.5 text-warning border-warning/30">Strong Momentum</Badge>
+          )}
+        </div>
+      </div>
+
       {/* Quick Trading Zones */}
       <div className="grid grid-cols-3 gap-2 mb-3 text-center">
         <div className="p-1.5 rounded bg-green-500/10 border border-green-500/20">

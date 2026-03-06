@@ -19,6 +19,8 @@ import { SignalStrengthMeter } from "@/components/prediction/SignalStrengthMeter
 import { PerformanceTracker } from "@/components/prediction/PerformanceTracker";
 import { EnhancedPredictionCard } from "@/components/prediction/EnhancedPredictionCard";
 import { GlobalTokenSearch } from "@/components/prediction/GlobalTokenSearch";
+import { PredictionLeaderboard } from "@/components/prediction/PredictionLeaderboard";
+import { ComparisonView } from "@/components/prediction/ComparisonView";
 import { GlobalToken } from "@/hooks/useGlobalTokenSearch";
 
 const timeframes = [
@@ -300,6 +302,23 @@ export default function PredictionHub() {
           
           {/* Ad placement after timeframe section */}
           <BannerAd className="mb-8" />
+
+          {/* Prediction Leaderboard - Real tracked predictions */}
+          <section className="mb-8">
+            <PredictionLeaderboard />
+          </section>
+
+          {/* AI vs Technical Comparison View */}
+          <section className="mb-8">
+            <ComparisonView tokens={displayCryptos.map(c => ({
+              symbol: c.symbol,
+              name: c.name,
+              price: c.price,
+              change24h: c.change24h,
+              bias: c.bias,
+              confidence: c.confidence,
+            }))} />
+          </section>
 
           {/* Performance Tracker & High Conviction Signals */}
           <div className="grid md:grid-cols-2 gap-6 mb-8">
