@@ -187,7 +187,7 @@ const App = () => (
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/risk-disclaimer" element={<RiskDisclaimer />} />
-                <Route path="/admin" element={<Admin />} />
+                <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
                 <Route path="/my" element={<MyHub />} />
                 <Route path="/my/watchlist" element={<MyWatchlistPage />} />
                 <Route path="/my/portfolio" element={<MyPortfolioPage />} />
