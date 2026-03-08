@@ -109,7 +109,7 @@ interface DexToken {
   fdv?: number;
   txns24h?: number;
   makers?: number;
-  age?: number; // hours
+  ageHours?: number;
   logo?: string;
   contractAddress?: string;
   chain: string;
@@ -128,7 +128,7 @@ function mergeTokens(
 ): DexToken[] {
   const map = new Map<string, DexToken>();
 
-  // Add discovery tokens
+  // Add discovery tokens (CoinGecko data — no fake fields)
   discovery.forEach((t, i) => {
     const key = t.symbol.toLowerCase();
     map.set(key, {
@@ -136,65 +136,57 @@ function mergeTokens(
       name: t.name,
       price: t.price,
       change24h: t.change24h,
-      change1h: undefined,
-      change5m: undefined,
-      change6h: undefined,
       volume24h: t.volume24h,
       marketCap: t.marketCap,
-      liquidity: t.liquidityScore ? t.liquidityScore * t.volume24h * 0.5 : undefined,
+      liquidity: t.liquidityScore && t.volume24h ? Math.round(t.liquidityScore * t.volume24h * 0.5) : undefined,
       logo: t.logo,
       chain,
       rank: t.rank || i + 1,
       momentum: t.momentum,
       category: t.category,
       coingeckoId: t.coingeckoId,
-      makers: Math.floor(Math.random() * 20000) + 500,
-      txns24h: Math.floor(t.volume24h / (t.price || 1) * 0.01),
-      age: Math.floor(Math.random() * 720) + 1,
     });
   });
 
-  // Overlay live token data
+  // Overlay live token data (DexScreener — real 5m/1h/6h, txns, makers, age)
   live.forEach(t => {
     const key = t.symbol.toLowerCase();
     const existing = map.get(key);
+    const liveData: Partial<DexToken> = {
+      price: t.price || undefined,
+      change5m: (t as any).change5m ?? (t as any).priceChange5m ?? undefined,
+      change1h: (t as any).change1h ?? (t as any).priceChange1h ?? undefined,
+      change6h: (t as any).change6h ?? (t as any).priceChange6h ?? undefined,
+      change24h: t.change24h || undefined,
+      volume24h: t.volume24h || undefined,
+      liquidity: t.liquidity || undefined,
+      marketCap: t.marketCap || undefined,
+      fdv: t.fdv || undefined,
+      txns24h: t.txns24h || undefined,
+      makers: (t as any).makers || t.txns24h || undefined,
+      ageHours: (t as any).ageHours || undefined,
+      contractAddress: t.contractAddress || undefined,
+      logo: t.logo || undefined,
+      isTrending: t.isTrending,
+      verified: t.verified,
+    };
+
     if (existing) {
-      existing.price = t.price || existing.price;
-      existing.change5m = t.change5m;
-      existing.change1h = t.change1h;
-      existing.change24h = t.change24h || existing.change24h;
-      existing.volume24h = t.volume24h || existing.volume24h;
-      existing.liquidity = t.liquidity || existing.liquidity;
-      existing.marketCap = t.marketCap || existing.marketCap;
-      existing.fdv = t.fdv;
-      existing.txns24h = t.txns24h || existing.txns24h;
-      // live data merged
-      existing.contractAddress = t.contractAddress;
-      existing.logo = t.logo || existing.logo;
-      existing.isTrending = t.isTrending;
+      // Merge — prefer live data over discovery
+      Object.entries(liveData).forEach(([k, v]) => {
+        if (v !== undefined) (existing as any)[k] = v;
+      });
     } else {
       map.set(key, {
         symbol: t.symbol,
         name: t.name,
         price: t.price,
-        change5m: t.change5m,
-        change1h: t.change1h,
         change24h: t.change24h,
-        change6h: undefined,
         volume24h: t.volume24h,
-        liquidity: t.liquidity,
-        marketCap: t.marketCap,
-        fdv: t.fdv,
-        txns24h: t.txns24h,
-        contractAddress: t.contractAddress,
-        logo: t.logo,
         chain,
         rank: t.rank,
-        verified: t.verified,
-        isTrending: t.isTrending,
-        makers: Math.floor(Math.random() * 15000) + 300,
-        age: Math.floor(Math.random() * 500) + 1,
-      });
+        ...liveData,
+      } as DexToken);
     }
   });
 
@@ -247,7 +239,7 @@ const ExplorerPage = () => {
         tokens = tokens.filter(t => t.change24h < 0);
         break;
       case 'new':
-        tokens.sort((a, b) => (a.age || 999) - (b.age || 999));
+        tokens.sort((a, b) => (a.ageHours || 999) - (b.ageHours || 999));
         break;
     }
     return tokens;
@@ -260,23 +252,23 @@ const ExplorerPage = () => {
         symbol: t.symbol,
         name: t.name,
         price: t.price,
-        change5m: t.change5m,
-        change1h: t.change1h,
+        change5m: (t as any).change5m ?? undefined,
+        change1h: (t as any).change1h ?? undefined,
+        change6h: (t as any).change6h ?? undefined,
         change24h: t.change24h,
-        change6h: undefined,
         volume24h: t.volume24h,
         liquidity: t.liquidity,
         marketCap: t.marketCap,
         fdv: t.fdv,
         txns24h: t.txns24h,
+        makers: (t as any).makers || t.txns24h || undefined,
+        ageHours: (t as any).ageHours || undefined,
         contractAddress: t.contractAddress,
         logo: t.logo,
         chain: t.chain || selectedChain,
         rank: t.rank || i + 1,
         verified: t.verified,
         isTrending: t.isTrending,
-        makers: Math.floor(Math.random() * 10000) + 200,
-        age: Math.floor(Math.random() * 300) + 1,
       } as DexToken));
     }
     return tabTokens;
@@ -562,7 +554,7 @@ const ExplorerPage = () => {
 
                       {/* Age */}
                       <td className="px-2 py-2.5 text-muted-foreground whitespace-nowrap">
-                        {formatAge(token.age)}
+                        {formatAge(token.ageHours)}
                       </td>
 
                       {/* Txns */}
