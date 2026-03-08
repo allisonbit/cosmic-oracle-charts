@@ -77,6 +77,8 @@ export interface CryptoFactoryData {
   news: NewsItem[];
   trending: TrendingCoin[];
   globalStats: GlobalStats;
+  fearGreed?: { value: number; classification: string };
+  topMovers?: any[];
   timestamp: number;
 }
 
@@ -96,7 +98,7 @@ export function useCryptoFactory(filters?: {
         throw error;
       }
 
-      let { events, onChainActivity, narratives, news, trending, globalStats, timestamp } = data;
+      let { events, onChainActivity, narratives, news, trending, globalStats, fearGreed, topMovers, timestamp } = data;
 
       // Apply filters
       if (filters?.chain && filters.chain !== 'All') {
@@ -134,6 +136,8 @@ export function useCryptoFactory(filters?: {
         news,
         trending: trending || [],
         globalStats: globalStats || {},
+        fearGreed: fearGreed || { value: 50, classification: 'Neutral' },
+        topMovers: topMovers || [],
         timestamp,
       };
     },
