@@ -197,38 +197,6 @@ export function EnhancedWalletStats({ analysis }: WalletStatsProps) {
         })}
       </div>
 
-      {/* Detail Modal */}
-      <Dialog open={!!selectedStat} onOpenChange={() => setSelectedStat(null)}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              {selectedStatData && <selectedStatData.icon className={cn("w-5 h-5", selectedStatData.color)} />}
-              {selectedStatData?.details.title}
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-3 mt-4">
-            {selectedStatData?.details.content.map((item, i) => (
-              <div key={i} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
-                <span className="text-sm text-muted-foreground">{item.label}</span>
-                <span className="font-medium text-sm">{item.value}</span>
-              </div>
-            ))}
-          </div>
-          <div className="mt-4 p-3 bg-primary/10 rounded-lg border border-primary/20">
-            <div className="flex items-start gap-2">
-              <Brain className="w-4 h-4 text-primary mt-0.5" />
-              <div className="text-xs text-muted-foreground">
-                {selectedStat === 'total-value' && "Your portfolio value is calculated from real-time prices across all detected tokens."}
-                {selectedStat === 'risk-score' && "Risk score considers token volatility, liquidity, and concentration. Lower is better."}
-                {selectedStat === 'diversification' && "A well-diversified portfolio reduces overall risk. Aim for multiple uncorrelated assets."}
-                {selectedStat === 'top-picks' && "Top picks are tokens with high pump potential and acceptable risk levels."}
-                {selectedStat === 'performance' && "24h change shows portfolio performance. Compare against market benchmarks."}
-                {selectedStat === 'health' && "Portfolio health considers all warnings and risk factors for overall assessment."}
-              </div>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </>
   );
 }
