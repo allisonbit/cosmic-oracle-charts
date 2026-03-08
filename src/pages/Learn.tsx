@@ -724,13 +724,6 @@ export default function Learn() {
             {activeCategory !== 'All' && ` in ${activeCategory}`}
           </p>
         )}
-
-        {/* Post Modal */}
-        <BlogPostModal 
-          post={selectedPost}
-          open={!!selectedPost}
-          onClose={() => setSelectedPost(null)}
-        />
       </main>
 
       {/* Educational Fundamentals Section */}
