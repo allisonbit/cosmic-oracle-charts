@@ -55,7 +55,10 @@ const MyWalletScanner = lazy(() => import("./pages/MyWalletScanner"));
 const MySignals = lazy(() => import("./pages/MySignals"));
 const MyPortfolioTracker = lazy(() => import("./pages/MyPortfolioTracker"));
 const MySocial = lazy(() => import("./pages/MySocial"));
-
+const MyTradeJournal = lazy(() => import("./pages/MyTradeJournal"));
+const MyNewsFeed = lazy(() => import("./pages/MyNewsFeed"));
+const MyDCAPlanner = lazy(() => import("./pages/MyDCAPlanner"));
+const MyCopyTrading = lazy(() => import("./pages/MyCopyTrading"));
 // Loading fallback component
 const PageLoader = memo(function PageLoader() {
   return (
