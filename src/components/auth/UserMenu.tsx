@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogIn, LogOut, User, Star, Bell, Settings, PieChart, Zap, Wallet, Users, DollarSign } from "lucide-react";
+import { LogIn, LogOut, User, Star, Bell, Settings, PieChart, Zap, Wallet, Users, DollarSign, BookOpen, Newspaper, TrendingUp, Copy } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 
@@ -99,6 +99,18 @@ export function UserMenu({ className }: { className?: string }) {
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => navigate("/my/social")} className="gap-2 cursor-pointer">
           <Users className="w-4 h-4" /> Social & Leaderboard
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate("/my/journal")} className="gap-2 cursor-pointer">
+          <BookOpen className="w-4 h-4" /> Trade Journal
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate("/my/news")} className="gap-2 cursor-pointer">
+          <Newspaper className="w-4 h-4" /> News Feed
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate("/my/dca")} className="gap-2 cursor-pointer">
+          <TrendingUp className="w-4 h-4" /> DCA Planner
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate("/my/copy")} className="gap-2 cursor-pointer">
+          <Copy className="w-4 h-4" /> Copy Trading
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => navigate("/my/settings")} className="gap-2 cursor-pointer">
           <Settings className="w-4 h-4" /> Settings
