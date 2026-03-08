@@ -61,6 +61,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         email: data.email,
         watchlist: (data.watchlist as string[]) || [],
         preferences: (data.preferences as Record<string, unknown>) || {},
+        is_premium: (data as any).is_premium ?? false,
+        email_notifications: (data as any).email_notifications ?? true,
       });
     } catch (e) {
       console.error("Profile fetch failed:", e);
