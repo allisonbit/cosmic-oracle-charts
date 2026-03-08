@@ -25,7 +25,7 @@ const Learn = lazy(() => import("./pages/Learn"));
 const LearnArticle = lazy(() => import("./pages/LearnArticle"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Chain = lazy(() => import("./pages/Chain"));
-const Portfolio = lazy(() => import("./pages/Portfolio"));
+
 const StrengthMeter = lazy(() => import("./pages/StrengthMeter"));
 const CryptoFactory = lazy(() => import("./pages/CryptoFactory"));
 const FactoryEvents = lazy(() => import("./pages/FactoryEvents"));
