@@ -81,6 +81,7 @@ const queryClient = new QueryClient({
 // Page tracking wrapper component
 const PageTracker = memo(function PageTracker() {
   usePageTracking();
+  useSearchEnginePing();
   return null;
 });
 
