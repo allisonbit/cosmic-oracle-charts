@@ -29,6 +29,7 @@ export interface InsightsData {
   date: string;
   timestamp: number;
   totalArticles: number;
+  todayArticles?: number;
 }
 
 export function useInsights() {
