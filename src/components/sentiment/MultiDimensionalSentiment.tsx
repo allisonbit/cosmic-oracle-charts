@@ -1,7 +1,5 @@
-import { useState } from "react";
-import { Brain, Users, TrendingUp, Waves, Activity, ChevronRight, ChevronDown, Info, ExternalLink, BarChart3 } from "lucide-react";
+import { Brain, Users, TrendingUp, Waves, Activity, Info, ExternalLink, BarChart3 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 
 interface DimensionData {
   id: string;
@@ -29,7 +27,6 @@ export function MultiDimensionalSentiment({
   fearGreedIndex, socialSentiment, volatilityIndex, whaleActivity,
   fundingRate = 0.015, onchainSentiment = 58
 }: MultiDimensionalSentimentProps) {
-  const [expandedDimension, setExpandedDimension] = useState<string | null>(null);
   const fundingScore = 50 + (fundingRate * 1000);
   
   const dimensions: DimensionData[] = [
@@ -77,60 +74,42 @@ export function MultiDimensionalSentiment({
         </div>
       </div>
 
-      <div className="space-y-3">
-        {dimensions.map(dim => {
-          const isExpanded = expandedDimension === dim.id;
-          return (
-            <div key={dim.id}>
-              <button onClick={() => setExpandedDimension(isExpanded ? null : dim.id)} className="w-full group">
-                <div className="flex items-center justify-between mb-1">
-                  <div className="flex items-center gap-2">
-                    <div className={cn("p-1.5 rounded", getScoreColor(dim.score).replace('text-', 'bg-') + '/20')}>
-                      {dim.icon}
-                    </div>
-                    <span className="text-sm font-medium">{dim.name}</span>
-                    <span className="text-xs text-muted-foreground">({(dim.weight * 100).toFixed(0)}%)</span>
-                    <span className="text-xs">{getTrendArrow(dim.trend)}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className={cn("font-bold", getScoreColor(dim.score))}>{dim.score.toFixed(0)}</span>
-                    <ChevronDown className={cn("w-4 h-4 text-muted-foreground transition-transform", isExpanded && "rotate-180")} />
-                  </div>
+      {/* All dimensions shown inline - no dropdowns */}
+      <div className="space-y-4">
+        {dimensions.map(dim => (
+          <div key={dim.id} className="p-3 rounded-lg bg-muted/20 border border-border/30">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <div className={cn("p-1.5 rounded", getScoreColor(dim.score).replace('text-', 'bg-') + '/20')}>
+                  {dim.icon}
                 </div>
-                <div className="h-2 bg-muted rounded-full overflow-hidden">
-                  <div className={cn("h-full rounded-full transition-all",
-                    dim.score >= 70 ? "bg-success" : dim.score >= 50 ? "bg-primary" : dim.score >= 35 ? "bg-warning" : "bg-danger"
-                  )} style={{ width: `${dim.score}%` }} />
-                </div>
-              </button>
-              
-              {isExpanded && (
-                <div className="ml-10 mt-2 mb-3 p-3 rounded-lg bg-muted/20 border border-border/30 animate-in fade-in slide-in-from-top-1 duration-200">
-                  <p className="text-sm text-muted-foreground mb-3">{dim.description}</p>
-                  <div className="text-xs text-muted-foreground mb-2 font-display flex items-center gap-1">
-                    <Info className="w-3 h-3" /> DATA POINTS
-                  </div>
-                  <div className="space-y-1 mb-3">
-                    {dim.dataPoints.map((point, i) => (
-                      <div key={i} className="flex items-center gap-2 text-sm">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                        {point}
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {dim.sources.map(source => (
-                      <a key={source.name} href={source.url} target="_blank" rel="noopener noreferrer"
-                        className="text-xs px-2 py-1 rounded border border-border/50 hover:border-primary/50 text-primary flex items-center gap-1">
-                        {source.name} <ExternalLink className="w-3 h-3" />
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
+                <span className="text-sm font-medium">{dim.name}</span>
+                <span className="text-xs text-muted-foreground">({(dim.weight * 100).toFixed(0)}%)</span>
+                <span className="text-xs">{getTrendArrow(dim.trend)}</span>
+              </div>
+              <span className={cn("font-bold text-lg", getScoreColor(dim.score))}>{dim.score.toFixed(0)}</span>
             </div>
-          );
-        })}
+            <div className="h-2 bg-muted rounded-full overflow-hidden mb-2">
+              <div className={cn("h-full rounded-full transition-all",
+                dim.score >= 70 ? "bg-success" : dim.score >= 50 ? "bg-primary" : dim.score >= 35 ? "bg-warning" : "bg-danger"
+              )} style={{ width: `${dim.score}%` }} />
+            </div>
+            <p className="text-xs text-muted-foreground mb-2">{dim.description}</p>
+            <div className="flex items-center gap-2 flex-wrap">
+              {dim.dataPoints.map((point, i) => (
+                <span key={i} className="text-xs px-2 py-0.5 rounded bg-muted/50 text-muted-foreground">{point}</span>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {dim.sources.map(source => (
+                <a key={source.name} href={source.url} target="_blank" rel="noopener noreferrer"
+                  className="text-xs px-2 py-1 rounded border border-border/50 hover:border-primary/50 text-primary flex items-center gap-1">
+                  {source.name} <ExternalLink className="w-3 h-3" />
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
