@@ -197,6 +197,10 @@ const App = () => (
                 <Route path="/my/signals" element={<MySignals />} />
                 <Route path="/my/tracker" element={<MyPortfolioTracker />} />
                 <Route path="/my/social" element={<MySocial />} />
+                <Route path="/my/journal" element={<MyTradeJournal />} />
+                <Route path="/my/news" element={<MyNewsFeed />} />
+                <Route path="/my/dca" element={<MyDCAPlanner />} />
+                <Route path="/my/copy" element={<MyCopyTrading />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
