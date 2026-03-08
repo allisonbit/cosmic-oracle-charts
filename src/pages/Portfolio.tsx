@@ -16,6 +16,7 @@ import { PortfolioChart } from "@/components/portfolio/PortfolioChart";
 import { useNavigate } from "react-router-dom";
 import { HoldingsDistribution } from "@/components/portfolio/HoldingsDistribution";
 import { PortfolioSchema, PortfolioSEOContent } from "@/components/seo";
+import { TokenDetailModal } from "@/components/portfolio/TokenDetailModal";
 
 interface TokenHolding {
   symbol: string;
@@ -570,6 +571,12 @@ export default function Portfolio() {
       </main>
       <Footer />
 
+      {/* Token Detail Modal - Quick preview */}
+      <TokenDetailModal
+        token={selectedToken}
+        isOpen={!!selectedToken}
+        onClose={() => setSelectedToken(null)}
+      />
     </div>
   );
 }

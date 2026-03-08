@@ -23,8 +23,12 @@ import { MarketRegimeIndicator } from "@/components/dashboard/MarketRegimeIndica
 import { WhaleActivityPanel } from "@/components/dashboard/WhaleActivityPanel";
 import { OptionsFlowPanel } from "@/components/dashboard/OptionsFlowPanel";
 import { CustomAlertsPanel } from "@/components/dashboard/CustomAlertsPanel";
+import { GlobalMetricsSummary } from "@/components/dashboard/GlobalMetricsSummary";
+import { SectorPerformancePanel } from "@/components/dashboard/SectorPerformancePanel";
+import { RecentTradesPanel } from "@/components/dashboard/RecentTradesPanel";
 import { Link, useNavigate } from "react-router-dom";
 import { SidebarAd, InArticleAd } from "@/components/ads";
+import { CoinDetailModal } from "@/components/dashboard/CoinDetailModal";
 import { DashboardSchema, DashboardSEOContent, HowToReadDashboard, WhatMakesUsDifferent, RelatedMarketInsights, DashboardHowItWorks } from "@/components/seo";
 
 function formatNumber(num: number): string {
@@ -217,6 +221,7 @@ const Dashboard = () => {
   const { data: pricesData, isLoading: pricesLoading } = useCryptoPrices();
   const { data: marketData, isLoading: marketLoading } = useMarketData();
   const [lastUpdate, setLastUpdate] = useState(new Date());
+  const [selectedCoin, setSelectedCoin] = useState<any>(null);
   
   const topCoins = useMemo(() => marketData?.topCoins?.slice(0, 8) || [], [marketData]);
   const allCoins = useMemo(() => marketData?.topCoins || [], [marketData]);
@@ -311,6 +316,9 @@ const Dashboard = () => {
                 </Link>
               ))}
             </div>
+
+            {/* Global Metrics Summary - More data */}
+            <GlobalMetricsSummary />
 
             {/* Main Grid */}
             <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
@@ -430,6 +438,12 @@ const Dashboard = () => {
                 {/* Sidebar ad */}
                 <SidebarAd />
               </div>
+            </div>
+
+            {/* Sector Performance & Live Trades */}
+            <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
+              <SectorPerformancePanel />
+              <RecentTradesPanel />
             </div>
             
             {/* In-article ad between major sections */}
@@ -611,6 +625,13 @@ const Dashboard = () => {
           </>
         )}
       </div>
+
+      {/* Coin Detail Modal - Quick preview without leaving dashboard */}
+      <CoinDetailModal
+        coin={selectedCoin}
+        open={!!selectedCoin}
+        onOpenChange={(open) => !open && setSelectedCoin(null)}
+      />
     </Layout>
   );
 };
