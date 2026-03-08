@@ -188,7 +188,7 @@ export default function MyDCAPlanner() {
           </div>
 
           {/* Summary */}
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-3">
             <Card className="border-border"><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Invested</p>
               <p className="text-lg font-bold font-mono">{formatCompact(totalInvested)}</p>
