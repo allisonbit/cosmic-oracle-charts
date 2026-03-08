@@ -21,7 +21,7 @@ import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow, format } from "date-fns";
 import { Helmet } from "react-helmet-async";
-import { TopCryptoPredictionLinks, MarketPagesLinks } from "@/components/factory/AssetPredictionLinks";
+import { TopCryptoPredictionLinks } from "@/components/factory/AssetPredictionLinks";
 
 const sentiments = ['All', 'bullish', 'neutral', 'bearish'];
 
