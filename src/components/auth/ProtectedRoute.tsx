@@ -13,7 +13,7 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
     setSigningIn(true);
     try {
       await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
+        redirect_uri: `${window.location.origin}/my`,
       });
     } catch (e) {
       console.error("Sign in error:", e);

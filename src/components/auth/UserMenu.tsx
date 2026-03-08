@@ -23,7 +23,7 @@ export function UserMenu({ className }: { className?: string }) {
     setSigningIn(true);
     try {
       await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
+        redirect_uri: `${window.location.origin}/my`,
       });
     } catch (e) {
       console.error("Sign in error:", e);
