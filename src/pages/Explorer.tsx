@@ -574,7 +574,7 @@ const ExplorerPage = () => {
                       </td>
 
                       {/* Txns */}
-                      <td className="px-2 py-2.5 text-muted-foreground whitespace-nowrap">
+                      <td className="px-2 py-2.5 text-muted-foreground whitespace-nowrap hidden sm:table-cell">
                         {(token.txns24h || 0).toLocaleString()}
                       </td>
 
