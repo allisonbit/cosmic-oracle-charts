@@ -23,6 +23,9 @@ import { MarketRegimeIndicator } from "@/components/dashboard/MarketRegimeIndica
 import { WhaleActivityPanel } from "@/components/dashboard/WhaleActivityPanel";
 import { OptionsFlowPanel } from "@/components/dashboard/OptionsFlowPanel";
 import { CustomAlertsPanel } from "@/components/dashboard/CustomAlertsPanel";
+import { GlobalMetricsSummary } from "@/components/dashboard/GlobalMetricsSummary";
+import { SectorPerformancePanel } from "@/components/dashboard/SectorPerformancePanel";
+import { RecentTradesPanel } from "@/components/dashboard/RecentTradesPanel";
 import { Link, useNavigate } from "react-router-dom";
 import { SidebarAd, InArticleAd } from "@/components/ads";
 import { CoinDetailModal } from "@/components/dashboard/CoinDetailModal";
