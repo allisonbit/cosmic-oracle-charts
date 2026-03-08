@@ -69,30 +69,16 @@ const SentimentPage = () => {
     : avgChange > 2 && socialSentiment < 45 ? 'bearish_divergence' 
     : Math.abs(avgChange) < 1 ? 'neutral' : 'aligned';
 
-  const handleCoinClick = (coin: typeof topCoins[0], signalType?: string, signalMessage?: string) => {
-    setSelectedCoin({
-      symbol: coin.symbol,
-      name: coin.name,
-      price: coin.price,
-      change24h: coin.change24h,
-      volume: coin.volume,
-      marketCap: coin.marketCap,
-      rank: coin.rank,
-      sentiment: coin.change24h > 2 ? "bullish" : coin.change24h < -2 ? "bearish" : "neutral",
-      signalType,
-      signalMessage,
-    });
-    setCoinModalOpen(true);
+  const handleCoinClick = (coin: typeof topCoins[0]) => {
+    navigate(`/price-prediction/${coin.name?.toLowerCase() || coin.symbol?.toLowerCase()}/daily`);
   };
 
-  const handleWhaleClick = (alert: WhaleAlert) => {
-    setSelectedWhale(alert);
-    setWhaleModalOpen(true);
+  const handleWhaleClick = () => {
+    navigate('/sentiment');
   };
 
-  const handleTopicClick = (topic: TrendingTopic) => {
-    setSelectedTopic(topic);
-    setTopicModalOpen(true);
+  const handleTopicClick = () => {
+    navigate('/sentiment');
   };
 
   if (isLoading) {
