@@ -191,6 +191,101 @@ export type Database = {
         }
         Relationships: []
       }
+      dca_entries: {
+        Row: {
+          amount: number
+          bought_at: string
+          created_at: string
+          id: string
+          plan_id: string
+          price_at_buy: number
+          units_bought: number
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          bought_at?: string
+          created_at?: string
+          id?: string
+          plan_id: string
+          price_at_buy?: number
+          units_bought?: number
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          bought_at?: string
+          created_at?: string
+          id?: string
+          plan_id?: string
+          price_at_buy?: number
+          units_bought?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dca_entries_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "dca_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dca_plans: {
+        Row: {
+          amount_per_buy: number
+          avg_buy_price: number
+          coin_id: string
+          created_at: string
+          frequency: string
+          id: string
+          is_active: boolean
+          name: string
+          next_buy_date: string | null
+          notes: string | null
+          symbol: string
+          total_invested: number
+          total_units: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_per_buy?: number
+          avg_buy_price?: number
+          coin_id: string
+          created_at?: string
+          frequency?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          next_buy_date?: string | null
+          notes?: string | null
+          symbol: string
+          total_invested?: number
+          total_units?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_per_buy?: number
+          avg_buy_price?: number
+          coin_id?: string
+          created_at?: string
+          frequency?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          next_buy_date?: string | null
+          notes?: string | null
+          symbol?: string
+          total_invested?: number
+          total_units?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       performance_metrics: {
         Row: {
           avg_time_on_page: number | null
@@ -344,6 +439,72 @@ export type Database = {
           preferences?: Json | null
           updated_at?: string
           watchlist?: Json | null
+        }
+        Relationships: []
+      }
+      trade_journal: {
+        Row: {
+          coin_id: string
+          created_at: string
+          entered_at: string
+          entry_price: number
+          exit_price: number | null
+          exited_at: string | null
+          fees: number | null
+          id: string
+          name: string
+          notes: string | null
+          pnl: number | null
+          pnl_percent: number | null
+          quantity: number
+          status: string
+          symbol: string
+          tags: string[] | null
+          trade_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          coin_id: string
+          created_at?: string
+          entered_at?: string
+          entry_price?: number
+          exit_price?: number | null
+          exited_at?: string | null
+          fees?: number | null
+          id?: string
+          name?: string
+          notes?: string | null
+          pnl?: number | null
+          pnl_percent?: number | null
+          quantity?: number
+          status?: string
+          symbol: string
+          tags?: string[] | null
+          trade_type?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          coin_id?: string
+          created_at?: string
+          entered_at?: string
+          entry_price?: number
+          exit_price?: number | null
+          exited_at?: string | null
+          fees?: number | null
+          id?: string
+          name?: string
+          notes?: string | null
+          pnl?: number | null
+          pnl_percent?: number | null
+          quantity?: number
+          status?: string
+          symbol?: string
+          tags?: string[] | null
+          trade_type?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

@@ -2,74 +2,22 @@ import { Layout } from "@/components/layout/Layout";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router-dom";
-import { Star, Bell, PieChart, Settings, Sparkles, MessageCircle, Crown, ArrowRight, Wallet, Zap, DollarSign, Users } from "lucide-react";
+import { Star, Bell, PieChart, Settings, Sparkles, MessageCircle, Crown, ArrowRight, Wallet, Zap, DollarSign, Users, BookOpen, Newspaper, Repeat, Copy } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const hubPages = [
-  {
-    path: "/my/watchlist",
-    label: "Watchlist",
-    desc: "Track your favorite coins with live prices",
-    icon: Star,
-    color: "text-yellow-500",
-    bg: "bg-yellow-500/10 border-yellow-500/20",
-  },
-  {
-    path: "/my/portfolio",
-    label: "Portfolio",
-    desc: "Monitor holdings & allocation overview",
-    icon: PieChart,
-    color: "text-blue-500",
-    bg: "bg-blue-500/10 border-blue-500/20",
-  },
-  {
-    path: "/my/tracker",
-    label: "P&L Tracker",
-    desc: "Track buy prices & real profit/loss",
-    icon: DollarSign,
-    color: "text-cyan-500",
-    bg: "bg-cyan-500/10 border-cyan-500/20",
-  },
-  {
-    path: "/my/alerts",
-    label: "Price Alerts",
-    desc: "Set targets & get notified when they trigger",
-    icon: Bell,
-    color: "text-emerald-500",
-    bg: "bg-emerald-500/10 border-emerald-500/20",
-  },
-  {
-    path: "/my/signals",
-    label: "AI Signals",
-    desc: "AI-powered buy/sell signals for your coins",
-    icon: Zap,
-    color: "text-amber-500",
-    bg: "bg-amber-500/10 border-amber-500/20",
-  },
-  {
-    path: "/my/scanner",
-    label: "Wallet Scanner",
-    desc: "Analyze any wallet — holdings & risk",
-    icon: Wallet,
-    color: "text-purple-500",
-    bg: "bg-purple-500/10 border-purple-500/20",
-  },
-  {
-    path: "/my/social",
-    label: "Social & Leaderboard",
-    desc: "Share predictions, compete on accuracy",
-    icon: Users,
-    color: "text-indigo-500",
-    bg: "bg-indigo-500/10 border-indigo-500/20",
-  },
-  {
-    path: "/my/settings",
-    label: "Settings",
-    desc: "Profile, notifications & plan management",
-    icon: Settings,
-    color: "text-muted-foreground",
-    bg: "bg-muted/50 border-border",
-  },
+  { path: "/my/watchlist", label: "Watchlist", desc: "Track your favorite coins with live prices", icon: Star, color: "text-yellow-500", bg: "bg-yellow-500/10 border-yellow-500/20" },
+  { path: "/my/portfolio", label: "Portfolio", desc: "Monitor holdings & allocation overview", icon: PieChart, color: "text-blue-500", bg: "bg-blue-500/10 border-blue-500/20" },
+  { path: "/my/tracker", label: "P&L Tracker", desc: "Track buy prices & real profit/loss", icon: DollarSign, color: "text-cyan-500", bg: "bg-cyan-500/10 border-cyan-500/20" },
+  { path: "/my/journal", label: "Trade Journal", desc: "Log trades, track win rate & performance", icon: BookOpen, color: "text-teal-500", bg: "bg-teal-500/10 border-teal-500/20" },
+  { path: "/my/alerts", label: "Price Alerts", desc: "Set targets & get notified when they trigger", icon: Bell, color: "text-emerald-500", bg: "bg-emerald-500/10 border-emerald-500/20" },
+  { path: "/my/signals", label: "AI Signals", desc: "AI-powered buy/sell signals for your coins", icon: Zap, color: "text-amber-500", bg: "bg-amber-500/10 border-amber-500/20" },
+  { path: "/my/news", label: "News Feed", desc: "Personalized alerts, whale moves & market news", icon: Newspaper, color: "text-rose-500", bg: "bg-rose-500/10 border-rose-500/20" },
+  { path: "/my/dca", label: "DCA Planner", desc: "Dollar-cost average plans & performance", icon: Repeat, color: "text-lime-500", bg: "bg-lime-500/10 border-lime-500/20" },
+  { path: "/my/copy", label: "Copy Trading", desc: "Follow top traders & copy their strategies", icon: Copy, color: "text-orange-500", bg: "bg-orange-500/10 border-orange-500/20" },
+  { path: "/my/scanner", label: "Wallet Scanner", desc: "Analyze any wallet — holdings & risk", icon: Wallet, color: "text-purple-500", bg: "bg-purple-500/10 border-purple-500/20" },
+  { path: "/my/social", label: "Social & Leaderboard", desc: "Share predictions, compete on accuracy", icon: Users, color: "text-indigo-500", bg: "bg-indigo-500/10 border-indigo-500/20" },
+  { path: "/my/settings", label: "Settings", desc: "Profile, notifications & plan management", icon: Settings, color: "text-muted-foreground", bg: "bg-muted/50 border-border" },
 ];
 
 function HubContent() {
