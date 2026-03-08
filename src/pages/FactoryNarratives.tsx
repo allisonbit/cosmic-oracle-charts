@@ -13,7 +13,7 @@ import {
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Helmet } from "react-helmet-async";
-import { TopCryptoPredictionLinks, MarketPagesLinks } from "@/components/factory/AssetPredictionLinks";
+import { TopCryptoPredictionLinks } from "@/components/factory/AssetPredictionLinks";
 
 function FactoryNarrativesSchema() {
   const schema = {
