@@ -38,8 +38,7 @@ const internalLinks = [
   { keyword: "sentiment", path: "/sentiment", label: "Market Sentiment" },
   { keyword: "factory", path: "/factory", label: "Crypto Factory" },
   { keyword: "explorer", path: "/explorer", label: "Token Explorer" },
-  { keyword: "wallet", path: "/portfolio", label: "Wallet Scanner" },
-];
+  { keyword: "wallet", path: "/scanner", label: "Token Scanner" },
 
 export default function InsightArticle() {
   const { slug } = useParams<{ slug: string }>();
