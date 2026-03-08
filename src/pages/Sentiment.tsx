@@ -226,22 +226,6 @@ const SentimentPage = () => {
         )}
       </div>
 
-      {/* Modals */}
-      <CoinDetailModal
-        coin={selectedCoin}
-        open={coinModalOpen}
-        onOpenChange={setCoinModalOpen}
-      />
-      <WhaleAlertModal
-        alert={selectedWhale}
-        open={whaleModalOpen}
-        onOpenChange={setWhaleModalOpen}
-      />
-      <TopicDetailModal
-        topic={selectedTopic}
-        open={topicModalOpen}
-        onOpenChange={setTopicModalOpen}
-      />
     </Layout>
   );
 };
