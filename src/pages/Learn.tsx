@@ -602,12 +602,9 @@ export default function Learn() {
 
         {/* Featured Post - Mobile optimized */}
         {!isLoading && featuredPost && (
-          <Card 
-            className="glass-card overflow-hidden cursor-pointer group active:scale-[0.99] transition-transform touch-manipulation"
-            onClick={() => setSelectedPost(featuredPost)}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => e.key === 'Enter' && setSelectedPost(featuredPost)}
+          <Link 
+            to={`/insights/${featuredPost.slug || featuredPost.id}`}
+            className="glass-card overflow-hidden cursor-pointer group active:scale-[0.99] transition-transform touch-manipulation block rounded-xl border border-border/50"
           >
             <div className="flex flex-col sm:grid sm:grid-cols-2 gap-0">
               <div className="relative h-48 sm:h-64 md:h-80 overflow-hidden">
