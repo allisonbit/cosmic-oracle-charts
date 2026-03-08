@@ -8,6 +8,7 @@ import { Loader2 } from "lucide-react";
 import { SEO, StructuredData } from "@/components/SEO";
 import { AdSenseManager } from "@/components/ads/AdSenseManager";
 import { usePageTracking } from "@/hooks/usePageTracking";
+import { useSearchEnginePing } from "@/hooks/useSearchEnginePing";
 import { AppErrorBoundary } from "@/components/system/AppErrorBoundary";
 import { GlobalSchemas } from "@/components/seo/RichSchemas";
 
@@ -80,6 +81,7 @@ const queryClient = new QueryClient({
 // Page tracking wrapper component
 const PageTracker = memo(function PageTracker() {
   usePageTracking();
+  useSearchEnginePing();
   return null;
 });
 
