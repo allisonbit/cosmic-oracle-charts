@@ -425,7 +425,7 @@ const Dashboard = () => {
               {/* Right Column */}
               <div className="space-y-4 sm:space-y-6">
                 <EnhancedTrendingAlerts />
-                <EnhancedTopPerformers onCoinClick={setSelectedCoin} />
+                <EnhancedTopPerformers onCoinClick={(coin: any) => navigate(`/price-prediction/${coin.name?.toLowerCase() || coin.symbol?.toLowerCase()}/daily`)} />
                 <MarketRegimeIndicator />
                 {/* Sidebar ad */}
                 <SidebarAd />
