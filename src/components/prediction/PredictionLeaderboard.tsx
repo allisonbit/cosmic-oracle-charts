@@ -258,13 +258,7 @@ export function PredictionLeaderboard() {
                         to={`/price-prediction/${entry.coinId}/daily`}
                         className="flex items-center gap-2 hover:text-primary transition-colors"
                       >
-                        <div className={cn(
-                          "w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold",
-                          entry.predictedBias === 'bullish' ? 'bg-success/20 text-success' :
-                          entry.predictedBias === 'bearish' ? 'bg-danger/20 text-danger' : 'bg-warning/20 text-warning'
-                        )}>
-                          <TokenIcon coinId={entry.coinId} symbol={entry.symbol} size="md" />
-                        </div>
+                        <TokenIcon coinId={entry.coinId} symbol={entry.symbol} size="md" />
                         <div>
                           <div className="font-medium text-xs sm:text-sm">{entry.symbol}</div>
                           <div className="text-[10px] text-muted-foreground capitalize">{entry.timeframe}</div>
