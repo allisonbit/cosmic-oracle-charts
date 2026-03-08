@@ -361,9 +361,9 @@ export default function InsightArticle() {
                   <TrendingUp className="h-4 w-4 text-primary" />
                   Crypto Factory
                 </Link>
-                <Link to="/portfolio" className="flex items-center gap-2 p-3 rounded-lg bg-background/50 hover:bg-primary/10 transition-colors text-sm">
+                <Link to="/scanner" className="flex items-center gap-2 p-3 rounded-lg bg-background/50 hover:bg-primary/10 transition-colors text-sm">
                   <Wallet className="h-4 w-4 text-primary" />
-                  Wallet Scanner
+                  Token Scanner
                 </Link>
               </div>
             </CardContent>
