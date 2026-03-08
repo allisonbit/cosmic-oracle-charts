@@ -1,141 +1,64 @@
 import { useState } from "react";
 import { 
   MessageCircle, Users, TrendingUp, TrendingDown, Activity, 
-  Github, Globe, Search as SearchIcon, BarChart3, Zap,
-  ChevronRight, ExternalLink, Flame
+  Globe, BarChart3, Flame, Loader2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-interface SocialMetric {
-  platform: string;
-  icon: React.ElementType;
-  color: string;
-  mentions: number;
-  sentiment: number; // 0-100
-  change: number;
-  influenceScore?: number;
-}
-
-interface CommunityMetric {
-  label: string;
-  value: string;
-  change: number;
-  icon: React.ElementType;
-}
-
-interface TokenSocialData {
-  symbol: string;
-  name: string;
-  overallSentiment: number;
-  socialMetrics: SocialMetric[];
-  communityMetrics: CommunityMetric[];
-  trendingRank?: number;
-  whaleActivity: 'high' | 'medium' | 'low';
-}
-
-// Mock real-time social data generator
-const generateSocialData = (symbol: string, name: string, change24h: number): TokenSocialData => {
-  const baseSentiment = Math.min(100, Math.max(0, 50 + change24h * 3));
-  
-  return {
-    symbol,
-    name,
-    overallSentiment: baseSentiment,
-    trendingRank: Math.floor(Math.random() * 50) + 1,
-    whaleActivity: change24h > 5 ? 'high' : change24h > 0 ? 'medium' : 'low',
-    socialMetrics: [
-      {
-        platform: 'Twitter/X',
-        icon: MessageCircle,
-        color: 'text-[#1DA1F2]',
-        mentions: Math.floor(Math.random() * 100000) + 10000,
-        sentiment: baseSentiment + (Math.random() * 10 - 5),
-        change: Math.floor(Math.random() * 40) - 10,
-        influenceScore: Math.floor(Math.random() * 30) + 70,
-      },
-      {
-        platform: 'Reddit',
-        icon: MessageCircle,
-        color: 'text-[#FF4500]',
-        mentions: Math.floor(Math.random() * 50000) + 5000,
-        sentiment: baseSentiment + (Math.random() * 10 - 5),
-        change: Math.floor(Math.random() * 30) - 5,
-        influenceScore: Math.floor(Math.random() * 20) + 60,
-      },
-      {
-        platform: 'Telegram',
-        icon: MessageCircle,
-        color: 'text-[#0088CC]',
-        mentions: Math.floor(Math.random() * 30000) + 2000,
-        sentiment: baseSentiment + (Math.random() * 10 - 5),
-        change: Math.floor(Math.random() * 25) - 5,
-      },
-      {
-        platform: 'Discord',
-        icon: MessageCircle,
-        color: 'text-[#5865F2]',
-        mentions: Math.floor(Math.random() * 20000) + 1000,
-        sentiment: baseSentiment + (Math.random() * 10 - 5),
-        change: Math.floor(Math.random() * 20) - 5,
-      },
-    ],
-    communityMetrics: [
-      {
-        label: 'Holder Growth (7d)',
-        value: `${(Math.random() * 5 + 0.5).toFixed(1)}%`,
-        change: Math.random() * 10 - 2,
-        icon: Users,
-      },
-      {
-        label: 'Social Followers',
-        value: `${Math.floor(Math.random() * 500 + 100)}K`,
-        change: Math.random() * 8 - 1,
-        icon: Users,
-      },
-      {
-        label: 'Dev Activity',
-        value: `${Math.floor(Math.random() * 200 + 20)} commits`,
-        change: Math.random() * 15 - 3,
-        icon: Github,
-      },
-      {
-        label: 'Google Trends',
-        value: `${Math.floor(Math.random() * 60 + 40)}/100`,
-        change: Math.random() * 20 - 5,
-        icon: SearchIcon,
-      },
-    ],
-  };
-};
+import type { TopCoinData, GlobalMarketData } from "@/hooks/useSentimentData";
 
 interface SocialSentimentPanelProps {
-  tokens: Array<{
-    symbol: string;
-    name: string;
-    price: number;
-    change24h: number;
-    volume: number;
-    marketCap: number;
-  }>;
-  onTokenClick?: (symbol: string) => void;
+  tokens: TopCoinData[];
+  globalData?: GlobalMarketData | null;
+  isLoading?: boolean;
 }
 
-export function SocialSentimentPanel({ tokens, onTokenClick }: SocialSentimentPanelProps) {
-  const [selectedToken, setSelectedToken] = useState<string | null>(null);
-  const [activeView, setActiveView] = useState<'overview' | 'platforms' | 'community'>('overview');
+function deriveSentiment(coin: TopCoinData, globalData?: GlobalMarketData | null) {
+  // Derive sentiment from real metrics
+  const priceScore = Math.min(100, Math.max(0, 50 + coin.change24h * 4));
+  const volumeRatio = coin.marketCap > 0 ? (coin.volume / coin.marketCap) * 100 : 5;
+  const volumeScore = Math.min(100, volumeRatio * 10);
+  const athScore = Math.min(100, Math.max(0, 100 + coin.athChangePercentage));
+  const rangePosition = coin.high24h > coin.low24h
+    ? ((coin.price - coin.low24h) / (coin.high24h - coin.low24h)) * 100
+    : 50;
 
-  const socialData = tokens.slice(0, 10).map(t => generateSocialData(t.symbol, t.name, t.change24h));
-  const selectedData = selectedToken 
-    ? socialData.find(d => d.symbol === selectedToken) 
-    : socialData[0];
+  const overall = Math.round(priceScore * 0.35 + volumeScore * 0.25 + athScore * 0.2 + rangePosition * 0.2);
+
+  return {
+    overall: Math.min(100, Math.max(0, overall)),
+    priceScore: Math.round(priceScore),
+    volumeScore: Math.round(volumeScore),
+    athScore: Math.round(athScore),
+    rangePosition: Math.round(rangePosition),
+    volumeRatio: volumeRatio.toFixed(2),
+    whaleActivity: volumeRatio > 15 ? 'high' as const : volumeRatio > 8 ? 'medium' as const : 'low' as const,
+  };
+}
+
+export function SocialSentimentPanel({ tokens, globalData, isLoading }: SocialSentimentPanelProps) {
+  const [selectedToken, setSelectedToken] = useState<string | null>(null);
+  const [activeView, setActiveView] = useState<'overview' | 'metrics' | 'comparison'>('overview');
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  const coins = tokens.slice(0, 10);
+  const selectedCoin = selectedToken ? coins.find(c => c.symbol === selectedToken) : coins[0];
+  const sentiment = selectedCoin ? deriveSentiment(selectedCoin, globalData) : null;
 
   const formatNumber = (num: number) => {
-    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
-    if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
-    return num.toString();
+    if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
+    if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
+    if (num >= 1e6) return `$${(num / 1e6).toFixed(1)}M`;
+    return `$${num.toLocaleString()}`;
   };
 
   const getSentimentColor = (value: number) => {
@@ -152,249 +75,168 @@ export function SocialSentimentPanel({ tokens, onTokenClick }: SocialSentimentPa
 
   return (
     <div className="space-y-6">
-      {/* Token Selector Row */}
+      {/* Token Selector */}
       <div className="flex gap-2 overflow-x-auto pb-2">
-        {socialData.map((data) => (
-          <Button
-            key={data.symbol}
-            variant={selectedToken === data.symbol || (!selectedToken && data === socialData[0]) ? "default" : "outline"}
-            size="sm"
-            onClick={() => setSelectedToken(data.symbol)}
-            className="gap-2 whitespace-nowrap shrink-0"
-          >
-            <div className={cn(
-              "w-2 h-2 rounded-full",
-              getSentimentBg(data.overallSentiment)
-            )} />
-            {data.symbol}
-          </Button>
-        ))}
+        {coins.map((coin) => {
+          const s = deriveSentiment(coin, globalData);
+          return (
+            <Button
+              key={coin.symbol}
+              variant={selectedToken === coin.symbol || (!selectedToken && coin === coins[0]) ? "default" : "outline"}
+              size="sm"
+              onClick={() => setSelectedToken(coin.symbol)}
+              className="gap-2 whitespace-nowrap shrink-0"
+            >
+              <img src={coin.image} alt={coin.name} className="w-4 h-4 rounded-full" />
+              {coin.symbol}
+              <div className={cn("w-2 h-2 rounded-full", getSentimentBg(s.overall))} />
+            </Button>
+          );
+        })}
       </div>
 
-      {selectedData && (
+      {selectedCoin && sentiment && (
         <>
-          {/* Overall Sentiment Header */}
+          {/* Header */}
           <div className="holo-card p-6">
             <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="font-display font-bold text-xl">{selectedData.symbol}</h3>
-                <p className="text-sm text-muted-foreground">{selectedData.name}</p>
+              <div className="flex items-center gap-3">
+                <img src={selectedCoin.image} alt={selectedCoin.name} className="w-10 h-10 rounded-full" />
+                <div>
+                  <h3 className="font-display font-bold text-xl">{selectedCoin.symbol}</h3>
+                  <p className="text-sm text-muted-foreground">{selectedCoin.name} • {formatNumber(selectedCoin.price)}</p>
+                </div>
               </div>
               <div className="text-right">
-                <div className={cn("text-3xl font-display font-bold", getSentimentColor(selectedData.overallSentiment))}>
-                  {Math.round(selectedData.overallSentiment)}
+                <div className={cn("text-3xl font-display font-bold", getSentimentColor(sentiment.overall))}>
+                  {sentiment.overall}
                 </div>
-                <div className="text-xs text-muted-foreground">Social Score</div>
+                <div className="text-xs text-muted-foreground">Composite Score</div>
               </div>
             </div>
 
-            {/* Quick Stats */}
-            <div className="grid grid-cols-3 gap-4">
+            {/* Quick Stats from real data */}
+            <div className="grid grid-cols-4 gap-3">
               <div className="p-3 rounded-lg bg-muted/30 text-center">
-                <div className="text-xs text-muted-foreground mb-1">Trending Rank</div>
-                <div className="font-bold text-primary">#{selectedData.trendingRank}</div>
+                <div className="text-xs text-muted-foreground mb-1">24h Change</div>
+                <div className={cn("font-bold", selectedCoin.change24h >= 0 ? "text-success" : "text-danger")}>
+                  {selectedCoin.change24h >= 0 ? "+" : ""}{selectedCoin.change24h.toFixed(2)}%
+                </div>
+              </div>
+              <div className="p-3 rounded-lg bg-muted/30 text-center">
+                <div className="text-xs text-muted-foreground mb-1">Vol/MCap</div>
+                <div className="font-bold text-primary">{sentiment.volumeRatio}%</div>
               </div>
               <div className="p-3 rounded-lg bg-muted/30 text-center">
                 <div className="text-xs text-muted-foreground mb-1">Whale Activity</div>
                 <div className={cn(
                   "font-bold",
-                  selectedData.whaleActivity === 'high' ? 'text-success' :
-                  selectedData.whaleActivity === 'medium' ? 'text-warning' : 'text-muted-foreground'
+                  sentiment.whaleActivity === 'high' ? 'text-success' :
+                  sentiment.whaleActivity === 'medium' ? 'text-warning' : 'text-muted-foreground'
                 )}>
-                  {selectedData.whaleActivity.toUpperCase()}
+                  {sentiment.whaleActivity.toUpperCase()}
                 </div>
               </div>
               <div className="p-3 rounded-lg bg-muted/30 text-center">
-                <div className="text-xs text-muted-foreground mb-1">Total Mentions</div>
-                <div className="font-bold">
-                  {formatNumber(selectedData.socialMetrics.reduce((sum, m) => sum + m.mentions, 0))}
+                <div className="text-xs text-muted-foreground mb-1">From ATH</div>
+                <div className={cn("font-bold", selectedCoin.athChangePercentage > -20 ? "text-warning" : "text-danger")}>
+                  {selectedCoin.athChangePercentage.toFixed(0)}%
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Tabs */}
           <Tabs value={activeView} onValueChange={(v) => setActiveView(v as typeof activeView)}>
             <TabsList className="w-full grid grid-cols-3">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="platforms">Platforms</TabsTrigger>
-              <TabsTrigger value="community">Community</TabsTrigger>
+              <TabsTrigger value="overview">Scores</TabsTrigger>
+              <TabsTrigger value="metrics">Metrics</TabsTrigger>
+              <TabsTrigger value="comparison">Compare</TabsTrigger>
             </TabsList>
 
-            {/* Overview Tab */}
             <TabsContent value="overview" className="space-y-4 mt-4">
-              {/* Platform Summary */}
               <div className="holo-card p-6">
                 <h4 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
                   <BarChart3 className="w-4 h-4 text-primary" />
-                  REAL-TIME SENTIMENT BY PLATFORM
+                  SENTIMENT BREAKDOWN
                 </h4>
                 <div className="space-y-4">
-                  {selectedData.socialMetrics.map((metric) => (
-                    <div key={metric.platform} className="space-y-2">
+                  {[
+                    { label: 'Price Momentum', value: sentiment.priceScore, desc: 'Based on 24h price action' },
+                    { label: 'Volume Strength', value: sentiment.volumeScore, desc: 'Volume relative to market cap' },
+                    { label: 'ATH Recovery', value: sentiment.athScore, desc: 'Distance from all-time high' },
+                    { label: '24h Range Position', value: sentiment.rangePosition, desc: 'Where price sits in daily range' },
+                  ].map((metric) => (
+                    <div key={metric.label} className="space-y-1">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <metric.icon className={cn("w-4 h-4", metric.color)} />
-                          <span className="font-medium text-sm">{metric.platform}</span>
+                        <div>
+                          <span className="font-medium text-sm">{metric.label}</span>
+                          <span className="text-xs text-muted-foreground ml-2">{metric.desc}</span>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <span className="text-sm text-muted-foreground">{formatNumber(metric.mentions)} mentions</span>
-                          <span className={cn(
-                            "text-xs font-bold px-2 py-0.5 rounded",
-                            metric.change >= 0 ? "bg-success/20 text-success" : "bg-danger/20 text-danger"
-                          )}>
-                            {metric.change >= 0 ? "+" : ""}{metric.change}%
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Progress value={metric.sentiment} className="flex-1 h-2" />
-                        <span className={cn("text-sm font-bold w-10", getSentimentColor(metric.sentiment))}>
-                          {Math.round(metric.sentiment)}
+                        <span className={cn("text-sm font-bold", getSentimentColor(metric.value))}>
+                          {metric.value}
                         </span>
                       </div>
+                      <Progress value={metric.value} className="h-2" />
                     </div>
                   ))}
                 </div>
               </div>
+            </TabsContent>
 
-              {/* Community Growth */}
+            <TabsContent value="metrics" className="space-y-4 mt-4">
               <div className="holo-card p-6">
                 <h4 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
-                  <Users className="w-4 h-4 text-primary" />
-                  COMMUNITY METRICS
+                  <Activity className="w-4 h-4 text-primary" />
+                  REAL-TIME METRICS
                 </h4>
                 <div className="grid grid-cols-2 gap-3">
-                  {selectedData.communityMetrics.map((metric) => (
-                    <div key={metric.label} className="p-3 rounded-lg bg-muted/30">
-                      <div className="flex items-center gap-2 mb-2">
-                        <metric.icon className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground">{metric.label}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="font-bold">{metric.value}</span>
-                        <span className={cn(
-                          "text-xs font-medium",
-                          metric.change >= 0 ? "text-success" : "text-danger"
-                        )}>
-                          {metric.change >= 0 ? "+" : ""}{metric.change.toFixed(1)}%
-                        </span>
-                      </div>
+                  {[
+                    { label: 'Market Cap', value: formatNumber(selectedCoin.marketCap) },
+                    { label: '24h Volume', value: formatNumber(selectedCoin.volume) },
+                    { label: '24h High', value: formatNumber(selectedCoin.high24h) },
+                    { label: '24h Low', value: formatNumber(selectedCoin.low24h) },
+                    { label: 'ATH', value: formatNumber(selectedCoin.ath) },
+                    { label: 'Circulating Supply', value: selectedCoin.circulatingSupply > 1e9 ? `${(selectedCoin.circulatingSupply / 1e9).toFixed(2)}B` : `${(selectedCoin.circulatingSupply / 1e6).toFixed(2)}M` },
+                  ].map((item) => (
+                    <div key={item.label} className="p-3 rounded-lg bg-muted/30">
+                      <div className="text-xs text-muted-foreground mb-1">{item.label}</div>
+                      <div className="font-bold text-sm">{item.value}</div>
                     </div>
                   ))}
                 </div>
               </div>
             </TabsContent>
 
-            {/* Platforms Tab */}
-            <TabsContent value="platforms" className="space-y-4 mt-4">
-              {selectedData.socialMetrics.map((metric) => (
-                <div key={metric.platform} className="holo-card p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className={cn("w-10 h-10 rounded-full flex items-center justify-center bg-muted", metric.color)}>
-                        <metric.icon className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <h4 className="font-display font-bold">{metric.platform}</h4>
-                        <p className="text-sm text-muted-foreground">{formatNumber(metric.mentions)} mentions</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className={cn("text-2xl font-bold", getSentimentColor(metric.sentiment))}>
-                        {Math.round(metric.sentiment)}
-                      </div>
-                      <div className="text-xs text-muted-foreground">Sentiment</div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-3">
-                    <div className="p-3 rounded-lg bg-muted/30 text-center">
-                      <div className="text-xs text-muted-foreground mb-1">24h Change</div>
-                      <div className={cn("font-bold", metric.change >= 0 ? "text-success" : "text-danger")}>
-                        {metric.change >= 0 ? "+" : ""}{metric.change}%
-                      </div>
-                    </div>
-                    {metric.influenceScore && (
-                      <div className="p-3 rounded-lg bg-muted/30 text-center">
-                        <div className="text-xs text-muted-foreground mb-1">Influence</div>
-                        <div className="font-bold text-primary">{metric.influenceScore}</div>
-                      </div>
-                    )}
-                    <div className="p-3 rounded-lg bg-muted/30 text-center">
-                      <div className="text-xs text-muted-foreground mb-1">Reach</div>
-                      <div className="font-bold">{formatNumber(metric.mentions * 10)}</div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </TabsContent>
-
-            {/* Community Tab */}
-            <TabsContent value="community" className="space-y-4 mt-4">
+            <TabsContent value="comparison" className="space-y-4 mt-4">
               <div className="holo-card p-6">
                 <h4 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-primary" />
-                  GROWTH METRICS
-                </h4>
-                <div className="space-y-4">
-                  {selectedData.communityMetrics.map((metric) => (
-                    <div key={metric.label} className="flex items-center justify-between p-4 rounded-lg bg-muted/30">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                          <metric.icon className="w-5 h-5 text-primary" />
-                        </div>
-                        <div>
-                          <div className="font-medium">{metric.label}</div>
-                          <div className="text-2xl font-bold">{metric.value}</div>
-                        </div>
-                      </div>
-                      <div className={cn(
-                        "flex items-center gap-1 px-3 py-1 rounded-full font-bold",
-                        metric.change >= 0 ? "bg-success/20 text-success" : "bg-danger/20 text-danger"
-                      )}>
-                        {metric.change >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
-                        {metric.change >= 0 ? "+" : ""}{metric.change.toFixed(1)}%
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Whale Social Activity */}
-              <div className="holo-card p-6">
-                <h4 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
-                  <Flame className="w-4 h-4 text-warning" />
-                  WHALE SOCIAL ACTIVITY
+                  <Globe className="w-4 h-4 text-primary" />
+                  TOP 10 SENTIMENT COMPARISON
                 </h4>
                 <div className="space-y-3">
-                  {[
-                    { wallet: '0x7a1f...8e3d', action: 'Tweeted about', sentiment: 'bullish', time: '2m ago' },
-                    { wallet: '0x3b2c...9f1a', action: 'Reddit post on', sentiment: 'neutral', time: '15m ago' },
-                    { wallet: '0x9d4e...2c7b', action: 'Discord mention', sentiment: 'bullish', time: '32m ago' },
-                  ].map((activity, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                          <Activity className="w-4 h-4 text-primary" />
-                        </div>
-                        <div>
-                          <div className="text-sm">
-                            <span className="font-mono text-primary">{activity.wallet}</span>
-                            <span className="text-muted-foreground"> {activity.action} </span>
-                            <span className="font-bold">{selectedData.symbol}</span>
-                          </div>
-                          <div className="text-xs text-muted-foreground">{activity.time}</div>
-                        </div>
-                      </div>
-                      <span className={cn(
-                        "text-xs px-2 py-1 rounded font-bold",
-                        activity.sentiment === 'bullish' ? "bg-success/20 text-success" : "bg-warning/20 text-warning"
-                      )}>
-                        {activity.sentiment.toUpperCase()}
-                      </span>
-                    </div>
-                  ))}
+                  {coins.map((coin) => {
+                    const s = deriveSentiment(coin, globalData);
+                    return (
+                      <button
+                        key={coin.symbol}
+                        onClick={() => setSelectedToken(coin.symbol)}
+                        className="w-full flex items-center gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors text-left"
+                      >
+                        <img src={coin.image} alt={coin.name} className="w-6 h-6 rounded-full" />
+                        <span className="font-bold text-sm w-12">{coin.symbol}</span>
+                        <Progress value={s.overall} className="flex-1 h-2" />
+                        <span className={cn("font-bold text-sm w-8 text-right", getSentimentColor(s.overall))}>
+                          {s.overall}
+                        </span>
+                        <span className={cn(
+                          "text-xs w-16 text-right",
+                          coin.change24h >= 0 ? "text-success" : "text-danger"
+                        )}>
+                          {coin.change24h >= 0 ? "+" : ""}{coin.change24h.toFixed(1)}%
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </TabsContent>
