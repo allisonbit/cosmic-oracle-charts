@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import DOMPurify from "dompurify";
 import { SITE_URL } from "@/lib/siteConfig";
 import { Layout } from "@/components/layout/Layout";
 import { EDUCATIONAL_ARTICLES } from "@/lib/educationalArticles";
