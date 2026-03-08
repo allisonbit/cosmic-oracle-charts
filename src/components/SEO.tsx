@@ -111,12 +111,16 @@ export function SEO({ title, description, keywords, image, type = "website", can
   const currentPath = location.pathname;
   
   // Get page-specific or default SEO
-  const pageMeta = pageSEO[currentPath] || (currentPath.includes("/chain/") ? {
-    title: `${currentPath.split("/chain/")[1]?.charAt(0).toUpperCase()}${currentPath.split("/chain/")[1]?.slice(1) || "Blockchain"} Analytics | Real-Time Chain Data | Oracle Bull`,
-    description: `Comprehensive ${currentPath.split("/chain/")[1] || "blockchain"} analytics with real-time metrics, AI price predictions, whale tracking, token discovery, and DeFi data. Advanced chain health monitoring and risk analysis.`,
-    keywords: `${currentPath.split("/chain/")[1]} analytics, ${currentPath.split("/chain/")[1]} price, ${currentPath.split("/chain/")[1]} tokens, ${currentPath.split("/chain/")[1]} DeFi, blockchain data, chain metrics`
-  } : currentPath.includes("/insights/") ? {
-    title: "Crypto Insight Article | Oracle Bull",
+  const pageMeta = pageSEO[currentPath] || (currentPath.includes("/chain/") ? (() => {
+    const chainSlug = currentPath.split("/chain/")[1] || "blockchain";
+    const chainDisplay = chainSlug.charAt(0).toUpperCase() + chainSlug.slice(1);
+    return {
+      title: `${chainDisplay} Analytics – Live Price, Whale Alerts & DeFi Data (${currentMonth} ${currentYear})`,
+      description: `Real-time ${chainDisplay} blockchain analytics: price charts, whale tracking, token discovery, risk analysis & AI predictions. Free ${chainDisplay} dashboard updated every 30 seconds.`,
+      keywords: `${chainSlug} analytics, ${chainSlug} price today, ${chainSlug} whale alerts, ${chainSlug} DeFi, ${chainSlug} tokens, ${chainSlug} prediction`
+    };
+  })() : currentPath.includes("/insights/") ? {
+    title: `Crypto Insight – Expert Market Analysis | Oracle Bull`,
     description: "Expert cryptocurrency market analysis and trading intelligence. Deep dive into blockchain data, market trends, and investment opportunities.",
     keywords: "crypto analysis, market insight, trading research, blockchain intelligence"
   } : {
