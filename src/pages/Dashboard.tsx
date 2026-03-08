@@ -83,7 +83,8 @@ function CryptoChart({ price, isPositive }: { price: number; isPositive: boolean
 type SortKey = 'rank' | 'price' | 'change24h' | 'volume' | 'marketCap';
 type SortDir = 'asc' | 'desc';
 
-function SortableCryptoTable({ coins, onCoinClick }: { coins: any[]; onCoinClick: (c: any) => void }) {
+function SortableCryptoTable({ coins }: { coins: any[] }) {
+  const navigate = useNavigate();
   const [sortKey, setSortKey] = useState<SortKey>('rank');
   const [sortDir, setSortDir] = useState<SortDir>('asc');
   const [visibleCount, setVisibleCount] = useState(20);
