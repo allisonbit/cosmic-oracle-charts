@@ -77,6 +77,8 @@ export interface CryptoFactoryData {
   news: NewsItem[];
   trending: TrendingCoin[];
   globalStats: GlobalStats;
+  fearGreed?: { value: number; classification: string };
+  topMovers?: any[];
   timestamp: number;
 }
 
