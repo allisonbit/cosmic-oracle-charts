@@ -115,18 +115,24 @@ serve(async (req) => {
       const errorText = await response.text();
       console.error('AI Gateway error:', response.status, errorText);
       if (response.status === 429) {
-        return new Response(
-          JSON.stringify({ error: 'Rate limit exceeded, please try again later.' }),
-          { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+        // Rate limited - return fallback data instead of error
+        console.warn('Rate limited, returning fallback forecast');
+        return new Response(JSON.stringify({ forecast: generateFallbackForecast(coinData, analysisType), timestamp: Date.now(), fallback: true }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
       }
       if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: 'AI credits exhausted.' }),
-          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+        // Credits exhausted - return fallback data instead of error
+        console.warn('AI credits exhausted, returning fallback forecast');
+        return new Response(JSON.stringify({ forecast: generateFallbackForecast(coinData, analysisType), timestamp: Date.now(), fallback: true }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
       }
-      throw new Error(`AI Gateway error: ${response.status}`);
+      // For other errors, also return fallback
+      console.warn('AI Gateway error, returning fallback forecast');
+      return new Response(JSON.stringify({ forecast: generateFallbackForecast(coinData, analysisType), timestamp: Date.now(), fallback: true }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     const data = await response.json();
