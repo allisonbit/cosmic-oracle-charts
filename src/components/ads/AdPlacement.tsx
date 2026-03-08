@@ -67,27 +67,8 @@ const sizeConfig: Record<AdSize, {
   },
 };
 
-// Per-page ad budget to prevent heavy-ad Chrome intervention
-const MAX_AD_PLACEMENTS_PER_PAGE = 4;
-
-type AdBudgetState = {
-  path: string;
-  used: number;
-};
-
+// No artificial ad budget limit - let AdSense handle ad density optimization
 function allocateAdBudget(): boolean {
-  if (typeof window === "undefined") return true;
-
-  const w = window as Window & { __oracle_ad_budget?: AdBudgetState };
-  const path = window.location?.pathname || "/";
-  const state = w.__oracle_ad_budget;
-
-  if (!state || state.path !== path) {
-    w.__oracle_ad_budget = { path, used: 0 };
-  }
-
-  if (w.__oracle_ad_budget!.used >= MAX_AD_PLACEMENTS_PER_PAGE) return false;
-  w.__oracle_ad_budget!.used += 1;
   return true;
 }
 
