@@ -4,7 +4,7 @@ import {
   TrendingUp, TrendingDown, BarChart3, ArrowRightLeft, Wallet, DollarSign, 
   Activity, PieChart, X, ExternalLink, Info, Zap, Target, Scale, 
   Percent, LineChart, Layers, Shield, Clock, AlertTriangle, ChevronRight,
-  ArrowUpRight, ArrowDownRight, Coins, Building2, TrendingUpIcon
+  ArrowUpRight, ArrowDownRight, Coins, Building2
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";

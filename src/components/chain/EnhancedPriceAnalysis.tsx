@@ -510,60 +510,6 @@ export function EnhancedPriceAnalysis({ chain, priceData }: EnhancedPriceAnalysi
         )}
       </div>
 
-      {/* Metric Detail Modal */}
-      <Dialog open={!!selectedMetric} onOpenChange={() => setSelectedMetric(null)}>
-        <DialogContent className="max-w-md border-border/50 bg-card/95 backdrop-blur-xl">
-          <DialogHeader>
-            <DialogTitle className="flex items-center justify-between">
-              <span className="font-display">{selectedMetric?.title}</span>
-              {selectedMetric?.change !== undefined && (
-                <span className={cn("text-sm", selectedMetric.change >= 0 ? "text-success" : "text-danger")}>
-                  {selectedMetric.change >= 0 ? "+" : ""}{selectedMetric.change.toFixed(2)}%
-                </span>
-              )}
-            </DialogTitle>
-          </DialogHeader>
-          
-          <div className="space-y-4">
-            <div className="text-3xl font-display text-primary glow-text text-center py-4">
-              {selectedMetric?.value}
-            </div>
-            
-            <p className="text-sm text-muted-foreground">
-              {selectedMetric?.description}
-            </p>
-
-            <div className="space-y-2">
-              <h4 className="text-sm font-medium text-foreground flex items-center gap-2">
-                <Eye className="h-4 w-4 text-primary" />
-                Key Insights
-              </h4>
-              <ul className="space-y-2">
-                {selectedMetric?.insights.map((insight, i) => (
-                  <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
-                    <span className="text-primary mt-0.5">◆</span>
-                    <span>{insight}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {selectedMetric?.relatedMetrics && (
-              <div className="space-y-2">
-                <h4 className="text-sm font-medium text-foreground">Related Metrics</h4>
-                <div className="grid grid-cols-3 gap-2">
-                  {selectedMetric.relatedMetrics.map((m, i) => (
-                    <div key={i} className="p-2 rounded-lg bg-muted/30 text-center">
-                      <div className="text-[10px] text-muted-foreground">{m.label}</div>
-                      <div className="text-xs font-display text-foreground">{m.value}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

@@ -3,7 +3,7 @@ import { ChainConfig } from "@/lib/chainConfig";
 import { Building2, TrendingUp, TrendingDown, BarChart3, DollarSign, Pickaxe, PieChart, LineChart, ArrowUpDown, ExternalLink, Info, Wallet, Target, Activity, Users, Lock, Coins } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
