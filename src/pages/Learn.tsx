@@ -674,7 +674,7 @@ export default function Learn() {
                 </div>
               </CardContent>
             </div>
-          </Card>
+          </Link>
         )}
 
         {/* Posts Grid - Responsive */}
