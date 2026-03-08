@@ -20,6 +20,7 @@ import NotFound from "./pages/NotFound";
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Sentiment = lazy(() => import("./pages/Sentiment"));
 const Explorer = lazy(() => import("./pages/Explorer"));
+const TokenDetail = lazy(() => import("./pages/TokenDetail"));
 const Learn = lazy(() => import("./pages/Learn"));
 const LearnArticle = lazy(() => import("./pages/LearnArticle"));
 const Contact = lazy(() => import("./pages/Contact"));
