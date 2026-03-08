@@ -11,11 +11,14 @@ interface SEOProps {
   canonicalPath?: string;
 }
 
+const currentMonth = new Date().toLocaleString('en-US', { month: 'long' });
+const currentYear = new Date().getFullYear();
+
 const defaultMeta = {
   siteName: SITE_NAME,
-  title: "Oracle Bull | AI-Powered Crypto Forecasts & Blockchain Analytics",
-  description: "Free AI-powered crypto forecasting platform. Real-time price charts, market predictions, whale tracking, sentiment analysis, and blockchain analytics for Bitcoin, Ethereum, Solana, and 1000+ tokens.",
-  keywords: "crypto forecast, bitcoin prediction, ethereum price, crypto analytics, blockchain data, whale tracking, crypto sentiment, AI trading signals, cryptocurrency market, DeFi analytics, token scanner, real-time crypto prices",
+  title: `Best Free AI Crypto Predictions & Forecasts (${currentMonth} ${currentYear}) – Oracle Bull`,
+  description: "Get free AI-powered crypto price predictions for Bitcoin, Ethereum & 1000+ tokens. Real-time charts, whale alerts, sentiment analysis. No signup needed.",
+  keywords: "crypto prediction today, AI crypto forecast, bitcoin price prediction, free crypto signals, crypto analysis tool, best crypto prediction site",
   image: "https://storage.googleapis.com/gpt-engineer-file-uploads/uDg0k7BDXGRxsHZqK6gSbdN9o0l1/social-images/social-1765566965381-WhatsApp Image 2025-12-12 at 10.50.30_d13b6f53.jpg",
   twitterHandle: TWITTER_HANDLE,
   baseUrl: SITE_URL
