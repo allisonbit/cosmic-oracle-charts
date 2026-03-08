@@ -558,7 +558,7 @@ const Dashboard = () => {
                         <span className="truncate">Vol: {formatNumber(coin.volume)}</span>
                         <span className="truncate ml-1">MCap: {formatNumber(coin.marketCap)}</span>
                       </div>
-                    </button>
+                    </Link>
                   );
                 })}
               </div>
