@@ -11,6 +11,7 @@ import { Disclaimer, Methodology } from "@/components/prediction/PredictionConte
 import { InvestorActionSummary } from "@/components/prediction/InvestorActionSummary";
 import { EnhancedFAQ } from "@/components/prediction/EnhancedFAQ";
 import { MarketQuestionsLinks, RelatedToolsLinks, TimeframeCrossLinks, HighIntentCTA } from "@/components/prediction/HighIntentLinks";
+import { MarketDataPanel } from "@/components/prediction/MarketDataPanel";
 import { SignalChart } from "@/components/prediction/SignalChart";
 import { GlobalTokenSearch } from "@/components/prediction/GlobalTokenSearch";
 import { GlobalToken } from "@/hooks/useGlobalTokenSearch";
@@ -268,6 +269,9 @@ export default function PricePrediction() {
                     takeProfit3: data.tradingZones.takeProfit3 || data.currentPrice * 1.15,
                   } : undefined}
                 />
+                
+                {/* Market Data Overview */}
+                <MarketDataPanel data={data} coinName={crypto.name} />
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <PriceTargetsPanel data={data} timeframe={validTimeframe} />

@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export interface TechnicalIndicators {
   rsi: number;
@@ -8,6 +9,10 @@ export interface TechnicalIndicators {
   movingAverages: { ma20: number; ma50: number; ma200: number; trend: 'bullish' | 'bearish' | 'neutral' };
   bollingerBands: { upper: number; middle: number; lower: number; position: 'upper' | 'middle' | 'lower' };
   volumeAnalysis: { trend: 'increasing' | 'decreasing' | 'stable'; strength: number };
+  stochastic?: { k: number; d: number; signal: 'oversold' | 'neutral' | 'overbought' };
+  atr?: number;
+  obv?: string;
+  vwap?: number;
 }
 
 export interface PredictionData {
@@ -42,6 +47,15 @@ export interface PredictionData {
   bullScenario: { target: number; probability: number; triggers: string[] };
   bearScenario: { target: number; probability: number; triggers: string[] };
   disclaimer: string;
+  marketData?: {
+    volume24h: number;
+    marketCap: number;
+    high24h: number;
+    low24h: number;
+    change7d: number;
+    change30d: number;
+    ath: number;
+  };
 }
 
 export function usePricePrediction(
@@ -53,40 +67,44 @@ export function usePricePrediction(
   return useQuery<PredictionData>({
     queryKey: ['price-prediction', coinId, timeframe],
     queryFn: async () => {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
-      
       try {
         const { data, error } = await supabase.functions.invoke('price-prediction', {
           body: { coinId, symbol, timeframe }
         });
         
-        clearTimeout(timeoutId);
-        
         if (error) {
-          console.error('Price prediction error:', error);
-          throw new Error(error.message || 'Failed to fetch prediction');
+          // Check for specific error codes
+          const errMsg = error.message || '';
+          if (errMsg.includes('402') || errMsg.includes('credits')) {
+            toast.error("AI credits exhausted — using algorithmic analysis", { id: "ai-credits" });
+          } else if (errMsg.includes('429') || errMsg.includes('rate limit')) {
+            toast.warning("Rate limited — retrying shortly", { id: "rate-limit" });
+          }
+          throw new Error(errMsg || 'Failed to fetch prediction');
         }
         
-        if (!data) {
-          throw new Error('No prediction data received');
+        if (!data) throw new Error('No prediction data received');
+        
+        // Validate essential fields
+        if (!data.currentPrice || data.currentPrice <= 0) {
+          throw new Error('Invalid price data received');
         }
         
         return data;
       } catch (err) {
-        clearTimeout(timeoutId);
+        // Re-throw with context
         throw err;
       }
     },
     enabled: enabled && !!coinId && coinId.length > 0,
-    staleTime: timeframe === 'daily' ? 3 * 60 * 1000 : timeframe === 'weekly' ? 15 * 60 * 1000 : 30 * 60 * 1000,
-    refetchInterval: timeframe === 'daily' ? 5 * 60 * 1000 : timeframe === 'weekly' ? 15 * 60 * 1000 : 30 * 60 * 1000, // All timeframes auto-refresh 24/7
-    gcTime: 1000 * 60 * 60, // Keep in cache for 60 minutes
-    refetchIntervalInBackground: true, // Keep updating in background
+    staleTime: timeframe === 'daily' ? 3 * 60_000 : timeframe === 'weekly' ? 15 * 60_000 : 30 * 60_000,
+    refetchInterval: timeframe === 'daily' ? 5 * 60_000 : timeframe === 'weekly' ? 15 * 60_000 : 30 * 60_000,
+    gcTime: 60 * 60_000,
+    refetchIntervalInBackground: true,
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
     retry: 3,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 15000),
   });
 }
 
