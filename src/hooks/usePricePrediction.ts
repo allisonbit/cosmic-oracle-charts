@@ -120,18 +120,32 @@ export function getCryptoBySlug(slug: string) {
 
 // Question intent templates for SEO pages
 export const QUESTION_INTENTS = [
+  // Daily intent - highest search volume
   { pattern: 'what-will-{coin}-price-be-today', template: 'What will {name} price be today?', timeframe: 'daily' as const },
   { pattern: 'will-{coin}-go-up-today', template: 'Will {name} go up today?', timeframe: 'daily' as const },
   { pattern: '{coin}-price-prediction-today', template: '{name} price prediction today', timeframe: 'daily' as const },
   { pattern: 'is-{coin}-bullish-today', template: 'Is {name} bullish today?', timeframe: 'daily' as const },
+  { pattern: 'should-i-buy-{coin}-today', template: 'Should I buy {name} today?', timeframe: 'daily' as const },
+  { pattern: '{coin}-forecast-today', template: '{name} forecast today', timeframe: 'daily' as const },
+  { pattern: 'is-{coin}-going-up-or-down-today', template: 'Is {name} going up or down today?', timeframe: 'daily' as const },
+  { pattern: '{coin}-price-tomorrow', template: '{name} price tomorrow', timeframe: 'daily' as const },
+  // Weekly intent
   { pattern: 'what-will-{coin}-price-be-this-week', template: 'What will {name} price be this week?', timeframe: 'weekly' as const },
   { pattern: 'will-{coin}-go-up-this-week', template: 'Will {name} go up this week?', timeframe: 'weekly' as const },
   { pattern: '{coin}-price-prediction-this-week', template: '{name} price prediction this week', timeframe: 'weekly' as const },
   { pattern: '{coin}-weekly-forecast', template: '{name} weekly forecast', timeframe: 'weekly' as const },
+  { pattern: 'should-i-buy-{coin}-this-week', template: 'Should I buy {name} this week?', timeframe: 'weekly' as const },
+  { pattern: '{coin}-analysis-this-week', template: '{name} analysis this week', timeframe: 'weekly' as const },
+  // Monthly intent
   { pattern: 'what-will-{coin}-price-be-this-month', template: 'What will {name} price be this month?', timeframe: 'monthly' as const },
   { pattern: 'is-{coin}-a-good-investment-this-month', template: 'Is {name} a good investment this month?', timeframe: 'monthly' as const },
   { pattern: '{coin}-price-prediction-this-month', template: '{name} price prediction this month', timeframe: 'monthly' as const },
   { pattern: '{coin}-monthly-forecast', template: '{name} monthly forecast', timeframe: 'monthly' as const },
+  { pattern: 'should-i-buy-{coin}-now', template: 'Should I buy {name} now?', timeframe: 'monthly' as const },
+  { pattern: '{coin}-price-prediction-2026', template: '{name} price prediction 2026', timeframe: 'monthly' as const },
+  { pattern: 'is-{coin}-a-good-investment', template: 'Is {name} a good investment?', timeframe: 'monthly' as const },
+  { pattern: '{coin}-buy-or-sell', template: '{name}: buy or sell?', timeframe: 'monthly' as const },
+  { pattern: 'will-{coin}-reach-new-highs', template: 'Will {name} reach new highs?', timeframe: 'monthly' as const },
 ];
 
 export function getQuestionIntent(slug: string): { 

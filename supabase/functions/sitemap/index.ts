@@ -169,9 +169,15 @@ function generateSitemap(articles: BlogArticleRow[]): string {
   const qCoins = ["bitcoin", "ethereum", "solana", "ripple", "cardano", "dogecoin", "shiba-inu", "pepe", "chainlink", "polkadot"];
   const qPatterns = [
     "what-will-{coin}-price-be-today", "will-{coin}-go-up-today", "{coin}-price-prediction-today",
-    "is-{coin}-bullish-today", "what-will-{coin}-price-be-this-week", "will-{coin}-go-up-this-week",
-    "{coin}-price-prediction-this-week", "{coin}-weekly-forecast", "what-will-{coin}-price-be-this-month",
-    "is-{coin}-a-good-investment-this-month", "{coin}-price-prediction-this-month", "{coin}-monthly-forecast",
+    "is-{coin}-bullish-today", "should-i-buy-{coin}-today", "{coin}-forecast-today",
+    "is-{coin}-going-up-or-down-today", "{coin}-price-tomorrow",
+    "what-will-{coin}-price-be-this-week", "will-{coin}-go-up-this-week",
+    "{coin}-price-prediction-this-week", "{coin}-weekly-forecast",
+    "should-i-buy-{coin}-this-week", "{coin}-analysis-this-week",
+    "what-will-{coin}-price-be-this-month", "is-{coin}-a-good-investment-this-month",
+    "{coin}-price-prediction-this-month", "{coin}-monthly-forecast",
+    "should-i-buy-{coin}-now", "{coin}-price-prediction-2026",
+    "is-{coin}-a-good-investment", "{coin}-buy-or-sell", "will-{coin}-reach-new-highs",
   ];
   for (const coin of qCoins) {
     for (const pattern of qPatterns) {

@@ -6,7 +6,7 @@ const corsHeaders = {
 };
 
 const SITE_URL = "https://oraclebull.com";
-const INDEXNOW_KEY = "oraclebull2026indexnow";
+const INDEXNOW_KEY = "b4e2f8a1c3d5e7f9a0b2c4d6e8f0a1b3";
 
 async function getAllArticleUrls(): Promise<string[]> {
   try {
@@ -94,22 +94,25 @@ Deno.serve(async (req) => {
     ).then(r => ({ engine: "bing-dynamic", status: r.status, ok: r.ok }))
      .catch(e => ({ engine: "bing-dynamic", status: 0, ok: false, error: e.message }));
 
-    // 3. IndexNow - submit in batches of 10,000 (API limit)
+    // 3. IndexNow - submit in smaller batches for reliability
     const indexNowEndpoints = [
       "https://api.indexnow.org/IndexNow",
       "https://www.bing.com/IndexNow",
       "https://yandex.com/indexnow",
     ];
 
-    const batchSize = 10000;
+    const batchSize = 100; // Smaller batches = more reliable
     const indexNowResults: any[] = [];
 
-    for (let i = 0; i < allUrls.length; i += batchSize) {
-      const batch = allUrls.slice(i, i + batchSize);
+    // Only submit first 500 URLs to avoid timeouts, prioritize core + recent
+    const priorityUrls = allUrls.slice(0, 500);
+
+    for (let i = 0; i < priorityUrls.length; i += batchSize) {
+      const batch = priorityUrls.slice(i, i + batchSize);
       const payload = {
         host: "oraclebull.com",
         key: INDEXNOW_KEY,
-        keyLocation: `${SITE_URL}/indexnow-key.txt`,
+        keyLocation: `${SITE_URL}/${INDEXNOW_KEY}.txt`,
         urlList: batch,
       };
 
@@ -119,7 +122,7 @@ Deno.serve(async (req) => {
             method: "POST",
             headers: { "Content-Type": "application/json; charset=utf-8" },
             body: JSON.stringify(payload),
-          }).then(r => ({ endpoint, status: r.status, ok: r.ok, batch: i / batchSize }))
+          }).then(r => ({ endpoint, status: r.status, ok: r.ok, batch: Math.floor(i / batchSize) }))
         )
       );
 
