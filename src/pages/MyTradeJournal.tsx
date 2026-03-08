@@ -199,7 +199,7 @@ export default function MyTradeJournal() {
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-8 gap-2 sm:gap-3">
             <Card className={cn("border-border", totalPnL >= 0 ? "bg-success/5" : "bg-danger/5")}><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Total P&L</p>
               <p className={cn("text-lg font-bold font-mono", totalPnL >= 0 ? "text-success" : "text-danger")}>{formatCompact(totalPnL)}</p>
