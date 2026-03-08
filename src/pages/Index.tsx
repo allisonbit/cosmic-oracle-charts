@@ -64,6 +64,15 @@ const ViewportSection = ({ children, fallback }: { children: React.ReactNode; fa
 };
 
 const Index = () => {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && user) {
+      navigate("/my", { replace: true });
+    }
+  }, [user, loading, navigate]);
+
   return (
     <div className="min-h-screen flex flex-col">
       <SEO />
