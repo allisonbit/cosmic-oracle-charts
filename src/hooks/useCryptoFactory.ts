@@ -136,6 +136,8 @@ export function useCryptoFactory(filters?: {
         news,
         trending: trending || [],
         globalStats: globalStats || {},
+        fearGreed: fearGreed || { value: 50, classification: 'Neutral' },
+        topMovers: topMovers || [],
         timestamp,
       };
     },
