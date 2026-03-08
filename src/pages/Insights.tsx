@@ -466,6 +466,29 @@ export default function Insights() {
             Showing {paginatedArticles.length} of {filteredArticles.length} articles
             {data?.totalArticles ? <span> · {data.totalArticles} total published</span> : null}
           </div>
+
+          {/* ═══════ NOSCRIPT CRAWLABLE LINKS ═══════ */}
+          <noscript>
+            <div style={{ padding: '24px 0' }}>
+              <h2>All Crypto Market Insights</h2>
+              <p>Browse our complete library of AI-powered cryptocurrency market analysis articles, updated daily with expert insights on Bitcoin, Ethereum, DeFi, altcoins, and trading strategies.</p>
+              <ul>
+                {data?.posts?.map(post => (
+                  <li key={post.slug}>
+                    <a href={`https://oraclebull.com/insights/${post.slug}`}>{post.title}</a>
+                    {post.metaDescription && <span> — {post.metaDescription}</span>}
+                  </li>
+                ))}
+              </ul>
+              <p>
+                <a href="https://oraclebull.com/learn">Educational Guides</a> · 
+                <a href="https://oraclebull.com/predictions">Price Predictions</a> · 
+                <a href="https://oraclebull.com/dashboard">Market Dashboard</a> · 
+                <a href="https://oraclebull.com/sentiment">Sentiment Analysis</a> · 
+                <a href="https://oraclebull.com/explorer">Token Explorer</a>
+              </p>
+            </div>
+          </noscript>
         </div>
       </div>
     </Layout>
