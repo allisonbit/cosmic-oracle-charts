@@ -27,6 +27,19 @@ const staticRoutes = [
   "/privacy-policy",
   "/terms",
   "/risk-disclaimer",
+  // Authenticated user hub pages
+  "/my",
+  "/my/portfolio",
+  "/my/scanner",
+  "/my/watchlist",
+  "/my/alerts",
+  "/my/signals",
+  "/my/settings",
+  "/my/journal",
+  "/my/news",
+  "/my/dca",
+  "/my/copy",
+  "/my/social",
 ];
 
 // Chain routes

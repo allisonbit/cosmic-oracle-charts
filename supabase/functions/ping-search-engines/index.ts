@@ -64,6 +64,9 @@ Deno.serve(async (req) => {
       "/price-prediction/solana", "/price-prediction/ripple",
       "/price-prediction/cardano", "/price-prediction/dogecoin",
       "/chain/ethereum", "/chain/solana", "/chain/base", "/chain/arbitrum",
+      // User hub pages
+      "/my", "/my/portfolio", "/my/scanner", "/my/watchlist", "/my/alerts",
+      "/my/signals", "/my/journal", "/my/news", "/my/dca", "/my/copy", "/my/social",
     ].map(p => `${SITE_URL}${p}`);
 
     const allUrls = [...corePages, ...articleUrls];

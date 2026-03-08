@@ -28,6 +28,19 @@ const staticRoutes = [
   { path: "/privacy-policy", priority: "0.3", changefreq: "yearly" },
   { path: "/terms", priority: "0.3", changefreq: "yearly" },
   { path: "/risk-disclaimer", priority: "0.3", changefreq: "yearly" },
+  // User hub pages
+  { path: "/my", priority: "0.6", changefreq: "daily" },
+  { path: "/my/portfolio", priority: "0.6", changefreq: "daily" },
+  { path: "/my/scanner", priority: "0.6", changefreq: "daily" },
+  { path: "/my/watchlist", priority: "0.6", changefreq: "daily" },
+  { path: "/my/alerts", priority: "0.6", changefreq: "daily" },
+  { path: "/my/signals", priority: "0.6", changefreq: "daily" },
+  { path: "/my/journal", priority: "0.6", changefreq: "daily" },
+  { path: "/my/news", priority: "0.6", changefreq: "hourly" },
+  { path: "/my/dca", priority: "0.6", changefreq: "daily" },
+  { path: "/my/copy", priority: "0.6", changefreq: "daily" },
+  { path: "/my/social", priority: "0.5", changefreq: "daily" },
+  { path: "/my/settings", priority: "0.4", changefreq: "monthly" },
 ];
 
 const chains = ["ethereum", "solana", "base", "arbitrum", "polygon", "optimism", "avalanche", "bnb"];
