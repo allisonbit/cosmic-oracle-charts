@@ -6,15 +6,13 @@ import { useAIForecast } from "@/hooks/useAIForecast";
 import { useWhaleTracker } from "@/hooks/useWhaleTracker";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { CoinDetailModal, CoinData } from "@/components/sentiment/CoinDetailModal";
-import { WhaleAlertModal, WhaleAlert } from "@/components/sentiment/WhaleAlertModal";
-import { TopicDetailModal, TrendingTopic } from "@/components/sentiment/TopicDetailModal";
 import { SocialSentimentPanel } from "@/components/sentiment/SocialSentimentPanel";
 import { NewsPanel } from "@/components/sentiment/NewsPanel";
 import { GoogleTrendsPanel } from "@/components/sentiment/GoogleTrendsPanel";
 import { GitHubActivityPanel } from "@/components/sentiment/GitHubActivityPanel";
 import { SentimentSchema, SentimentSEOContent, SentimentHowItWorks, SentimentDataMeaning } from "@/components/seo";
 import { InArticleAd, SidebarAd } from "@/components/ads";
+import { useNavigate } from "react-router-dom";
 
 // New enhanced components
 import { SentimentContextBar } from "@/components/sentiment/SentimentContextBar";
