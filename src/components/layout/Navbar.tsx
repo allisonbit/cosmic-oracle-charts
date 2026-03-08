@@ -1,28 +1,22 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, TrendingUp, BookOpen, Globe, Radio, Layers, Wallet, Home, Zap, Calendar, Target, Sparkles, ChevronDown, BarChart3, Search } from "lucide-react";
+import { Menu, X, TrendingUp, BookOpen, Globe, Radio, Layers, Wallet, Home, Zap, Calendar, Target, Sparkles, BarChart3, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import oracleLogo from "@/assets/oracle-bull-logo.jpg";
 import { GlobalSearch } from "@/components/search/GlobalSearch";
 
-// Dropdown menu configurations
-const analyticsItems = [
-  { path: "/predictions", label: "AI Predictions", description: "Daily crypto forecasts", icon: Target, color: "text-primary" },
-  { path: "/sentiment", label: "Market Sentiment", description: "Fear & Greed Index", icon: BarChart3, color: "text-success" },
-  { path: "/strength", label: "Strength Meter", description: "Real-time strength analysis", icon: Zap, color: "text-warning" },
-];
-
-const toolsItems = [
-  { path: "/portfolio", label: "Wallet Scanner", description: "Analyze any address", icon: Wallet, color: "text-warning" },
-  { path: "/explorer", label: "Token Explorer", description: "Search 1000+ tokens", icon: Search, color: "text-primary" },
-  { path: "/factory", label: "Crypto Factory", description: "Events, news, narratives", icon: Calendar, color: "text-success" },
-];
-
-const chainsItems = [
-  { path: "/chain/ethereum", label: "Ethereum", description: "ETH gas, TVL, DeFi", icon: "Ξ", color: "text-secondary" },
-  { path: "/chain/solana", label: "Solana", description: "SOL blockchain data", icon: "◎", color: "text-success" },
-  { path: "/chain/bitcoin", label: "Bitcoin", description: "BTC on-chain metrics", icon: "₿", color: "text-warning" },
-  { path: "/chain/arbitrum", label: "Arbitrum", description: "L2 analytics", icon: "A", color: "text-primary" },
+const desktopNavItems = [
+  { path: "/", label: "Home" },
+  { path: "/dashboard", label: "Dashboard" },
+  { path: "/predictions", label: "Predictions" },
+  { path: "/sentiment", label: "Sentiment" },
+  { path: "/strength", label: "Strength" },
+  { path: "/explorer", label: "Explorer" },
+  { path: "/portfolio", label: "Scanner" },
+  { path: "/factory", label: "Factory" },
+  { path: "/chain/ethereum", label: "Chains" },
+  { path: "/market/best-crypto-to-buy-today", label: "Hot Picks" },
+  { path: "/insights", label: "Insights" },
 ];
 
 const mobileNavItems = [
@@ -38,82 +32,6 @@ const mobileNavItems = [
   { path: "/insights", label: "Insights", icon: BookOpen },
   { path: "/portfolio", label: "Scanner", icon: Wallet },
 ];
-
-interface DropdownItem {
-  path: string;
-  label: string;
-  description: string;
-  icon: any;
-  color?: string;
-}
-
-interface DropdownProps {
-  label: string;
-  items: DropdownItem[];
-  isChain?: boolean;
-}
-
-function NavDropdown({ label, items, isChain = false }: DropdownProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout>();
-
-  const handleMouseEnter = () => {
-    clearTimeout(timeoutRef.current);
-    setIsOpen(true);
-  };
-
-  const handleMouseLeave = () => {
-    timeoutRef.current = setTimeout(() => setIsOpen(false), 150);
-  };
-
-  return (
-    <div 
-      className="relative"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      <button className="flex items-center gap-1 px-3 py-2 text-muted-foreground hover:text-foreground text-sm font-medium transition-colors">
-        {label}
-        <ChevronDown className={cn("w-3 h-3 transition-transform", isOpen && "rotate-180")} />
-      </button>
-      
-      {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-64 bg-card border border-border rounded-xl shadow-2xl z-50 overflow-hidden">
-          <div className="p-2">
-            {items.map((item) => {
-              const IconComponent = typeof item.icon === 'string' ? null : item.icon;
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className="flex items-center gap-3 p-3 hover:bg-muted/50 rounded-lg transition-colors group"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <div className={cn(
-                    "p-2 rounded-lg",
-                    isChain ? "bg-primary/10" : "bg-muted"
-                  )}>
-                    {isChain || typeof item.icon === 'string' ? (
-                      <span className={cn("font-bold text-sm", item.color || "text-primary")}>{item.icon}</span>
-                    ) : (
-                      IconComponent && <IconComponent className={cn("w-4 h-4", item.color)} />
-                    )}
-                  </div>
-                  <div>
-                    <div className="font-medium text-foreground group-hover:text-primary transition-colors text-sm">
-                      {item.label}
-                    </div>
-                    <div className="text-xs text-muted-foreground">{item.description}</div>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -162,59 +80,22 @@ export function Navbar() {
               <GlobalSearch />
             </div>
 
-            {/* Desktop Navigation with Dropdowns */}
-            <div className="hidden lg:flex items-center gap-0.5">
-              <Link
-                to="/"
-                className={cn(
-                  "px-3 py-2 rounded-lg text-sm font-medium transition-all",
-                  isActivePath("/")
-                    ? "bg-primary/20 text-primary"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                Home
-              </Link>
-              <Link
-                to="/dashboard"
-                className={cn(
-                  "px-3 py-2 rounded-lg text-sm font-medium transition-all",
-                  isActivePath("/dashboard")
-                    ? "bg-primary/20 text-primary"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                Dashboard
-              </Link>
-              
-              <NavDropdown label="Analytics" items={analyticsItems} />
-              <NavDropdown label="Tools" items={toolsItems} />
-              <NavDropdown label="Chains" items={chainsItems} isChain />
-              
-              <Link
-                to="/market/best-crypto-to-buy-today"
-                className={cn(
-                  "px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1",
-                  isActivePath("/market/")
-                    ? "bg-primary/20 text-primary"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                <Sparkles className="w-3 h-3" />
-                Hot Picks
-              </Link>
-              
-              <Link
-                to="/insights"
-                className={cn(
-                  "px-3 py-2 rounded-lg text-sm font-medium transition-all",
-                  isActivePath("/insights")
-                    ? "bg-primary/20 text-primary"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                Insights
-              </Link>
+            {/* Desktop Navigation - Flat Links */}
+            <div className="hidden lg:flex items-center gap-0.5 overflow-x-auto">
+              {desktopNavItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={cn(
+                    "px-2.5 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap",
+                    isActivePath(item.path)
+                      ? "bg-primary/20 text-primary"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  {item.label}
+                </Link>
+              ))}
             </div>
 
             {/* Mobile Menu Button */}
@@ -231,7 +112,7 @@ export function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile Navigation Overlay */}
+      {/* Mobile Navigation - Full Page Overlay */}
       {isOpen && (
         <div 
           className="lg:hidden fixed inset-0 z-[55] bg-background/98 backdrop-blur-xl overflow-y-auto"

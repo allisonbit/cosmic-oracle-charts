@@ -236,11 +236,6 @@ export function TokenHeatScanner({ chain, tokenHeat, isLoading }: TokenHeatScann
         </div>
       )}
 
-      <TokenDetailModal
-        open={modalOpen}
-        onOpenChange={setModalOpen}
-        token={selectedToken}
-      />
     </div>
   );
 }

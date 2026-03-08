@@ -454,11 +454,6 @@ export function RiskAnalyzer({ chain }: RiskAnalyzerProps) {
         </div>
       </div>
 
-      <TokenDetailModal
-        open={modalOpen}
-        onOpenChange={setModalOpen}
-        token={selectedToken}
-      />
     </>
   );
 }
