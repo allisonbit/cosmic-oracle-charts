@@ -129,57 +129,59 @@ const ChunkLoadRecovery = memo(function ChunkLoadRecovery() {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider delayDuration={300}>
-      <Toaster />
-      <Sonner position="top-right" closeButton richColors />
-      <AppErrorBoundary>
-        <BrowserRouter>
-          <ChunkLoadRecovery />
-          <PageTracker />
-          <AdSenseManager />
-          <SEO />
-          <StructuredData />
-          <GlobalSchemas />
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              
-              <Route path="/sentiment" element={<Sentiment />} />
-              <Route path="/scanner" element={<Scanner />} />
-              <Route path="/explorer" element={<Explorer />} />
-              <Route path="/explorer/:chain/:address" element={<TokenDetail />} />
-              <Route path="/learn" element={<Learn />} />
-              <Route path="/learn/:slug" element={<LearnArticle />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/chain/:chainId" element={<Chain />} />
-              <Route path="/strength" element={<StrengthMeter />} />
-              <Route path="/strength-meter" element={<StrengthMeter />} />
-              <Route path="/factory" element={<CryptoFactory />} />
-              <Route path="/factory/events" element={<FactoryEvents />} />
-              <Route path="/factory/onchain" element={<FactoryOnchain />} />
-              <Route path="/factory/narratives" element={<FactoryNarratives />} />
-              <Route path="/factory/news" element={<FactoryNews />} />
-              <Route path="/sitemap" element={<Sitemap />} />
-              <Route path="/insights" element={<Insights />} />
-              <Route path="/insights/:slug" element={<InsightArticle />} />
-              <Route path="/predictions" element={<PredictionHub />} />
-              <Route path="/price-prediction" element={<PredictionHub />} />
-              <Route path="/price-prediction/:coinId" element={<PricePrediction />} />
-              <Route path="/price-prediction/:coinId/:timeframe" element={<PricePrediction />} />
-              <Route path="/q/:slug" element={<QuestionIntent />} />
-              {/* Legal & About pages */}
-              <Route path="/about" element={<About />} />
-              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/risk-disclaimer" element={<RiskDisclaimer />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </BrowserRouter>
-      </AppErrorBoundary>
-    </TooltipProvider>
+    <AuthProvider>
+      <TooltipProvider delayDuration={300}>
+        <Toaster />
+        <Sonner position="top-right" closeButton richColors />
+        <AppErrorBoundary>
+          <BrowserRouter>
+            <ChunkLoadRecovery />
+            <PageTracker />
+            <AdSenseManager />
+            <SEO />
+            <StructuredData />
+            <GlobalSchemas />
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                
+                <Route path="/sentiment" element={<Sentiment />} />
+                <Route path="/scanner" element={<Scanner />} />
+                <Route path="/explorer" element={<Explorer />} />
+                <Route path="/explorer/:chain/:address" element={<TokenDetail />} />
+                <Route path="/learn" element={<Learn />} />
+                <Route path="/learn/:slug" element={<LearnArticle />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/chain/:chainId" element={<Chain />} />
+                <Route path="/strength" element={<StrengthMeter />} />
+                <Route path="/strength-meter" element={<StrengthMeter />} />
+                <Route path="/factory" element={<CryptoFactory />} />
+                <Route path="/factory/events" element={<FactoryEvents />} />
+                <Route path="/factory/onchain" element={<FactoryOnchain />} />
+                <Route path="/factory/narratives" element={<FactoryNarratives />} />
+                <Route path="/factory/news" element={<FactoryNews />} />
+                <Route path="/sitemap" element={<Sitemap />} />
+                <Route path="/insights" element={<Insights />} />
+                <Route path="/insights/:slug" element={<InsightArticle />} />
+                <Route path="/predictions" element={<PredictionHub />} />
+                <Route path="/price-prediction" element={<PredictionHub />} />
+                <Route path="/price-prediction/:coinId" element={<PricePrediction />} />
+                <Route path="/price-prediction/:coinId/:timeframe" element={<PricePrediction />} />
+                <Route path="/q/:slug" element={<QuestionIntent />} />
+                {/* Legal & About pages */}
+                <Route path="/about" element={<About />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/risk-disclaimer" element={<RiskDisclaimer />} />
+                <Route path="/admin" element={<Admin />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </BrowserRouter>
+        </AppErrorBoundary>
+      </TooltipProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 
