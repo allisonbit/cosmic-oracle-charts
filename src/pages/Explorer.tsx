@@ -239,7 +239,7 @@ const ExplorerPage = () => {
         tokens = tokens.filter(t => t.change24h < 0);
         break;
       case 'new':
-        tokens.sort((a, b) => (a.age || 999) - (b.age || 999));
+        tokens.sort((a, b) => (a.ageHours || 999) - (b.ageHours || 999));
         break;
     }
     return tokens;
