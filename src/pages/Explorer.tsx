@@ -109,6 +109,8 @@ interface DexToken {
   marketCap?: number;
   fdv?: number;
   txns24h?: number;
+  buys24h?: number;
+  sells24h?: number;
   makers?: number;
   ageHours?: number;
   logo?: string;
@@ -120,6 +122,7 @@ interface DexToken {
   momentum?: number;
   category?: string;
   coingeckoId?: string;
+  dexId?: string;
 }
 
 function mergeTokens(
