@@ -613,6 +613,13 @@ const Dashboard = () => {
           </>
         )}
       </div>
+
+      {/* Coin Detail Modal - Quick preview without leaving dashboard */}
+      <CoinDetailModal
+        coin={selectedCoin}
+        open={!!selectedCoin}
+        onOpenChange={(open) => !open && setSelectedCoin(null)}
+      />
     </Layout>
   );
 };
