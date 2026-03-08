@@ -177,6 +177,7 @@ const App = () => (
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/risk-disclaimer" element={<RiskDisclaimer />} />
                 <Route path="/admin" element={<Admin />} />
+                <Route path="/my" element={<MyHub />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
