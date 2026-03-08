@@ -439,6 +439,12 @@ const Dashboard = () => {
                 <SidebarAd />
               </div>
             </div>
+
+            {/* Sector Performance & Live Trades */}
+            <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
+              <SectorPerformancePanel />
+              <RecentTradesPanel />
+            </div>
             
             {/* In-article ad between major sections */}
             <InArticleAd className="mb-4 sm:mb-6" />
