@@ -7,12 +7,13 @@ import { TokenIcon } from "@/components/ui/token-icon";
 
 interface PredictionHeroProps {
   coinName: string;
+  coinId?: string;
   symbol: string;
   timeframe: 'daily' | 'weekly' | 'monthly';
   data: PredictionData;
 }
 
-export function PredictionHero({ coinName, symbol, timeframe, data }: PredictionHeroProps) {
+export function PredictionHero({ coinName, coinId, symbol, timeframe, data }: PredictionHeroProps) {
   const timeframeText = timeframe === 'daily' ? 'Today' : timeframe === 'weekly' ? 'This Week' : 'This Month';
   const BiasIcon = data.bias === 'bullish' ? TrendingUp : data.bias === 'bearish' ? TrendingDown : Minus;
   const lastUpdate = new Date(data.timestamp);
