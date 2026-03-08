@@ -79,13 +79,16 @@ export function UserMenu({ className }: { className?: string }) {
           </p>
         </div>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="gap-2 cursor-pointer">
+        <DropdownMenuItem onClick={() => navigate("/my?tab=watchlist")} className="gap-2 cursor-pointer">
           <Star className="w-4 h-4" /> Watchlist
         </DropdownMenuItem>
-        <DropdownMenuItem className="gap-2 cursor-pointer">
+        <DropdownMenuItem onClick={() => navigate("/my?tab=portfolio")} className="gap-2 cursor-pointer">
+          <PieChart className="w-4 h-4" /> Portfolio
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate("/my?tab=alerts")} className="gap-2 cursor-pointer">
           <Bell className="w-4 h-4" /> Alerts
         </DropdownMenuItem>
-        <DropdownMenuItem className="gap-2 cursor-pointer">
+        <DropdownMenuItem onClick={() => navigate("/my?tab=settings")} className="gap-2 cursor-pointer">
           <Settings className="w-4 h-4" /> Settings
         </DropdownMenuItem>
         <DropdownMenuSeparator />
