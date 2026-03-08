@@ -113,6 +113,7 @@ export function Navbar() {
                 {isOpen ? <X className="w-5 h-5 text-primary" /> : <Menu className="w-5 h-5 text-foreground" />}
               </button>
             </div>
+          </div>
         </div>
       </nav>
 
