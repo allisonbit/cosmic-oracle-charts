@@ -1,5 +1,6 @@
 import { Layout } from "@/components/layout/Layout";
 import { useState, useMemo, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { Search, X, Loader2, ExternalLink, Copy, TrendingUp, TrendingDown, Flame, Zap, BarChart3, Star, ArrowUpDown, Filter, Clock, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -203,6 +204,7 @@ const ExplorerPage = () => {
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [copiedAddr, setCopiedAddr] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const navigate = useNavigate();
 
   const chainData = getChainById(selectedChain) || ALL_CHAINS[0];
 
@@ -498,7 +500,13 @@ const ExplorerPage = () => {
                     <tr
                       key={`${token.symbol}-${idx}`}
                       className="border-b border-border/30 hover:bg-muted/30 transition-colors cursor-pointer group"
-                      onClick={() => window.open(getDexScreenerUrl(token), '_blank')}
+                      onClick={() => {
+                        if (token.contractAddress) {
+                          navigate(`/explorer/${token.chain || selectedChain}/${token.contractAddress}`);
+                        } else if (token.coingeckoId) {
+                          navigate(`/price-prediction/${token.symbol.toLowerCase()}/daily`);
+                        }
+                      }}
                     >
                       {/* Rank */}
                       <td className="px-2 py-2.5 text-muted-foreground font-mono">
