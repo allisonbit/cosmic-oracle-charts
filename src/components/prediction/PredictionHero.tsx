@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, TrendingDown, Minus, Clock, RefreshCw, Shield, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { TokenIcon } from "@/components/ui/token-icon";
 
 interface PredictionHeroProps {
   coinName: string;
