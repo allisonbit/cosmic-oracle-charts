@@ -13,6 +13,7 @@ import { useSearchEnginePing } from "@/hooks/useSearchEnginePing";
 import { AppErrorBoundary } from "@/components/system/AppErrorBoundary";
 import { GlobalSchemas } from "@/components/seo/RichSchemas";
 import { AIChatBubble } from "@/components/chat/AIChatBubble";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 // Eager load critical pages
 import Index from "./pages/Index";
@@ -187,7 +188,7 @@ const App = () => (
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/risk-disclaimer" element={<RiskDisclaimer />} />
-                <Route path="/admin" element={<Admin />} />
+                <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
                 <Route path="/my" element={<MyHub />} />
                 <Route path="/my/watchlist" element={<MyWatchlistPage />} />
                 <Route path="/my/portfolio" element={<MyPortfolioPage />} />
