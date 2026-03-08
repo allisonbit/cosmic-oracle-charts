@@ -167,6 +167,8 @@ function mergeTokens(
       marketCap: t.marketCap || undefined,
       fdv: t.fdv || undefined,
       txns24h: t.txns24h || undefined,
+      buys24h: (t as any).buys24h || undefined,
+      sells24h: (t as any).sells24h || undefined,
       makers: (t as any).makers || t.txns24h || undefined,
       ageHours: (t as any).ageHours || undefined,
       contractAddress: t.contractAddress || undefined,
