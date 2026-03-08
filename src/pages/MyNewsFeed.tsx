@@ -160,17 +160,17 @@ export default function MyNewsFeed() {
       <Layout>
         <SEO title="News Feed – Personalized Crypto Intelligence" description="Your personalized crypto news feed with price alerts, whale movements, sentiment analysis, and market updates." />
         <div className="container mx-auto px-4 py-6 space-y-6 max-w-5xl">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-primary/15 border border-primary/20"><Newspaper className="w-6 h-6 text-primary" /></div>
+              <div className="p-2 sm:p-2.5 rounded-xl bg-primary/15 border border-primary/20"><Newspaper className="w-5 h-5 sm:w-6 sm:h-6 text-primary" /></div>
               <div>
-                <h1 className="text-2xl font-bold">News Feed</h1>
-                <p className="text-sm text-muted-foreground">
+                <h1 className="text-xl sm:text-2xl font-bold">News Feed</h1>
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   {unreadCount > 0 ? `${unreadCount} unread` : 'All caught up!'} · {highPriorityCount > 0 && <span className="text-danger">{highPriorityCount} urgent · </span>}Personalized
                 </p>
               </div>
             </div>
-            <Button variant="outline" size="sm" onClick={() => setShowRead(!showRead)} className="gap-2 text-xs">
+            <Button variant="outline" size="sm" onClick={() => setShowRead(!showRead)} className="gap-2 text-xs w-full sm:w-auto">
               {showRead ? <BellOff className="w-3 h-3" /> : <Bell className="w-3 h-3" />}
               {showRead ? 'Hide Read' : 'Show All'}
             </Button>

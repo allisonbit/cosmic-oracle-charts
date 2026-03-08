@@ -94,19 +94,19 @@ function SignalsContent() {
     <Layout>
       <SEO title="AI Trading Signals – Smart Crypto Alerts" description="AI-powered buy/sell signals with entry, target, stop-loss, and risk/reward analysis." />
       <div className="container mx-auto px-4 py-6 space-y-6 max-w-6xl">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-warning/15 border border-warning/20">
-              <Zap className="w-6 h-6 text-warning" />
+            <div className="p-2 sm:p-2.5 rounded-xl bg-warning/15 border border-warning/20">
+              <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-warning" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold">AI Trading Signals</h1>
-              <p className="text-sm text-muted-foreground">
+              <h1 className="text-xl sm:text-2xl font-bold">AI Trading Signals</h1>
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 {watchlist.length > 0 ? `Personalized for ${watchlist.length} watchlist coins` : "Top market signals"} · {signals.length} active
               </p>
             </div>
           </div>
-          <Button onClick={generateSignals} disabled={loading} className="gap-2">
+          <Button onClick={generateSignals} disabled={loading} className="gap-2 w-full sm:w-auto">
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
             {signals.length > 0 ? 'Refresh' : 'Generate'}
           </Button>
