@@ -1,3 +1,5 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -60,7 +62,47 @@ const marketQuestions = [
   "best-altcoins-to-buy", "top-meme-coins", "best-defi-tokens", "top-ai-crypto-tokens",
 ];
 
-function generateSitemap(): string {
+interface BlogArticleRow {
+  slug: string;
+  published_at: string;
+  source: string;
+}
+
+async function fetchAllArticleSlugs(): Promise<BlogArticleRow[]> {
+  try {
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const sb = createClient(supabaseUrl, supabaseKey);
+
+    const allArticles: BlogArticleRow[] = [];
+    let offset = 0;
+    const pageSize = 1000;
+
+    while (true) {
+      const { data, error } = await sb
+        .from("blog_articles")
+        .select("slug, published_at, source")
+        .order("published_at", { ascending: false })
+        .range(offset, offset + pageSize - 1);
+
+      if (error) {
+        console.error("Error fetching articles:", error.message);
+        break;
+      }
+      if (!data || data.length === 0) break;
+      allArticles.push(...data);
+      if (data.length < pageSize) break;
+      offset += pageSize;
+    }
+
+    return allArticles;
+  } catch (e) {
+    console.error("Failed to fetch articles for sitemap:", e);
+    return [];
+  }
+}
+
+function generateSitemap(articles: BlogArticleRow[]): string {
   const now = new Date().toISOString();
   const today = now.split("T")[0];
 
@@ -92,6 +134,25 @@ function generateSitemap(): string {
     urls += `  <url>\n    <loc>${SITE_URL}/learn/${slug}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
   }
 
+  // ═══════ Dynamic blog articles from database ═══════
+  // Insights articles (source = "insights-engine" or similar)
+  const insightSlugs = new Set<string>();
+  const learnSlugs = new Set(educationalSlugs);
+
+  for (const article of articles) {
+    const slug = article.slug;
+    if (learnSlugs.has(slug)) continue; // already added as educational
+
+    if (!insightSlugs.has(slug)) {
+      insightSlugs.add(slug);
+      const lastmod = article.published_at ? article.published_at.split("T")[0] : today;
+
+      // Determine if it's a learn or insights article
+      const prefix = article.source === "ai-blog" ? "/learn" : "/insights";
+      urls += `  <url>\n    <loc>${SITE_URL}${prefix}/${slug}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
+    }
+  }
+
   const qCoins = ["bitcoin", "ethereum", "solana", "ripple", "cardano", "dogecoin", "shiba-inu", "pepe", "chainlink", "polkadot"];
   const qPatterns = [
     "what-will-{coin}-price-be-today", "will-{coin}-go-up-today", "{coin}-price-prediction-today",
@@ -114,7 +175,8 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const sitemap = generateSitemap();
+    const articles = await fetchAllArticleSlugs();
+    const sitemap = generateSitemap(articles);
     return new Response(sitemap, {
       headers: {
         "Content-Type": "application/xml; charset=utf-8",

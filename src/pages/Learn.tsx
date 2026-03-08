@@ -456,6 +456,33 @@ export default function Learn() {
             Showing {paginatedPosts.length} of {filteredPosts.length} articles
             {data?.totalArticles ? <span> · {data.totalArticles} total published</span> : null}
           </div>
+
+          {/* ═══════ NOSCRIPT CRAWLABLE LINKS ═══════ */}
+          <noscript>
+            <div style={{ padding: '24px 0' }}>
+              <h2>Cryptocurrency Educational Guides</h2>
+              <p>Comprehensive guides covering crypto market analysis, DeFi, on-chain analytics, trading strategies, and blockchain technology fundamentals.</p>
+              <ul>
+                {EDUCATIONAL_ARTICLES.map(article => (
+                  <li key={article.slug}>
+                    <a href={`https://oraclebull.com/learn/${article.slug}`}>{article.title}</a>
+                    {article.metaDescription && <span> — {article.metaDescription}</span>}
+                  </li>
+                ))}
+              </ul>
+              {data?.posts?.map(post => (
+                <li key={post.slug}>
+                  <a href={`https://oraclebull.com/learn/${post.slug}`}>{post.title}</a>
+                </li>
+              ))}
+              <p>
+                <a href="https://oraclebull.com/insights">Market Insights</a> · 
+                <a href="https://oraclebull.com/predictions">Price Predictions</a> · 
+                <a href="https://oraclebull.com/dashboard">Market Dashboard</a> · 
+                <a href="https://oraclebull.com/sentiment">Sentiment Analysis</a>
+              </p>
+            </div>
+          </noscript>
         </div>
       </div>
     </Layout>
