@@ -1,5 +1,6 @@
 import { Layout } from "@/components/layout/Layout";
 import { useState, useMemo, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { Search, X, Loader2, ExternalLink, Copy, TrendingUp, TrendingDown, Flame, Zap, BarChart3, Star, ArrowUpDown, Filter, Clock, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
