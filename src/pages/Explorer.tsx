@@ -168,7 +168,7 @@ function mergeTokens(
       existing.marketCap = t.marketCap || existing.marketCap;
       existing.fdv = t.fdv;
       existing.txns24h = t.txns24h || existing.txns24h;
-      existing.buys24h = undefined;
+      // live data merged
       existing.contractAddress = t.contractAddress;
       existing.logo = t.logo || existing.logo;
       existing.isTrending = t.isTrending;
