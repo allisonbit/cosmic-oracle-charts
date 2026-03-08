@@ -204,6 +204,7 @@ const ExplorerPage = () => {
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [copiedAddr, setCopiedAddr] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const navigate = useNavigate();
 
   const chainData = getChainById(selectedChain) || ALL_CHAINS[0];
 
