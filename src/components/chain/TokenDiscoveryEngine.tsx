@@ -471,11 +471,6 @@ export function TokenDiscoveryEngine({ chain }: TokenDiscoveryEngineProps) {
         </div>
       </div>
 
-      <TokenDetailModal
-        open={modalOpen}
-        onOpenChange={setModalOpen}
-        token={selectedToken}
-      />
     </div>
   );
 }
