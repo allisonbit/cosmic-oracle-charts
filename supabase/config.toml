@@ -123,3 +123,9 @@ per = 3600
 
 [functions.sentiment-data]
 verify_jwt = false
+
+[functions.ai-chat]
+verify_jwt = false
+
+[functions.check-alerts]
+verify_jwt = false

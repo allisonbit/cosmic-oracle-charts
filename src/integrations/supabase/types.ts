@@ -272,7 +272,9 @@ export type Database = {
           created_at: string
           display_name: string | null
           email: string | null
+          email_notifications: boolean
           id: string
+          is_premium: boolean
           preferences: Json | null
           updated_at: string
           watchlist: Json | null
@@ -282,7 +284,9 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           email?: string | null
+          email_notifications?: boolean
           id: string
+          is_premium?: boolean
           preferences?: Json | null
           updated_at?: string
           watchlist?: Json | null
@@ -292,7 +296,9 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           email?: string | null
+          email_notifications?: boolean
           id?: string
+          is_premium?: boolean
           preferences?: Json | null
           updated_at?: string
           watchlist?: Json | null
@@ -304,6 +310,7 @@ export type Database = {
           coin_id: string
           condition: string
           created_at: string
+          email_sent: boolean
           id: string
           is_triggered: boolean
           note: string | null
@@ -316,6 +323,7 @@ export type Database = {
           coin_id: string
           condition?: string
           created_at?: string
+          email_sent?: boolean
           id?: string
           is_triggered?: boolean
           note?: string | null
@@ -328,6 +336,7 @@ export type Database = {
           coin_id?: string
           condition?: string
           created_at?: string
+          email_sent?: boolean
           id?: string
           is_triggered?: boolean
           note?: string | null
