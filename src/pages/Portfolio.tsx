@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { PortfolioChart } from "@/components/portfolio/PortfolioChart";
-import { TokenDetailModal } from "@/components/portfolio/TokenDetailModal";
+import { useNavigate } from "react-router-dom";
 import { HoldingsDistribution } from "@/components/portfolio/HoldingsDistribution";
 import { PortfolioSchema, PortfolioSEOContent } from "@/components/seo";
 
