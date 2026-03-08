@@ -4,6 +4,7 @@ import { Trophy, TrendingUp, TrendingDown, Target, CheckCircle, XCircle, Chevron
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
+import { TokenIcon } from "@/components/ui/token-icon";
 
 interface CachedPrediction {
   id: string;
