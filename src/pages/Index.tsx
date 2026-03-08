@@ -2,7 +2,7 @@ import { lazy, Suspense, useState, useEffect, useRef } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { CryptoTicker } from "@/components/layout/CryptoTicker";
 import { HeroSection } from "@/components/home/HeroSection";
-import { InternalLinkHub } from "@/components/home/InternalLinkHub";
+
 import { QuickAccessBar } from "@/components/home/QuickAccessBar";
 import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";

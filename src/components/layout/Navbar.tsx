@@ -28,7 +28,7 @@ const mobileNavItems = [
   { path: "/sentiment", label: "Sentiment", icon: Radio },
   { path: "/explorer", label: "Explorer", icon: Globe },
   { path: "/insights", label: "Insights", icon: BookOpen },
-  { path: "/portfolio", label: "Scanner", icon: Wallet },
+  
 ];
 
 export function Navbar() {
