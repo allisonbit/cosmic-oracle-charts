@@ -159,8 +159,8 @@ export default function Scanner() {
   const { data: priceData } = useCryptoPrices();
 
   const btcChange = useMemo(() => {
-    const btc = priceData?.prices?.find((p: any) => p.symbol === "btc");
-    return btc?.price_change_percentage_24h || 0;
+    const btc = priceData?.prices?.find((p) => p.symbol === "btc");
+    return btc?.change24h || 0;
   }, [priceData]);
 
   // Merge all sources into unified token list
