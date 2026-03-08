@@ -611,15 +611,6 @@ const Dashboard = () => {
           </>
         )}
       </div>
-
-      {/* Modal */}
-      {selectedCoin && (
-        <CoinDetailModal 
-          coin={selectedCoin} 
-          open={!!selectedCoin} 
-          onOpenChange={(open) => !open && setSelectedCoin(null)} 
-        />
-      )}
     </Layout>
   );
 };
