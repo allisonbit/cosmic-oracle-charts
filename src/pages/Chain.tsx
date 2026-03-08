@@ -123,11 +123,6 @@ export default function Chain() {
   const priceChange = livePrice?.change24h || chainPrice?.change24h || chainData?.overview?.priceChange24h || 0;
   const isPositive = priceChange >= 0;
 
-  const handleRefreshAll = useCallback(() => {
-    refetchChainData();
-    refetchForecast();
-    refetchAdvanced();
-  }, [refetchChainData, refetchForecast, refetchAdvanced]);
 
   const overview = chainData?.overview;
   const categoryLabel = chain.category === "layer1" ? "Layer 1" : chain.category === "layer2" ? "Layer 2" : "Sidechain";
