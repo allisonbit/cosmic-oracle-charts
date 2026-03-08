@@ -317,6 +317,9 @@ const Dashboard = () => {
               ))}
             </div>
 
+            {/* Global Metrics Summary - More data */}
+            <GlobalMetricsSummary />
+
             {/* Main Grid */}
             <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
               {/* Left Column */}
