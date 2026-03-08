@@ -38,8 +38,6 @@ const InsightArticle = lazy(() => import("./pages/InsightArticle"));
 const PricePrediction = lazy(() => import("./pages/PricePrediction"));
 const PredictionHub = lazy(() => import("./pages/PredictionHub"));
 const QuestionIntent = lazy(() => import("./pages/QuestionIntent"));
-const MarketQuestion = lazy(() => import("./pages/MarketQuestion"));
-const CoinMarket = lazy(() => import("./pages/CoinMarket"));
 const About = lazy(() => import("./pages/About"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Terms = lazy(() => import("./pages/Terms"));
