@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import DOMPurify from "dompurify";
 import { Layout } from "@/components/layout/Layout";
 import { useInsights } from "@/hooks/useInsights";
 import { Card, CardContent } from "@/components/ui/card";
@@ -62,7 +63,12 @@ export default function InsightArticle() {
       .replace(/^(\d+)\. (.*?)$/gm, '<li class="ml-4 mb-2"><span class="font-semibold text-primary">$1.</span> $2</li>')
       .replace(/\n\n/g, '</p><p class="mb-5 text-muted-foreground leading-relaxed text-[15px]">')
       .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-primary hover:underline font-medium">$1</a>');
-    return `<p class="mb-5 text-muted-foreground leading-relaxed text-[15px]">${content}</p>`;
+    const raw = `<p class="mb-5 text-muted-foreground leading-relaxed text-[15px]">${content}</p>`;
+    return DOMPurify.sanitize(raw, {
+      ALLOWED_TAGS: ['p', 'h2', 'h3', 'h4', 'strong', 'em', 'li', 'ul', 'ol', 'a', 'br', 'span'],
+      ALLOWED_ATTR: ['href', 'class'],
+      ALLOW_DATA_ATTR: false,
+    });
   }, [article?.content]);
 
   const structuredData = article ? {
