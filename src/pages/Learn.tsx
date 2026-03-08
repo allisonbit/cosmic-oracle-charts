@@ -99,17 +99,14 @@ const categoryColors: Record<string, string> = {
   'Investment Strategies': 'bg-stone-500/20 text-stone-400 border-stone-500/30',
 };
 
-function BlogPostCard({ post, onClick }: { post: BlogPost; onClick: () => void }) {
+function BlogPostCard({ post }: { post: BlogPost }) {
   const Icon = categoryIcons[post.category] || BookOpen;
   const colorClass = categoryColors[post.category] || 'bg-primary/20 text-primary border-primary/30';
   
   return (
-    <Card 
-      className="glass-card hover:border-primary/40 transition-all cursor-pointer group overflow-hidden h-full flex flex-col active:scale-[0.98] touch-manipulation"
-      onClick={onClick}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => e.key === 'Enter' && onClick()}
+    <Link 
+      to={`/insights/${post.slug || post.articleId}`}
+      className="glass-card hover:border-primary/40 transition-all cursor-pointer group overflow-hidden h-full flex flex-col active:scale-[0.98] touch-manipulation rounded-xl border border-border/50"
     >
       <div className="relative h-32 sm:h-36 overflow-hidden shrink-0">
         <img 
@@ -128,7 +125,7 @@ function BlogPostCard({ post, onClick }: { post: BlogPost; onClick: () => void }
           <span className="sm:hidden">{post.category.split(' ')[0]}</span>
         </Badge>
       </div>
-      <CardContent className="p-3 sm:p-4 flex-1 flex flex-col">
+      <div className="p-3 sm:p-4 flex-1 flex flex-col">
         <h3 className="font-semibold text-sm sm:text-base line-clamp-2 group-hover:text-primary transition-colors">
           {post.title}
         </h3>
@@ -144,8 +141,8 @@ function BlogPostCard({ post, onClick }: { post: BlogPost; onClick: () => void }
             Read <ChevronRight className="w-3 h-3" />
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </Link>
   );
 }
 
