@@ -21,7 +21,7 @@ import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow, format } from "date-fns";
 import { Helmet } from "react-helmet-async";
-import { TopCryptoPredictionLinks, MarketPagesLinks } from "@/components/factory/AssetPredictionLinks";
+import { TopCryptoPredictionLinks } from "@/components/factory/AssetPredictionLinks";
 
 const chains = ['All', 'Ethereum', 'Solana', 'Arbitrum', 'Base', 'Polygon', 'Optimism', 'Avalanche'];
 
@@ -354,9 +354,6 @@ export default function FactoryOnchain() {
 
             {/* Top Crypto Predictions */}
             <TopCryptoPredictionLinks />
-
-            {/* Market Pages */}
-            <MarketPagesLinks />
 
             {/* Interpretation Guide */}
             <Card className="glass-card">

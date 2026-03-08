@@ -12,10 +12,8 @@ const desktopNavItems = [
   { path: "/sentiment", label: "Sentiment" },
   { path: "/strength", label: "Strength" },
   { path: "/explorer", label: "Explorer" },
-  { path: "/portfolio", label: "Scanner" },
   { path: "/factory", label: "Factory" },
   { path: "/chain/ethereum", label: "Chains" },
-  { path: "/market/best-crypto-to-buy-today", label: "Hot Picks" },
   { path: "/insights", label: "Insights" },
 ];
 
@@ -23,14 +21,14 @@ const mobileNavItems = [
   { path: "/", label: "Home", icon: Home },
   { path: "/dashboard", label: "Dashboard", icon: TrendingUp },
   { path: "/predictions", label: "Predictions", icon: Target },
-  { path: "/market/best-crypto-to-buy-today", label: "Hot Picks", icon: Sparkles },
+  
   { path: "/strength", label: "Strength", icon: Zap },
   { path: "/factory", label: "Factory", icon: Calendar },
   { path: "/chain/ethereum", label: "Chains", icon: Layers },
   { path: "/sentiment", label: "Sentiment", icon: Radio },
   { path: "/explorer", label: "Explorer", icon: Globe },
   { path: "/insights", label: "Insights", icon: BookOpen },
-  { path: "/portfolio", label: "Scanner", icon: Wallet },
+  
 ];
 
 export function Navbar() {

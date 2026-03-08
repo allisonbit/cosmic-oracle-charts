@@ -142,21 +142,6 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/market/best-crypto-to-buy-today" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Best Crypto to Buy Today
-                </Link>
-              </li>
-              <li>
-                <Link to="/market/next-crypto-to-explode" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Next Crypto to Explode
-                </Link>
-              </li>
-              <li>
-                <Link to="/market/top-crypto-gainers-today" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Top Crypto Gainers
-                </Link>
-              </li>
-              <li>
                 <Link to="/sitemap" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
                   Sitemap
                 </Link>

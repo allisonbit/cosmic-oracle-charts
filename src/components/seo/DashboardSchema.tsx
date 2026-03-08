@@ -125,7 +125,7 @@ function RelatedMarketInsights() {
   const links = [
     { to: "/price-prediction/bitcoin/daily", label: "Bitcoin Prediction Today" },
     { to: "/price-prediction/ethereum/daily", label: "Ethereum Prediction Today" },
-    { to: "/market/best-crypto-to-buy-today", label: "Best Crypto to Buy Today" },
+    
     { to: "/predictions", label: "All AI Predictions" },
   ];
   return (

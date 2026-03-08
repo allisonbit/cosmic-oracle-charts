@@ -13,7 +13,7 @@ import {
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Helmet } from "react-helmet-async";
-import { TopCryptoPredictionLinks, MarketPagesLinks } from "@/components/factory/AssetPredictionLinks";
+import { TopCryptoPredictionLinks } from "@/components/factory/AssetPredictionLinks";
 
 function FactoryNarrativesSchema() {
   const schema = {
@@ -145,12 +145,6 @@ function NarrativeCard({ narrative }: { narrative: any }) {
       
       {/* Action Links */}
       <div className="flex items-center gap-4 text-sm pt-3 border-t border-border/50">
-        <Link 
-          to="/market/best-crypto-to-buy-today"
-          className="text-primary hover:text-primary/80 flex items-center gap-1"
-        >
-          Best Buys Today <ChevronRight className="w-4 h-4" />
-        </Link>
         <Link 
           to="/strength-meter"
           className="text-primary hover:text-primary/80 flex items-center gap-1"
@@ -365,9 +359,6 @@ export default function FactoryNarratives() {
 
             {/* Top Crypto Predictions */}
             <TopCryptoPredictionLinks />
-
-            {/* Market Pages */}
-            <MarketPagesLinks />
 
             {/* Trading Tips */}
             <Card className="glass-card">

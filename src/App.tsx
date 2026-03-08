@@ -25,7 +25,7 @@ const Learn = lazy(() => import("./pages/Learn"));
 const LearnArticle = lazy(() => import("./pages/LearnArticle"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Chain = lazy(() => import("./pages/Chain"));
-const Portfolio = lazy(() => import("./pages/Portfolio"));
+
 const StrengthMeter = lazy(() => import("./pages/StrengthMeter"));
 const CryptoFactory = lazy(() => import("./pages/CryptoFactory"));
 const FactoryEvents = lazy(() => import("./pages/FactoryEvents"));
@@ -38,8 +38,6 @@ const InsightArticle = lazy(() => import("./pages/InsightArticle"));
 const PricePrediction = lazy(() => import("./pages/PricePrediction"));
 const PredictionHub = lazy(() => import("./pages/PredictionHub"));
 const QuestionIntent = lazy(() => import("./pages/QuestionIntent"));
-const MarketQuestion = lazy(() => import("./pages/MarketQuestion"));
-const CoinMarket = lazy(() => import("./pages/CoinMarket"));
 const About = lazy(() => import("./pages/About"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Terms = lazy(() => import("./pages/Terms"));
@@ -144,7 +142,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/portfolio" element={<Portfolio />} />
+              
               <Route path="/sentiment" element={<Sentiment />} />
               <Route path="/explorer" element={<Explorer />} />
               <Route path="/explorer/:chain/:address" element={<TokenDetail />} />
@@ -167,87 +165,6 @@ const App = () => (
               <Route path="/price-prediction/:coinId" element={<PricePrediction />} />
               <Route path="/price-prediction/:coinId/:timeframe" element={<PricePrediction />} />
               <Route path="/q/:slug" element={<QuestionIntent />} />
-              <Route
-                path="/market/best-crypto-to-buy-today"
-                element={<MarketQuestion questionSlug="best-crypto-to-buy-today" />}
-              />
-              <Route
-                path="/market/top-crypto-gainers-today"
-                element={<MarketQuestion questionSlug="top-crypto-gainers-today" />}
-              />
-              <Route
-                path="/market/crypto-market-prediction-today"
-                element={<MarketQuestion questionSlug="crypto-market-prediction-today" />}
-              />
-              <Route
-                path="/market/which-crypto-will-go-up-today"
-                element={<MarketQuestion questionSlug="which-crypto-will-go-up-today" />}
-              />
-              <Route
-                path="/market/crypto-losers-today"
-                element={<MarketQuestion questionSlug="crypto-losers-today" />}
-              />
-              <Route
-                path="/market/is-crypto-going-up-today"
-                element={<MarketQuestion questionSlug="is-crypto-going-up-today" />}
-              />
-              {/* Weekly market questions */}
-              <Route
-                path="/market/best-crypto-to-buy-this-week"
-                element={<MarketQuestion questionSlug="best-crypto-to-buy-this-week" />}
-              />
-              <Route
-                path="/market/crypto-prediction-this-week"
-                element={<MarketQuestion questionSlug="crypto-prediction-this-week" />}
-              />
-              <Route
-                path="/market/crypto-to-watch-this-week"
-                element={<MarketQuestion questionSlug="crypto-to-watch-this-week" />}
-              />
-              <Route
-                path="/market/top-crypto-gainers-this-week"
-                element={<MarketQuestion questionSlug="top-crypto-gainers-this-week" />}
-              />
-              {/* Monthly market questions */}
-              <Route
-                path="/market/crypto-prediction-january-2025"
-                element={<MarketQuestion questionSlug="crypto-prediction-january-2025" />}
-              />
-              <Route
-                path="/market/best-crypto-to-buy-january-2025"
-                element={<MarketQuestion questionSlug="best-crypto-to-buy-january-2025" />}
-              />
-              <Route
-                path="/market/top-crypto-to-invest-2025"
-                element={<MarketQuestion questionSlug="top-crypto-to-invest-2025" />}
-              />
-              <Route
-                path="/market/crypto-outlook-2025"
-                element={<MarketQuestion questionSlug="crypto-outlook-2025" />}
-              />
-              {/* General high-intent questions */}
-              <Route
-                path="/market/next-crypto-to-explode"
-                element={<MarketQuestion questionSlug="next-crypto-to-explode" />}
-              />
-              <Route
-                path="/market/safest-crypto-to-invest"
-                element={<MarketQuestion questionSlug="safest-crypto-to-invest" />}
-              />
-              <Route
-                path="/market/cheap-crypto-to-buy-now"
-                element={<MarketQuestion questionSlug="cheap-crypto-to-buy-now" />}
-              />
-              <Route
-                path="/market/undervalued-crypto-to-buy"
-                element={<MarketQuestion questionSlug="undervalued-crypto-to-buy" />}
-              />
-              <Route
-                path="/market/crypto-with-most-potential"
-                element={<MarketQuestion questionSlug="crypto-with-most-potential" />}
-              />
-              {/* Coin market pages */}
-              <Route path="/markets/:coinId" element={<CoinMarket />} />
               {/* Legal & About pages */}
               <Route path="/about" element={<About />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />

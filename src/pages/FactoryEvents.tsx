@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils";
 import { format, formatDistanceToNow } from "date-fns";
 import { SEO } from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
-import { TopCryptoPredictionLinks, MarketPagesLinks } from "@/components/factory/AssetPredictionLinks";
+import { TopCryptoPredictionLinks } from "@/components/factory/AssetPredictionLinks";
 
 const chains = ['All', 'Ethereum', 'Solana', 'Arbitrum', 'Base', 'Polygon', 'Optimism', 'Avalanche'];
 const impacts = ['All', 'high', 'medium', 'low'];
@@ -378,10 +378,6 @@ export default function FactoryEvents() {
                     <Zap className="w-4 h-4" />
                     Crypto Strength Meter
                   </Link>
-                  <Link to="/market/best-crypto-to-buy-today" className="flex items-center gap-2 text-primary hover:text-primary/80">
-                    <TrendingUp className="w-4 h-4" />
-                    Best Crypto to Buy Today
-                  </Link>
                   <Link to="/sentiment" className="flex items-center gap-2 text-primary hover:text-primary/80">
                     <Activity className="w-4 h-4" />
                     Sentiment Analysis
@@ -392,9 +388,6 @@ export default function FactoryEvents() {
 
             {/* Top Crypto Predictions */}
             <TopCryptoPredictionLinks />
-
-            {/* Market Pages */}
-            <MarketPagesLinks />
 
             {/* How to Use */}
             <Card className="glass-card">

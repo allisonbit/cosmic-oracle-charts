@@ -105,41 +105,8 @@ const questionRoutes = questionIntentCoins.flatMap(coin =>
   questionPatterns.map(pattern => `/q/${pattern.replace('{coin}', coin)}`)
 );
 
-// Market question routes for SEO - updated with current dates
-const currentYear = new Date().getFullYear();
-const currentMonth = new Date().toLocaleString('en-US', { month: 'long' }).toLowerCase();
-const marketQuestionRoutes = [
-  // Today
-  '/market/best-crypto-to-buy-today',
-  '/market/top-crypto-gainers-today',
-  '/market/crypto-market-prediction-today',
-  '/market/which-crypto-will-go-up-today',
-  '/market/crypto-losers-today',
-  '/market/is-crypto-going-up-today',
-  // Weekly
-  '/market/best-crypto-to-buy-this-week',
-  '/market/crypto-prediction-this-week',
-  '/market/crypto-to-watch-this-week',
-  '/market/top-crypto-gainers-this-week',
-  // Monthly / Long-term - dynamic dates
-  `/market/crypto-prediction-${currentMonth}-${currentYear}`,
-  `/market/best-crypto-to-buy-${currentMonth}-${currentYear}`,
-  `/market/top-crypto-to-invest-${currentYear}`,
-  `/market/crypto-outlook-${currentYear}`,
-  // General high-intent
-  '/market/next-crypto-to-explode',
-  '/market/safest-crypto-to-invest',
-  '/market/cheap-crypto-to-buy-now',
-  '/market/undervalued-crypto-to-buy',
-  '/market/crypto-with-most-potential',
-  '/market/best-altcoins-to-buy',
-  '/market/top-meme-coins',
-  '/market/best-defi-tokens',
-  '/market/top-ai-crypto-tokens',
-];
-
-// Coin market landing pages for SEO
-const coinMarketRoutes = topCryptoIds.map(id => `/markets/${id}`);
+const marketQuestionRoutes: string[] = [];
+const coinMarketRoutes: string[] = [];
 
 // All routes combined
 const allRoutes = [...staticRoutes, ...chainRoutes, ...predictionRoutes, ...questionRoutes, ...marketQuestionRoutes, ...coinMarketRoutes, ...educationalRoutes];

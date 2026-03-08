@@ -58,13 +58,6 @@ export function AssetPredictionLinks({
             <TrendingUp className="w-3 h-3" />
             All Predictions
           </Link>
-          <Link 
-            to="/market/best-crypto-to-buy-today" 
-            className="text-xs text-primary hover:text-primary/80 flex items-center gap-1"
-          >
-            <BarChart3 className="w-3 h-3" />
-            Best Buys Today
-          </Link>
         </div>
       </CardContent>
     </Card>
