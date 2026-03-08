@@ -500,7 +500,13 @@ const ExplorerPage = () => {
                     <tr
                       key={`${token.symbol}-${idx}`}
                       className="border-b border-border/30 hover:bg-muted/30 transition-colors cursor-pointer group"
-                      onClick={() => window.open(getDexScreenerUrl(token), '_blank')}
+                      onClick={() => {
+                        if (token.contractAddress) {
+                          navigate(`/explorer/${token.chain || selectedChain}/${token.contractAddress}`);
+                        } else if (token.coingeckoId) {
+                          navigate(`/price-prediction/${token.symbol.toLowerCase()}/daily`);
+                        }
+                      }}
                     >
                       {/* Rank */}
                       <td className="px-2 py-2.5 text-muted-foreground font-mono">
