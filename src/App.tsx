@@ -51,6 +51,10 @@ const MyWatchlistPage = lazy(() => import("./pages/MyWatchlist"));
 const MyPortfolioPage = lazy(() => import("./pages/MyPortfolio"));
 const MyAlertsPage = lazy(() => import("./pages/MyAlerts"));
 const MySettingsPage = lazy(() => import("./pages/MySettings"));
+const MyWalletScanner = lazy(() => import("./pages/MyWalletScanner"));
+const MySignals = lazy(() => import("./pages/MySignals"));
+const MyPortfolioTracker = lazy(() => import("./pages/MyPortfolioTracker"));
+const MySocial = lazy(() => import("./pages/MySocial"));
 
 // Loading fallback component
 const PageLoader = memo(function PageLoader() {
@@ -186,6 +190,10 @@ const App = () => (
                 <Route path="/my/portfolio" element={<MyPortfolioPage />} />
                 <Route path="/my/alerts" element={<MyAlertsPage />} />
                 <Route path="/my/settings" element={<MySettingsPage />} />
+                <Route path="/my/scanner" element={<MyWalletScanner />} />
+                <Route path="/my/signals" element={<MySignals />} />
+                <Route path="/my/tracker" element={<MyPortfolioTracker />} />
+                <Route path="/my/social" element={<MySocial />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
