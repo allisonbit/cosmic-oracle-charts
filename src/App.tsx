@@ -190,6 +190,10 @@ const App = () => (
                 <Route path="/my/portfolio" element={<MyPortfolioPage />} />
                 <Route path="/my/alerts" element={<MyAlertsPage />} />
                 <Route path="/my/settings" element={<MySettingsPage />} />
+                <Route path="/my/scanner" element={<MyWalletScanner />} />
+                <Route path="/my/signals" element={<MySignals />} />
+                <Route path="/my/tracker" element={<MyPortfolioTracker />} />
+                <Route path="/my/social" element={<MySocial />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
