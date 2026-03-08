@@ -474,7 +474,7 @@ const Dashboard = () => {
             </div>
             
             {/* Full Sortable Crypto Table */}
-            <SortableCryptoTable coins={allCoins} onCoinClick={setSelectedCoin} />
+            <SortableCryptoTable coins={allCoins} />
             
             {/* SEO Content Block */}
             <DashboardSEOContent />
