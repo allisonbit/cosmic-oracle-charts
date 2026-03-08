@@ -85,7 +85,7 @@ export default function Chain() {
   const { data: forecastData, isLoading: forecastLoading, refetch: refetchForecast } = useChainForecast(chainId || "", chainData, !!chain && !!chainData);
   const { data: advancedData, isLoading: advancedLoading, refetch: refetchAdvanced } = useAdvancedChainData(chainId || "", !!chain);
   const { data: pricesData } = useCryptoPrices();
-  const { data: realtimeData } = useRealtimePrices(chain ? [chain.symbol] : []);
+  const realtimePrices = useRealtimePrices(chain ? [chain.symbol] : []);
 
   // Chain navigation
   const currentIndex = CHAINS.findIndex(c => c.id === chainId);
