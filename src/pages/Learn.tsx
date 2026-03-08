@@ -406,7 +406,6 @@ export default function Learn() {
   const { data, isLoading, refetch, isFetching } = useAIBlog();
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedDate, setSelectedDate] = useState('all');
 
   // Get unique categories from posts
