@@ -631,7 +631,7 @@ const ExplorerPage = () => {
                       </td>
 
                       {/* Liquidity */}
-                      <td className="px-2 py-2.5 font-mono text-foreground whitespace-nowrap hidden lg:table-cell">
+                      <td className="px-2 py-2.5 font-mono text-foreground whitespace-nowrap hidden xl:table-cell">
                         {formatCompact(token.liquidity)}
                       </td>
 
