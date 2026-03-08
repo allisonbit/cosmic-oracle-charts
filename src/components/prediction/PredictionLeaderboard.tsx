@@ -263,7 +263,7 @@ export function PredictionLeaderboard() {
                           entry.predictedBias === 'bullish' ? 'bg-success/20 text-success' :
                           entry.predictedBias === 'bearish' ? 'bg-danger/20 text-danger' : 'bg-warning/20 text-warning'
                         )}>
-                          {entry.symbol.slice(0, 2)}
+                          <TokenIcon coinId={entry.coinId} symbol={entry.symbol} size="md" />
                         </div>
                         <div>
                           <div className="font-medium text-xs sm:text-sm">{entry.symbol}</div>

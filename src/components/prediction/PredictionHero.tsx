@@ -31,14 +31,7 @@ export function PredictionHero({ coinName, symbol, timeframe, data }: Prediction
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-5">
             <div>
               <div className="flex items-center gap-2.5 mb-2">
-                <div className={cn(
-                  "w-10 h-10 rounded-lg flex items-center justify-center text-lg font-bold",
-                  data.bias === 'bullish' ? 'bg-success/15 text-success' :
-                  data.bias === 'bearish' ? 'bg-danger/15 text-danger' :
-                  'bg-warning/15 text-warning'
-                )}>
-                  {symbol.charAt(0).toUpperCase()}
-                </div>
+                <TokenIcon coinId={coinName.toLowerCase().replace(/\s+/g, '-')} symbol={symbol} size="lg" />
                 <div>
                   <h1 className="text-xl md:text-2xl font-bold leading-tight">
                     {coinName} Prediction {timeframeText}

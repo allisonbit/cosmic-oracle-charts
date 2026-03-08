@@ -390,13 +390,7 @@ export default function PredictionHub() {
                         <td className="p-3 text-xs text-muted-foreground font-mono">{idx + 1}</td>
                         <td className="p-3">
                           <div className="flex items-center gap-2">
-                            <div className={cn(
-                              "w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0",
-                              crypto.bias === 'bullish' ? 'bg-success/15 text-success' :
-                              crypto.bias === 'bearish' ? 'bg-danger/15 text-danger' : 'bg-warning/15 text-warning'
-                            )}>
-                              {crypto.symbol.slice(0, 2).toUpperCase()}
-                            </div>
+                            <TokenIcon coinId={crypto.id} symbol={crypto.symbol} size="md" />
                             <div className="min-w-0">
                               <div className="font-medium text-sm truncate flex items-center gap-1">
                                 {crypto.name}
