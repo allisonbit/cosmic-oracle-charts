@@ -28,6 +28,7 @@ const mobileNavItems = [
   { path: "/chain/ethereum", label: "Chains", icon: Layers },
   { path: "/sentiment", label: "Sentiment", icon: Radio },
   { path: "/explorer", label: "Explorer", icon: Globe },
+  { path: "/scanner", label: "Scanner", icon: Search },
   { path: "/insights", label: "Insights", icon: BookOpen },
   
 ];
