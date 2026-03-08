@@ -88,6 +88,18 @@ export function UserMenu({ className }: { className?: string }) {
         <DropdownMenuItem onClick={() => navigate("/my/alerts")} className="gap-2 cursor-pointer">
           <Bell className="w-4 h-4" /> Alerts
         </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate("/my/tracker")} className="gap-2 cursor-pointer">
+          <DollarSign className="w-4 h-4" /> P&L Tracker
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate("/my/signals")} className="gap-2 cursor-pointer">
+          <Zap className="w-4 h-4" /> AI Signals
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate("/my/scanner")} className="gap-2 cursor-pointer">
+          <Wallet className="w-4 h-4" /> Wallet Scanner
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate("/my/social")} className="gap-2 cursor-pointer">
+          <Users className="w-4 h-4" /> Social & Leaderboard
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={() => navigate("/my/settings")} className="gap-2 cursor-pointer">
           <Settings className="w-4 h-4" /> Settings
         </DropdownMenuItem>
