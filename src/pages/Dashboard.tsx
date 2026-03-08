@@ -11,7 +11,6 @@ import { EnhancedTrendingAlerts } from "@/components/dashboard/EnhancedTrendingA
 import { EnhancedVolumeLeaders } from "@/components/dashboard/EnhancedVolumeLeaders";
 import { EnhancedDominanceChart } from "@/components/dashboard/EnhancedDominanceChart";
 import { EnhancedQuickActions } from "@/components/dashboard/EnhancedQuickActions";
-import { CoinDetailModal } from "@/components/dashboard/CoinDetailModal";
 import { EnhancedMarketInsightsPanel } from "@/components/dashboard/EnhancedMarketInsightsPanel";
 import { EnhancedTopPerformers } from "@/components/dashboard/EnhancedTopPerformers";
 import { StrengthMeterWidget } from "@/components/dashboard/StrengthMeterWidget";
@@ -24,7 +23,7 @@ import { MarketRegimeIndicator } from "@/components/dashboard/MarketRegimeIndica
 import { WhaleActivityPanel } from "@/components/dashboard/WhaleActivityPanel";
 import { OptionsFlowPanel } from "@/components/dashboard/OptionsFlowPanel";
 import { CustomAlertsPanel } from "@/components/dashboard/CustomAlertsPanel";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { SidebarAd, InArticleAd } from "@/components/ads";
 import { DashboardSchema, DashboardSEOContent, HowToReadDashboard, WhatMakesUsDifferent, RelatedMarketInsights, DashboardHowItWorks } from "@/components/seo";
 
@@ -84,7 +83,8 @@ function CryptoChart({ price, isPositive }: { price: number; isPositive: boolean
 type SortKey = 'rank' | 'price' | 'change24h' | 'volume' | 'marketCap';
 type SortDir = 'asc' | 'desc';
 
-function SortableCryptoTable({ coins, onCoinClick }: { coins: any[]; onCoinClick: (c: any) => void }) {
+function SortableCryptoTable({ coins }: { coins: any[] }) {
+  const navigate = useNavigate();
   const [sortKey, setSortKey] = useState<SortKey>('rank');
   const [sortDir, setSortDir] = useState<SortDir>('asc');
   const [visibleCount, setVisibleCount] = useState(20);
@@ -157,7 +157,7 @@ function SortableCryptoTable({ coins, onCoinClick }: { coins: any[]; onCoinClick
             {visible.map((coin: any) => (
               <tr
                 key={coin.symbol}
-                onClick={() => onCoinClick(coin)}
+                onClick={() => navigate(`/price-prediction/${coin.name?.toLowerCase() || coin.symbol?.toLowerCase()}/daily`)}
                 className="border-b border-border/30 hover:bg-primary/5 cursor-pointer transition-colors"
               >
                 <td className="py-2.5 sm:py-3 px-1.5 sm:px-3 text-muted-foreground text-xs sm:text-sm">{coin.rank}</td>
@@ -213,10 +213,10 @@ function SortableCryptoTable({ coins, onCoinClick }: { coins: any[]; onCoinClick
 }
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const { data: pricesData, isLoading: pricesLoading } = useCryptoPrices();
   const { data: marketData, isLoading: marketLoading } = useMarketData();
   const [lastUpdate, setLastUpdate] = useState(new Date());
-  const [selectedCoin, setSelectedCoin] = useState<any>(null);
   
   const topCoins = useMemo(() => marketData?.topCoins?.slice(0, 8) || [], [marketData]);
   const allCoins = useMemo(() => marketData?.topCoins || [], [marketData]);
@@ -425,7 +425,7 @@ const Dashboard = () => {
               {/* Right Column */}
               <div className="space-y-4 sm:space-y-6">
                 <EnhancedTrendingAlerts />
-                <EnhancedTopPerformers onCoinClick={setSelectedCoin} />
+                <EnhancedTopPerformers onCoinClick={(coin: any) => navigate(`/price-prediction/${coin.name?.toLowerCase() || coin.symbol?.toLowerCase()}/daily`)} />
                 <MarketRegimeIndicator />
                 {/* Sidebar ad */}
                 <SidebarAd />
@@ -474,7 +474,7 @@ const Dashboard = () => {
             </div>
             
             {/* Full Sortable Crypto Table */}
-            <SortableCryptoTable coins={allCoins} onCoinClick={setSelectedCoin} />
+            <SortableCryptoTable coins={allCoins} />
             
             {/* SEO Content Block */}
             <DashboardSEOContent />
@@ -510,10 +510,10 @@ const Dashboard = () => {
                   const trend = coin.change24h >= 2 ? "BULLISH" : coin.change24h <= -2 ? "BEARISH" : "NEUTRAL";
                   
                   return (
-                    <button 
+                    <Link 
                       key={coin.symbol} 
-                      onClick={() => setSelectedCoin(coin)}
-                      className="holo-card p-2.5 sm:p-3 md:p-4 space-y-2 sm:space-y-3 card-touch text-left group"
+                      to={`/price-prediction/${coin.name?.toLowerCase() || coin.symbol?.toLowerCase()}/daily`}
+                      className="holo-card p-2.5 sm:p-3 md:p-4 space-y-2 sm:space-y-3 card-touch text-left group block"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
@@ -558,7 +558,7 @@ const Dashboard = () => {
                         <span className="truncate">Vol: {formatNumber(coin.volume)}</span>
                         <span className="truncate ml-1">MCap: {formatNumber(coin.marketCap)}</span>
                       </div>
-                    </button>
+                    </Link>
                   );
                 })}
               </div>
@@ -580,7 +580,6 @@ const Dashboard = () => {
                   <Link
                     key={coin.symbol}
                     to={`/price-prediction/${coin.symbol.toLowerCase()}/daily`}
-                    onClick={(e) => { e.preventDefault(); setSelectedCoin(coin); }}
                     className={cn(
                       "p-1.5 sm:p-2 md:p-3 rounded-lg text-center transition-all card-touch",
                       coin.change24h >= 3 ? "bg-success/30 border border-success/50" :
@@ -612,15 +611,6 @@ const Dashboard = () => {
           </>
         )}
       </div>
-
-      {/* Modal */}
-      {selectedCoin && (
-        <CoinDetailModal 
-          coin={selectedCoin} 
-          open={!!selectedCoin} 
-          onOpenChange={(open) => !open && setSelectedCoin(null)} 
-        />
-      )}
     </Layout>
   );
 };

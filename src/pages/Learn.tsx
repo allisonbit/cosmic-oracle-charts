@@ -99,17 +99,14 @@ const categoryColors: Record<string, string> = {
   'Investment Strategies': 'bg-stone-500/20 text-stone-400 border-stone-500/30',
 };
 
-function BlogPostCard({ post, onClick }: { post: BlogPost; onClick: () => void }) {
+function BlogPostCard({ post }: { post: BlogPost }) {
   const Icon = categoryIcons[post.category] || BookOpen;
   const colorClass = categoryColors[post.category] || 'bg-primary/20 text-primary border-primary/30';
   
   return (
-    <Card 
-      className="glass-card hover:border-primary/40 transition-all cursor-pointer group overflow-hidden h-full flex flex-col active:scale-[0.98] touch-manipulation"
-      onClick={onClick}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => e.key === 'Enter' && onClick()}
+    <Link 
+      to={`/insights/${post.slug || post.id}`}
+      className="glass-card hover:border-primary/40 transition-all cursor-pointer group overflow-hidden h-full flex flex-col active:scale-[0.98] touch-manipulation rounded-xl border border-border/50"
     >
       <div className="relative h-32 sm:h-36 overflow-hidden shrink-0">
         <img 
@@ -128,7 +125,7 @@ function BlogPostCard({ post, onClick }: { post: BlogPost; onClick: () => void }
           <span className="sm:hidden">{post.category.split(' ')[0]}</span>
         </Badge>
       </div>
-      <CardContent className="p-3 sm:p-4 flex-1 flex flex-col">
+      <div className="p-3 sm:p-4 flex-1 flex flex-col">
         <h3 className="font-semibold text-sm sm:text-base line-clamp-2 group-hover:text-primary transition-colors">
           {post.title}
         </h3>
@@ -144,8 +141,8 @@ function BlogPostCard({ post, onClick }: { post: BlogPost; onClick: () => void }
             Read <ChevronRight className="w-3 h-3" />
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </Link>
   );
 }
 
@@ -407,7 +404,6 @@ function BlogSkeleton() {
 
 export default function Learn() {
   const { data, isLoading, refetch, isFetching } = useAIBlog();
-  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDate, setSelectedDate] = useState('all');
@@ -605,12 +601,9 @@ export default function Learn() {
 
         {/* Featured Post - Mobile optimized */}
         {!isLoading && featuredPost && (
-          <Card 
-            className="glass-card overflow-hidden cursor-pointer group active:scale-[0.99] transition-transform touch-manipulation"
-            onClick={() => setSelectedPost(featuredPost)}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => e.key === 'Enter' && setSelectedPost(featuredPost)}
+          <Link 
+            to={`/insights/${featuredPost.slug || featuredPost.id}`}
+            className="glass-card overflow-hidden cursor-pointer group active:scale-[0.99] transition-transform touch-manipulation block rounded-xl border border-border/50"
           >
             <div className="flex flex-col sm:grid sm:grid-cols-2 gap-0">
               <div className="relative h-48 sm:h-64 md:h-80 overflow-hidden">
@@ -680,7 +673,7 @@ export default function Learn() {
                 </div>
               </CardContent>
             </div>
-          </Card>
+          </Link>
         )}
 
         {/* Posts Grid - Responsive */}
@@ -692,7 +685,6 @@ export default function Learn() {
               <BlogPostCard 
                 key={post.id} 
                 post={post} 
-                onClick={() => setSelectedPost(post)}
               />
             ))}
           </div>
@@ -732,13 +724,6 @@ export default function Learn() {
             {activeCategory !== 'All' && ` in ${activeCategory}`}
           </p>
         )}
-
-        {/* Post Modal */}
-        <BlogPostModal 
-          post={selectedPost}
-          open={!!selectedPost}
-          onClose={() => setSelectedPost(null)}
-        />
       </main>
 
       {/* Educational Fundamentals Section */}

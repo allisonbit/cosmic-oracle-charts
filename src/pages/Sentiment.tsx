@@ -6,15 +6,13 @@ import { useAIForecast } from "@/hooks/useAIForecast";
 import { useWhaleTracker } from "@/hooks/useWhaleTracker";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { CoinDetailModal, CoinData } from "@/components/sentiment/CoinDetailModal";
-import { WhaleAlertModal, WhaleAlert } from "@/components/sentiment/WhaleAlertModal";
-import { TopicDetailModal, TrendingTopic } from "@/components/sentiment/TopicDetailModal";
 import { SocialSentimentPanel } from "@/components/sentiment/SocialSentimentPanel";
 import { NewsPanel } from "@/components/sentiment/NewsPanel";
 import { GoogleTrendsPanel } from "@/components/sentiment/GoogleTrendsPanel";
 import { GitHubActivityPanel } from "@/components/sentiment/GitHubActivityPanel";
 import { SentimentSchema, SentimentSEOContent, SentimentHowItWorks, SentimentDataMeaning } from "@/components/seo";
 import { InArticleAd, SidebarAd } from "@/components/ads";
+import { useNavigate } from "react-router-dom";
 
 // New enhanced components
 import { SentimentContextBar } from "@/components/sentiment/SentimentContextBar";
@@ -33,6 +31,7 @@ function formatNumber(num: number): string {
 }
 
 const SentimentPage = () => {
+  const navigate = useNavigate();
   const { data: marketData, isLoading } = useMarketData();
   const topCoins = useMemo(() => marketData?.topCoins?.slice(0, 20) || [], [marketData]);
   const [activeTab, setActiveTab] = useState<"overview" | "social" | "whales" | "signals">("overview");
@@ -40,14 +39,6 @@ const SentimentPage = () => {
   
   // Whale tracker data
   const { data: whaleData, refetch: refetchWhales } = useWhaleTracker('ethereum');
-  
-  // Modal states
-  const [selectedCoin, setSelectedCoin] = useState<CoinData | null>(null);
-  const [coinModalOpen, setCoinModalOpen] = useState(false);
-  const [selectedWhale, setSelectedWhale] = useState<WhaleAlert | null>(null);
-  const [whaleModalOpen, setWhaleModalOpen] = useState(false);
-  const [selectedTopic, setSelectedTopic] = useState<TrendingTopic | null>(null);
-  const [topicModalOpen, setTopicModalOpen] = useState(false);
   
   const { data: aiData, isLoading: aiLoading } = useAIForecast(
     topCoins.length > 0 ? topCoins : null,
@@ -78,30 +69,16 @@ const SentimentPage = () => {
     : avgChange > 2 && socialSentiment < 45 ? 'bearish_divergence' 
     : Math.abs(avgChange) < 1 ? 'neutral' : 'aligned';
 
-  const handleCoinClick = (coin: typeof topCoins[0], signalType?: string, signalMessage?: string) => {
-    setSelectedCoin({
-      symbol: coin.symbol,
-      name: coin.name,
-      price: coin.price,
-      change24h: coin.change24h,
-      volume: coin.volume,
-      marketCap: coin.marketCap,
-      rank: coin.rank,
-      sentiment: coin.change24h > 2 ? "bullish" : coin.change24h < -2 ? "bearish" : "neutral",
-      signalType,
-      signalMessage,
-    });
-    setCoinModalOpen(true);
+  const handleCoinClick = (coin: typeof topCoins[0]) => {
+    navigate(`/price-prediction/${coin.name?.toLowerCase() || coin.symbol?.toLowerCase()}/daily`);
   };
 
-  const handleWhaleClick = (alert: WhaleAlert) => {
-    setSelectedWhale(alert);
-    setWhaleModalOpen(true);
+  const handleWhaleClick = () => {
+    navigate('/sentiment');
   };
 
-  const handleTopicClick = (topic: TrendingTopic) => {
-    setSelectedTopic(topic);
-    setTopicModalOpen(true);
+  const handleTopicClick = () => {
+    navigate('/sentiment');
   };
 
   if (isLoading) {
@@ -249,22 +226,6 @@ const SentimentPage = () => {
         )}
       </div>
 
-      {/* Modals */}
-      <CoinDetailModal
-        coin={selectedCoin}
-        open={coinModalOpen}
-        onOpenChange={setCoinModalOpen}
-      />
-      <WhaleAlertModal
-        alert={selectedWhale}
-        open={whaleModalOpen}
-        onOpenChange={setWhaleModalOpen}
-      />
-      <TopicDetailModal
-        topic={selectedTopic}
-        open={topicModalOpen}
-        onOpenChange={setTopicModalOpen}
-      />
     </Layout>
   );
 };
