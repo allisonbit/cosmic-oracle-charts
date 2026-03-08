@@ -60,20 +60,20 @@ serve(async (req) => {
     let globalData: any = {};
     let allNews: any[] = [];
 
-    if (trendingRes.ok) {
+    if (trendingRes?.ok) {
       const trendingData = await trendingRes.json();
       trending = trendingData.coins || [];
     }
 
-    if (globalRes.ok) {
+    if (globalRes?.ok) {
       const global = await globalRes.json();
       globalData = global.data || {};
     }
 
     // Collect news from all sources
-    const newsSources = [newsRes1, newsRes2, newsRes3];
+    const newsSources = [newsRes1, newsRes2, newsRes3].filter(Boolean);
     for (const res of newsSources) {
-      if (res.ok) {
+      if (res?.ok) {
         const data = await res.json();
         if (data.Data) {
           allNews = [...allNews, ...data.Data];
