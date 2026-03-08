@@ -22,6 +22,7 @@ import { DivergenceScanner } from "@/components/sentiment/DivergenceScanner";
 import { AdvancedWhaleTracker } from "@/components/sentiment/AdvancedWhaleTracker";
 import { LiveAlertsFeed } from "@/components/sentiment/LiveAlertsFeed";
 import { TellMeTheStory } from "@/components/sentiment/TellMeTheStory";
+import { TokenSentimentSearch } from "@/components/sentiment/TokenSentimentSearch";
 
 function formatNumber(num: number): string {
   if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
