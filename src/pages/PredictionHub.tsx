@@ -379,7 +379,7 @@ export default function PredictionHub() {
                               <div className="font-medium text-sm flex items-center gap-1.5">
                                 {crypto.name}
                                 {crypto.hasCachedPrediction && (
-                                  <Zap className="w-3 h-3 text-primary" title="AI prediction cached" />
+                                  <Zap className="w-3 h-3 text-primary" />
                                 )}
                               </div>
                               <div className="text-xs text-muted-foreground">{crypto.symbol.toUpperCase()}</div>
