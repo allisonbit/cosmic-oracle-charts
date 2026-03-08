@@ -470,21 +470,21 @@ const ExplorerPage = () => {
               <thead className="sticky top-0 z-10 bg-card border-b border-border">
                 <tr>
                   <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground text-left w-8">#</th>
-                  <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground text-left min-w-[200px]">TOKEN</th>
+                  <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground text-left min-w-[140px] sm:min-w-[200px]">TOKEN</th>
                   <SortHeader col="price" label="PRICE" />
-                  <SortHeader col="age" label="AGE" />
-                  <SortHeader col="txns24h" label="TXNS" />
+                  <SortHeader col="age" label="AGE" className="hidden sm:table-cell" />
+                  <SortHeader col="txns24h" label="TXNS" className="hidden sm:table-cell" />
                   <SortHeader col="volume24h" label="VOLUME" />
-                  <SortHeader col="makers" label="MAKERS" />
-                  <SortHeader col="change5m" label="5M" className="hidden md:table-cell" />
-                  <SortHeader col="change1h" label="1H" className="hidden md:table-cell" />
-                  <SortHeader col="change6h" label="6H" className="hidden lg:table-cell" />
+                  <SortHeader col="makers" label="MAKERS" className="hidden md:table-cell" />
+                  <SortHeader col="change5m" label="5M" className="hidden lg:table-cell" />
+                  <SortHeader col="change1h" label="1H" className="hidden lg:table-cell" />
+                  <SortHeader col="change6h" label="6H" className="hidden xl:table-cell" />
                   <SortHeader col="change24h" label="24H" />
-                  <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground text-right hidden md:table-cell">BUYS</th>
-                  <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground text-right hidden md:table-cell">SELLS</th>
-                  <SortHeader col="liquidity" label="LIQUIDITY" className="hidden lg:table-cell" />
-                  <SortHeader col="marketCap" label="MCAP" className="hidden xl:table-cell" />
-                  <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground text-right hidden xl:table-cell">FDV</th>
+                  <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground text-right hidden lg:table-cell">BUYS</th>
+                  <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground text-right hidden lg:table-cell">SELLS</th>
+                  <SortHeader col="liquidity" label="LIQUIDITY" className="hidden xl:table-cell" />
+                  <SortHeader col="marketCap" label="MCAP" className="hidden 2xl:table-cell" />
+                  <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground text-right hidden 2xl:table-cell">FDV</th>
                   <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground w-8"></th>
                 </tr>
               </thead>
