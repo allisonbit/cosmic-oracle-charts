@@ -157,7 +157,7 @@ export default function MyCopyTrading() {
           </div>
 
           {/* Summary Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-3">
             <Card className="border-border"><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Following</p>
               <p className="text-lg font-bold">{totalFollowing}</p>
