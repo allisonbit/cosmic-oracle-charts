@@ -127,7 +127,7 @@ export function Footer() {
             </ul>
           </nav>
           
-          {/* Learn & Market */}
+          {/* Learn & Content */}
           <nav className="space-y-4" aria-label="Footer navigation - Learn">
             <h4 className="font-display font-bold text-foreground text-sm md:text-base">LEARN</h4>
             <ul className="space-y-2">
@@ -139,6 +139,26 @@ export function Footer() {
               <li>
                 <Link to="/insights" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
                   Daily AI Insights
+                </Link>
+              </li>
+              <li>
+                <Link to="/learn/what-is-crypto-market-sentiment" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Crypto Sentiment Guide
+                </Link>
+              </li>
+              <li>
+                <Link to="/learn/bitcoin-market-cycles-explained" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Bitcoin Market Cycles
+                </Link>
+              </li>
+              <li>
+                <Link to="/learn/how-ai-is-used-in-crypto-market-analysis" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  AI in Crypto Analysis
+                </Link>
+              </li>
+              <li>
+                <Link to="/learn/on-chain-data-explained-for-beginners" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  On-Chain Data Guide
                 </Link>
               </li>
               <li>
