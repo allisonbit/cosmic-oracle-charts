@@ -211,66 +211,99 @@ export function AdvancedWhaleTracker({ onRefresh }: AdvancedWhaleTrackerProps) {
           <div className="space-y-3">
             {filteredTransactions.map((tx, i) => {
               const tier = getWhaleTier(tx.value);
+              const isExpanded = expandedTx === tx.id;
               
               return (
-                <button
-                  key={tx.id}
-                  onClick={() => setSelectedTransaction(tx)}
-                  className={cn(
-                    "w-full p-4 rounded-lg border flex items-center justify-between transition-all text-left group animate-fade-in",
-                    tx.type === 'buy' ? "bg-success/10 border-success/30 hover:border-success" :
-                    tx.type === 'sell' ? "bg-danger/10 border-danger/30 hover:border-danger" :
-                    "bg-muted/30 border-border hover:border-primary/50"
+                <div key={tx.id}>
+                  <button
+                    onClick={() => setExpandedTx(isExpanded ? null : tx.id)}
+                    className={cn(
+                      "w-full p-4 rounded-lg border flex items-center justify-between transition-all text-left group animate-fade-in",
+                      tx.type === 'buy' ? "bg-success/10 border-success/30 hover:border-success" :
+                      tx.type === 'sell' ? "bg-danger/10 border-danger/30 hover:border-danger" :
+                      "bg-muted/30 border-border hover:border-primary/50"
+                    )}
+                    style={{ animationDelay: `${i * 0.05}s` }}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className={cn(
+                        "w-12 h-12 rounded-full flex items-center justify-center",
+                        tx.type === 'buy' ? "bg-success/20" : 
+                        tx.type === 'sell' ? "bg-danger/20" : "bg-muted"
+                      )}>
+                        {tx.type === 'buy' ? 
+                          <TrendingUp className="w-6 h-6 text-success" /> :
+                          tx.type === 'sell' ?
+                          <TrendingDown className="w-6 h-6 text-danger" /> :
+                          <ArrowRight className="w-6 h-6 text-muted-foreground" />
+                        }
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-display font-bold">{tx.asset}</span>
+                          <span className={cn("text-xs px-2 py-0.5 rounded font-bold", tier.color, "bg-current/10")}>
+                            {tier.name}
+                          </span>
+                          {tx.impact === 'high' && <Zap className="w-3 h-3 text-warning" />}
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+                          <Wallet className="w-3 h-3" />
+                          <span>{tx.from}</span>
+                          <ArrowRight className="w-3 h-3" />
+                          <span>{tx.to}</span>
+                        </div>
+                        <div className="flex items-center gap-3 mt-1 text-xs">
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <Clock className="w-3 h-3" /> {getTimeAgo(tx.timestamp)}
+                          </span>
+                          <span className={cn("flex items-center gap-1", tier.color)}>
+                            <Star className="w-3 h-3" /> {tier.accuracy}% accuracy
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="text-right">
+                        <div className="font-bold text-lg">{formatValue(tx.value)}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {tx.amount.toFixed(4)} {tx.asset}
+                        </div>
+                      </div>
+                      <ChevronDown className={cn("w-5 h-5 text-muted-foreground transition-transform", isExpanded && "rotate-180")} />
+                    </div>
+                  </button>
+                  
+                  {isExpanded && (
+                    <div className="ml-4 mt-2 mb-3 p-4 rounded-lg bg-muted/20 border border-border/30 animate-in fade-in slide-in-from-top-1 duration-200 space-y-3">
+                      <div className={cn("p-3 rounded-xl border text-center", tx.type === 'buy' ? "bg-success/10 border-success/30" : "bg-danger/10 border-danger/30")}>
+                        <div className="text-2xl font-bold">{formatValue(tx.value)}</div>
+                        <div className="text-sm text-muted-foreground">{tx.amount.toFixed(4)} {tx.asset}</div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="p-2 rounded bg-muted/30"><div className="text-xs text-muted-foreground">From</div><div className="text-sm truncate">{tx.from}</div></div>
+                        <div className="p-2 rounded bg-muted/30"><div className="text-xs text-muted-foreground">To</div><div className="text-sm truncate">{tx.to}</div></div>
+                        <div className="p-2 rounded bg-muted/30"><div className="text-xs text-muted-foreground">Chain</div><div className="capitalize">{tx.chain}</div></div>
+                        <div className="p-2 rounded bg-muted/30"><div className="text-xs text-muted-foreground">Tier Accuracy</div><div className={cn("font-bold", tier.color)}>{tier.accuracy}%</div></div>
+                      </div>
+                      {tx.hash && (
+                        <div className="p-2 rounded bg-muted/30 flex items-center gap-2">
+                          <code className="text-xs font-mono flex-1 truncate">{tx.hash}</code>
+                          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => copyToClipboard(tx.hash)}>
+                            {copied ? <Check className="w-3 h-3 text-success" /> : <Copy className="w-3 h-3" />}
+                          </Button>
+                        </div>
+                      )}
+                      <div className={cn("p-3 rounded-lg border text-sm", tx.type === 'buy' ? "bg-success/10 border-success/30" : "bg-danger/10 border-danger/30")}>
+                        {tx.type === 'buy'
+                          ? 'Exchange outflow suggests accumulation. Smart money moving to cold storage — typically bullish.'
+                          : 'Exchange inflow suggests distribution. Large holders may be preparing to sell.'}
+                      </div>
+                      <Link to={`/price-prediction/${tx.asset.toLowerCase()}/daily`} className="block text-center text-sm text-primary hover:underline">
+                        View {tx.asset} Prediction →
+                      </Link>
+                    </div>
                   )}
-                  style={{ animationDelay: `${i * 0.05}s` }}
-                >
-                  <div className="flex items-center gap-4">
-                    <div className={cn(
-                      "w-12 h-12 rounded-full flex items-center justify-center",
-                      tx.type === 'buy' ? "bg-success/20" : 
-                      tx.type === 'sell' ? "bg-danger/20" : "bg-muted"
-                    )}>
-                      {tx.type === 'buy' ? 
-                        <TrendingUp className="w-6 h-6 text-success" /> :
-                        tx.type === 'sell' ?
-                        <TrendingDown className="w-6 h-6 text-danger" /> :
-                        <ArrowRight className="w-6 h-6 text-muted-foreground" />
-                      }
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-display font-bold">{tx.asset}</span>
-                        <span className={cn("text-xs px-2 py-0.5 rounded font-bold", tier.color, "bg-current/10")}>
-                          {tier.name}
-                        </span>
-                        {tx.impact === 'high' && <Zap className="w-3 h-3 text-warning" />}
-                      </div>
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-                        <Wallet className="w-3 h-3" />
-                        <span>{tx.from}</span>
-                        <ArrowRight className="w-3 h-3" />
-                        <span>{tx.to}</span>
-                      </div>
-                      <div className="flex items-center gap-3 mt-1 text-xs">
-                        <span className="text-muted-foreground flex items-center gap-1">
-                          <Clock className="w-3 h-3" /> {getTimeAgo(tx.timestamp)}
-                        </span>
-                        <span className={cn("flex items-center gap-1", tier.color)}>
-                          <Star className="w-3 h-3" /> {tier.accuracy}% accuracy
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="text-right">
-                      <div className="font-bold text-lg">{formatValue(tx.value)}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {tx.amount.toFixed(4)} {tx.asset}
-                      </div>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                  </div>
-                </button>
+                </div>
               );
             })}
 
@@ -312,125 +345,6 @@ export function AdvancedWhaleTracker({ onRefresh }: AdvancedWhaleTrackerProps) {
           </div>
         </div>
       </div>
-
-      {/* Transaction Detail Modal */}
-      <Dialog open={!!selectedTransaction} onOpenChange={() => setSelectedTransaction(null)}>
-        <DialogContent className="max-w-lg">
-          {selectedTransaction && (() => {
-            const tier = getWhaleTier(selectedTransaction.value);
-            return (
-              <>
-                <DialogHeader>
-                  <DialogTitle className="flex items-center gap-3">
-                    <div className={cn(
-                      "w-12 h-12 rounded-full flex items-center justify-center",
-                      selectedTransaction.type === 'buy' ? "bg-success/20" : "bg-danger/20"
-                    )}>
-                      {selectedTransaction.type === 'buy' ? 
-                        <TrendingUp className="w-6 h-6 text-success" /> :
-                        <TrendingDown className="w-6 h-6 text-danger" />
-                      }
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xl font-display">{selectedTransaction.asset}</span>
-                        <span className={cn("text-xs px-2 py-0.5 rounded-full font-bold", tier.color, "bg-current/10")}>
-                          {tier.name}
-                        </span>
-                      </div>
-                      <p className="text-sm text-muted-foreground font-normal">
-                        {selectedTransaction.type === 'buy' ? 'Exchange Outflow' : 'Exchange Inflow'}
-                      </p>
-                    </div>
-                  </DialogTitle>
-                </DialogHeader>
-
-                <Tabs defaultValue="overview" className="mt-4">
-                  <TabsList className="w-full grid grid-cols-2">
-                    <TabsTrigger value="overview">Overview</TabsTrigger>
-                    <TabsTrigger value="intelligence">Intelligence</TabsTrigger>
-                  </TabsList>
-
-                  <TabsContent value="overview" className="space-y-4 mt-4">
-                    <div className={cn(
-                      "p-4 rounded-xl border text-center",
-                      selectedTransaction.type === 'buy' ? "bg-success/10 border-success/30" : "bg-danger/10 border-danger/30"
-                    )}>
-                      <div className="text-3xl font-bold">{formatValue(selectedTransaction.value)}</div>
-                      <div className="text-sm text-muted-foreground">
-                        {selectedTransaction.amount.toFixed(4)} {selectedTransaction.asset}
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="p-3 rounded-lg bg-muted/30">
-                        <div className="text-xs text-muted-foreground mb-1">From</div>
-                        <div className="font-medium text-sm truncate">{selectedTransaction.from}</div>
-                      </div>
-                      <div className="p-3 rounded-lg bg-muted/30">
-                        <div className="text-xs text-muted-foreground mb-1">To</div>
-                        <div className="font-medium text-sm truncate">{selectedTransaction.to}</div>
-                      </div>
-                      <div className="p-3 rounded-lg bg-muted/30">
-                        <div className="text-xs text-muted-foreground mb-1">Time</div>
-                        <div className="font-medium">{getTimeAgo(selectedTransaction.timestamp)}</div>
-                      </div>
-                      <div className="p-3 rounded-lg bg-muted/30">
-                        <div className="text-xs text-muted-foreground mb-1">Chain</div>
-                        <div className="font-medium capitalize">{selectedTransaction.chain}</div>
-                      </div>
-                    </div>
-
-                    {selectedTransaction.hash && (
-                      <div className="p-3 rounded-lg bg-muted/30">
-                        <div className="text-xs text-muted-foreground mb-1">Transaction Hash</div>
-                        <div className="flex items-center gap-2">
-                          <code className="text-xs font-mono flex-1 truncate">{selectedTransaction.hash}</code>
-                          <Button variant="ghost" size="icon" onClick={() => copyToClipboard(selectedTransaction.hash)}>
-                            {copied ? <Check className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}
-                          </Button>
-                        </div>
-                      </div>
-                    )}
-                  </TabsContent>
-
-                  <TabsContent value="intelligence" className="space-y-4 mt-4">
-                    <div className="p-4 rounded-lg bg-primary/10 border border-primary/20">
-                      <h4 className="font-bold text-sm mb-2 flex items-center gap-2">
-                        <Star className="w-4 h-4 text-primary" />
-                        Whale Tier Analysis
-                      </h4>
-                      <p className="text-sm text-muted-foreground mb-2">
-                        This wallet is classified as a <span className={cn("font-bold", tier.color)}>{tier.name}</span>.
-                      </p>
-                      <p className="text-sm">
-                        Historical data shows {tier.name.toLowerCase()}s have a <span className="font-bold text-primary">{tier.accuracy}%</span> accuracy rate 
-                        in predicting 7-day price direction.
-                      </p>
-                    </div>
-
-                    <div className={cn(
-                      "p-4 rounded-lg border",
-                      selectedTransaction.type === 'buy' ? "bg-success/10 border-success/30" : "bg-danger/10 border-danger/30"
-                    )}>
-                      <h4 className="font-bold text-sm mb-2 flex items-center gap-2">
-                        <Target className="w-4 h-4" />
-                        Trading Implication
-                      </h4>
-                      <p className="text-sm">
-                        {selectedTransaction.type === 'buy'
-                          ? 'Exchange outflow suggests accumulation. Smart money is moving assets to cold storage, typically bullish for price action.'
-                          : 'Exchange inflow suggests distribution. Large holders may be preparing to sell, exercise caution with long positions.'
-                        }
-                      </p>
-                    </div>
-                  </TabsContent>
-                </Tabs>
-              </>
-            );
-          })()}
-        </DialogContent>
-      </Dialog>
     </>
   );
 }
