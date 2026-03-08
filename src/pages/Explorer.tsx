@@ -606,7 +606,7 @@ const ExplorerPage = () => {
 
                       {/* 6H */}
                       <td className={cn(
-                        "px-2 py-2.5 font-mono whitespace-nowrap hidden lg:table-cell",
+                        "px-2 py-2.5 font-mono whitespace-nowrap hidden xl:table-cell",
                         (token.change6h || 0) > 0 ? "text-success" : (token.change6h || 0) < 0 ? "text-danger" : "text-muted-foreground"
                       )}>
                         {formatChange(token.change6h)}
