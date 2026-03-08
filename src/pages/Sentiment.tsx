@@ -31,6 +31,7 @@ function formatNumber(num: number): string {
 }
 
 const SentimentPage = () => {
+  const navigate = useNavigate();
   const { data: marketData, isLoading } = useMarketData();
   const topCoins = useMemo(() => marketData?.topCoins?.slice(0, 20) || [], [marketData]);
   const [activeTab, setActiveTab] = useState<"overview" | "social" | "whales" | "signals">("overview");
@@ -38,14 +39,6 @@ const SentimentPage = () => {
   
   // Whale tracker data
   const { data: whaleData, refetch: refetchWhales } = useWhaleTracker('ethereum');
-  
-  // Modal states
-  const [selectedCoin, setSelectedCoin] = useState<CoinData | null>(null);
-  const [coinModalOpen, setCoinModalOpen] = useState(false);
-  const [selectedWhale, setSelectedWhale] = useState<WhaleAlert | null>(null);
-  const [whaleModalOpen, setWhaleModalOpen] = useState(false);
-  const [selectedTopic, setSelectedTopic] = useState<TrendingTopic | null>(null);
-  const [topicModalOpen, setTopicModalOpen] = useState(false);
   
   const { data: aiData, isLoading: aiLoading } = useAIForecast(
     topCoins.length > 0 ? topCoins : null,
