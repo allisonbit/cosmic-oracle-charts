@@ -103,16 +103,16 @@ export function Navbar() {
             {/* Mobile: User Menu + Hamburger */}
             <div className="lg:hidden flex items-center gap-2">
               <UserMenu />
-            <button
-              type="button"
-              className="lg:hidden relative z-[60] h-10 w-10 flex items-center justify-center rounded-lg bg-background/80 border border-primary/20 active:bg-primary/20 touch-manipulation"
-              onClick={() => setIsOpen(!isOpen)}
-              aria-label={isOpen ? "Close menu" : "Open menu"}
-              aria-expanded={isOpen}
-            >
-              {isOpen ? <X className="w-5 h-5 text-primary" /> : <Menu className="w-5 h-5 text-foreground" />}
-            </button>
-          </div>
+              <button
+                type="button"
+                className="relative z-[60] h-10 w-10 flex items-center justify-center rounded-lg bg-background/80 border border-primary/20 active:bg-primary/20 touch-manipulation"
+                onClick={() => setIsOpen(!isOpen)}
+                aria-label={isOpen ? "Close menu" : "Open menu"}
+                aria-expanded={isOpen}
+              >
+                {isOpen ? <X className="w-5 h-5 text-primary" /> : <Menu className="w-5 h-5 text-foreground" />}
+              </button>
+            </div>
         </div>
       </nav>
 
