@@ -84,7 +84,7 @@ export default function Insights() {
   );
 
   const featuredArticles = data?.posts?.slice(0, 3) || [];
-  const todayCount = (data as any)?.todayArticles || 0;
+  const todayCount = data?.todayArticles || 0;
 
   const handleCategoryChange = (cat: string) => { setSelectedCategory(cat); setCurrentPage(1); };
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => { setSearchQuery(e.target.value); setCurrentPage(1); };
