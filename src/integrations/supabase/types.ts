@@ -227,6 +227,48 @@ export type Database = {
         }
         Relationships: []
       }
+      portfolio_holdings: {
+        Row: {
+          bought_at: string
+          buy_price: number
+          coin_id: string
+          created_at: string
+          id: string
+          name: string
+          notes: string | null
+          quantity: number
+          symbol: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bought_at?: string
+          buy_price?: number
+          coin_id: string
+          created_at?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          quantity?: number
+          symbol: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bought_at?: string
+          buy_price?: number
+          coin_id?: string
+          created_at?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          quantity?: number
+          symbol?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       predictions_cache: {
         Row: {
           bias: string | null
@@ -344,6 +386,75 @@ export type Database = {
           target_price?: number
           triggered_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      user_follows: {
+        Row: {
+          created_at: string
+          follower_id: string
+          following_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          follower_id: string
+          following_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          follower_id?: string
+          following_id?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      user_predictions: {
+        Row: {
+          coin_id: string
+          created_at: string
+          entry_price: number
+          id: string
+          is_resolved: boolean
+          prediction_type: string
+          reasoning: string | null
+          resolved_at: string | null
+          symbol: string
+          target_price: number
+          timeframe: string
+          user_id: string
+          was_correct: boolean | null
+        }
+        Insert: {
+          coin_id: string
+          created_at?: string
+          entry_price?: number
+          id?: string
+          is_resolved?: boolean
+          prediction_type?: string
+          reasoning?: string | null
+          resolved_at?: string | null
+          symbol: string
+          target_price: number
+          timeframe?: string
+          user_id: string
+          was_correct?: boolean | null
+        }
+        Update: {
+          coin_id?: string
+          created_at?: string
+          entry_price?: number
+          id?: string
+          is_resolved?: boolean
+          prediction_type?: string
+          reasoning?: string | null
+          resolved_at?: string | null
+          symbol?: string
+          target_price?: number
+          timeframe?: string
+          user_id?: string
+          was_correct?: boolean | null
         }
         Relationships: []
       }
