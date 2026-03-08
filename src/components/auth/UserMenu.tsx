@@ -10,8 +10,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogIn, LogOut, User, Star, Bell, Settings } from "lucide-react";
+import { LogIn, LogOut, User, Star, Bell, Settings, PieChart } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 export function UserMenu({ className }: { className?: string }) {
   const { user, profile, loading, signOut } = useAuth();
