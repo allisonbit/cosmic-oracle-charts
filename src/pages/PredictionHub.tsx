@@ -8,6 +8,7 @@ import {
   Search, ArrowUpRight, Activity, RefreshCw, Radio, Eye, Filter
 } from "lucide-react";
 import { TOP_50_CRYPTOS } from "@/lib/extendedCryptos";
+import { TokenIcon } from "@/components/ui/token-icon";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
