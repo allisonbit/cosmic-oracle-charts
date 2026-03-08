@@ -21,7 +21,7 @@ const mobileNavItems = [
   { path: "/", label: "Home", icon: Home },
   { path: "/dashboard", label: "Dashboard", icon: TrendingUp },
   { path: "/predictions", label: "Predictions", icon: Target },
-  { path: "/market/best-crypto-to-buy-today", label: "Hot Picks", icon: Sparkles },
+  
   { path: "/strength", label: "Strength", icon: Zap },
   { path: "/factory", label: "Factory", icon: Calendar },
   { path: "/chain/ethereum", label: "Chains", icon: Layers },
