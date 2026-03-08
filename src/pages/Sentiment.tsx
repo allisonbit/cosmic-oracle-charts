@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { useMarketData } from "@/hooks/useMarketData";
 import { useAIForecast } from "@/hooks/useAIForecast";
 import { useWhaleTracker } from "@/hooks/useWhaleTracker";
+import { useSentimentData } from "@/hooks/useSentimentData";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { SocialSentimentPanel } from "@/components/sentiment/SocialSentimentPanel";
@@ -38,6 +39,9 @@ const SentimentPage = () => {
   const [activeTab, setActiveTab] = useState<"overview" | "social" | "whales" | "signals">("overview");
   const [lastUpdate] = useState(new Date());
   
+  // Real sentiment data
+  const { data: sentimentData, isLoading: sentimentLoading } = useSentimentData();
+  
   // Whale tracker data
   const { data: whaleData, refetch: refetchWhales } = useWhaleTracker('ethereum');
   
@@ -47,7 +51,7 @@ const SentimentPage = () => {
     topCoins.length > 0
   );
 
-  const fearGreedIndex = marketData?.fearGreedIndex || 50;
+  const fearGreedIndex = sentimentData?.fearGreed?.[0]?.value || marketData?.fearGreedIndex || 50;
   
   // Calculate metrics
   const avgChange = useMemo(() => topCoins.reduce((sum, c) => sum + c.change24h, 0) / (topCoins.length || 1), [topCoins]);
@@ -107,7 +111,7 @@ const SentimentPage = () => {
             </h1>
             <p className="text-muted-foreground text-xs sm:text-sm flex items-center gap-2 mt-1">
               <Clock className="w-3 h-3" />
-              Updated: {lastUpdate.toLocaleTimeString()} • Multi-source real-time analysis
+              Updated: {sentimentData?.lastUpdated ? new Date(sentimentData.lastUpdated).toLocaleTimeString() : lastUpdate.toLocaleTimeString()} • Live multi-source analysis
             </p>
           </div>
           <div className={cn(
@@ -135,6 +139,31 @@ const SentimentPage = () => {
             />
           )}
         </div>
+
+        {/* Global Market Stats from real data */}
+        {sentimentData?.global && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+            <div className="holo-card p-4 text-center">
+              <div className="text-xs text-muted-foreground mb-1">Total Market Cap</div>
+              <div className="font-bold text-lg">{formatNumber(sentimentData.global.totalMarketCap)}</div>
+              <div className={cn("text-xs font-medium", sentimentData.global.marketCapChange24h >= 0 ? "text-success" : "text-danger")}>
+                {sentimentData.global.marketCapChange24h >= 0 ? "+" : ""}{sentimentData.global.marketCapChange24h.toFixed(2)}%
+              </div>
+            </div>
+            <div className="holo-card p-4 text-center">
+              <div className="text-xs text-muted-foreground mb-1">24h Volume</div>
+              <div className="font-bold text-lg">{formatNumber(sentimentData.global.totalVolume)}</div>
+            </div>
+            <div className="holo-card p-4 text-center">
+              <div className="text-xs text-muted-foreground mb-1">BTC Dominance</div>
+              <div className="font-bold text-lg">{sentimentData.global.btcDominance.toFixed(1)}%</div>
+            </div>
+            <div className="holo-card p-4 text-center">
+              <div className="text-xs text-muted-foreground mb-1">Active Cryptos</div>
+              <div className="font-bold text-lg">{sentimentData.global.activeCryptos.toLocaleString()}</div>
+            </div>
+          </div>
+        )}
 
         {/* Sentiment Context Bar */}
         <SentimentContextBar
@@ -183,7 +212,6 @@ const SentimentPage = () => {
           <div className="space-y-6">
             <SentimentSEOContent />
             
-            {/* Multi-Dimensional Sentiment Engine */}
             <MultiDimensionalSentiment
               fearGreedIndex={fearGreedIndex}
               socialSentiment={socialSentiment}
@@ -193,12 +221,8 @@ const SentimentPage = () => {
 
             <InArticleAd />
 
-            {/* Sector Heatmap */}
             <SectorHeatmap coins={topCoins} />
-
-            {/* Divergence Scanner */}
             <DivergenceScanner coins={topCoins} />
-
             <SentimentHowItWorks />
           </div>
         )}
@@ -207,13 +231,28 @@ const SentimentPage = () => {
         {activeTab === "social" && (
           <div className="space-y-6">
             <div className="grid lg:grid-cols-2 gap-6">
-              <SocialSentimentPanel tokens={topCoins.slice(0, 10)} />
-              <NewsPanel />
+              <SocialSentimentPanel 
+                tokens={sentimentData?.topCoins || []} 
+                globalData={sentimentData?.global}
+                isLoading={sentimentLoading}
+              />
+              <NewsPanel 
+                news={sentimentData?.news || []} 
+                isLoading={sentimentLoading} 
+              />
             </div>
             <InArticleAd />
             <div className="grid lg:grid-cols-2 gap-6">
-              <GoogleTrendsPanel />
-              <GitHubActivityPanel />
+              <GoogleTrendsPanel 
+                trending={sentimentData?.trending || []}
+                trendingCategories={sentimentData?.trendingCategories || []}
+                fearGreed={sentimentData?.fearGreed || []}
+                isLoading={sentimentLoading}
+              />
+              <GitHubActivityPanel 
+                topCoins={sentimentData?.topCoins || []}
+                isLoading={sentimentLoading}
+              />
             </div>
             <SentimentDataMeaning />
           </div>
