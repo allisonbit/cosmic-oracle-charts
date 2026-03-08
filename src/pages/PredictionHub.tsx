@@ -365,18 +365,18 @@ export default function PredictionHub() {
           ) : (
             <div className="rounded-xl border border-border overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+                <table className="w-full text-sm table-fixed">
                   <thead>
                     <tr className="bg-muted/40 border-b border-border">
-                      <th className="text-left p-3 text-xs font-medium text-muted-foreground">#</th>
-                      <th className="text-left p-3 text-xs font-medium text-muted-foreground">Token</th>
-                      <th className="text-right p-3 text-xs font-medium text-muted-foreground">Price</th>
-                      <th className="text-right p-3 text-xs font-medium text-muted-foreground">24h</th>
-                      <th className="text-center p-3 text-xs font-medium text-muted-foreground">AI Signal</th>
-                      <th className="text-center p-3 text-xs font-medium text-muted-foreground">Confidence</th>
-                      <th className="text-center p-3 text-xs font-medium text-muted-foreground hidden md:table-cell">Risk</th>
-                      <th className="text-right p-3 text-xs font-medium text-muted-foreground hidden md:table-cell">Market Cap</th>
-                      <th className="text-center p-3 text-xs font-medium text-muted-foreground">Action</th>
+                      <th className="text-left p-3 text-xs font-medium text-muted-foreground w-10">#</th>
+                      <th className="text-left p-3 text-xs font-medium text-muted-foreground w-[180px] min-w-[140px]">Token</th>
+                      <th className="text-right p-3 text-xs font-medium text-muted-foreground w-[100px]">Price</th>
+                      <th className="text-right p-3 text-xs font-medium text-muted-foreground w-[80px]">24h</th>
+                      <th className="text-center p-3 text-xs font-medium text-muted-foreground w-[90px]">AI Signal</th>
+                      <th className="text-center p-3 text-xs font-medium text-muted-foreground w-[120px]">Confidence</th>
+                      <th className="text-center p-3 text-xs font-medium text-muted-foreground w-[70px] hidden md:table-cell">Risk</th>
+                      <th className="text-right p-3 text-xs font-medium text-muted-foreground w-[100px] hidden md:table-cell">Mkt Cap</th>
+                      <th className="text-center p-3 text-xs font-medium text-muted-foreground w-[70px]"></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -388,29 +388,29 @@ export default function PredictionHub() {
                       >
                         <td className="p-3 text-xs text-muted-foreground font-mono">{idx + 1}</td>
                         <td className="p-3">
-                          <div className="flex items-center gap-2.5">
+                          <div className="flex items-center gap-2">
                             <div className={cn(
-                              "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold",
+                              "w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0",
                               crypto.bias === 'bullish' ? 'bg-success/15 text-success' :
                               crypto.bias === 'bearish' ? 'bg-danger/15 text-danger' : 'bg-warning/15 text-warning'
                             )}>
                               {crypto.symbol.slice(0, 2).toUpperCase()}
                             </div>
-                            <div>
-                              <div className="font-medium text-sm flex items-center gap-1.5">
+                            <div className="min-w-0">
+                              <div className="font-medium text-sm truncate flex items-center gap-1">
                                 {crypto.name}
                                 {crypto.hasCachedPrediction && (
-                                  <Zap className="w-3 h-3 text-primary" />
+                                  <Zap className="w-3 h-3 text-primary shrink-0" />
                                 )}
                               </div>
-                              <div className="text-xs text-muted-foreground">{crypto.symbol.toUpperCase()}</div>
+                              <div className="text-[10px] text-muted-foreground">{crypto.symbol.toUpperCase()}</div>
                             </div>
                           </div>
                         </td>
-                        <td className="p-3 text-right font-mono text-sm">{formatPrice(crypto.price)}</td>
+                        <td className="p-3 text-right font-mono text-sm tabular-nums">{formatPrice(crypto.price)}</td>
                         <td className="p-3 text-right">
                           <span className={cn(
-                            "font-mono text-sm font-medium",
+                            "font-mono text-xs font-medium tabular-nums",
                             crypto.change24h >= 0 ? "text-success" : "text-danger"
                           )}>
                             {crypto.change24h >= 0 ? '+' : ''}{crypto.change24h.toFixed(2)}%
@@ -434,21 +434,21 @@ export default function PredictionHub() {
                         </td>
                         <td className="p-3 text-center">
                           <div className="flex items-center justify-center gap-1.5">
-                            <div className="w-12 h-1.5 bg-muted rounded-full overflow-hidden">
+                            <div className="w-10 h-1.5 bg-muted rounded-full overflow-hidden">
                               <div
                                 className={cn(
-                                  "h-full rounded-full",
+                                  "h-full rounded-full transition-all duration-500",
                                   crypto.confidence >= 70 ? "bg-success" :
                                   crypto.confidence >= 55 ? "bg-warning" : "bg-danger"
                                 )}
                                 style={{ width: `${crypto.confidence}%` }}
                               />
                             </div>
-                            <span className="text-xs font-mono">{crypto.confidence}%</span>
+                            <span className="text-xs font-mono tabular-nums w-8 text-right">{crypto.confidence}%</span>
                           </div>
                         </td>
                         <td className="p-3 text-center hidden md:table-cell">
-                          <Badge variant="outline" className={cn("text-[10px]",
+                          <Badge variant="outline" className={cn("text-[10px] capitalize",
                             crypto.riskLevel === 'low' ? 'text-success border-success/30' :
                             crypto.riskLevel === 'medium' ? 'text-warning border-warning/30' :
                             'text-danger border-danger/30'
@@ -456,14 +456,11 @@ export default function PredictionHub() {
                             {crypto.riskLevel}
                           </Badge>
                         </td>
-                        <td className="p-3 text-right hidden md:table-cell text-xs text-muted-foreground font-mono">
+                        <td className="p-3 text-right hidden md:table-cell text-xs text-muted-foreground font-mono tabular-nums">
                           {crypto.marketCap > 0 ? formatCompact(crypto.marketCap) : '—'}
                         </td>
                         <td className="p-3 text-center">
-                          <Button variant="ghost" size="sm" className="h-7 px-2 text-xs gap-1 text-primary hover:text-primary">
-                            <Eye className="w-3 h-3" />
-                            View
-                          </Button>
+                          <ChevronRight className="w-4 h-4 text-muted-foreground mx-auto" />
                         </td>
                       </tr>
                     ))}
