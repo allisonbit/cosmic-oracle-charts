@@ -47,6 +47,10 @@ const RiskDisclaimer = lazy(() => import("./pages/RiskDisclaimer"));
 const Scanner = lazy(() => import("./pages/Scanner"));
 const Admin = lazy(() => import("./pages/Admin"));
 const MyHub = lazy(() => import("./pages/MyHub"));
+const MyWatchlistPage = lazy(() => import("./pages/MyWatchlist"));
+const MyPortfolioPage = lazy(() => import("./pages/MyPortfolio"));
+const MyAlertsPage = lazy(() => import("./pages/MyAlerts"));
+const MySettingsPage = lazy(() => import("./pages/MySettings"));
 
 // Loading fallback component
 const PageLoader = memo(function PageLoader() {
