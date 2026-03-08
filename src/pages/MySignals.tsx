@@ -123,7 +123,7 @@ function SignalsContent() {
 
         {/* Summary Stats */}
         {signals.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-3">
             <Card className="border-border"><CardContent className="p-3">
               <p className="text-[10px] text-muted-foreground uppercase">Total Signals</p>
               <p className="text-lg font-bold">{signals.length}</p>
