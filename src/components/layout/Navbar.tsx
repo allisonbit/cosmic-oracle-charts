@@ -12,10 +12,8 @@ const desktopNavItems = [
   { path: "/sentiment", label: "Sentiment" },
   { path: "/strength", label: "Strength" },
   { path: "/explorer", label: "Explorer" },
-  { path: "/portfolio", label: "Scanner" },
   { path: "/factory", label: "Factory" },
   { path: "/chain/ethereum", label: "Chains" },
-  { path: "/market/best-crypto-to-buy-today", label: "Hot Picks" },
   { path: "/insights", label: "Insights" },
 ];
 
