@@ -98,7 +98,7 @@ export function useCryptoFactory(filters?: {
         throw error;
       }
 
-      let { events, onChainActivity, narratives, news, trending, globalStats, timestamp } = data;
+      let { events, onChainActivity, narratives, news, trending, globalStats, fearGreed, topMovers, timestamp } = data;
 
       // Apply filters
       if (filters?.chain && filters.chain !== 'All') {
