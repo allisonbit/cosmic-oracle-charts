@@ -636,7 +636,7 @@ const ExplorerPage = () => {
                       </td>
 
                       {/* MCap */}
-                      <td className="px-2 py-2.5 font-mono text-foreground whitespace-nowrap hidden xl:table-cell">
+                      <td className="px-2 py-2.5 font-mono text-foreground whitespace-nowrap hidden 2xl:table-cell">
                         {formatCompact(token.marketCap)}
                       </td>
 
