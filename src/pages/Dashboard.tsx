@@ -11,7 +11,6 @@ import { EnhancedTrendingAlerts } from "@/components/dashboard/EnhancedTrendingA
 import { EnhancedVolumeLeaders } from "@/components/dashboard/EnhancedVolumeLeaders";
 import { EnhancedDominanceChart } from "@/components/dashboard/EnhancedDominanceChart";
 import { EnhancedQuickActions } from "@/components/dashboard/EnhancedQuickActions";
-import { CoinDetailModal } from "@/components/dashboard/CoinDetailModal";
 import { EnhancedMarketInsightsPanel } from "@/components/dashboard/EnhancedMarketInsightsPanel";
 import { EnhancedTopPerformers } from "@/components/dashboard/EnhancedTopPerformers";
 import { StrengthMeterWidget } from "@/components/dashboard/StrengthMeterWidget";
@@ -24,7 +23,7 @@ import { MarketRegimeIndicator } from "@/components/dashboard/MarketRegimeIndica
 import { WhaleActivityPanel } from "@/components/dashboard/WhaleActivityPanel";
 import { OptionsFlowPanel } from "@/components/dashboard/OptionsFlowPanel";
 import { CustomAlertsPanel } from "@/components/dashboard/CustomAlertsPanel";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { SidebarAd, InArticleAd } from "@/components/ads";
 import { DashboardSchema, DashboardSEOContent, HowToReadDashboard, WhatMakesUsDifferent, RelatedMarketInsights, DashboardHowItWorks } from "@/components/seo";
 
