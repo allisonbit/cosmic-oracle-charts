@@ -468,11 +468,15 @@ export default function Scanner() {
           {/* Token Table */}
           <Card className="bg-card/50 border-border/30 overflow-hidden">
             {/* Table header */}
-            <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_100px] md:grid-cols-[2.5fr_1fr_1fr_1fr_1fr_120px] items-center gap-2 px-4 py-2.5 bg-muted/30 border-b border-border/30 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            <div className="grid grid-cols-[2fr_1fr_1fr_1fr_100px] md:grid-cols-[2.5fr_0.8fr_0.7fr_0.7fr_0.8fr_0.8fr_0.7fr_0.8fr_0.6fr_110px] items-center gap-1 px-3 py-2.5 bg-muted/30 border-b border-border/30 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
               <span>Token</span>
               <span className="text-right">Price</span>
-              <span className="text-right">24h</span>
+              <span className="text-right hidden md:block">1H</span>
+              <span className="text-right">24H</span>
               <span className="text-right hidden md:block">Volume</span>
+              <span className="text-right hidden md:block">Liquidity</span>
+              <span className="text-right hidden md:block">Txns</span>
+              <span className="text-right hidden md:block">Buy %</span>
               <span className="text-right hidden md:block">MCap</span>
               <span className="text-right">Strength</span>
             </div>
