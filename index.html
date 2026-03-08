@@ -316,10 +316,10 @@
 
     <script type="module" src="/src/main.tsx" onerror="window.__oracleBoot && window.__oracleBoot.showError('entry script failed')"></script>
     
-    <!-- Defer Google Analytics only (AdSense now in <head>) -->
+    <!-- Google Analytics 4 - Enhanced Configuration -->
     <script>
       function loadDeferredScripts() {
-        // Google Analytics
+        // Google Analytics 4
         var ga = document.createElement('script');
         ga.src = 'https://www.googletagmanager.com/gtag/js?id=G-B2T2RX6RHB';
         ga.async = true;
@@ -328,13 +328,36 @@
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', 'G-B2T2RX6RHB', { send_page_view: true, cookie_flags: 'SameSite=None;Secure' });
+        gtag('config', 'G-B2T2RX6RHB', {
+          send_page_view: true,
+          cookie_flags: 'SameSite=None;Secure',
+          allow_google_signals: true,
+          allow_ad_personalization_signals: true,
+          link_attribution: true,
+          anonymize_ip: false
+        });
+        
+        // Track core web vitals
+        if ('PerformanceObserver' in window) {
+          try {
+            new PerformanceObserver(function(list) {
+              list.getEntries().forEach(function(entry) {
+                gtag('event', 'web_vitals', {
+                  event_category: 'Web Vitals',
+                  event_label: entry.name,
+                  value: Math.round(entry.startTime),
+                  non_interaction: true
+                });
+              });
+            }).observe({type: 'largest-contentful-paint', buffered: true});
+          } catch(e) {}
+        }
       }
       
       if ('requestIdleCallback' in window) {
-        requestIdleCallback(loadDeferredScripts, { timeout: 3000 });
+        requestIdleCallback(loadDeferredScripts, { timeout: 2000 });
       } else {
-        setTimeout(loadDeferredScripts, 2000);
+        setTimeout(loadDeferredScripts, 1500);
       }
     </script>
   </body>
