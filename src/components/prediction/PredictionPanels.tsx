@@ -164,6 +164,52 @@ export function TechnicalIndicatorsPanel({ data }: TechnicalIndicatorsPanelProps
             </div>
           </div>
         )}
+
+        {/* Stochastic Oscillator */}
+        {(ti as any).stochastic && (
+          <div className="p-3 bg-muted/30 rounded-lg">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium">Stochastic</span>
+              <Badge variant={(ti as any).stochastic.signal === 'oversold' ? 'default' : (ti as any).stochastic.signal === 'overbought' ? 'destructive' : 'secondary'} className="text-xs">
+                {(ti as any).stochastic.signal}
+              </Badge>
+            </div>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div>
+                <span className="text-muted-foreground">%K</span>
+                <p className="font-mono">{(ti as any).stochastic.k}</p>
+              </div>
+              <div>
+                <span className="text-muted-foreground">%D</span>
+                <p className="font-mono">{(ti as any).stochastic.d}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ATR & VWAP & OBV */}
+        <div className="grid grid-cols-3 gap-2">
+          {(ti as any).atr != null && (
+            <div className="p-2 bg-muted/30 rounded-lg text-center">
+              <span className="text-xs text-muted-foreground block">ATR</span>
+              <p className="font-mono text-sm">${(ti as any).atr.toLocaleString()}</p>
+            </div>
+          )}
+          {(ti as any).vwap != null && (
+            <div className="p-2 bg-muted/30 rounded-lg text-center">
+              <span className="text-xs text-muted-foreground block">VWAP</span>
+              <p className="font-mono text-sm">${(ti as any).vwap.toLocaleString()}</p>
+            </div>
+          )}
+          {(ti as any).obv != null && (
+            <div className="p-2 bg-muted/30 rounded-lg text-center">
+              <span className="text-xs text-muted-foreground block">OBV</span>
+              <p className={cn("text-sm font-medium", (ti as any).obv === 'accumulation' ? 'text-green-500' : 'text-red-500')}>
+                {(ti as any).obv === 'accumulation' ? '↑ Acc' : '↓ Dist'}
+              </p>
+            </div>
+          )}
+        </div>
       </CardContent>
     </Card>
   );
