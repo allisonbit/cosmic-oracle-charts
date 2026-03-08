@@ -366,9 +366,6 @@ export default function FactoryNarratives() {
             {/* Top Crypto Predictions */}
             <TopCryptoPredictionLinks />
 
-            {/* Market Pages */}
-            <MarketPagesLinks />
-
             {/* Trading Tips */}
             <Card className="glass-card">
               <CardContent className="p-4">

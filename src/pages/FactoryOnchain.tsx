@@ -355,9 +355,6 @@ export default function FactoryOnchain() {
             {/* Top Crypto Predictions */}
             <TopCryptoPredictionLinks />
 
-            {/* Market Pages */}
-            <MarketPagesLinks />
-
             {/* Interpretation Guide */}
             <Card className="glass-card">
               <CardContent className="p-4">

@@ -415,9 +415,6 @@ export default function FactoryNews() {
             {/* Top Crypto Predictions */}
             <TopCryptoPredictionLinks />
 
-            {/* Market Pages */}
-            <MarketPagesLinks />
-
             {/* News Trading Tips */}
             <Card className="glass-card">
               <CardContent className="p-4">

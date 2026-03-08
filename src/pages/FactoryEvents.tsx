@@ -393,9 +393,6 @@ export default function FactoryEvents() {
             {/* Top Crypto Predictions */}
             <TopCryptoPredictionLinks />
 
-            {/* Market Pages */}
-            <MarketPagesLinks />
-
             {/* How to Use */}
             <Card className="glass-card">
               <CardContent className="p-4">
