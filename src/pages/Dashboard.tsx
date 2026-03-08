@@ -157,7 +157,7 @@ function SortableCryptoTable({ coins }: { coins: any[] }) {
             {visible.map((coin: any) => (
               <tr
                 key={coin.symbol}
-                onClick={() => onCoinClick(coin)}
+                onClick={() => navigate(`/price-prediction/${coin.name?.toLowerCase() || coin.symbol?.toLowerCase()}/daily`)}
                 className="border-b border-border/30 hover:bg-primary/5 cursor-pointer transition-colors"
               >
                 <td className="py-2.5 sm:py-3 px-1.5 sm:px-3 text-muted-foreground text-xs sm:text-sm">{coin.rank}</td>
