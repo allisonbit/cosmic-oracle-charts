@@ -173,22 +173,22 @@ export default function MyDCAPlanner() {
       <Layout>
         <SEO title="DCA Planner – Dollar Cost Average Strategy" description="Plan and track DCA strategies with projections, buy recording, and performance analytics." />
         <div className="container mx-auto px-4 py-6 space-y-6 max-w-6xl">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-primary/15 border border-primary/20"><Repeat className="w-6 h-6 text-primary" /></div>
+              <div className="p-2 sm:p-2.5 rounded-xl bg-primary/15 border border-primary/20"><Repeat className="w-5 h-5 sm:w-6 sm:h-6 text-primary" /></div>
               <div>
-                <h1 className="text-2xl font-bold">DCA Planner</h1>
-                <p className="text-sm text-muted-foreground">{plans.length} plans · {activePlans} active · Automate your strategy</p>
+                <h1 className="text-xl sm:text-2xl font-bold">DCA Planner</h1>
+                <p className="text-xs sm:text-sm text-muted-foreground">{plans.length} plans · {activePlans} active · Automate your strategy</p>
               </div>
             </div>
-            <Button onClick={() => setShowForm(!showForm)} className="gap-2">
+            <Button onClick={() => setShowForm(!showForm)} className="gap-2 w-full sm:w-auto">
               {showForm ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
               {showForm ? 'Cancel' : 'New Plan'}
             </Button>
           </div>
 
           {/* Summary */}
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-3">
             <Card className="border-border"><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Invested</p>
               <p className="text-lg font-bold font-mono">{formatCompact(totalInvested)}</p>

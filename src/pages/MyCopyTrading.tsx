@@ -149,15 +149,15 @@ export default function MyCopyTrading() {
         <SEO title="Copy Trading – Follow Top Traders" description="Discover top crypto traders, see their predictions, win rates, and follow their strategies." />
         <div className="container mx-auto px-4 py-6 space-y-6 max-w-6xl">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-accent/15 border border-accent/20"><Users className="w-6 h-6 text-accent" /></div>
+            <div className="p-2 sm:p-2.5 rounded-xl bg-accent/15 border border-accent/20"><Users className="w-5 h-5 sm:w-6 sm:h-6 text-accent" /></div>
             <div>
-              <h1 className="text-2xl font-bold">Copy Trading</h1>
-              <p className="text-sm text-muted-foreground">Follow top traders · See their calls · Learn strategies</p>
+              <h1 className="text-xl sm:text-2xl font-bold">Copy Trading</h1>
+              <p className="text-xs sm:text-sm text-muted-foreground">Follow top traders · See their calls · Learn strategies</p>
             </div>
           </div>
 
           {/* Summary Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-3">
             <Card className="border-border"><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Following</p>
               <p className="text-lg font-bold">{totalFollowing}</p>
