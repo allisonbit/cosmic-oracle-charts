@@ -12,6 +12,7 @@ import { usePageTracking } from "@/hooks/usePageTracking";
 import { useSearchEnginePing } from "@/hooks/useSearchEnginePing";
 import { AppErrorBoundary } from "@/components/system/AppErrorBoundary";
 import { GlobalSchemas } from "@/components/seo/RichSchemas";
+import { AIChatBubble } from "@/components/chat/AIChatBubble";
 
 // Eager load critical pages
 import Index from "./pages/Index";
