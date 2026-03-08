@@ -584,7 +584,7 @@ const ExplorerPage = () => {
                       </td>
 
                       {/* Makers */}
-                      <td className="px-2 py-2.5 text-muted-foreground whitespace-nowrap">
+                      <td className="px-2 py-2.5 text-muted-foreground whitespace-nowrap hidden md:table-cell">
                         {(token.makers || 0).toLocaleString()}
                       </td>
 
