@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Bell, Plus, Trash2, ArrowUp, ArrowDown, Loader2, Check } from "lucide-react";
+import { Bell, Plus, Trash2, ArrowUp, ArrowDown, Loader2, Check, Crown, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -19,8 +19,10 @@ interface Alert {
   note: string | null;
 }
 
+const FREE_ALERT_LIMIT = 5;
+
 export function MyAlerts() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -29,6 +31,10 @@ export function MyAlerts() {
   const [condition, setCondition] = useState<"above" | "below">("above");
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
+
+  const isPremium = (profile as any)?.is_premium === true;
+  const activeAlerts = alerts.filter(a => !a.is_triggered);
+  const atLimit = !isPremium && activeAlerts.length >= FREE_ALERT_LIMIT;
 
   const fetchAlerts = useCallback(async () => {
     if (!user) return;
@@ -45,6 +51,10 @@ export function MyAlerts() {
 
   const addAlert = async () => {
     if (!user || !symbol || !price) return;
+    if (atLimit) {
+      toast.error(`Free users can set up to ${FREE_ALERT_LIMIT} active alerts. Upgrade to Premium for unlimited!`);
+      return;
+    }
     setSaving(true);
     try {
       const { error } = await supabase.from("user_alerts").insert({
@@ -80,10 +90,28 @@ export function MyAlerts() {
 
   return (
     <div className="space-y-6">
+      {/* Alert limit banner */}
+      {!isPremium && (
+        <div className="flex items-center gap-3 p-4 rounded-xl bg-accent/10 border border-accent/20">
+          <Crown className="w-5 h-5 text-accent shrink-0" />
+          <div className="flex-1">
+            <p className="text-sm text-foreground">
+              <span className="font-semibold">{activeAlerts.length}/{FREE_ALERT_LIMIT}</span> alerts used on Free plan.
+              {atLimit && " Upgrade to Premium for unlimited alerts + priority AI chat."}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Add alert button */}
       {!showForm && (
-        <Button onClick={() => setShowForm(true)} className="gap-2">
-          <Plus className="w-4 h-4" /> New Alert
+        <Button
+          onClick={() => atLimit ? toast.error("Alert limit reached. Upgrade to Premium!") : setShowForm(true)}
+          className="gap-2"
+          variant={atLimit ? "outline" : "default"}
+        >
+          {atLimit ? <Lock className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+          {atLimit ? "Upgrade to Add More" : "New Alert"}
         </Button>
       )}
 
@@ -168,6 +196,11 @@ export function MyAlerts() {
                   </div>
                   {alert.note && (
                     <p className="text-xs text-muted-foreground mt-1">{alert.note}</p>
+                  )}
+                  {alert.is_triggered && alert.triggered_at && (
+                    <p className="text-xs text-success mt-1">
+                      ✓ Triggered {new Date(alert.triggered_at).toLocaleString()}
+                    </p>
                   )}
                 </div>
               </div>
