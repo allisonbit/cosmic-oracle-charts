@@ -56,7 +56,9 @@ export function PredictionLeaderboard() {
 
         const entries: LeaderboardEntry[] = data.map((p: CachedPrediction) => {
           const predData = p.prediction_data as any;
-          const predictedPrice = predData?.priceTargets?.moderate || predData?.priceTargets?.conservative || p.current_price || 0;
+          const rawTarget = predData?.priceTargets?.moderate || predData?.priceTargets?.conservative;
+          const predictedPrice = typeof rawTarget === 'number' ? rawTarget : 
+            (typeof rawTarget?.high === 'number' ? rawTarget.high : (p.current_price || 0));
           const isExpired = new Date(p.expires_at) < new Date();
 
           // Simulate actual price for expired predictions (in production, fetch from price API)
@@ -130,7 +132,8 @@ export function PredictionLeaderboard() {
 
   const visible = expanded ? filtered : filtered.slice(0, 8);
 
-  const formatPrice = (price: number) => {
+  const formatPrice = (price: number | null | undefined) => {
+    if (price == null || typeof price !== 'number' || isNaN(price)) return '—';
     if (price >= 1000) return `$${price.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
     if (price >= 1) return `$${price.toFixed(2)}`;
     return `$${price.toPrecision(4)}`;

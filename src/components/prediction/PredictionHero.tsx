@@ -1,7 +1,7 @@
 import { PredictionData } from "@/hooks/usePricePrediction";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, TrendingDown, Minus, Clock, RefreshCw } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus, Clock, RefreshCw, Shield, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface PredictionHeroProps {
@@ -13,116 +13,118 @@ interface PredictionHeroProps {
 
 export function PredictionHero({ coinName, symbol, timeframe, data }: PredictionHeroProps) {
   const timeframeText = timeframe === 'daily' ? 'Today' : timeframe === 'weekly' ? 'This Week' : 'This Month';
-  const timeframeLower = timeframe === 'daily' ? 'today' : timeframe === 'weekly' ? 'this week' : 'this month';
-  
-  const biasColors = {
-    bullish: 'from-green-500/20 to-green-600/10 border-green-500/30',
-    bearish: 'from-red-500/20 to-red-600/10 border-red-500/30',
-    neutral: 'from-yellow-500/20 to-yellow-600/10 border-yellow-500/30'
-  };
-  
   const BiasIcon = data.bias === 'bullish' ? TrendingUp : data.bias === 'bearish' ? TrendingDown : Minus;
-  
   const lastUpdate = new Date(data.timestamp);
-  
+
   return (
-    <div className="space-y-6">
-      {/* Main Prediction Card */}
+    <div className="space-y-4">
+      {/* Main Card */}
       <Card className={cn(
-        "bg-gradient-to-br border-2 backdrop-blur-sm overflow-hidden",
-        biasColors[data.bias]
+        "border-2 overflow-hidden",
+        data.bias === 'bullish' ? 'border-success/30 bg-success/[0.03]' :
+        data.bias === 'bearish' ? 'border-danger/30 bg-danger/[0.03]' :
+        'border-warning/30 bg-warning/[0.03]'
       )}>
-        <CardContent className="p-6 md:p-8">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-            {/* Left: Coin Info & Bias */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
-                  <span className="text-2xl font-bold text-primary">{symbol.charAt(0).toUpperCase()}</span>
+        <CardContent className="p-5 md:p-6">
+          {/* Top row: token + badges */}
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-5">
+            <div>
+              <div className="flex items-center gap-2.5 mb-2">
+                <div className={cn(
+                  "w-10 h-10 rounded-lg flex items-center justify-center text-lg font-bold",
+                  data.bias === 'bullish' ? 'bg-success/15 text-success' :
+                  data.bias === 'bearish' ? 'bg-danger/15 text-danger' :
+                  'bg-warning/15 text-warning'
+                )}>
+                  {symbol.charAt(0).toUpperCase()}
                 </div>
                 <div>
-                  <h1 className="text-2xl md:text-3xl font-bold">{coinName} Price Prediction {timeframeText}</h1>
-                  <p className="text-muted-foreground">{symbol.toUpperCase()} / USD</p>
+                  <h1 className="text-xl md:text-2xl font-bold leading-tight">
+                    {coinName} Prediction {timeframeText}
+                  </h1>
+                  <span className="text-sm text-muted-foreground">{symbol.toUpperCase()} / USD</span>
                 </div>
               </div>
-              
-              <div className="flex flex-wrap items-center gap-3">
-                <Badge 
-                  className={cn(
-                    "text-lg px-4 py-1",
-                    data.bias === 'bullish' ? 'bg-green-500 hover:bg-green-600' :
-                    data.bias === 'bearish' ? 'bg-red-500 hover:bg-red-600' :
-                    'bg-yellow-500 hover:bg-yellow-600'
-                  )}
-                >
-                  <BiasIcon className="h-4 w-4 mr-2" />
+              <div className="flex flex-wrap gap-2 mt-3">
+                <Badge className={cn(
+                  "gap-1 font-semibold",
+                  data.bias === 'bullish' ? 'bg-success hover:bg-success/90 text-success-foreground' :
+                  data.bias === 'bearish' ? 'bg-danger hover:bg-danger/90 text-danger-foreground' :
+                  'bg-warning hover:bg-warning/90 text-warning-foreground'
+                )}>
+                  <BiasIcon className="h-3.5 w-3.5" />
                   {data.bias.toUpperCase()}
                 </Badge>
-                
-                <Badge variant="outline" className="text-lg px-4 py-1">
+                <Badge variant="outline" className="gap-1 font-mono">
+                  <Zap className="w-3 h-3" />
                   {data.confidence}% Confidence
                 </Badge>
-                
-                <Badge 
-                  variant="outline" 
-                  className={cn(
-                    "px-3 py-1",
-                    data.riskLevel === 'low' ? 'border-green-500 text-green-500' :
-                    data.riskLevel === 'medium' ? 'border-yellow-500 text-yellow-500' :
-                    data.riskLevel === 'high' ? 'border-orange-500 text-orange-500' :
-                    'border-red-500 text-red-500'
-                  )}
-                >
+                <Badge variant="outline" className={cn(
+                  "gap-1",
+                  data.riskLevel === 'low' ? 'border-success/40 text-success' :
+                  data.riskLevel === 'medium' ? 'border-warning/40 text-warning' :
+                  data.riskLevel === 'high' ? 'border-danger/40 text-danger' :
+                  'border-danger/60 text-danger'
+                )}>
+                  <Shield className="w-3 h-3" />
                   {data.riskLevel.toUpperCase()} RISK
                 </Badge>
               </div>
             </div>
-            
-            {/* Right: Current Price & Probabilities */}
-            <div className="flex flex-col sm:flex-row gap-4 lg:gap-8">
-              <div className="text-center sm:text-right">
-                <span className="text-sm text-muted-foreground">Current Price</span>
-                <p className="text-3xl md:text-4xl font-bold text-primary">
+
+            {/* Price + Probabilities */}
+            <div className="flex items-start gap-4">
+              <div className="text-right">
+                <div className="text-xs text-muted-foreground mb-0.5">Current Price</div>
+                <div className="text-2xl md:text-3xl font-bold font-mono text-primary">
                   ${data.currentPrice.toLocaleString()}
-                </p>
+                </div>
               </div>
-              
-              <div className="flex gap-4">
-                <div className="text-center p-3 bg-green-500/10 rounded-lg border border-green-500/20">
-                  <TrendingUp className="h-5 w-5 text-green-500 mx-auto mb-1" />
-                  <p className="text-2xl font-bold text-green-500">{data.probabilityBullish}%</p>
-                  <span className="text-xs text-muted-foreground">Bullish</span>
-                </div>
-                <div className="text-center p-3 bg-red-500/10 rounded-lg border border-red-500/20">
-                  <TrendingDown className="h-5 w-5 text-red-500 mx-auto mb-1" />
-                  <p className="text-2xl font-bold text-red-500">{data.probabilityBearish}%</p>
-                  <span className="text-xs text-muted-foreground">Bearish</span>
-                </div>
+            </div>
+          </div>
+
+          {/* Probability bars */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-lg bg-success/10 border border-success/20 p-3">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  <TrendingUp className="w-3 h-3 text-success" /> Bull Probability
+                </span>
+                <span className="text-lg font-bold font-mono text-success">{data.probabilityBullish}%</span>
+              </div>
+              <div className="h-1.5 bg-success/20 rounded-full overflow-hidden">
+                <div className="h-full bg-success rounded-full transition-all" style={{ width: `${data.probabilityBullish}%` }} />
+              </div>
+            </div>
+            <div className="rounded-lg bg-danger/10 border border-danger/20 p-3">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  <TrendingDown className="w-3 h-3 text-danger" /> Bear Probability
+                </span>
+                <span className="text-lg font-bold font-mono text-danger">{data.probabilityBearish}%</span>
+              </div>
+              <div className="h-1.5 bg-danger/20 rounded-full overflow-hidden">
+                <div className="h-full bg-danger rounded-full transition-all" style={{ width: `${data.probabilityBearish}%` }} />
               </div>
             </div>
           </div>
         </CardContent>
       </Card>
       
-      {/* Summary Card */}
-      <Card className="bg-card/50 border-border/50 backdrop-blur-sm">
-        <CardContent className="p-6">
-          <h2 className="text-xl font-semibold mb-3">
-            {coinName} Prediction Summary {timeframeText}
-          </h2>
-          <p className="text-muted-foreground leading-relaxed">
-            {data.summary}
-          </p>
-          
-          <div className="flex flex-wrap items-center gap-4 mt-4 pt-4 border-t border-border/50">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Clock className="h-4 w-4" />
-              <span>Last updated: {lastUpdate.toLocaleString()}</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <RefreshCw className="h-4 w-4" />
-              <span>Updates {timeframe === 'daily' ? 'every 5 minutes' : timeframe === 'weekly' ? 'every 30 minutes' : 'hourly'}</span>
-            </div>
+      {/* Summary */}
+      <Card className="bg-card border-border">
+        <CardContent className="p-5">
+          <h2 className="font-semibold mb-2">{coinName} Analysis Summary</h2>
+          <p className="text-sm text-muted-foreground leading-relaxed">{data.summary}</p>
+          <div className="flex flex-wrap items-center gap-3 mt-3 pt-3 border-t border-border text-xs text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <Clock className="h-3 w-3" />
+              Updated: {lastUpdate.toLocaleTimeString()}
+            </span>
+            <span className="flex items-center gap-1">
+              <RefreshCw className="h-3 w-3" />
+              Auto-refreshes {timeframe === 'daily' ? 'every 5 min' : timeframe === 'weekly' ? 'every 30 min' : 'hourly'}
+            </span>
           </div>
         </CardContent>
       </Card>
