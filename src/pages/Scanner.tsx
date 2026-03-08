@@ -200,25 +200,25 @@ export default function Scanner() {
 
     // Enrich with CoinGecko price data
     if (priceData?.prices) {
-      priceData.prices.forEach((p: any) => {
+      priceData.prices.forEach((p) => {
         const key = `${p.symbol?.toUpperCase()}-market`;
         const existing = tokenMap.get(key);
         if (existing) {
-          existing.price = p.current_price || existing.price;
-          existing.volume24h = p.total_volume || existing.volume24h;
-          existing.marketCap = p.market_cap || existing.marketCap;
-          existing.change24h = p.price_change_percentage_24h ?? existing.change24h;
+          existing.price = p.price || existing.price;
+          existing.volume24h = p.volume24h || existing.volume24h;
+          existing.marketCap = p.marketCap || existing.marketCap;
+          existing.change24h = p.change24h ?? existing.change24h;
         } else {
           tokenMap.set(key, {
             symbol: p.symbol?.toUpperCase(),
             name: p.name,
             contractAddress: "",
             chain: "multi",
-            price: p.current_price || 0,
-            change24h: p.price_change_percentage_24h || 0,
-            volume24h: p.total_volume || 0,
-            marketCap: p.market_cap || 0,
-            logo: p.image,
+            price: p.price || 0,
+            change24h: p.change24h || 0,
+            volume24h: p.volume24h || 0,
+            marketCap: p.marketCap || 0,
+            logo: "",
             verified: true,
           });
         }
