@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { 
   Waves, TrendingUp, TrendingDown, Clock, Target, ExternalLink, 
-  Copy, Check, ChevronRight, DollarSign, Wallet, ArrowRight,
+  Copy, Check, ChevronDown, DollarSign, Wallet, ArrowRight,
   Activity, Filter, RefreshCw, Globe, Star, BarChart3, Zap
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { useWhaleTracker } from "@/hooks/useWhaleTracker";
+import { Link } from "react-router-dom";
 
 interface AdvancedWhaleTrackerProps {
   onRefresh?: () => void;
