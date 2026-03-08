@@ -689,7 +689,6 @@ export default function Learn() {
               <BlogPostCard 
                 key={post.id} 
                 post={post} 
-                onClick={() => setSelectedPost(post)}
               />
             ))}
           </div>
