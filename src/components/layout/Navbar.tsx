@@ -97,9 +97,12 @@ export function Navbar() {
                   {item.label}
                 </Link>
               ))}
+              <UserMenu className="ml-2" />
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile: User Menu + Hamburger */}
+            <div className="lg:hidden flex items-center gap-2">
+              <UserMenu />
             <button
               type="button"
               className="lg:hidden relative z-[60] h-10 w-10 flex items-center justify-center rounded-lg bg-background/80 border border-primary/20 active:bg-primary/20 touch-manipulation"
