@@ -15,9 +15,13 @@ interface PredictionSEOProps {
 export function PredictionSEO({ coinName, symbol, timeframe, currentPrice, bias, confidence }: PredictionSEOProps) {
   const timeframeText = timeframe === 'daily' ? 'Today' : timeframe === 'weekly' ? 'This Week' : 'This Month';
   const timeframeLower = timeframe === 'daily' ? 'today' : timeframe === 'weekly' ? 'this week' : 'this month';
+  const currentMonth = new Date().toLocaleString('en-US', { month: 'long' });
+  const currentYear = new Date().getFullYear();
+  const dateTag = timeframe === 'monthly' ? `${currentMonth} ${currentYear}` : `${currentMonth} ${new Date().getDate()}, ${currentYear}`;
   
-  const title = `${coinName} (${symbol.toUpperCase()}) Price Prediction ${timeframeText} | Oracle Bull`;
-  const description = `${coinName} price prediction ${timeframeLower}. Expert ${symbol.toUpperCase()} forecast with technical analysis, support/resistance levels, and AI-powered insights. ${bias ? `Current bias: ${bias} with ${confidence}% confidence.` : ''}`;
+  const biasEmoji = bias === 'bullish' ? '📈' : bias === 'bearish' ? '📉' : '➡️';
+  const title = `${coinName} (${symbol.toUpperCase()}) Price Prediction ${timeframeText} ${biasEmoji} ${dateTag}`;
+  const description = `Will ${symbol.toUpperCase()} go up ${timeframeLower}? ${coinName} AI prediction with ${bias || 'neutral'} bias${confidence ? ` (${confidence}% confidence)` : ''}. ${currentPrice ? `Current price: $${currentPrice.toLocaleString()}.` : ''} Free technical analysis, targets & risk levels.`;
   
   const currentDate = new Date();
   const dateStr = currentDate.toISOString().split('T')[0];

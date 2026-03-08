@@ -11,81 +11,95 @@ interface SEOProps {
   canonicalPath?: string;
 }
 
+const currentMonth = new Date().toLocaleString('en-US', { month: 'long' });
+const currentYear = new Date().getFullYear();
+
 const defaultMeta = {
   siteName: SITE_NAME,
-  title: "Oracle Bull | AI-Powered Crypto Forecasts & Blockchain Analytics",
-  description: "Free AI-powered crypto forecasting platform. Real-time price charts, market predictions, whale tracking, sentiment analysis, and blockchain analytics for Bitcoin, Ethereum, Solana, and 1000+ tokens.",
-  keywords: "crypto forecast, bitcoin prediction, ethereum price, crypto analytics, blockchain data, whale tracking, crypto sentiment, AI trading signals, cryptocurrency market, DeFi analytics, token scanner, real-time crypto prices",
+  title: `Best Free AI Crypto Predictions & Forecasts (${currentMonth} ${currentYear}) – Oracle Bull`,
+  description: "Get free AI-powered crypto price predictions for Bitcoin, Ethereum & 1000+ tokens. Real-time charts, whale alerts, sentiment analysis. No signup needed.",
+  keywords: "crypto prediction today, AI crypto forecast, bitcoin price prediction, free crypto signals, crypto analysis tool, best crypto prediction site",
   image: "https://storage.googleapis.com/gpt-engineer-file-uploads/uDg0k7BDXGRxsHZqK6gSbdN9o0l1/social-images/social-1765566965381-WhatsApp Image 2025-12-12 at 10.50.30_d13b6f53.jpg",
   twitterHandle: TWITTER_HANDLE,
   baseUrl: SITE_URL
 };
 
+
 const pageSEO: Record<string, { title: string; description: string; keywords: string }> = {
   "/": {
-    title: "Oracle Bull | AI-Powered Crypto Forecasts & Real-Time Blockchain Analytics",
-    description: "Your cosmic guide to crypto markets. Free AI predictions, real-time price charts, whale tracking, and sentiment analysis for Bitcoin, Ethereum, Solana & 1000+ tokens. No signup required.",
-    keywords: "crypto forecast, AI crypto predictions, bitcoin price prediction, ethereum forecast, real-time crypto, blockchain analytics, free crypto tools"
+    title: `Best Free AI Crypto Predictions & Forecasts (${currentMonth} ${currentYear}) – Oracle Bull`,
+    description: `Get free AI-powered crypto price predictions for Bitcoin, Ethereum & 1000+ tokens. Real-time charts, whale alerts, sentiment analysis. Updated ${currentMonth} ${currentYear}. No signup needed.`,
+    keywords: "crypto prediction today, AI crypto forecast, bitcoin price prediction, free crypto signals, crypto analysis tool, best crypto prediction site"
   },
   "/dashboard": {
-    title: "Crypto Dashboard | Real-Time Market Data & AI Insights | Oracle Bull",
-    description: "Live cryptocurrency dashboard with real-time prices, market momentum, top performers, volume leaders, and AI-powered market insights. Track Bitcoin, Ethereum, and altcoins in one view.",
-    keywords: "crypto dashboard, live crypto prices, market momentum, crypto gainers, volume leaders, AI market analysis, cryptocurrency tracker"
+    title: `Crypto Market Dashboard – Live Prices & Signals (${currentMonth} ${currentYear})`,
+    description: "Live crypto dashboard: real-time prices, top gainers, market momentum, volume leaders & AI insights. Track BTC, ETH & 1000+ altcoins in one view. Free & updated every 30 seconds.",
+    keywords: "crypto dashboard live, real time crypto prices, crypto market today, top crypto gainers today, crypto market cap live"
   },
   "/strength-meter": {
-    title: "Crypto Strength Meter | Real-Time Asset & Chain Strength Rankings | Oracle Bull",
-    description: "Measure and rank cryptocurrency strength in real-time. Compare Bitcoin, Ethereum, Solana, and 100+ assets using weighted momentum, volume, sentiment, and trend analysis. Live auto-refresh.",
-    keywords: "crypto strength meter, currency strength, bitcoin strength, ethereum momentum, crypto ranking, asset strength, chain comparison, market momentum"
+    title: `Crypto Strength Meter – Which Coin Is Strongest Right Now? (${currentMonth} ${currentYear})`,
+    description: "See which crypto is the strongest right now. Real-time strength rankings for Bitcoin, Ethereum, Solana & 100+ assets based on momentum, volume & sentiment. Free tool.",
+    keywords: "crypto strength meter, strongest cryptocurrency today, bitcoin strength index, crypto momentum ranking, best performing crypto"
   },
   "/strength": {
-    title: "Crypto Strength Meter | Real-Time Asset & Chain Strength Rankings | Oracle Bull",
-    description: "Measure and rank cryptocurrency strength in real-time. Compare Bitcoin, Ethereum, Solana, and 100+ assets using weighted momentum, volume, sentiment, and trend analysis. Live auto-refresh.",
-    keywords: "crypto strength meter, currency strength, bitcoin strength, ethereum momentum, crypto ranking, asset strength, chain comparison, market momentum"
+    title: `Crypto Strength Meter – Which Coin Is Strongest Right Now? (${currentMonth} ${currentYear})`,
+    description: "See which crypto is the strongest right now. Real-time strength rankings for Bitcoin, Ethereum, Solana & 100+ assets based on momentum, volume & sentiment. Free tool.",
+    keywords: "crypto strength meter, strongest cryptocurrency today, bitcoin strength index, crypto momentum ranking, best performing crypto"
   },
   "/crypto-factory": {
-    title: "Crypto Factory | Market Events Calendar & On-Chain Intelligence | Oracle Bull",
-    description: "Your centralized crypto intelligence hub. Track token launches, protocol upgrades, whale movements, trending narratives, and market-moving events. Like Forex Factory for cryptocurrency.",
-    keywords: "crypto factory, crypto calendar, token launches, protocol upgrades, whale alerts, crypto events, market news, DeFi updates, narrative tracking"
+    title: "Crypto Factory – Market Events, Whale Alerts & On-Chain Intel",
+    description: "Track every market-moving event: token launches, protocol upgrades, whale movements & trending narratives. Like Forex Factory but for crypto. Updated in real-time.",
+    keywords: "crypto events calendar, crypto factory, upcoming token launches, whale alerts crypto, crypto market events, protocol upgrades"
   },
   "/factory": {
-    title: "Crypto Factory | Market Events Calendar & On-Chain Intelligence | Oracle Bull",
-    description: "Your centralized crypto intelligence hub. Track token launches, protocol upgrades, whale movements, trending narratives, and market-moving events. Like Forex Factory for cryptocurrency.",
-    keywords: "crypto factory, crypto calendar, token launches, protocol upgrades, whale alerts, crypto events, market news, DeFi updates, narrative tracking"
+    title: "Crypto Factory – Market Events, Whale Alerts & On-Chain Intel",
+    description: "Track every market-moving event: token launches, protocol upgrades, whale movements & trending narratives. Like Forex Factory but for crypto. Updated in real-time.",
+    keywords: "crypto events calendar, crypto factory, upcoming token launches, whale alerts crypto, crypto market events, protocol upgrades"
   },
   "/sitemap": {
-    title: "Sitemap | All Pages & Features | Oracle Bull",
-    description: "Complete sitemap of Oracle Bull - navigate to all crypto analytics pages, blockchain dashboards, tools, and educational resources. Find every feature in one place.",
-    keywords: "sitemap, navigation, oracle bull pages, crypto tools directory, blockchain analytics sitemap"
+    title: "Sitemap – All Oracle Bull Pages & Tools",
+    description: "Complete index of Oracle Bull: crypto analytics, blockchain dashboards, AI predictions, educational guides & trading tools. Find every feature.",
+    keywords: "oracle bull sitemap, crypto tools, blockchain analytics"
   },
   "/portfolio": {
-    title: "Wallet Scanner | AI-Powered Portfolio Analysis | Oracle Bull",
-    description: "Scan any EVM or Solana wallet address for AI-powered portfolio analysis. Discover holdings, pump potential, risk levels, and trading opportunities. Free wallet research tool.",
-    keywords: "wallet scanner, crypto portfolio analyzer, wallet tracker, token holdings, pump potential, crypto risk analysis, Solana wallet, EVM wallet"
+    title: "Free Wallet Scanner – Analyze Any Crypto Wallet Instantly",
+    description: "Paste any EVM or Solana wallet address for instant AI analysis. See holdings, hidden gems, risk scores & pump potential. 100% free, no signup.",
+    keywords: "crypto wallet scanner free, wallet analyzer, portfolio tracker, check crypto wallet, solana wallet checker"
   },
   "/sentiment": {
-    title: "Crypto Sentiment Analysis | Social & Whale Tracking | Oracle Bull",
-    description: "Real-time crypto sentiment from Twitter, Reddit, and Telegram. Track whale transactions, fear & greed index, trending topics, and social signals for smarter trading decisions.",
-    keywords: "crypto sentiment, fear greed index, whale alerts, social sentiment, crypto Twitter, Reddit crypto, telegram signals, market sentiment"
+    title: `Crypto Fear & Greed Index + Whale Tracker (Live ${currentMonth} ${currentYear})`,
+    description: "Real-time crypto sentiment: Fear & Greed Index, whale transaction alerts, social buzz from Twitter/Reddit/Telegram & trending topics. Make data-driven trading decisions.",
+    keywords: "crypto fear greed index today, whale alerts crypto, crypto sentiment analysis, crypto social signals, bitcoin sentiment"
   },
   "/explorer": {
-    title: "Token Explorer | Search Any Cryptocurrency | Oracle Bull",
-    description: "Search and analyze any cryptocurrency by name, symbol, or contract address. Get detailed token data, price charts, holder analysis, liquidity metrics, and DeFi usage across all major blockchains.",
-    keywords: "token explorer, crypto search, token analytics, contract address lookup, token holder analysis, liquidity analysis, DeFi tokens"
+    title: "Crypto Token Explorer – Search Any Coin by Name or Contract",
+    description: "Search 10,000+ tokens by name, symbol, or contract address. Get price charts, holder analysis, liquidity depth & DeFi metrics across 30+ blockchains. Free.",
+    keywords: "crypto token explorer, search cryptocurrency, token contract lookup, crypto analysis by address, defi token scanner"
   },
   "/learn": {
-    title: "Learn Crypto | Free Blockchain Education & Daily Insights | Oracle Bull",
-    description: "Free cryptocurrency education with daily AI-generated articles, market insights, and blockchain analysis. Learn about Bitcoin, DeFi, NFTs, technical analysis, and crypto trading strategies.",
-    keywords: "learn crypto, crypto education, blockchain course, bitcoin guide, DeFi tutorial, crypto for beginners, trading education, crypto blog"
+    title: `Learn Crypto Free – Daily Articles & Trading Guides (${currentMonth} ${currentYear})`,
+    description: "Free daily crypto education: AI-written market insights, Bitcoin guides, DeFi tutorials, technical analysis lessons & trading strategies. 2000+ articles available.",
+    keywords: "learn crypto free, crypto education, bitcoin guide for beginners, defi tutorial, crypto trading course free"
   },
   "/insights": {
-    title: "Crypto Market Insights & Analysis | Oracle Bull",
-    description: "Daily cryptocurrency market analysis, on-chain data insights, Ethereum, Bitcoin, Solana, and Base network intelligence. Expert trading research updated every day.",
-    keywords: "crypto analysis, ethereum analysis, bitcoin prediction, solana insights, base network, on-chain data, market sentiment, crypto trading"
+    title: `Crypto Market Analysis Today – AI-Powered Daily Insights (${currentMonth} ${currentYear})`,
+    description: "Daily AI market analysis for Bitcoin, Ethereum, Solana & altcoins. On-chain data, technical indicators & expert research. Updated every day, always free.",
+    keywords: "crypto analysis today, daily crypto insights, bitcoin market analysis, ethereum analysis today, crypto research"
   },
   "/contact": {
-    title: "Contact Oracle Bull | Community & Token Information",
-    description: "Connect with the Oracle Bull community on Twitter and Telegram. View Oracle token ($ORACLE) information including price, market cap, and contract address on Ethereum.",
-    keywords: "Oracle token, Oracle crypto, contact Oracle, Oracle community, Oracle Telegram, Oracle Twitter"
+    title: "Contact Oracle Bull – Get Support & Join Our Community",
+    description: "Reach the Oracle Bull team via email, Twitter or Telegram. Join 50,000+ traders using our free AI crypto analytics platform. Quick response guaranteed.",
+    keywords: "contact oracle bull, oracle bull support, oracle bull telegram, crypto community"
+  },
+  "/predictions": {
+    title: `AI Crypto Price Predictions – BTC, ETH & Altcoin Forecasts (${currentMonth} ${currentYear})`,
+    description: "Browse AI-powered price predictions for Bitcoin, Ethereum, Solana & 100+ tokens. Daily, weekly & monthly forecasts with confidence scores and bull/bear targets.",
+    keywords: "crypto price prediction, bitcoin forecast today, ethereum prediction, altcoin predictions, AI crypto forecast"
+  },
+  "/about": {
+    title: "About Oracle Bull – Free AI Crypto Analytics Platform",
+    description: "Oracle Bull is a free AI-powered crypto forecasting platform used by 50,000+ traders. Real-time predictions, whale tracking & sentiment analysis for 1000+ tokens.",
+    keywords: "about oracle bull, AI crypto platform, free crypto analytics"
   }
 };
 
@@ -94,12 +108,16 @@ export function SEO({ title, description, keywords, image, type = "website", can
   const currentPath = location.pathname;
   
   // Get page-specific or default SEO
-  const pageMeta = pageSEO[currentPath] || (currentPath.includes("/chain/") ? {
-    title: `${currentPath.split("/chain/")[1]?.charAt(0).toUpperCase()}${currentPath.split("/chain/")[1]?.slice(1) || "Blockchain"} Analytics | Real-Time Chain Data | Oracle Bull`,
-    description: `Comprehensive ${currentPath.split("/chain/")[1] || "blockchain"} analytics with real-time metrics, AI price predictions, whale tracking, token discovery, and DeFi data. Advanced chain health monitoring and risk analysis.`,
-    keywords: `${currentPath.split("/chain/")[1]} analytics, ${currentPath.split("/chain/")[1]} price, ${currentPath.split("/chain/")[1]} tokens, ${currentPath.split("/chain/")[1]} DeFi, blockchain data, chain metrics`
-  } : currentPath.includes("/insights/") ? {
-    title: "Crypto Insight Article | Oracle Bull",
+  const pageMeta = pageSEO[currentPath] || (currentPath.includes("/chain/") ? (() => {
+    const chainSlug = currentPath.split("/chain/")[1] || "blockchain";
+    const chainDisplay = chainSlug.charAt(0).toUpperCase() + chainSlug.slice(1);
+    return {
+      title: `${chainDisplay} Analytics – Live Price, Whale Alerts & DeFi Data (${currentMonth} ${currentYear})`,
+      description: `Real-time ${chainDisplay} blockchain analytics: price charts, whale tracking, token discovery, risk analysis & AI predictions. Free ${chainDisplay} dashboard updated every 30 seconds.`,
+      keywords: `${chainSlug} analytics, ${chainSlug} price today, ${chainSlug} whale alerts, ${chainSlug} DeFi, ${chainSlug} tokens, ${chainSlug} prediction`
+    };
+  })() : currentPath.includes("/insights/") ? {
+    title: `Crypto Insight – Expert Market Analysis | Oracle Bull`,
     description: "Expert cryptocurrency market analysis and trading intelligence. Deep dive into blockchain data, market trends, and investment opportunities.",
     keywords: "crypto analysis, market insight, trading research, blockchain intelligence"
   } : {
