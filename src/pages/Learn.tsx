@@ -105,7 +105,7 @@ function BlogPostCard({ post }: { post: BlogPost }) {
   
   return (
     <Link 
-      to={`/insights/${post.slug || post.articleId}`}
+      to={`/insights/${post.slug || post.id}`}
       className="glass-card hover:border-primary/40 transition-all cursor-pointer group overflow-hidden h-full flex flex-col active:scale-[0.98] touch-manipulation rounded-xl border border-border/50"
     >
       <div className="relative h-32 sm:h-36 overflow-hidden shrink-0">
