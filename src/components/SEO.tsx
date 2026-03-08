@@ -24,9 +24,6 @@ const defaultMeta = {
   baseUrl: SITE_URL
 };
 
-// Dynamic date for freshness signals
-const currentMonth = new Date().toLocaleString('en-US', { month: 'long' });
-const currentYear = new Date().getFullYear();
 
 const pageSEO: Record<string, { title: string; description: string; keywords: string }> = {
   "/": {
