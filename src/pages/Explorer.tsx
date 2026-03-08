@@ -475,8 +475,11 @@ const ExplorerPage = () => {
                   <SortHeader col="change1h" label="1H" className="hidden md:table-cell" />
                   <SortHeader col="change6h" label="6H" className="hidden lg:table-cell" />
                   <SortHeader col="change24h" label="24H" />
+                  <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground text-right hidden md:table-cell">BUYS</th>
+                  <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground text-right hidden md:table-cell">SELLS</th>
                   <SortHeader col="liquidity" label="LIQUIDITY" className="hidden lg:table-cell" />
                   <SortHeader col="marketCap" label="MCAP" className="hidden xl:table-cell" />
+                  <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground text-right hidden xl:table-cell">FDV</th>
                   <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground w-8"></th>
                 </tr>
               </thead>
