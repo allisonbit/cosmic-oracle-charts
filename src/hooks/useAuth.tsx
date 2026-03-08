@@ -9,6 +9,8 @@ interface UserProfile {
   email: string | null;
   watchlist: string[];
   preferences: Record<string, unknown>;
+  is_premium: boolean;
+  email_notifications: boolean;
 }
 
 interface AuthContextType {
