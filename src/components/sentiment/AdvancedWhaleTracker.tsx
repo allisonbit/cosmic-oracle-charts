@@ -31,7 +31,7 @@ const WHALE_TIERS: WhaleTier[] = [
 
 export function AdvancedWhaleTracker({ onRefresh }: AdvancedWhaleTrackerProps) {
   const [selectedChain, setSelectedChain] = useState('ethereum');
-  const [selectedTransaction, setSelectedTransaction] = useState<any>(null);
+  const [expandedTx, setExpandedTx] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'buy' | 'sell'>('all');
   const [copied, setCopied] = useState(false);
   
