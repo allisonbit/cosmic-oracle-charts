@@ -27,7 +27,21 @@ serve(async (req) => {
 
     console.log('Fetching comprehensive crypto factory data...');
 
-    // Fetch from multiple news sources and trending data
+    // Fetch from multiple sources with individual error handling
+    const safeFetch = async (url: string) => {
+      try {
+        const res = await fetch(url);
+        if (!res.ok) {
+          console.warn(`Fetch failed (${res.status}): ${url}`);
+          return null;
+        }
+        return res;
+      } catch (e) {
+        console.warn(`Fetch error: ${url}`, e);
+        return null;
+      }
+    };
+
     const [
       trendingRes, 
       globalRes, 
@@ -35,32 +49,31 @@ serve(async (req) => {
       newsRes2,
       newsRes3
     ] = await Promise.all([
-      fetch('https://api.coingecko.com/api/v3/search/trending'),
-      fetch('https://api.coingecko.com/api/v3/global'),
-      // Multiple news feeds to get comprehensive coverage
-      fetch('https://min-api.cryptocompare.com/data/v2/news/?lang=EN&sortOrder=popular&limit=50'),
-      fetch('https://min-api.cryptocompare.com/data/v2/news/?lang=EN&sortOrder=latest&limit=30'),
-      fetch('https://min-api.cryptocompare.com/data/v2/news/?lang=EN&categories=BTC,ETH,Altcoin,Blockchain,Trading&limit=30'),
+      safeFetch('https://api.coingecko.com/api/v3/search/trending'),
+      safeFetch('https://api.coingecko.com/api/v3/global'),
+      safeFetch('https://min-api.cryptocompare.com/data/v2/news/?lang=EN&sortOrder=popular&limit=50'),
+      safeFetch('https://min-api.cryptocompare.com/data/v2/news/?lang=EN&sortOrder=latest&limit=30'),
+      safeFetch('https://min-api.cryptocompare.com/data/v2/news/?lang=EN&categories=BTC,ETH,Altcoin,Blockchain,Trading&limit=30'),
     ]);
 
     let trending: any[] = [];
     let globalData: any = {};
     let allNews: any[] = [];
 
-    if (trendingRes.ok) {
+    if (trendingRes?.ok) {
       const trendingData = await trendingRes.json();
       trending = trendingData.coins || [];
     }
 
-    if (globalRes.ok) {
+    if (globalRes?.ok) {
       const global = await globalRes.json();
       globalData = global.data || {};
     }
 
     // Collect news from all sources
-    const newsSources = [newsRes1, newsRes2, newsRes3];
+    const newsSources = [newsRes1, newsRes2, newsRes3].filter(Boolean);
     for (const res of newsSources) {
-      if (res.ok) {
+      if (res?.ok) {
         const data = await res.json();
         if (data.Data) {
           allNews = [...allNews, ...data.Data];
