@@ -4,6 +4,7 @@ import { Menu, X, TrendingUp, BookOpen, Globe, Radio, Layers, Wallet, Home, Zap,
 import { cn } from "@/lib/utils";
 import oracleLogo from "@/assets/oracle-bull-logo.jpg";
 import { GlobalSearch } from "@/components/search/GlobalSearch";
+import { UserMenu } from "@/components/auth/UserMenu";
 
 const desktopNavItems = [
   { path: "/", label: "Home" },
