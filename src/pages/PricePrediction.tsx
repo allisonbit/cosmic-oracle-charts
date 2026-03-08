@@ -270,6 +270,9 @@ export default function PricePrediction() {
                   } : undefined}
                 />
                 
+                {/* Market Data Overview */}
+                <MarketDataPanel data={data} coinName={crypto.name} />
+                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <PriceTargetsPanel data={data} timeframe={validTimeframe} />
                   <TechnicalIndicatorsPanel data={data} />
