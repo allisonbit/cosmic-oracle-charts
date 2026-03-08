@@ -25,6 +25,7 @@ import { OptionsFlowPanel } from "@/components/dashboard/OptionsFlowPanel";
 import { CustomAlertsPanel } from "@/components/dashboard/CustomAlertsPanel";
 import { Link, useNavigate } from "react-router-dom";
 import { SidebarAd, InArticleAd } from "@/components/ads";
+import { CoinDetailModal } from "@/components/dashboard/CoinDetailModal";
 import { DashboardSchema, DashboardSEOContent, HowToReadDashboard, WhatMakesUsDifferent, RelatedMarketInsights, DashboardHowItWorks } from "@/components/seo";
 
 function formatNumber(num: number): string {
