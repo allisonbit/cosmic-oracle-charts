@@ -504,7 +504,7 @@ const ExplorerPage = () => {
                         if (token.contractAddress) {
                           navigate(`/explorer/${token.chain || selectedChain}/${token.contractAddress}`);
                         } else if (token.coingeckoId) {
-                          navigate(`/price-prediction/${token.symbol.toLowerCase()}/daily`);
+                          navigate(`/explorer/${token.chain || selectedChain}/${token.coingeckoId}`);
                         }
                       }}
                     >
