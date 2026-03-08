@@ -56,7 +56,9 @@ export function PredictionLeaderboard() {
 
         const entries: LeaderboardEntry[] = data.map((p: CachedPrediction) => {
           const predData = p.prediction_data as any;
-          const predictedPrice = predData?.priceTargets?.moderate || predData?.priceTargets?.conservative || p.current_price || 0;
+          const rawTarget = predData?.priceTargets?.moderate || predData?.priceTargets?.conservative;
+          const predictedPrice = typeof rawTarget === 'number' ? rawTarget : 
+            (typeof rawTarget?.high === 'number' ? rawTarget.high : (p.current_price || 0));
           const isExpired = new Date(p.expires_at) < new Date();
 
           // Simulate actual price for expired predictions (in production, fetch from price API)
