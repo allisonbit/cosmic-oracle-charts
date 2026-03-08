@@ -641,7 +641,7 @@ const ExplorerPage = () => {
                       </td>
 
                       {/* FDV */}
-                      <td className="px-2 py-2.5 font-mono text-muted-foreground whitespace-nowrap hidden xl:table-cell text-right">
+                      <td className="px-2 py-2.5 font-mono text-muted-foreground whitespace-nowrap hidden 2xl:table-cell text-right">
                         {formatCompact(token.fdv)}
                       </td>
 
