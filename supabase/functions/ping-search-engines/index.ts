@@ -6,7 +6,7 @@ const corsHeaders = {
 };
 
 const SITE_URL = "https://oraclebull.com";
-const INDEXNOW_KEY = "oraclebull2026indexnow";
+const INDEXNOW_KEY = "b4e2f8a1c3d5e7f9a0b2c4d6e8f0a1b3";
 
 async function getAllArticleUrls(): Promise<string[]> {
   try {
