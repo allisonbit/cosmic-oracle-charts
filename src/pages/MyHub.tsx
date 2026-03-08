@@ -1,28 +1,54 @@
 import { Layout } from "@/components/layout/Layout";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/hooks/useAuth";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MyWatchlist } from "@/components/hub/MyWatchlist";
-import { MyAlerts } from "@/components/hub/MyAlerts";
-import { MyPortfolio } from "@/components/hub/MyPortfolio";
-import { MySettings } from "@/components/hub/MySettings";
-import { Star, Bell, PieChart, Settings, Sparkles } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { Star, Bell, PieChart, Settings, Sparkles, MessageCircle, Crown, ArrowRight } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+const hubPages = [
+  {
+    path: "/my/watchlist",
+    label: "Watchlist",
+    desc: "Track your favorite coins with live prices",
+    icon: Star,
+    color: "text-yellow-500",
+    bg: "bg-yellow-500/10 border-yellow-500/20",
+  },
+  {
+    path: "/my/portfolio",
+    label: "Portfolio",
+    desc: "Monitor holdings, allocation & P&L",
+    icon: PieChart,
+    color: "text-blue-500",
+    bg: "bg-blue-500/10 border-blue-500/20",
+  },
+  {
+    path: "/my/alerts",
+    label: "Price Alerts",
+    desc: "Set targets & get notified when they trigger",
+    icon: Bell,
+    color: "text-emerald-500",
+    bg: "bg-emerald-500/10 border-emerald-500/20",
+  },
+  {
+    path: "/my/settings",
+    label: "Settings",
+    desc: "Profile, notifications & plan management",
+    icon: Settings,
+    color: "text-muted-foreground",
+    bg: "bg-muted/50 border-border",
+  },
+];
 
 function HubContent() {
   const { profile } = useAuth();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const activeTab = searchParams.get("tab") || "watchlist";
-
-  const handleTabChange = (value: string) => {
-    setSearchParams({ tab: value });
-  };
+  const isPremium = (profile as any)?.is_premium === true;
 
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-6 space-y-6">
+      <div className="container mx-auto px-4 py-6 space-y-8">
         {/* Header */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center">
               <Sparkles className="w-6 h-6 text-primary" />
@@ -34,42 +60,48 @@ function HubContent() {
               <p className="text-sm text-muted-foreground">Your personal crypto command center</p>
             </div>
           </div>
+          {isPremium && (
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20">
+              <Crown className="w-4 h-4 text-accent" />
+              <span className="text-xs font-semibold text-accent">Premium</span>
+            </div>
+          )}
         </div>
 
-        {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 h-12 bg-muted/50">
-            <TabsTrigger value="watchlist" className="gap-2 text-sm">
-              <Star className="w-4 h-4" />
-              <span className="hidden sm:inline">Watchlist</span>
-            </TabsTrigger>
-            <TabsTrigger value="portfolio" className="gap-2 text-sm">
-              <PieChart className="w-4 h-4" />
-              <span className="hidden sm:inline">Portfolio</span>
-            </TabsTrigger>
-            <TabsTrigger value="alerts" className="gap-2 text-sm">
-              <Bell className="w-4 h-4" />
-              <span className="hidden sm:inline">Alerts</span>
-            </TabsTrigger>
-            <TabsTrigger value="settings" className="gap-2 text-sm">
-              <Settings className="w-4 h-4" />
-              <span className="hidden sm:inline">Settings</span>
-            </TabsTrigger>
-          </TabsList>
+        {/* Feature cards grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {hubPages.map((page) => (
+            <Link
+              key={page.path}
+              to={page.path}
+              className={cn(
+                "group flex items-center gap-4 p-5 rounded-2xl border transition-all duration-200",
+                "hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]",
+                page.bg
+              )}
+            >
+              <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center shrink-0", page.bg)}>
+                <page.icon className={cn("w-6 h-6", page.color)} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h2 className="font-semibold text-foreground">{page.label}</h2>
+                <p className="text-sm text-muted-foreground">{page.desc}</p>
+              </div>
+              <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors shrink-0" />
+            </Link>
+          ))}
+        </div>
 
-          <TabsContent value="watchlist" className="mt-6">
-            <MyWatchlist />
-          </TabsContent>
-          <TabsContent value="portfolio" className="mt-6">
-            <MyPortfolio />
-          </TabsContent>
-          <TabsContent value="alerts" className="mt-6">
-            <MyAlerts />
-          </TabsContent>
-          <TabsContent value="settings" className="mt-6">
-            <MySettings />
-          </TabsContent>
-        </Tabs>
+        {/* AI Chat callout */}
+        <div className="flex items-center gap-4 p-5 rounded-2xl bg-primary/5 border border-primary/20">
+          <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+            <MessageCircle className="w-6 h-6 text-primary" />
+          </div>
+          <div className="flex-1">
+            <h2 className="font-semibold text-foreground">Oracle Bull AI Chat</h2>
+            <p className="text-sm text-muted-foreground">Ask anything about crypto — powered by live market data. Use the chat bubble in the bottom-right corner.</p>
+          </div>
+        </div>
       </div>
     </Layout>
   );
