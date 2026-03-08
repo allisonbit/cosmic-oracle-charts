@@ -264,8 +264,9 @@ export default function Scanner() {
   const isLoading = isTrendingLoading && !allTokens.length;
 
   const handleTokenClick = (token: LiveToken) => {
-    const slug = token.coingeckoId || token.symbol?.toLowerCase() || token.name?.toLowerCase().replace(/\s+/g, "-");
-    navigate(`/price-prediction/${slug}/daily`);
+    const chain = token.chain || 'ethereum';
+    const id = token.contractAddress || token.coingeckoId || token.symbol?.toLowerCase();
+    navigate(`/explorer/${chain}/${id}`);
   };
 
   return (
