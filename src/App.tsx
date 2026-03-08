@@ -182,6 +182,10 @@ const App = () => (
                 <Route path="/risk-disclaimer" element={<RiskDisclaimer />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/my" element={<MyHub />} />
+                <Route path="/my/watchlist" element={<MyWatchlistPage />} />
+                <Route path="/my/portfolio" element={<MyPortfolioPage />} />
+                <Route path="/my/alerts" element={<MyAlertsPage />} />
+                <Route path="/my/settings" element={<MySettingsPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
