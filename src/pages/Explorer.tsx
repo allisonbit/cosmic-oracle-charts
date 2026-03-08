@@ -109,6 +109,8 @@ interface DexToken {
   marketCap?: number;
   fdv?: number;
   txns24h?: number;
+  buys24h?: number;
+  sells24h?: number;
   makers?: number;
   ageHours?: number;
   logo?: string;
@@ -120,6 +122,7 @@ interface DexToken {
   momentum?: number;
   category?: string;
   coingeckoId?: string;
+  dexId?: string;
 }
 
 function mergeTokens(
@@ -164,6 +167,8 @@ function mergeTokens(
       marketCap: t.marketCap || undefined,
       fdv: t.fdv || undefined,
       txns24h: t.txns24h || undefined,
+      buys24h: (t as any).buys24h || undefined,
+      sells24h: (t as any).sells24h || undefined,
       makers: (t as any).makers || t.txns24h || undefined,
       ageHours: (t as any).ageHours || undefined,
       contractAddress: t.contractAddress || undefined,
@@ -475,8 +480,11 @@ const ExplorerPage = () => {
                   <SortHeader col="change1h" label="1H" className="hidden md:table-cell" />
                   <SortHeader col="change6h" label="6H" className="hidden lg:table-cell" />
                   <SortHeader col="change24h" label="24H" />
+                  <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground text-right hidden md:table-cell">BUYS</th>
+                  <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground text-right hidden md:table-cell">SELLS</th>
                   <SortHeader col="liquidity" label="LIQUIDITY" className="hidden lg:table-cell" />
                   <SortHeader col="marketCap" label="MCAP" className="hidden xl:table-cell" />
+                  <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground text-right hidden xl:table-cell">FDV</th>
                   <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground w-8"></th>
                 </tr>
               </thead>
@@ -612,6 +620,16 @@ const ExplorerPage = () => {
                         {formatChange(token.change24h)}
                       </td>
 
+                      {/* Buys */}
+                      <td className="px-2 py-2.5 text-success whitespace-nowrap hidden md:table-cell text-right">
+                        <span className="text-[11px] font-mono">{(token.buys24h || 0).toLocaleString()}</span>
+                      </td>
+
+                      {/* Sells */}
+                      <td className="px-2 py-2.5 text-danger whitespace-nowrap hidden md:table-cell text-right">
+                        <span className="text-[11px] font-mono">{(token.sells24h || 0).toLocaleString()}</span>
+                      </td>
+
                       {/* Liquidity */}
                       <td className="px-2 py-2.5 font-mono text-foreground whitespace-nowrap hidden lg:table-cell">
                         {formatCompact(token.liquidity)}
@@ -620,6 +638,11 @@ const ExplorerPage = () => {
                       {/* MCap */}
                       <td className="px-2 py-2.5 font-mono text-foreground whitespace-nowrap hidden xl:table-cell">
                         {formatCompact(token.marketCap)}
+                      </td>
+
+                      {/* FDV */}
+                      <td className="px-2 py-2.5 font-mono text-muted-foreground whitespace-nowrap hidden xl:table-cell text-right">
+                        {formatCompact(token.fdv)}
                       </td>
 
                       {/* Action */}
