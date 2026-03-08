@@ -12,6 +12,7 @@ import { usePageTracking } from "@/hooks/usePageTracking";
 import { useSearchEnginePing } from "@/hooks/useSearchEnginePing";
 import { AppErrorBoundary } from "@/components/system/AppErrorBoundary";
 import { GlobalSchemas } from "@/components/seo/RichSchemas";
+import { AIChatBubble } from "@/components/chat/AIChatBubble";
 
 // Eager load critical pages
 import Index from "./pages/Index";
@@ -45,6 +46,7 @@ const Terms = lazy(() => import("./pages/Terms"));
 const RiskDisclaimer = lazy(() => import("./pages/RiskDisclaimer"));
 const Scanner = lazy(() => import("./pages/Scanner"));
 const Admin = lazy(() => import("./pages/Admin"));
+const MyHub = lazy(() => import("./pages/MyHub"));
 
 // Loading fallback component
 const PageLoader = memo(function PageLoader() {
@@ -175,9 +177,11 @@ const App = () => (
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/risk-disclaimer" element={<RiskDisclaimer />} />
                 <Route path="/admin" element={<Admin />} />
+                <Route path="/my" element={<MyHub />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
+            <AIChatBubble />
           </BrowserRouter>
         </AppErrorBoundary>
       </TooltipProvider>

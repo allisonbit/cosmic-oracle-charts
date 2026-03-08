@@ -113,6 +113,30 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       content_drafts: {
         Row: {
           agent_type: string
@@ -272,6 +296,45 @@ export type Database = {
           preferences?: Json | null
           updated_at?: string
           watchlist?: Json | null
+        }
+        Relationships: []
+      }
+      user_alerts: {
+        Row: {
+          coin_id: string
+          condition: string
+          created_at: string
+          id: string
+          is_triggered: boolean
+          note: string | null
+          symbol: string
+          target_price: number
+          triggered_at: string | null
+          user_id: string
+        }
+        Insert: {
+          coin_id: string
+          condition?: string
+          created_at?: string
+          id?: string
+          is_triggered?: boolean
+          note?: string | null
+          symbol: string
+          target_price: number
+          triggered_at?: string | null
+          user_id: string
+        }
+        Update: {
+          coin_id?: string
+          condition?: string
+          created_at?: string
+          id?: string
+          is_triggered?: boolean
+          note?: string | null
+          symbol?: string
+          target_price?: number
+          triggered_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }

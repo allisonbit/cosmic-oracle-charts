@@ -10,12 +10,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogIn, LogOut, User, Star, Bell, Settings } from "lucide-react";
+import { LogIn, LogOut, User, Star, Bell, Settings, PieChart } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 export function UserMenu({ className }: { className?: string }) {
   const { user, profile, loading, signOut } = useAuth();
   const [signingIn, setSigningIn] = useState(false);
+  const navigate = useNavigate();
 
   const handleSignIn = async () => {
     setSigningIn(true);
@@ -77,13 +79,16 @@ export function UserMenu({ className }: { className?: string }) {
           </p>
         </div>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="gap-2 cursor-pointer">
+        <DropdownMenuItem onClick={() => navigate("/my?tab=watchlist")} className="gap-2 cursor-pointer">
           <Star className="w-4 h-4" /> Watchlist
         </DropdownMenuItem>
-        <DropdownMenuItem className="gap-2 cursor-pointer">
+        <DropdownMenuItem onClick={() => navigate("/my?tab=portfolio")} className="gap-2 cursor-pointer">
+          <PieChart className="w-4 h-4" /> Portfolio
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate("/my?tab=alerts")} className="gap-2 cursor-pointer">
           <Bell className="w-4 h-4" /> Alerts
         </DropdownMenuItem>
-        <DropdownMenuItem className="gap-2 cursor-pointer">
+        <DropdownMenuItem onClick={() => navigate("/my?tab=settings")} className="gap-2 cursor-pointer">
           <Settings className="w-4 h-4" /> Settings
         </DropdownMenuItem>
         <DropdownMenuSeparator />
