@@ -1,6 +1,8 @@
-import { corsHeaders } from "../_shared/cors.ts";
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
 
-// IndexNow API key - also needs to be served at /indexnow-key.txt
 const INDEXNOW_KEY = "oraclebull2026indexnow";
 const SITE_URL = "https://oraclebull.com";
 
@@ -19,15 +21,13 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Format URLs with full domain
     const fullUrls = urls.map((u: string) => u.startsWith("http") ? u : `${SITE_URL}${u}`);
 
-    // Submit to IndexNow (Bing, Yandex, Seznam, Naver)
     const indexNowPayload = {
       host: "oraclebull.com",
       key: INDEXNOW_KEY,
       keyLocation: `${SITE_URL}/indexnow-key.txt`,
-      urlList: fullUrls.slice(0, 10000), // Max 10k per request
+      urlList: fullUrls.slice(0, 10000),
     };
 
     const endpoints = [
@@ -42,15 +42,10 @@ Deno.serve(async (req) => {
           method: "POST",
           headers: { "Content-Type": "application/json; charset=utf-8" },
           body: JSON.stringify(indexNowPayload),
-        }).then(async r => ({
-          endpoint,
-          status: r.status,
-          ok: r.ok,
-        }))
+        }).then(async r => ({ endpoint, status: r.status, ok: r.ok }))
       )
     );
 
-    // Also ping Google sitemap
     const googlePing = await fetch(
       `https://www.google.com/ping?sitemap=${encodeURIComponent(SITE_URL + "/sitemap.xml")}`
     ).then(r => ({ status: r.status, ok: r.ok })).catch(() => ({ status: 0, ok: false }));

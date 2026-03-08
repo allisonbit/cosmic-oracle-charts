@@ -1,4 +1,7 @@
-import { corsHeaders } from "../_shared/cors.ts";
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
 
 const SITE_URL = "https://oraclebull.com";
 const INDEXNOW_KEY = "oraclebull2026indexnow";
@@ -9,19 +12,16 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Ping Google sitemap
     const googlePing = fetch(
       `https://www.google.com/ping?sitemap=${encodeURIComponent(SITE_URL + "/sitemap.xml")}`
     ).then(r => ({ engine: "google", status: r.status, ok: r.ok }))
      .catch(e => ({ engine: "google", status: 0, ok: false, error: e.message }));
 
-    // Ping Bing sitemap
     const bingPing = fetch(
       `https://www.bing.com/ping?sitemap=${encodeURIComponent(SITE_URL + "/sitemap.xml")}`
     ).then(r => ({ engine: "bing", status: r.status, ok: r.ok }))
      .catch(e => ({ engine: "bing", status: 0, ok: false, error: e.message }));
 
-    // Submit key pages via IndexNow
     const keyPages = [
       "/", "/dashboard", "/predictions", "/sentiment", "/explorer",
       "/strength-meter", "/factory", "/portfolio", "/learn", "/insights",
