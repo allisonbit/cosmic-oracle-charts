@@ -8,6 +8,7 @@ import { Loader2 } from "lucide-react";
 import { SEO, StructuredData } from "@/components/SEO";
 import { AdSenseManager } from "@/components/ads/AdSenseManager";
 import { usePageTracking } from "@/hooks/usePageTracking";
+import { useSearchEnginePing } from "@/hooks/useSearchEnginePing";
 import { AppErrorBoundary } from "@/components/system/AppErrorBoundary";
 import { GlobalSchemas } from "@/components/seo/RichSchemas";
 
