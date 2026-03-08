@@ -13,13 +13,16 @@ import { HomepageSchema } from "@/components/home/HomepageSchema";
 
 // Lazy load below-fold components for better LCP
 const QuickStats = lazy(() => import("@/components/home/QuickStats").then(m => ({ default: m.QuickStats })));
+const SocialProofBar = lazy(() => import("@/components/home/SocialProofBar").then(m => ({ default: m.SocialProofBar })));
 const SEOContentBlock = lazy(() => import("@/components/home/SEOContentBlock").then(m => ({ default: m.SEOContentBlock })));
+const HowItWorks = lazy(() => import("@/components/home/HowItWorks").then(m => ({ default: m.HowItWorks })));
 const ChainLinks = lazy(() => import("@/components/home/ChainLinks").then(m => ({ default: m.ChainLinks })));
 const TopMovers = lazy(() => import("@/components/home/TopMovers").then(m => ({ default: m.TopMovers })));
 const FeaturesSection = lazy(() => import("@/components/home/FeaturesSection").then(m => ({ default: m.FeaturesSection })));
 const CTASection = lazy(() => import("@/components/home/CTASection").then(m => ({ default: m.CTASection })));
 const MarketOverview = lazy(() => import("@/components/home/MarketOverview").then(m => ({ default: m.MarketOverview })));
 const TrendingSearches = lazy(() => import("@/components/home/TrendingSearches").then(m => ({ default: m.TrendingSearches })));
+const HomepageFAQ = lazy(() => import("@/components/home/HomepageFAQ").then(m => ({ default: m.HomepageFAQ })));
 
 const SectionFallback = () => (
   <div className="container mx-auto px-4 py-8">
@@ -74,53 +77,78 @@ const Index = () => {
       </header>
       
       <main id="main-content">
+        {/* 1. Hero - first impression, trust badges, live prices */}
         <HeroSection />
+
+        {/* 2. Quick Stats - live market data bar */}
         <Suspense fallback={<SectionFallback />}>
           <QuickStats />
         </Suspense>
+
+        {/* 3. Social Proof - animated platform metrics */}
+        <Suspense fallback={<SectionFallback />}>
+          <SocialProofBar />
+        </Suspense>
         
-        {/* SEO content block with unique text for Google crawlability */}
+        {/* 4. How It Works - 3-step onboarding */}
+        <Suspense fallback={<SectionFallback />}>
+          <HowItWorks />
+        </Suspense>
+        
+        {/* 5. SEO content block with trust elements */}
         <Suspense fallback={<SectionFallback />}>
           <SEOContentBlock />
         </Suspense>
         
+        {/* 6. Chain analytics cards */}
         <Suspense fallback={<SectionFallback />}>
           <ChainLinks />
         </Suspense>
 
-        {/* Internal link hub for SEO crawlability */}
+        {/* 7. Internal link hub for SEO crawlability */}
         <InternalLinkHub />
         
-        {/* Ad placement after ChainLinks - below fold */}
+        {/* Ad placement - below fold */}
         <BannerAd className="mt-4" />
         
-        {/* TopMovers uses recharts - defer loading until visible */}
+        {/* 8. TopMovers - deferred chart loading */}
         <ViewportSection fallback={<SectionFallback />}>
           <Suspense fallback={<SectionFallback />}>
             <TopMovers />
           </Suspense>
         </ViewportSection>
+
+        {/* 9. Platform features grid */}
         <Suspense fallback={<SectionFallback />}>
           <FeaturesSection />
         </Suspense>
         
-        {/* In-article ad between sections */}
+        {/* In-article ad */}
         <InArticleAd />
         
-        {/* Trending Searches Section */}
+        {/* 10. Trending Searches + Platform Stats */}
         <ViewportSection fallback={<SectionFallback />}>
           <Suspense fallback={<SectionFallback />}>
             <TrendingSearches />
           </Suspense>
         </ViewportSection>
         
+        {/* 11. Interactive CTA tabs */}
         <Suspense fallback={<SectionFallback />}>
           <CTASection />
         </Suspense>
-        {/* MarketOverview uses recharts - defer loading until visible */}
+
+        {/* 12. Market Overview - deferred chart loading */}
         <ViewportSection fallback={<SectionFallback />}>
           <Suspense fallback={<SectionFallback />}>
             <MarketOverview />
+          </Suspense>
+        </ViewportSection>
+
+        {/* 13. FAQ - SEO rich snippets */}
+        <ViewportSection fallback={<SectionFallback />}>
+          <Suspense fallback={<SectionFallback />}>
+            <HomepageFAQ />
           </Suspense>
         </ViewportSection>
       </main>
