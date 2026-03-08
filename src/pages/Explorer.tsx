@@ -621,12 +621,12 @@ const ExplorerPage = () => {
                       </td>
 
                       {/* Buys */}
-                      <td className="px-2 py-2.5 text-success whitespace-nowrap hidden md:table-cell text-right">
+                      <td className="px-2 py-2.5 text-success whitespace-nowrap hidden lg:table-cell text-right">
                         <span className="text-[11px] font-mono">{(token.buys24h || 0).toLocaleString()}</span>
                       </td>
 
                       {/* Sells */}
-                      <td className="px-2 py-2.5 text-danger whitespace-nowrap hidden md:table-cell text-right">
+                      <td className="px-2 py-2.5 text-danger whitespace-nowrap hidden lg:table-cell text-right">
                         <span className="text-[11px] font-mono">{(token.sells24h || 0).toLocaleString()}</span>
                       </td>
 
