@@ -169,40 +169,61 @@ export default function PredictionHub() {
       <header><Navbar /></header>
 
       <main className="flex-1 container mx-auto px-4 py-20 md:py-28 max-w-7xl">
-        
+
+        {/* === LIVE MONITORING BAR === */}
+        <div className="flex flex-wrap items-center gap-3 mb-6 px-4 py-2.5 rounded-lg border border-border bg-card text-xs">
+          <div className="flex items-center gap-1.5">
+            <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
+            <span className="font-mono text-success font-medium">LIVE</span>
+          </div>
+          <span className="text-muted-foreground font-mono">{liveTime.toLocaleTimeString()}</span>
+          <span className="hidden sm:inline text-border">|</span>
+          <span className="hidden sm:inline text-muted-foreground">
+            Prices: <span className="text-foreground font-medium">15s</span>
+          </span>
+          <span className="hidden sm:inline text-border">|</span>
+          <span className="hidden sm:inline text-muted-foreground">
+            AI Cache: <span className="text-foreground font-medium">2m</span>
+          </span>
+          {cachedPredictions && cachedPredictions.length > 0 && (
+            <>
+              <span className="text-border">|</span>
+              <Badge variant="outline" className="text-[10px] gap-1 border-success/30 text-success">
+                <Zap className="w-2.5 h-2.5" /> {cachedPredictions.length} cached
+              </Badge>
+            </>
+          )}
+          {pricesData?.timestamp && (
+            <>
+              <span className="hidden md:inline text-border">|</span>
+              <span className="hidden md:inline text-muted-foreground">
+                Last: {new Date(pricesData.timestamp).toLocaleTimeString()}
+              </span>
+            </>
+          )}
+          <div className="ml-auto">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => refetch()} 
+              disabled={isFetching}
+              className="h-6 px-2 text-xs gap-1"
+            >
+              <RefreshCw className={cn("h-3 w-3", isFetching && "animate-spin")} />
+              {isFetching ? 'Updating...' : 'Refresh'}
+            </Button>
+          </div>
+        </div>
+
         {/* === HERO === */}
         <section className="mb-10">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-                <span className="text-xs font-mono text-success">LIVE</span>
-                <span className="text-xs text-muted-foreground font-mono">{liveTime.toLocaleTimeString()}</span>
-                {cachedPredictions && cachedPredictions.length > 0 && (
-                  <Badge variant="outline" className="text-[10px] ml-2 gap-1 border-success/30 text-success">
-                    <Zap className="w-2.5 h-2.5" /> {cachedPredictions.length} AI Predictions Cached
-                  </Badge>
-                )}
-              </div>
-              <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
-                AI Prediction Terminal
-              </h1>
-              <p className="text-muted-foreground mt-1 max-w-lg">
-                Real-time AI analysis for <strong>every token on DexScreener</strong>. Search by name, symbol, or contract address.
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => refetch()} 
-                disabled={isFetching}
-                className="gap-1.5"
-              >
-                <RefreshCw className={cn("h-3.5 w-3.5", isFetching && "animate-spin")} />
-                Refresh
-              </Button>
-            </div>
+          <div className="mb-6">
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
+              AI Prediction Terminal
+            </h1>
+            <p className="text-muted-foreground mt-1 max-w-lg">
+              Real-time AI analysis for <strong>every token on DexScreener</strong>. Search by name, symbol, or contract address.
+            </p>
           </div>
 
           {/* Market Pulse Bar */}
