@@ -571,6 +571,12 @@ export default function Portfolio() {
       </main>
       <Footer />
 
+      {/* Token Detail Modal - Quick preview */}
+      <TokenDetailModal
+        token={selectedToken}
+        isOpen={!!selectedToken}
+        onClose={() => setSelectedToken(null)}
+      />
     </div>
   );
 }
