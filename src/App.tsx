@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { lazy, Suspense, memo, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { SEO, StructuredData } from "@/components/SEO";
+import { AuthProvider } from "@/hooks/useAuth";
 import { AdSenseManager } from "@/components/ads/AdSenseManager";
 import { usePageTracking } from "@/hooks/usePageTracking";
 import { useSearchEnginePing } from "@/hooks/useSearchEnginePing";
