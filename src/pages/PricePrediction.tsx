@@ -11,6 +11,7 @@ import { Disclaimer, Methodology } from "@/components/prediction/PredictionConte
 import { InvestorActionSummary } from "@/components/prediction/InvestorActionSummary";
 import { EnhancedFAQ } from "@/components/prediction/EnhancedFAQ";
 import { MarketQuestionsLinks, RelatedToolsLinks, TimeframeCrossLinks, HighIntentCTA } from "@/components/prediction/HighIntentLinks";
+import { MarketDataPanel } from "@/components/prediction/MarketDataPanel";
 import { SignalChart } from "@/components/prediction/SignalChart";
 import { GlobalTokenSearch } from "@/components/prediction/GlobalTokenSearch";
 import { GlobalToken } from "@/hooks/useGlobalTokenSearch";
