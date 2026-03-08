@@ -1,0 +1,31 @@
+{
+  "name": "Oracle Bull - AI Crypto Intelligence",
+  "short_name": "Oracle Bull",
+  "description": "AI-powered crypto predictions, portfolio tracking, and market intelligence",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/oracle-bot-mascot.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "/oracle-bot-mascot.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["finance", "business"],
+  "screenshots": []
+}
