@@ -75,60 +75,107 @@ function StrengthBar({ score }: { score: number }) {
   );
 }
 
+function BuyPressureBar({ buys, sells }: { buys?: number; sells?: number }) {
+  if (!buys && !sells) return <span className="text-[10px] text-muted-foreground">—</span>;
+  const total = (buys || 0) + (sells || 0);
+  const pct = total > 0 ? ((buys || 0) / total) * 100 : 50;
+  return (
+    <div className="flex items-center gap-1.5">
+      <div className="w-12 h-1.5 rounded-full bg-danger/30 overflow-hidden">
+        <div className="h-full bg-success rounded-full" style={{ width: `${pct}%` }} />
+      </div>
+      <span className={cn("text-[10px] font-mono", pct > 55 ? "text-success" : pct < 45 ? "text-danger" : "text-muted-foreground")}>
+        {pct.toFixed(0)}%
+      </span>
+    </div>
+  );
+}
+
+function formatAge(hours?: number): string {
+  if (!hours) return '—';
+  if (hours < 1) return `${Math.round(hours * 60)}m`;
+  if (hours < 24) return `${Math.round(hours)}h`;
+  if (hours < 720) return `${Math.round(hours / 24)}d`;
+  return `${Math.round(hours / 720)}mo`;
+}
+
 function ScannerTokenRow({ token, strength, onClick }: { token: LiveToken; strength: number; onClick: () => void }) {
   const change = token.change24h || 0;
   const isUp = change >= 0;
+  const change1h = (token as any).change1h || 0;
+  const is1hUp = change1h >= 0;
 
   return (
     <button
       onClick={onClick}
-      className="w-full grid grid-cols-[2fr_1fr_1fr_1fr_1fr_100px] md:grid-cols-[2.5fr_1fr_1fr_1fr_1fr_120px] items-center gap-2 px-4 py-3 hover:bg-muted/30 transition-colors border-b border-border/20 text-left"
+      className="w-full grid grid-cols-[2fr_1fr_1fr_1fr_100px] md:grid-cols-[2.5fr_0.8fr_0.7fr_0.7fr_0.8fr_0.8fr_0.7fr_0.8fr_0.6fr_110px] items-center gap-1 px-3 py-2.5 hover:bg-muted/30 transition-colors border-b border-border/20 text-left"
     >
       {/* Token info */}
-      <div className="flex items-center gap-3 min-w-0">
+      <div className="flex items-center gap-2.5 min-w-0">
         {token.logo ? (
-          <img src={token.logo} alt={token.name} className="w-8 h-8 rounded-full flex-shrink-0" loading="lazy" />
+          <img src={token.logo} alt={token.name} className="w-7 h-7 rounded-full flex-shrink-0" loading="lazy" />
         ) : (
-          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-            <span className="text-xs font-bold text-primary">{token.symbol?.charAt(0)}</span>
+          <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+            <span className="text-[10px] font-bold text-primary">{token.symbol?.charAt(0)}</span>
           </div>
         )}
         <div className="min-w-0">
-          <p className="font-semibold text-sm truncate">{token.name}</p>
-          <div className="flex items-center gap-1.5">
-            <span className="text-xs text-muted-foreground">{token.symbol?.toUpperCase()}</span>
+          <div className="flex items-center gap-1">
+            <span className="font-semibold text-xs truncate max-w-[100px]">{token.name}</span>
+            {token.verified && <Shield className="w-3 h-3 text-primary flex-shrink-0" />}
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="text-[10px] text-muted-foreground font-mono">{token.symbol?.toUpperCase()}</span>
             {token.chain && (
-              <Badge variant="outline" className="text-[9px] px-1 py-0 h-4 border-primary/20">{token.chain}</Badge>
+              <Badge variant="outline" className="text-[8px] px-1 py-0 h-3.5 border-primary/20">{token.chain}</Badge>
             )}
-            {token.verified && <Shield className="w-3 h-3 text-primary" />}
           </div>
         </div>
       </div>
 
       {/* Price */}
       <div className="text-right">
-        <p className="text-sm font-mono font-medium">{formatPrice(token.price)}</p>
+        <p className="text-xs font-mono font-medium">{formatPrice(token.price)}</p>
+      </div>
+
+      {/* 1h Change - hidden on mobile */}
+      <div className="text-right hidden md:block">
+        <span className={cn("text-[11px] font-mono", is1hUp ? "text-success" : "text-danger")}>
+          {change1h !== 0 ? `${is1hUp ? '+' : ''}${change1h.toFixed(2)}%` : '—'}
+        </span>
       </div>
 
       {/* 24h Change */}
       <div className="text-right">
-        <span className={cn(
-          "inline-flex items-center gap-0.5 text-sm font-mono font-medium",
-          isUp ? "text-green-400" : "text-red-400"
-        )}>
+        <span className={cn("inline-flex items-center gap-0.5 text-xs font-mono font-medium", isUp ? "text-success" : "text-danger")}>
           {isUp ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
           {Math.abs(change).toFixed(2)}%
         </span>
       </div>
 
-      {/* Volume */}
+      {/* Volume - hidden on mobile */}
       <div className="text-right hidden md:block">
-        <p className="text-sm font-mono text-muted-foreground">{formatCompact(token.volume24h)}</p>
+        <p className="text-xs font-mono text-muted-foreground">{formatCompact(token.volume24h)}</p>
+      </div>
+
+      {/* Liquidity - hidden on mobile */}
+      <div className="text-right hidden md:block">
+        <p className="text-xs font-mono text-muted-foreground">{formatCompact((token as any).liquidity)}</p>
+      </div>
+
+      {/* Txns - hidden on mobile */}
+      <div className="text-right hidden md:block">
+        <p className="text-xs font-mono text-muted-foreground">{((token as any).txns24h || 0).toLocaleString()}</p>
+      </div>
+
+      {/* Buy Pressure - hidden on mobile */}
+      <div className="hidden md:flex justify-end">
+        <BuyPressureBar buys={(token as any).buys24h} sells={(token as any).sells24h} />
       </div>
 
       {/* Market Cap */}
       <div className="text-right hidden md:block">
-        <p className="text-sm font-mono text-muted-foreground">{formatCompact(token.marketCap)}</p>
+        <p className="text-xs font-mono text-muted-foreground">{formatCompact(token.marketCap)}</p>
       </div>
 
       {/* Strength */}
