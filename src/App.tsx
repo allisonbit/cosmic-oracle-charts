@@ -14,6 +14,7 @@ import { AppErrorBoundary } from "@/components/system/AppErrorBoundary";
 import { GlobalSchemas } from "@/components/seo/RichSchemas";
 import { AIChatBubble } from "@/components/chat/AIChatBubble";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { AdminRoute } from "@/components/auth/AdminRoute";
 
 // Eager load critical pages
 import Index from "./pages/Index";
