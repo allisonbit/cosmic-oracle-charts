@@ -130,7 +130,8 @@ export function PredictionLeaderboard() {
 
   const visible = expanded ? filtered : filtered.slice(0, 8);
 
-  const formatPrice = (price: number) => {
+  const formatPrice = (price: number | null | undefined) => {
+    if (price == null || typeof price !== 'number' || isNaN(price)) return '—';
     if (price >= 1000) return `$${price.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
     if (price >= 1) return `$${price.toFixed(2)}`;
     return `$${price.toPrecision(4)}`;
