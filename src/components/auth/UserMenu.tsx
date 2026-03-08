@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { lovable } from "@/integrations/lovable/index";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
+import { Zap, Wallet, Users, DollarSign,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
