@@ -1,5 +1,5 @@
 import { 
-  Home, LayoutDashboard, TrendingUp, Brain, Zap, Calendar, Layers, Search, Wallet, BookOpen
+  Home, LayoutDashboard, TrendingUp, Brain, Zap, ScanLine, Search
 } from "lucide-react";
 import { NavLink as RouterNavLink, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -9,7 +9,7 @@ const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
   { icon: TrendingUp, label: "Predict", path: "/predictions" },
   { icon: Brain, label: "Sentiment", path: "/sentiment" },
-  { icon: Zap, label: "Strength", path: "/strength" },
+  { icon: ScanLine, label: "Scanner", path: "/scanner" },
   { icon: Search, label: "Explorer", path: "/explorer" },
 ];
 

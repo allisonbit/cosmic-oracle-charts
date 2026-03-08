@@ -145,6 +145,7 @@ const App = () => (
               <Route path="/dashboard" element={<Dashboard />} />
               
               <Route path="/sentiment" element={<Sentiment />} />
+              <Route path="/scanner" element={<Scanner />} />
               <Route path="/explorer" element={<Explorer />} />
               <Route path="/explorer/:chain/:address" element={<TokenDetail />} />
               <Route path="/learn" element={<Learn />} />
