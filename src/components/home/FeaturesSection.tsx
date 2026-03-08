@@ -10,86 +10,79 @@ const features = [
     icon: Brain,
     accentIcon: Target,
     title: "AI-Powered Predictions",
-    description: "Our machine learning models analyze 50+ technical indicators, on-chain metrics, and sentiment data to forecast price movements with confidence scores across daily, weekly, and monthly timeframes.",
+    description: "Machine learning models analyze 50+ technical indicators, on-chain metrics, and sentiment data to forecast price movements with confidence scores.",
     link: "/predictions",
     linkText: "Try AI Predictions",
-    gradient: "from-primary/20 via-primary/10 to-transparent",
-    iconBg: "bg-primary/15 group-hover:bg-primary/25",
     stat: "18,000+ cryptos analyzed",
+    highlight: "85% accuracy",
   },
   {
     icon: Waves,
     accentIcon: BarChart3,
     title: "Real-Time Market Dashboard",
-    description: "Live price charts, market momentum indicators, volume leaders, dominance tracking, and correlation matrices — all updating in real-time with institutional-grade data feeds.",
+    description: "Live price charts, market momentum, volume leaders, dominance tracking, and correlation matrices — all updating in real-time.",
     link: "/dashboard",
     linkText: "Open Dashboard",
-    gradient: "from-secondary/20 via-secondary/10 to-transparent",
-    iconBg: "bg-secondary/15 group-hover:bg-secondary/25",
     stat: "Live data, zero delay",
+    highlight: "15s updates",
   },
   {
     icon: Radio,
     accentIcon: Eye,
     title: "Sentiment & Whale Tracking",
-    description: "Monitor Fear & Greed Index, social buzz scores, Google Trends, and large wallet movements. Spot smart money flows before they impact prices.",
+    description: "Monitor Fear & Greed Index, social buzz, Google Trends, and large wallet movements. Spot smart money flows before they impact prices.",
     link: "/sentiment",
     linkText: "Check Sentiment",
-    gradient: "from-success/20 via-success/10 to-transparent",
-    iconBg: "bg-success/15 group-hover:bg-success/25",
     stat: "Multi-source analysis",
+    highlight: "Real-time alerts",
   },
   {
     icon: Globe,
     accentIcon: Zap,
     title: "Multi-Chain Token Explorer",
-    description: "Search any token across Ethereum, Solana, Base, Arbitrum, and more. Instantly view price, liquidity depth, holder concentration, and AI-generated risk scores.",
+    description: "Search any token across Ethereum, Solana, Base, Arbitrum and more. View price, liquidity depth, holder data, and AI risk scores.",
     link: "/explorer",
     linkText: "Explore Tokens",
-    gradient: "from-warning/20 via-warning/10 to-transparent",
-    iconBg: "bg-warning/15 group-hover:bg-warning/25",
     stat: "8 blockchains covered",
+    highlight: "Cross-chain",
   },
   {
     icon: Activity,
     accentIcon: TrendingUp,
     title: "Wallet Intelligence Scanner",
-    description: "Paste any wallet address to reveal holdings distribution, portfolio performance, risk assessment, and AI-driven trading recommendations based on on-chain activity.",
+    description: "Paste any wallet address to reveal holdings, performance, risk assessment, and AI-driven trading recommendations.",
     link: "/portfolio",
     linkText: "Scan a Wallet",
-    gradient: "from-primary/20 via-primary/10 to-transparent",
-    iconBg: "bg-primary/15 group-hover:bg-primary/25",
     stat: "Instant analysis",
+    highlight: "No connection needed",
   },
   {
     icon: BookOpen,
     accentIcon: Shield,
     title: "Educational Resources",
-    description: "Master crypto markets with our comprehensive learning hub — from beginner guides on blockchain basics to advanced technical analysis strategies and risk management frameworks.",
+    description: "Master crypto markets with our comprehensive learning hub — from beginner guides to advanced technical analysis and risk management.",
     link: "/learn",
     linkText: "Start Learning",
-    gradient: "from-secondary/20 via-secondary/10 to-transparent",
-    iconBg: "bg-secondary/15 group-hover:bg-secondary/25",
     stat: "20+ in-depth articles",
+    highlight: "Updated daily",
   },
 ];
 
 export function FeaturesSection() {
   return (
-    <section className="py-16 md:py-24 relative">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/20 to-transparent" />
+    <section className="py-16 md:py-24 relative" aria-labelledby="features-heading">
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/10 to-transparent" />
       
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-10 md:mb-16 space-y-4">
           <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-medium tracking-wide uppercase">
             Platform Features
           </span>
-          <h2 className="text-[clamp(1.375rem,4vw,3rem)] font-display font-bold">
+          <h2 id="features-heading" className="text-[clamp(1.375rem,4vw,3rem)] font-display font-bold">
             Why Choose <span className="text-gradient-cosmic">Oracle Bull</span>?
           </h2>
           <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">
-            Institutional-grade analytics tools, completely free and with no signup required. 
-            Here's what makes our platform stand out.
+            Institutional-grade analytics tools, completely free with no signup required.
           </p>
         </div>
         
@@ -101,15 +94,12 @@ export function FeaturesSection() {
               <Link
                 key={feature.title}
                 to={feature.link}
-                className="group relative overflow-hidden rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm p-5 sm:p-6 md:p-7 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 animate-fade-in block tap-highlight-none active:scale-[0.98] touch-manipulation"
+                className="group relative overflow-hidden rounded-2xl border border-border/50 bg-card p-5 sm:p-6 md:p-7 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 animate-fade-in block tap-highlight-none active:scale-[0.98] touch-manipulation"
                 style={{ animationDelay: `${index * 0.08}s` }}
               >
-                {/* Gradient background accent */}
-                <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl ${feature.gradient} rounded-full -translate-y-1/2 translate-x-1/2 opacity-60 group-hover:opacity-100 transition-opacity`} />
-                
-                {/* Icon container with accent */}
+                {/* Icon container */}
                 <div className="relative mb-5">
-                  <div className={`w-14 h-14 rounded-2xl ${feature.iconBg} flex items-center justify-center transition-colors`}>
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 group-hover:bg-primary/15 flex items-center justify-center transition-colors">
                     <Icon className="w-7 h-7 text-primary" />
                   </div>
                   <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-lg bg-muted/80 border border-border/50 flex items-center justify-center">
@@ -125,11 +115,14 @@ export function FeaturesSection() {
                   {feature.description}
                 </p>
 
-                {/* Stat badge */}
-                <div className="mb-5">
+                {/* Stat + Highlight badges */}
+                <div className="flex flex-wrap gap-2 mb-5">
                   <span className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground bg-muted/50 px-2.5 py-1 rounded-full border border-border/30">
                     <Zap className="w-3 h-3 text-primary" />
                     {feature.stat}
+                  </span>
+                  <span className="inline-flex items-center text-xs font-medium text-success bg-success/10 px-2.5 py-1 rounded-full border border-success/20">
+                    {feature.highlight}
                   </span>
                 </div>
 
