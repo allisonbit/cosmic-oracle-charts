@@ -242,6 +242,39 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          email: string | null
+          id: string
+          preferences: Json | null
+          updated_at: string
+          watchlist: Json | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id: string
+          preferences?: Json | null
+          updated_at?: string
+          watchlist?: Json | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          preferences?: Json | null
+          updated_at?: string
+          watchlist?: Json | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
