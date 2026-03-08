@@ -146,12 +146,6 @@ function NarrativeCard({ narrative }: { narrative: any }) {
       {/* Action Links */}
       <div className="flex items-center gap-4 text-sm pt-3 border-t border-border/50">
         <Link 
-          to="/market/best-crypto-to-buy-today"
-          className="text-primary hover:text-primary/80 flex items-center gap-1"
-        >
-          Best Buys Today <ChevronRight className="w-4 h-4" />
-        </Link>
-        <Link 
           to="/strength-meter"
           className="text-primary hover:text-primary/80 flex items-center gap-1"
         >

@@ -378,10 +378,6 @@ export default function FactoryEvents() {
                     <Zap className="w-4 h-4" />
                     Crypto Strength Meter
                   </Link>
-                  <Link to="/market/best-crypto-to-buy-today" className="flex items-center gap-2 text-primary hover:text-primary/80">
-                    <TrendingUp className="w-4 h-4" />
-                    Best Crypto to Buy Today
-                  </Link>
                   <Link to="/sentiment" className="flex items-center gap-2 text-primary hover:text-primary/80">
                     <Activity className="w-4 h-4" />
                     Sentiment Analysis
