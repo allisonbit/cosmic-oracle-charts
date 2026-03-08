@@ -104,9 +104,6 @@ const Index = () => {
         <Suspense fallback={<SectionFallback />}>
           <ChainLinks />
         </Suspense>
-
-        {/* 7. Internal link hub for SEO crawlability */}
-        <InternalLinkHub />
         
         {/* Ad placement - below fold */}
         <BannerAd className="mt-4" />
