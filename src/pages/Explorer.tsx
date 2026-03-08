@@ -569,7 +569,7 @@ const ExplorerPage = () => {
                       </td>
 
                       {/* Age */}
-                      <td className="px-2 py-2.5 text-muted-foreground whitespace-nowrap">
+                      <td className="px-2 py-2.5 text-muted-foreground whitespace-nowrap hidden sm:table-cell">
                         {formatAge(token.ageHours)}
                       </td>
 
