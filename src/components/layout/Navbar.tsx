@@ -12,6 +12,7 @@ const desktopNavItems = [
   { path: "/sentiment", label: "Sentiment" },
   { path: "/strength", label: "Strength" },
   { path: "/explorer", label: "Explorer" },
+  { path: "/scanner", label: "Scanner" },
   { path: "/factory", label: "Factory" },
   { path: "/chain/ethereum", label: "Chains" },
   { path: "/insights", label: "Insights" },
@@ -27,6 +28,7 @@ const mobileNavItems = [
   { path: "/chain/ethereum", label: "Chains", icon: Layers },
   { path: "/sentiment", label: "Sentiment", icon: Radio },
   { path: "/explorer", label: "Explorer", icon: Globe },
+  { path: "/scanner", label: "Scanner", icon: Search },
   { path: "/insights", label: "Insights", icon: BookOpen },
   
 ];

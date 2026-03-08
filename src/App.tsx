@@ -42,6 +42,7 @@ const About = lazy(() => import("./pages/About"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const RiskDisclaimer = lazy(() => import("./pages/RiskDisclaimer"));
+const Scanner = lazy(() => import("./pages/Scanner"));
 const Admin = lazy(() => import("./pages/Admin"));
 
 // Loading fallback component
@@ -144,6 +145,7 @@ const App = () => (
               <Route path="/dashboard" element={<Dashboard />} />
               
               <Route path="/sentiment" element={<Sentiment />} />
+              <Route path="/scanner" element={<Scanner />} />
               <Route path="/explorer" element={<Explorer />} />
               <Route path="/explorer/:chain/:address" element={<TokenDetail />} />
               <Route path="/learn" element={<Learn />} />
