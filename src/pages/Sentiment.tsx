@@ -22,6 +22,7 @@ import { DivergenceScanner } from "@/components/sentiment/DivergenceScanner";
 import { AdvancedWhaleTracker } from "@/components/sentiment/AdvancedWhaleTracker";
 import { LiveAlertsFeed } from "@/components/sentiment/LiveAlertsFeed";
 import { TellMeTheStory } from "@/components/sentiment/TellMeTheStory";
+import { TokenSentimentSearch } from "@/components/sentiment/TokenSentimentSearch";
 
 function formatNumber(num: number): string {
   if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
@@ -144,6 +145,9 @@ const SentimentPage = () => {
           whaleMood={whaleMood}
           netflow={netflow}
         />
+
+        {/* Token Sentiment Search */}
+        <TokenSentimentSearch />
 
         {/* Navigation Tabs */}
         <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
