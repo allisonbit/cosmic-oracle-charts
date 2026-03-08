@@ -92,6 +92,17 @@ export default function Chain() {
   const prevChain = currentIndex > 0 ? CHAINS[currentIndex - 1] : null;
   const nextChain = currentIndex < CHAINS.length - 1 ? CHAINS[currentIndex + 1] : null;
 
+  const chainPrice = useMemo(() => 
+    pricesData?.prices?.find(p => p.symbol === chain?.symbol),
+    [pricesData?.prices, chain?.symbol]
+  );
+
+  const handleRefreshAll = useCallback(() => {
+    refetchChainData();
+    refetchForecast();
+    refetchAdvanced();
+  }, [refetchChainData, refetchForecast, refetchAdvanced]);
+
   if (!chain) {
     return (
       <div className="min-h-screen cosmic-bg flex items-center justify-center p-6">
@@ -106,14 +117,9 @@ export default function Chain() {
     );
   }
 
-  const chainPrice = useMemo(() => 
-    pricesData?.prices?.find(p => p.symbol === chain.symbol),
-    [pricesData?.prices, chain.symbol]
-  );
-
   // Get real-time price
-  const livePrice = realtimeData?.prices?.[chain.symbol.toLowerCase()] || realtimeData?.prices?.[chain.id];
-  const currentPrice = livePrice?.price || chainPrice?.price || chainData?.overview?.nativePrice || 0;
+  const livePrice = realtimePrices.prices?.[chain.symbol.toLowerCase()] || realtimePrices.prices?.[chain.id];
+  const currentPrice = livePrice?.price || chainPrice?.price || (chainData?.overview as any)?.nativePrice || 0;
   const priceChange = livePrice?.change24h || chainPrice?.change24h || chainData?.overview?.priceChange24h || 0;
   const isPositive = priceChange >= 0;
 
