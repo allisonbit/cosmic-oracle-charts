@@ -3,15 +3,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, TrendingDown, Minus, Clock, RefreshCw, Shield, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { TokenIcon } from "@/components/ui/token-icon";
 
 interface PredictionHeroProps {
   coinName: string;
+  coinId?: string;
   symbol: string;
   timeframe: 'daily' | 'weekly' | 'monthly';
   data: PredictionData;
 }
 
-export function PredictionHero({ coinName, symbol, timeframe, data }: PredictionHeroProps) {
+export function PredictionHero({ coinName, coinId, symbol, timeframe, data }: PredictionHeroProps) {
   const timeframeText = timeframe === 'daily' ? 'Today' : timeframe === 'weekly' ? 'This Week' : 'This Month';
   const BiasIcon = data.bias === 'bullish' ? TrendingUp : data.bias === 'bearish' ? TrendingDown : Minus;
   const lastUpdate = new Date(data.timestamp);
@@ -30,14 +32,7 @@ export function PredictionHero({ coinName, symbol, timeframe, data }: Prediction
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-5">
             <div>
               <div className="flex items-center gap-2.5 mb-2">
-                <div className={cn(
-                  "w-10 h-10 rounded-lg flex items-center justify-center text-lg font-bold",
-                  data.bias === 'bullish' ? 'bg-success/15 text-success' :
-                  data.bias === 'bearish' ? 'bg-danger/15 text-danger' :
-                  'bg-warning/15 text-warning'
-                )}>
-                  {symbol.charAt(0).toUpperCase()}
-                </div>
+                <TokenIcon coinId={coinId || coinName.toLowerCase().replace(/\s+/g, '-')} symbol={symbol} size="lg" />
                 <div>
                   <h1 className="text-xl md:text-2xl font-bold leading-tight">
                     {coinName} Prediction {timeframeText}
