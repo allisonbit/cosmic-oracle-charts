@@ -162,12 +162,6 @@ export function InvestorActionSummary({
           >
             {symbol} Strength Score
           </Link>
-          <Link
-            to="/market/best-crypto-to-buy-today"
-            className="flex items-center gap-1 text-sm px-4 py-2 bg-muted hover:bg-muted/80 rounded-lg transition-colors"
-          >
-            Best Crypto Today
-          </Link>
         </div>
       </CardContent>
     </Card>
