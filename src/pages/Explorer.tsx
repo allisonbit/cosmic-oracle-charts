@@ -554,7 +554,7 @@ const ExplorerPage = () => {
 
                       {/* Age */}
                       <td className="px-2 py-2.5 text-muted-foreground whitespace-nowrap">
-                        {formatAge(token.age)}
+                        {formatAge(token.ageHours)}
                       </td>
 
                       {/* Txns */}
