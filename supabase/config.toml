@@ -120,3 +120,6 @@ verify_jwt = false
 [functions.autonomous-agent.rate_limit]
 requests = 10
 per = 3600
+
+[functions.sentiment-data]
+verify_jwt = false
