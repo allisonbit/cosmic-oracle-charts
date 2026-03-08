@@ -246,7 +246,7 @@ export default function PricePrediction() {
             ) : data ? (
               <>
                 {/* Hero */}
-                <PredictionHero coinName={crypto.name} symbol={crypto.symbol} timeframe={validTimeframe} data={data} />
+                <PredictionHero coinName={crypto.name} coinId={crypto.id} symbol={crypto.symbol} timeframe={validTimeframe} data={data} />
                 
                 {/* Action Summary */}
                 <InvestorActionSummary

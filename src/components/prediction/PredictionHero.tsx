@@ -32,7 +32,7 @@ export function PredictionHero({ coinName, coinId, symbol, timeframe, data }: Pr
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-5">
             <div>
               <div className="flex items-center gap-2.5 mb-2">
-                <TokenIcon coinId={coinName.toLowerCase().replace(/\s+/g, '-')} symbol={symbol} size="lg" />
+                <TokenIcon coinId={coinId || coinName.toLowerCase().replace(/\s+/g, '-')} symbol={symbol} size="lg" />
                 <div>
                   <h1 className="text-xl md:text-2xl font-bold leading-tight">
                     {coinName} Prediction {timeframeText}
