@@ -12,7 +12,6 @@ import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { SEO } from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
@@ -22,24 +21,11 @@ import { GlobalTokenSearch } from "@/components/prediction/GlobalTokenSearch";
 import { PredictionLeaderboard } from "@/components/prediction/PredictionLeaderboard";
 import { GlobalToken } from "@/hooks/useGlobalTokenSearch";
 import { cn } from "@/lib/utils";
-
-function generateSentiment(symbol: string, change24h: number) {
-  const hash = symbol.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-  let bias: 'bullish' | 'bearish' | 'neutral' = 'neutral';
-  if (change24h > 3) bias = 'bullish';
-  else if (change24h < -3) bias = 'bearish';
-  else if (change24h > 0) bias = hash % 2 === 0 ? 'bullish' : 'neutral';
-  else if (change24h < 0) bias = hash % 2 === 0 ? 'bearish' : 'neutral';
-  const confidence = Math.min(90, Math.max(45, 55 + Math.abs(change24h) * 2 + (hash % 20)));
-  return {
-    bias,
-    confidence,
-    signalStrength: Math.floor(confidence * 0.9 + (hash % 10)),
-    indicatorAlignment: Math.floor(25 + (hash % 20))
-  };
-}
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 const formatPrice = (p: number) => {
+  if (!p || p <= 0) return '—';
   if (p >= 1000) return `$${p.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
   if (p >= 1) return `$${p.toFixed(2)}`;
   if (p >= 0.01) return `$${p.toFixed(4)}`;
@@ -47,21 +33,42 @@ const formatPrice = (p: number) => {
 };
 
 const formatCompact = (n: number) => {
+  if (!n || n <= 0) return '—';
   if (n >= 1e12) return `$${(n / 1e12).toFixed(1)}T`;
   if (n >= 1e9) return `$${(n / 1e9).toFixed(1)}B`;
   if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
   return `$${n.toLocaleString()}`;
 };
 
+// Fetch cached predictions from database
+function useCachedPredictions() {
+  return useQuery({
+    queryKey: ['cached-predictions-hub'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('predictions_cache')
+        .select('coin_id, symbol, bias, confidence, current_price, prediction_data, timeframe, created_at')
+        .eq('timeframe', 'daily')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 60_000,
+    refetchInterval: 2 * 60_000,
+    refetchIntervalInBackground: true,
+  });
+}
+
 export default function PredictionHub() {
   const navigate = useNavigate();
   const { data: pricesData, isLoading, refetch, isFetching } = useCryptoPrices();
+  const { data: cachedPredictions } = useCachedPredictions();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'bullish' | 'bearish' | 'neutral'>('all');
   const [sortBy, setSortBy] = useState<'confidence' | 'change' | 'marketCap'>('confidence');
   const [liveTime, setLiveTime] = useState(new Date());
 
-  // Live clock
   useEffect(() => {
     const interval = setInterval(() => setLiveTime(new Date()), 1000);
     return () => clearInterval(interval);
@@ -72,25 +79,43 @@ export default function PredictionHub() {
     navigate(`/price-prediction/${tokenSlug}/daily`);
   }, [navigate]);
 
-  // Build token list from top 50
+  // Build token list from top 50 with real cached AI data
   const displayCryptos = useMemo(() => {
     return TOP_50_CRYPTOS.map(crypto => {
       const priceData = pricesData?.prices?.find(
         p => p.symbol.toLowerCase() === crypto.symbol.toLowerCase()
       );
       const change24h = priceData?.change24h ?? 0;
-      const sentiment = generateSentiment(crypto.symbol, change24h);
+      
+      // Use real cached prediction data if available
+      const cached = cachedPredictions?.find(
+        p => p.coin_id === crypto.id || p.symbol?.toLowerCase() === crypto.symbol.toLowerCase()
+      );
+      
+      const predData = cached?.prediction_data as any;
+      
+      const bias: 'bullish' | 'bearish' | 'neutral' = (cached?.bias as any) || 
+        (change24h > 2 ? 'bullish' : change24h < -2 ? 'bearish' : 'neutral');
+      const confidence = cached?.confidence || Math.min(85, Math.max(40, 50 + Math.abs(change24h) * 3));
+      const signalStrength = predData?.technicalIndicators
+        ? Math.floor((predData.technicalIndicators.rsi || 50) + (confidence * 0.3))
+        : Math.floor(confidence * 0.85);
+      
       return {
         id: crypto.id,
         name: crypto.name,
         symbol: crypto.symbol,
-        price: priceData?.price || 0,
+        price: priceData?.price || cached?.current_price || 0,
         change24h,
         marketCap: priceData?.marketCap || 0,
-        ...sentiment
+        bias,
+        confidence,
+        signalStrength,
+        hasCachedPrediction: !!cached,
+        riskLevel: predData?.riskLevel || (Math.abs(change24h) > 5 ? 'high' : Math.abs(change24h) > 2 ? 'medium' : 'low'),
       };
     });
-  }, [pricesData]);
+  }, [pricesData, cachedPredictions]);
 
   const filteredCryptos = useMemo(() => {
     let result = displayCryptos.filter(crypto => {
@@ -111,7 +136,6 @@ export default function PredictionHub() {
     return result;
   }, [displayCryptos, searchQuery, selectedCategory, sortBy]);
 
-  // Market summary stats
   const marketStats = useMemo(() => {
     const bullish = displayCryptos.filter(c => c.bias === 'bullish').length;
     const bearish = displayCryptos.filter(c => c.bias === 'bearish').length;
@@ -154,6 +178,11 @@ export default function PredictionHub() {
                 <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
                 <span className="text-xs font-mono text-success">LIVE</span>
                 <span className="text-xs text-muted-foreground font-mono">{liveTime.toLocaleTimeString()}</span>
+                {cachedPredictions && cachedPredictions.length > 0 && (
+                  <Badge variant="outline" className="text-[10px] ml-2 gap-1 border-success/30 text-success">
+                    <Zap className="w-2.5 h-2.5" /> {cachedPredictions.length} AI Predictions Cached
+                  </Badge>
+                )}
               </div>
               <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
                 AI Prediction Terminal
@@ -324,6 +353,7 @@ export default function PredictionHub() {
                       <th className="text-right p-3 text-xs font-medium text-muted-foreground">24h</th>
                       <th className="text-center p-3 text-xs font-medium text-muted-foreground">AI Signal</th>
                       <th className="text-center p-3 text-xs font-medium text-muted-foreground">Confidence</th>
+                      <th className="text-center p-3 text-xs font-medium text-muted-foreground hidden md:table-cell">Risk</th>
                       <th className="text-right p-3 text-xs font-medium text-muted-foreground hidden md:table-cell">Market Cap</th>
                       <th className="text-center p-3 text-xs font-medium text-muted-foreground">Action</th>
                     </tr>
@@ -346,7 +376,12 @@ export default function PredictionHub() {
                               {crypto.symbol.slice(0, 2).toUpperCase()}
                             </div>
                             <div>
-                              <div className="font-medium text-sm">{crypto.name}</div>
+                              <div className="font-medium text-sm flex items-center gap-1.5">
+                                {crypto.name}
+                                {crypto.hasCachedPrediction && (
+                                  <Zap className="w-3 h-3 text-primary" />
+                                )}
+                              </div>
                               <div className="text-xs text-muted-foreground">{crypto.symbol.toUpperCase()}</div>
                             </div>
                           </div>
@@ -390,6 +425,15 @@ export default function PredictionHub() {
                             </div>
                             <span className="text-xs font-mono">{crypto.confidence}%</span>
                           </div>
+                        </td>
+                        <td className="p-3 text-center hidden md:table-cell">
+                          <Badge variant="outline" className={cn("text-[10px]",
+                            crypto.riskLevel === 'low' ? 'text-success border-success/30' :
+                            crypto.riskLevel === 'medium' ? 'text-warning border-warning/30' :
+                            'text-danger border-danger/30'
+                          )}>
+                            {crypto.riskLevel}
+                          </Badge>
                         </td>
                         <td className="p-3 text-right hidden md:table-cell text-xs text-muted-foreground font-mono">
                           {crypto.marketCap > 0 ? formatCompact(crypto.marketCap) : '—'}
