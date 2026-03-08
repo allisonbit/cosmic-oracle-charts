@@ -404,8 +404,8 @@ function BlogSkeleton() {
 
 export default function Learn() {
   const { data, isLoading, refetch, isFetching } = useAIBlog();
-  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [activeCategory, setActiveCategory] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDate, setSelectedDate] = useState('all');
 
