@@ -580,7 +580,6 @@ const Dashboard = () => {
                   <Link
                     key={coin.symbol}
                     to={`/price-prediction/${coin.symbol.toLowerCase()}/daily`}
-                    onClick={(e) => { e.preventDefault(); setSelectedCoin(coin); }}
                     className={cn(
                       "p-1.5 sm:p-2 md:p-3 rounded-lg text-center transition-all card-touch",
                       coin.change24h >= 3 ? "bg-success/30 border border-success/50" :
