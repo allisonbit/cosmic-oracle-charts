@@ -510,10 +510,10 @@ const Dashboard = () => {
                   const trend = coin.change24h >= 2 ? "BULLISH" : coin.change24h <= -2 ? "BEARISH" : "NEUTRAL";
                   
                   return (
-                    <button 
+                    <Link 
                       key={coin.symbol} 
-                      onClick={() => setSelectedCoin(coin)}
-                      className="holo-card p-2.5 sm:p-3 md:p-4 space-y-2 sm:space-y-3 card-touch text-left group"
+                      to={`/price-prediction/${coin.name?.toLowerCase() || coin.symbol?.toLowerCase()}/daily`}
+                      className="holo-card p-2.5 sm:p-3 md:p-4 space-y-2 sm:space-y-3 card-touch text-left group block"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
