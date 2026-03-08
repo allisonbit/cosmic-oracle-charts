@@ -218,6 +218,7 @@ const Dashboard = () => {
   const { data: pricesData, isLoading: pricesLoading } = useCryptoPrices();
   const { data: marketData, isLoading: marketLoading } = useMarketData();
   const [lastUpdate, setLastUpdate] = useState(new Date());
+  const [selectedCoin, setSelectedCoin] = useState<any>(null);
   
   const topCoins = useMemo(() => marketData?.topCoins?.slice(0, 8) || [], [marketData]);
   const allCoins = useMemo(() => marketData?.topCoins || [], [marketData]);
