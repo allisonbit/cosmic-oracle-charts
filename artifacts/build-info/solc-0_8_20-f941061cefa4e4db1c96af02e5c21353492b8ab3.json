@@ -1,0 +1,35 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_20-f941061cefa4e4db1c96af02e5c21353492b8ab3",
+  "solcVersion": "0.8.20",
+  "solcLongVersion": "0.8.20+commit.a1b79de6",
+  "userSourceNameMap": {
+    "contracts/OracleBullPayments.sol": "project/contracts/OracleBullPayments.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "shanghai",
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/OracleBullPayments.sol": {
+        "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.20;\n\ncontract OracleBullPayments {\n    address public owner;\n    mapping(address => bool) public hasPaid;\n\n    event PaymentReceived(address indexed user, uint256 amount);\n    event FundsWithdrawn(address indexed owner, uint256 amount);\n\n    constructor() {\n        owner = 0x38e2F47D9b2Eb233c035Dcbc2D40857D9517933A; // OracleBull default recipient\n    }\n\n    modifier onlyOwner() {\n        require(msg.sender == owner, \"Only owner can call this function\");\n        _;\n    }\n\n    function pay() external payable {\n        require(msg.value > 0, \"Amount must be greater than 0\");\n        hasPaid[msg.sender] = true;\n        emit PaymentReceived(msg.sender, msg.value);\n    }\n\n    function withdraw() external onlyOwner {\n        uint256 balance = address(this).balance;\n        require(balance > 0, \"No funds to withdraw\");\n        \n        (bool success, ) = payable(owner).call{value: balance}(\"\");\n        require(success, \"Withdraw failed\");\n        \n        emit FundsWithdrawn(owner, balance);\n    }\n}\n"
+      }
+    }
+  }
+}

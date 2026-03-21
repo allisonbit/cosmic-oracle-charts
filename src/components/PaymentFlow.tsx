@@ -101,7 +101,7 @@ const abi = [
 ] as const;
 
 export function PaymentFlow() {
-  const contractAddress = (import.meta.env.VITE_CONTRACT_ADDRESS || "0x0000000000000000000000000000000000000000") as `0x${string}`;
+  const contractAddress = (import.meta.env.VITE_CONTRACT_ADDRESS || "0x3ACA071D6cA66462612d04eB6f31Ab7924F86FF0") as `0x${string}`;
   
   const { address, isConnected } = useAccount();
   const { connect, connectors, isPending: isConnecting } = useConnect();
