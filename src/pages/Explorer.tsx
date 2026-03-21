@@ -9,7 +9,7 @@ import { useTokenSearch, SearchToken } from "@/hooks/useTokenSearch";
 import { useLiveTokenSearch, useTrendingTokens, LiveToken } from "@/hooks/useLiveTokenSearch";
 import { useTokenDiscovery, DiscoveryToken } from "@/hooks/useTokenDiscovery";
 import { ALL_CHAINS, getChainById, ExplorerChain } from "@/lib/explorerChains";
-import { ExplorerSchema, ExplorerSEOContent } from "@/components/seo";
+import { ExplorerSchema, ExplorerSEOContent } from "@/components/seo/index";
 import { toast } from "sonner";
 import { SEO } from "@/components/SEO";
 import { ScrollArea } from "@/components/ui/scroll-area";

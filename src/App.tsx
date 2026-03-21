@@ -4,6 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { lazy, Suspense, memo, useEffect } from "react";
+import { WagmiProvider } from 'wagmi';
+import { config } from './wagmi';
 import { Loader2 } from "lucide-react";
 import { SEO, StructuredData } from "@/components/SEO";
 import { AuthProvider } from "@/hooks/useAuth";
@@ -143,7 +145,8 @@ const ChunkLoadRecovery = memo(function ChunkLoadRecovery() {
 });
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
+  <WagmiProvider config={config}>
+    <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <TooltipProvider delayDuration={300}>
         <Toaster />
@@ -212,6 +215,7 @@ const App = () => (
       </TooltipProvider>
     </AuthProvider>
   </QueryClientProvider>
+  </WagmiProvider>
 );
 
 export default App;

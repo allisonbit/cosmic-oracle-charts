@@ -17,8 +17,8 @@ import {
   TrendingUp
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { StrengthMeterSchema } from "@/components/seo";
-import { StrengthMeterSEOHeader, StrengthMeterSEOContent } from "@/components/seo";
+import { StrengthMeterSchema } from "@/components/seo/index";
+import { StrengthMeterSEOHeader, StrengthMeterSEOContent } from "@/components/seo/index";
 import { InArticleAd } from "@/components/ads";
 import {
   StrengthComparisonGauge,

@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils";
 import { format, parseISO, isToday, isYesterday } from "date-fns";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
-import { LearnSEOContent } from "@/components/seo";
+import { LearnSEOContent } from "@/components/seo/index";
 import { EDUCATIONAL_ARTICLES } from "@/lib/educationalArticles";
 
 const categoryIcons: Record<string, typeof BookOpen> = {

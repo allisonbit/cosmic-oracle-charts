@@ -71,3 +71,41 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+
+## 🚀 Smart Contract Payment Integration
+
+We have added a completely functional payment flow powered by a Solidity smart contract deployed on the Base network.
+
+### 1. Smart Contract Deployment
+
+To deploy the smart contract on the Base mainnet or testnet, you need to configure your environment:
+
+1. Copy `.env.example` to `.env` if you haven't already.
+2. In your `.env` file, include your deployment wallet's private key and RPC URL:
+   ```env
+   PRIVATE_KEY="your-private-key"
+   RPC_URL="https://mainnet.base.org"
+   ```
+3. Run the hardhat deployment script:
+   ```sh
+   npx hardhat ignition deploy ignition/modules/OracleBullPayments.cjs --network base_mainnet
+   ```
+
+### 2. Frontend Configuration
+
+After deploying, you need to link the contract back to the frontend:
+1. Update your `.env` file with the deployed contract address:
+   ```env
+   VITE_CONTRACT_ADDRESS="0xYOUR_DEPLOYED_CONTRACT_ADDRESS"
+   VITE_RPC_URL="https://mainnet.base.org"
+   VITE_WALLET_CONNECT_PROJECT_ID="your_wallet_connect_project_id"
+   ```
+2. Run the application: `npm run dev`
+
+### 3. Testing Payment Flow
+
+Once everything is configured:
+1. Navigate to the landing page and click the "Connect Wallet" button on the Premium Access card.
+2. Ensure you are connected to the correct network (Base Mainnet).
+3. Authorize the transaction to pay the target fee (0.01 ETH).
+4. Upon successful transaction, the UI will reflect your "Paid" status and grant you full access to OracleBull traits.

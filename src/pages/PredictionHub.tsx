@@ -17,7 +17,7 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import { SEO } from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
 import { BannerAd, InArticleAd } from "@/components/ads";
-import { PredictionHubSEOContent, PredictionsHowItWorks, PredictionsDataMeaning } from "@/components/seo";
+import { PredictionHubSEOContent, PredictionsHowItWorks, PredictionsDataMeaning } from "@/components/seo/index";
 import { GlobalTokenSearch } from "@/components/prediction/GlobalTokenSearch";
 import { PredictionLeaderboard } from "@/components/prediction/PredictionLeaderboard";
 import { GlobalToken } from "@/hooks/useGlobalTokenSearch";

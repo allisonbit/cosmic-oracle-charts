@@ -19,7 +19,7 @@ import {
 import { cn } from "@/lib/utils";
 import { format, parseISO, isToday, isYesterday } from "date-fns";
 import { BannerAd, InArticleAd } from "@/components/ads";
-import { InsightsSEOContent } from "@/components/seo";
+import { InsightsSEOContent } from "@/components/seo/index";
 import { EducationalArticlesPanel } from "@/components/insights/EducationalArticlesPanel";
 
 const ARTICLES_PER_PAGE = 12;

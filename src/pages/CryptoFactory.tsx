@@ -16,8 +16,8 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { format, formatDistanceToNow } from "date-fns";
-import { CryptoFactorySchema } from "@/components/seo";
-import { CryptoFactorySEOHeader, CryptoFactorySEOContent } from "@/components/seo";
+import { CryptoFactorySchema } from "@/components/seo/index";
+import { CryptoFactorySEOHeader, CryptoFactorySEOContent } from "@/components/seo/index";
 import { SEO } from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
 

@@ -13,7 +13,7 @@ import { ChainExternalLinks } from "@/components/chain/ChainExternalLinks";
 import { ChainSpecificMetrics } from "@/components/chain/ChainSpecificMetrics";
 import { LiveTokenSearchPanel } from "@/components/chain/LiveTokenSearchPanel";
 import { ChainFAQSchema, ChainFAQDisplay } from "@/components/chain/ChainFAQSchema";
-import { ChainSEOContent } from "@/components/seo";
+import { ChainSEOContent } from "@/components/seo/index";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { LazySection } from "@/components/ui/LazySection";
 import { 

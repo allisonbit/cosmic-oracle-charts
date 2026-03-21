@@ -29,7 +29,7 @@ import { RecentTradesPanel } from "@/components/dashboard/RecentTradesPanel";
 import { Link, useNavigate } from "react-router-dom";
 import { SidebarAd, InArticleAd } from "@/components/ads";
 import { CoinDetailModal } from "@/components/dashboard/CoinDetailModal";
-import { DashboardSchema, DashboardSEOContent, HowToReadDashboard, WhatMakesUsDifferent, RelatedMarketInsights, DashboardHowItWorks } from "@/components/seo";
+import { DashboardSchema, DashboardSEOContent, HowToReadDashboard, WhatMakesUsDifferent, RelatedMarketInsights, DashboardHowItWorks } from "@/components/seo/index";
 
 function formatNumber(num: number): string {
   if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
