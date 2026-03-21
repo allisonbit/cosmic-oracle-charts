@@ -11,7 +11,7 @@ import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BannerAd, InArticleAd } from "@/components/ads";
-import { SEO, StructuredData } from "@/components/SEO";
+import { SEO, StructuredData } from "@/components/MainSEO";
 import { HomepageSchema } from "@/components/home/HomepageSchema";
 
 // Lazy load below-fold components for better LCP

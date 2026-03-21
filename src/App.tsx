@@ -7,7 +7,7 @@ import { lazy, Suspense, memo, useEffect } from "react";
 import { WagmiProvider } from 'wagmi';
 import { config } from './wagmi';
 import { Loader2 } from "lucide-react";
-import { SEO, StructuredData } from "@/components/SEO";
+import { SEO, StructuredData } from "@/components/MainSEO";
 import { AuthProvider } from "@/hooks/useAuth";
 import { AdSenseManager } from "@/components/ads/AdSenseManager";
 import { usePageTracking } from "@/hooks/usePageTracking";
