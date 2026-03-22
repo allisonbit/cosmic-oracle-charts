@@ -1,5 +1,5 @@
 import { Layout } from "@/components/layout/Layout";
-import { SEO } from "@/components/SEO";
+import { SEO } from "@/components/MainSEO";
 import { AlertTriangle, TrendingDown, Shield, Brain, DollarSign, Scale } from "lucide-react";
 
 const RiskDisclaimer = () => {

@@ -20,7 +20,7 @@ import {
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { format, formatDistanceToNow } from "date-fns";
-import { SEO } from "@/components/SEO";
+import { SEO } from "@/components/MainSEO";
 import { Helmet } from "react-helmet-async";
 import { TopCryptoPredictionLinks } from "@/components/factory/AssetPredictionLinks";
 

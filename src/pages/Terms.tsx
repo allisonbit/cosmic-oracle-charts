@@ -1,5 +1,5 @@
 import { Layout } from "@/components/layout/Layout";
-import { SEO } from "@/components/SEO";
+import { SEO } from "@/components/MainSEO";
 import { FileText, AlertTriangle, Scale, Shield, Globe, Ban } from "lucide-react";
 
 const Terms = () => {

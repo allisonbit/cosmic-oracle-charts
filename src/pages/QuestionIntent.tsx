@@ -2,7 +2,7 @@ import { useParams, Navigate, Link } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
-import { SEO } from "@/components/SEO";
+import { SEO } from "@/components/MainSEO";
 import { Helmet } from "react-helmet-async";
 import { 
   TrendingUp, TrendingDown, Minus, Clock, Calendar, CalendarDays,

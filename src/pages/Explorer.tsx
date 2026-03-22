@@ -11,7 +11,7 @@ import { useTokenDiscovery, DiscoveryToken } from "@/hooks/useTokenDiscovery";
 import { ALL_CHAINS, getChainById, ExplorerChain } from "@/lib/explorerChains";
 import { ExplorerSchema, ExplorerSEOContent } from "@/components/seo/index";
 import { toast } from "sonner";
-import { SEO } from "@/components/SEO";
+import { SEO } from "@/components/MainSEO";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 type ViewTab = 'trending' | 'top' | 'gainers' | 'losers' | 'new';

@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useMemo, useCallback, useEffect } from "react";
-import { SEO } from "@/components/SEO";
+import { SEO } from "@/components/MainSEO";
 import { Helmet } from "react-helmet-async";
 import { BannerAd, InArticleAd } from "@/components/ads";
 import { PredictionHubSEOContent, PredictionsHowItWorks, PredictionsDataMeaning } from "@/components/seo/index";

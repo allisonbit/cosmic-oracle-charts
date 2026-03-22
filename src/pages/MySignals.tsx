@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { SEO } from "@/components/SEO";
+import { SEO } from "@/components/MainSEO";
 
 interface Signal {
   coin: string;

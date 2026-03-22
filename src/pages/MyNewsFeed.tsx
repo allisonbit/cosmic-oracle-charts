@@ -6,7 +6,7 @@ import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { SEO } from "@/components/SEO";
+import { SEO } from "@/components/MainSEO";
 import { cn } from "@/lib/utils";
 import {
   Newspaper, Bell, BellOff, TrendingUp, TrendingDown, AlertTriangle,

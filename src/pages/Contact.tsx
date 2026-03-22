@@ -1,7 +1,7 @@
 import { Layout } from "@/components/layout/Layout";
 import { Mail, MessageCircle, Twitter, MapPin, Clock, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { SEO } from "@/components/SEO";
+import { SEO } from "@/components/MainSEO";
 import { ContactSEOContent } from "@/components/seo/index";
 
 const ContactPage = () => {

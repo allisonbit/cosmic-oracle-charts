@@ -1,5 +1,5 @@
 import { Layout } from "@/components/layout/Layout";
-import { SEO } from "@/components/SEO";
+import { SEO } from "@/components/MainSEO";
 import { Shield, Eye, Lock, Database, Cookie, Mail } from "lucide-react";
 
 const PrivacyPolicy = () => {

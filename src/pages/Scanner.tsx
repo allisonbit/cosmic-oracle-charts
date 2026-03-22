@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 import { useLiveTokenSearch, useTrendingTokens, type LiveToken } from "@/hooks/useLiveTokenSearch";
 import { useStrengthMeter } from "@/hooks/useStrengthMeter";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
-import { SEO } from "@/components/SEO";
+import { SEO } from "@/components/MainSEO";
 import { Helmet } from "react-helmet-async";
 
 const chains = ["all", "ethereum", "solana", "bsc", "arbitrum", "base", "polygon", "optimism", "avalanche"] as const;

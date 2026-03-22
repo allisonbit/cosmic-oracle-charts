@@ -1,7 +1,7 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useState, useMemo } from "react";
 import { Layout } from "@/components/layout/Layout";
-import { SEO } from "@/components/SEO";
+import { SEO } from "@/components/MainSEO";
 import { useTokenByAddress, useLiveTokenSearch } from "@/hooks/useLiveTokenSearch";
 import { useAIForecast } from "@/hooks/useAIForecast";
 import { getChainById, ALL_CHAINS } from "@/lib/explorerChains";
