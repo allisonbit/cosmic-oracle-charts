@@ -1,0 +1,116 @@
+﻿
+> vite_react_shadcn_ts@0.0.0 build
+> vite build
+
+[36mvite v5.4.19 [32mbuilding for production...[36m[39m
+transforming...
+node.exe : Browserslist: 
+browsers data (caniuse-lite) 
+is 9 months old. Please run:
+At C:\Program 
+Files\nodejs\npm.ps1:29 
+char:3
++   & $NODE_EXE $NPM_CLI_JS 
+$args
++   
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (Browser  
+  slist: b...ld. Please ru   
+ n::String) [], RemoteExc    
+eption
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+  npx 
+update-browserslist-db@latest
+  Why you should do it 
+regularly: https://github.com
+/browserslist/update-db#readm
+e
+[32mΓ£ô[39m 4569 modules transformed.
+[31mx[39m Build failed in 
+18.37s
+[31merror during build:
+[31msrc/pages/Explorer.tsx 
+(14:9): "SEO" is not 
+exported by "src/components/s
+eo/index.ts", imported by "sr
+c/pages/Explorer.tsx".[31m
+file: [36mC:/Users/allison/.
+gemini/antigravity/scratch/co
+smic-oracle-charts/src/pages/
+Explorer.tsx:14:9[31m
+[33m
+12: import { ExplorerSchema, 
+ExplorerSEOContent } from 
+"@/components/seo/index";
+13: import { toast } from 
+"sonner";
+14: import { SEO } from 
+"@/components/SEO";
+             ^
+15: import { ScrollArea } 
+from "@/components/ui/scroll-
+area";
+[31m
+    at getRollupError (file:/
+//C:/Users/allison/.gemini/an
+tigravity/scratch/cosmic-orac
+le-charts/node_modules/rollup
+/dist/es/shared/parseAst.js:3
+95:41)
+    at error (file:///C:/User
+s/allison/.gemini/antigravity
+/scratch/cosmic-oracle-charts
+/node_modules/rollup/dist/es/
+shared/parseAst.js:391:42)
+    at Module.error (file:///
+C:/Users/allison/.gemini/anti
+gravity/scratch/cosmic-oracle
+-charts/node_modules/rollup/d
+ist/es/shared/node-entry.js:1
+5535:16)
+    at Module.traceVariable (
+file:///C:/Users/allison/.gem
+ini/antigravity/scratch/cosmi
+c-oracle-charts/node_modules/
+rollup/dist/es/shared/node-en
+try.js:15984:29)
+    at 
+ModuleScope.findVariable (fil
+e:///C:/Users/allison/.gemini
+/antigravity/scratch/cosmic-o
+racle-charts/node_modules/rol
+lup/dist/es/shared/node-entry
+.js:13770:39)
+    at ReturnValueScope.findV
+ariable (file:///C:/Users/all
+ison/.gemini/antigravity/scra
+tch/cosmic-oracle-charts/node
+_modules/rollup/dist/es/share
+d/node-entry.js:5252:38)
+    at FunctionBodyScope.find
+Variable (file:///C:/Users/al
+lison/.gemini/antigravity/scr
+atch/cosmic-oracle-charts/nod
+e_modules/rollup/dist/es/shar
+ed/node-entry.js:5252:38)
+    at Identifier.bind (file:
+///C:/Users/allison/.gemini/a
+ntigravity/scratch/cosmic-ora
+cle-charts/node_modules/rollu
+p/dist/es/shared/node-entry.j
+s:5035:40)
+    at CallExpression.bind (f
+ile:///C:/Users/allison/.gemi
+ni/antigravity/scratch/cosmic
+-oracle-charts/node_modules/r
+ollup/dist/es/shared/node-ent
+ry.js:2851:28)
+    at CallExpression.bind (f
+ile:///C:/Users/allison/.gemi
+ni/antigravity/scratch/cosmic
+-oracle-charts/node_modules/r
+ollup/dist/es/shared/node-ent
+ry.js:11235:15)[39m

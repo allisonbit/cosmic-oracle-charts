@@ -1,0 +1,31 @@
+﻿STDOUT:
+vite v5.4.19 building for production...
+transforming...
+✓ 4569 modules transformed.
+
+STDERR:
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+x Build failed in 18.32s
+error during build:
+src/pages/Explorer.tsx (14:9): "SEO" is not exported by "src/components/seo/index.ts", imported by "src/pages/Explorer.tsx".
+file: C:/Users/allison/.gemini/antigravity/scratch/cosmic-oracle-charts/src/pages/Explorer.tsx:14:9
+
+12: import { ExplorerSchema, ExplorerSEOContent } from "@/components/seo/index";
+13: import { toast } from "sonner";
+14: import { SEO } from "@/components/SEO";
+             ^
+15: import { ScrollArea } from "@/components/ui/scroll-area";
+
+    at getRollupError (file:///C:/Users/allison/.gemini/antigravity/scratch/cosmic-oracle-charts/node_modules/rollup/dist/es/shared/parseAst.js:395:41)
+    at error (file:///C:/Users/allison/.gemini/antigravity/scratch/cosmic-oracle-charts/node_modules/rollup/dist/es/shared/parseAst.js:391:42)
+    at Module.error (file:///C:/Users/allison/.gemini/antigravity/scratch/cosmic-oracle-charts/node_modules/rollup/dist/es/shared/node-entry.js:15535:16)
+    at Module.traceVariable (file:///C:/Users/allison/.gemini/antigravity/scratch/cosmic-oracle-charts/node_modules/rollup/dist/es/shared/node-entry.js:15984:29)
+    at ModuleScope.findVariable (file:///C:/Users/allison/.gemini/antigravity/scratch/cosmic-oracle-charts/node_modules/rollup/dist/es/shared/node-entry.js:13770:39)
+    at ReturnValueScope.findVariable (file:///C:/Users/allison/.gemini/antigravity/scratch/cosmic-oracle-charts/node_modules/rollup/dist/es/shared/node-entry.js:5252:38)
+    at FunctionBodyScope.findVariable (file:///C:/Users/allison/.gemini/antigravity/scratch/cosmic-oracle-charts/node_modules/rollup/dist/es/shared/node-entry.js:5252:38)
+    at Identifier.bind (file:///C:/Users/allison/.gemini/antigravity/scratch/cosmic-oracle-charts/node_modules/rollup/dist/es/shared/node-entry.js:5035:40)
+    at CallExpression.bind (file:///C:/Users/allison/.gemini/antigravity/scratch/cosmic-oracle-charts/node_modules/rollup/dist/es/shared/node-entry.js:2851:28)
+    at CallExpression.bind (file:///C:/Users/allison/.gemini/antigravity/scratch/cosmic-oracle-charts/node_modules/rollup/dist/es/shared/node-entry.js:11235:15)
+

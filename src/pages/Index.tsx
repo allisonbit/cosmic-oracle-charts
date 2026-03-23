@@ -1,6 +1,7 @@
 import { lazy, Suspense, useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useAccount } from "wagmi";
 import { Navbar } from "@/components/layout/Navbar";
 import { CryptoTicker } from "@/components/layout/CryptoTicker";
 import { HeroSection } from "@/components/home/HeroSection";
@@ -66,13 +67,14 @@ const ViewportSection = ({ children, fallback }: { children: React.ReactNode; fa
 
 const Index = () => {
   const { user, loading } = useAuth();
+  const { isConnected } = useAccount();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && user) {
+    if ((!loading && user) || isConnected) {
       navigate("/my", { replace: true });
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, isConnected, navigate]);
 
   return (
     <div className="min-h-screen flex flex-col">

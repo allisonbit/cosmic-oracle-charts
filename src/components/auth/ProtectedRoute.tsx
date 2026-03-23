@@ -1,28 +1,25 @@
+import { useAccount, useConnect } from "wagmi";
 import { useAuth } from "@/hooks/useAuth";
-import { lovable } from "@/integrations/lovable/index";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
 import { LogIn, Shield, Sparkles, TrendingUp, Bell, MessageCircle } from "lucide-react";
 import { useState, type ReactNode } from "react";
 
 export function ProtectedRoute({ children }: { children: ReactNode }) {
-  const { user, loading } = useAuth();
-  const [signingIn, setSigningIn] = useState(false);
+  const { isConnected } = useAccount();
+  const { connect, connectors, isPending } = useConnect();
+  const { loading: authLoading } = useAuth();
 
   const handleSignIn = async () => {
-    setSigningIn(true);
     try {
-      await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: `${window.location.origin}/my`,
-      });
+      const connector = connectors.find(c => c.id === 'walletConnect' || c.id === 'injected') || connectors[0];
+      if (connector) connect({ connector });
     } catch (e) {
-      console.error("Sign in error:", e);
-    } finally {
-      setSigningIn(false);
+      console.error("Connect error:", e);
     }
   };
 
-  if (loading) {
+  if (authLoading && !isConnected) {
     return (
       <Layout>
         <div className="min-h-[60vh] flex items-center justify-center">
@@ -32,7 +29,7 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
     );
   }
 
-  if (!user) {
+  if (!isConnected) {
     return (
       <Layout>
         <div className="min-h-[60vh] flex items-center justify-center px-4">
@@ -65,11 +62,11 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
             <Button
               size="lg"
               onClick={handleSignIn}
-              disabled={signingIn}
+              disabled={isPending}
               className="w-full gap-3 text-base h-12"
             >
               <LogIn className="w-5 h-5" />
-              {signingIn ? "Connecting..." : "Sign In with Google"}
+              {isPending ? "Connecting..." : "Connect Wallet"}
             </Button>
             <p className="text-xs text-muted-foreground">
               Free forever · No credit card required

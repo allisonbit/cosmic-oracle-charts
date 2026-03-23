@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { useAuth } from "@/hooks/useAuth";
-import { lovable } from "@/integrations/lovable/index";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,47 +15,55 @@ import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 
 export function UserMenu({ className }: { className?: string }) {
-  const { user, profile, loading, signOut } = useAuth();
-  const [signingIn, setSigningIn] = useState(false);
+  const { profile, loading: authLoading } = useAuth();
+  const { isConnected, address } = useAccount();
+  const { connect, connectors, isPending } = useConnect();
+  const { disconnect } = useDisconnect();
   const navigate = useNavigate();
 
   const handleSignIn = async () => {
-    setSigningIn(true);
     try {
-      await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: `${window.location.origin}/my`,
-      });
+      const connector = connectors.find(c => c.id === 'walletConnect' || c.id === 'injected') || connectors[0];
+      if (connector) connect({ connector });
     } catch (e) {
-      console.error("Sign in error:", e);
-    } finally {
-      setSigningIn(false);
+      console.error("Connect error:", e);
     }
   };
 
-  if (loading) {
+  const handleSignOut = async () => {
+    try {
+      disconnect();
+    } catch (e) {
+      console.error(e)
+    }
+  };
+
+  if (authLoading && !isConnected) {
     return (
       <div className={cn("w-9 h-9 rounded-full bg-muted animate-pulse", className)} />
     );
   }
 
-  if (!user) {
+  if (!isConnected) {
     return (
       <Button
         variant="outline"
         size="sm"
         onClick={handleSignIn}
-        disabled={signingIn}
+        disabled={isPending}
         className={cn("gap-2 h-9 px-3 border-primary/30 hover:bg-primary/10 hover:text-primary", className)}
       >
         <LogIn className="w-4 h-4" />
-        <span className="hidden sm:inline">Sign In</span>
+        <span className="hidden sm:inline">Connect Wallet</span>
       </Button>
     );
   }
 
+  const shortenedAddress = address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "Wallet";
+
   const initials = profile?.display_name
     ? profile.display_name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2)
-    : user.email?.charAt(0).toUpperCase() || "U";
+    : "W";
 
   return (
     <DropdownMenu>
@@ -72,10 +80,10 @@ export function UserMenu({ className }: { className?: string }) {
       <DropdownMenuContent align="end" className="w-56 bg-card border-border">
         <div className="px-3 py-2">
           <p className="text-sm font-medium text-foreground truncate">
-            {profile?.display_name || "User"}
+            {profile?.display_name || "Connected"}
           </p>
           <p className="text-xs text-muted-foreground truncate">
-            {user.email}
+            {shortenedAddress}
           </p>
         </div>
         <DropdownMenuSeparator />
@@ -116,8 +124,8 @@ export function UserMenu({ className }: { className?: string }) {
           <Settings className="w-4 h-4" /> Settings
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={signOut} className="gap-2 cursor-pointer text-destructive focus:text-destructive">
-          <LogOut className="w-4 h-4" /> Sign Out
+        <DropdownMenuItem onClick={handleSignOut} className="gap-2 cursor-pointer text-destructive focus:text-destructive">
+          <LogOut className="w-4 h-4" /> Disconnect
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

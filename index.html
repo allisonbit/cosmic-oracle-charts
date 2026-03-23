@@ -303,16 +303,15 @@
 
         window.addEventListener('error', function (e) {
           if (document.documentElement.dataset.appMounted === '1') return;
-          var msg = (e && e.message) || '';
-          if (fatalPattern.test(msg) && window.__oracleBoot && window.__oracleBoot.showError) {
+          var msg = (e && e.message) || String(e || '');
+          if (window.__oracleBoot && window.__oracleBoot.showError) {
             window.__oracleBoot.showError(msg);
           }
         });
         window.addEventListener('unhandledrejection', function (e) {
           if (document.documentElement.dataset.appMounted === '1') return;
           var reason = (e && e.reason && e.reason.message) ? e.reason.message : String(e && e.reason ? e.reason : '');
-          // Only treat chunk/module load failures as fatal — ignore API/fetch errors
-          if (fatalPattern.test(reason) && window.__oracleBoot && window.__oracleBoot.showError) {
+          if (window.__oracleBoot && window.__oracleBoot.showError) {
             window.__oracleBoot.showError(reason);
           }
         });
