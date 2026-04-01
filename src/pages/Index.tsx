@@ -5,7 +5,7 @@ import { useAccount } from "wagmi";
 import { Navbar } from "@/components/layout/Navbar";
 import { CryptoTicker } from "@/components/layout/CryptoTicker";
 import { HeroSection } from "@/components/home/HeroSection";
-import { PaymentFlow } from "@/components/PaymentFlow";
+
 
 import { QuickAccessBar } from "@/components/home/QuickAccessBar";
 import { Footer } from "@/components/layout/Footer";
