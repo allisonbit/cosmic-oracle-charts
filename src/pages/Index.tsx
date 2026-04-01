@@ -94,15 +94,6 @@ const Index = () => {
         {/* 1. Hero - first impression, trust badges, live prices */}
         <HeroSection />
 
-        <section className="py-12 bg-background relative z-20">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold mb-4">Unlock Premium Access</h2>
-              <p className="text-muted-foreground">Get lifetime access to advanced OracleBull AI features with a one-time on-chain payment.</p>
-            </div>
-            <PaymentFlow />
-          </div>
-        </section>
 
         {/* 2. Quick Stats - live market data bar */}
         <Suspense fallback={<SectionFallback />}>

@@ -22,7 +22,7 @@ const hubPages = [
 
 function HubContent() {
   const { profile } = useAuth();
-  const isPremium = (profile as any)?.is_premium === true;
+  const isPremium = true; // Everything is free
 
   return (
     <Layout>
