@@ -298,20 +298,20 @@
           }
         }, 8000);
 
-        // Only show "Site failed to load" for actual script/chunk load errors, NOT API errors.
-        var fatalPattern = /script error|ChunkLoadError|Loading chunk|Failed to fetch dynamically imported module|Importing a module script failed|SyntaxError|ReferenceError|Cannot access .* before initialization/i;
+        // Only show "Site failed to load" for actual fatal script/chunk load errors.
+        var fatalPattern = /script error|ChunkLoadError|Loading chunk|Failed to fetch dynamically imported module|Importing a module script failed|SyntaxError.*unexpected|Cannot access .* before initialization/i;
 
         window.addEventListener('error', function (e) {
           if (document.documentElement.dataset.appMounted === '1') return;
           var msg = (e && e.message) || String(e || '');
-          if (window.__oracleBoot && window.__oracleBoot.showError) {
+          if (fatalPattern.test(msg) && window.__oracleBoot && window.__oracleBoot.showError) {
             window.__oracleBoot.showError(msg);
           }
         });
         window.addEventListener('unhandledrejection', function (e) {
           if (document.documentElement.dataset.appMounted === '1') return;
           var reason = (e && e.reason && e.reason.message) ? e.reason.message : String(e && e.reason ? e.reason : '');
-          if (window.__oracleBoot && window.__oracleBoot.showError) {
+          if (fatalPattern.test(reason) && window.__oracleBoot && window.__oracleBoot.showError) {
             window.__oracleBoot.showError(reason);
           }
         });
