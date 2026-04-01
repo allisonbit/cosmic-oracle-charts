@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { lazy, Suspense, memo, useEffect } from "react";
 import { WagmiProvider } from 'wagmi';
 import { config } from './wagmi';
+import React from 'react';
 import { Loader2 } from "lucide-react";
 import { SEO, StructuredData } from "@/components/MainSEO";
 import { AuthProvider } from "@/hooks/useAuth";

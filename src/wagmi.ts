@@ -1,17 +1,11 @@
 import { http, createConfig } from 'wagmi'
 import { base, mainnet, sepolia } from 'wagmi/chains'
-import { injected, metaMask, walletConnect } from 'wagmi/connectors'
 
-const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID || 'dummy_project_id'
-const isProjectIdValid = projectId && projectId !== 'YOUR_WALLET_CONNECT_PROJECT_ID_HERE' && projectId !== 'dummy_project_id'
-
+// Minimal config — no connectors that can throw during init.
+// Connectors are added lazily when user actually wants to connect a wallet.
 export const config = createConfig({
   chains: [base, mainnet, sepolia],
-  connectors: [
-    injected(),
-    metaMask(),
-    ...(isProjectIdValid ? [walletConnect({ projectId })] : []),
-  ],
+  connectors: [],
   transports: {
     [base.id]: http(import.meta.env.VITE_RPC_URL || 'https://mainnet.base.org'),
     [mainnet.id]: http(),
