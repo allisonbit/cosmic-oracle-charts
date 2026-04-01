@@ -32,9 +32,9 @@ export function MyAlerts() {
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
 
-  const isPremium = (profile as any)?.is_premium === true;
+  const isPremium = true; // Everything is free
   const activeAlerts = alerts.filter(a => !a.is_triggered);
-  const atLimit = !isPremium && activeAlerts.length >= FREE_ALERT_LIMIT;
+  const atLimit = false;
 
   const fetchAlerts = useCallback(async () => {
     if (!user) return;

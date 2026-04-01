@@ -25,8 +25,7 @@ export function AdminRoute({ children }: { children: ReactNode }) {
       // 1. Check hardcoded wallet list
       if (address && ADMIN_WALLETS.includes(address)) return true;
       
-      // 2. Check hardcoded email list
-      if (user?.email && ADMIN_EMAILS.includes(user.email)) return true;
+      // 2. Check hardcoded email list (skipped for wallet-only auth)
 
       // 3. Fallback to Supabase roles
       if (!user?.id) return false;
