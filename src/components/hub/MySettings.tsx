@@ -45,8 +45,8 @@ export function MySettings() {
             <AvatarFallback className="bg-primary/10 text-primary text-lg font-bold">{initials}</AvatarFallback>
           </Avatar>
           <div>
-            <p className="font-medium text-foreground">{user?.email}</p>
-            <p className="text-sm text-muted-foreground">Signed in with Google</p>
+            <p className="font-medium text-foreground">{profile?.display_name || user?.id}</p>
+            <p className="text-sm text-muted-foreground">Connected via wallet</p>
           </div>
         </div>
         <div className="space-y-2">
