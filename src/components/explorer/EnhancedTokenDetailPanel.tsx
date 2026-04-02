@@ -8,6 +8,7 @@ import {
   Info, ChevronRight, Twitter, MessageCircle, Share2, Bookmark
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { TradeButtons } from "@/components/trading/TradeButtons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
