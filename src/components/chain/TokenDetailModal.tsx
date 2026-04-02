@@ -35,8 +35,7 @@ interface TokenDetailModalProps {
 }
 
 export function TokenDetailModal({ open, onOpenChange, token }: TokenDetailModalProps) {
-  const [tradingExpanded, setTradingExpanded] = useState(false);
-  const [analyticsExpanded, setAnalyticsExpanded] = useState(false);
+  if (!token) return null;
 
   if (!token) return null;
 
