@@ -13,6 +13,7 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart a
 import { toast } from "sonner";
 import { SearchToken } from "@/hooks/useTokenSearch";
 import { ExplorerChain, getChainById } from "@/lib/explorerChains";
+import { TradeButtons } from "@/components/trading/TradeButtons";
 
 interface TokenDetailPanelProps {
   token: SearchToken;
@@ -509,31 +510,24 @@ export function TokenDetailPanel({ token, chain, forecast, aiLoading }: TokenDet
         </TabsContent>
       </Tabs>
 
-      {/* External Links */}
+      {/* Trade Actions */}
       <div className="holo-card p-6">
         <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
-          <Link2 className="w-4 h-4 text-primary" />
-          EXPLORE
+          <Zap className="w-4 h-4 text-primary" />
+          TRADE {token.symbol}
         </h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {[
-            { name: "Block Explorer", url: `${chain.explorer}/token/${token.contractAddress}` },
-            { name: "DexScreener", url: `https://dexscreener.com/${chain.id}/${token.contractAddress}` },
-            { name: "DexTools", url: `https://www.dextools.io/app/en/${chain.id}/pair-explorer/${token.contractAddress}` },
-            { name: "Market Data", url: token.coingeckoId ? `https://www.coingecko.com/en/coins/${token.coingeckoId}` : `https://www.coingecko.com/en/search?query=${token.symbol}` },
-          ].map((link) => (
-            <Button
-              key={link.name}
-              variant="outline"
-              size="sm"
-              className="gap-2"
-              onClick={() => window.open(link.url, "_blank")}
-              disabled={!token.contractAddress && link.name !== "Market Data"}
-            >
-              <ExternalLink className="w-3 h-3" />
-              {link.name}
-            </Button>
-          ))}
+        <TradeButtons
+          symbol={token.symbol}
+          name={token.name}
+          contractAddress={token.contractAddress}
+          chain={chain.id}
+          price={token.price}
+          logo={token.logo}
+        />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+          <Button variant="outline" size="sm" className="gap-2" onClick={() => window.open(`${chain.explorer}/token/${token.contractAddress}`, "_blank")} disabled={!token.contractAddress}>
+            <ExternalLink className="w-3 h-3" /> Block Explorer
+          </Button>
         </div>
       </div>
     </div>

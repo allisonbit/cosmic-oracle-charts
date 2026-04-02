@@ -18,6 +18,8 @@ import { GlobalSchemas } from "@/components/seo/RichSchemas";
 import { AIChatBubble } from "@/components/chat/AIChatBubble";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { AdminRoute } from "@/components/auth/AdminRoute";
+import { TradeProvider } from "@/contexts/TradeContext";
+import { QuickTradeModal } from "@/components/trading/QuickTradeModal";
 
 // Eager load critical pages
 import Index from "./pages/Index";
@@ -161,6 +163,7 @@ const App = () => (
   <WagmiSafety>
     <QueryClientProvider client={queryClient}>
     <AuthProvider>
+    <TradeProvider>
       <TooltipProvider delayDuration={300}>
         <Toaster />
         <Sonner position="top-right" closeButton richColors />
@@ -224,9 +227,11 @@ const App = () => (
               </Routes>
             </Suspense>
             <AIChatBubble />
+            <QuickTradeModal />
           </BrowserRouter>
         </AppErrorBoundary>
       </TooltipProvider>
+    </TradeProvider>
     </AuthProvider>
   </QueryClientProvider>
   </WagmiSafety>

@@ -8,6 +8,7 @@ import {
   Info, ChevronRight, Twitter, MessageCircle, Share2, Bookmark
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { TradeButtons } from "@/components/trading/TradeButtons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -108,14 +109,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
   ];
 
   const externalLinks = [
-    { name: 'DexScreener', url: `https://dexscreener.com/${chain.id}/${token.contractAddress}`, icon: '📊' },
-    { name: 'DexTools', url: `https://www.dextools.io/app/en/${chain.id}/pair-explorer/${token.contractAddress}`, icon: '🔧' },
-    { name: 'CoinGecko', url: token.coingeckoId ? `https://www.coingecko.com/en/coins/${token.coingeckoId}` : `https://www.coingecko.com/en/search?query=${token.symbol}`, icon: '🦎' },
-    { name: 'CoinMarketCap', url: `https://coinmarketcap.com/currencies/${token.symbol.toLowerCase()}/`, icon: '📈' },
     { name: chain.name + ' Explorer', url: getExplorerUrl(token.contractAddress || ''), icon: '🔍' },
-    { name: 'TokenSniffer', url: `https://tokensniffer.com/token/${chain.id}/${token.contractAddress}`, icon: '🐕' },
-    { name: 'GoPlus Security', url: `https://gopluslabs.io/token-security/${chain.id}/${token.contractAddress}`, icon: '🛡️' },
-    { name: 'DEX Guru', url: `https://dex.guru/token/${token.contractAddress}-${chain.id}`, icon: '🧙' },
   ];
 
   const renderStatCard = (label: string, value: string, change?: number, icon?: any, onClick?: () => void) => {
@@ -216,13 +210,21 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
         </div>
       </div>
 
-      {/* Social & External Links */}
+      {/* Trade Actions */}
       <div className="holo-card p-6">
         <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
-          <Link2 className="w-4 h-4 text-primary" />
-          QUICK ACCESS & LINKS
+          <Zap className="w-4 h-4 text-primary" />
+          TRADE {token.symbol}
         </h3>
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
+        <TradeButtons
+          symbol={token.symbol}
+          name={token.name}
+          contractAddress={token.contractAddress}
+          chain={chain.id}
+          price={token.price}
+          logo={token.logo}
+        />
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4">
           {externalLinks.map((link) => (
             <Button
               key={link.name}
@@ -230,7 +232,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
               size="sm"
               className="gap-1 text-xs h-auto py-2 flex-col"
               onClick={() => window.open(link.url, "_blank")}
-              disabled={!token.contractAddress && !link.url.includes('coingecko')}
+              disabled={!token.contractAddress}
             >
               <span className="text-lg">{link.icon}</span>
               <span className="truncate w-full text-center">{link.name}</span>
