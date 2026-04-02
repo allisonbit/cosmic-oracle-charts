@@ -18,6 +18,8 @@ import { GlobalSchemas } from "@/components/seo/RichSchemas";
 import { AIChatBubble } from "@/components/chat/AIChatBubble";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { AdminRoute } from "@/components/auth/AdminRoute";
+import { TradeProvider } from "@/contexts/TradeContext";
+import { QuickTradeModal } from "@/components/trading/QuickTradeModal";
 
 // Eager load critical pages
 import Index from "./pages/Index";
