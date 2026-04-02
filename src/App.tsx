@@ -219,6 +219,7 @@ const App = () => (
                 <Route path="/my/news" element={<MyNewsFeed />} />
                 <Route path="/my/dca" element={<MyDCAPlanner />} />
                 <Route path="/my/copy" element={<MyCopyTrading />} />
+                <Route path="/trade" element={<Trade />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>

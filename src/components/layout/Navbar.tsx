@@ -23,6 +23,7 @@ const desktopNavItems = [
 const mobileNavItems = [
   { path: "/", label: "Home", icon: Home },
   { path: "/dashboard", label: "Dashboard", icon: TrendingUp },
+  { path: "/trade", label: "Trade", icon: Wallet },
   { path: "/predictions", label: "Predictions", icon: Target },
   
   { path: "/strength", label: "Strength", icon: Zap },
