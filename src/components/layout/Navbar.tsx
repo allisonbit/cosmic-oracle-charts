@@ -9,6 +9,7 @@ import { UserMenu } from "@/components/auth/UserMenu";
 const desktopNavItems = [
   { path: "/", label: "Home" },
   { path: "/dashboard", label: "Dashboard" },
+  { path: "/trade", label: "Trade" },
   { path: "/predictions", label: "Predictions" },
   { path: "/sentiment", label: "Sentiment" },
   { path: "/strength", label: "Strength" },
