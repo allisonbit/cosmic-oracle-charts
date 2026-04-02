@@ -163,6 +163,7 @@ const App = () => (
   <WagmiSafety>
     <QueryClientProvider client={queryClient}>
     <AuthProvider>
+    <TradeProvider>
       <TooltipProvider delayDuration={300}>
         <Toaster />
         <Sonner position="top-right" closeButton richColors />
