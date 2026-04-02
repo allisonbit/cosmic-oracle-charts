@@ -64,6 +64,7 @@ const MyTradeJournal = lazy(() => import("./pages/MyTradeJournal"));
 const MyNewsFeed = lazy(() => import("./pages/MyNewsFeed"));
 const MyDCAPlanner = lazy(() => import("./pages/MyDCAPlanner"));
 const MyCopyTrading = lazy(() => import("./pages/MyCopyTrading"));
+const Trade = lazy(() => import("./pages/Trade"));
 // Loading fallback component
 const PageLoader = memo(function PageLoader() {
   return (
@@ -218,6 +219,7 @@ const App = () => (
                 <Route path="/my/news" element={<MyNewsFeed />} />
                 <Route path="/my/dca" element={<MyDCAPlanner />} />
                 <Route path="/my/copy" element={<MyCopyTrading />} />
+                <Route path="/trade" element={<Trade />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>

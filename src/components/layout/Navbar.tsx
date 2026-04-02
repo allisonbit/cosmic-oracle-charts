@@ -9,6 +9,7 @@ import { UserMenu } from "@/components/auth/UserMenu";
 const desktopNavItems = [
   { path: "/", label: "Home" },
   { path: "/dashboard", label: "Dashboard" },
+  { path: "/trade", label: "Trade" },
   { path: "/predictions", label: "Predictions" },
   { path: "/sentiment", label: "Sentiment" },
   { path: "/strength", label: "Strength" },
@@ -22,6 +23,7 @@ const desktopNavItems = [
 const mobileNavItems = [
   { path: "/", label: "Home", icon: Home },
   { path: "/dashboard", label: "Dashboard", icon: TrendingUp },
+  { path: "/trade", label: "Trade", icon: Wallet },
   { path: "/predictions", label: "Predictions", icon: Target },
   
   { path: "/strength", label: "Strength", icon: Zap },
