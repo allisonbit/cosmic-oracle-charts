@@ -227,9 +227,11 @@ const App = () => (
               </Routes>
             </Suspense>
             <AIChatBubble />
+            <QuickTradeModal />
           </BrowserRouter>
         </AppErrorBoundary>
       </TooltipProvider>
+    </TradeProvider>
     </AuthProvider>
   </QueryClientProvider>
   </WagmiSafety>
