@@ -1,20 +1,18 @@
 import { useState, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
 
 export interface SwapQuote {
+  allowanceTarget: string;
   buyAmount: string;
-  buyTokenAddress: string;
+  buyToken: string;
   sellAmount: string;
-  sellTokenAddress: string;
-  price: string;
-  guaranteedPrice: string;
-  to: string;
-  data: string;
-  value: string;
+  sellToken: string;
+  minBuyAmount: string;
   gas: string;
   gasPrice: string;
-  estimatedGas: string;
-  sources: { name: string; proportion: string }[];
+  liquidityAvailable: boolean;
+  route: { fills: { from: string; to: string; source: string; proportionBps: string }[] };
+  transaction?: { to: string; data: string; value: string; gas: string; gasPrice: string };
+  fees?: { zeroExFee?: { amount: string; token: string } };
 }
 
 export interface BridgeQuote {
@@ -64,51 +62,66 @@ const SUPPORTED_CHAINS: Chain[] = [
   { id: 324, name: "zkSync", icon: "⚡", nativeCurrency: { symbol: "ETH", decimals: 18 } },
 ];
 
+const BASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const API_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+async function tradingFetch(params: Record<string, string>, method = "GET", body?: unknown) {
+  const qs = new URLSearchParams(params).toString();
+  const url = `${BASE_URL}/functions/v1/trading?${qs}`;
+  const res = await fetch(url, {
+    method,
+    headers: {
+      apikey: API_KEY,
+      ...(body ? { "Content-Type": "application/json" } : {}),
+    },
+    ...(body ? { body: JSON.stringify(body) } : {}),
+  });
+  return res.json();
+}
+
 export function useTrading() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const getSwapQuote = useCallback(async (
-    chainId: number,
-    sellToken: string,
-    buyToken: string,
-    sellAmount: string,
-    taker?: string,
+  const getSwapPrice = useCallback(async (
+    chainId: number, sellToken: string, buyToken: string, sellAmount: string,
   ): Promise<SwapQuote | null> => {
     setLoading(true);
     setError(null);
     try {
-      const params = new URLSearchParams({
-        action: "quote",
-        chainId: String(chainId),
-        sellToken,
-        buyToken,
-        sellAmount,
-        ...(taker ? { taker } : {}),
+      const data = await tradingFetch({
+        action: "price", chainId: String(chainId), sellToken, buyToken, sellAmount,
       });
-
-      const { data, error: fnError } = await supabase.functions.invoke("trading", {
-        method: "GET",
-        headers: {},
-        body: undefined,
-      });
-
-      // Use fetch directly for GET with query params
-      const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/trading?${params}`;
-      const res = await fetch(url, {
-        headers: {
-          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-        },
-      });
-      const result = await res.json();
-
-      if (!res.ok) {
-        setError(result.error || "Failed to get quote");
+      if (data.error || data.reason) {
+        setError(data.reason || data.error || "Price unavailable");
+        setLoading(false);
         return null;
       }
-
       setLoading(false);
-      return result as SwapQuote;
+      return data;
+    } catch (e: any) {
+      setError(e.message || "Price error");
+      setLoading(false);
+      return null;
+    }
+  }, []);
+
+  const getSwapQuote = useCallback(async (
+    chainId: number, sellToken: string, buyToken: string, sellAmount: string, taker: string,
+  ): Promise<SwapQuote | null> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await tradingFetch({
+        action: "quote", chainId: String(chainId), sellToken, buyToken, sellAmount, taker,
+      });
+      if (data.error || data.reason) {
+        setError(data.reason || data.error || "Quote unavailable");
+        setLoading(false);
+        return null;
+      }
+      setLoading(false);
+      return data;
     } catch (e: any) {
       setError(e.message || "Quote error");
       setLoading(false);
@@ -116,76 +129,29 @@ export function useTrading() {
     }
   }, []);
 
-  const getSwapPrice = useCallback(async (
-    chainId: number,
-    sellToken: string,
-    buyToken: string,
-    sellAmount: string,
-  ) => {
-    try {
-      const params = new URLSearchParams({
-        action: "price",
-        chainId: String(chainId),
-        sellToken,
-        buyToken,
-        sellAmount,
-      });
-
-      const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/trading?${params}`;
-      const res = await fetch(url, {
-        headers: { apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY },
-      });
-      return await res.json();
-    } catch {
-      return null;
-    }
-  }, []);
-
   const getBridgeQuote = useCallback(async (
-    fromChainId: number,
-    toChainId: number,
-    fromTokenAddress: string,
-    toTokenAddress: string,
-    fromAmount: string,
-    fromAddress?: string,
+    fromChainId: number, toChainId: number,
+    fromTokenAddress: string, toTokenAddress: string,
+    fromAmount: string, fromAddress?: string,
   ): Promise<BridgeQuote | null> => {
     setLoading(true);
     setError(null);
     try {
-      const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/trading?action=bridge-quote`;
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ fromChainId, toChainId, fromTokenAddress, toTokenAddress, fromAmount, fromAddress }),
-      });
-      const result = await res.json();
-
-      if (!res.ok) {
-        setError(result.message || result.error || "Bridge quote failed");
+      const data = await tradingFetch(
+        { action: "bridge-quote" },
+        "POST",
+        { fromChainId, toChainId, fromTokenAddress, toTokenAddress, fromAmount, fromAddress },
+      );
+      if (data.error || data.message) {
+        setError(data.message || data.error || "Bridge quote failed");
         setLoading(false);
         return null;
       }
-
       setLoading(false);
-      return result as BridgeQuote;
+      return data;
     } catch (e: any) {
       setError(e.message || "Bridge error");
       setLoading(false);
-      return null;
-    }
-  }, []);
-
-  const getBridgeChains = useCallback(async () => {
-    try {
-      const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/trading?action=bridge-chains`;
-      const res = await fetch(url, {
-        headers: { apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY },
-      });
-      return await res.json();
-    } catch {
       return null;
     }
   }, []);
@@ -196,7 +162,6 @@ export function useTrading() {
     getSwapQuote,
     getSwapPrice,
     getBridgeQuote,
-    getBridgeChains,
     supportedChains: SUPPORTED_CHAINS,
   };
 }
