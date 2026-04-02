@@ -1,9 +1,9 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { TrendingUp, TrendingDown, Activity, DollarSign, BarChart3, Shield, AlertTriangle, ExternalLink, Copy, ArrowUpDown, Wallet, Globe } from "lucide-react";
+import { TrendingUp, TrendingDown, Activity, DollarSign, BarChart3, Shield, AlertTriangle, Copy, Wallet, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useState } from "react";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { TradeButtons } from "@/components/trading/TradeButtons";
 
 export interface TokenModalData {
   symbol: string;
