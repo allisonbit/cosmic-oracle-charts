@@ -13,6 +13,8 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart a
 import { toast } from "sonner";
 import { SearchToken } from "@/hooks/useTokenSearch";
 import { ExplorerChain, getChainById } from "@/lib/explorerChains";
+import { TradeButtons } from "@/components/trading/TradeButtons";
+import { ExplorerChain, getChainById } from "@/lib/explorerChains";
 
 interface TokenDetailPanelProps {
   token: SearchToken;
