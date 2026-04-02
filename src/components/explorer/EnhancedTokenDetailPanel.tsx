@@ -109,14 +109,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
   ];
 
   const externalLinks = [
-    { name: 'DexScreener', url: `https://dexscreener.com/${chain.id}/${token.contractAddress}`, icon: '📊' },
-    { name: 'DexTools', url: `https://www.dextools.io/app/en/${chain.id}/pair-explorer/${token.contractAddress}`, icon: '🔧' },
-    { name: 'CoinGecko', url: token.coingeckoId ? `https://www.coingecko.com/en/coins/${token.coingeckoId}` : `https://www.coingecko.com/en/search?query=${token.symbol}`, icon: '🦎' },
-    { name: 'CoinMarketCap', url: `https://coinmarketcap.com/currencies/${token.symbol.toLowerCase()}/`, icon: '📈' },
     { name: chain.name + ' Explorer', url: getExplorerUrl(token.contractAddress || ''), icon: '🔍' },
-    { name: 'TokenSniffer', url: `https://tokensniffer.com/token/${chain.id}/${token.contractAddress}`, icon: '🐕' },
-    { name: 'GoPlus Security', url: `https://gopluslabs.io/token-security/${chain.id}/${token.contractAddress}`, icon: '🛡️' },
-    { name: 'DEX Guru', url: `https://dex.guru/token/${token.contractAddress}-${chain.id}`, icon: '🧙' },
   ];
 
   const renderStatCard = (label: string, value: string, change?: number, icon?: any, onClick?: () => void) => {
