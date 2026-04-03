@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { 
-  TrendingUp, TrendingDown, ExternalLink, Eye, Star, 
+  TrendingUp, TrendingDown, Eye, Star, 
   Copy, CheckCircle, ChevronDown, ChevronUp, Filter
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { SearchToken } from "@/hooks/useTokenSearch";
 import { ExplorerChain } from "@/lib/explorerChains";
+import { TradeButtons } from "@/components/trading/TradeButtons";
 
 interface TopTokensTableProps {
   chain: ExplorerChain;
