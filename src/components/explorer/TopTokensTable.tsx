@@ -213,7 +213,7 @@ export function TopTokensTable({ chain, onTokenSelect }: TopTokensTableProps) {
                 <td className="py-3 px-2 text-right hidden md:table-cell text-muted-foreground">{formatNumber(token.liquidity)}</td>
                 <td className="py-3 px-2 text-right hidden lg:table-cell text-muted-foreground">{token.txns24h.toLocaleString()}</td>
                 <td className="py-3 px-2 text-right">
-                  <div className="flex items-center justify-end gap-1">
+                  <div className="flex items-center justify-end gap-1" onClick={e => e.stopPropagation()}>
                     <Button 
                       variant="ghost" 
                       size="sm" 
@@ -222,14 +222,7 @@ export function TopTokensTable({ chain, onTokenSelect }: TopTokensTableProps) {
                     >
                       {copiedAddress === token.contractAddress ? <CheckCircle className="w-3 h-3 text-success" /> : <Copy className="w-3 h-3" />}
                     </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="h-7 w-7 p-0"
-                      onClick={(e) => { e.stopPropagation(); window.open(`https://dexscreener.com/${chain.id}/${token.contractAddress}`, '_blank'); }}
-                    >
-                      <ExternalLink className="w-3 h-3" />
-                    </Button>
+                    <TradeButtons symbol={token.symbol} name={token.name} contractAddress={token.contractAddress} chain={chain.id} price={token.price} variant="inline" />
                   </div>
                 </td>
               </tr>
