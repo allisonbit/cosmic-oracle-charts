@@ -7,6 +7,7 @@ import { useMarketData } from "@/hooks/useMarketData";
 import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { TokenIcon } from "@/components/ui/token-icon";
+import { TradeButtons } from "@/components/trading/TradeButtons";
 
 interface CoinData {
   symbol: string;
