@@ -13,6 +13,10 @@ export interface SwapQuote {
   route: { fills: { from: string; to: string; source: string; proportionBps: string }[] };
   transaction?: { to: string; data: string; value: string; gas: string; gasPrice: string };
   fees?: { zeroExFee?: { amount: string; token: string } };
+  to?: string;
+  data?: string;
+  value?: string;
+  price?: string;
 }
 
 export interface BridgeQuote {
@@ -60,6 +64,10 @@ const SUPPORTED_CHAINS: Chain[] = [
   { id: 43114, name: "Avalanche", icon: "▲", nativeCurrency: { symbol: "AVAX", decimals: 18 } },
   { id: 8453, name: "Base", icon: "🔵", nativeCurrency: { symbol: "ETH", decimals: 18 } },
   { id: 324, name: "zkSync", icon: "⚡", nativeCurrency: { symbol: "ETH", decimals: 18 } },
+  { id: 250, name: "Fantom", icon: "👻", nativeCurrency: { symbol: "FTM", decimals: 18 } },
+  { id: 59144, name: "Linea", icon: "🟢", nativeCurrency: { symbol: "ETH", decimals: 18 } },
+  { id: 534352, name: "Scroll", icon: "📜", nativeCurrency: { symbol: "ETH", decimals: 18 } },
+  { id: 5000, name: "Mantle", icon: "🟣", nativeCurrency: { symbol: "MNT", decimals: 18 } },
 ];
 
 const BASE_URL = import.meta.env.VITE_SUPABASE_URL;
@@ -76,6 +84,10 @@ async function tradingFetch(params: Record<string, string>, method = "GET", body
     },
     ...(body ? { body: JSON.stringify(body) } : {}),
   });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Trading API error ${res.status}: ${text}`);
+  }
   return res.json();
 }
 
@@ -94,15 +106,14 @@ export function useTrading() {
       });
       if (data.error || data.reason) {
         setError(data.reason || data.error || "Price unavailable");
-        setLoading(false);
         return null;
       }
-      setLoading(false);
       return data;
     } catch (e: any) {
       setError(e.message || "Price error");
-      setLoading(false);
       return null;
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -117,15 +128,14 @@ export function useTrading() {
       });
       if (data.error || data.reason) {
         setError(data.reason || data.error || "Quote unavailable");
-        setLoading(false);
         return null;
       }
-      setLoading(false);
       return data;
     } catch (e: any) {
       setError(e.message || "Quote error");
-      setLoading(false);
       return null;
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -144,15 +154,14 @@ export function useTrading() {
       );
       if (data.error || data.message) {
         setError(data.message || data.error || "Bridge quote failed");
-        setLoading(false);
         return null;
       }
-      setLoading(false);
       return data;
     } catch (e: any) {
       setError(e.message || "Bridge error");
-      setLoading(false);
       return null;
+    } finally {
+      setLoading(false);
     }
   }, []);
 
