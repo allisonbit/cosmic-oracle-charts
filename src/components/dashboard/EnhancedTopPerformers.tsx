@@ -7,6 +7,7 @@ import { useMarketData } from "@/hooks/useMarketData";
 import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { TokenIcon } from "@/components/ui/token-icon";
+import { TradeButtons } from "@/components/trading/TradeButtons";
 
 interface CoinData {
   symbol: string;
@@ -124,6 +125,9 @@ export function EnhancedTopPerformers({ onCoinClick }: EnhancedTopPerformersProp
                 </div>
                 <div className="text-[10px] sm:text-xs text-primary flex items-center gap-1 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
                   <Eye className="w-3 h-3" /> View
+                </div>
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity" onClick={e => e.preventDefault()}>
+                  <TradeButtons symbol={coin.symbol} name={coin.name} price={coin.price} variant="inline" />
                 </div>
               </div>
             </Link>
