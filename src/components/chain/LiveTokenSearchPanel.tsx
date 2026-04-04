@@ -240,31 +240,13 @@ export function LiveTokenSearchPanel({ chain }: LiveTokenSearchPanelProps) {
           )}
         </ScrollArea>
 
-        {/* Quick Links */}
+        {/* Quick Actions */}
         <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-border/30">
           <a
-            href={`https://dexscreener.com/${chain.dexScreenerId || chain.id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted/20 text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all text-xs"
+            href="/trade"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-all text-xs"
           >
-            DexScreener <ExternalLink className="h-3 w-3" />
-          </a>
-          <a
-            href={`https://www.geckoterminal.com/${chain.id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted/20 text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all text-xs"
-          >
-            GeckoTerminal <ExternalLink className="h-3 w-3" />
-          </a>
-          <a
-            href={`https://defillama.com/chain/${chain.defiLlamaId || chain.id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted/20 text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all text-xs"
-          >
-            DeFi Llama <ExternalLink className="h-3 w-3" />
+            Trade Tokens <ArrowDownUp className="h-3 w-3" />
           </a>
         </div>
       </div>

@@ -273,10 +273,10 @@ export function TokenDetailModal({ token, isOpen, onClose }: TokenDetailModalPro
                   variant="outline" 
                   size="sm" 
                   className="gap-2"
-                  onClick={() => window.open(`https://dexscreener.com/ethereum/${token.contractAddress}`, "_blank")}
+                  onClick={() => window.open("/trade", "_self")}
                 >
-                  <ExternalLink className="w-3 h-3" />
-                  DexScreener
+                  <ArrowDownUp className="w-3 h-3" />
+                  Trade
                 </Button>
                 <Button 
                   variant="outline" 

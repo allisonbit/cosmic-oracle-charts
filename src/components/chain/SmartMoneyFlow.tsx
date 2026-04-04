@@ -142,13 +142,11 @@ export function SmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: SmartMoneyF
                 <CollapsibleContent>
                   <div className="mt-3 pt-3 border-t border-border/30">
                     <a
-                      href={getUniswapLink()}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      href="/trade"
                       className="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors text-sm"
                     >
                       <Repeat className="h-4 w-4" />
-                      Trade on Uniswap
+                      Swap Tokens
                     </a>
                   </div>
                 </CollapsibleContent>

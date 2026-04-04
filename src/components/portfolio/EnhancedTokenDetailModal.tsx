@@ -626,20 +626,15 @@ export function EnhancedTokenDetailModal({ token, isOpen, onClose, walletAddress
               </div>
             )}
 
-            {/* External Links */}
+            {/* Explorers & Info */}
             <div className="space-y-3">
-              <h4 className="font-display font-bold text-sm">Explorers & Charts</h4>
+              <h4 className="font-display font-bold text-sm">Explorers & Info</h4>
               <div className="grid grid-cols-2 gap-2">
                 {(token.contractAddress && token.contractAddress !== 'native' ? [
                   { name: 'Etherscan', url: `https://etherscan.io/token/${token.contractAddress}`, iconName: 'Search' },
-                  { name: 'DexScreener', url: `https://dexscreener.com/ethereum/${token.contractAddress}`, iconName: 'BarChart3' },
-                  { name: 'DexTools', url: `https://www.dextools.io/app/en/ether/pair-explorer/${token.contractAddress}`, iconName: 'Activity' },
                   { name: 'CoinGecko', url: `https://www.coingecko.com/en/coins/${token.name.toLowerCase().replace(/\s+/g, '-')}`, iconName: 'Globe' },
-                  { name: 'TokenSniffer', url: `https://tokensniffer.com/token/eth/${token.contractAddress}`, iconName: 'Shield' },
-                  { name: 'Honeypot', url: `https://honeypot.is/ethereum?address=${token.contractAddress}`, iconName: 'AlertTriangle' },
                 ] : [
                   { name: 'CoinGecko', url: `https://www.coingecko.com/en/coins/${token.name.toLowerCase().replace(/\s+/g, '-')}`, iconName: 'Globe' },
-                  { name: 'CoinMarketCap', url: `https://coinmarketcap.com/currencies/${token.name.toLowerCase().replace(/\s+/g, '-')}`, iconName: 'BarChart3' },
                 ]).map(link => (
                   <Button 
                     key={link.name}
@@ -655,25 +650,26 @@ export function EnhancedTokenDetailModal({ token, isOpen, onClose, walletAddress
               </div>
             </div>
 
-            {/* Trading Links */}
+            {/* Trade */}
             <div className="space-y-3">
               <h4 className="font-display font-bold text-sm">Trade</h4>
               <div className="grid grid-cols-2 gap-2">
-                {[
-                  { name: 'Uniswap', url: token.contractAddress !== 'native' ? `https://app.uniswap.org/swap?outputCurrency=${token.contractAddress}` : 'https://app.uniswap.org', icon: RefreshCw },
-                  { name: '1inch', url: token.contractAddress !== 'native' ? `https://app.1inch.io/#/1/simple/swap/ETH/${token.contractAddress}` : 'https://app.1inch.io', icon: Zap },
-                ].map(link => (
-                  <Button 
-                    key={link.name}
-                    variant="outline" 
-                    className="justify-start gap-2 h-10"
-                    onClick={() => window.open(link.url, "_blank")}
-                  >
-                    <link.icon className="w-4 h-4 text-primary" />
-                    {link.name}
-                    <ExternalLink className="w-3 h-3 ml-auto" />
-                  </Button>
-                ))}
+                <Button 
+                  variant="outline" 
+                  className="justify-start gap-2 h-10"
+                  onClick={() => window.open("/trade", "_self")}
+                >
+                  <RefreshCw className="w-4 h-4 text-primary" />
+                  Swap
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="justify-start gap-2 h-10"
+                  onClick={() => window.open("/trade", "_self")}
+                >
+                  <Zap className="w-4 h-4 text-primary" />
+                  Bridge
+                </Button>
               </div>
             </div>
 
