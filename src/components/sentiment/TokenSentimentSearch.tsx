@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import { Search, X, Loader2, TrendingUp, TrendingDown, Activity, ExternalLink, Zap, BarChart3, Users, MessageCircle } from "lucide-react";
+import { Search, X, Loader2, TrendingUp, TrendingDown, Activity, ExternalLink, Zap, BarChart3, Users, MessageCircle, ArrowDownUp } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";

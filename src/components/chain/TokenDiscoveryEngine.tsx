@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ChainConfig } from "@/lib/chainConfig";
 import { useTokenDiscovery, DiscoveryToken } from "@/hooks/useTokenDiscovery";
-import { TrendingUp, TrendingDown, Sparkles, AlertTriangle, Clock, Activity, ExternalLink, Copy, ChevronDown, ChevronUp, RefreshCw, Search, Filter, ArrowUpDown } from "lucide-react";
+import { TrendingUp, TrendingDown, Sparkles, AlertTriangle, Clock, Activity, ExternalLink, Copy, ChevronDown, ChevronUp, RefreshCw, Search, Filter, ArrowUpDown, ArrowDownUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TokenDetailModal, TokenModalData } from "./TokenDetailModal";
 import { toast } from "sonner";

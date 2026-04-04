@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ChainConfig } from "@/lib/chainConfig";
 import { TokenHeat } from "@/hooks/useChainData";
-import { TrendingUp, TrendingDown, Flame, ExternalLink, Search } from "lucide-react";
+import { TrendingUp, TrendingDown, Flame, ExternalLink, Search, ArrowDownUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TokenDetailModal, TokenModalData } from "./TokenDetailModal";
 

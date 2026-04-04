@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ChainConfig } from "@/lib/chainConfig";
 import { SmartMoneyFlow as SmartMoneyFlowType } from "@/hooks/useChainData";
-import { ArrowDownLeft, ArrowUpRight, Droplets, Repeat, ExternalLink, ChevronDown, ChevronUp, Wallet, TrendingUp, Activity, Clock, BarChart3, Users, Zap, Target, Info, X, Copy, ArrowRightLeft, PieChart, DollarSign } from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, Droplets, Repeat, ExternalLink, ChevronDown, ChevronUp, Wallet, TrendingUp, Activity, Clock, BarChart3, Users, Zap, Target, Info, X, Copy, ArrowRightLeft, ArrowDownUp, PieChart, DollarSign } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";

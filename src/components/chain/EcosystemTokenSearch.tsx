@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { ChainConfig } from "@/lib/chainConfig";
-import { Search, ExternalLink, Copy, TrendingUp, TrendingDown, Coins, Tag, CheckCircle } from "lucide-react";
+import { Search, ExternalLink, Copy, TrendingUp, TrendingDown, Coins, Tag, CheckCircle, ArrowDownUp } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
