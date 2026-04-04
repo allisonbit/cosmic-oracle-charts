@@ -218,13 +218,11 @@ export function EnhancedSmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: Enh
                       <div className="flex items-center gap-2">
                         <span className="text-muted-foreground">{swap.from} → {swap.to}</span>
                         <a
-                          href={getDexScreenerLink(swap.to)}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                          href={getTradeLink()}
                           className="text-primary hover:text-primary/80"
                           onClick={(e) => e.stopPropagation()}
                         >
-                          <ExternalLink className="h-3 w-3" />
+                          <ArrowDownUp className="h-3 w-3" />
                         </a>
                       </div>
                       <span className="text-foreground font-medium">{formatValue(swap.amount)}</span>
