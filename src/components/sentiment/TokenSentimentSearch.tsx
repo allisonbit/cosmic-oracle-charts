@@ -304,22 +304,12 @@ export function TokenSentimentSearch() {
             </div>
           </div>
 
-          {/* External Links */}
+          {/* Trade Actions */}
           <div className="flex gap-2 flex-wrap">
-            {selectedToken.token.pairAddress && (
-              <a href={`https://dexscreener.com/${selectedToken.token.chain}/${selectedToken.token.pairAddress}`}
-                target="_blank" rel="noopener noreferrer"
-                className="text-[10px] px-2 py-1 rounded bg-muted/30 text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors">
-                <ExternalLink className="w-3 h-3" /> DexScreener
-              </a>
-            )}
-            {selectedToken.token.address && (
-              <a href={`https://dexscreener.com/search?q=${selectedToken.token.address}`}
-                target="_blank" rel="noopener noreferrer"
-                className="text-[10px] px-2 py-1 rounded bg-muted/30 text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors">
-                <ExternalLink className="w-3 h-3" /> All Pairs
-              </a>
-            )}
+            <a href="/trade"
+              className="text-[10px] px-2 py-1 rounded bg-primary/20 text-primary hover:bg-primary/30 flex items-center gap-1 transition-colors">
+              <ArrowDownUp className="w-3 h-3" /> Trade
+            </a>
           </div>
         </div>
       )}

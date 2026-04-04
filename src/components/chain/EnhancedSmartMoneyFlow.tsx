@@ -299,12 +299,10 @@ export function EnhancedSmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: Enh
                         <Activity className="h-4 w-4" /> DeFi Llama
                       </a>
                       <a
-                        href={`https://info.uniswap.org/#/${chain.id === 'ethereum' ? '' : chain.id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href="/trade"
                         className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-muted/20 text-muted-foreground hover:text-foreground transition-colors text-sm"
                       >
-                        <PieChart className="h-4 w-4" /> Uniswap Info
+                        <ArrowRightLeft className="h-4 w-4" /> Trade
                       </a>
                     </div>
                   </div>
