@@ -142,7 +142,7 @@ export function TokenSentimentSearch() {
       <div className="flex items-center gap-2 mb-4">
         <Search className="w-5 h-5 text-primary" />
         <h3 className="font-display font-bold text-sm sm:text-base">TOKEN SENTIMENT SCANNER</h3>
-        <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/20 text-primary font-mono">DexScreener</span>
+        <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/20 text-primary font-mono">Live</span>
       </div>
 
       {/* Search Input */}
