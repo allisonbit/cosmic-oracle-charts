@@ -4,7 +4,7 @@ import { TokenHeat } from "@/hooks/useChainData";
 import { 
   TrendingUp, TrendingDown, Flame, ExternalLink, Search, Info, 
   BarChart3, Activity, DollarSign, Zap, Shield, Volume2, Users,
-  Copy, ChevronRight, Filter, SortDesc, Eye, Target
+  Copy, ChevronRight, Filter, SortDesc, Eye, Target, ArrowDownUp
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -290,22 +290,12 @@ export function EnhancedTokenHeatScanner({ chain, tokenHeat, isLoading }: TokenH
         )}
       </div>
 
-      {/* External Links */}
+      {/* Quick Actions */}
       <div className="mt-4 pt-4 border-t border-border/30 flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap gap-2">
-          {chain.dexScreenerId && (
-            <a href={`https://dexscreener.com/${chain.dexScreenerId}`} target="_blank" rel="noopener noreferrer"
-               className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors text-xs font-medium">
-              <ExternalLink className="h-3 w-3" /> DexScreener
-            </a>
-          )}
-          <a href={`https://www.geckoterminal.com/${chain.dexScreenerId || chain.id}`} target="_blank" rel="noopener noreferrer"
-             className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-muted/20 text-muted-foreground hover:text-foreground transition-colors text-xs">
-            <ExternalLink className="h-3 w-3" /> GeckoTerminal
-          </a>
-          <a href={`https://dextools.io/app/en/${chain.dexScreenerId || chain.id}`} target="_blank" rel="noopener noreferrer"
-             className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-muted/20 text-muted-foreground hover:text-foreground transition-colors text-xs">
-            <BarChart3 className="h-3 w-3" /> DexTools
+          <a href="/trade"
+             className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors text-xs font-medium">
+            <ArrowDownUp className="h-3 w-3" /> Trade Tokens
           </a>
         </div>
         <p className="text-[10px] text-muted-foreground">Click any token for detailed analysis</p>

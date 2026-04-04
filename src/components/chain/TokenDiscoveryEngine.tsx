@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ChainConfig } from "@/lib/chainConfig";
 import { useTokenDiscovery, DiscoveryToken } from "@/hooks/useTokenDiscovery";
-import { TrendingUp, TrendingDown, Sparkles, AlertTriangle, Clock, Activity, ExternalLink, Copy, ChevronDown, ChevronUp, RefreshCw, Search, Filter, ArrowUpDown } from "lucide-react";
+import { TrendingUp, TrendingDown, Sparkles, AlertTriangle, Clock, Activity, ExternalLink, Copy, ChevronDown, ChevronUp, RefreshCw, Search, Filter, ArrowUpDown, ArrowDownUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TokenDetailModal, TokenModalData } from "./TokenDetailModal";
 import { toast } from "sonner";
@@ -320,13 +320,11 @@ export function TokenDiscoveryEngine({ chain }: TokenDiscoveryEngineProps) {
           />
         </div>
         <a
-          href={`https://dexscreener.com/${chain.id}`}
-          target="_blank"
-          rel="noopener noreferrer"
+          href="/trade"
           className="px-4 py-2 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors text-sm flex items-center gap-2"
         >
-          <ExternalLink className="h-4 w-4" />
-          <span className="hidden sm:inline">DexScreener</span>
+          <ArrowDownUp className="h-4 w-4" />
+          <span className="hidden sm:inline">Trade</span>
         </a>
       </div>
 
@@ -401,12 +399,10 @@ export function TokenDiscoveryEngine({ chain }: TokenDiscoveryEngineProps) {
                 {cat.tokens.length > 6 && (
                   <div className="mt-3 pt-3 border-t border-border/30 text-center">
                     <a
-                      href={`https://dexscreener.com/${chain.id}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      href="/trade"
                       className="text-xs text-primary hover:underline"
                     >
-                      View all {cat.tokens.length} tokens →
+                      Trade tokens →
                     </a>
                   </div>
                 )}
@@ -416,49 +412,12 @@ export function TokenDiscoveryEngine({ chain }: TokenDiscoveryEngineProps) {
         ))}
       </div>
 
-      {/* External Resources */}
+      {/* Quick Actions */}
       <div className="mt-6 p-4 rounded-xl bg-muted/10 border border-border/30">
-        <h4 className="text-sm font-medium text-foreground mb-3">Token Research Tools</h4>
+        <h4 className="text-sm font-medium text-foreground mb-3">Quick Actions</h4>
         <div className="flex flex-wrap gap-2">
-          <a
-            href={`https://dexscreener.com/${chain.id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-3 py-1.5 rounded-lg bg-muted/20 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors flex items-center gap-1"
-          >
-            <ExternalLink className="h-3 w-3" /> DexScreener
-          </a>
-          <a
-            href={`https://www.geckoterminal.com/${chain.id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-3 py-1.5 rounded-lg bg-muted/20 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors flex items-center gap-1"
-          >
-            <ExternalLink className="h-3 w-3" /> GeckoTerminal
-          </a>
-          <a
-            href={`https://dextools.io/app/en/${chain.id}/pairs`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-3 py-1.5 rounded-lg bg-muted/20 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors flex items-center gap-1"
-          >
-            <ExternalLink className="h-3 w-3" /> DexTools
-          </a>
-          <a
-            href="https://app.uniswap.org"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-3 py-1.5 rounded-lg bg-muted/20 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors flex items-center gap-1"
-          >
-            <ExternalLink className="h-3 w-3" /> Uniswap
-          </a>
-          <a
-            href="https://1inch.io"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-3 py-1.5 rounded-lg bg-muted/20 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors flex items-center gap-1"
-          >
-            <ExternalLink className="h-3 w-3" /> 1inch
+          <a href="/trade" className="px-3 py-1.5 rounded-lg bg-primary/20 text-xs text-primary hover:bg-primary/30 transition-colors flex items-center gap-1">
+            <ArrowDownUp className="h-3 w-3" /> Swap Tokens
           </a>
           <a
             href={chain.explorerUrl}

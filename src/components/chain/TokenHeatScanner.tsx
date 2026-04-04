@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ChainConfig } from "@/lib/chainConfig";
 import { TokenHeat } from "@/hooks/useChainData";
-import { TrendingUp, TrendingDown, Flame, ExternalLink, Search } from "lucide-react";
+import { TrendingUp, TrendingDown, Flame, ExternalLink, Search, ArrowDownUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TokenDetailModal, TokenModalData } from "./TokenDetailModal";
 
@@ -221,20 +221,16 @@ export function TokenHeatScanner({ chain, tokenHeat, isLoading }: TokenHeatScann
         )}
       </div>
 
-      {/* View more link */}
-      {chain.dexScreenerId && (
-        <div className="mt-4 text-center">
-          <a
-            href={`https://dexscreener.com/${chain.dexScreenerId}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium"
-          >
-            <ExternalLink className="h-3.5 w-3.5" />
-            View All Tokens on DexScreener
-          </a>
-        </div>
-      )}
+      {/* Trade link */}
+      <div className="mt-4 text-center">
+        <a
+          href="/trade"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium"
+        >
+          <ArrowDownUp className="h-3.5 w-3.5" />
+          Trade Any Token
+        </a>
+      </div>
 
     </div>
   );

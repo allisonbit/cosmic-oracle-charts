@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ChainConfig } from "@/lib/chainConfig";
 import { SmartMoneyFlow as SmartMoneyFlowType } from "@/hooks/useChainData";
-import { ArrowDownLeft, ArrowUpRight, Droplets, Repeat, ExternalLink, ChevronDown, ChevronUp, Wallet, TrendingUp, Activity, Clock, BarChart3, Users, Zap, Target, Info, X, Copy, ArrowRightLeft, PieChart, DollarSign } from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, Droplets, Repeat, ExternalLink, ChevronDown, ChevronUp, Wallet, TrendingUp, Activity, Clock, BarChart3, Users, Zap, Target, Info, X, Copy, ArrowRightLeft, ArrowDownUp, PieChart, DollarSign } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -42,19 +42,7 @@ export function EnhancedSmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: Enh
     toast.success("Copied to clipboard");
   };
 
-  const getDexScreenerLink = (token: string) => {
-    const chainSlug = chain.id === "ethereum" ? "ethereum" : chain.id === "polygon" ? "polygon" : chain.id === "arbitrum" ? "arbitrum" : chain.id === "base" ? "base" : chain.id;
-    return `https://dexscreener.com/${chainSlug}/${token.toLowerCase()}`;
-  };
-
-  const getUniswapLink = () => {
-    if (chain.id === "ethereum") return "https://app.uniswap.org/#/swap";
-    if (chain.id === "polygon") return "https://app.uniswap.org/#/swap?chain=polygon";
-    if (chain.id === "arbitrum") return "https://app.uniswap.org/#/swap?chain=arbitrum";
-    if (chain.id === "base") return "https://app.uniswap.org/#/swap?chain=base";
-    if (chain.id === "optimism") return "https://app.uniswap.org/#/swap?chain=optimism";
-    return "https://app.uniswap.org/#/swap";
-  };
+  const getTradeLink = () => "/trade";
 
   const openDetailModal = (type: DetailModalData['type'], title: string, data: any) => {
     setModalData({ type, title, data });
@@ -230,13 +218,11 @@ export function EnhancedSmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: Enh
                       <div className="flex items-center gap-2">
                         <span className="text-muted-foreground">{swap.from} → {swap.to}</span>
                         <a
-                          href={getDexScreenerLink(swap.to)}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                          href={getTradeLink()}
                           className="text-primary hover:text-primary/80"
                           onClick={(e) => e.stopPropagation()}
                         >
-                          <ExternalLink className="h-3 w-3" />
+                          <ArrowDownUp className="h-3 w-3" />
                         </a>
                       </div>
                       <span className="text-foreground font-medium">{formatValue(swap.amount)}</span>
@@ -247,20 +233,10 @@ export function EnhancedSmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: Enh
                 <CollapsibleContent>
                   <div className="mt-3 pt-3 border-t border-border/30 flex gap-2">
                     <a
-                      href={getUniswapLink()}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      href="/trade"
                       className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors text-sm"
                     >
-                      <Repeat className="h-4 w-4" /> Trade on Uniswap
-                    </a>
-                    <a
-                      href={`https://dexscreener.com/${chain.id}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-muted/20 text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors text-sm"
-                    >
-                      <BarChart3 className="h-4 w-4" /> DexScreener
+                      <Repeat className="h-4 w-4" /> Swap Tokens
                     </a>
                   </div>
                 </CollapsibleContent>
@@ -323,12 +299,10 @@ export function EnhancedSmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: Enh
                         <Activity className="h-4 w-4" /> DeFi Llama
                       </a>
                       <a
-                        href={`https://info.uniswap.org/#/${chain.id === 'ethereum' ? '' : chain.id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href="/trade"
                         className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-muted/20 text-muted-foreground hover:text-foreground transition-colors text-sm"
                       >
-                        <PieChart className="h-4 w-4" /> Uniswap Info
+                        <ArrowRightLeft className="h-4 w-4" /> Trade
                       </a>
                     </div>
                   </div>

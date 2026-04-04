@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import { Search, X, Loader2, TrendingUp, TrendingDown, Activity, ExternalLink, Zap, BarChart3, Users, MessageCircle } from "lucide-react";
+import { Search, X, Loader2, TrendingUp, TrendingDown, Activity, ExternalLink, Zap, BarChart3, Users, MessageCircle, ArrowDownUp } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
@@ -142,7 +142,7 @@ export function TokenSentimentSearch() {
       <div className="flex items-center gap-2 mb-4">
         <Search className="w-5 h-5 text-primary" />
         <h3 className="font-display font-bold text-sm sm:text-base">TOKEN SENTIMENT SCANNER</h3>
-        <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/20 text-primary font-mono">DexScreener</span>
+        <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/20 text-primary font-mono">Live</span>
       </div>
 
       {/* Search Input */}
@@ -304,22 +304,12 @@ export function TokenSentimentSearch() {
             </div>
           </div>
 
-          {/* External Links */}
+          {/* Trade Actions */}
           <div className="flex gap-2 flex-wrap">
-            {selectedToken.token.pairAddress && (
-              <a href={`https://dexscreener.com/${selectedToken.token.chain}/${selectedToken.token.pairAddress}`}
-                target="_blank" rel="noopener noreferrer"
-                className="text-[10px] px-2 py-1 rounded bg-muted/30 text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors">
-                <ExternalLink className="w-3 h-3" /> DexScreener
-              </a>
-            )}
-            {selectedToken.token.address && (
-              <a href={`https://dexscreener.com/search?q=${selectedToken.token.address}`}
-                target="_blank" rel="noopener noreferrer"
-                className="text-[10px] px-2 py-1 rounded bg-muted/30 text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors">
-                <ExternalLink className="w-3 h-3" /> All Pairs
-              </a>
-            )}
+            <a href="/trade"
+              className="text-[10px] px-2 py-1 rounded bg-primary/20 text-primary hover:bg-primary/30 flex items-center gap-1 transition-colors">
+              <ArrowDownUp className="w-3 h-3" /> Trade
+            </a>
           </div>
         </div>
       )}

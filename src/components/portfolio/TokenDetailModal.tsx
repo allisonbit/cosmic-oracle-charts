@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { 
   TrendingUp, TrendingDown, Copy, ExternalLink, 
   AlertTriangle, Shield, Rocket, Target, BarChart3,
-  Activity, Coins, Percent, Clock, Check
+  Activity, Coins, Percent, Clock, Check, ArrowDownUp
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -273,10 +273,10 @@ export function TokenDetailModal({ token, isOpen, onClose }: TokenDetailModalPro
                   variant="outline" 
                   size="sm" 
                   className="gap-2"
-                  onClick={() => window.open(`https://dexscreener.com/ethereum/${token.contractAddress}`, "_blank")}
+                  onClick={() => window.open("/trade", "_self")}
                 >
-                  <ExternalLink className="w-3 h-3" />
-                  DexScreener
+                  <ArrowDownUp className="w-3 h-3" />
+                  Trade
                 </Button>
                 <Button 
                   variant="outline" 

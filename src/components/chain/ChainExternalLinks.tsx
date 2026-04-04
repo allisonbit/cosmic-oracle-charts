@@ -15,7 +15,7 @@ export function ChainExternalLinks({ chain }: ChainExternalLinksProps) {
     { label: "GitHub", url: chain.github, icon: Github },
     { label: "Docs", url: chain.docs, icon: BookOpen },
     { label: "DeFi Llama", url: chain.defiLlamaId ? `https://defillama.com/chain/${chain.defiLlamaId}` : null, icon: BarChart3 },
-    { label: "DexScreener", url: chain.dexScreenerId ? `https://dexscreener.com/${chain.dexScreenerId}` : null, icon: Coins },
+    { label: "Trade", url: "/trade", icon: Coins },
   ].filter(l => l.url);
 
   return (

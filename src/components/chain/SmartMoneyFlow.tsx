@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ChainConfig } from "@/lib/chainConfig";
 import { SmartMoneyFlow as SmartMoneyFlowType } from "@/hooks/useChainData";
-import { ArrowDownLeft, ArrowUpRight, Droplets, Repeat, ExternalLink, ChevronDown, ChevronUp, Wallet, TrendingUp, Activity, Clock } from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, Droplets, Repeat, ExternalLink, ChevronDown, ChevronUp, Wallet, TrendingUp, Activity, Clock, ArrowDownUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
@@ -27,19 +27,7 @@ export function SmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: SmartMoneyF
     ? (smartMoneyFlow.inflow / (smartMoneyFlow.inflow + smartMoneyFlow.outflow)) * 100
     : 50;
 
-  const getDexScreenerLink = (token: string) => {
-    const chainSlug = chain.id === "ethereum" ? "ethereum" : chain.id === "polygon" ? "polygon" : chain.id === "arbitrum" ? "arbitrum" : chain.id === "base" ? "base" : chain.id;
-    return `https://dexscreener.com/${chainSlug}/${token.toLowerCase()}`;
-  };
-
-  const getUniswapLink = () => {
-    if (chain.id === "ethereum") return "https://app.uniswap.org/#/swap";
-    if (chain.id === "polygon") return "https://app.uniswap.org/#/swap?chain=polygon";
-    if (chain.id === "arbitrum") return "https://app.uniswap.org/#/swap?chain=arbitrum";
-    if (chain.id === "base") return "https://app.uniswap.org/#/swap?chain=base";
-    if (chain.id === "optimism") return "https://app.uniswap.org/#/swap?chain=optimism";
-    return "https://app.uniswap.org/#/swap";
-  };
+  const getTradeLink = () => "/trade";
 
   return (
     <div className="holo-card p-6">
@@ -140,12 +128,10 @@ export function SmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: SmartMoneyF
                           {swap.from} → {swap.to}
                         </span>
                         <a
-                          href={getDexScreenerLink(swap.to)}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                          href={getTradeLink()}
                           className="text-primary hover:text-primary/80"
                         >
-                          <ExternalLink className="h-3 w-3" />
+                          <ArrowDownUp className="h-3 w-3" />
                         </a>
                       </div>
                       <span className="text-foreground font-medium">{formatValue(swap.amount)}</span>
@@ -156,13 +142,11 @@ export function SmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: SmartMoneyF
                 <CollapsibleContent>
                   <div className="mt-3 pt-3 border-t border-border/30">
                     <a
-                      href={getUniswapLink()}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      href="/trade"
                       className="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors text-sm"
                     >
                       <Repeat className="h-4 w-4" />
-                      Trade on Uniswap
+                      Swap Tokens
                     </a>
                   </div>
                 </CollapsibleContent>

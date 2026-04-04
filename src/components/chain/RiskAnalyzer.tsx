@@ -397,12 +397,10 @@ export function RiskAnalyzer({ chain }: RiskAnalyzerProps) {
                       {tokens.length > 5 && (
                         <div className="mt-3 text-center">
                           <a
-                            href={`https://dexscreener.com/${chain.id}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            href="/trade"
                             className="text-xs text-primary hover:underline"
                           >
-                            View all {tokens.length} tokens →
+                            Trade tokens →
                           </a>
                         </div>
                       )}

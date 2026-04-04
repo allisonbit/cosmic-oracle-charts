@@ -59,7 +59,7 @@ const primaryActions = [
 
 const quickLinks = [
   { label: "CoinGecko", url: "https://www.coingecko.com", icon: Globe },
-  { label: "DexScreener", url: "https://dexscreener.com", icon: BarChart3 },
+  { label: "Trade", url: "/trade", icon: BarChart3 },
   { label: "Etherscan", url: "https://etherscan.io", icon: Search },
   { label: "DefiLlama", url: "https://defillama.com", icon: Activity },
 ];
