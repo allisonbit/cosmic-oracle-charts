@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { ChainConfig } from "@/lib/chainConfig";
-import { Search, ExternalLink, Copy, TrendingUp, TrendingDown, Coins, CheckCircle, Activity, BarChart3, DollarSign, Flame, ChevronRight, RefreshCw, Droplets, ArrowUpDown, Clock, Loader2, X, Zap, Users } from "lucide-react";
+import { Search, ExternalLink, Copy, TrendingUp, TrendingDown, Coins, CheckCircle, Activity, BarChart3, DollarSign, Flame, ChevronRight, RefreshCw, Droplets, ArrowUpDown, ArrowDownUp, Clock, Loader2, X, Zap, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";

@@ -4,7 +4,7 @@ import { TokenHeat } from "@/hooks/useChainData";
 import { 
   TrendingUp, TrendingDown, Flame, ExternalLink, Search, Info, 
   BarChart3, Activity, DollarSign, Zap, Shield, Volume2, Users,
-  Copy, ChevronRight, Filter, SortDesc, Eye, Target
+  Copy, ChevronRight, Filter, SortDesc, Eye, Target, ArrowDownUp
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";

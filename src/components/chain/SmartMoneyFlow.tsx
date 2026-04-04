@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ChainConfig } from "@/lib/chainConfig";
 import { SmartMoneyFlow as SmartMoneyFlowType } from "@/hooks/useChainData";
-import { ArrowDownLeft, ArrowUpRight, Droplets, Repeat, ExternalLink, ChevronDown, ChevronUp, Wallet, TrendingUp, Activity, Clock } from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, Droplets, Repeat, ExternalLink, ChevronDown, ChevronUp, Wallet, TrendingUp, Activity, Clock, ArrowDownUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { 
   TrendingUp, TrendingDown, Copy, ExternalLink, 
   AlertTriangle, Shield, Rocket, Target, BarChart3,
-  Activity, Coins, Percent, Clock, Check
+  Activity, Coins, Percent, Clock, Check, ArrowDownUp
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
