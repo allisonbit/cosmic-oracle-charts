@@ -297,9 +297,9 @@ export function EnhancedTokenDiscoveryEngine({ chain }: EnhancedTokenDiscoveryEn
               className="w-full pl-10 pr-4 py-2 rounded-lg bg-muted/20 border border-border/30 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
             />
           </div>
-          <a href={`https://dexscreener.com/${chain.id}`} target="_blank" rel="noopener noreferrer" className="px-4 py-2 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors text-sm flex items-center gap-2">
-            <ExternalLink className="h-4 w-4" />
-            <span className="hidden sm:inline">DexScreener</span>
+          <a href="/trade" className="px-4 py-2 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors text-sm flex items-center gap-2">
+            <ArrowDownUp className="h-4 w-4" />
+            <span className="hidden sm:inline">Trade</span>
           </a>
         </div>
 
