@@ -27,19 +27,7 @@ export function SmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: SmartMoneyF
     ? (smartMoneyFlow.inflow / (smartMoneyFlow.inflow + smartMoneyFlow.outflow)) * 100
     : 50;
 
-  const getDexScreenerLink = (token: string) => {
-    const chainSlug = chain.id === "ethereum" ? "ethereum" : chain.id === "polygon" ? "polygon" : chain.id === "arbitrum" ? "arbitrum" : chain.id === "base" ? "base" : chain.id;
-    return `https://dexscreener.com/${chainSlug}/${token.toLowerCase()}`;
-  };
-
-  const getUniswapLink = () => {
-    if (chain.id === "ethereum") return "https://app.uniswap.org/#/swap";
-    if (chain.id === "polygon") return "https://app.uniswap.org/#/swap?chain=polygon";
-    if (chain.id === "arbitrum") return "https://app.uniswap.org/#/swap?chain=arbitrum";
-    if (chain.id === "base") return "https://app.uniswap.org/#/swap?chain=base";
-    if (chain.id === "optimism") return "https://app.uniswap.org/#/swap?chain=optimism";
-    return "https://app.uniswap.org/#/swap";
-  };
+  const getTradeLink = () => "/trade";
 
   return (
     <div className="holo-card p-6">
