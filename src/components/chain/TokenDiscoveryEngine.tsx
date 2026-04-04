@@ -320,13 +320,11 @@ export function TokenDiscoveryEngine({ chain }: TokenDiscoveryEngineProps) {
           />
         </div>
         <a
-          href={`https://dexscreener.com/${chain.id}`}
-          target="_blank"
-          rel="noopener noreferrer"
+          href="/trade"
           className="px-4 py-2 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors text-sm flex items-center gap-2"
         >
-          <ExternalLink className="h-4 w-4" />
-          <span className="hidden sm:inline">DexScreener</span>
+          <ArrowDownUp className="h-4 w-4" />
+          <span className="hidden sm:inline">Trade</span>
         </a>
       </div>
 
