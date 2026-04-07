@@ -40,6 +40,9 @@ const staticRoutes = [
   "/my/dca",
   "/my/copy",
   "/my/social",
+  "/my/tracker",
+  "/trade",
+  "/scanner",
 ];
 
 // Chain routes
