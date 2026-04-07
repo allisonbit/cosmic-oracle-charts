@@ -49,63 +49,62 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Fetch all article URLs from database
     const articleUrls = await getAllArticleUrls();
 
-    // Core pages always submitted
     const corePages = [
       "/", "/dashboard", "/predictions", "/sentiment", "/explorer",
       "/strength-meter", "/factory", "/portfolio", "/learn", "/insights",
+      "/trade", "/scanner",
       "/factory/events", "/factory/onchain", "/factory/narratives", "/factory/news",
       "/about", "/contact", "/sitemap",
       "/market/best-crypto-to-buy-today", "/market/next-crypto-to-explode",
       "/market/top-crypto-gainers-today", "/market/crypto-market-prediction-today",
+      "/market/best-crypto-under-1-dollar", "/market/trending-crypto-today",
+      "/market/best-long-term-crypto", "/market/best-altcoins-to-buy",
       "/price-prediction/bitcoin", "/price-prediction/ethereum",
       "/price-prediction/solana", "/price-prediction/ripple",
       "/price-prediction/cardano", "/price-prediction/dogecoin",
+      "/price-prediction/shiba-inu", "/price-prediction/pepe",
+      "/price-prediction/chainlink", "/price-prediction/polkadot",
+      "/price-prediction/toncoin", "/price-prediction/sui",
+      "/price-prediction/avalanche-2", "/price-prediction/near",
+      "/price-prediction/arbitrum", "/price-prediction/optimism",
       "/chain/ethereum", "/chain/solana", "/chain/base", "/chain/arbitrum",
-      // User hub pages
+      "/chain/polygon", "/chain/optimism", "/chain/avalanche", "/chain/bnb",
       "/my", "/my/portfolio", "/my/scanner", "/my/watchlist", "/my/alerts",
       "/my/signals", "/my/journal", "/my/news", "/my/dca", "/my/copy", "/my/social",
+      "/my/tracker",
     ].map(p => `${SITE_URL}${p}`);
 
     const allUrls = [...corePages, ...articleUrls];
 
-    // 1. Ping Google with both sitemaps
+    // 1. Ping Google & Bing with all sitemaps including sitemap index
     const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
-    const googlePing1 = fetch(
-      `https://www.google.com/ping?sitemap=${encodeURIComponent(SITE_URL + "/sitemap.xml")}`
-    ).then(r => ({ engine: "google-static", status: r.status, ok: r.ok }))
-     .catch(e => ({ engine: "google-static", status: 0, ok: false, error: e.message }));
+    const sitemapUrls = [
+      `${SITE_URL}/sitemap.xml`,
+      `${supabaseUrl}/functions/v1/sitemap?type=index`,
+      `${supabaseUrl}/functions/v1/sitemap`,
+    ];
 
-    const googlePing2 = fetch(
-      `https://www.google.com/ping?sitemap=${encodeURIComponent(supabaseUrl + "/functions/v1/sitemap")}`
-    ).then(r => ({ engine: "google-dynamic", status: r.status, ok: r.ok }))
-     .catch(e => ({ engine: "google-dynamic", status: 0, ok: false, error: e.message }));
+    const sitemapPings = sitemapUrls.flatMap(sitemapUrl => [
+      fetch(`https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`)
+        .then(r => ({ engine: "google", sitemap: sitemapUrl, status: r.status, ok: r.ok }))
+        .catch(e => ({ engine: "google", sitemap: sitemapUrl, status: 0, ok: false, error: e.message })),
+      fetch(`https://www.bing.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`)
+        .then(r => ({ engine: "bing", sitemap: sitemapUrl, status: r.status, ok: r.ok }))
+        .catch(e => ({ engine: "bing", sitemap: sitemapUrl, status: 0, ok: false, error: e.message })),
+    ]);
 
-    // 2. Ping Bing with both sitemaps
-    const bingPing1 = fetch(
-      `https://www.bing.com/ping?sitemap=${encodeURIComponent(SITE_URL + "/sitemap.xml")}`
-    ).then(r => ({ engine: "bing-static", status: r.status, ok: r.ok }))
-     .catch(e => ({ engine: "bing-static", status: 0, ok: false, error: e.message }));
-
-    const bingPing2 = fetch(
-      `https://www.bing.com/ping?sitemap=${encodeURIComponent(supabaseUrl + "/functions/v1/sitemap")}`
-    ).then(r => ({ engine: "bing-dynamic", status: r.status, ok: r.ok }))
-     .catch(e => ({ engine: "bing-dynamic", status: 0, ok: false, error: e.message }));
-
-    // 3. IndexNow - submit in smaller batches for reliability
+    // 2. IndexNow - submit in batches
     const indexNowEndpoints = [
       "https://api.indexnow.org/IndexNow",
       "https://www.bing.com/IndexNow",
       "https://yandex.com/indexnow",
     ];
 
-    const batchSize = 100; // Smaller batches = more reliable
+    const batchSize = 100;
     const indexNowResults: any[] = [];
-
-    // Only submit first 500 URLs to avoid timeouts, prioritize core + recent
-    const priorityUrls = allUrls.slice(0, 500);
+    const priorityUrls = allUrls.slice(0, 1000);
 
     for (let i = 0; i < priorityUrls.length; i += batchSize) {
       const batch = priorityUrls.slice(i, i + batchSize);
@@ -131,7 +130,7 @@ Deno.serve(async (req) => {
       ));
     }
 
-    const pingResults = await Promise.all([googlePing1, googlePing2, bingPing1, bingPing2]);
+    const pingResults = await Promise.all(sitemapPings);
 
     return new Response(JSON.stringify({
       success: true,
