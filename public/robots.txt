@@ -17,9 +17,17 @@ Allow: /*.webp
 Allow: /*.svg
 Allow: /*.woff2
 
-# Sitemap locations
+# Sitemap locations - Sitemap Index + individual sitemaps
 Sitemap: https://oraclebull.com/sitemap.xml
+Sitemap: https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/sitemap?type=index
 Sitemap: https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/sitemap
+Sitemap: https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/sitemap?type=core
+Sitemap: https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/sitemap?type=predictions
+Sitemap: https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/sitemap?type=chains
+Sitemap: https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/sitemap?type=market
+Sitemap: https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/sitemap?type=questions
+Sitemap: https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/sitemap?type=articles
+Sitemap: https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/sitemap?type=learn
 Sitemap-HTML: https://oraclebull.com/html-sitemap.html
 
 # Google specific - full access
