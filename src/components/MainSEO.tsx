@@ -190,15 +190,49 @@ export function SEO({ title, description, keywords, image, type = "website", can
     }
     canonical.href = canonicalUrl;
 
-    // Alternate language (for future i18n)
-    let alternate = document.querySelector('link[rel="alternate"][hreflang="en"]') as HTMLLinkElement;
-    if (!alternate) {
-      alternate = document.createElement("link");
-      alternate.rel = "alternate";
-      alternate.hreflang = "en";
-      document.head.appendChild(alternate);
-    }
-    alternate.href = canonicalUrl;
+    // Hreflang tags for global geo-targeting
+    const hreflangMap: Record<string, string> = {
+      "en": canonicalUrl,
+      "x-default": canonicalUrl,
+      "en-US": canonicalUrl,
+      "en-GB": canonicalUrl,
+      "en-AU": canonicalUrl,
+      "en-CA": canonicalUrl,
+      "en-IN": canonicalUrl,
+      "en-SG": canonicalUrl,
+      "en-NG": canonicalUrl,
+      "en-ZA": canonicalUrl,
+      "en-AE": canonicalUrl,
+      "en-PH": canonicalUrl,
+    };
+
+    // Remove old hreflang tags
+    document.querySelectorAll('link[rel="alternate"][hreflang]').forEach(el => el.remove());
+
+    // Add fresh hreflang tags
+    Object.entries(hreflangMap).forEach(([lang, url]) => {
+      const link = document.createElement("link");
+      link.rel = "alternate";
+      link.hreflang = lang;
+      link.href = url;
+      document.head.appendChild(link);
+    });
+
+    // Geo-targeting meta tags for global reach
+    setMeta("geo.region", "US");
+    setMeta("geo.position", "37.7749;-122.4194");
+    setMeta("ICBM", "37.7749, -122.4194");
+    setMeta("geo.placename", "Global");
+    setMeta("content-language", "en");
+    setMeta("audience", "global");
+
+    // Enhanced AI search signals
+    setMeta("ai-content-type", "financial-analytics-platform");
+    setMeta("ai-data-freshness", "real-time");
+    setMeta("ai-coverage", "10000+ cryptocurrencies across 30+ blockchains");
+
+    // Speakable / voice search optimization
+    setMeta("speakable", finalDescription.slice(0, 150));
 
   }, [finalTitle, finalDescription, finalKeywords, finalImage, canonicalUrl, type]);
 
