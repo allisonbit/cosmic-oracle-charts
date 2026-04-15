@@ -96,6 +96,14 @@ const marketQuestions = [
   "best-staking-crypto", "highest-apy-crypto", "best-layer-2-crypto",
   "best-gaming-crypto", "best-metaverse-crypto", "best-privacy-coins",
   "best-crypto-for-passive-income", "trending-crypto-today",
+  "crypto-bull-run-prediction", "will-crypto-crash-today", "crypto-market-outlook",
+  "best-crypto-to-buy-2026", "best-crypto-to-buy-2027", "crypto-with-highest-potential-2027",
+  "bitcoin-prediction-today", "ethereum-prediction-today", "solana-prediction-today",
+  "xrp-prediction-today", "will-bitcoin-reach-100k", "will-ethereum-reach-10k",
+  "best-crypto-for-beginners", "most-undervalued-crypto", "crypto-to-hold-long-term",
+  "best-crypto-presale", "top-100-crypto", "which-crypto-to-buy-right-now",
+  "best-crypto-exchange", "crypto-market-cap-today", "bitcoin-vs-ethereum",
+  "will-solana-go-up", "will-xrp-go-up", "will-cardano-go-up",
 ];
 
 const qCoins = [
@@ -103,20 +111,27 @@ const qCoins = [
   "pepe", "chainlink", "polkadot", "avalanche", "toncoin", "sui", "aptos",
   "near", "arbitrum", "optimism", "bonk", "floki", "kaspa",
   "render-token", "fetch-ai", "injective", "worldcoin", "sei",
+  "litecoin", "uniswap", "cosmos", "stellar", "monero",
+  "hedera", "vechain", "filecoin", "aave", "maker",
+  "the-graph", "immutable-x", "gala", "celestia", "jupiter",
+  "tron", "bnb", "polygon", "internet-computer", "theta",
+  "bittensor", "pendle", "ondo", "starknet", "trump",
 ];
 
 const qPatterns = [
   "what-will-{coin}-price-be-today", "will-{coin}-go-up-today", "{coin}-price-prediction-today",
   "is-{coin}-bullish-today", "should-i-buy-{coin}-today", "{coin}-forecast-today",
-  "is-{coin}-going-up-or-down-today", "{coin}-price-tomorrow",
+  "is-{coin}-going-up-or-down-today", "{coin}-price-tomorrow", "{coin}-price-right-now",
+  "is-{coin}-a-buy-today",
   "what-will-{coin}-price-be-this-week", "will-{coin}-go-up-this-week",
   "{coin}-price-prediction-this-week", "{coin}-weekly-forecast",
-  "should-i-buy-{coin}-this-week", "{coin}-analysis-this-week",
+  "should-i-buy-{coin}-this-week", "{coin}-analysis-this-week", "{coin}-price-next-week",
   "what-will-{coin}-price-be-this-month", "is-{coin}-a-good-investment-this-month",
   "{coin}-price-prediction-this-month", "{coin}-monthly-forecast",
-  "should-i-buy-{coin}-now", "{coin}-price-prediction-2026",
+  "should-i-buy-{coin}-now", "{coin}-price-prediction-2026", "{coin}-price-prediction-2027",
   "is-{coin}-a-good-investment", "{coin}-buy-or-sell", "will-{coin}-reach-new-highs",
   "{coin}-technical-analysis", "{coin}-whale-activity", "{coin}-vs-bitcoin",
+  "{coin}-price-prediction-long-term", "is-{coin}-worth-buying",
 ];
 
 interface BlogArticleRow {
