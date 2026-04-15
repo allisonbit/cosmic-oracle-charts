@@ -142,14 +142,43 @@ export function SEO({ title, description, keywords, image, type = "website", can
     const chainSlug = currentPath.split("/chain/")[1] || "blockchain";
     const chainDisplay = chainSlug.charAt(0).toUpperCase() + chainSlug.slice(1);
     return {
-      title: `${chainDisplay} Analytics – Live Price, Whale Alerts & DeFi Data (${currentMonth} ${currentYear})`,
-      description: `Real-time ${chainDisplay} blockchain analytics: price charts, whale tracking, token discovery, risk analysis & AI predictions. Free ${chainDisplay} dashboard updated every 30 seconds.`,
-      keywords: `${chainSlug} analytics, ${chainSlug} price today, ${chainSlug} whale alerts, ${chainSlug} DeFi, ${chainSlug} tokens, ${chainSlug} prediction`
+      title: `${chainDisplay} Analytics – Live Price, DeFi & Whale Alerts (${currentMonth} ${currentYear})`,
+      description: `Real-time ${chainDisplay} blockchain analytics: price charts, whale tracking, token discovery, risk analysis & AI predictions. Free ${chainDisplay} dashboard updated every 30 seconds. ${currentMonth} ${currentYear}.`,
+      keywords: `${chainSlug} analytics, ${chainSlug} price today, ${chainSlug} whale alerts, ${chainSlug} DeFi, ${chainSlug} tokens, ${chainSlug} prediction, ${chainSlug} news`
+    };
+  })() : currentPath.includes("/price-prediction/") ? (() => {
+    const coinSlug = currentPath.split("/price-prediction/")[1]?.split("/")[0] || "crypto";
+    const coinDisplay = coinSlug.charAt(0).toUpperCase() + coinSlug.slice(1).replace(/-/g, " ");
+    const tf = currentPath.includes("/daily") ? "Today" : currentPath.includes("/weekly") ? "This Week" : currentPath.includes("/monthly") ? "This Month" : "";
+    return {
+      title: `${coinDisplay} Price Prediction ${tf || currentMonth + " " + currentYear} – AI Forecast & Targets`,
+      description: `${coinDisplay} price prediction ${tf ? tf.toLowerCase() : "for " + currentMonth + " " + currentYear}. AI-powered forecast with entry zones, support/resistance levels, bull/bear targets & confidence scores. Updated live.`,
+      keywords: `${coinSlug} price prediction, ${coinSlug} forecast ${tf.toLowerCase()}, will ${coinSlug} go up, ${coinSlug} analysis, ${coinSlug} price target, should I buy ${coinSlug}`
+    };
+  })() : currentPath.includes("/q/") ? (() => {
+    const slug = currentPath.split("/q/")[1] || "";
+    const readable = slug.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+    return {
+      title: `${readable} – AI Answer & Live Analysis (${currentMonth} ${currentYear})`,
+      description: `${readable}? Get the AI-powered answer with live market data, technical analysis, whale activity & price targets. Updated ${currentMonth} ${currentYear}.`,
+      keywords: `${slug.replace(/-/g, " ")}, crypto prediction today, should i buy crypto`
+    };
+  })() : currentPath.includes("/market/") ? (() => {
+    const slug = currentPath.split("/market/")[1] || "";
+    const readable = slug.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+    return {
+      title: `${readable} – Live Rankings & AI Picks (${currentMonth} ${currentYear})`,
+      description: `${readable}: AI-curated list with live prices, technical analysis & risk scores. Find the best crypto opportunities right now. Updated ${currentMonth} ${currentYear}.`,
+      keywords: `${slug.replace(/-/g, " ")}, best crypto to buy, crypto picks today`
     };
   })() : currentPath.includes("/insights/") ? {
     title: `Crypto Insight – Expert Market Analysis | Oracle Bull`,
     description: "Expert cryptocurrency market analysis and trading intelligence. Deep dive into blockchain data, market trends, and investment opportunities.",
     keywords: "crypto analysis, market insight, trading research, blockchain intelligence"
+  } : currentPath.includes("/learn/") ? {
+    title: `Crypto Education – In-Depth Guide | Oracle Bull`,
+    description: "Comprehensive cryptocurrency guide covering blockchain technology, trading strategies, and market analysis fundamentals.",
+    keywords: "crypto education, blockchain guide, trading tutorial, crypto for beginners"
   } : {
     title: defaultMeta.title,
     description: defaultMeta.description,
