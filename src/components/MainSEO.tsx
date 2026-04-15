@@ -542,7 +542,88 @@ export function StructuredData() {
       });
     }
 
-    // Dashboard - Service schema
+    // Predictions page - ItemList for rich results
+    if (currentPath === "/predictions") {
+      schemas.push({
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": `Crypto Price Predictions ${currentMonth} ${currentYear}`,
+        "description": `AI-powered cryptocurrency price predictions for ${currentMonth} ${currentYear}. Daily, weekly & monthly forecasts.`,
+        "url": `${defaultMeta.baseUrl}/predictions`,
+        "numberOfItems": 100,
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Bitcoin Price Prediction", "url": `${defaultMeta.baseUrl}/price-prediction/bitcoin` },
+          { "@type": "ListItem", "position": 2, "name": "Ethereum Price Prediction", "url": `${defaultMeta.baseUrl}/price-prediction/ethereum` },
+          { "@type": "ListItem", "position": 3, "name": "Solana Price Prediction", "url": `${defaultMeta.baseUrl}/price-prediction/solana` },
+          { "@type": "ListItem", "position": 4, "name": "XRP Price Prediction", "url": `${defaultMeta.baseUrl}/price-prediction/ripple` },
+          { "@type": "ListItem", "position": 5, "name": "Cardano Price Prediction", "url": `${defaultMeta.baseUrl}/price-prediction/cardano` },
+          { "@type": "ListItem", "position": 6, "name": "Dogecoin Price Prediction", "url": `${defaultMeta.baseUrl}/price-prediction/dogecoin` },
+          { "@type": "ListItem", "position": 7, "name": "Chainlink Price Prediction", "url": `${defaultMeta.baseUrl}/price-prediction/chainlink` },
+          { "@type": "ListItem", "position": 8, "name": "Avalanche Price Prediction", "url": `${defaultMeta.baseUrl}/price-prediction/avalanche-2` },
+          { "@type": "ListItem", "position": 9, "name": "Polkadot Price Prediction", "url": `${defaultMeta.baseUrl}/price-prediction/polkadot` },
+          { "@type": "ListItem", "position": 10, "name": "Shiba Inu Price Prediction", "url": `${defaultMeta.baseUrl}/price-prediction/shiba-inu` },
+        ]
+      });
+    }
+
+    // Trade page schema
+    if (currentPath === "/trade") {
+      schemas.push({
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Oracle Bull Trading Terminal",
+        "description": "Buy, sell, swap & bridge any cryptocurrency across 12+ blockchains. Zero platform fees, decentralized trading.",
+        "url": `${defaultMeta.baseUrl}/trade`,
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Web Browser",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      });
+    }
+
+    // Price prediction pages - FinancialProduct schema
+    if (currentPath.includes("/price-prediction/")) {
+      const coinSlug = currentPath.split("/price-prediction/")[1]?.split("/")[0] || "crypto";
+      const coinDisplay = coinSlug.charAt(0).toUpperCase() + coinSlug.slice(1).replace(/-/g, " ");
+      schemas.push({
+        "@context": "https://schema.org",
+        "@type": "AnalysisNewsArticle",
+        "headline": `${coinDisplay} Price Prediction – AI Forecast ${currentMonth} ${currentYear}`,
+        "description": `AI-powered ${coinDisplay} price prediction with technical analysis, support/resistance levels, and trading targets.`,
+        "url": `${defaultMeta.baseUrl}${currentPath}`,
+        "datePublished": new Date().toISOString(),
+        "dateModified": new Date().toISOString(),
+        "author": { "@type": "Organization", "name": "Oracle Bull" },
+        "publisher": { "@id": `${defaultMeta.baseUrl}/#organization` },
+        "about": { "@type": "Thing", "name": coinDisplay },
+        "inLanguage": "en-US"
+      });
+    }
+
+    // Question intent pages - QAPage schema
+    if (currentPath.includes("/q/")) {
+      const slug = currentPath.split("/q/")[1] || "";
+      const readable = slug.replace(/-/g, " ").replace(/\b\w/g, (l: string) => l.toUpperCase());
+      schemas.push({
+        "@context": "https://schema.org",
+        "@type": "QAPage",
+        "name": readable,
+        "mainEntity": {
+          "@type": "Question",
+          "name": readable + "?",
+          "answerCount": 1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": `Get the latest AI-powered analysis and prediction for this question at Oracle Bull. Our models analyze technical indicators, whale activity, and market sentiment in real-time.`,
+            "url": `${defaultMeta.baseUrl}/q/${slug}`
+          }
+        }
+      });
+    }
+
     if (currentPath === "/dashboard") {
       schemas.push({
         "@context": "https://schema.org",
