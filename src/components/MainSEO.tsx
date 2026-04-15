@@ -29,32 +29,42 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
   "/": {
     title: `Best Free AI Crypto Predictions & Forecasts (${currentMonth} ${currentYear}) – Oracle Bull`,
     description: `Get free AI-powered crypto price predictions for Bitcoin, Ethereum & 1000+ tokens. Real-time charts, whale alerts, sentiment analysis. Updated ${currentMonth} ${currentYear}. No signup needed.`,
-    keywords: "crypto prediction today, AI crypto forecast, bitcoin price prediction, free crypto signals, crypto analysis tool, best crypto prediction site"
+    keywords: "crypto prediction today, AI crypto forecast, bitcoin price prediction, free crypto signals, crypto analysis tool, best crypto prediction site, will crypto go up today, best crypto to buy today"
   },
   "/dashboard": {
-    title: `Crypto Market Dashboard – Live Prices & Signals (${currentMonth} ${currentYear})`,
-    description: "Live crypto dashboard: real-time prices, top gainers, market momentum, volume leaders & AI insights. Track BTC, ETH & 1000+ altcoins in one view. Free & updated every 30 seconds.",
-    keywords: "crypto dashboard live, real time crypto prices, crypto market today, top crypto gainers today, crypto market cap live"
+    title: `Crypto Market Dashboard – Live Prices, Signals & Top Gainers (${currentMonth} ${currentYear})`,
+    description: `Live crypto dashboard: real-time prices, top gainers & losers, market momentum, volume leaders & AI insights. Track BTC, ETH & 1000+ altcoins in one view. Free & updated every 30 seconds. ${currentMonth} ${currentYear}.`,
+    keywords: "crypto dashboard live, real time crypto prices, crypto market today, top crypto gainers today, crypto market cap live, crypto prices now, bitcoin price live, altcoin dashboard"
   },
   "/strength-meter": {
     title: `Crypto Strength Meter – Which Coin Is Strongest Right Now? (${currentMonth} ${currentYear})`,
-    description: "See which crypto is the strongest right now. Real-time strength rankings for Bitcoin, Ethereum, Solana & 100+ assets based on momentum, volume & sentiment. Free tool.",
-    keywords: "crypto strength meter, strongest cryptocurrency today, bitcoin strength index, crypto momentum ranking, best performing crypto"
+    description: `See which crypto is the strongest right now. Real-time strength rankings for Bitcoin, Ethereum, Solana & 100+ assets based on momentum, volume & sentiment. Free tool. Updated ${currentMonth} ${currentYear}.`,
+    keywords: "crypto strength meter, strongest cryptocurrency today, bitcoin strength index, crypto momentum ranking, best performing crypto, crypto relative strength"
   },
   "/strength": {
     title: `Crypto Strength Meter – Which Coin Is Strongest Right Now? (${currentMonth} ${currentYear})`,
-    description: "See which crypto is the strongest right now. Real-time strength rankings for Bitcoin, Ethereum, Solana & 100+ assets based on momentum, volume & sentiment. Free tool.",
+    description: `See which crypto is the strongest right now. Real-time strength rankings for Bitcoin, Ethereum, Solana & 100+ assets based on momentum, volume & sentiment. Free tool. Updated ${currentMonth} ${currentYear}.`,
     keywords: "crypto strength meter, strongest cryptocurrency today, bitcoin strength index, crypto momentum ranking, best performing crypto"
   },
   "/crypto-factory": {
-    title: "Crypto Factory – Market Events, Whale Alerts & On-Chain Intel",
+    title: `Crypto Factory – Market Events, Whale Alerts & On-Chain Intel (${currentMonth} ${currentYear})`,
+    description: "Track every market-moving event: token launches, protocol upgrades, whale movements & trending narratives. Like Forex Factory but for crypto. Updated in real-time.",
+    keywords: "crypto events calendar, crypto factory, upcoming token launches, whale alerts crypto, crypto market events, protocol upgrades, crypto news today"
+  },
+  "/factory": {
+    title: `Crypto Factory – Market Events, Whale Alerts & On-Chain Intel (${currentMonth} ${currentYear})`,
     description: "Track every market-moving event: token launches, protocol upgrades, whale movements & trending narratives. Like Forex Factory but for crypto. Updated in real-time.",
     keywords: "crypto events calendar, crypto factory, upcoming token launches, whale alerts crypto, crypto market events, protocol upgrades"
   },
-  "/factory": {
-    title: "Crypto Factory – Market Events, Whale Alerts & On-Chain Intel",
-    description: "Track every market-moving event: token launches, protocol upgrades, whale movements & trending narratives. Like Forex Factory but for crypto. Updated in real-time.",
-    keywords: "crypto events calendar, crypto factory, upcoming token launches, whale alerts crypto, crypto market events, protocol upgrades"
+  "/trade": {
+    title: `Trade Crypto – Buy, Sell, Swap & Bridge Any Token (${currentMonth} ${currentYear})`,
+    description: "Trade any cryptocurrency directly. Buy, sell, swap & bridge tokens across 12+ blockchains including Ethereum, Base, Polygon, Arbitrum & more. Zero platform fees. Connect your wallet and trade instantly.",
+    keywords: "trade crypto, buy crypto, sell crypto, swap tokens, crypto bridge, dex trading, decentralized exchange, buy bitcoin, buy ethereum, buy solana"
+  },
+  "/scanner": {
+    title: `Crypto Token Scanner – Find Hidden Gems & New Tokens (${currentMonth} ${currentYear})`,
+    description: "Scan for new and trending crypto tokens across all blockchains. Find hidden gems, analyze token metrics, liquidity, and risk scores. Free real-time scanner.",
+    keywords: "crypto scanner, token scanner, new crypto tokens, hidden gems crypto, crypto gem finder, low cap crypto, new token alert"
   },
   "/sitemap": {
     title: "Sitemap – All Oracle Bull Pages & Tools",
@@ -62,29 +72,29 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
     keywords: "oracle bull sitemap, crypto tools, blockchain analytics"
   },
   "/portfolio": {
-    title: "Free Wallet Scanner – Analyze Any Crypto Wallet Instantly",
+    title: `Free Wallet Scanner – Analyze Any Crypto Wallet Instantly (${currentMonth} ${currentYear})`,
     description: "Paste any EVM or Solana wallet address for instant AI analysis. See holdings, hidden gems, risk scores & pump potential. 100% free, no signup.",
-    keywords: "crypto wallet scanner free, wallet analyzer, portfolio tracker, check crypto wallet, solana wallet checker"
+    keywords: "crypto wallet scanner free, wallet analyzer, portfolio tracker, check crypto wallet, solana wallet checker, ethereum wallet scanner"
   },
   "/sentiment": {
     title: `Crypto Fear & Greed Index + Whale Tracker (Live ${currentMonth} ${currentYear})`,
     description: "Real-time crypto sentiment: Fear & Greed Index, whale transaction alerts, social buzz from Twitter/Reddit/Telegram & trending topics. Make data-driven trading decisions.",
-    keywords: "crypto fear greed index today, whale alerts crypto, crypto sentiment analysis, crypto social signals, bitcoin sentiment"
+    keywords: "crypto fear greed index today, whale alerts crypto, crypto sentiment analysis, crypto social signals, bitcoin sentiment, is crypto bullish today"
   },
   "/explorer": {
-    title: "Crypto Token Explorer – Search Any Coin by Name or Contract",
+    title: `Crypto Token Explorer – Search Any Coin by Name or Contract (${currentMonth} ${currentYear})`,
     description: "Search 10,000+ tokens by name, symbol, or contract address. Get price charts, holder analysis, liquidity depth & DeFi metrics across 30+ blockchains. Free.",
-    keywords: "crypto token explorer, search cryptocurrency, token contract lookup, crypto analysis by address, defi token scanner"
+    keywords: "crypto token explorer, search cryptocurrency, token contract lookup, crypto analysis by address, defi token scanner, crypto lookup"
   },
   "/learn": {
     title: `Learn Crypto Free – Daily Articles & Trading Guides (${currentMonth} ${currentYear})`,
     description: "Free daily crypto education: AI-written market insights, Bitcoin guides, DeFi tutorials, technical analysis lessons & trading strategies. 2000+ articles available.",
-    keywords: "learn crypto free, crypto education, bitcoin guide for beginners, defi tutorial, crypto trading course free"
+    keywords: "learn crypto free, crypto education, bitcoin guide for beginners, defi tutorial, crypto trading course free, how to trade crypto"
   },
   "/insights": {
     title: `Crypto Market Analysis Today – AI-Powered Daily Insights (${currentMonth} ${currentYear})`,
     description: "Daily AI market analysis for Bitcoin, Ethereum, Solana & altcoins. On-chain data, technical indicators & expert research. Updated every day, always free.",
-    keywords: "crypto analysis today, daily crypto insights, bitcoin market analysis, ethereum analysis today, crypto research"
+    keywords: "crypto analysis today, daily crypto insights, bitcoin market analysis, ethereum analysis today, crypto research, crypto news analysis"
   },
   "/contact": {
     title: "Contact Oracle Bull – Get Support & Join Our Community",
@@ -94,13 +104,33 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
   "/predictions": {
     title: `AI Crypto Price Predictions – BTC, ETH & Altcoin Forecasts (${currentMonth} ${currentYear})`,
     description: "Browse AI-powered price predictions for Bitcoin, Ethereum, Solana & 100+ tokens. Daily, weekly & monthly forecasts with confidence scores and bull/bear targets.",
-    keywords: "crypto price prediction, bitcoin forecast today, ethereum prediction, altcoin predictions, AI crypto forecast"
+    keywords: "crypto price prediction, bitcoin forecast today, ethereum prediction, altcoin predictions, AI crypto forecast, crypto prediction today, will bitcoin go up"
   },
   "/about": {
     title: "About Oracle Bull – Free AI Crypto Analytics Platform",
     description: "Oracle Bull is a free AI-powered crypto forecasting platform used by 50,000+ traders. Real-time predictions, whale tracking & sentiment analysis for 1000+ tokens.",
     keywords: "about oracle bull, AI crypto platform, free crypto analytics"
-  }
+  },
+  "/privacy-policy": {
+    title: "Privacy Policy – Oracle Bull",
+    description: "Oracle Bull privacy policy. How we protect your data, what we collect, and your rights as a user of our free crypto analytics platform.",
+    keywords: "oracle bull privacy policy, crypto platform privacy"
+  },
+  "/terms": {
+    title: "Terms of Service – Oracle Bull",
+    description: "Terms and conditions for using Oracle Bull's free AI-powered cryptocurrency analytics, predictions, and trading tools.",
+    keywords: "oracle bull terms, crypto platform terms of service"
+  },
+  "/risk-disclaimer": {
+    title: "Risk Disclaimer – Oracle Bull",
+    description: "Important risk disclosure for cryptocurrency trading and AI predictions. Understand the risks before using Oracle Bull's analytics tools.",
+    keywords: "crypto risk disclaimer, trading risk, AI prediction disclaimer"
+  },
+  "/my": {
+    title: `My Hub – Personal Crypto Dashboard & Tools (${currentMonth} ${currentYear})`,
+    description: "Your personal crypto command center. Track your portfolio, set price alerts, manage watchlists, journal trades, and access AI trading signals all in one place.",
+    keywords: "crypto dashboard personal, crypto portfolio tracker, crypto alerts, trading journal, watchlist crypto"
+  },
 };
 
 export function SEO({ title, description, keywords, image, type = "website", canonicalPath }: SEOProps) {
@@ -112,14 +142,43 @@ export function SEO({ title, description, keywords, image, type = "website", can
     const chainSlug = currentPath.split("/chain/")[1] || "blockchain";
     const chainDisplay = chainSlug.charAt(0).toUpperCase() + chainSlug.slice(1);
     return {
-      title: `${chainDisplay} Analytics – Live Price, Whale Alerts & DeFi Data (${currentMonth} ${currentYear})`,
-      description: `Real-time ${chainDisplay} blockchain analytics: price charts, whale tracking, token discovery, risk analysis & AI predictions. Free ${chainDisplay} dashboard updated every 30 seconds.`,
-      keywords: `${chainSlug} analytics, ${chainSlug} price today, ${chainSlug} whale alerts, ${chainSlug} DeFi, ${chainSlug} tokens, ${chainSlug} prediction`
+      title: `${chainDisplay} Analytics – Live Price, DeFi & Whale Alerts (${currentMonth} ${currentYear})`,
+      description: `Real-time ${chainDisplay} blockchain analytics: price charts, whale tracking, token discovery, risk analysis & AI predictions. Free ${chainDisplay} dashboard updated every 30 seconds. ${currentMonth} ${currentYear}.`,
+      keywords: `${chainSlug} analytics, ${chainSlug} price today, ${chainSlug} whale alerts, ${chainSlug} DeFi, ${chainSlug} tokens, ${chainSlug} prediction, ${chainSlug} news`
+    };
+  })() : currentPath.includes("/price-prediction/") ? (() => {
+    const coinSlug = currentPath.split("/price-prediction/")[1]?.split("/")[0] || "crypto";
+    const coinDisplay = coinSlug.charAt(0).toUpperCase() + coinSlug.slice(1).replace(/-/g, " ");
+    const tf = currentPath.includes("/daily") ? "Today" : currentPath.includes("/weekly") ? "This Week" : currentPath.includes("/monthly") ? "This Month" : "";
+    return {
+      title: `${coinDisplay} Price Prediction ${tf || currentMonth + " " + currentYear} – AI Forecast & Targets`,
+      description: `${coinDisplay} price prediction ${tf ? tf.toLowerCase() : "for " + currentMonth + " " + currentYear}. AI-powered forecast with entry zones, support/resistance levels, bull/bear targets & confidence scores. Updated live.`,
+      keywords: `${coinSlug} price prediction, ${coinSlug} forecast ${tf.toLowerCase()}, will ${coinSlug} go up, ${coinSlug} analysis, ${coinSlug} price target, should I buy ${coinSlug}`
+    };
+  })() : currentPath.includes("/q/") ? (() => {
+    const slug = currentPath.split("/q/")[1] || "";
+    const readable = slug.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+    return {
+      title: `${readable} – AI Answer & Live Analysis (${currentMonth} ${currentYear})`,
+      description: `${readable}? Get the AI-powered answer with live market data, technical analysis, whale activity & price targets. Updated ${currentMonth} ${currentYear}.`,
+      keywords: `${slug.replace(/-/g, " ")}, crypto prediction today, should i buy crypto`
+    };
+  })() : currentPath.includes("/market/") ? (() => {
+    const slug = currentPath.split("/market/")[1] || "";
+    const readable = slug.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+    return {
+      title: `${readable} – Live Rankings & AI Picks (${currentMonth} ${currentYear})`,
+      description: `${readable}: AI-curated list with live prices, technical analysis & risk scores. Find the best crypto opportunities right now. Updated ${currentMonth} ${currentYear}.`,
+      keywords: `${slug.replace(/-/g, " ")}, best crypto to buy, crypto picks today`
     };
   })() : currentPath.includes("/insights/") ? {
     title: `Crypto Insight – Expert Market Analysis | Oracle Bull`,
     description: "Expert cryptocurrency market analysis and trading intelligence. Deep dive into blockchain data, market trends, and investment opportunities.",
     keywords: "crypto analysis, market insight, trading research, blockchain intelligence"
+  } : currentPath.includes("/learn/") ? {
+    title: `Crypto Education – In-Depth Guide | Oracle Bull`,
+    description: "Comprehensive cryptocurrency guide covering blockchain technology, trading strategies, and market analysis fundamentals.",
+    keywords: "crypto education, blockchain guide, trading tutorial, crypto for beginners"
   } : {
     title: defaultMeta.title,
     description: defaultMeta.description,
@@ -483,7 +542,88 @@ export function StructuredData() {
       });
     }
 
-    // Dashboard - Service schema
+    // Predictions page - ItemList for rich results
+    if (currentPath === "/predictions") {
+      schemas.push({
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": `Crypto Price Predictions ${currentMonth} ${currentYear}`,
+        "description": `AI-powered cryptocurrency price predictions for ${currentMonth} ${currentYear}. Daily, weekly & monthly forecasts.`,
+        "url": `${defaultMeta.baseUrl}/predictions`,
+        "numberOfItems": 100,
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Bitcoin Price Prediction", "url": `${defaultMeta.baseUrl}/price-prediction/bitcoin` },
+          { "@type": "ListItem", "position": 2, "name": "Ethereum Price Prediction", "url": `${defaultMeta.baseUrl}/price-prediction/ethereum` },
+          { "@type": "ListItem", "position": 3, "name": "Solana Price Prediction", "url": `${defaultMeta.baseUrl}/price-prediction/solana` },
+          { "@type": "ListItem", "position": 4, "name": "XRP Price Prediction", "url": `${defaultMeta.baseUrl}/price-prediction/ripple` },
+          { "@type": "ListItem", "position": 5, "name": "Cardano Price Prediction", "url": `${defaultMeta.baseUrl}/price-prediction/cardano` },
+          { "@type": "ListItem", "position": 6, "name": "Dogecoin Price Prediction", "url": `${defaultMeta.baseUrl}/price-prediction/dogecoin` },
+          { "@type": "ListItem", "position": 7, "name": "Chainlink Price Prediction", "url": `${defaultMeta.baseUrl}/price-prediction/chainlink` },
+          { "@type": "ListItem", "position": 8, "name": "Avalanche Price Prediction", "url": `${defaultMeta.baseUrl}/price-prediction/avalanche-2` },
+          { "@type": "ListItem", "position": 9, "name": "Polkadot Price Prediction", "url": `${defaultMeta.baseUrl}/price-prediction/polkadot` },
+          { "@type": "ListItem", "position": 10, "name": "Shiba Inu Price Prediction", "url": `${defaultMeta.baseUrl}/price-prediction/shiba-inu` },
+        ]
+      });
+    }
+
+    // Trade page schema
+    if (currentPath === "/trade") {
+      schemas.push({
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Oracle Bull Trading Terminal",
+        "description": "Buy, sell, swap & bridge any cryptocurrency across 12+ blockchains. Zero platform fees, decentralized trading.",
+        "url": `${defaultMeta.baseUrl}/trade`,
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Web Browser",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      });
+    }
+
+    // Price prediction pages - FinancialProduct schema
+    if (currentPath.includes("/price-prediction/")) {
+      const coinSlug = currentPath.split("/price-prediction/")[1]?.split("/")[0] || "crypto";
+      const coinDisplay = coinSlug.charAt(0).toUpperCase() + coinSlug.slice(1).replace(/-/g, " ");
+      schemas.push({
+        "@context": "https://schema.org",
+        "@type": "AnalysisNewsArticle",
+        "headline": `${coinDisplay} Price Prediction – AI Forecast ${currentMonth} ${currentYear}`,
+        "description": `AI-powered ${coinDisplay} price prediction with technical analysis, support/resistance levels, and trading targets.`,
+        "url": `${defaultMeta.baseUrl}${currentPath}`,
+        "datePublished": new Date().toISOString(),
+        "dateModified": new Date().toISOString(),
+        "author": { "@type": "Organization", "name": "Oracle Bull" },
+        "publisher": { "@id": `${defaultMeta.baseUrl}/#organization` },
+        "about": { "@type": "Thing", "name": coinDisplay },
+        "inLanguage": "en-US"
+      });
+    }
+
+    // Question intent pages - QAPage schema
+    if (currentPath.includes("/q/")) {
+      const slug = currentPath.split("/q/")[1] || "";
+      const readable = slug.replace(/-/g, " ").replace(/\b\w/g, (l: string) => l.toUpperCase());
+      schemas.push({
+        "@context": "https://schema.org",
+        "@type": "QAPage",
+        "name": readable,
+        "mainEntity": {
+          "@type": "Question",
+          "name": readable + "?",
+          "answerCount": 1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": `Get the latest AI-powered analysis and prediction for this question at Oracle Bull. Our models analyze technical indicators, whale activity, and market sentiment in real-time.`,
+            "url": `${defaultMeta.baseUrl}/q/${slug}`
+          }
+        }
+      });
+    }
+
     if (currentPath === "/dashboard") {
       schemas.push({
         "@context": "https://schema.org",
