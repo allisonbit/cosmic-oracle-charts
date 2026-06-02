@@ -9,6 +9,7 @@ const staticRoutes = [
   "/",
   "/dashboard",
   "/predictions",
+  "/price-prediction",
   "/strength",
   "/strength-meter",
   "/factory",
