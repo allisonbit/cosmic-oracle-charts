@@ -27,6 +27,10 @@ const CTASection = lazy(() => import("@/components/home/CTASection").then(m => (
 const MarketOverview = lazy(() => import("@/components/home/MarketOverview").then(m => ({ default: m.MarketOverview })));
 const TrendingSearches = lazy(() => import("@/components/home/TrendingSearches").then(m => ({ default: m.TrendingSearches })));
 const HomepageFAQ = lazy(() => import("@/components/home/HomepageFAQ").then(m => ({ default: m.HomepageFAQ })));
+const MarketCategoriesHub = lazy(() => import("@/components/home/MarketCategoriesHub").then(m => ({ default: m.MarketCategoriesHub })));
+const LiveSignals = lazy(() => import("@/components/home/LiveSignals").then(m => ({ default: m.LiveSignals })));
+const TestimonialsSection = lazy(() => import("@/components/home/TestimonialsSection").then(m => ({ default: m.TestimonialsSection })));
+const NewsletterCTASection = lazy(() => import("@/components/home/NewsletterCTASection").then(m => ({ default: m.NewsletterCTASection })));
 
 const SectionFallback = () => (
   <div className="container mx-auto px-4 py-8">
@@ -112,6 +116,7 @@ const Index = () => {
           <QuickStats />
         </Suspense>
 
+
         {/* 3. Social Proof - animated platform metrics */}
         <Suspense fallback={<SectionFallback />}>
           <SocialProofBar />
@@ -142,6 +147,13 @@ const Index = () => {
           </Suspense>
         </ViewportSection>
 
+        {/* 8.5 Live Signals - high conviction trade setups */}
+        <ViewportSection fallback={<SectionFallback />}>
+          <Suspense fallback={<SectionFallback />}>
+            <LiveSignals />
+          </Suspense>
+        </ViewportSection>
+
         {/* 9. Platform features grid */}
         <Suspense fallback={<SectionFallback />}>
           <FeaturesSection />
@@ -149,6 +161,13 @@ const Index = () => {
         
         {/* In-article ad */}
         <InArticleAd />
+        
+        {/* 9b. Testimonials - social proof */}
+        <ViewportSection fallback={<SectionFallback />}>
+          <Suspense fallback={<SectionFallback />}>
+            <TestimonialsSection />
+          </Suspense>
+        </ViewportSection>
         
         {/* 10. Trending Searches + Platform Stats */}
         <ViewportSection fallback={<SectionFallback />}>
@@ -173,6 +192,20 @@ const Index = () => {
         <ViewportSection fallback={<SectionFallback />}>
           <Suspense fallback={<SectionFallback />}>
             <HomepageFAQ />
+          </Suspense>
+        </ViewportSection>
+        
+        {/* 14. SEO Internal Linking Hub */}
+        <ViewportSection fallback={<SectionFallback />}>
+          <Suspense fallback={<SectionFallback />}>
+            <MarketCategoriesHub />
+          </Suspense>
+        </ViewportSection>
+        
+        {/* 15. Final Conversion CTA */}
+        <ViewportSection fallback={<SectionFallback />}>
+          <Suspense fallback={<SectionFallback />}>
+            <NewsletterCTASection />
           </Suspense>
         </ViewportSection>
       </main>

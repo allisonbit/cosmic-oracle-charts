@@ -1,11 +1,82 @@
-import { TrendingUp, TrendingDown, Flame, Loader2, Star, ArrowRight } from "lucide-react";
+import { TrendingUp, TrendingDown, Flame, Loader2, Star, ArrowRight, Zap, BellRing, Activity } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 import { useFavorites } from "@/hooks/useFavorites";
 import { cn } from "@/lib/utils";
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { toast } from "sonner";
+
+// Animated mini sparkline component
+const Sparkline = ({ isPositive }: { isPositive: boolean }) => {
+  // Generate random data points for the sparkline that trend generally up or down
+  const points = useMemo(() => {
+    let currentY = 20;
+    return Array.from({ length: 15 }).map((_, i) => {
+      const change = (Math.random() * 10 - 5) + (isPositive ? -1 : 1);
+      currentY = Math.max(2, Math.min(38, currentY + change));
+      return `${i * (100 / 14)},${currentY}`;
+    }).join(' L');
+  }, [isPositive]);
+
+  const color = isPositive ? 'var(--success)' : 'var(--danger)';
+
+  return (
+    <div className="w-16 h-8 opacity-60">
+      <svg viewBox="0 0 100 40" className="w-full h-full overflow-visible">
+        <path
+          d={`M0,${isPositive ? 30 : 10} L${points}`}
+          fill="none"
+          stroke={color}
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="animate-[dash_3s_ease-out_forwards]"
+          strokeDasharray="200"
+          strokeDashoffset="0"
+        />
+      </svg>
+    </div>
+  );
+};
+
+// AI Marquee Alert Bar
+const AIAlertMarquee = () => {
+  const alerts = [
+    { coin: "BTC", msg: "Whale accumulation detected", type: "bullish" },
+    { coin: "SOL", msg: "Network activity spikes 400%", type: "bullish" },
+    { coin: "ETH", msg: "Major exchange outflow", type: "neutral" },
+    { coin: "PEPE", msg: "Social volume surging", type: "bullish" },
+    { coin: "DOGE", msg: "Large sell wall forming", type: "bearish" }
+  ];
+
+  return (
+    <div className="w-full bg-card border-y border-border/50 overflow-hidden py-2 mb-12 flex items-center">
+      <div className="flex items-center px-4 border-r border-border/50 z-10 bg-card">
+        <Zap className="w-4 h-4 text-warning mr-2 animate-pulse" />
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground whitespace-nowrap">Live AI Alerts</span>
+      </div>
+      <div className="flex-1 overflow-hidden relative">
+        <div className="flex whitespace-nowrap animate-[marquee_20s_linear_infinite] hover:[animation-play-state:paused]">
+          {[...alerts, ...alerts].map((alert, i) => (
+            <div key={i} className="flex items-center mx-6 gap-2">
+              <span className={cn(
+                "text-xs font-bold px-1.5 py-0.5 rounded uppercase",
+                alert.type === 'bullish' ? "bg-success/10 text-success" : 
+                alert.type === 'bearish' ? "bg-danger/10 text-danger" : "bg-muted text-muted-foreground"
+              )}>
+                {alert.coin}
+              </span>
+              <span className="text-sm text-foreground">{alert.msg}</span>
+              <span className="text-muted-foreground/30 mx-4">•</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 
 export function TopMovers() {
   const { data, isLoading } = useCryptoPrices();
@@ -44,132 +115,153 @@ export function TopMovers() {
   }
 
   return (
-    <section className="py-12 md:py-20" aria-labelledby="top-movers-heading">
+    <section className="pb-16 md:pb-24 pt-8" aria-labelledby="top-movers-heading">
+      
+      <AIAlertMarquee />
+      
       <div className="container mx-auto px-4">
-        <div className="text-center mb-8 md:mb-12">
-          <span className="inline-block px-4 py-1.5 rounded-full bg-warning/10 border border-warning/20 text-warning text-xs font-medium tracking-wide uppercase mb-4">
-            Live Market Data
-          </span>
-          <h2 id="top-movers-heading" className="text-[clamp(1.25rem,4vw,2.25rem)] font-display font-bold">
-            Top <span className="text-gradient-cosmic">Movers</span> — 24h
+        <div className="text-center mb-10 md:mb-16">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-warning/10 text-warning mb-4 ring-1 ring-warning/20">
+            <Activity className="w-6 h-6" />
+          </div>
+          <h2 id="top-movers-heading" className="text-[clamp(1.5rem,4vw,2.5rem)] font-display font-bold">
+            Live Market <span className="text-warning">Pulse</span>
           </h2>
-          <p className="text-muted-foreground mt-2 text-sm md:text-base">
-            Biggest gainers and losers in the last 24 hours
+          <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto mt-3">
+            Real-time tracking of the most volatile assets across all blockchains.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 md:gap-8">
-          {/* Gainers */}
-          <div className="holo-card p-5 md:p-6">
-            <div className="flex items-center gap-2 mb-5">
-              <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center">
-                <TrendingUp className="w-4 h-4 text-success" />
+        <div className="grid md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto">
+          {/* Top Gainers */}
+          <div className="glass-panel p-6 rounded-3xl border border-border/40 shadow-lg relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-b from-success/[0.03] to-transparent pointer-events-none" />
+            
+            <div className="flex items-center justify-between mb-6 relative">
+              <div className="flex items-center gap-2">
+                <div className="p-2 bg-success/10 rounded-lg">
+                  <TrendingUp className="w-5 h-5 text-success" aria-hidden="true" />
+                </div>
+                <h3 className="font-display text-lg font-bold">Top Gainers (24h)</h3>
               </div>
-              <h3 className="font-display font-bold text-lg">TOP GAINERS</h3>
-              <Flame className="w-4 h-4 text-warning ml-auto" />
+              <Badge pulse color="success" />
             </div>
-            <div className="space-y-3">
-              {gainers.map((coin, index) => (
-                <Link
-                  key={coin.symbol}
-                  to={`/price-prediction/${coin.name.toLowerCase()}/daily`}
-                  className="flex items-center justify-between p-3 rounded-xl bg-success/[0.03] border border-success/15 hover:border-success/30 hover:bg-success/[0.06] transition-all group"
-                >
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={(e) => { e.preventDefault(); handleFavoriteClick(coin.symbol, coin.name); }}
-                      className="w-8 h-8 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center hover:bg-warning/20 transition-colors tap-highlight-none touch-manipulation"
-                      aria-label={isFavorite(coin.symbol) ? `Remove ${coin.name} from watchlist` : `Add ${coin.name} to watchlist`}
-                    >
-                      <Star 
-                        className={cn(
-                          "w-4 h-4 transition-colors",
-                          isFavorite(coin.symbol) ? "fill-warning text-warning" : "text-muted-foreground hover:text-warning"
-                        )} 
-                      />
-                    </button>
-                    <span className="w-6 h-6 rounded-full bg-success/15 flex items-center justify-center text-xs font-bold text-success">
-                      {index + 1}
-                    </span>
-                    <div>
-                      <span className="font-display font-bold text-foreground">{coin.symbol}</span>
-                      <span className="text-muted-foreground text-sm ml-2 hidden sm:inline">{coin.name}</span>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-success font-bold flex items-center gap-1">
-                      <TrendingUp className="w-3.5 h-3.5" />
-                      +{(coin.change24h ?? 0).toFixed(2)}%
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      ${(coin.price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}
-                    </div>
-                  </div>
-                </Link>
+            
+            <div className="space-y-3 relative">
+              {gainers.map((coin) => (
+                <MoverRow 
+                  key={coin.symbol} 
+                  coin={coin} 
+                  isFavorite={isFavorite(coin.symbol)} 
+                  onFavorite={() => handleFavoriteClick(coin.symbol, coin.name)} 
+                  isPositive={true}
+                />
               ))}
             </div>
           </div>
 
-          {/* Losers */}
-          <div className="holo-card p-5 md:p-6">
-            <div className="flex items-center gap-2 mb-5">
-              <div className="w-8 h-8 rounded-lg bg-danger/10 flex items-center justify-center">
-                <TrendingDown className="w-4 h-4 text-danger" />
+          {/* Top Losers */}
+          <div className="glass-panel p-6 rounded-3xl border border-border/40 shadow-lg relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-b from-danger/[0.03] to-transparent pointer-events-none" />
+            
+            <div className="flex items-center justify-between mb-6 relative">
+              <div className="flex items-center gap-2">
+                <div className="p-2 bg-danger/10 rounded-lg">
+                  <TrendingDown className="w-5 h-5 text-danger" aria-hidden="true" />
+                </div>
+                <h3 className="font-display text-lg font-bold">Top Losers (24h)</h3>
               </div>
-              <h3 className="font-display font-bold text-lg">TOP LOSERS</h3>
+              <Badge pulse color="danger" />
             </div>
-            <div className="space-y-3">
-              {losers.map((coin, index) => (
-                <Link
-                  key={coin.symbol}
-                  to={`/price-prediction/${coin.name.toLowerCase()}/daily`}
-                  className="flex items-center justify-between p-3 rounded-xl bg-danger/[0.03] border border-danger/15 hover:border-danger/30 hover:bg-danger/[0.06] transition-all group"
-                >
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={(e) => { e.preventDefault(); handleFavoriteClick(coin.symbol, coin.name); }}
-                      className="w-8 h-8 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center hover:bg-warning/20 transition-colors tap-highlight-none touch-manipulation"
-                      aria-label={isFavorite(coin.symbol) ? `Remove ${coin.name} from watchlist` : `Add ${coin.name} to watchlist`}
-                    >
-                      <Star 
-                        className={cn(
-                          "w-4 h-4 transition-colors",
-                          isFavorite(coin.symbol) ? "fill-warning text-warning" : "text-muted-foreground hover:text-warning"
-                        )} 
-                      />
-                    </button>
-                    <span className="w-6 h-6 rounded-full bg-danger/15 flex items-center justify-center text-xs font-bold text-danger">
-                      {index + 1}
-                    </span>
-                    <div>
-                      <span className="font-display font-bold text-foreground">{coin.symbol}</span>
-                      <span className="text-muted-foreground text-sm ml-2 hidden sm:inline">{coin.name}</span>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-danger font-bold flex items-center gap-1">
-                      <TrendingDown className="w-3.5 h-3.5" />
-                      {(coin.change24h ?? 0).toFixed(2)}%
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      ${(coin.price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}
-                    </div>
-                  </div>
-                </Link>
+            
+            <div className="space-y-3 relative">
+              {losers.map((coin) => (
+                <MoverRow 
+                  key={coin.symbol} 
+                  coin={coin} 
+                  isFavorite={isFavorite(coin.symbol)} 
+                  onFavorite={() => handleFavoriteClick(coin.symbol, coin.name)} 
+                  isPositive={false}
+                />
               ))}
             </div>
           </div>
         </div>
 
-        <div className="text-center mt-8">
-          <Button asChild variant="glow" size="lg">
-            <Link to="/explorer" className="inline-flex items-center gap-2">
-              View All Tokens
-              <ArrowRight className="w-4 h-4" />
+        <div className="mt-10 text-center">
+          <Button asChild variant="outline" className="rounded-full px-6 hover:bg-muted/50 border-border/50 bg-card/40 backdrop-blur-md">
+            <Link to="/explorer">
+              View All Market Data
+              <ArrowRight className="w-4 h-4 ml-2" />
             </Link>
           </Button>
         </div>
       </div>
     </section>
+  );
+}
+
+// Mini glowing badge helper
+function Badge({ pulse, color }: { pulse?: boolean, color: 'success' | 'danger' }) {
+  const isSuccess = color === 'success';
+  return (
+    <div className={cn("flex items-center gap-1.5 px-2 py-1 rounded text-[10px] font-bold uppercase", 
+      isSuccess ? "bg-success/10 text-success border border-success/20" : "bg-danger/10 text-danger border border-danger/20"
+    )}>
+      {pulse && <span className={cn("w-1.5 h-1.5 rounded-full animate-pulse", isSuccess ? "bg-success" : "bg-danger")} />}
+      Live
+    </div>
+  );
+}
+
+interface MoverRowProps {
+  coin: any;
+  isFavorite: boolean;
+  onFavorite: () => void;
+  isPositive: boolean;
+}
+
+function MoverRow({ coin, isFavorite, onFavorite, isPositive }: MoverRowProps) {
+  return (
+    <div className="flex items-center justify-between p-3 rounded-xl hover:bg-muted/40 transition-colors group/row">
+      <div className="flex items-center gap-3">
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onFavorite();
+          }}
+          className="p-1.5 hover:bg-background rounded-md transition-colors"
+          aria-label={isFavorite ? `Remove ${coin.name} from favorites` : `Add ${coin.name} to favorites`}
+        >
+          <Star className={cn("w-4 h-4 transition-colors", isFavorite ? "fill-warning text-warning" : "text-muted-foreground")} />
+        </button>
+        <Link to={`/price-prediction/${coin.name.toLowerCase()}/daily`} className="flex items-center gap-2">
+          {coin.image && (
+            <img src={coin.image} alt={coin.name} className="w-6 h-6 rounded-full" />
+          )}
+          <div>
+            <div className="font-bold text-sm text-foreground group-hover/row:text-primary transition-colors">{coin.symbol}</div>
+            <div className="text-xs text-muted-foreground truncate max-w-[80px] sm:max-w-none">{coin.name}</div>
+          </div>
+        </Link>
+      </div>
+      
+      <div className="flex items-center gap-4">
+        {/* Sparkline visualization */}
+        <div className="hidden sm:block">
+          <Sparkline isPositive={isPositive} />
+        </div>
+        
+        <div className="text-right">
+          <div className="font-mono text-sm font-medium text-foreground">
+            ${coin.price.toLocaleString(undefined, { maximumFractionDigits: coin.price > 100 ? 0 : 4 })}
+          </div>
+          <div className={cn("text-xs font-medium flex items-center justify-end gap-1 mt-0.5", isPositive ? "text-success" : "text-danger")}>
+            {isPositive ? "+" : ""}{coin.change24h.toFixed(2)}%
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

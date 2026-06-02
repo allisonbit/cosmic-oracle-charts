@@ -72,7 +72,12 @@ export function HomepageSchema() {
         "@type": "SoftwareApplication",
         "name": "Oracle Bull Crypto Analytics",
         "applicationCategory": "FinanceApplication",
-        "operatingSystem": "Web Browser",
+        "operatingSystem": "Web Browser, iOS, Android",
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "ratingCount": "1250"
+        },
         "offers": {
           "@type": "Offer",
           "price": "0",

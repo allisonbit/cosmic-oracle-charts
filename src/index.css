@@ -913,3 +913,15 @@ html {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* Marquee animation for scrolling alerts */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Slow pulse for ambient background orbs */
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.08); }
+}

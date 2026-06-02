@@ -1,5 +1,6 @@
-import { Shield, Globe, Zap, Clock } from "lucide-react";
+import { Shield, Globe, Zap, Clock, TrendingUp, Users } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import { cn } from "@/lib/utils";
 
 function useCountUp(target: number, duration = 2000) {
   const [count, setCount] = useState(0);
@@ -40,44 +41,99 @@ function useCountUp(target: number, duration = 2000) {
 }
 
 const metrics = [
-  { icon: Globe, label: "Countries Served", target: 195, suffix: "+", color: "text-primary" },
-  { icon: Shield, label: "Predictions Generated", target: 2400000, suffix: "+", color: "text-success", format: true },
-  { icon: Zap, label: "Data Points / Day", target: 50, suffix: "M+", color: "text-warning" },
-  { icon: Clock, label: "Uptime", target: 99, suffix: ".9%", color: "text-secondary" },
+  {
+    icon: Users,
+    label: "Monthly Traders",
+    target: 100000,
+    suffix: "+",
+    color: "text-primary",
+    glow: "bg-primary/10 border-primary/20",
+    format: (n: number) => n >= 1000 ? `${(n / 1000).toFixed(0)}K` : `${n}`,
+  },
+  {
+    icon: Shield,
+    label: "Predictions Generated",
+    target: 2400000,
+    suffix: "+",
+    color: "text-success",
+    glow: "bg-success/10 border-success/20",
+    format: (n: number) => `${(n / 1000000).toFixed(1)}M`,
+  },
+  {
+    icon: Zap,
+    label: "Data Points / Day",
+    target: 50,
+    suffix: "M+",
+    color: "text-warning",
+    glow: "bg-warning/10 border-warning/20",
+    format: (n: number) => `${n}`,
+  },
+  {
+    icon: Globe,
+    label: "Countries Served",
+    target: 195,
+    suffix: "+",
+    color: "text-secondary",
+    glow: "bg-secondary/10 border-secondary/20",
+    format: (n: number) => `${n}`,
+  },
+  {
+    icon: TrendingUp,
+    label: "Tokens Tracked",
+    target: 18000,
+    suffix: "+",
+    color: "text-chart-4",
+    glow: "bg-chart-4/10 border-chart-4/20",
+    format: (n: number) => n >= 1000 ? `${(n / 1000).toFixed(0)}K` : `${n}`,
+  },
+  {
+    icon: Clock,
+    label: "Uptime",
+    target: 999,
+    suffix: "",
+    color: "text-foreground",
+    glow: "bg-muted/30 border-border/40",
+    format: (n: number) => `${(n / 10).toFixed(1)}%`,
+  },
 ];
 
-function MetricItem({ metric }: { metric: typeof metrics[0] }) {
+function MetricCard({ metric }: { metric: typeof metrics[0] }) {
   const Icon = metric.icon;
   const { count, ref } = useCountUp(metric.target, 2500);
-  const displayValue = metric.format
-    ? `${(count / 1000000).toFixed(1)}M`
-    : (count ?? 0).toLocaleString();
 
   return (
     <div
       ref={ref}
-      className="flex items-center gap-3 p-3 md:p-4 rounded-xl bg-card border border-border/50"
+      className={cn(
+        "group flex flex-col items-center text-center p-6 rounded-2xl border transition-all duration-300 hover:scale-[1.03] hover:shadow-lg",
+        metric.glow
+      )}
     >
-      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-        <Icon className={`w-5 h-5 ${metric.color}`} />
+      <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center mb-4 border", metric.glow)}>
+        <Icon className={cn("w-6 h-6", metric.color)} />
       </div>
-      <div>
-        <div className="text-lg md:text-xl font-bold text-foreground tabular-nums">
-          {displayValue}{metric.suffix}
-        </div>
-        <div className="text-[10px] md:text-xs text-muted-foreground">{metric.label}</div>
+      <div className={cn("text-2xl md:text-3xl font-display font-black tabular-nums mb-1", metric.color)}>
+        {metric.format(count ?? 0)}{metric.suffix}
       </div>
+      <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{metric.label}</div>
     </div>
   );
 }
 
 export function SocialProofBar() {
   return (
-    <section className="py-6 md:py-8 border-b border-border/30 bg-muted/20" aria-label="Platform metrics">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+    <section className="py-16 md:py-20 relative" aria-label="Platform metrics">
+      <div className="absolute inset-0 bg-gradient-to-b from-muted/20 via-transparent to-transparent pointer-events-none" />
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="text-center mb-12">
+          <p className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Platform by the Numbers</p>
+          <h2 className="text-[clamp(1.5rem,3.5vw,2.25rem)] font-display font-bold mt-2">
+            Trusted by Traders <span className="text-gradient-cosmic">Worldwide</span>
+          </h2>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {metrics.map((metric) => (
-            <MetricItem key={metric.label} metric={metric} />
+            <MetricCard key={metric.label} metric={metric} />
           ))}
         </div>
       </div>
