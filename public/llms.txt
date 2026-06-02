@@ -1,0 +1,40 @@
+# Oracle Bull
+
+> Free AI-powered cryptocurrency analytics platform. Real-time price forecasts, whale tracking, sentiment analysis, on-chain intelligence, and market data for Bitcoin, Ethereum, Solana, and 1000+ tokens across all major blockchains.
+
+Oracle Bull provides institutional-grade crypto market intelligence powered by AI. The platform aggregates on-chain data, exchange feeds, social sentiment, and whale movements to deliver real-time signals, multi-horizon price predictions, and market narratives — all free, ad-supported, with wallet-only authentication.
+
+Core capabilities: AI price predictions (Gemini-powered), whale flow tracking, multi-chain analytics, sentiment fusion (Twitter, Reddit, news), token strength scoring, and universal in-app trading via 0x and Li.Fi.
+
+## Core Pages
+- [Home](https://oraclebull.com/): Live crypto market dashboard, AI signals, top movers
+- [Dashboard](https://oraclebull.com/dashboard): High-density command center with 15+ widgets
+- [Prediction Hub](https://oraclebull.com/predictions): AI price forecasts for 1000+ tokens
+- [Token Explorer](https://oraclebull.com/explorer): DexScreener-style multi-chain token discovery
+- [Sentiment](https://oraclebull.com/sentiment): Social and news sentiment intelligence
+- [Strength Meter](https://oraclebull.com/strength-meter): 7-factor token strength scoring engine
+- [Crypto Factory](https://oraclebull.com/factory): Live market aggregation and sector narratives
+- [Scanner](https://oraclebull.com/scanner): Real-time token scanner with strength filters
+
+## Analysis & Tools
+- [Bitcoin Prediction](https://oraclebull.com/price-prediction/bitcoin/daily): AI price forecast for BTC
+- [Ethereum Prediction](https://oraclebull.com/price-prediction/ethereum/daily): AI price forecast for ETH
+- [Solana Prediction](https://oraclebull.com/price-prediction/solana/daily): AI price forecast for SOL
+- [Bitcoin Market](https://oraclebull.com/market/bitcoin): BTC live market intelligence
+- [Ethereum Market](https://oraclebull.com/market/ethereum): ETH live market intelligence
+- [Trade](https://oraclebull.com/trade): Universal in-app trading across chains
+
+## Education & Content
+- [Learn](https://oraclebull.com/learn): Crypto education hub with guides and tutorials
+- [Insights](https://oraclebull.com/insights): AI-generated market analysis and articles
+- [About](https://oraclebull.com/about): Platform mission, methodology, and team
+
+## Trust & Legal
+- [Privacy Policy](https://oraclebull.com/privacy-policy): How we handle data
+- [Terms](https://oraclebull.com/terms): Terms of service
+- [Risk Disclaimer](https://oraclebull.com/risk-disclaimer): Not financial advice — risk disclosure
+- [Contact](https://oraclebull.com/contact): Support and inquiries
+
+## Optional
+- [Sitemap](https://oraclebull.com/sitemap): Full HTML sitemap of all pages
+- [XML Sitemap](https://oraclebull.com/sitemap.xml): Machine-readable sitemap for crawlers
