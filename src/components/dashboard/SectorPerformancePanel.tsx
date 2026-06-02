@@ -13,7 +13,7 @@ interface Sector {
 
 export function SectorPerformancePanel() {
   const { data } = useMarketData();
-  const topCoins = data?.topCoins || [];
+  const topCoins = useMemo(() => data?.topCoins || [], [data?.topCoins]);
 
   const sectors = useMemo((): Sector[] => {
     const avgChange = topCoins.reduce((s, c) => s + c.change24h, 0) / (topCoins.length || 1);

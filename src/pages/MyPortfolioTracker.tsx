@@ -133,6 +133,7 @@ function TrackerContent() {
       if (sortBy === 'pnl_pct') return Math.abs(b.pnlPct) - Math.abs(a.pnlPct);
       return b.currentValue - a.currentValue;
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [holdings, priceData, sortBy]);
 
   const totalInvested = enriched.reduce((s, h) => s + h.invested, 0);

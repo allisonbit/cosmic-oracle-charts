@@ -60,7 +60,7 @@ export function PredictionLeaderboard() {
         const uniqueCoinIds = [...new Set(expiredPredictions.map(p => p.coin_id))];
         
         // Fetch real current prices from CoinGecko for accuracy verification
-        let realPrices: Record<string, number> = {};
+        const realPrices: Record<string, number> = {};
         if (uniqueCoinIds.length > 0) {
           try {
             const ids = uniqueCoinIds.slice(0, 50).join(',');

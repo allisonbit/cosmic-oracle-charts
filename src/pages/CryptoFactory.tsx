@@ -76,7 +76,7 @@ export default function CryptoFactory() {
   return (
     <Layout>
       <SEO title="Crypto Factory – Real-Time Market Intelligence" description="Live market events, trending narratives, on-chain flows, and crypto news aggregated from 50+ sources. Your central intelligence hub." />
-      <Helmet><link rel="canonical" href="https://cosmic-oracle-charts.lovable.app/factory" /></Helmet>
+      <Helmet><link rel="canonical" href="https://oraclebull.com/factory" /></Helmet>
       <CryptoFactorySchema />
 
       <div className="min-h-screen cosmic-bg">

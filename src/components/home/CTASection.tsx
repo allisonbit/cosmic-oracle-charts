@@ -30,7 +30,7 @@ const tabs = [
     icon: Wallet,
     title: "Track My Portfolio",
     buttonText: "Start Tracking",
-    link: "/portfolio",
+    link: "/scanner",
     accent: "text-primary",
     accentBg: "bg-primary/15 border-primary/30",
     description: "Add your holdings and watch your portfolio value, risk score, and allocation update in real-time.",

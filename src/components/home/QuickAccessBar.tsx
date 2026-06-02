@@ -39,7 +39,7 @@ const quickLinks = [
   },
   {
     label: "Portfolio",
-    href: "/portfolio",
+    href: "/scanner",
     icon: <Wallet className="w-3.5 h-3.5" />,
     bgColor: "bg-success/20",
     textColor: "text-success",

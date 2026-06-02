@@ -14,7 +14,7 @@ function formatNumber(num: number): string {
 export function GlobalMetricsSummary() {
   const { data } = useMarketData();
   const global = data?.global;
-  const topCoins = data?.topCoins || [];
+  const topCoins = useMemo(() => data?.topCoins || [], [data?.topCoins]);
 
   const metrics = useMemo(() => {
     if (!global) return null;

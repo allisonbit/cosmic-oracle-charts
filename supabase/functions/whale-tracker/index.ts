@@ -296,24 +296,33 @@ function generateMockTransactions(chain: string): WhaleTransaction[] {
   const assets = ['ETH', 'USDT', 'USDC', 'WBTC', 'LINK'];
   const types: ('buy' | 'sell' | 'transfer')[] = ['buy', 'sell', 'transfer'];
   const exchanges = ['Binance', 'Coinbase', 'Kraken', 'OKX', 'Gemini'];
-  
+  // Seed by minute so data is stable within each 60s window
+  const seed = Math.floor(Date.now() / 60000);
+  const sr = (n: number) => { let x = Math.sin(seed * 9301 + n * 49297 + 233) * 1e9; return x - Math.floor(x); };
+
   return Array.from({ length: 8 }, (_, i) => {
-    const asset = assets[Math.floor(Math.random() * assets.length)];
-    const type = types[Math.floor(Math.random() * types.length)];
+    const asset = assets[Math.floor(sr(i * 3) * assets.length)];
+    const type = types[Math.floor(sr(i * 7 + 1) * types.length)];
     const price = tokenPrices[asset] || 1;
-    const amount = (50000 + Math.random() * 500000) / price;
+    const amount = (50000 + sr(i * 5 + 2) * 500000) / price;
     const value = amount * price;
-    
+    const exIdx = Math.floor(sr(i * 11 + 3) * exchanges.length);
+    const exIdx2 = Math.floor(sr(i * 13 + 4) * exchanges.length);
+    const addrA = (seed * (i + 1) * 0x3f7a).toString(16).slice(0, 6);
+    const addrB = (seed * (i + 2) * 0x1c9d).toString(16).slice(0, 4);
+    const addrC = (seed * (i + 3) * 0x8b2e).toString(16).slice(0, 6);
+    const addrD = (seed * (i + 4) * 0x5a1f).toString(16).slice(0, 4);
+
     return {
-      id: `mock-${Date.now()}-${i}`,
+      id: `mock-${seed}-${i}`,
       type,
       asset,
       amount,
       value,
-      from: type === 'buy' ? exchanges[Math.floor(Math.random() * exchanges.length)] : `0x${Math.random().toString(16).slice(2, 8)}...`,
-      to: type === 'sell' ? exchanges[Math.floor(Math.random() * exchanges.length)] : `0x${Math.random().toString(16).slice(2, 8)}...`,
-      hash: `0x${Math.random().toString(16).slice(2)}`,
-      timestamp: Date.now() - Math.random() * 3600000,
+      from: type === 'buy' ? exchanges[exIdx] : `0x${addrA}...${addrB}`,
+      to: type === 'sell' ? exchanges[exIdx2] : `0x${addrC}...${addrD}`,
+      hash: `0x${(seed * (i + 5) * 0x2f3c9a1b).toString(16)}`,
+      timestamp: Date.now() - sr(i * 17) * 3600000,
       chain,
       impact: value >= 500000 ? 'high' : value >= 100000 ? 'medium' : 'low' as 'high' | 'medium' | 'low',
     };

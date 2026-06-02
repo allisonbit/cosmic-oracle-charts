@@ -107,7 +107,7 @@ serve(async (req) => {
     // Detect if it's a Solana address
     const isSolana = address.match(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/) && !address.startsWith('0x');
     
-    let holdings: TokenHolding[] = [];
+    const holdings: TokenHolding[] = [];
     let nativeBalance = 0;
     let nativePrice = 0;
     let nativeChange24h = 0;

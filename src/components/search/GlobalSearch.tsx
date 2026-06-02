@@ -35,7 +35,7 @@ const staticSearchItems: SearchResult[] = [
     type: 'tool',
     title: 'Wallet Scanner',
     description: 'Analyze any wallet address',
-    url: '/portfolio',
+    url: '/scanner',
     icon: <Wallet className="w-4 h-4 text-success" />
   },
   {

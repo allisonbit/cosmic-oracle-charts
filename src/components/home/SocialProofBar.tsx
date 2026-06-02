@@ -46,36 +46,39 @@ const metrics = [
   { icon: Clock, label: "Uptime", target: 99, suffix: ".9%", color: "text-secondary" },
 ];
 
+function MetricItem({ metric }: { metric: typeof metrics[0] }) {
+  const Icon = metric.icon;
+  const { count, ref } = useCountUp(metric.target, 2500);
+  const displayValue = metric.format
+    ? `${(count / 1000000).toFixed(1)}M`
+    : count.toLocaleString();
+
+  return (
+    <div
+      ref={ref}
+      className="flex items-center gap-3 p-3 md:p-4 rounded-xl bg-card border border-border/50"
+    >
+      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+        <Icon className={`w-5 h-5 ${metric.color}`} />
+      </div>
+      <div>
+        <div className="text-lg md:text-xl font-bold text-foreground tabular-nums">
+          {displayValue}{metric.suffix}
+        </div>
+        <div className="text-[10px] md:text-xs text-muted-foreground">{metric.label}</div>
+      </div>
+    </div>
+  );
+}
+
 export function SocialProofBar() {
   return (
     <section className="py-6 md:py-8 border-b border-border/30 bg-muted/20" aria-label="Platform metrics">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          {metrics.map((metric) => {
-            const Icon = metric.icon;
-            const { count, ref } = useCountUp(metric.target, 2500);
-            const displayValue = metric.format
-              ? `${(count / 1000000).toFixed(1)}M`
-              : count.toLocaleString();
-
-            return (
-              <div
-                key={metric.label}
-                ref={ref}
-                className="flex items-center gap-3 p-3 md:p-4 rounded-xl bg-card border border-border/50"
-              >
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                  <Icon className={`w-5 h-5 ${metric.color}`} />
-                </div>
-                <div>
-                  <div className="text-lg md:text-xl font-bold text-foreground tabular-nums">
-                    {displayValue}{metric.suffix}
-                  </div>
-                  <div className="text-[10px] md:text-xs text-muted-foreground">{metric.label}</div>
-                </div>
-              </div>
-            );
-          })}
+          {metrics.map((metric) => (
+            <MetricItem key={metric.label} metric={metric} />
+          ))}
         </div>
       </div>
     </section>

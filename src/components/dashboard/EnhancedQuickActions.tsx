@@ -14,7 +14,7 @@ const primaryActions = [
     icon: Wallet, 
     label: "Wallet Scanner", 
     shortLabel: "Scanner", 
-    path: "/portfolio", 
+    path: "/scanner", 
     color: "text-primary",
     description: "AI-powered wallet analysis for EVM & Solana",
     features: ["Token holdings analysis", "Pump potential predictions", "Risk classification", "Trading recommendations"]

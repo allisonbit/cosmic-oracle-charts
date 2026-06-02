@@ -80,7 +80,7 @@ export interface ChainDataResponse {
   timestamp: number;
 }
 
-// Fallback data generator
+// Deterministic fallback - seeded per 30s window so data is stable, not random on every render
 function generateFallbackData(chainId: string): ChainDataResponse {
   const chainDefaults: Record<string, { marketCap: number; volume: number; tokens: string[] }> = {
     ethereum: { marketCap: 440e9, volume: 18e9, tokens: ["ETH", "LINK", "UNI", "AAVE", "LDO", "MKR", "CRV", "COMP"] },
@@ -93,48 +93,51 @@ function generateFallbackData(chainId: string): ChainDataResponse {
   };
 
   const defaults = chainDefaults[chainId] || chainDefaults.ethereum;
+  // Seed by 30s window - stable within window, fresh every 30s
+  const seed = Math.floor(Date.now() / 30000);
+  const sr = (n: number) => { const x = Math.sin(seed * 127 + n * 311) * 1e8; return x - Math.floor(x); };
 
   return {
     overview: {
-      marketCap: defaults.marketCap * (1 + (Math.random() - 0.5) * 0.02),
-      volume24h: defaults.volume * (1 + (Math.random() - 0.5) * 0.1),
-      transactions24h: Math.floor(1000000 + Math.random() * 500000),
-      gasFees: Math.random() * 50,
-      tps: Math.floor(50 + Math.random() * 100),
-      activeWallets: Math.floor(100000 + Math.random() * 200000),
+      marketCap: defaults.marketCap,
+      volume24h: defaults.volume,
+      transactions24h: Math.floor(1000000 + sr(1) * 500000),
+      gasFees: 15 + sr(2) * 30,
+      tps: Math.floor(50 + sr(3) * 100),
+      activeWallets: Math.floor(100000 + sr(4) * 200000),
       defiTvl: defaults.volume * 3,
-      priceChange24h: (Math.random() - 0.5) * 10,
+      priceChange24h: (sr(5) - 0.5) * 8,
     },
     whaleActivity: Array.from({ length: 20 }, (_, i) => ({
-      type: ["buy", "sell", "transfer"][Math.floor(Math.random() * 3)] as "buy" | "sell" | "transfer",
-      amount: Math.random() * 10000,
-      token: defaults.tokens[Math.floor(Math.random() * defaults.tokens.length)],
-      timestamp: Date.now() - Math.random() * 3600000,
-      value: Math.random() * 5000000,
-      wallet: `0x${Math.random().toString(16).slice(2, 10)}...${Math.random().toString(16).slice(2, 6)}`,
+      type: (["buy", "sell", "transfer"] as const)[Math.floor(sr(i * 3 + 6) * 3)],
+      amount: sr(i * 5 + 7) * 10000,
+      token: defaults.tokens[Math.floor(sr(i * 7 + 8) * defaults.tokens.length)],
+      timestamp: Date.now() - sr(i * 11 + 9) * 3600000,
+      value: sr(i * 13 + 10) * 2000000,
+      wallet: `0x${(seed * (i + 1) * 0x3f7a).toString(16).slice(0, 6)}...${(seed * i).toString(16).slice(-4)}`,
     })),
-    tokenHeat: defaults.tokens.map((symbol) => ({
+    tokenHeat: defaults.tokens.map((symbol, i) => ({
       symbol,
       name: symbol,
-      momentum: Math.random() * 100,
-      volumeSpike: Math.random() * 100,
-      volatility: Math.random() * 100,
-      socialScore: Math.random() * 100,
-      liquidityChange: (Math.random() - 0.5) * 40,
-      price: Math.random() * 1000,
-      change24h: (Math.random() - 0.5) * 20,
+      momentum: sr(i * 17 + 11) * 100,
+      volumeSpike: sr(i * 19 + 12) * 100,
+      volatility: sr(i * 23 + 13) * 100,
+      socialScore: sr(i * 29 + 14) * 100,
+      liquidityChange: (sr(i * 31 + 15) - 0.5) * 40,
+      price: sr(i * 37 + 16) * 1000,
+      change24h: (sr(i * 41 + 17) - 0.5) * 20,
     })),
     smartMoneyFlow: {
-      inflow: Math.random() * 100e6,
-      outflow: Math.random() * 80e6,
-      netFlow: (Math.random() - 0.3) * 30e6,
-      topSwaps: Array.from({ length: 5 }, () => ({
-        from: defaults.tokens[Math.floor(Math.random() * 3)],
-        to: defaults.tokens[Math.floor(Math.random() * 5) + 3] || defaults.tokens[0],
-        amount: Math.random() * 1e6,
+      inflow: defaults.volume * 0.08,
+      outflow: defaults.volume * 0.06,
+      netFlow: defaults.volume * 0.02,
+      topSwaps: Array.from({ length: 5 }, (_, i) => ({
+        from: defaults.tokens[i % 3],
+        to: defaults.tokens[(i + 2) % defaults.tokens.length],
+        amount: defaults.volume * 0.005,
       })),
-      liquidityAdded: Math.random() * 50e6,
-      liquidityRemoved: Math.random() * 30e6,
+      liquidityAdded: defaults.volume * 0.07,
+      liquidityRemoved: defaults.volume * 0.05,
     },
     timestamp: Date.now(),
   };

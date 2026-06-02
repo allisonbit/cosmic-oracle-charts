@@ -95,7 +95,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/portfolio" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                <Link to="/scanner" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
                   Wallet Scanner
                 </Link>
               </li>

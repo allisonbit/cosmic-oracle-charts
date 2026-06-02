@@ -323,7 +323,7 @@ export default function Scanner() {
         description="Scan any cryptocurrency in the world. Real-time strength scoring, volume analysis, and market intelligence for every token across all chains."
       />
       <Helmet>
-        <link rel="canonical" href="https://cosmic-oracle-charts.lovable.app/scanner" />
+        <link rel="canonical" href="https://oraclebull.com/scanner" />
       </Helmet>
 
       <div className="min-h-screen cosmic-bg">

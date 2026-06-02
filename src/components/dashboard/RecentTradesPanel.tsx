@@ -16,7 +16,7 @@ interface Trade {
 
 export function RecentTradesPanel() {
   const { data } = useMarketData();
-  const topCoins = data?.topCoins || [];
+  const topCoins = useMemo(() => data?.topCoins || [], [data?.topCoins]);
   const [trades, setTrades] = useState<Trade[]>([]);
 
   // Simulate live trades from market data

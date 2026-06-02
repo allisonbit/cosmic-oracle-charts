@@ -121,17 +121,19 @@ export function useStrengthMeter(timeframe: string = '24h') {
             symbol: chain.symbol,
             type: 'chain' as const,
             logo: chain.logo,
-            priceChange1h: matchingCoin?.price_change_percentage_1h_in_currency || Math.random() * 4 - 2,
-            priceChange24h: matchingCoin?.price_change_percentage_24h || Math.random() * 10 - 5,
-            priceChange7d: matchingCoin?.price_change_percentage_7d_in_currency || Math.random() * 20 - 10,
-            volumeChange: Math.random() * 30 - 15,
-            volatility: Math.random() * 40 + 10,
-            dominanceChange: Math.random() * 2 - 1,
-            sentimentScore: 40 + Math.random() * 40,
-            trendConsistency: 40 + Math.random() * 40,
-            momentum: Math.random() * 20 - 10,
-            relativeStrengthVsBTC: Math.random() * 10 - 5,
-            relativeStrengthVsETH: Math.random() * 10 - 5,
+            priceChange1h: matchingCoin?.price_change_percentage_1h_in_currency || 0,
+            priceChange24h: matchingCoin?.price_change_percentage_24h || 0,
+            priceChange7d: matchingCoin?.price_change_percentage_7d_in_currency || 0,
+            volumeChange: matchingCoin
+              ? ((matchingCoin.total_volume || 0) / (matchingCoin.market_cap || 1)) * 100 - 5
+              : 0,
+            volatility: Math.abs(matchingCoin?.price_change_percentage_24h || 0) * 2,
+            dominanceChange: (matchingCoin?.market_cap_change_percentage_24h || 0) / 10,
+            sentimentScore: Math.min(100, Math.max(0, 50 + (matchingCoin?.price_change_percentage_24h || 0) * 1.5)),
+            trendConsistency: matchingCoin ? calculateTrendConsistency(matchingCoin) : 50,
+            momentum: (matchingCoin?.price_change_percentage_24h || 0) + (matchingCoin?.price_change_percentage_7d_in_currency || 0) / 2,
+            relativeStrengthVsBTC: (matchingCoin?.price_change_percentage_24h || 0) - (coins[0]?.price_change_percentage_24h || 0),
+            relativeStrengthVsETH: (matchingCoin?.price_change_percentage_24h || 0) - (coins[1]?.price_change_percentage_24h || 0),
           };
 
           return {
@@ -167,10 +169,12 @@ function calculateTrendConsistency(coin: any): number {
     coin.price_change_percentage_24h || 0,
     (coin.price_change_percentage_7d_in_currency || 0) / 7,
   ];
-  
+
   const allPositive = changes.every(c => c > 0);
   const allNegative = changes.every(c => c < 0);
-  
-  if (allPositive || allNegative) return 80 + Math.random() * 20;
-  return 30 + Math.random() * 40;
+  const avgMagnitude = changes.reduce((s, c) => s + Math.abs(c), 0) / changes.length;
+
+  // Stronger & more consistent trend = higher score. No randomness.
+  if (allPositive || allNegative) return Math.min(100, 75 + avgMagnitude * 2);
+  return Math.min(70, Math.max(25, 40 + avgMagnitude));
 }

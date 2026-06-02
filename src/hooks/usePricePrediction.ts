@@ -67,34 +67,29 @@ export function usePricePrediction(
   return useQuery<PredictionData>({
     queryKey: ['price-prediction', coinId, timeframe],
     queryFn: async () => {
-      try {
-        const { data, error } = await supabase.functions.invoke('price-prediction', {
-          body: { coinId, symbol, timeframe }
-        });
-        
-        if (error) {
-          // Check for specific error codes
-          const errMsg = error.message || '';
-          if (errMsg.includes('402') || errMsg.includes('credits')) {
-            toast.error("AI credits exhausted — using algorithmic analysis", { id: "ai-credits" });
-          } else if (errMsg.includes('429') || errMsg.includes('rate limit')) {
-            toast.warning("Rate limited — retrying shortly", { id: "rate-limit" });
-          }
-          throw new Error(errMsg || 'Failed to fetch prediction');
+      const { data, error } = await supabase.functions.invoke('price-prediction', {
+        body: { coinId, symbol, timeframe }
+      });
+      
+      if (error) {
+        // Check for specific error codes
+        const errMsg = error.message || '';
+        if (errMsg.includes('402') || errMsg.includes('credits')) {
+          toast.error("AI credits exhausted — using algorithmic analysis", { id: "ai-credits" });
+        } else if (errMsg.includes('429') || errMsg.includes('rate limit')) {
+          toast.warning("Rate limited — retrying shortly", { id: "rate-limit" });
         }
-        
-        if (!data) throw new Error('No prediction data received');
-        
-        // Validate essential fields
-        if (!data.currentPrice || data.currentPrice <= 0) {
-          throw new Error('Invalid price data received');
-        }
-        
-        return data;
-      } catch (err) {
-        // Re-throw with context
-        throw err;
+        throw new Error(errMsg || 'Failed to fetch prediction');
       }
+      
+      if (!data) throw new Error('No prediction data received');
+      
+      // Validate essential fields
+      if (!data.currentPrice || data.currentPrice <= 0) {
+        throw new Error('Invalid price data received');
+      }
+      
+      return data;
     },
     enabled: enabled && !!coinId && coinId.length > 0,
     staleTime: timeframe === 'daily' ? 3 * 60_000 : timeframe === 'weekly' ? 15 * 60_000 : 30 * 60_000,

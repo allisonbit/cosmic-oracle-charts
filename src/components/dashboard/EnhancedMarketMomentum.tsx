@@ -11,7 +11,7 @@ export function EnhancedMarketMomentum() {
   const { data, isLoading } = useMarketData();
   const [expandedSector, setExpandedSector] = useState<string | null>(null);
 
-  const topCoins = data?.topCoins?.slice(0, 20) || [];
+  const topCoins = useMemo(() => data?.topCoins?.slice(0, 20) || [], [data?.topCoins]);
 
   const momentum = useMemo(() => {
     const bullish = topCoins.filter(c => c.change24h > 2).length;

@@ -59,19 +59,19 @@ serve(async (req) => {
     // Parse global data
     let globalData: any = {};
     if (globalRes) {
-      try { const g = await globalRes.json(); globalData = g.data || {}; } catch {}
+      try { const g = await globalRes.json(); globalData = g.data || {}; } catch { /* ignore */ }
     }
 
     // Parse trending
     let trending: any[] = [];
     if (trendingRes) {
-      try { const t = await trendingRes.json(); trending = t.coins || []; } catch {}
+      try { const t = await trendingRes.json(); trending = t.coins || []; } catch { /* ignore */ }
     }
 
     // Parse top coins for real market events
     let topCoins: any[] = [];
     if (topCoinsRes) {
-      try { topCoins = await topCoinsRes.json(); if (!Array.isArray(topCoins)) topCoins = []; } catch {}
+      try { topCoins = await topCoinsRes.json(); if (!Array.isArray(topCoins)) topCoins = []; } catch { /* ignore */ }
     }
 
     // Parse Fear & Greed
@@ -82,14 +82,14 @@ serve(async (req) => {
         if (fg.data?.[0]) {
           fearGreed = { value: parseInt(fg.data[0].value), classification: fg.data[0].value_classification };
         }
-      } catch {}
+      } catch { /* ignore */ }
     }
 
     // Collect and deduplicate news
-    let allNews: any[] = [];
+    const allNews: any[] = [];
     for (const res of [newsPopularRes, newsLatestRes, newsTrading]) {
       if (res) {
-        try { const d = await res.json(); if (d.Data) allNews.push(...d.Data); } catch {}
+        try { const d = await res.json(); if (d.Data) allNews.push(...d.Data); } catch { /* ignore */ }
       }
     }
     const seenTitles = new Set();

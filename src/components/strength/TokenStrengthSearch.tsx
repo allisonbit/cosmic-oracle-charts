@@ -61,7 +61,7 @@ export function TokenStrengthSearch({ allAssets }: TokenStrengthSearchProps) {
       // Check if it looks like a contract address
       const isAddress = searchQuery.startsWith('0x') && searchQuery.length >= 10;
       
-      let searchUrl = `https://api.coingecko.com/api/v3/search?query=${encodeURIComponent(searchQuery)}`;
+      const searchUrl = `https://api.coingecko.com/api/v3/search?query=${encodeURIComponent(searchQuery)}`;
       
       const response = await fetch(searchUrl);
       if (!response.ok) throw new Error('Search failed');
@@ -128,6 +128,7 @@ export function TokenStrengthSearch({ allAssets }: TokenStrengthSearchProps) {
     }, 500);
 
     return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
 
   const allResults = [...localResults, ...apiResults];

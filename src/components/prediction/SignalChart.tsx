@@ -65,7 +65,7 @@ export function SignalChart({ symbol, name, currentPrice, bias, confidence, trad
   }, [currentPrice, bias, timeframe]);
 
   // Calculate trading zones if not provided
-  const zones: TradingZone = tradingZones || useMemo(() => {
+  const generatedZones = useMemo(() => {
     const range = currentPrice * 0.05; // 5% range
     return {
       entryLow: currentPrice * 0.98,
@@ -76,6 +76,8 @@ export function SignalChart({ symbol, name, currentPrice, bias, confidence, trad
       takeProfit3: bias === 'bullish' ? currentPrice * 1.15 : currentPrice * 0.85,
     };
   }, [currentPrice, bias]);
+
+  const zones: TradingZone = tradingZones || generatedZones;
 
   const formatPrice = (price: number) => {
     if (price >= 1000) return `$${price.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;

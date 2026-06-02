@@ -39,7 +39,7 @@ export default function MyNewsFeed() {
   const [savedItems, setSavedItems] = useState<Set<string>>(new Set());
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
-  const watchlist = profile?.watchlist || [];
+  const watchlist = useMemo(() => profile?.watchlist || [], [profile?.watchlist]);
 
   const feedItems: FeedItem[] = useMemo(() => {
     const items: FeedItem[] = [];
@@ -132,8 +132,16 @@ export default function MyNewsFeed() {
   }, [feedItems, category, showRead, watchlist]);
 
   const markRead = (id: string) => setReadItems(prev => new Set([...prev, id]));
-  const toggleSave = (id: string) => setSavedItems(prev => { const s = new Set(prev); s.has(id) ? s.delete(id) : s.add(id); return s; });
-  const toggleExpand = (id: string) => setExpandedItems(prev => { const s = new Set(prev); s.has(id) ? s.delete(id) : s.add(id); return s; });
+  const toggleSave = (id: string) => setSavedItems(prev => { 
+    const s = new Set(prev); 
+    if (s.has(id)) { s.delete(id); } else { s.add(id); } 
+    return s; 
+  });
+  const toggleExpand = (id: string) => setExpandedItems(prev => { 
+    const s = new Set(prev); 
+    if (s.has(id)) { s.delete(id); } else { s.add(id); } 
+    return s; 
+  });
   const unreadCount = feedItems.filter(i => !i.read).length;
   const highPriorityCount = feedItems.filter(i => i.priority === 'high' && !i.read).length;
   const bullishCount = feedItems.filter(i => i.sentiment === 'bullish').length;

@@ -17,17 +17,21 @@ export default function QuestionIntent() {
   const { slug } = useParams<{ slug: string }>();
   const questionData = slug ? getQuestionIntent(slug) : null;
   
+  const cryptoId = questionData?.crypto.id || 'bitcoin';
+  const cryptoSymbol = questionData?.crypto.symbol || 'btc';
+  const timeframe = questionData?.timeframe || 'daily';
+  const { data: prediction, isLoading, error } = usePricePrediction(
+    cryptoId,
+    cryptoSymbol,
+    timeframe as any,
+    true
+  );
+
   if (!questionData) {
     return <Navigate to="/predictions" replace />;
   }
-  
-  const { crypto, question, timeframe } = questionData;
-  const { data: prediction, isLoading, error } = usePricePrediction(
-    crypto.id,
-    crypto.symbol,
-    timeframe,
-    true
-  );
+
+  const { crypto, question } = questionData;
 
   const timeframeIcon = timeframe === 'daily' ? Clock : 
     timeframe === 'weekly' ? Calendar : CalendarDays;

@@ -118,7 +118,7 @@ export function TopCryptoPredictionLinks({ className = "" }: { className?: strin
 
 export function MarketPagesLinks({ className = "" }: { className?: string }) {
   const marketPages = [
-    { path: "/market/best-crypto-to-buy-today", label: "Best Crypto to Buy Today" },
+    { path: "/predictions", label: "Best Crypto to Buy Today" },
     { path: "/market/top-crypto-gainers-today", label: "Top Gainers Today" },
     { path: "/market/next-crypto-to-explode", label: "Next Crypto to Explode" },
     { path: "/market/crypto-market-prediction-today", label: "Market Prediction Today" },

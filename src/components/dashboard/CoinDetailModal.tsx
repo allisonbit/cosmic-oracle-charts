@@ -28,23 +28,23 @@ function formatNumber(num: number): string {
 }
 
 export function CoinDetailModal({ coin, open, onOpenChange }: CoinDetailModalProps) {
-  if (!coin) return null;
-
-  const trend = coin.change24h >= 2 ? "BULLISH" : coin.change24h <= -2 ? "BEARISH" : "NEUTRAL";
-  const isPositive = coin.change24h >= 0;
+  const trend = coin ? (coin.change24h >= 2 ? "BULLISH" : coin.change24h <= -2 ? "BEARISH" : "NEUTRAL") : "NEUTRAL";
+  const isPositive = coin ? coin.change24h >= 0 : false;
 
   // Generate mock chart data
   const chartData = useMemo(() => {
+    if (!coin) return [];
     const points = Array.from({ length: 48 }, (_, i) => ({
       time: `${i}h`,
       price: coin.price * (0.92 + Math.random() * 0.16),
     }));
     points[points.length - 1].price = coin.price;
     return points;
-  }, [coin.price]);
+  }, [coin]);
 
   // Generate analysis based on the coin's performance
   const analysis = useMemo(() => {
+    if (!coin) return null;
     const volatility = Math.abs(coin.change24h) > 5 ? "high" : Math.abs(coin.change24h) > 2 ? "moderate" : "low";
     const volumeToMcap = (coin.volume / coin.marketCap) * 100;
     const liquiditySignal = volumeToMcap > 10 ? "high" : volumeToMcap > 3 ? "normal" : "low";
@@ -71,12 +71,17 @@ export function CoinDetailModal({ coin, open, onOpenChange }: CoinDetailModalPro
   }, [coin]);
 
   // Support and resistance levels
-  const levels = useMemo(() => ({
-    strongSupport: coin.price * 0.85,
+  const levels = useMemo(() => {
+    if (!coin) return null;
+    return {
+      strongSupport: coin.price * 0.85,
     support: coin.price * 0.95,
     resistance: coin.price * 1.05,
     strongResistance: coin.price * 1.15,
-  }), [coin.price]);
+    };
+  }, [coin]);
+
+  if (!coin || !analysis || !levels) return null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

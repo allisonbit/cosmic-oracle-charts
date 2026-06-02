@@ -51,7 +51,7 @@ const features = [
     accentIcon: TrendingUp,
     title: "Wallet Intelligence Scanner",
     description: "Paste any wallet address to reveal holdings, performance, risk assessment, and AI-driven trading recommendations.",
-    link: "/portfolio",
+    link: "/scanner",
     linkText: "Scan a Wallet",
     stat: "Instant analysis",
     highlight: "No connection needed",

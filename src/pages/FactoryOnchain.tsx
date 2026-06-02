@@ -336,7 +336,7 @@ export default function FactoryOnchain() {
               <CardContent className="p-4">
                 <h3 className="font-semibold mb-3">Related Analysis</h3>
                 <div className="space-y-2 text-sm">
-                  <Link to="/portfolio" className="flex items-center gap-2 text-primary hover:text-primary/80">
+                  <Link to="/scanner" className="flex items-center gap-2 text-primary hover:text-primary/80">
                     <Wallet className="w-4 h-4" />
                     Wallet Scanner
                   </Link>

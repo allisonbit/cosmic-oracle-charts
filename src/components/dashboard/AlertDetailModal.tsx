@@ -17,9 +17,8 @@ interface AlertDetailModalProps {
 }
 
 export function AlertDetailModal({ alert, open, onOpenChange }: AlertDetailModalProps) {
-  if (!alert) return null;
-
   const analysis = useMemo(() => {
+    if (!alert) return null;
     const now = new Date();
     const triggerTime = new Date(now.getTime() - Math.random() * 3600000); // Random time in last hour
 
@@ -108,6 +107,8 @@ export function AlertDetailModal({ alert, open, onOpenChange }: AlertDetailModal
 
     return details[alert.type];
   }, [alert]);
+
+  if (!alert || !analysis) return null;
 
   const Icon = analysis.icon;
 

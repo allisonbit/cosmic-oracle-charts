@@ -38,7 +38,7 @@ export function CryptoFactoryWidget() {
           <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
           <span className="truncate">CRYPTO FACTORY</span>
         </h3>
-        <Link to="/crypto-factory" className="text-primary hover:text-primary/80 transition-colors">
+        <Link to="/factory" className="text-primary hover:text-primary/80 transition-colors">
           <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
@@ -123,7 +123,7 @@ export function CryptoFactoryWidget() {
       )}
 
       <Link 
-        to="/crypto-factory" 
+        to="/factory" 
         className="block text-center text-[10px] text-primary hover:text-primary/80 mt-3 font-display"
       >
         View Full Calendar →

@@ -155,7 +155,7 @@ export default function Sitemap() {
             { path: '/predictions', label: 'Prediction Hub', desc: 'Browse all AI price predictions for 1000+ cryptocurrencies with daily, weekly, and monthly forecasts' },
             { path: '/strength', label: 'Strength Meter', desc: 'Real-time asset strength rankings using momentum, volume, sentiment, and trend analysis' },
             { path: '/factory', label: 'Crypto Factory', desc: 'Market events calendar, on-chain intelligence, narratives, and breaking crypto news' },
-            { path: '/portfolio', label: 'Wallet Scanner', desc: 'AI-powered portfolio analysis for any EVM or Solana wallet address' },
+            { path: '/scanner', label: 'Wallet Scanner', desc: 'AI-powered portfolio analysis for any EVM or Solana wallet address' },
             { path: '/sentiment', label: 'Sentiment Analysis', desc: 'Social sentiment from Twitter, Reddit, Telegram — whale tracking and market signals' },
             { path: '/explorer', label: 'Token Explorer', desc: 'Search any cryptocurrency by name, symbol, or contract address across all blockchains' },
             { path: '/learn', label: 'Learn Crypto', desc: 'Free cryptocurrency education with daily AI-generated articles and in-depth guides' },

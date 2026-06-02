@@ -107,7 +107,7 @@ export function CryptoFactorySEOContent() {
           <Search className="w-4 h-4" />
           <span>Token Explorer</span>
         </Link>
-        <Link to="/portfolio" className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 p-2 rounded-lg bg-primary/5 hover:bg-primary/10">
+        <Link to="/scanner" className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 p-2 rounded-lg bg-primary/5 hover:bg-primary/10">
           <Wallet className="w-4 h-4" />
           <span>Wallet Scanner</span>
         </Link>
@@ -238,7 +238,7 @@ export function PredictionHubSEOContent() {
           <Calendar className="w-4 h-4" />
           <span>Ethereum Weekly</span>
         </Link>
-        <Link to="/market/best-crypto-to-buy-today" className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 p-2 rounded-lg bg-primary/5 hover:bg-primary/10">
+        <Link to="/predictions" className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 p-2 rounded-lg bg-primary/5 hover:bg-primary/10">
           <Target className="w-4 h-4" />
           <span>Best Buys Today</span>
         </Link>

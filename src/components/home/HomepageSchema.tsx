@@ -6,7 +6,7 @@ const baseUrl = SITE_URL;
 
 export function HomepageSchema() {
   const { data } = useCryptoPrices();
-  const prices = data?.prices || [];
+  const prices = useMemo(() => data?.prices || [], [data?.prices]);
 
   useEffect(() => {
     // Remove any existing homepage-specific schemas

@@ -81,6 +81,7 @@ export function QuickTradeModal() {
     setPriceInfo(null);
     setBridgeQuote(null);
     setBridgeAmount("");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [target]);
 
   const tokens = POPULAR_TOKENS[chainId] || POPULAR_TOKENS[1];

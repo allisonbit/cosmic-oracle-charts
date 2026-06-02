@@ -119,7 +119,7 @@ export default function PredictionHub() {
   }, [pricesData, cachedPredictions]);
 
   const filteredCryptos = useMemo(() => {
-    let result = displayCryptos.filter(crypto => {
+    const result = displayCryptos.filter(crypto => {
       const matchesSearch = !searchQuery || 
         crypto.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         crypto.symbol.toLowerCase().includes(searchQuery.toLowerCase());

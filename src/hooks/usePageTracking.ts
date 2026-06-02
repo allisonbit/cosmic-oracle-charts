@@ -83,7 +83,7 @@ function getContentGroup(path: string): string {
   if (path.startsWith("/insights")) return "Insights";
   if (path.startsWith("/strength")) return "Strength Meter";
   if (path.startsWith("/factory")) return "Crypto Factory";
-  if (path.startsWith("/portfolio")) return "Portfolio";
+  if (path.startsWith("/scanner")) return "Portfolio";
   if (path === "/about" || path === "/contact") return "Company";
   if (path === "/privacy-policy" || path === "/terms" || path === "/risk-disclaimer") return "Legal";
   return "Other";

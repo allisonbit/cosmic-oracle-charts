@@ -41,6 +41,7 @@ function SwapPanel() {
     setPriceInfo(null);
     setShowCustomSell(false);
     setShowCustomBuy(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId]);
 
   const activeSellToken = showCustomSell && customSellAddress.startsWith("0x") ? customSellAddress : sellToken;
@@ -202,7 +203,9 @@ function BridgePanel() {
   const fromTokens = POPULAR_TOKENS[fromChainId] || POPULAR_TOKENS[1];
   const toTokens = POPULAR_TOKENS[toChainId] || POPULAR_TOKENS[1];
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { setFromToken(fromTokens[0]?.address || ""); setBridgeQuote(null); }, [fromChainId]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { setToToken(toTokens[0]?.address || ""); setBridgeQuote(null); }, [toChainId]);
 
   const fromTokenInfo = fromTokens.find(t => t.address === fromToken);

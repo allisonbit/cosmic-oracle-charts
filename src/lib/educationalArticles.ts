@@ -408,7 +408,7 @@ Risk management is the foundation of long-term success in crypto. The goal isn't
     relatedLinks: [
       { text: "Risk Disclaimer", url: "/risk-disclaimer" },
       { text: "Market Strength Meter", url: "/strength" },
-      { text: "Portfolio Scanner", url: "/portfolio" }
+      { text: "Portfolio Scanner", url: "/scanner" }
     ]
   },
   {

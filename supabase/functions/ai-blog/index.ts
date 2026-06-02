@@ -110,7 +110,7 @@ serve(async (req) => {
       console.log('Generating 20 new daily AI blog posts...');
 
       // Fetch market data for context
-      let marketContext = {
+      const marketContext = {
         totalMarketCap: 2.5e12,
         btcDominance: 52,
         ethDominance: 18,

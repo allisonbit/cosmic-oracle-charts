@@ -46,16 +46,12 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
     description: `See which crypto is the strongest right now. Real-time strength rankings for Bitcoin, Ethereum, Solana & 100+ assets based on momentum, volume & sentiment. Free tool. Updated ${currentMonth} ${currentYear}.`,
     keywords: "crypto strength meter, strongest cryptocurrency today, bitcoin strength index, crypto momentum ranking, best performing crypto"
   },
-  "/crypto-factory": {
+  "/factory": {
     title: `Crypto Factory – Market Events, Whale Alerts & On-Chain Intel (${currentMonth} ${currentYear})`,
     description: "Track every market-moving event: token launches, protocol upgrades, whale movements & trending narratives. Like Forex Factory but for crypto. Updated in real-time.",
     keywords: "crypto events calendar, crypto factory, upcoming token launches, whale alerts crypto, crypto market events, protocol upgrades, crypto news today"
   },
-  "/factory": {
-    title: `Crypto Factory – Market Events, Whale Alerts & On-Chain Intel (${currentMonth} ${currentYear})`,
-    description: "Track every market-moving event: token launches, protocol upgrades, whale movements & trending narratives. Like Forex Factory but for crypto. Updated in real-time.",
-    keywords: "crypto events calendar, crypto factory, upcoming token launches, whale alerts crypto, crypto market events, protocol upgrades"
-  },
+
   "/trade": {
     title: `Trade Crypto – Buy, Sell, Swap & Bridge Any Token (${currentMonth} ${currentYear})`,
     description: "Trade any cryptocurrency directly. Buy, sell, swap & bridge tokens across 12+ blockchains including Ethereum, Base, Polygon, Arbitrum & more. Zero platform fees. Connect your wallet and trade instantly.",
@@ -71,7 +67,7 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
     description: "Complete index of Oracle Bull: crypto analytics, blockchain dashboards, AI predictions, educational guides & trading tools. Find every feature.",
     keywords: "oracle bull sitemap, crypto tools, blockchain analytics"
   },
-  "/portfolio": {
+  "/my/scanner": {
     title: `Free Wallet Scanner – Analyze Any Crypto Wallet Instantly (${currentMonth} ${currentYear})`,
     description: "Paste any EVM or Solana wallet address for instant AI analysis. See holdings, hidden gems, risk scores & pump potential. 100% free, no signup.",
     keywords: "crypto wallet scanner free, wallet analyzer, portfolio tracker, check crypto wallet, solana wallet checker, ethereum wallet scanner"
@@ -601,6 +597,37 @@ export function StructuredData() {
         "about": { "@type": "Thing", "name": coinDisplay },
         "inLanguage": "en-US"
       });
+
+      schemas.push({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": `What is the price prediction for ${coinDisplay}?`,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": `Our AI model predicts the price of ${coinDisplay} based on real-time market data, technical analysis, and whale activity. Check the live chart above for exact support and resistance targets.`
+            }
+          },
+          {
+            "@type": "Question",
+            "name": `Is ${coinDisplay} a good investment right now?`,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": `The investment potential of ${coinDisplay} depends on your timeframe. We provide daily, weekly, and monthly AI forecasts along with a real-time risk assessment score to help you decide.`
+            }
+          },
+          {
+            "@type": "Question",
+            "name": `Will ${coinDisplay} go up today?`,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": `Our real-time prediction model analyzes current momentum, volume, and sentiment to forecast whether ${coinDisplay} will go up or down today. See the probability scores on this page.`
+            }
+          }
+        ]
+      });
     }
 
     // Question intent pages - QAPage schema
@@ -706,7 +733,7 @@ export function StructuredData() {
     }
 
     // Portfolio/Wallet Scanner - Service schema
-    if (currentPath === "/portfolio") {
+    if (currentPath === "/scanner") {
       schemas.push({
         "@context": "https://schema.org",
         "@type": "Service",

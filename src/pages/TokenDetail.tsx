@@ -199,7 +199,7 @@ export default function TokenDetail() {
     { label: 'Top 11-50 Holders', pct: 10 + Math.random() * 15, color: 'hsl(var(--success))' },
     { label: 'Top 51-100 Holders', pct: 5 + Math.random() * 10, color: 'hsl(var(--warning))' },
     { label: 'Remaining', pct: 30 + Math.random() * 20, color: 'hsl(var(--muted-foreground))' },
-  ], [token]);
+  ], []);
 
   // Radar data for token health
   const radarData = useMemo(() => {

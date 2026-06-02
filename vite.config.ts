@@ -153,7 +153,10 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  build: { minify: false, sourcemap: true,
+  build: { 
+    minify: true, 
+    sourcemap: true,
+    cssCodeSplit: true,
     // Let Vite/Rollup handle chunking automatically.
     // Our previous manualChunks split introduced a production-only TDZ error
     // ("Cannot access 'S' before initialization"), resulting in a black screen after deploy.

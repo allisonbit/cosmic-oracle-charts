@@ -3,7 +3,7 @@ import { Search, Layers, Radio, BookOpen, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const actions = [
-  { icon: Wallet, label: "Scan Wallet", shortLabel: "Scanner", path: "/portfolio", color: "text-primary" },
+  { icon: Wallet, label: "Scan Wallet", shortLabel: "Scanner", path: "/scanner", color: "text-primary" },
   { icon: Layers, label: "Chain Analysis", shortLabel: "Chains", path: "/chain/ethereum", color: "text-secondary" },
   { icon: Search, label: "Token Explorer", shortLabel: "Explorer", path: "/explorer", color: "text-success" },
   { icon: Radio, label: "Sentiment", shortLabel: "Sentiment", path: "/sentiment", color: "text-warning" },

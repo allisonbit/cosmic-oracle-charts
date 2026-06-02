@@ -55,30 +55,34 @@ export interface ChainForecastResponse {
   timestamp: number;
 }
 
-// Fallback data generator
+// Fallback forecast - all values derived from real priceChange, no random
 function generateFallbackForecast(chainId: string, priceChange: number): ChainForecastResponse {
   const trend = priceChange > 2 ? "bullish" : priceChange < -2 ? "bearish" : "neutral";
   const chainName = chainId.charAt(0).toUpperCase() + chainId.slice(1);
+  // Confidence is anchored to absolute price momentum (stronger move = higher confidence)
+  const momentumConf = Math.min(85, 60 + Math.abs(priceChange) * 1.5);
+  const riskLevel = Math.min(80, 30 + Math.abs(priceChange) * 3);
+  const sentiment = trend === "bullish" ? 72 : trend === "bearish" ? 38 : 55;
 
   return {
     forecast: {
       shortTerm: {
         prediction: trend,
-        confidence: 65 + Math.floor(Math.random() * 20),
+        confidence: Math.round(momentumConf),
         priceTarget: 0,
         timeframe: "1-4 hours",
         reasoning: `${chainName} showing ${trend} momentum in short-term trading based on on-chain activity.`,
       },
       midTerm: {
         prediction: trend === "bullish" ? "bullish" : "neutral",
-        confidence: 55 + Math.floor(Math.random() * 25),
+        confidence: Math.round(momentumConf * 0.85),
         priceTarget: 0,
         timeframe: "24-48 hours",
         reasoning: "Medium-term outlook depends on broader market conditions and on-chain activity.",
       },
       longTerm: {
         prediction: "bullish",
-        confidence: 60 + Math.floor(Math.random() * 20),
+        confidence: Math.round(momentumConf * 0.9),
         priceTarget: 0,
         timeframe: "3-7 days",
         reasoning: "Long-term fundamentals remain strong with continued ecosystem development.",
@@ -90,25 +94,25 @@ function generateFallbackForecast(chainId: string, priceChange: number): ChainFo
         "Cross-chain bridge activity",
         "Market sentiment shifts",
       ],
-      riskLevel: Math.floor(30 + Math.random() * 40),
-      overallConfidence: Math.floor(60 + Math.random() * 25),
+      riskLevel: Math.round(riskLevel),
+      overallConfidence: Math.round(momentumConf),
       dailySummary: `${chainName} network activity shows ${trend} signals. Monitor whale movements and DeFi metrics for trading opportunities.`,
     },
     tokenRisks: Array.from({ length: 8 }, (_, i) => ({
       symbol: `TOKEN${i + 1}`,
       name: `Token ${i + 1}`,
-      riskLevel: (["low", "medium", "high", "extreme"] as const)[Math.floor(Math.random() * 4)],
-      riskScore: Math.random() * 100,
+      riskLevel: (["low", "medium", "high", "extreme"] as const)[Math.min(3, Math.floor(riskLevel / 25))],
+      riskScore: riskLevel + i * 2,
       reasons: ["Stable liquidity", "Active development"],
-      liquidity: Math.random() * 10e6,
-      volatility: Math.random() * 100,
+      liquidity: 1e6 * (8 - i),
+      volatility: Math.abs(priceChange) * (1 + i * 0.1),
     })),
     socialSentiment: {
-      twitter: { positive: 45, neutral: 35, negative: 20, volume: 15000 },
-      reddit: { positive: 40, neutral: 40, negative: 20, volume: 5000 },
-      telegram: { positive: 50, neutral: 30, negative: 20, volume: 8000 },
-      news: { positive: 35, neutral: 45, negative: 20, count: 50 },
-      overallSentiment: 65 + Math.floor(Math.random() * 20),
+      twitter: { positive: Math.round(sentiment), neutral: 30, negative: Math.round(100 - sentiment - 30), volume: 15000 },
+      reddit: { positive: Math.round(sentiment - 5), neutral: 40, negative: Math.round(100 - (sentiment - 5) - 40), volume: 5000 },
+      telegram: { positive: Math.round(sentiment + 3), neutral: 28, negative: Math.round(100 - (sentiment + 3) - 28), volume: 8000 },
+      news: { positive: Math.round(sentiment - 8), neutral: 45, negative: Math.round(100 - (sentiment - 8) - 45), count: 50 },
+      overallSentiment: Math.round(sentiment),
     },
     timestamp: Date.now(),
   };
