@@ -1,0 +1,5 @@
+# Netlify SPA routing — redirect all routes to index.html
+# This ensures every URL (e.g. /price-prediction/bitcoin) works on direct load
+# Required for React Router to handle client-side routing correctly
+
+/*  /index.html  200

@@ -16,7 +16,7 @@ const staticRoutes = [
   "/factory/onchain",
   "/factory/narratives",
   "/factory/news",
-  "/portfolio",
+  "/scanner",
   "/sentiment",
   "/explorer",
   "/learn",
@@ -27,22 +27,7 @@ const staticRoutes = [
   "/privacy-policy",
   "/terms",
   "/risk-disclaimer",
-  // Authenticated user hub pages
-  "/my",
-  "/my/portfolio",
-  "/my/scanner",
-  "/my/watchlist",
-  "/my/alerts",
-  "/my/signals",
-  "/my/settings",
-  "/my/journal",
-  "/my/news",
-  "/my/dca",
-  "/my/copy",
-  "/my/social",
-  "/my/tracker",
   "/trade",
-  "/scanner",
 ];
 
 // Chain routes
@@ -121,7 +106,28 @@ const questionRoutes = questionIntentCoins.flatMap(coin =>
   questionPatterns.map(pattern => `/q/${pattern.replace('{coin}', coin)}`)
 );
 
-const marketQuestionRoutes: string[] = [];
+const marketQuestionRoutes = [
+  "/market/best-crypto-to-buy-today",
+  "/market/top-crypto-gainers-today",
+  "/market/crypto-market-prediction-today",
+  "/market/which-crypto-will-go-up-today",
+  "/market/crypto-losers-today",
+  "/market/is-crypto-going-up-today",
+  "/market/best-crypto-to-buy-this-week",
+  "/market/crypto-prediction-this-week",
+  "/market/crypto-to-watch-this-week",
+  "/market/top-crypto-gainers-this-week",
+  "/market/next-crypto-to-explode",
+  "/market/safest-crypto-to-invest",
+  "/market/cheap-crypto-to-buy-now",
+  "/market/undervalued-crypto-to-buy",
+  "/market/crypto-with-most-potential",
+  "/market/best-altcoins-to-buy",
+  "/market/top-meme-coins",
+  "/market/best-defi-tokens",
+  "/market/top-ai-crypto-tokens",
+];
+
 const coinMarketRoutes: string[] = [];
 
 // All routes combined

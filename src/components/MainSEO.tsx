@@ -212,20 +212,52 @@ export function SEO({ title, description, keywords, image, type = "website", can
   })() : currentPath.includes("/market/") ? (() => {
     const slug = currentPath.split("/market/")[1] || "";
     const readable = slug.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+    // Map common market slugs to highly optimized titles
+    const marketTitles: Record<string, { title: string; description: string; keywords: string }> = {
+      "best-crypto-to-buy-today": { title: `Best Crypto to Buy Today – AI Picks & Live Analysis (${currentMonth} ${currentYear})`, description: `Which cryptocurrency should you buy today? AI-curated picks based on real-time momentum, volume, sentiment, and technical signals. Updated ${currentMonth} ${currentYear}.`, keywords: "best crypto to buy today, crypto to buy now, best cryptocurrency 2024, top crypto picks today" },
+      "top-crypto-gainers-today": { title: `Top Crypto Gainers Today – Biggest Winners Right Now (${currentMonth} ${currentYear})`, description: `Live list of today's top crypto gainers by 24h price change with volume analysis, momentum scores, and AI insights. Updated every 30 seconds.`, keywords: "top crypto gainers today, biggest crypto movers today, best performing crypto today, crypto up today" },
+      "crypto-market-prediction-today": { title: `Crypto Market Prediction Today – Bullish or Bearish? (${currentMonth} ${currentYear})`, description: `AI-powered crypto market prediction for today. BTC dominance, altcoin rotation signals, Fear & Greed Index, and overall market outlook. Updated ${currentMonth} ${currentYear}.`, keywords: "crypto market prediction today, will crypto go up today, crypto market outlook, bitcoin market today" },
+      "which-crypto-will-go-up-today": { title: `Which Crypto Will Go Up Today? AI Predictions (${currentMonth} ${currentYear})`, description: `AI-ranked list of cryptocurrencies most likely to go up today based on momentum, breakout signals, and whale activity. See today's top movers.`, keywords: "which crypto will go up today, crypto going up today, crypto to buy today, best crypto for today" },
+      "crypto-losers-today": { title: `Crypto Losers Today – Biggest Decliners & Bounce Candidates (${currentMonth} ${currentYear})`, description: `Today's biggest crypto losers ranked by 24h decline. Includes oversold bounce probability, support levels, and AI recovery analysis.`, keywords: "crypto losers today, biggest crypto decliners, crypto down today, oversold crypto" },
+      "is-crypto-going-up-today": { title: `Is Crypto Going Up Today? Market Analysis (${currentMonth} ${currentYear})`, description: `Is the crypto market going up or down today? Real-time analysis of BTC, ETH, market cap trends, Fear & Greed Index, and AI-powered market outlook.`, keywords: "is crypto going up today, crypto market direction, will crypto rise today, crypto bullish today" },
+      "best-crypto-to-buy-this-week": { title: `Best Crypto to Buy This Week – Top Weekly Picks (${currentMonth} ${currentYear})`, description: `This week's top cryptocurrency picks with swing trading entry zones, resistance targets, and weekly AI forecasts. Updated every Monday.`, keywords: "best crypto to buy this week, top crypto this week, crypto weekly picks, swing trading crypto" },
+      "crypto-prediction-this-week": { title: `Crypto Prediction This Week – Weekly Market Forecast (${currentMonth} ${currentYear})`, description: `Complete weekly crypto market forecast with BTC, ETH, and altcoin outlooks, key support/resistance levels, and macro event calendar.`, keywords: "crypto prediction this week, crypto forecast this week, weekly crypto analysis, bitcoin this week" },
+      "crypto-to-watch-this-week": { title: `Crypto to Watch This Week – Upcoming Catalysts & Breakouts (${currentMonth} ${currentYear})`, description: `This week's top cryptocurrencies to watch with upcoming catalysts, technical breakouts, and whale accumulation signals. Don't miss these.`, keywords: "crypto to watch this week, crypto catalysts this week, crypto breakouts, crypto alerts this week" },
+      "top-crypto-gainers-this-week": { title: `Top Crypto Gainers This Week – Weekly Performance Leaders (${currentMonth} ${currentYear})`, description: `This week's best performing cryptocurrencies ranked by weekly gain across all market cap tiers with trend analysis and momentum scores.`, keywords: "top crypto gainers this week, best performing crypto this week, weekly crypto winners" },
+      "next-crypto-to-explode": { title: `Next Crypto to Explode – High Potential Altcoins (${currentMonth} ${currentYear})`, description: `AI-identified cryptocurrencies with the highest growth potential right now. Based on fundamentals, community growth, and technical breakout signals.`, keywords: "next crypto to explode, crypto to explode soon, next 100x crypto, altcoins about to pump" },
+      "safest-crypto-to-invest": { title: `Safest Crypto to Invest – Low Risk Blue Chips (${currentMonth} ${currentYear})`, description: `The safest cryptocurrencies for conservative investors. Blue-chip assets with proven track records, high liquidity, and low volatility scores.`, keywords: "safest crypto to invest, safe cryptocurrency, low risk crypto, stable crypto investment" },
+      "cheap-crypto-to-buy-now": { title: `Cheap Crypto to Buy Now – Best Affordable Coins Under $1 (${currentMonth} ${currentYear})`, description: `Top low-priced cryptocurrencies worth buying now. Affordable tokens under $1 with strong fundamentals, growing communities, and AI growth scores.`, keywords: "cheap crypto to buy now, best crypto under $1, affordable crypto, low price high potential" },
+      "undervalued-crypto-to-buy": { title: `Undervalued Crypto to Buy – Hidden Gems Below Fair Value (${currentMonth} ${currentYear})`, description: `Cryptocurrencies trading below their AI-estimated fair value. Find fundamentally strong tokens that are currently undervalued by the market.`, keywords: "undervalued crypto to buy, undervalued cryptocurrency, crypto hidden gems, crypto below fair value" },
+      "crypto-with-most-potential": { title: `Crypto with Most Potential – Highest Upside Picks (${currentMonth} ${currentYear})`, description: `Cryptocurrencies with the highest long-term growth potential. AI-scored by technology, team, tokenomics, ecosystem growth, and market positioning.`, keywords: "crypto with most potential, highest potential crypto, best crypto long term, most promising crypto" },
+      "best-altcoins-to-buy": { title: `Best Altcoins to Buy Right Now – Top Picks (${currentMonth} ${currentYear})`, description: `The best altcoins to buy now ranked by investment potential, market momentum, and AI analysis. Discover which non-Bitcoin cryptos lead the market.`, keywords: "best altcoins to buy, best altcoins 2024, top altcoins, altcoins to invest in" },
+      "top-meme-coins": { title: `Top Meme Coins Right Now – Best Meme Crypto Rankings (${currentMonth} ${currentYear})`, description: `Live rankings of the hottest meme coins by community strength, social buzz, trading volume, and price momentum. Includes DOGE, SHIB, PEPE & more.`, keywords: "top meme coins, best meme crypto, meme coin rankings, best meme coins to buy" },
+      "best-defi-tokens": { title: `Best DeFi Tokens to Buy – Top DeFi Coins (${currentMonth} ${currentYear})`, description: `The best decentralized finance tokens ranked by TVL growth, protocol revenue, tokenomics, and AI analysis. Find the top DeFi investments.`, keywords: "best defi tokens, top defi coins, defi tokens to buy, best defi crypto" },
+      "top-ai-crypto-tokens": { title: `Top AI Crypto Tokens – Best Artificial Intelligence Coins (${currentMonth} ${currentYear})`, description: `Rankings of the best AI-focused blockchain projects by market cap, utility, and ecosystem growth. Track the AI crypto narrative in real time.`, keywords: "top AI crypto tokens, best AI crypto, artificial intelligence coins, AI blockchain projects" },
+    };
+    const marketMeta = marketTitles[slug];
+    if (marketMeta) return marketMeta;
     return {
-      title: `${readable} – Live Rankings & AI Picks (${currentMonth} ${currentYear})`,
-      description: `${readable}: AI-curated list with live prices, technical analysis & risk scores. Find the best crypto opportunities right now. Updated ${currentMonth} ${currentYear}.`,
+      title: `${readable} – AI Analysis & Live Data (${currentMonth} ${currentYear})`,
+      description: `${readable}: AI-powered market analysis with live prices, technical indicators, whale activity & sentiment scores. Updated ${currentMonth} ${currentYear}.`,
       keywords: `${slug.replace(/-/g, " ")}, best crypto to buy, crypto picks today`
     };
-  })() : currentPath.includes("/insights/") ? {
-    title: `Crypto Insight – Expert Market Analysis | Oracle Bull`,
-    description: "Expert cryptocurrency market analysis and trading intelligence. Deep dive into blockchain data, market trends, and investment opportunities.",
-    keywords: "crypto analysis, market insight, trading research, blockchain intelligence"
-  } : currentPath.includes("/learn/") ? {
-    title: `Crypto Education – In-Depth Guide | Oracle Bull`,
-    description: "Comprehensive cryptocurrency guide covering blockchain technology, trading strategies, and market analysis fundamentals.",
-    keywords: "crypto education, blockchain guide, trading tutorial, crypto for beginners"
-  } : {
+  })() : currentPath.includes("/insights/") ? (() => {
+    const slug = currentPath.split("/insights/")[1]?.split("/")[0] || "";
+    const readable = slug.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+    return {
+      title: `${readable} – Crypto Market Analysis | Oracle Bull`,
+      description: `${readable}. Expert cryptocurrency market analysis with on-chain data, technical indicators, and AI-powered insights. Read the full report on Oracle Bull.`,
+      keywords: `${slug.replace(/-/g, " ")}, crypto analysis, market insight, oracle bull`
+    };
+  })() : currentPath.includes("/learn/") ? (() => {
+    const slug = currentPath.split("/learn/")[1]?.split("/")[0] || "";
+    const readable = slug.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+    return {
+      title: `${readable} – Free Crypto Education | Oracle Bull`,
+      description: `${readable}. Comprehensive free guide covering everything you need to know. Written for all experience levels — beginner to advanced crypto traders.`,
+      keywords: `${slug.replace(/-/g, " ")}, crypto education, learn cryptocurrency, oracle bull guide`
+    };
+  })() : {
     title: defaultMeta.title,
     description: defaultMeta.description,
     keywords: defaultMeta.keywords
