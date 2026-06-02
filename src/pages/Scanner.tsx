@@ -109,7 +109,7 @@ function ScannerTokenRow({ token, strength, onClick }: { token: LiveToken; stren
   return (
     <button
       onClick={onClick}
-      className="w-full grid grid-cols-[2fr_1fr_1fr_1fr_100px] md:grid-cols-[2.5fr_0.8fr_0.7fr_0.7fr_0.8fr_0.8fr_0.7fr_0.8fr_0.6fr_110px] items-center gap-1 px-3 py-2.5 hover:bg-muted/30 transition-colors border-b border-border/20 text-left"
+      className="w-full grid grid-cols-[2.5fr_0.8fr_0.7fr_0.7fr_0.8fr_0.8fr_0.7fr_0.8fr_0.6fr_110px] items-center gap-1 px-3 py-2.5 hover:bg-muted/30 transition-colors border-b border-border/20 text-left"
     >
       {/* Token info */}
       <div className="flex items-center gap-2.5 min-w-0">
@@ -139,10 +139,10 @@ function ScannerTokenRow({ token, strength, onClick }: { token: LiveToken; stren
         <p className="text-xs font-mono font-medium">{formatPrice(token.price)}</p>
       </div>
 
-      {/* 1h Change - hidden on mobile */}
-      <div className="text-right hidden md:block">
+      {/* 1h Change */}
+      <div className="text-right">
         <span className={cn("text-[11px] font-mono", is1hUp ? "text-success" : "text-danger")}>
-          {change1h !== 0 ? `${is1hUp ? '+' : ''}${(change1h ?? 0).toFixed(2)}%` : '—'}
+          {change1h !== 0 ? `${is1hUp ? '+' : ''}${(change1h ?? 0).toFixed(2)}%` : '-'}
         </span>
       </div>
 
@@ -154,28 +154,28 @@ function ScannerTokenRow({ token, strength, onClick }: { token: LiveToken; stren
         </span>
       </div>
 
-      {/* Volume - hidden on mobile */}
-      <div className="text-right hidden md:block">
+      {/* Volume */}
+      <div className="text-right">
         <p className="text-xs font-mono text-muted-foreground">{formatCompact(token.volume24h)}</p>
       </div>
 
-      {/* Liquidity - hidden on mobile */}
-      <div className="text-right hidden md:block">
+      {/* Liquidity */}
+      <div className="text-right">
         <p className="text-xs font-mono text-muted-foreground">{formatCompact((token as any).liquidity)}</p>
       </div>
 
-      {/* Txns - hidden on mobile */}
-      <div className="text-right hidden md:block">
+      {/* Txns */}
+      <div className="text-right">
         <p className="text-xs font-mono text-muted-foreground">{((token as any).txns24h || 0).toLocaleString()}</p>
       </div>
 
-      {/* Buy Pressure - hidden on mobile */}
-      <div className="hidden md:flex justify-end">
+      {/* Buy Pressure */}
+      <div className="flex justify-end">
         <BuyPressureBar buys={(token as any).buys24h} sells={(token as any).sells24h} />
       </div>
 
       {/* Market Cap */}
-      <div className="text-right hidden md:block">
+      <div className="text-right">
         <p className="text-xs font-mono text-muted-foreground">{formatCompact(token.marketCap)}</p>
       </div>
 
@@ -489,23 +489,24 @@ export default function Scanner() {
           </div>
 
           {/* Token Table */}
-          <Card className="bg-card/50 border-border/30 overflow-hidden">
-            {/* Table header */}
-            <div className="grid grid-cols-[2fr_1fr_1fr_1fr_100px] md:grid-cols-[2.5fr_0.8fr_0.7fr_0.7fr_0.8fr_0.8fr_0.7fr_0.8fr_0.6fr_110px] items-center gap-1 px-3 py-2.5 bg-muted/30 border-b border-border/30 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-              <span>Token</span>
-              <span className="text-right">Price</span>
-              <span className="text-right hidden md:block">1H</span>
-              <span className="text-right">24H</span>
-              <span className="text-right hidden md:block">Volume</span>
-              <span className="text-right hidden md:block">Liquidity</span>
-              <span className="text-right hidden md:block">Txns</span>
-              <span className="text-right hidden md:block">Buy %</span>
-              <span className="text-right hidden md:block">MCap</span>
-              <span className="text-right">Strength</span>
-            </div>
+          <Card className="bg-card/50 border-border/30 overflow-x-auto">
+            <div className="min-w-[1000px]">
+              {/* Table header */}
+              <div className="grid grid-cols-[2.5fr_0.8fr_0.7fr_0.7fr_0.8fr_0.8fr_0.7fr_0.8fr_0.6fr_110px] items-center gap-1 px-3 py-2.5 bg-muted/30 border-b border-border/30 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                <span>Token</span>
+                <span className="text-right">Price</span>
+                <span className="text-right">1H</span>
+                <span className="text-right">24H</span>
+                <span className="text-right">Volume</span>
+                <span className="text-right">Liquidity</span>
+                <span className="text-right">Txns</span>
+                <span className="text-right">Buy %</span>
+                <span className="text-right">MCap</span>
+                <span className="text-right">Strength</span>
+              </div>
 
-            {/* Rows */}
-            <div className="max-h-[70vh] overflow-y-auto">
+              {/* Rows */}
+              <div className="max-h-[70vh] overflow-y-auto">
               {isLoading ? (
                 <div className="flex items-center justify-center py-20">
                   <RefreshCw className="w-6 h-6 text-primary animate-spin" />
@@ -540,6 +541,7 @@ export default function Scanner() {
                   )}
                 </div>
               )}
+            </div>
             </div>
           </Card>
 

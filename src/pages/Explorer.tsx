@@ -481,25 +481,25 @@ const ExplorerPage = () => {
 
           {/* Token Table */}
           <div className="flex-1 overflow-auto">
-            <table className="w-full text-xs">
+            <table className="w-full text-xs min-w-[1200px]">
               <thead className="sticky top-0 z-10 bg-card border-b border-border">
                 <tr>
                   <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground text-left w-8">#</th>
                   <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground text-left min-w-[140px] sm:min-w-[200px]">TOKEN</th>
                   <SortHeader col="price" label="PRICE" />
-                  <SortHeader col="age" label="AGE" className="hidden sm:table-cell" />
-                  <SortHeader col="txns24h" label="TXNS" className="hidden sm:table-cell" />
+                  <SortHeader col="age" label="AGE" />
+                  <SortHeader col="txns24h" label="TXNS" />
                   <SortHeader col="volume24h" label="VOLUME" />
-                  <SortHeader col="makers" label="MAKERS" className="hidden md:table-cell" />
-                  <SortHeader col="change5m" label="5M" className="hidden lg:table-cell" />
-                  <SortHeader col="change1h" label="1H" className="hidden lg:table-cell" />
-                  <SortHeader col="change6h" label="6H" className="hidden xl:table-cell" />
+                  <SortHeader col="makers" label="MAKERS" />
+                  <SortHeader col="change5m" label="5M" />
+                  <SortHeader col="change1h" label="1H" />
+                  <SortHeader col="change6h" label="6H" />
                   <SortHeader col="change24h" label="24H" />
-                  <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground text-right hidden lg:table-cell">BUYS</th>
-                  <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground text-right hidden lg:table-cell">SELLS</th>
-                  <SortHeader col="liquidity" label="LIQUIDITY" className="hidden xl:table-cell" />
-                  <SortHeader col="marketCap" label="MCAP" className="hidden 2xl:table-cell" />
-                  <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground text-right hidden 2xl:table-cell">FDV</th>
+                  <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground text-right">BUYS</th>
+                  <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground text-right">SELLS</th>
+                  <SortHeader col="liquidity" label="LIQUIDITY" />
+                  <SortHeader col="marketCap" label="MCAP" />
+                  <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground text-right">FDV</th>
                   <th className="px-2 py-2 text-[11px] font-semibold text-muted-foreground w-8"></th>
                 </tr>
               </thead>
@@ -589,7 +589,7 @@ const ExplorerPage = () => {
                       </td>
 
                       {/* Txns */}
-                      <td className="px-2 py-2.5 text-muted-foreground whitespace-nowrap hidden sm:table-cell">
+                      <td className="px-2 py-2.5 text-muted-foreground whitespace-nowrap">
                         {(token.txns24h || 0).toLocaleString()}
                       </td>
 
@@ -599,13 +599,13 @@ const ExplorerPage = () => {
                       </td>
 
                       {/* Makers */}
-                      <td className="px-2 py-2.5 text-muted-foreground whitespace-nowrap hidden md:table-cell">
+                      <td className="px-2 py-2.5 text-muted-foreground whitespace-nowrap">
                         {(token.makers || 0).toLocaleString()}
                       </td>
 
                       {/* 5M */}
                       <td className={cn(
-                        "px-2 py-2.5 font-mono whitespace-nowrap hidden lg:table-cell",
+                        "px-2 py-2.5 font-mono whitespace-nowrap",
                         (token.change5m || 0) > 0 ? "text-success" : (token.change5m || 0) < 0 ? "text-danger" : "text-muted-foreground"
                       )}>
                         {formatChange(token.change5m)}
@@ -613,7 +613,7 @@ const ExplorerPage = () => {
 
                       {/* 1H */}
                       <td className={cn(
-                        "px-2 py-2.5 font-mono whitespace-nowrap hidden lg:table-cell",
+                        "px-2 py-2.5 font-mono whitespace-nowrap",
                         (token.change1h || 0) > 0 ? "text-success" : (token.change1h || 0) < 0 ? "text-danger" : "text-muted-foreground"
                       )}>
                         {formatChange(token.change1h)}
@@ -621,7 +621,7 @@ const ExplorerPage = () => {
 
                       {/* 6H */}
                       <td className={cn(
-                        "px-2 py-2.5 font-mono whitespace-nowrap hidden xl:table-cell",
+                        "px-2 py-2.5 font-mono whitespace-nowrap",
                         (token.change6h || 0) > 0 ? "text-success" : (token.change6h || 0) < 0 ? "text-danger" : "text-muted-foreground"
                       )}>
                         {formatChange(token.change6h)}
@@ -636,27 +636,27 @@ const ExplorerPage = () => {
                       </td>
 
                       {/* Buys */}
-                      <td className="px-2 py-2.5 text-success whitespace-nowrap hidden lg:table-cell text-right">
+                      <td className="px-2 py-2.5 text-success whitespace-nowrap text-right">
                         <span className="text-[11px] font-mono">{(token.buys24h || 0).toLocaleString()}</span>
                       </td>
 
                       {/* Sells */}
-                      <td className="px-2 py-2.5 text-danger whitespace-nowrap hidden lg:table-cell text-right">
+                      <td className="px-2 py-2.5 text-danger whitespace-nowrap text-right">
                         <span className="text-[11px] font-mono">{(token.sells24h || 0).toLocaleString()}</span>
                       </td>
 
                       {/* Liquidity */}
-                      <td className="px-2 py-2.5 font-mono text-foreground whitespace-nowrap hidden xl:table-cell">
+                      <td className="px-2 py-2.5 font-mono text-foreground whitespace-nowrap">
                         {formatCompact(token.liquidity)}
                       </td>
 
                       {/* MCap */}
-                      <td className="px-2 py-2.5 font-mono text-foreground whitespace-nowrap hidden 2xl:table-cell">
+                      <td className="px-2 py-2.5 font-mono text-foreground whitespace-nowrap">
                         {formatCompact(token.marketCap)}
                       </td>
 
                       {/* FDV */}
-                      <td className="px-2 py-2.5 font-mono text-muted-foreground whitespace-nowrap hidden 2xl:table-cell text-right">
+                      <td className="px-2 py-2.5 font-mono text-muted-foreground whitespace-nowrap text-right">
                         {formatCompact(token.fdv)}
                       </td>
 

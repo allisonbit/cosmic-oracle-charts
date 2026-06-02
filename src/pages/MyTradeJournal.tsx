@@ -413,8 +413,8 @@ function TradeRow({ trade, onClose, onDelete }: { trade: Trade; onClose: (t: Tra
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-4 text-xs">
-            <div className="text-right hidden md:block">
+          <div className="flex items-center gap-4 text-xs overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
+            <div className="text-right">
               <p className="text-muted-foreground">Position</p>
               <p className="font-mono font-medium">${(positionSize ?? 0).toFixed(2)}</p>
             </div>

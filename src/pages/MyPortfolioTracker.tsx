@@ -365,7 +365,7 @@ function TrackerContent() {
                           </p>
                         </div>
                         {/* Allocation bar */}
-                        <div className="hidden md:block w-16">
+                        <div className="w-16">
                           <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                             <div className="h-full rounded-full" style={{ width: `${Math.min(allocationPct, 100)}%`, background: COLORS[idx % COLORS.length] }} />
                           </div>

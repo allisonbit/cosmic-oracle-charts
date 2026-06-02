@@ -234,30 +234,30 @@ export default function MyCopyTrading() {
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center gap-5 text-xs">
-                          <div className="text-center">
+                        <div className="flex items-center gap-5 text-xs overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
+                          <div className="text-center shrink-0">
                             <p className="text-muted-foreground">Win Rate</p>
                             <p className={cn("text-lg font-bold font-mono", trader.win_rate >= 50 ? "text-success" : "text-danger")}>
                               {(trader.win_rate ?? 0).toFixed(0)}%
                             </p>
                           </div>
-                          <div className="text-center hidden md:block">
+                          <div className="text-center shrink-0">
                             <p className="text-muted-foreground">Avg Return</p>
                             <p className={cn("font-bold font-mono", trader.avg_return >= 0 ? "text-success" : "text-danger")}>
                               {trader.avg_return >= 0 ? '+' : ''}{(trader.avg_return ?? 0).toFixed(1)}%
                             </p>
                           </div>
-                          <div className="text-center hidden md:block">
+                          <div className="text-center shrink-0">
                             <p className="text-muted-foreground">Correct</p>
                             <p className="font-bold font-mono">{trader.correct_predictions}/{trader.total_predictions}</p>
                           </div>
                           {/* Win rate visual bar */}
-                          <div className="hidden md:block w-20">
+                          <div className="w-20 shrink-0">
                             <div className="h-2 bg-muted rounded-full overflow-hidden">
                               <div className={cn("h-full rounded-full", trader.win_rate >= 60 ? "bg-success" : trader.win_rate >= 40 ? "bg-warning" : "bg-danger")} style={{ width: `${Math.min(trader.win_rate, 100)}%` }} />
                             </div>
                           </div>
-                          <Button size="sm" variant={following.has(trader.id) ? "secondary" : "outline"} className="h-8 text-xs gap-1" onClick={() => toggleFollow(trader.id)}>
+                          <Button size="sm" variant={following.has(trader.id) ? "secondary" : "outline"} className="h-8 text-xs gap-1 shrink-0" onClick={() => toggleFollow(trader.id)}>
                             {following.has(trader.id) ? <><UserMinus className="w-3 h-3" /> Following</> : <><UserPlus className="w-3 h-3" /> Follow</>}
                           </Button>
                         </div>

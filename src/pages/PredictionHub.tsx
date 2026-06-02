@@ -178,12 +178,12 @@ export default function PredictionHub() {
             <span className="font-mono text-success font-medium">LIVE</span>
           </div>
           <span className="text-muted-foreground font-mono">{liveTime.toLocaleTimeString()}</span>
-          <span className="hidden sm:inline text-border">|</span>
-          <span className="hidden sm:inline text-muted-foreground">
+          <span className="text-border">|</span>
+          <span className="text-muted-foreground">
             Prices: <span className="text-foreground font-medium">15s</span>
           </span>
-          <span className="hidden sm:inline text-border">|</span>
-          <span className="hidden sm:inline text-muted-foreground">
+          <span className="text-border">|</span>
+          <span className="text-muted-foreground">
             AI Cache: <span className="text-foreground font-medium">2m</span>
           </span>
           {cachedPredictions && cachedPredictions.length > 0 && (
@@ -196,8 +196,8 @@ export default function PredictionHub() {
           )}
           {pricesData?.timestamp && (
             <>
-              <span className="hidden md:inline text-border">|</span>
-              <span className="hidden md:inline text-muted-foreground">
+              <span className="text-border">|</span>
+              <span className="text-muted-foreground">
                 Last: {new Date(pricesData.timestamp).toLocaleTimeString()}
               </span>
             </>
@@ -366,7 +366,7 @@ export default function PredictionHub() {
           ) : (
             <div className="rounded-xl border border-border overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="w-full text-sm table-fixed">
+                <table className="w-full text-sm min-w-[900px]">
                   <thead>
                     <tr className="bg-muted/40 border-b border-border">
                       <th className="text-left p-3 text-xs font-medium text-muted-foreground w-10">#</th>
@@ -375,8 +375,8 @@ export default function PredictionHub() {
                       <th className="text-right p-3 text-xs font-medium text-muted-foreground w-[80px]">24h</th>
                       <th className="text-center p-3 text-xs font-medium text-muted-foreground w-[90px]">AI Signal</th>
                       <th className="text-center p-3 text-xs font-medium text-muted-foreground w-[120px]">Confidence</th>
-                      <th className="text-center p-3 text-xs font-medium text-muted-foreground w-[70px] hidden md:table-cell">Risk</th>
-                      <th className="text-right p-3 text-xs font-medium text-muted-foreground w-[100px] hidden md:table-cell">Mkt Cap</th>
+                      <th className="text-center p-3 text-xs font-medium text-muted-foreground w-[70px]">Risk</th>
+                      <th className="text-right p-3 text-xs font-medium text-muted-foreground w-[100px]">Mkt Cap</th>
                       <th className="text-center p-3 text-xs font-medium text-muted-foreground w-[70px]"></th>
                     </tr>
                   </thead>
@@ -442,7 +442,7 @@ export default function PredictionHub() {
                             <span className="text-xs font-mono tabular-nums w-8 text-right">{crypto.confidence}%</span>
                           </div>
                         </td>
-                        <td className="p-3 text-center hidden md:table-cell">
+                        <td className="p-3 text-center">
                           <Badge variant="outline" className={cn("text-[10px] capitalize",
                             crypto.riskLevel === 'low' ? 'text-success border-success/30' :
                             crypto.riskLevel === 'medium' ? 'text-warning border-warning/30' :
@@ -451,7 +451,7 @@ export default function PredictionHub() {
                             {crypto.riskLevel}
                           </Badge>
                         </td>
-                        <td className="p-3 text-right hidden md:table-cell text-xs text-muted-foreground font-mono tabular-nums">
+                        <td className="p-3 text-right text-xs text-muted-foreground font-mono tabular-nums">
                           {crypto.marketCap > 0 ? formatCompact(crypto.marketCap) : '—'}
                         </td>
                         <td className="p-3 text-center">
