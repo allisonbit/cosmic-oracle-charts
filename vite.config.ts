@@ -70,16 +70,29 @@ const educationalRoutes = [
   "/learn/how-to-read-market-analytics-dashboards",
 ];
 
-// Top crypto prediction routes (for SEO)
+// Top crypto prediction routes (for SEO) — 60+ coins for maximum sitemap coverage
 const topCryptoIds = [
-  'bitcoin', 'ethereum', 'solana', 'binancecoin', 'ripple', 'cardano', 'dogecoin',
-  'polkadot', 'chainlink', 'avalanche-2', 'matic-network', 'shiba-inu', 'litecoin',
-  'uniswap', 'cosmos', 'near', 'arbitrum', 'optimism', 'aptos', 'sui', 'pepe', 'floki', 'bonk',
-  'toncoin', 'tron', 'stellar', 'monero', 'okb', 'hedera', 'filecoin', 'vechain',
-  'internet-computer', 'render-token', 'fetch-ai', 'injective-protocol', 'kaspa', 'theta-token'
+  // Tier 1 — Blue chips
+  'bitcoin', 'ethereum', 'solana', 'binancecoin', 'ripple', 'toncoin',
+  // Tier 2 — Large caps
+  'cardano', 'dogecoin', 'polkadot', 'chainlink', 'avalanche-2', 'matic-network',
+  'shiba-inu', 'litecoin', 'uniswap', 'cosmos', 'near', 'arbitrum', 'optimism',
+  'aptos', 'sui', 'tron', 'stellar', 'monero', 'okb', 'hedera', 'filecoin', 'vechain',
+  // Tier 3 — Mid caps
+  'internet-computer', 'render-token', 'fetch-ai', 'injective-protocol', 'kaspa',
+  'theta-token', 'pepe', 'floki', 'bonk', 'bittensor', 'sei-network',
+  'starknet', 'worldcoin-wld', 'wormhole', 'jupiter-ag', 'pyth-network',
+  'jito-governance-token', 'pendle', 'eigenlayer', 'dogwifcoin', 'brett-based',
+  'mog-coin', 'mantle', 'immutable-x', 'blur', 'beam-2', 'gala',
+  // Tier 4 — Trending / high search volume
+  'hamster-kombat', 'notcoin', 'catizen', 'dogs-2', 'toncoin',
+  'raydium', 'jupiter-ag', 'helium', 'hive', 'terra-luna-2',
+  'elrond', 'harmony', 'zilliqa', 'enjincoin', 'decentraland', 'sandbox',
+  'axie-infinity', 'the-graph', 'aave', 'compound', 'maker', 'synthetix-network-token',
+  'curve-dao-token', 'yearn-finance', '1inch', 'balancer', 'sushi',
 ];
 
-const predictionRoutes = topCryptoIds.flatMap(id => [
+const predictionRoutes = [...new Set(topCryptoIds)].flatMap(id => [
   `/price-prediction/${id}`,
   `/price-prediction/${id}/daily`,
   `/price-prediction/${id}/weekly`,
@@ -102,9 +115,13 @@ const questionPatterns = [
   '{coin}-monthly-forecast',
 ];
 
-// Generate question-intent routes for top 10 coins
-const questionIntentCoins = ['bitcoin', 'ethereum', 'solana', 'ripple', 'cardano', 'dogecoin', 'shiba-inu', 'pepe', 'chainlink', 'polkadot'];
-const questionRoutes = questionIntentCoins.flatMap(coin => 
+// Generate question-intent routes for top 20 coins
+const questionIntentCoins = [
+  'bitcoin', 'ethereum', 'solana', 'ripple', 'cardano', 'dogecoin',
+  'shiba-inu', 'pepe', 'chainlink', 'polkadot', 'binancecoin', 'toncoin',
+  'avalanche-2', 'aptos', 'sui', 'arbitrum', 'near', 'tron', 'floki', 'bonk',
+];
+const questionRoutes = questionIntentCoins.flatMap(coin =>
   questionPatterns.map(pattern => `/q/${pattern.replace('{coin}', coin)}`)
 );
 
@@ -128,6 +145,13 @@ const marketQuestionRoutes = [
   "/market/top-meme-coins",
   "/market/best-defi-tokens",
   "/market/top-ai-crypto-tokens",
+  "/market/crypto-bull-run-indicator",
+  "/market/altcoin-season-index",
+  "/market/crypto-gainers-and-losers-today",
+  "/market/crypto-fear-greed-index-today",
+  "/market/best-layer-2-crypto",
+  "/market/best-gaming-crypto-tokens",
+  "/market/best-rwa-crypto-tokens",
 ];
 
 const coinMarketRoutes: string[] = [];
