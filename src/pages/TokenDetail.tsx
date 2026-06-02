@@ -642,7 +642,7 @@ export default function TokenDetail() {
                     )}
 
                     {/* Key Triggers */}
-                    {forecast.triggers && forecast.triggers.length > 0 && (
+                    {Array.isArray(forecast.triggers) && forecast.triggers.length > 0 && (
                       <div className="p-4 rounded-lg border border-border">
                         <h4 className="text-xs font-semibold text-muted-foreground mb-2">KEY TRIGGERS</h4>
                         <ul className="space-y-1.5">
