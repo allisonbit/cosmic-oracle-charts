@@ -161,7 +161,7 @@ const SentimentPage = () => {
             </div>
             <div className="holo-card p-4 text-center">
               <div className="text-xs text-muted-foreground mb-1">Active Cryptos</div>
-              <div className="font-bold text-lg">{(sentimentData.global.activeCryptos ?? sentimentData.global.activeCryptocurrencies ?? 0).toLocaleString()}</div>
+              <div className="font-bold text-lg">{(sentimentData.global.activeCryptos ?? 0).toLocaleString()}</div>
             </div>
           </div>
         )}
