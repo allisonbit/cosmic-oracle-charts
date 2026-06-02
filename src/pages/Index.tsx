@@ -111,15 +111,16 @@ const Index = () => {
         <HeroSection />
 
 
-        {/* 2. Quick Stats - live market data bar */}
+        {/* 2. Live Signals - high conviction trade setups (Moved to be 2nd thing users see) */}
+        <Suspense fallback={<SectionFallback />}>
+          <LiveSignals />
+        </Suspense>
+
+        {/* 3. Quick Stats - live market data bar */}
         <Suspense fallback={<SectionFallback />}>
           <QuickStats />
         </Suspense>
 
-        {/* 2.5 Live Signals - high conviction trade setups */}
-        <Suspense fallback={<SectionFallback />}>
-          <LiveSignals />
-        </Suspense>
 
 
         {/* 3. Social Proof - animated platform metrics */}
