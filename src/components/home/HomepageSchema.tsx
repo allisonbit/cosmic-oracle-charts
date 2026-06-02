@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 import { SITE_URL } from "@/lib/siteConfig";
 
