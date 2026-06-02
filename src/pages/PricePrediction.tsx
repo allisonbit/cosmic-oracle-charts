@@ -67,32 +67,29 @@ export default function PricePrediction() {
       
       const fetchTokenInfo = async () => {
         try {
-          const cgResponse = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}`, { signal: controller.signal });
-          if (cgResponse.ok) {
-            const data = await cgResponse.json();
-            setDynamicToken({ id: data.id, symbol: data.symbol?.toUpperCase() || coinId.toUpperCase(), name: data.name || coinId });
-            setIsLoadingToken(false);
-            return;
-          }
-          const searchResponse = await fetch(`https://api.coingecko.com/api/v3/search?query=${encodeURIComponent(coinId)}`, { signal: controller.signal });
-          if (searchResponse.ok) {
-            const searchData = await searchResponse.json();
-            if (searchData.coins?.length > 0) {
-              const match = searchData.coins[0];
-              setDynamicToken({ id: match.id, symbol: match.symbol?.toUpperCase() || coinId.toUpperCase(), name: match.name || coinId });
+          const { data, error } = await supabase.functions.invoke('crypto-prices');
+          if (!error && data?.prices) {
+            const match = data.prices.find((p: any) => 
+              p.id === coinId || p.symbol?.toLowerCase() === coinId.toLowerCase() || p.name?.toLowerCase() === coinId.toLowerCase()
+            );
+            
+            if (match) {
+              setDynamicToken({ 
+                id: match.id || coinId, 
+                symbol: match.symbol?.toUpperCase() || coinId.toUpperCase(), 
+                name: match.name || coinId 
+              });
               setIsLoadingToken(false);
               return;
             }
           }
+          
+          // Fallback if not found in edge function
           const formattedName = coinId.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
           setDynamicToken({ id: coinId, symbol: coinId.toUpperCase().substring(0, 6), name: formattedName });
         } catch (error) {
-          if ((error as Error).name === 'AbortError') {
-            setTokenError('Request timed out. Please try again.');
-          } else {
-            const formattedName = coinId.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-            setDynamicToken({ id: coinId, symbol: coinId.toUpperCase().substring(0, 6), name: formattedName });
-          }
+          const formattedName = coinId.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+          setDynamicToken({ id: coinId, symbol: coinId.toUpperCase().substring(0, 6), name: formattedName });
         }
         clearTimeout(timeoutId);
         setIsLoadingToken(false);

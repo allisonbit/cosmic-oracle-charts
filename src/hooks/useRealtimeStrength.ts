@@ -83,33 +83,27 @@ export function useRealtimeStrength(timeframe: string = '24h') {
 
   const fetchData = useCallback(async () => {
     try {
-      // Fetch full market data from CoinGecko via edge function
-      const response = await fetch(
-        'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=25&page=1&sparkline=false&price_change_percentage=1h,24h,7d'
-      );
+      // Fetch market data from CoinGecko via our Edge Function to prevent rate limits
+      const { data, error } = await supabase.functions.invoke('crypto-prices');
       
       let coins: any[] = [];
       
-      if (response.ok) {
-        coins = await response.json();
+      if (!error && data?.prices) {
+        coins = data.prices.map((p: any) => ({
+          id: p.symbol?.toLowerCase() || p.id,
+          symbol: p.symbol,
+          name: p.name,
+          image: coinImages[p.symbol?.toLowerCase()] || `https://assets.coingecko.com/coins/images/1/large/bitcoin.png`,
+          current_price: p.price,
+          price_change_percentage_24h: p.change24h,
+          price_change_percentage_1h_in_currency: p.change24h / 24,
+          price_change_percentage_7d_in_currency: p.change24h * 3,
+          total_volume: p.volume24h,
+          market_cap: p.marketCap,
+          market_cap_change_percentage_24h: p.change24h * 0.8,
+        }));
       } else {
-        // Fallback to edge function
-        const { data, error } = await supabase.functions.invoke('crypto-prices');
-        if (!error && data?.prices) {
-          coins = data.prices.map((p: any) => ({
-            id: p.symbol?.toLowerCase(),
-            symbol: p.symbol,
-            name: p.name,
-            image: coinImages[p.symbol?.toLowerCase()] || `https://assets.coingecko.com/coins/images/1/large/bitcoin.png`,
-            current_price: p.price,
-            price_change_percentage_24h: p.change24h,
-            price_change_percentage_1h_in_currency: p.change24h / 24,
-            price_change_percentage_7d_in_currency: p.change24h * 3,
-            total_volume: p.volume24h,
-            market_cap: p.marketCap,
-            market_cap_change_percentage_24h: p.change24h * 0.8,
-          }));
-        }
+        console.warn("crypto-prices edge function failed:", error);
       }
 
       if (coins.length === 0) {

@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useTokenSearch, SearchToken } from "@/hooks/useTokenSearch";
-import { useLiveTokenSearch, useTrendingTokens, LiveToken } from "@/hooks/useLiveTokenSearch";
+import { useLiveTokenSearch, useInfiniteTrendingTokens, LiveToken } from "@/hooks/useLiveTokenSearch";
+import { useInView } from "react-intersection-observer";
 import { useTokenDiscovery, DiscoveryToken } from "@/hooks/useTokenDiscovery";
 import { ALL_CHAINS, getChainById, ExplorerChain } from "@/lib/explorerChains";
 import { ExplorerSchema, ExplorerSEOContent } from "@/components/seo/index";
@@ -215,17 +216,31 @@ const ExplorerPage = () => {
 
   // Data hooks
   const { data: discoveryData, isLoading: discoveryLoading } = useTokenDiscovery(selectedChain);
-  const { data: trendingData, isLoading: trendingLoading } = useTrendingTokens(selectedChain, 50);
+  const { 
+    data: trendingDataPages, 
+    isLoading: trendingLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage
+  } = useInfiniteTrendingTokens(selectedChain, 50);
   const { data: searchResults, isLoading: searchLoading } = useLiveTokenSearch(searchQuery, selectedChain);
+
+  const { ref: loadMoreRef, inView } = useInView();
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const isLoading = discoveryLoading || trendingLoading;
 
   // Merge all tokens
   const allTokens = useMemo(() => {
     const disc = discoveryData?.tokens || [];
-    const live = trendingData?.tokens || [];
+    const live = trendingDataPages?.pages.flatMap(p => p.tokens) || [];
     return mergeTokens(disc, live, selectedChain);
-  }, [discoveryData, trendingData, selectedChain]);
+  }, [discoveryData, trendingDataPages, selectedChain]);
 
   // Filter by tab
   const tabTokens = useMemo(() => {
@@ -660,6 +675,17 @@ const ExplorerPage = () => {
               </tbody>
             </table>
           </div>
+
+          {/* Infinite Scroll Trigger */}
+          {hasNextPage && !searchQuery && (
+            <div ref={loadMoreRef} className="py-6 flex justify-center items-center">
+              {isFetchingNextPage ? (
+                <Loader2 className="h-6 w-6 animate-spin text-primary" />
+              ) : (
+                <span className="text-sm text-muted-foreground">Scroll for more</span>
+              )}
+            </div>
+          )}
 
           {/* SEO Footer */}
           <div className="border-t border-border bg-card px-4 py-6">

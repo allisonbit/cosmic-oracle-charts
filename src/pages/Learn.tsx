@@ -20,7 +20,7 @@ import { format, parseISO, isToday, isYesterday } from "date-fns";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import { LearnSEOContent } from "@/components/seo/index";
-import { EDUCATIONAL_ARTICLES } from "@/lib/educationalArticles";
+import { useEducationalArticles } from "@/hooks/useEducationalArticles";
 
 const categoryIcons: Record<string, typeof BookOpen> = {
   'Market Structure': BarChart3,
@@ -112,6 +112,7 @@ function CardSkeleton() {
 
 export default function Learn() {
   const { data, isLoading, refetch, isFetching } = useAIBlog();
+  const { data: educationalArticles = [], isLoading: isLoadingArticles } = useEducationalArticles();
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDate, setSelectedDate] = useState('all');
@@ -429,24 +430,28 @@ export default function Learn() {
               Master cryptocurrency investing with comprehensive educational guides.
             </p>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-              {EDUCATIONAL_ARTICLES.slice(0, 8).map((article) => (
-                <Link key={article.id} to={`/learn/${article.slug}`} className="group">
-                  <Card className="h-full border-border/40 hover:border-primary/30 transition-all duration-200 hover:shadow-sm">
-                    <CardContent className="p-3 sm:p-4">
-                      <Badge variant="outline" className="text-[10px] mb-2">{article.category}</Badge>
-                      <h3 className="font-display font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors leading-snug">
-                        {article.title}
-                      </h3>
-                      <p className="text-xs text-muted-foreground mt-2 line-clamp-2 leading-relaxed">
-                        {article.metaDescription}
-                      </p>
-                      <div className="flex items-center gap-1 text-[10px] text-muted-foreground mt-2">
-                        <Clock className="w-2.5 h-2.5" /> {article.readTime}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
+              {isLoadingArticles ? (
+                Array.from({ length: 4 }).map((_, i) => <CardSkeleton key={i} />)
+              ) : (
+                educationalArticles.slice(0, 8).map((article) => (
+                  <Link key={article.id} to={`/learn/${article.slug}`} className="group">
+                    <Card className="h-full border-border/40 hover:border-primary/30 transition-all duration-200 hover:shadow-sm">
+                      <CardContent className="p-3 sm:p-4">
+                        <Badge variant="outline" className="text-[10px] mb-2">{article.category}</Badge>
+                        <h3 className="font-display font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors leading-snug">
+                          {article.title}
+                        </h3>
+                        <p className="text-xs text-muted-foreground mt-2 line-clamp-2 leading-relaxed">
+                          {article.metaDescription}
+                        </p>
+                        <div className="flex items-center gap-1 text-[10px] text-muted-foreground mt-2">
+                          <Clock className="w-2.5 h-2.5" /> {article.readTime}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))
+              )}
             </div>
           </section>
 
@@ -463,7 +468,7 @@ export default function Learn() {
               <h2>Cryptocurrency Educational Guides</h2>
               <p>Comprehensive guides covering crypto market analysis, DeFi, on-chain analytics, trading strategies, and blockchain technology fundamentals.</p>
               <ul>
-                {EDUCATIONAL_ARTICLES.map(article => (
+                {educationalArticles.map(article => (
                   <li key={article.slug}>
                     <a href={`https://oraclebull.com/learn/${article.slug}`}>{article.title}</a>
                     {article.metaDescription && <span> — {article.metaDescription}</span>}

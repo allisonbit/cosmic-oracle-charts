@@ -17,7 +17,7 @@ import { GlobalSchemas } from "@/components/seo/RichSchemas";
 import { AIChatBubble } from "@/components/chat/AIChatBubble";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { AdminRoute } from "@/components/auth/AdminRoute";
-import { TradeProvider } from "@/contexts/TradeContext";
+// Trade context removed in favor of Zustand store
 import { QuickTradeModal } from "@/components/trading/QuickTradeModal";
 
 // Eager load critical pages
@@ -161,7 +161,6 @@ const App = () => (
   >
     <QueryClientProvider client={queryClient}>
     <AuthProvider>
-    <TradeProvider>
       <TooltipProvider delayDuration={300}>
         <Toaster />
         <Sonner position="top-right" closeButton richColors />
@@ -230,9 +229,8 @@ const App = () => (
           </BrowserRouter>
         </AppErrorBoundary>
       </TooltipProvider>
-    </TradeProvider>
     </AuthProvider>
-  </QueryClientProvider>
+    </QueryClientProvider>
   </PrivyProvider>
 );
 

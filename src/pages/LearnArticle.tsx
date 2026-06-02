@@ -4,13 +4,13 @@ import { Helmet } from "react-helmet-async";
 import DOMPurify from "dompurify";
 import { SITE_URL } from "@/lib/siteConfig";
 import { Layout } from "@/components/layout/Layout";
-import { EDUCATIONAL_ARTICLES } from "@/lib/educationalArticles";
+import { useEducationalArticles } from "@/hooks/useEducationalArticles";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Clock, BookOpen, ChevronLeft, Share2, ArrowRight, Check,
-  HelpCircle, TrendingUp, BarChart3, Activity, Wallet, ChevronUp, Copy
+  HelpCircle, TrendingUp, BarChart3, Activity, Wallet, ChevronUp, Copy, Loader2
 } from "lucide-react";
 import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
@@ -25,7 +25,8 @@ export default function LearnArticle() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
 
-  const article = EDUCATIONAL_ARTICLES.find(a => a.slug === slug);
+  const { data: educationalArticles = [], isLoading } = useEducationalArticles();
+  const article = educationalArticles.find(a => a.slug === slug);
 
   // Reading progress
   useEffect(() => {
@@ -41,12 +42,12 @@ export default function LearnArticle() {
   }, []);
 
   const relatedArticles = useMemo(() => {
-    if (!article) return [];
-    return EDUCATIONAL_ARTICLES
+    if (!article || educationalArticles.length === 0) return [];
+    return educationalArticles
       .filter(a => a.id !== article.id)
       .sort(() => 0.5 - Math.random())
       .slice(0, 4);
-  }, [article]);
+  }, [article, educationalArticles]);
 
   const processedContent = useMemo(() => {
     if (!article?.content) return "";
@@ -79,6 +80,16 @@ export default function LearnArticle() {
       setTimeout(() => setCopied(false), 2000);
     }
   };
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="min-h-screen pt-20 pb-12 flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </Layout>
+    );
+  }
 
   if (!article) {
     return (

@@ -35,8 +35,26 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const { user: privyUser, ready, authenticated, logout } = usePrivy();
+  const { user: privyUser, ready, authenticated, logout, getAccessToken } = usePrivy();
   const [profile, setProfile] = useState<UserProfile | null>(null);
+
+  // Sync the Privy access token to the global scope for Supabase to use
+  useEffect(() => {
+    const syncToken = async () => {
+      if (authenticated) {
+        try {
+          const token = await getAccessToken();
+          globalThis.__privyAccessToken = token;
+        } catch (error) {
+          console.error("Failed to get Privy access token:", error);
+          globalThis.__privyAccessToken = null;
+        }
+      } else {
+        globalThis.__privyAccessToken = null;
+      }
+    };
+    syncToken();
+  }, [authenticated, getAccessToken]);
 
   useEffect(() => {
     if (ready && authenticated && privyUser) {

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowDownUp, Globe, ShoppingCart, DollarSign } from "lucide-react";
-import { useTrade } from "@/contexts/TradeContext";
+import { useAppStore } from "@/store/useAppStore";
 
 interface TradeButtonsProps {
   symbol: string;
@@ -15,7 +15,7 @@ interface TradeButtonsProps {
 }
 
 export function TradeButtons({ symbol, name, contractAddress, chain, chainId, price, logo, size = "sm", variant = "full" }: TradeButtonsProps) {
-  const { openTrade } = useTrade();
+  const openTrade = useAppStore(state => state.openTrade);
 
   const base = { symbol, name, contractAddress, chain, chainId, price, logo };
 

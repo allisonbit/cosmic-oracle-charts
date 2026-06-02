@@ -12,10 +12,26 @@ if (!import.meta.env.VITE_SUPABASE_URL || (!import.meta.env.VITE_SUPABASE_PUBLIS
   console.warn("Supabase environment variables are missing. Some features may not work.");
 }
 
+// We use a global variable to store the Privy token so we don't have to refactor every import
+declare global {
+  var __privyAccessToken: string | null | undefined;
+}
+
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: {
     storage: typeof window !== 'undefined' ? window.localStorage : undefined,
     persistSession: true,
     autoRefreshToken: true,
+  },
+  global: {
+    fetch: async (url, options = {}) => {
+      const privyToken = globalThis.__privyAccessToken;
+      if (privyToken) {
+        const headers = new Headers(options?.headers);
+        headers.set('Authorization', `Bearer ${privyToken}`);
+        options.headers = headers;
+      }
+      return fetch(url, options);
+    }
   }
 });

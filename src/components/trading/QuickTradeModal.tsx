@@ -8,13 +8,15 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowDownUp, ArrowRight, Globe, Loader2, Zap, RefreshCw, AlertTriangle, Plus, Lock } from "lucide-react";
 import { formatUnits } from "viem";
 import { useTrading } from "@/hooks/useTrading";
-import { useTrade } from "@/contexts/TradeContext";
+import { useAppStore } from "@/store/useAppStore";
 import { toast } from "sonner";
 import { POPULAR_TOKENS, CHAIN_NAME_TO_ID } from "@/lib/tradingTokens";
 import { usePrivy } from "@privy-io/react-auth";
 
 export function QuickTradeModal() {
-  const { isOpen, target, closeTrade } = useTrade();
+  const isOpen = useAppStore(state => state.isTradeOpen);
+  const target = useAppStore(state => state.tradeTarget);
+  const closeTrade = useAppStore(state => state.closeTrade);
   const { authenticated, login } = usePrivy();
   const { loading, error, getSwapQuote, getSwapPrice, getBridgeQuote, supportedChains } = useTrading();
 

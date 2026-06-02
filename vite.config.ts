@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 import Sitemap from "vite-plugin-sitemap";
+import { VitePWA } from "vite-plugin-pwa";
 
 // All static routes for sitemap generation
 const staticRoutes = [
@@ -153,6 +154,51 @@ export default defineConfig(({ mode }) => ({
       exclude: ["/404", "/**/404"],
       outDir: "dist",
       readable: true,
+    }),
+    VitePWA({
+      registerType: 'autoUpdate',
+      injectRegister: 'auto',
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg}'],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/api\.coingecko\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'coingecko-api-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 5 // 5 minutes
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          }
+        ]
+      },
+      manifest: {
+        name: "Oracle Bull - AI Crypto Intelligence",
+        short_name: "Oracle Bull",
+        description: "Free AI-powered cryptocurrency price predictions, whale tracking, market sentiment analysis, and blockchain dashboards for 1000+ tokens.",
+        theme_color: "#2563eb",
+        background_color: "#0f172a",
+        display: "standalone",
+        icons: [
+          {
+            src: "oracle-bot-mascot.jpg",
+            sizes: "192x192",
+            type: "image/jpeg",
+            purpose: "any"
+          },
+          {
+            src: "oracle-bot-mascot.jpg",
+            sizes: "512x512",
+            type: "image/jpeg",
+            purpose: "any maskable"
+          }
+        ]
+      }
     }),
   ].filter(Boolean),
   resolve: {

@@ -12,7 +12,8 @@ import {
   Flame, Target, Eye, Filter, ScanLine, Globe, Clock
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useLiveTokenSearch, useTrendingTokens, type LiveToken } from "@/hooks/useLiveTokenSearch";
+import { useLiveTokenSearch, useInfiniteTrendingTokens, type LiveToken } from "@/hooks/useLiveTokenSearch";
+import { useInView } from "react-intersection-observer";
 import { useStrengthMeter } from "@/hooks/useStrengthMeter";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 import { SEO } from "@/components/MainSEO";
@@ -201,7 +202,22 @@ export default function Scanner() {
 
   // Data hooks
   const { data: searchResults, isLoading: isSearching } = useLiveTokenSearch(searchQuery, selectedChain === "all" ? "ethereum" : selectedChain);
-  const { data: trendingData, isLoading: isTrendingLoading, refetch: refreshTrending } = useTrendingTokens(selectedChain === "all" ? "ethereum" : selectedChain, 100);
+  const { 
+    data: trendingDataPages, 
+    isLoading: isTrendingLoading, 
+    refetch: refreshTrending,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage
+  } = useInfiniteTrendingTokens(selectedChain === "all" ? "ethereum" : selectedChain, 50);
+
+  const { ref: loadMoreRef, inView } = useInView();
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
   const { data: strengthData } = useStrengthMeter("24h");
   const { data: priceData } = useCryptoPrices();
 
@@ -215,8 +231,8 @@ export default function Scanner() {
     const tokenMap = new Map<string, LiveToken>();
 
     // Add trending tokens
-    if (trendingData?.tokens) {
-      trendingData.tokens.forEach(t => tokenMap.set(`${t.symbol}-${t.chain}`, t));
+    if (trendingDataPages?.pages) {
+      trendingDataPages.pages.flatMap(p => p.tokens).forEach(t => tokenMap.set(`${t.symbol}-${t.chain}`, t));
     }
 
     // Add search results on top
@@ -276,27 +292,34 @@ export default function Scanner() {
       ...t,
       strength: calcTokenStrength(t, btcChange),
     }));
-  }, [trendingData, searchResults, strengthData, priceData, searchQuery, btcChange]);
+  }, [trendingDataPages, searchResults, strengthData, priceData, searchQuery, btcChange]);
 
   // Filter + sort
   const displayTokens = useMemo(() => {
-    let filtered = allTokens;
+    let filtered = Array.from(allTokens);
 
+    // Filter by chain if not all
     if (selectedChain !== "all") {
-      filtered = filtered.filter(t => t.chain?.toLowerCase().includes(selectedChain));
+      filtered = filtered.filter(t => t.chain?.toLowerCase() === selectedChain.toLowerCase() || t.chain === "multi");
     }
 
+    // Sort
     filtered.sort((a, b) => {
       switch (sortBy) {
-        case "strength": return b.strength - a.strength;
-        case "volume": return (b.volume24h || 0) - (a.volume24h || 0);
-        case "change": return (b.change24h || 0) - (a.change24h || 0);
-        case "marketcap": return (b.marketCap || 0) - (a.marketCap || 0);
-        default: return 0;
+        case "strength":
+          return b.strength - a.strength;
+        case "volume":
+          return (b.volume24h || 0) - (a.volume24h || 0);
+        case "change":
+          return (b.change24h || 0) - (a.change24h || 0);
+        case "marketcap":
+          return (b.marketCap || 0) - (a.marketCap || 0);
+        default:
+          return b.strength - a.strength;
       }
     });
 
-    return filtered.slice(0, 200);
+    return filtered;
   }, [allTokens, selectedChain, sortBy]);
 
   const stats = useMemo(() => {
@@ -488,20 +511,34 @@ export default function Scanner() {
                   <RefreshCw className="w-6 h-6 text-primary animate-spin" />
                   <span className="ml-3 text-muted-foreground">Scanning tokens...</span>
                 </div>
-              ) : displayTokens.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
-                  <ScanLine className="w-10 h-10 mb-3 opacity-30" />
-                  <p className="text-sm">No tokens found. Try a different search or chain.</p>
-                </div>
               ) : (
-                displayTokens.map((token, i) => (
-                  <ScannerTokenRow
-                    key={`${token.symbol}-${token.chain}-${i}`}
-                    token={token}
-                    strength={token.strength}
-                    onClick={() => handleTokenClick(token)}
-                  />
-                ))
+                <div className="flex flex-col">
+                  {displayTokens.map((token, i) => (
+                    <ScannerTokenRow
+                      key={`${token.symbol}-${token.chain}-${i}`}
+                      token={token}
+                      strength={token.strength}
+                      onClick={() => handleTokenClick(token)}
+                    />
+                  ))}
+                  
+                  {/* Infinite Scroll Trigger */}
+                  {hasNextPage && !searchQuery && (
+                    <div ref={loadMoreRef} className="py-6 flex justify-center items-center">
+                      {isFetchingNextPage ? (
+                        <RefreshCw className="h-6 w-6 animate-spin text-primary" />
+                      ) : (
+                        <span className="text-sm text-muted-foreground">Scroll for more tokens</span>
+                      )}
+                    </div>
+                  )}
+                  
+                  {allTokens.length === 0 && !isSearching && !isTrendingLoading && (
+                    <div className="text-center py-12 text-muted-foreground">
+                      No tokens found matching your criteria
+                    </div>
+                  )}
+                </div>
               )}
             </div>
           </Card>

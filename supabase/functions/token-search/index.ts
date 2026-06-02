@@ -67,13 +67,14 @@ serve(async (req) => {
   }
 
   try {
-    const { query, chain = 'ethereum', mode = 'search', limit = 50 } = await req.json();
+    const { query, chain = 'ethereum', mode = 'search', limit = 50, page = 1 } = await req.json();
     
     const ALCHEMY_KEY = Deno.env.get('ALCHEMY_API_KEY_1') || Deno.env.get('ALCHEMY_API_KEY_2');
     const dexChain = DEXSCREENER_CHAINS[chain] || chain;
     const platformId = CHAIN_PLATFORM_IDS[chain] || chain;
     
     let tokens: any[] = [];
+    const offset = (page - 1) * limit;
 
     // ─── MODE: Trending / Top ───
     if (mode === 'trending' || mode === 'top') {
@@ -142,9 +143,10 @@ serve(async (req) => {
       }
 
       // Fallback to CoinGecko if DexScreener returned too few
-      if (tokens.length < 10) {
+      if (tokens.length < limit) {
         try {
-          const cgUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${limit}&page=1&sparkline=true&price_change_percentage=1h,24h,7d`;
+          // Note: using limit parameter mapped to per_page, and our actual page
+          const cgUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${limit}&page=${page}&sparkline=true&price_change_percentage=1h,24h,7d`;
           const cgResponse = await fetch(cgUrl);
           if (cgResponse.ok) {
             const cgData = await cgResponse.json();
@@ -185,8 +187,17 @@ serve(async (req) => {
         }
       }
 
+      // Apply offset for DexScreener results since they don't natively paginate
+      const finalTokens = tokens.slice(offset, offset + limit);
+
       return new Response(
-        JSON.stringify({ tokens: tokens.slice(0, limit), query: '', chain, mode }),
+        JSON.stringify({ 
+          tokens: finalTokens, 
+          query: '', 
+          chain, 
+          mode,
+          nextPage: finalTokens.length === limit ? page + 1 : null
+        }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }

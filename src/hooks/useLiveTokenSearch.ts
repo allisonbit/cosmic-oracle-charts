@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 
 export interface LiveToken {
   symbol: string;
@@ -40,6 +40,7 @@ interface TokenSearchResult {
   chain: string;
   mode?: string;
   error?: string;
+  nextPage?: number | null;
 }
 
 // Hook for searching tokens
@@ -96,6 +97,29 @@ export function useTrendingTokens(chain: string = 'ethereum', limit: number = 50
     staleTime: 60000, // Cache for 1 minute
     refetchInterval: 60000, // Refetch every minute
     refetchOnWindowFocus: true,
+  });
+}
+
+// Hook for infinite scrolling trending/top tokens
+export function useInfiniteTrendingTokens(chain: string = 'ethereum', limit: number = 50) {
+  return useInfiniteQuery<TokenSearchResult>({
+    queryKey: ['infinite-trending-tokens', chain, limit],
+    initialPageParam: 1,
+    queryFn: async ({ pageParam = 1 }) => {
+      const { data, error } = await supabase.functions.invoke('token-search', {
+        body: { chain, mode: 'trending', limit, page: pageParam }
+      });
+
+      if (error) {
+        console.error('Trending tokens error:', error);
+        throw error;
+      }
+
+      return data as TokenSearchResult;
+    },
+    getNextPageParam: (lastPage) => lastPage.nextPage,
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
   });
 }
 

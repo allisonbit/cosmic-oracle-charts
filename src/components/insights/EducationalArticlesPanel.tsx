@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { EDUCATIONAL_ARTICLES } from "@/lib/educationalArticles";
-import { BookOpen, Clock, ChevronRight, GraduationCap } from "lucide-react";
+import { useEducationalArticles } from "@/hooks/useEducationalArticles";
+import { BookOpen, Clock, ChevronRight, GraduationCap, Loader2 } from "lucide-react";
 
 export function EducationalArticlesPanel() {
-  // Get first 10 educational articles
-  const articles = EDUCATIONAL_ARTICLES.slice(0, 10);
+  const { data: educationalArticles = [], isLoading } = useEducationalArticles();
+  const articles = educationalArticles.slice(0, 10);
 
   return (
     <section className="mb-8 sm:mb-12">
@@ -29,7 +29,12 @@ export function EducationalArticlesPanel() {
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        {articles.map((article) => (
+        {isLoading ? (
+          <div className="col-span-full flex justify-center py-8">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : (
+          articles.map((article) => (
           <Link
             key={article.id}
             to={`/learn/${article.slug}`}
@@ -70,7 +75,7 @@ export function EducationalArticlesPanel() {
               </CardContent>
             </Card>
           </Link>
-        ))}
+        )))}
       </div>
     </section>
   );

@@ -31,191 +31,11 @@ import { SidebarAd, InArticleAd } from "@/components/ads";
 import { CoinDetailModal } from "@/components/dashboard/CoinDetailModal";
 import { DashboardSchema, DashboardSEOContent, HowToReadDashboard, WhatMakesUsDifferent, RelatedMarketInsights, DashboardHowItWorks } from "@/components/seo/index";
 
-function formatNumber(num: number | undefined | null): string {
-  if (num === undefined || num === null || isNaN(num)) return '—';
-  if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
-  if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
-  if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
-  return `$${(num ?? 0).toLocaleString()}`;
-}
-
-function CryptoChart({ price, isPositive }: { price: number; isPositive: boolean }) {
-  const data = useMemo(() => {
-    const points = Array.from({ length: 24 }, (_, i) => ({
-      time: `${i}h`,
-      price: price * (0.95 + Math.random() * 0.1),
-    }));
-    points[points.length - 1].price = price;
-    return points;
-  }, [price]);
-
-  return (
-    <ResponsiveContainer width="100%" height={80}>
-      <AreaChart data={data}>
-        <defs>
-          <linearGradient id="colorPositive" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="hsl(160, 84%, 39%)" stopOpacity={0.3} />
-            <stop offset="95%" stopColor="hsl(160, 84%, 39%)" stopOpacity={0} />
-          </linearGradient>
-          <linearGradient id="colorNegative" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="hsl(0, 84%, 60%)" stopOpacity={0.3} />
-            <stop offset="95%" stopColor="hsl(0, 84%, 60%)" stopOpacity={0} />
-          </linearGradient>
-        </defs>
-        <XAxis dataKey="time" hide />
-        <YAxis hide domain={["dataMin - 100", "dataMax + 100"]} />
-        <Tooltip
-          contentStyle={{
-            background: "hsl(230, 30%, 8%)",
-            border: "1px solid hsl(190, 100%, 50%, 0.3)",
-            borderRadius: "8px",
-            color: "hsl(200, 100%, 95%)",
-            fontSize: "12px",
-          }}
-          formatter={(value: number) => [`$${(value ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}`, "Price"]}
-        />
-        <Area
-          type="monotone"
-          dataKey="price"
-          stroke={isPositive ? "hsl(160, 84%, 39%)" : "hsl(0, 84%, 60%)"}
-          strokeWidth={2}
-          fill={isPositive ? "url(#colorPositive)" : "url(#colorNegative)"}
-        />
-      </AreaChart>
-    </ResponsiveContainer>
-  );
-}
-type SortKey = 'rank' | 'price' | 'change24h' | 'volume' | 'marketCap';
-type SortDir = 'asc' | 'desc';
-
-function SortableCryptoTable({ coins }: { coins: any[] }) {
-  const navigate = useNavigate();
-  const [sortKey, setSortKey] = useState<SortKey>('rank');
-  const [sortDir, setSortDir] = useState<SortDir>('asc');
-  const [visibleCount, setVisibleCount] = useState(20);
-
-  const handleSort = useCallback((key: SortKey) => {
-    if (sortKey === key) {
-      setSortDir(d => d === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortKey(key);
-      setSortDir(key === 'rank' ? 'asc' : 'desc');
-    }
-  }, [sortKey]);
-
-  const sorted = useMemo(() => {
-    const filtered = coins.filter((c: any) => c.price > 0 && !['BUIDL', 'USYC', 'FIGR_HELOC'].includes(c.symbol));
-    return [...filtered].sort((a: any, b: any) => {
-      let av: number, bv: number;
-      switch (sortKey) {
-        case 'rank': av = a.rank; bv = b.rank; break;
-        case 'price': av = a.price; bv = b.price; break;
-        case 'change24h': av = a.change24h; bv = b.change24h; break;
-        case 'volume': av = a.volume; bv = b.volume; break;
-        case 'marketCap': av = a.marketCap; bv = b.marketCap; break;
-        default: av = a.rank; bv = b.rank;
-      }
-      return sortDir === 'asc' ? av - bv : bv - av;
-    });
-  }, [coins, sortKey, sortDir]);
-
-  const visible = sorted.slice(0, visibleCount);
-
-  const SortHeader = ({ label, k, className = '' }: { label: string; k: SortKey; className?: string }) => (
-    <th
-      className={cn("py-2 sm:py-3 px-1.5 sm:px-3 cursor-pointer select-none hover:text-primary transition-colors group", className)}
-      onClick={() => handleSort(k)}
-    >
-      <span className="inline-flex items-center gap-1">
-        {label}
-        {sortKey === k ? (
-          sortDir === 'asc' ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />
-        ) : (
-          <ArrowUpDown className="w-3 h-3 opacity-0 group-hover:opacity-50" />
-        )}
-      </span>
-    </th>
-  );
-
-  if (coins.length === 0) return null;
-
-  return (
-    <div className="holo-card p-3 sm:p-4 md:p-6 mb-4 sm:mb-6">
-      <h2 className="font-display text-sm sm:text-base md:text-lg lg:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2">
-        <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-        ALL CRYPTOCURRENCIES
-        <span className="ml-auto text-[10px] sm:text-xs text-muted-foreground font-normal">{sorted.length} coins • Click headers to sort</span>
-      </h2>
-      <div className="overflow-x-auto -mx-3 sm:mx-0 px-3 sm:px-0">
-        <table className="w-full min-w-[600px]">
-          <thead>
-            <tr className="text-muted-foreground text-[10px] sm:text-xs font-display border-b border-border uppercase">
-              <SortHeader label="#" k="rank" className="text-left w-10" />
-              <th className="py-2 sm:py-3 px-1.5 sm:px-3 text-left">Coin</th>
-              <SortHeader label="Price" k="price" className="text-right" />
-              <SortHeader label="24h %" k="change24h" className="text-right" />
-              <SortHeader label="Volume" k="volume" className="text-right hidden sm:table-cell" />
-              <SortHeader label="Market Cap" k="marketCap" className="text-right hidden md:table-cell" />
-            </tr>
-          </thead>
-          <tbody>
-            {visible.map((coin: any) => (
-              <tr
-                key={coin.symbol}
-                onClick={() => navigate(`/price-prediction/${coin.name?.toLowerCase() || coin.symbol?.toLowerCase()}/daily`)}
-                className="border-b border-border/30 hover:bg-primary/5 cursor-pointer transition-colors"
-              >
-                <td className="py-2.5 sm:py-3 px-1.5 sm:px-3 text-muted-foreground text-xs sm:text-sm">{coin.rank}</td>
-                <td className="py-2.5 sm:py-3 px-1.5 sm:px-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                      <span className="text-[10px] font-bold text-primary">{coin.symbol[0]}</span>
-                    </div>
-                    <div className="min-w-0">
-                      <span className="font-display font-bold text-xs sm:text-sm text-primary">{coin.symbol}</span>
-                      <span className="text-muted-foreground text-[10px] sm:text-xs ml-1.5 hidden sm:inline">{coin.name}</span>
-                    </div>
-                    {Math.abs(coin.change24h) > 5 && <Flame className="w-3 h-3 text-warning flex-shrink-0" />}
-                  </div>
-                </td>
-                <td className="py-2.5 sm:py-3 px-1.5 sm:px-3 text-right font-medium text-xs sm:text-sm">
-                  ${coin.price >= 1
-                    ? (coin.price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })
-                    : (coin.price ?? 0).toLocaleString(undefined, { maximumSignificantDigits: 4 })}
-                </td>
-                <td className={cn(
-                  "py-2.5 sm:py-3 px-1.5 sm:px-3 text-right font-medium text-xs sm:text-sm",
-                  coin.change24h >= 0 ? "text-success" : "text-danger"
-                )}>
-                  <span className="inline-flex items-center gap-0.5">
-                    {coin.change24h >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                    {coin.change24h >= 0 ? "+" : ""}{(coin.change24h ?? 0).toFixed(2)}%
-                  </span>
-                </td>
-                <td className="py-2.5 sm:py-3 px-1.5 sm:px-3 text-right text-muted-foreground text-xs sm:text-sm hidden sm:table-cell">
-                  {formatNumber(coin.volume)}
-                </td>
-                <td className="py-2.5 sm:py-3 px-1.5 sm:px-3 text-right text-muted-foreground text-xs sm:text-sm hidden md:table-cell">
-                  {formatNumber(coin.marketCap)}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      {visibleCount < sorted.length && (
-        <div className="text-center mt-4">
-          <button
-            onClick={() => setVisibleCount(v => Math.min(v + 20, sorted.length))}
-            className="px-6 py-2 rounded-lg bg-primary/10 border border-primary/30 text-primary text-xs sm:text-sm font-display hover:bg-primary/20 transition-colors"
-          >
-            Show More ({sorted.length - visibleCount} remaining)
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
+import { SortableCryptoTable } from "@/components/dashboard/SortableCryptoTable";
+import { DashboardTopCryptos } from "@/components/dashboard/DashboardTopCryptos";
+import { DashboardHeatMap } from "@/components/dashboard/DashboardHeatMap";
+import { DashboardStatsRow } from "@/components/dashboard/DashboardStatsRow";
+import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -246,29 +66,7 @@ const Dashboard = () => {
       <DashboardSchema marketCap={global ? `$${(global.totalMarketCap / 1e12).toFixed(2)}T` : undefined} fearGreedIndex={fearGreedIndex ?? 50} />
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 sm:mb-6 md:mb-8">
-          <div>
-            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-display font-bold">
-              <span className="glow-text">ORACLE</span> <span className="text-gradient-cosmic">DASHBOARD</span>
-            </h1>
-            <p className="text-muted-foreground text-[10px] sm:text-xs flex items-center gap-1.5 mt-1">
-              <Clock className="w-3 h-3" />
-              Updated: {lastUpdate.toLocaleTimeString()}
-            </p>
-          </div>
-          <div className="flex items-center gap-3 sm:gap-4">
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-              <span className="text-[10px] sm:text-xs text-muted-foreground font-display">LIVE</span>
-            </div>
-            <Link 
-              to="/chain/ethereum"
-              className="text-[10px] sm:text-xs text-primary hover:text-primary/80 font-display flex items-center gap-1"
-            >
-              Advanced <ArrowRight className="w-3 h-3" />
-            </Link>
-          </div>
-        </div>
+        <DashboardHeader lastUpdate={lastUpdate} />
 
         {isLoading ? (
           <div className="flex justify-center items-center min-h-[50vh]">
@@ -285,38 +83,7 @@ const Dashboard = () => {
             </div>
 
             {/* Stats Row */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6">
-              {[
-                { label: "Market Cap", value: global ? formatNumber(global.totalMarketCap) : null, icon: Globe, change: global?.marketCapChange24h, link: "/sentiment" },
-                { label: "24h Volume", value: global ? formatNumber(global.totalVolume24h) : null, icon: Activity, link: "/dashboard" },
-                { label: "Active Coins", value: global ? (global.activeCryptocurrencies ?? 0).toLocaleString() : null, icon: Zap, link: "/explorer" },
-                { label: "BTC Dom", value: global ? `${(global.btcDominance ?? 0).toFixed(1)}%` : null, icon: TrendingUp, link: "/chain/bitcoin" },
-              ].map((stat) => (
-                <Link 
-                  key={stat.label} 
-                  to={stat.link}
-                  className="holo-card p-2.5 sm:p-3 md:p-4 card-touch group"
-                >
-                  <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
-                    <stat.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
-                    <span className="text-[8px] sm:text-[10px] md:text-xs text-muted-foreground font-display uppercase truncate">{stat.label}</span>
-                    <ArrowRight className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-primary ml-auto opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
-                  </div>
-                  <div className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-foreground">
-                    {stat.value ?? <span className="inline-block h-6 w-20 bg-muted animate-pulse rounded" />}
-                  </div>
-                  {stat.change !== undefined && (
-                    <div className={cn(
-                      "text-[9px] sm:text-[10px] md:text-xs flex items-center gap-0.5 sm:gap-1 mt-0.5 sm:mt-1",
-                      stat.change >= 0 ? "text-success" : "text-danger"
-                    )}>
-                      {stat.change >= 0 ? <TrendingUp className="w-2.5 h-2.5 sm:w-3 sm:h-3" /> : <TrendingDown className="w-2.5 h-2.5 sm:w-3 sm:h-3" />}
-                      {stat.change >= 0 ? "+" : ""}{(stat.change ?? 0).toFixed(1)}%
-                    </div>
-                  )}
-                </Link>
-              ))}
-            </div>
+            <DashboardStatsRow global={global} />
 
             {/* Global Metrics Summary - More data */}
             <GlobalMetricsSummary />
@@ -514,106 +281,10 @@ const Dashboard = () => {
             </div>
 
             {/* Coin Cards - Clickable */}
-            <div className="mb-4 sm:mb-6">
-              <h2 className="font-display text-sm sm:text-base md:text-lg lg:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2">
-                <Flame className="w-4 h-4 sm:w-5 sm:h-5 text-warning" />
-                TOP CRYPTOS
-                <span className="ml-auto text-[10px] sm:text-xs text-muted-foreground font-normal hidden sm:inline">Click for details</span>
-              </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
-                {topCoins.map((coin) => {
-                  const trend = coin.change24h >= 2 ? "BULLISH" : coin.change24h <= -2 ? "BEARISH" : "NEUTRAL";
-                  
-                  return (
-                    <Link 
-                      key={coin.symbol} 
-                      to={`/price-prediction/${coin.name?.toLowerCase() || coin.symbol?.toLowerCase()}/daily`}
-                      className="holo-card p-2.5 sm:p-3 md:p-4 space-y-2 sm:space-y-3 card-touch text-left group block"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
-                          <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                            <span className="font-display font-bold text-primary text-[10px] sm:text-xs">{coin.symbol[0]}</span>
-                          </div>
-                          <div className="min-w-0">
-                            <h3 className="font-display font-bold text-primary text-xs sm:text-sm truncate">{coin.symbol}</h3>
-                            <p className="text-[8px] sm:text-[10px] text-muted-foreground truncate">{coin.name}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-0.5 flex-shrink-0">
-                          {Math.abs(coin.change24h) > 5 && <Flame className="w-3 h-3 sm:w-4 sm:h-4 text-warning" />}
-                          <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                        </div>
-                      </div>
-
-                      <div className="flex items-end justify-between">
-                        <div className="min-w-0">
-                          <div className="text-sm sm:text-base md:text-lg font-bold truncate">${(coin.price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
-                          <div className={cn(
-                            "flex items-center gap-0.5 text-[10px] sm:text-xs font-medium",
-                            coin.change24h >= 0 ? "text-success" : "text-danger"
-                          )}>
-                            {coin.change24h >= 0 ? <TrendingUp className="w-2.5 h-2.5 sm:w-3 sm:h-3" /> : <TrendingDown className="w-2.5 h-2.5 sm:w-3 sm:h-3" />}
-                            {coin.change24h >= 0 ? "+" : ""}{(coin.change24h ?? 0).toFixed(2)}%
-                          </div>
-                        </div>
-                        <span className={cn(
-                          "text-[8px] sm:text-[10px] font-display font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded flex-shrink-0",
-                          trend === "BULLISH" ? "text-success bg-success/20" : trend === "BEARISH" ? "text-danger bg-danger/20" : "text-warning bg-warning/20"
-                        )}>
-                          {trend}
-                        </span>
-                      </div>
-
-                      <div className="hidden sm:block">
-                        <CryptoChart price={coin.price} isPositive={coin.change24h >= 0} />
-                      </div>
-
-                      <div className="flex justify-between text-[8px] sm:text-[10px] text-muted-foreground pt-1.5 sm:pt-2 border-t border-border/50">
-                        <span className="truncate">Vol: {formatNumber(coin.volume)}</span>
-                        <span className="truncate ml-1">MCap: {formatNumber(coin.marketCap)}</span>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
+            <DashboardTopCryptos topCoins={topCoins} />
 
             {/* Heat Map - Clickable */}
-            <div className="holo-card p-3 sm:p-4 md:p-6 mb-4 sm:mb-6">
-              <h2 className="font-display text-sm sm:text-base md:text-lg lg:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2">
-                <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-                MARKET HEAT MAP
-                <span className="ml-auto text-[10px] sm:text-xs text-muted-foreground font-normal hidden sm:inline">Click any coin</span>
-              </h2>
-              <p className="text-xs text-muted-foreground mb-4">
-                The heat map provides a visual overview of market performance. Green indicates positive 24-hour price changes (bullish), 
-                while red indicates negative changes (bearish). Color intensity reflects the magnitude of the price movement.
-              </p>
-              <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-1.5 sm:gap-2">
-                {topCoins.slice(0, 16).map((coin) => (
-                  <Link
-                    key={coin.symbol}
-                    to={`/price-prediction/${coin.symbol.toLowerCase()}/daily`}
-                    className={cn(
-                      "p-1.5 sm:p-2 md:p-3 rounded-lg text-center transition-all card-touch",
-                      coin.change24h >= 3 ? "bg-success/30 border border-success/50" :
-                      coin.change24h >= 0 ? "bg-success/20 border border-success/30" :
-                      coin.change24h >= -3 ? "bg-danger/20 border border-danger/30" :
-                      "bg-danger/30 border border-danger/50"
-                    )}
-                  >
-                    <div className="font-display font-bold text-[10px] sm:text-xs truncate">{coin.symbol}</div>
-                    <div className={cn(
-                      "text-[9px] sm:text-[10px] md:text-xs font-medium",
-                      coin.change24h >= 0 ? "text-success" : "text-danger"
-                    )}>
-                      {coin.change24h >= 0 ? "+" : ""}{(coin.change24h ?? 0).toFixed(1)}%
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
+            <DashboardHeatMap topCoins={topCoins} />
             
             {/* What Makes Oracle Bull Different */}
             <WhatMakesUsDifferent />
