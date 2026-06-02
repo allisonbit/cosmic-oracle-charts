@@ -69,7 +69,10 @@ async function runPrerender() {
   await new Promise(resolve => server.listen(PORT, resolve));
 
   console.log("Launching Puppeteer...");
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
   const page = await browser.newPage();
 
   for (const route of SEO_ROUTES) {
