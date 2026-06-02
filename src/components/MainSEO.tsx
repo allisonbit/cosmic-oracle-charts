@@ -51,6 +51,26 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
     description: "Track every market-moving event: token launches, protocol upgrades, whale movements & trending narratives. Like Forex Factory but for crypto. Updated in real-time.",
     keywords: "crypto events calendar, crypto factory, upcoming token launches, whale alerts crypto, crypto market events, protocol upgrades, crypto news today"
   },
+  "/factory/events": {
+    title: `Crypto Events Calendar – Token Launches, Airdrops & Protocol Upgrades (${currentMonth} ${currentYear})`,
+    description: `Track every upcoming crypto event: token launches, protocol upgrades, airdrops, governance votes, and market-moving announcements. The crypto calendar traders rely on. Updated ${currentMonth} ${currentYear}.`,
+    keywords: "crypto events calendar, upcoming token launches, crypto airdrops, protocol upgrades, crypto governance, market events crypto"
+  },
+  "/factory/onchain": {
+    title: `On-Chain Intelligence – Whale Movements & Smart Money Flows (${currentMonth} ${currentYear})`,
+    description: `Real-time on-chain analytics: whale wallet movements, large transfers, smart money accumulation, DeFi flows, and exchange inflows/outflows. Know what whales are doing before the market reacts.`,
+    keywords: "on-chain analytics, whale movements crypto, smart money flow, large crypto transactions, whale tracker live, on-chain data"
+  },
+  "/factory/narratives": {
+    title: `Crypto Market Narratives – Trending Sectors & Rotation Signals (${currentMonth} ${currentYear})`,
+    description: `Track trending crypto narratives in real-time: AI tokens, DeFi 2.0, RWA, meme coins, Layer 2s. Identify sector rotation before it happens. Updated ${currentMonth} ${currentYear}.`,
+    keywords: "crypto narratives, trending crypto sectors, AI tokens, DeFi narrative, RWA crypto, sector rotation crypto, narrative trading"
+  },
+  "/factory/news": {
+    title: `Crypto News Today – Breaking News with Sentiment Analysis (${currentMonth} ${currentYear})`,
+    description: `Breaking crypto news from 50+ sources with real-time sentiment scoring. Filter by bullish/bearish impact, coin, or chain. Stay ahead of the market with AI-tagged news alerts.`,
+    keywords: "crypto news today, breaking crypto news, bitcoin news, crypto news live, cryptocurrency headlines, crypto market news"
+  },
 
   "/trade": {
     title: `Trade Crypto – Buy, Sell, Swap & Bridge Any Token (${currentMonth} ${currentYear})`,
@@ -126,6 +146,36 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
     title: `My Hub – Personal Crypto Dashboard & Tools (${currentMonth} ${currentYear})`,
     description: "Your personal crypto command center. Track your portfolio, set price alerts, manage watchlists, journal trades, and access AI trading signals all in one place.",
     keywords: "crypto dashboard personal, crypto portfolio tracker, crypto alerts, trading journal, watchlist crypto"
+  },
+  "/market/best-crypto-to-buy-today": {
+    title: `Best Crypto to Buy Today – AI Picks (${currentMonth} ${currentYear})`,
+    description: `AI-curated list of the best cryptocurrencies to buy today based on momentum, volume, sentiment, and technical signals. Updated ${currentMonth} ${currentYear}.`,
+    keywords: "best crypto to buy today, crypto to buy now, top crypto picks today, AI crypto picks"
+  },
+  "/market/top-crypto-gainers-today": {
+    title: `Top Crypto Gainers Today – Biggest Winners Right Now (${currentMonth} ${currentYear})`,
+    description: `Real-time list of today's biggest crypto gainers ranked by 24h price change. Includes volume analysis, momentum scores, and AI commentary. Updated live.`,
+    keywords: "top crypto gainers today, biggest crypto movers, best performing crypto today, crypto winners today"
+  },
+  "/market/next-crypto-to-explode": {
+    title: `Next Crypto to Explode – High Potential Altcoins (${currentMonth} ${currentYear})`,
+    description: `AI-identified cryptocurrencies with the highest explosion potential based on fundamentals, community growth, and technical breakouts. ${currentMonth} ${currentYear} picks.`,
+    keywords: "next crypto to explode, crypto to explode soon, high potential crypto, crypto moonshot, altcoins to watch"
+  },
+  "/market/cheap-crypto-to-buy-now": {
+    title: `Cheap Crypto to Buy Now – Best Value Picks Under $1 (${currentMonth} ${currentYear})`,
+    description: `Top cheap cryptocurrencies worth buying now. Affordable tokens under $1 with strong growth potential, analyzed by AI for momentum, utility, and risk score.`,
+    keywords: "cheap crypto to buy, best crypto under $1, affordable cryptocurrency, low price high potential crypto"
+  },
+  "/market/top-meme-coins": {
+    title: `Top Meme Coins Right Now – Best Meme Crypto Rankings (${currentMonth} ${currentYear})`,
+    description: `Live rankings of the hottest meme coins by community strength, social buzz, and price momentum. Includes DOGE, SHIB, PEPE, FLOKI & emerging meme tokens.`,
+    keywords: "top meme coins, best meme crypto, meme coin rankings, dogecoin shiba inu pepe, meme coin to buy"
+  },
+  "/market/top-ai-crypto-tokens": {
+    title: `Top AI Crypto Tokens – Best Artificial Intelligence Coins (${currentMonth} ${currentYear})`,
+    description: `Rankings of the best AI-focused cryptocurrency projects by market cap, utility, and ecosystem growth. Track the AI crypto narrative in real time.`,
+    keywords: "top AI crypto, best AI tokens, artificial intelligence crypto, AI blockchain projects, AI coins to buy"
   },
 };
 
@@ -205,9 +255,14 @@ export function SEO({ title, description, keywords, image, type = "website", can
     setMeta("description", finalDescription);
     setMeta("keywords", finalKeywords);
     setMeta("author", "Oracle Bull");
-    setMeta("robots", "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1");
-    setMeta("googlebot", "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1");
-    setMeta("bingbot", "index, follow");
+    // Private/authenticated routes should NOT be indexed
+    const isPrivatePage = currentPath.startsWith("/my") || currentPath.startsWith("/admin");
+    const robotsContent = isPrivatePage
+      ? "noindex, nofollow"
+      : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
+    setMeta("robots", robotsContent);
+    setMeta("googlebot", robotsContent);
+    setMeta("bingbot", isPrivatePage ? "noindex" : "index, follow");
 
     // Open Graph
     setMeta("og:title", finalTitle, true);

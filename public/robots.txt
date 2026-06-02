@@ -4,6 +4,9 @@
 # Default: Allow full crawling for all bots
 User-agent: *
 Allow: /
+Disallow: /my/
+Disallow: /admin/
+Disallow: /admin
 
 # Explicitly allow resources needed for rendering (AdSense requirement)
 Allow: /src/*.js
@@ -17,22 +20,16 @@ Allow: /*.webp
 Allow: /*.svg
 Allow: /*.woff2
 
-# Sitemap locations - Sitemap Index + individual sitemaps
+# Sitemap locations
 Sitemap: https://oraclebull.com/sitemap.xml
-Sitemap: https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/sitemap?type=index
-Sitemap: https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/sitemap
-Sitemap: https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/sitemap?type=core
-Sitemap: https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/sitemap?type=predictions
-Sitemap: https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/sitemap?type=chains
-Sitemap: https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/sitemap?type=market
-Sitemap: https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/sitemap?type=questions
-Sitemap: https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/sitemap?type=articles
-Sitemap: https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/sitemap?type=learn
+Sitemap-HTML: https://oraclebull.com/sitemap
 Sitemap-HTML: https://oraclebull.com/html-sitemap.html
 
 # Google specific - full access
 User-agent: Googlebot
 Allow: /
+Disallow: /my/
+Disallow: /admin
 Crawl-delay: 1
 
 User-agent: Googlebot-Image

@@ -200,6 +200,7 @@ const App = () => (
                 <Route path="/price-prediction/:coinId" element={<PricePrediction />} />
                 <Route path="/price-prediction/:coinId/:timeframe" element={<PricePrediction />} />
                 <Route path="/q/:slug" element={<QuestionIntent />} />
+                <Route path="/market/:slug" element={<QuestionIntent />} />
                 {/* Legal & About pages */}
                 <Route path="/about" element={<About />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
