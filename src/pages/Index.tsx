@@ -67,13 +67,26 @@ const ViewportSection = ({ children, fallback }: { children: React.ReactNode; fa
 
 const Index = () => {
   const { user, loading } = useAuth();
+  const { ready, authenticated } = usePrivy();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && user) {
+    // Only redirect once Privy is ready to avoid flash
+    if (ready && authenticated) {
       navigate("/my", { replace: true });
     }
-  }, [user, loading, navigate]);
+  }, [ready, authenticated, navigate]);
+
+  // Show nothing while Privy is initializing so the login modal
+  // doesn't flash over the home page content
+  if (!ready || loading) {
+    return null;
+  }
+
+  // If already logged in, don't render home page (redirect is in flight)
+  if (authenticated) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
