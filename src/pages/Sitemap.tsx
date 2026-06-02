@@ -243,12 +243,12 @@ export default function Sitemap() {
         </div>
 
         {/* ── Coin Market Pages ── */}
-        <SectionTitle id="markets">Coin Market Landing Pages — {topCryptos.length} Assets</SectionTitle>
-        <p className="text-muted-foreground mb-4">Dedicated market pages for each cryptocurrency with live price data, investor action summaries (Buy/Hold/Wait signals), risk levels, contextual news, related assets, and links to daily/weekly/monthly predictions.</p>
+        <SectionTitle id="markets">Coin Price Prediction Pages — {topCryptos.length} Assets</SectionTitle>
+        <p className="text-muted-foreground mb-4">Dedicated AI price prediction pages for each cryptocurrency with live price data, daily/weekly/monthly forecasts, technical indicators, bull/bear scenarios, entry zones, and stop-loss levels.</p>
         <ul className="grid md:grid-cols-3 gap-2">
           {topCryptos.map(coin => (
             <li key={coin.id}>
-              <Link to={`/markets/${coin.id}`} className="block p-2 rounded border border-border hover:border-primary/30 transition-colors">
+              <Link to={`/price-prediction/${coin.id}`} className="block p-2 rounded border border-border hover:border-primary/30 transition-colors">
                 <span className="text-sm font-medium text-primary hover:underline">{coin.name} ({coin.symbol})</span>
               </Link>
             </li>
