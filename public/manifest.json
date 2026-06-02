@@ -1,12 +1,15 @@
 {
   "name": "Oracle Bull - AI Crypto Intelligence",
   "short_name": "Oracle Bull",
-  "description": "AI-powered crypto predictions, portfolio tracking, and market intelligence",
+  "description": "Free AI-powered cryptocurrency price predictions, whale tracking, market sentiment analysis, and blockchain dashboards for 1000+ tokens.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#0f172a",
   "theme_color": "#2563eb",
   "orientation": "portrait-primary",
+  "lang": "en",
+  "categories": ["finance", "business", "utilities"],
   "icons": [
     {
       "src": "/favicon.ico",
@@ -23,9 +26,38 @@
       "src": "/oracle-bot-mascot.jpg",
       "sizes": "512x512",
       "type": "image/jpeg",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ],
-  "categories": ["finance", "business"],
+  "shortcuts": [
+    {
+      "name": "AI Predictions",
+      "short_name": "Predictions",
+      "description": "View AI price predictions for all cryptocurrencies",
+      "url": "/predictions",
+      "icons": [{ "src": "/favicon.ico", "sizes": "64x64" }]
+    },
+    {
+      "name": "Market Dashboard",
+      "short_name": "Dashboard",
+      "description": "Live cryptocurrency market dashboard",
+      "url": "/dashboard",
+      "icons": [{ "src": "/favicon.ico", "sizes": "64x64" }]
+    },
+    {
+      "name": "Bitcoin Prediction",
+      "short_name": "BTC",
+      "description": "AI Bitcoin price prediction",
+      "url": "/price-prediction/bitcoin",
+      "icons": [{ "src": "/favicon.ico", "sizes": "64x64" }]
+    },
+    {
+      "name": "Crypto Strength Meter",
+      "short_name": "Strength",
+      "description": "Crypto market strength rankings",
+      "url": "/strength",
+      "icons": [{ "src": "/favicon.ico", "sizes": "64x64" }]
+    }
+  ],
   "screenshots": []
 }

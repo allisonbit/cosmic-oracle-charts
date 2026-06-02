@@ -66,6 +66,7 @@ const MyNewsFeed = lazy(() => import("./pages/MyNewsFeed"));
 const MyDCAPlanner = lazy(() => import("./pages/MyDCAPlanner"));
 const MyCopyTrading = lazy(() => import("./pages/MyCopyTrading"));
 const Trade = lazy(() => import("./pages/Trade"));
+const MarketPage = lazy(() => import("./pages/MarketPage"));
 // Loading fallback component
 const PageLoader = memo(function PageLoader() {
   return (
@@ -200,7 +201,7 @@ const App = () => (
                 <Route path="/price-prediction/:coinId" element={<PricePrediction />} />
                 <Route path="/price-prediction/:coinId/:timeframe" element={<PricePrediction />} />
                 <Route path="/q/:slug" element={<QuestionIntent />} />
-                <Route path="/market/:slug" element={<QuestionIntent />} />
+                <Route path="/market/:slug" element={<MarketPage />} />
                 {/* Legal & About pages */}
                 <Route path="/about" element={<About />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
