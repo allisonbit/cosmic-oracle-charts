@@ -30,6 +30,20 @@ const staticRoutes = [
   "/terms",
   "/risk-disclaimer",
   "/trade",
+  // My Hub Routes
+  "/my",
+  "/my/watchlist",
+  "/my/portfolio",
+  "/my/alerts",
+  "/my/settings",
+  "/my/scanner",
+  "/my/signals",
+  "/my/tracker",
+  "/my/social",
+  "/my/journal",
+  "/my/news",
+  "/my/dca",
+  "/my/copy",
 ];
 
 // Chain routes

@@ -4,520 +4,685 @@
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
           http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
-  <!-- ═══ CORE PAGES ═══ -->
-  <url>
-    <loc>https://oraclebull.com/</loc>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/dashboard</loc>
-    <changefreq>always</changefreq>
-    <priority>0.95</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/predictions</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.95</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/sentiment</loc>
-    <changefreq>always</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/explorer</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/scanner</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/strength</loc>
-    <changefreq>always</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/strength-meter</loc>
-    <changefreq>always</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/factory</loc>
-    <changefreq>always</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/factory/events</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/factory/onchain</loc>
-    <changefreq>always</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/factory/narratives</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/factory/news</loc>
-    <changefreq>always</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/learn</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/insights</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/trade</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/about</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/contact</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/sitemap</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.4</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/privacy-policy</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/terms</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/risk-disclaimer</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
+  <!-- ═══════════════════════════════════════════════════════════════
+       ORACLE BULL — COMPLETE XML SITEMAP
+       https://oraclebull.com
+       Generated: 2026-06
+       Total URLs: 900+
+       ═══════════════════════════════════════════════════════════════ -->
 
-  <!-- ═══ BLOCKCHAIN ANALYTICS — 8 CHAINS ═══ -->
-  <url>
-    <loc>https://oraclebull.com/chain/ethereum</loc>
-    <changefreq>always</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/chain/solana</loc>
-    <changefreq>always</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/chain/base</loc>
-    <changefreq>always</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/chain/arbitrum</loc>
-    <changefreq>always</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/chain/polygon</loc>
-    <changefreq>always</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/chain/optimism</loc>
-    <changefreq>always</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/chain/avalanche</loc>
-    <changefreq>always</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://oraclebull.com/chain/bnb</loc>
-    <changefreq>always</changefreq>
-    <priority>0.8</priority>
-  </url>
+  <!-- ═══ TIER 1: CORE PAGES ═══ -->
+  <url><loc>https://oraclebull.com/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>https://oraclebull.com/dashboard</loc><changefreq>always</changefreq><priority>0.95</priority></url>
+  <url><loc>https://oraclebull.com/predictions</loc><changefreq>daily</changefreq><priority>0.95</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://oraclebull.com/sentiment</loc><changefreq>always</changefreq><priority>0.9</priority></url>
+  <url><loc>https://oraclebull.com/strength</loc><changefreq>always</changefreq><priority>0.9</priority></url>
+  <url><loc>https://oraclebull.com/strength-meter</loc><changefreq>always</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/factory</loc><changefreq>always</changefreq><priority>0.9</priority></url>
+  <url><loc>https://oraclebull.com/factory/events</loc><changefreq>daily</changefreq><priority>0.88</priority></url>
+  <url><loc>https://oraclebull.com/factory/onchain</loc><changefreq>always</changefreq><priority>0.88</priority></url>
+  <url><loc>https://oraclebull.com/factory/narratives</loc><changefreq>daily</changefreq><priority>0.88</priority></url>
+  <url><loc>https://oraclebull.com/factory/news</loc><changefreq>always</changefreq><priority>0.88</priority></url>
+  <url><loc>https://oraclebull.com/explorer</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://oraclebull.com/scanner</loc><changefreq>weekly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/trade</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/learn</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/insights</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/contact</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/about</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/sitemap</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://oraclebull.com/privacy-policy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://oraclebull.com/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://oraclebull.com/risk-disclaimer</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
 
-  <!-- ═══ PRICE PREDICTIONS — 37 COINS × 4 TIMEFRAMES ═══ -->
+  <!-- ═══ TIER 2: MY HUB PAGES (Personal Tools) ═══ -->
+  <url><loc>https://oraclebull.com/my</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/my/watchlist</loc><changefreq>daily</changefreq><priority>0.65</priority></url>
+  <url><loc>https://oraclebull.com/my/portfolio</loc><changefreq>daily</changefreq><priority>0.65</priority></url>
+  <url><loc>https://oraclebull.com/my/alerts</loc><changefreq>daily</changefreq><priority>0.65</priority></url>
+  <url><loc>https://oraclebull.com/my/settings</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://oraclebull.com/my/scanner</loc><changefreq>weekly</changefreq><priority>0.65</priority></url>
+  <url><loc>https://oraclebull.com/my/signals</loc><changefreq>daily</changefreq><priority>0.65</priority></url>
+  <url><loc>https://oraclebull.com/my/tracker</loc><changefreq>daily</changefreq><priority>0.65</priority></url>
+  <url><loc>https://oraclebull.com/my/social</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/my/journal</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/my/news</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/my/dca</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/my/copy</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+
+  <!-- ═══ TIER 3: BLOCKCHAIN ANALYTICS — 12 CHAINS ═══ -->
+  <url><loc>https://oraclebull.com/chain/ethereum</loc><changefreq>always</changefreq><priority>0.92</priority></url>
+  <url><loc>https://oraclebull.com/chain/solana</loc><changefreq>always</changefreq><priority>0.92</priority></url>
+  <url><loc>https://oraclebull.com/chain/bitcoin</loc><changefreq>always</changefreq><priority>0.92</priority></url>
+  <url><loc>https://oraclebull.com/chain/base</loc><changefreq>always</changefreq><priority>0.88</priority></url>
+  <url><loc>https://oraclebull.com/chain/arbitrum</loc><changefreq>always</changefreq><priority>0.88</priority></url>
+  <url><loc>https://oraclebull.com/chain/polygon</loc><changefreq>always</changefreq><priority>0.88</priority></url>
+  <url><loc>https://oraclebull.com/chain/optimism</loc><changefreq>always</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/chain/avalanche</loc><changefreq>always</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/chain/bnb</loc><changefreq>always</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/chain/tron</loc><changefreq>always</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/chain/sui</loc><changefreq>always</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/chain/near</loc><changefreq>always</changefreq><priority>0.8</priority></url>
+
+  <!-- ═══ TIER 4: PRICE PREDICTIONS — 60+ COINS × 4 TIMEFRAMES ═══ -->
+
   <!-- Bitcoin -->
-  <url><loc>https://oraclebull.com/price-prediction/bitcoin</loc><changefreq>daily</changefreq><priority>0.95</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/bitcoin/daily</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/bitcoin/weekly</loc><changefreq>weekly</changefreq><priority>0.85</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/bitcoin/monthly</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/bitcoin</loc><changefreq>daily</changefreq><priority>0.98</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/bitcoin/daily</loc><changefreq>daily</changefreq><priority>0.95</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/bitcoin/weekly</loc><changefreq>weekly</changefreq><priority>0.88</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/bitcoin/monthly</loc><changefreq>monthly</changefreq><priority>0.82</priority></url>
   <!-- Ethereum -->
-  <url><loc>https://oraclebull.com/price-prediction/ethereum</loc><changefreq>daily</changefreq><priority>0.95</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/ethereum/daily</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/ethereum/weekly</loc><changefreq>weekly</changefreq><priority>0.85</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/ethereum/monthly</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/ethereum</loc><changefreq>daily</changefreq><priority>0.98</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/ethereum/daily</loc><changefreq>daily</changefreq><priority>0.95</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/ethereum/weekly</loc><changefreq>weekly</changefreq><priority>0.88</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/ethereum/monthly</loc><changefreq>monthly</changefreq><priority>0.82</priority></url>
   <!-- Solana -->
-  <url><loc>https://oraclebull.com/price-prediction/solana</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/solana/daily</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/solana/weekly</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/solana/monthly</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/solana</loc><changefreq>daily</changefreq><priority>0.95</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/solana/daily</loc><changefreq>daily</changefreq><priority>0.92</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/solana/weekly</loc><changefreq>weekly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/solana/monthly</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <!-- XRP -->
-  <url><loc>https://oraclebull.com/price-prediction/ripple</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/ripple/daily</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/ripple/weekly</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/ripple/monthly</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/ripple</loc><changefreq>daily</changefreq><priority>0.95</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/ripple/daily</loc><changefreq>daily</changefreq><priority>0.92</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/ripple/weekly</loc><changefreq>weekly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/ripple/monthly</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <!-- BNB -->
-  <url><loc>https://oraclebull.com/price-prediction/binancecoin</loc><changefreq>daily</changefreq><priority>0.88</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/binancecoin/daily</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/binancecoin/weekly</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/binancecoin/monthly</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
-  <!-- Cardano -->
-  <url><loc>https://oraclebull.com/price-prediction/cardano</loc><changefreq>daily</changefreq><priority>0.88</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/cardano/daily</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/cardano/weekly</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/cardano/monthly</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
-  <!-- Dogecoin -->
-  <url><loc>https://oraclebull.com/price-prediction/dogecoin</loc><changefreq>daily</changefreq><priority>0.88</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/dogecoin/daily</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/dogecoin/weekly</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/dogecoin/monthly</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
-  <!-- Polkadot -->
-  <url><loc>https://oraclebull.com/price-prediction/polkadot</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/polkadot/daily</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/polkadot/weekly</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/polkadot/monthly</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <!-- Chainlink -->
-  <url><loc>https://oraclebull.com/price-prediction/chainlink</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/chainlink/daily</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/chainlink/weekly</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/chainlink/monthly</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <!-- Avalanche -->
-  <url><loc>https://oraclebull.com/price-prediction/avalanche-2</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/avalanche-2/daily</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/avalanche-2/weekly</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/avalanche-2/monthly</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <!-- Polygon -->
-  <url><loc>https://oraclebull.com/price-prediction/matic-network</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/matic-network/daily</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/matic-network/weekly</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/matic-network/monthly</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <!-- Shiba Inu -->
-  <url><loc>https://oraclebull.com/price-prediction/shiba-inu</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/shiba-inu/daily</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/shiba-inu/weekly</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/shiba-inu/monthly</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <!-- Litecoin -->
-  <url><loc>https://oraclebull.com/price-prediction/litecoin</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/litecoin/daily</loc><changefreq>daily</changefreq><priority>0.77</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/litecoin/weekly</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/litecoin/monthly</loc><changefreq>monthly</changefreq><priority>0.67</priority></url>
-  <!-- Uniswap -->
-  <url><loc>https://oraclebull.com/price-prediction/uniswap</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/uniswap/daily</loc><changefreq>daily</changefreq><priority>0.77</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/uniswap/weekly</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/uniswap/monthly</loc><changefreq>monthly</changefreq><priority>0.67</priority></url>
-  <!-- Cosmos -->
-  <url><loc>https://oraclebull.com/price-prediction/cosmos</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/cosmos/daily</loc><changefreq>daily</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/cosmos/weekly</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/cosmos/monthly</loc><changefreq>monthly</changefreq><priority>0.65</priority></url>
-  <!-- NEAR -->
-  <url><loc>https://oraclebull.com/price-prediction/near</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/near/daily</loc><changefreq>daily</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/near/weekly</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/near/monthly</loc><changefreq>monthly</changefreq><priority>0.65</priority></url>
-  <!-- Arbitrum -->
-  <url><loc>https://oraclebull.com/price-prediction/arbitrum</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/arbitrum/daily</loc><changefreq>daily</changefreq><priority>0.77</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/arbitrum/weekly</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/arbitrum/monthly</loc><changefreq>monthly</changefreq><priority>0.67</priority></url>
-  <!-- Optimism -->
-  <url><loc>https://oraclebull.com/price-prediction/optimism</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/optimism/daily</loc><changefreq>daily</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/optimism/weekly</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/optimism/monthly</loc><changefreq>monthly</changefreq><priority>0.65</priority></url>
-  <!-- Aptos -->
-  <url><loc>https://oraclebull.com/price-prediction/aptos</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/aptos/daily</loc><changefreq>daily</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/aptos/weekly</loc><changefreq>weekly</changefreq><priority>0.68</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/aptos/monthly</loc><changefreq>monthly</changefreq><priority>0.63</priority></url>
-  <!-- Sui -->
-  <url><loc>https://oraclebull.com/price-prediction/sui</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/sui/daily</loc><changefreq>daily</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/sui/weekly</loc><changefreq>weekly</changefreq><priority>0.68</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/sui/monthly</loc><changefreq>monthly</changefreq><priority>0.63</priority></url>
-  <!-- Pepe -->
-  <url><loc>https://oraclebull.com/price-prediction/pepe</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/pepe/daily</loc><changefreq>daily</changefreq><priority>0.77</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/pepe/weekly</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/pepe/monthly</loc><changefreq>monthly</changefreq><priority>0.67</priority></url>
-  <!-- Floki -->
-  <url><loc>https://oraclebull.com/price-prediction/floki</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/floki/daily</loc><changefreq>daily</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/floki/weekly</loc><changefreq>weekly</changefreq><priority>0.68</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/floki/monthly</loc><changefreq>monthly</changefreq><priority>0.63</priority></url>
-  <!-- Bonk -->
-  <url><loc>https://oraclebull.com/price-prediction/bonk</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/bonk/daily</loc><changefreq>daily</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/bonk/weekly</loc><changefreq>weekly</changefreq><priority>0.68</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/bonk/monthly</loc><changefreq>monthly</changefreq><priority>0.63</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/binancecoin</loc><changefreq>daily</changefreq><priority>0.92</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/binancecoin/daily</loc><changefreq>daily</changefreq><priority>0.88</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/binancecoin/weekly</loc><changefreq>weekly</changefreq><priority>0.82</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/binancecoin/monthly</loc><changefreq>monthly</changefreq><priority>0.76</priority></url>
   <!-- Toncoin -->
-  <url><loc>https://oraclebull.com/price-prediction/toncoin</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/toncoin/daily</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/toncoin/weekly</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/toncoin/monthly</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/toncoin</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/toncoin/daily</loc><changefreq>daily</changefreq><priority>0.87</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/toncoin/weekly</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/toncoin/monthly</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <!-- Cardano -->
+  <url><loc>https://oraclebull.com/price-prediction/cardano</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/cardano/daily</loc><changefreq>daily</changefreq><priority>0.87</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/cardano/weekly</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/cardano/monthly</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <!-- Dogecoin -->
+  <url><loc>https://oraclebull.com/price-prediction/dogecoin</loc><changefreq>daily</changefreq><priority>0.92</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/dogecoin/daily</loc><changefreq>daily</changefreq><priority>0.88</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/dogecoin/weekly</loc><changefreq>weekly</changefreq><priority>0.82</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/dogecoin/monthly</loc><changefreq>monthly</changefreq><priority>0.76</priority></url>
+  <!-- Polkadot -->
+  <url><loc>https://oraclebull.com/price-prediction/polkadot</loc><changefreq>daily</changefreq><priority>0.88</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/polkadot/daily</loc><changefreq>daily</changefreq><priority>0.84</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/polkadot/weekly</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/polkadot/monthly</loc><changefreq>monthly</changefreq><priority>0.72</priority></url>
+  <!-- Chainlink -->
+  <url><loc>https://oraclebull.com/price-prediction/chainlink</loc><changefreq>daily</changefreq><priority>0.88</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/chainlink/daily</loc><changefreq>daily</changefreq><priority>0.84</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/chainlink/weekly</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/chainlink/monthly</loc><changefreq>monthly</changefreq><priority>0.72</priority></url>
+  <!-- Avalanche -->
+  <url><loc>https://oraclebull.com/price-prediction/avalanche-2</loc><changefreq>daily</changefreq><priority>0.88</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/avalanche-2/daily</loc><changefreq>daily</changefreq><priority>0.84</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/avalanche-2/weekly</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/avalanche-2/monthly</loc><changefreq>monthly</changefreq><priority>0.72</priority></url>
+  <!-- Polygon -->
+  <url><loc>https://oraclebull.com/price-prediction/matic-network</loc><changefreq>daily</changefreq><priority>0.87</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/matic-network/daily</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/matic-network/weekly</loc><changefreq>weekly</changefreq><priority>0.77</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/matic-network/monthly</loc><changefreq>monthly</changefreq><priority>0.71</priority></url>
+  <!-- Shiba Inu -->
+  <url><loc>https://oraclebull.com/price-prediction/shiba-inu</loc><changefreq>daily</changefreq><priority>0.88</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/shiba-inu/daily</loc><changefreq>daily</changefreq><priority>0.84</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/shiba-inu/weekly</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/shiba-inu/monthly</loc><changefreq>monthly</changefreq><priority>0.72</priority></url>
+  <!-- Litecoin -->
+  <url><loc>https://oraclebull.com/price-prediction/litecoin</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/litecoin/daily</loc><changefreq>daily</changefreq><priority>0.81</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/litecoin/weekly</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/litecoin/monthly</loc><changefreq>monthly</changefreq><priority>0.69</priority></url>
+  <!-- Uniswap -->
+  <url><loc>https://oraclebull.com/price-prediction/uniswap</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/uniswap/daily</loc><changefreq>daily</changefreq><priority>0.81</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/uniswap/weekly</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/uniswap/monthly</loc><changefreq>monthly</changefreq><priority>0.69</priority></url>
+  <!-- Cosmos -->
+  <url><loc>https://oraclebull.com/price-prediction/cosmos</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/cosmos/daily</loc><changefreq>daily</changefreq><priority>0.79</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/cosmos/weekly</loc><changefreq>weekly</changefreq><priority>0.73</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/cosmos/monthly</loc><changefreq>monthly</changefreq><priority>0.67</priority></url>
+  <!-- NEAR -->
+  <url><loc>https://oraclebull.com/price-prediction/near</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/near/daily</loc><changefreq>daily</changefreq><priority>0.79</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/near/weekly</loc><changefreq>weekly</changefreq><priority>0.73</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/near/monthly</loc><changefreq>monthly</changefreq><priority>0.67</priority></url>
+  <!-- Arbitrum -->
+  <url><loc>https://oraclebull.com/price-prediction/arbitrum</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/arbitrum/daily</loc><changefreq>daily</changefreq><priority>0.81</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/arbitrum/weekly</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/arbitrum/monthly</loc><changefreq>monthly</changefreq><priority>0.69</priority></url>
+  <!-- Optimism -->
+  <url><loc>https://oraclebull.com/price-prediction/optimism</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/optimism/daily</loc><changefreq>daily</changefreq><priority>0.79</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/optimism/weekly</loc><changefreq>weekly</changefreq><priority>0.73</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/optimism/monthly</loc><changefreq>monthly</changefreq><priority>0.67</priority></url>
+  <!-- Aptos -->
+  <url><loc>https://oraclebull.com/price-prediction/aptos</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/aptos/daily</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/aptos/weekly</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/aptos/monthly</loc><changefreq>monthly</changefreq><priority>0.66</priority></url>
+  <!-- Sui -->
+  <url><loc>https://oraclebull.com/price-prediction/sui</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/sui/daily</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/sui/weekly</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/sui/monthly</loc><changefreq>monthly</changefreq><priority>0.66</priority></url>
+  <!-- Pepe -->
+  <url><loc>https://oraclebull.com/price-prediction/pepe</loc><changefreq>daily</changefreq><priority>0.87</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/pepe/daily</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/pepe/weekly</loc><changefreq>weekly</changefreq><priority>0.77</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/pepe/monthly</loc><changefreq>monthly</changefreq><priority>0.71</priority></url>
+  <!-- Floki -->
+  <url><loc>https://oraclebull.com/price-prediction/floki</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/floki/daily</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/floki/weekly</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/floki/monthly</loc><changefreq>monthly</changefreq><priority>0.66</priority></url>
+  <!-- Bonk -->
+  <url><loc>https://oraclebull.com/price-prediction/bonk</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/bonk/daily</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/bonk/weekly</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/bonk/monthly</loc><changefreq>monthly</changefreq><priority>0.66</priority></url>
   <!-- TRON -->
-  <url><loc>https://oraclebull.com/price-prediction/tron</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/tron/daily</loc><changefreq>daily</changefreq><priority>0.77</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/tron/weekly</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/tron/monthly</loc><changefreq>monthly</changefreq><priority>0.67</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/tron</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/tron/daily</loc><changefreq>daily</changefreq><priority>0.81</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/tron/weekly</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/tron/monthly</loc><changefreq>monthly</changefreq><priority>0.69</priority></url>
   <!-- Stellar -->
-  <url><loc>https://oraclebull.com/price-prediction/stellar</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/stellar/daily</loc><changefreq>daily</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/stellar/weekly</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/stellar/monthly</loc><changefreq>monthly</changefreq><priority>0.65</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/stellar</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/stellar/daily</loc><changefreq>daily</changefreq><priority>0.79</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/stellar/weekly</loc><changefreq>weekly</changefreq><priority>0.73</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/stellar/monthly</loc><changefreq>monthly</changefreq><priority>0.67</priority></url>
   <!-- Monero -->
-  <url><loc>https://oraclebull.com/price-prediction/monero</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/monero/daily</loc><changefreq>daily</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/monero/weekly</loc><changefreq>weekly</changefreq><priority>0.68</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/monero/monthly</loc><changefreq>monthly</changefreq><priority>0.63</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/monero</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/monero/daily</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/monero/weekly</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/monero/monthly</loc><changefreq>monthly</changefreq><priority>0.66</priority></url>
   <!-- OKB -->
-  <url><loc>https://oraclebull.com/price-prediction/okb</loc><changefreq>daily</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/okb/daily</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/okb/weekly</loc><changefreq>weekly</changefreq><priority>0.65</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/okb/monthly</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/okb</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/okb/daily</loc><changefreq>daily</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/okb/weekly</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/okb/monthly</loc><changefreq>monthly</changefreq><priority>0.64</priority></url>
   <!-- Hedera -->
-  <url><loc>https://oraclebull.com/price-prediction/hedera</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/hedera/daily</loc><changefreq>daily</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/hedera/weekly</loc><changefreq>weekly</changefreq><priority>0.68</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/hedera/monthly</loc><changefreq>monthly</changefreq><priority>0.63</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/hedera</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/hedera/daily</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/hedera/weekly</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/hedera/monthly</loc><changefreq>monthly</changefreq><priority>0.66</priority></url>
   <!-- Filecoin -->
-  <url><loc>https://oraclebull.com/price-prediction/filecoin</loc><changefreq>daily</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/filecoin/daily</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/filecoin/weekly</loc><changefreq>weekly</changefreq><priority>0.65</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/filecoin/monthly</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/filecoin</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/filecoin/daily</loc><changefreq>daily</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/filecoin/weekly</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/filecoin/monthly</loc><changefreq>monthly</changefreq><priority>0.64</priority></url>
   <!-- VeChain -->
-  <url><loc>https://oraclebull.com/price-prediction/vechain</loc><changefreq>daily</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/vechain/daily</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/vechain/weekly</loc><changefreq>weekly</changefreq><priority>0.65</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/vechain/monthly</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/vechain</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/vechain/daily</loc><changefreq>daily</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/vechain/weekly</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/vechain/monthly</loc><changefreq>monthly</changefreq><priority>0.64</priority></url>
   <!-- Internet Computer -->
-  <url><loc>https://oraclebull.com/price-prediction/internet-computer</loc><changefreq>daily</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/internet-computer/daily</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/internet-computer/weekly</loc><changefreq>weekly</changefreq><priority>0.65</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/internet-computer/monthly</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/internet-computer</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/internet-computer/daily</loc><changefreq>daily</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/internet-computer/weekly</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/internet-computer/monthly</loc><changefreq>monthly</changefreq><priority>0.64</priority></url>
   <!-- Render -->
-  <url><loc>https://oraclebull.com/price-prediction/render-token</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/render-token/daily</loc><changefreq>daily</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/render-token/weekly</loc><changefreq>weekly</changefreq><priority>0.68</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/render-token/monthly</loc><changefreq>monthly</changefreq><priority>0.63</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/render-token</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/render-token/daily</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/render-token/weekly</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/render-token/monthly</loc><changefreq>monthly</changefreq><priority>0.66</priority></url>
   <!-- Fetch.ai -->
-  <url><loc>https://oraclebull.com/price-prediction/fetch-ai</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/fetch-ai/daily</loc><changefreq>daily</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/fetch-ai/weekly</loc><changefreq>weekly</changefreq><priority>0.68</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/fetch-ai/monthly</loc><changefreq>monthly</changefreq><priority>0.63</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/fetch-ai</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/fetch-ai/daily</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/fetch-ai/weekly</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/fetch-ai/monthly</loc><changefreq>monthly</changefreq><priority>0.66</priority></url>
   <!-- Injective -->
-  <url><loc>https://oraclebull.com/price-prediction/injective-protocol</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/injective-protocol/daily</loc><changefreq>daily</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/injective-protocol/weekly</loc><changefreq>weekly</changefreq><priority>0.68</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/injective-protocol/monthly</loc><changefreq>monthly</changefreq><priority>0.63</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/injective-protocol</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/injective-protocol/daily</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/injective-protocol/weekly</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/injective-protocol/monthly</loc><changefreq>monthly</changefreq><priority>0.66</priority></url>
   <!-- Kaspa -->
-  <url><loc>https://oraclebull.com/price-prediction/kaspa</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/kaspa/daily</loc><changefreq>daily</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/kaspa/weekly</loc><changefreq>weekly</changefreq><priority>0.68</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/kaspa/monthly</loc><changefreq>monthly</changefreq><priority>0.63</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/kaspa</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/kaspa/daily</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/kaspa/weekly</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/kaspa/monthly</loc><changefreq>monthly</changefreq><priority>0.66</priority></url>
   <!-- Theta -->
-  <url><loc>https://oraclebull.com/price-prediction/theta-token</loc><changefreq>daily</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/theta-token/daily</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/theta-token/weekly</loc><changefreq>weekly</changefreq><priority>0.65</priority></url>
-  <url><loc>https://oraclebull.com/price-prediction/theta-token/monthly</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/theta-token</loc><changefreq>daily</changefreq><priority>0.79</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/theta-token/daily</loc><changefreq>daily</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/theta-token/weekly</loc><changefreq>weekly</changefreq><priority>0.69</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/theta-token/monthly</loc><changefreq>monthly</changefreq><priority>0.63</priority></url>
+  <!-- Bittensor -->
+  <url><loc>https://oraclebull.com/price-prediction/bittensor</loc><changefreq>daily</changefreq><priority>0.84</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/bittensor/daily</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/bittensor/weekly</loc><changefreq>weekly</changefreq><priority>0.74</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/bittensor/monthly</loc><changefreq>monthly</changefreq><priority>0.68</priority></url>
+  <!-- Sei -->
+  <url><loc>https://oraclebull.com/price-prediction/sei-network</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/sei-network/daily</loc><changefreq>daily</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/sei-network/weekly</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/sei-network/monthly</loc><changefreq>monthly</changefreq><priority>0.64</priority></url>
+  <!-- StarkNet -->
+  <url><loc>https://oraclebull.com/price-prediction/starknet</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/starknet/daily</loc><changefreq>daily</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/starknet/weekly</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/starknet/monthly</loc><changefreq>monthly</changefreq><priority>0.64</priority></url>
+  <!-- Wormhole -->
+  <url><loc>https://oraclebull.com/price-prediction/wormhole</loc><changefreq>daily</changefreq><priority>0.79</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/wormhole/daily</loc><changefreq>daily</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/wormhole/weekly</loc><changefreq>weekly</changefreq><priority>0.69</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/wormhole/monthly</loc><changefreq>monthly</changefreq><priority>0.63</priority></url>
+  <!-- Jupiter -->
+  <url><loc>https://oraclebull.com/price-prediction/jupiter-ag</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/jupiter-ag/daily</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/jupiter-ag/weekly</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/jupiter-ag/monthly</loc><changefreq>monthly</changefreq><priority>0.66</priority></url>
+  <!-- Pyth -->
+  <url><loc>https://oraclebull.com/price-prediction/pyth-network</loc><changefreq>daily</changefreq><priority>0.79</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/pyth-network/daily</loc><changefreq>daily</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/pyth-network/weekly</loc><changefreq>weekly</changefreq><priority>0.69</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/pyth-network/monthly</loc><changefreq>monthly</changefreq><priority>0.63</priority></url>
+  <!-- Pendle -->
+  <url><loc>https://oraclebull.com/price-prediction/pendle</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/pendle/daily</loc><changefreq>daily</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/pendle/weekly</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/pendle/monthly</loc><changefreq>monthly</changefreq><priority>0.64</priority></url>
+  <!-- dogwifhat -->
+  <url><loc>https://oraclebull.com/price-prediction/dogwifcoin</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/dogwifcoin/daily</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/dogwifcoin/weekly</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/dogwifcoin/monthly</loc><changefreq>monthly</changefreq><priority>0.66</priority></url>
+  <!-- Aave -->
+  <url><loc>https://oraclebull.com/price-prediction/aave</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/aave/daily</loc><changefreq>daily</changefreq><priority>0.79</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/aave/weekly</loc><changefreq>weekly</changefreq><priority>0.73</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/aave/monthly</loc><changefreq>monthly</changefreq><priority>0.67</priority></url>
+  <!-- The Graph -->
+  <url><loc>https://oraclebull.com/price-prediction/the-graph</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/the-graph/daily</loc><changefreq>daily</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/the-graph/weekly</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/the-graph/monthly</loc><changefreq>monthly</changefreq><priority>0.64</priority></url>
+  <!-- Maker -->
+  <url><loc>https://oraclebull.com/price-prediction/maker</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/maker/daily</loc><changefreq>daily</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/maker/weekly</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/maker/monthly</loc><changefreq>monthly</changefreq><priority>0.64</priority></url>
+  <!-- Axie Infinity -->
+  <url><loc>https://oraclebull.com/price-prediction/axie-infinity</loc><changefreq>daily</changefreq><priority>0.79</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/axie-infinity/daily</loc><changefreq>daily</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/axie-infinity/weekly</loc><changefreq>weekly</changefreq><priority>0.69</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/axie-infinity/monthly</loc><changefreq>monthly</changefreq><priority>0.63</priority></url>
+  <!-- Decentraland -->
+  <url><loc>https://oraclebull.com/price-prediction/decentraland</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/decentraland/daily</loc><changefreq>daily</changefreq><priority>0.74</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/decentraland/weekly</loc><changefreq>weekly</changefreq><priority>0.68</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/decentraland/monthly</loc><changefreq>monthly</changefreq><priority>0.62</priority></url>
+  <!-- Sandbox -->
+  <url><loc>https://oraclebull.com/price-prediction/sandbox</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/sandbox/daily</loc><changefreq>daily</changefreq><priority>0.74</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/sandbox/weekly</loc><changefreq>weekly</changefreq><priority>0.68</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/sandbox/monthly</loc><changefreq>monthly</changefreq><priority>0.62</priority></url>
+  <!-- Gala -->
+  <url><loc>https://oraclebull.com/price-prediction/gala</loc><changefreq>daily</changefreq><priority>0.79</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/gala/daily</loc><changefreq>daily</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/gala/weekly</loc><changefreq>weekly</changefreq><priority>0.69</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/gala/monthly</loc><changefreq>monthly</changefreq><priority>0.63</priority></url>
+  <!-- Curve -->
+  <url><loc>https://oraclebull.com/price-prediction/curve-dao-token</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/curve-dao-token/daily</loc><changefreq>daily</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/curve-dao-token/weekly</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/curve-dao-token/monthly</loc><changefreq>monthly</changefreq><priority>0.64</priority></url>
+  <!-- 1inch -->
+  <url><loc>https://oraclebull.com/price-prediction/1inch</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/1inch/daily</loc><changefreq>daily</changefreq><priority>0.74</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/1inch/weekly</loc><changefreq>weekly</changefreq><priority>0.68</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/1inch/monthly</loc><changefreq>monthly</changefreq><priority>0.62</priority></url>
+  <!-- Helium -->
+  <url><loc>https://oraclebull.com/price-prediction/helium</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/helium/daily</loc><changefreq>daily</changefreq><priority>0.74</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/helium/weekly</loc><changefreq>weekly</changefreq><priority>0.68</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/helium/monthly</loc><changefreq>monthly</changefreq><priority>0.62</priority></url>
+  <!-- Zilliqa -->
+  <url><loc>https://oraclebull.com/price-prediction/zilliqa</loc><changefreq>daily</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/zilliqa/daily</loc><changefreq>daily</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/zilliqa/weekly</loc><changefreq>weekly</changefreq><priority>0.66</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/zilliqa/monthly</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <!-- Enjin -->
+  <url><loc>https://oraclebull.com/price-prediction/enjincoin</loc><changefreq>daily</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/enjincoin/daily</loc><changefreq>daily</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/enjincoin/weekly</loc><changefreq>weekly</changefreq><priority>0.66</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/enjincoin/monthly</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <!-- Raydium -->
+  <url><loc>https://oraclebull.com/price-prediction/raydium</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/raydium/daily</loc><changefreq>daily</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/raydium/weekly</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/raydium/monthly</loc><changefreq>monthly</changefreq><priority>0.64</priority></url>
+  <!-- Harmony -->
+  <url><loc>https://oraclebull.com/price-prediction/harmony</loc><changefreq>daily</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/harmony/daily</loc><changefreq>daily</changefreq><priority>0.71</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/harmony/weekly</loc><changefreq>weekly</changefreq><priority>0.65</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/harmony/monthly</loc><changefreq>monthly</changefreq><priority>0.59</priority></url>
+  <!-- EigenLayer -->
+  <url><loc>https://oraclebull.com/price-prediction/eigenlayer</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/eigenlayer/daily</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/eigenlayer/weekly</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/eigenlayer/monthly</loc><changefreq>monthly</changefreq><priority>0.66</priority></url>
+  <!-- Notcoin -->
+  <url><loc>https://oraclebull.com/price-prediction/notcoin</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/notcoin/daily</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/notcoin/weekly</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction/notcoin/monthly</loc><changefreq>monthly</changefreq><priority>0.66</priority></url>
 
-  <!-- ═══ MARKET ANALYSIS & INVESTMENT QUESTIONS — 19 PAGES ═══ -->
-  <url><loc>https://oraclebull.com/market/best-crypto-to-buy-today</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
-  <url><loc>https://oraclebull.com/market/top-crypto-gainers-today</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
-  <url><loc>https://oraclebull.com/market/crypto-market-prediction-today</loc><changefreq>daily</changefreq><priority>0.88</priority></url>
-  <url><loc>https://oraclebull.com/market/which-crypto-will-go-up-today</loc><changefreq>daily</changefreq><priority>0.88</priority></url>
-  <url><loc>https://oraclebull.com/market/crypto-losers-today</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
-  <url><loc>https://oraclebull.com/market/is-crypto-going-up-today</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
-  <url><loc>https://oraclebull.com/market/best-crypto-to-buy-this-week</loc><changefreq>weekly</changefreq><priority>0.85</priority></url>
-  <url><loc>https://oraclebull.com/market/crypto-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.85</priority></url>
-  <url><loc>https://oraclebull.com/market/crypto-to-watch-this-week</loc><changefreq>weekly</changefreq><priority>0.82</priority></url>
-  <url><loc>https://oraclebull.com/market/top-crypto-gainers-this-week</loc><changefreq>weekly</changefreq><priority>0.82</priority></url>
-  <url><loc>https://oraclebull.com/market/next-crypto-to-explode</loc><changefreq>daily</changefreq><priority>0.88</priority></url>
-  <url><loc>https://oraclebull.com/market/safest-crypto-to-invest</loc><changefreq>weekly</changefreq><priority>0.82</priority></url>
-  <url><loc>https://oraclebull.com/market/cheap-crypto-to-buy-now</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
-  <url><loc>https://oraclebull.com/market/undervalued-crypto-to-buy</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
-  <url><loc>https://oraclebull.com/market/crypto-with-most-potential</loc><changefreq>weekly</changefreq><priority>0.82</priority></url>
-  <url><loc>https://oraclebull.com/market/best-altcoins-to-buy</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
-  <url><loc>https://oraclebull.com/market/top-meme-coins</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
-  <url><loc>https://oraclebull.com/market/best-defi-tokens</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
-  <url><loc>https://oraclebull.com/market/top-ai-crypto-tokens</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
+  <!-- ═══ TIER 5: MARKET ANALYSIS PAGES — 26 PAGES ═══ -->
+  <url><loc>https://oraclebull.com/market/best-crypto-to-buy-today</loc><changefreq>daily</changefreq><priority>0.92</priority></url>
+  <url><loc>https://oraclebull.com/market/top-crypto-gainers-today</loc><changefreq>daily</changefreq><priority>0.92</priority></url>
+  <url><loc>https://oraclebull.com/market/crypto-market-prediction-today</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://oraclebull.com/market/which-crypto-will-go-up-today</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://oraclebull.com/market/crypto-losers-today</loc><changefreq>daily</changefreq><priority>0.87</priority></url>
+  <url><loc>https://oraclebull.com/market/is-crypto-going-up-today</loc><changefreq>daily</changefreq><priority>0.87</priority></url>
+  <url><loc>https://oraclebull.com/market/best-crypto-to-buy-this-week</loc><changefreq>weekly</changefreq><priority>0.87</priority></url>
+  <url><loc>https://oraclebull.com/market/crypto-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.87</priority></url>
+  <url><loc>https://oraclebull.com/market/crypto-to-watch-this-week</loc><changefreq>weekly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/market/top-crypto-gainers-this-week</loc><changefreq>weekly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/market/next-crypto-to-explode</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://oraclebull.com/market/safest-crypto-to-invest</loc><changefreq>weekly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/market/cheap-crypto-to-buy-now</loc><changefreq>daily</changefreq><priority>0.88</priority></url>
+  <url><loc>https://oraclebull.com/market/undervalued-crypto-to-buy</loc><changefreq>daily</changefreq><priority>0.87</priority></url>
+  <url><loc>https://oraclebull.com/market/crypto-with-most-potential</loc><changefreq>weekly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/market/best-altcoins-to-buy</loc><changefreq>daily</changefreq><priority>0.87</priority></url>
+  <url><loc>https://oraclebull.com/market/top-meme-coins</loc><changefreq>daily</changefreq><priority>0.87</priority></url>
+  <url><loc>https://oraclebull.com/market/best-defi-tokens</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/market/top-ai-crypto-tokens</loc><changefreq>daily</changefreq><priority>0.87</priority></url>
+  <url><loc>https://oraclebull.com/market/crypto-bull-run-indicator</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/market/altcoin-season-index</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/market/crypto-gainers-and-losers-today</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/market/crypto-fear-greed-index-today</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/market/best-layer-2-crypto</loc><changefreq>weekly</changefreq><priority>0.83</priority></url>
+  <url><loc>https://oraclebull.com/market/best-gaming-crypto-tokens</loc><changefreq>weekly</changefreq><priority>0.82</priority></url>
+  <url><loc>https://oraclebull.com/market/best-rwa-crypto-tokens</loc><changefreq>weekly</changefreq><priority>0.82</priority></url>
 
-  <!-- ═══ QUESTION INTENT PAGES — 120 PAGES (10 COINS × 12 PATTERNS) ═══ -->
-  <!-- Bitcoin Questions -->
-  <url><loc>https://oraclebull.com/q/what-will-bitcoin-price-be-today</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
-  <url><loc>https://oraclebull.com/q/will-bitcoin-go-up-today</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
-  <url><loc>https://oraclebull.com/q/bitcoin-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
-  <url><loc>https://oraclebull.com/q/is-bitcoin-bullish-today</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
-  <url><loc>https://oraclebull.com/q/what-will-bitcoin-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/q/will-bitcoin-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/q/bitcoin-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/q/bitcoin-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/q/what-will-bitcoin-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/q/is-bitcoin-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/q/bitcoin-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/q/bitcoin-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
-  <!-- Ethereum Questions -->
-  <url><loc>https://oraclebull.com/q/what-will-ethereum-price-be-today</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
-  <url><loc>https://oraclebull.com/q/will-ethereum-go-up-today</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
-  <url><loc>https://oraclebull.com/q/ethereum-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
-  <url><loc>https://oraclebull.com/q/is-ethereum-bullish-today</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
-  <url><loc>https://oraclebull.com/q/what-will-ethereum-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/q/will-ethereum-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/q/ethereum-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/q/ethereum-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/q/what-will-ethereum-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/q/is-ethereum-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/q/ethereum-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/q/ethereum-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
-  <!-- Solana Questions -->
-  <url><loc>https://oraclebull.com/q/what-will-solana-price-be-today</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
-  <url><loc>https://oraclebull.com/q/will-solana-go-up-today</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
-  <url><loc>https://oraclebull.com/q/solana-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
-  <url><loc>https://oraclebull.com/q/is-solana-bullish-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/q/what-will-solana-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/q/will-solana-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/q/solana-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/q/solana-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/q/what-will-solana-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/q/is-solana-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/q/solana-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/q/solana-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <!-- XRP Questions -->
-  <url><loc>https://oraclebull.com/q/what-will-ripple-price-be-today</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
-  <url><loc>https://oraclebull.com/q/will-ripple-go-up-today</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
-  <url><loc>https://oraclebull.com/q/ripple-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
-  <url><loc>https://oraclebull.com/q/is-ripple-bullish-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/q/what-will-ripple-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/q/will-ripple-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/q/ripple-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/q/ripple-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/q/what-will-ripple-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/q/is-ripple-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/q/ripple-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/q/ripple-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <!-- Cardano Questions -->
-  <url><loc>https://oraclebull.com/q/what-will-cardano-price-be-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/q/will-cardano-go-up-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/q/cardano-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/q/is-cardano-bullish-today</loc><changefreq>daily</changefreq><priority>0.77</priority></url>
-  <url><loc>https://oraclebull.com/q/what-will-cardano-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/q/will-cardano-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/q/cardano-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/q/cardano-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
-  <url><loc>https://oraclebull.com/q/what-will-cardano-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/q/is-cardano-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/q/cardano-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/q/cardano-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.67</priority></url>
-  <!-- Dogecoin Questions -->
-  <url><loc>https://oraclebull.com/q/what-will-dogecoin-price-be-today</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
-  <url><loc>https://oraclebull.com/q/will-dogecoin-go-up-today</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
-  <url><loc>https://oraclebull.com/q/dogecoin-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
-  <url><loc>https://oraclebull.com/q/is-dogecoin-bullish-today</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/q/what-will-dogecoin-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.76</priority></url>
-  <url><loc>https://oraclebull.com/q/will-dogecoin-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.76</priority></url>
-  <url><loc>https://oraclebull.com/q/dogecoin-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.76</priority></url>
-  <url><loc>https://oraclebull.com/q/dogecoin-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/q/what-will-dogecoin-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.71</priority></url>
-  <url><loc>https://oraclebull.com/q/is-dogecoin-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.71</priority></url>
-  <url><loc>https://oraclebull.com/q/dogecoin-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.71</priority></url>
-  <url><loc>https://oraclebull.com/q/dogecoin-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.68</priority></url>
-  <!-- Shiba Inu Questions -->
-  <url><loc>https://oraclebull.com/q/what-will-shiba-inu-price-be-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/q/will-shiba-inu-go-up-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/q/shiba-inu-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/q/is-shiba-inu-bullish-today</loc><changefreq>daily</changefreq><priority>0.77</priority></url>
-  <url><loc>https://oraclebull.com/q/what-will-shiba-inu-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/q/will-shiba-inu-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/q/shiba-inu-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/q/shiba-inu-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
-  <url><loc>https://oraclebull.com/q/what-will-shiba-inu-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/q/is-shiba-inu-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/q/shiba-inu-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/q/shiba-inu-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.67</priority></url>
-  <!-- Pepe Questions -->
-  <url><loc>https://oraclebull.com/q/what-will-pepe-price-be-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/q/will-pepe-go-up-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/q/pepe-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/q/is-pepe-bullish-today</loc><changefreq>daily</changefreq><priority>0.77</priority></url>
-  <url><loc>https://oraclebull.com/q/what-will-pepe-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/q/will-pepe-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/q/pepe-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/q/pepe-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
-  <url><loc>https://oraclebull.com/q/what-will-pepe-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/q/is-pepe-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/q/pepe-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/q/pepe-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.67</priority></url>
-  <!-- Chainlink Questions -->
-  <url><loc>https://oraclebull.com/q/what-will-chainlink-price-be-today</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/q/will-chainlink-go-up-today</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/q/chainlink-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/q/is-chainlink-bullish-today</loc><changefreq>daily</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/q/what-will-chainlink-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/q/will-chainlink-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/q/chainlink-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/q/chainlink-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/q/what-will-chainlink-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.68</priority></url>
-  <url><loc>https://oraclebull.com/q/is-chainlink-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.68</priority></url>
-  <url><loc>https://oraclebull.com/q/chainlink-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.68</priority></url>
-  <url><loc>https://oraclebull.com/q/chainlink-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.65</priority></url>
-  <!-- Polkadot Questions -->
-  <url><loc>https://oraclebull.com/q/what-will-polkadot-price-be-today</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/q/will-polkadot-go-up-today</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/q/polkadot-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
-  <url><loc>https://oraclebull.com/q/is-polkadot-bullish-today</loc><changefreq>daily</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/q/what-will-polkadot-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/q/will-polkadot-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/q/polkadot-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/q/polkadot-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/q/what-will-polkadot-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.68</priority></url>
-  <url><loc>https://oraclebull.com/q/is-polkadot-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.68</priority></url>
-  <url><loc>https://oraclebull.com/q/polkadot-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.68</priority></url>
-  <url><loc>https://oraclebull.com/q/polkadot-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.65</priority></url>
+  <!-- ═══ TIER 6: QUESTION INTENT PAGES — 20 COINS × 12 PATTERNS = 240 PAGES ═══ -->
+  <!-- Bitcoin Questions (12) -->
+  <url><loc>https://oraclebull.com/q/what-will-bitcoin-price-be-today</loc><changefreq>daily</changefreq><priority>0.88</priority></url>
+  <url><loc>https://oraclebull.com/q/will-bitcoin-go-up-today</loc><changefreq>daily</changefreq><priority>0.88</priority></url>
+  <url><loc>https://oraclebull.com/q/bitcoin-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.88</priority></url>
+  <url><loc>https://oraclebull.com/q/is-bitcoin-bullish-today</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-bitcoin-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.83</priority></url>
+  <url><loc>https://oraclebull.com/q/will-bitcoin-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.83</priority></url>
+  <url><loc>https://oraclebull.com/q/bitcoin-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.83</priority></url>
+  <url><loc>https://oraclebull.com/q/bitcoin-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-bitcoin-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/q/is-bitcoin-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/q/bitcoin-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/q/bitcoin-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <!-- Ethereum Questions (12) -->
+  <url><loc>https://oraclebull.com/q/what-will-ethereum-price-be-today</loc><changefreq>daily</changefreq><priority>0.88</priority></url>
+  <url><loc>https://oraclebull.com/q/will-ethereum-go-up-today</loc><changefreq>daily</changefreq><priority>0.88</priority></url>
+  <url><loc>https://oraclebull.com/q/ethereum-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.88</priority></url>
+  <url><loc>https://oraclebull.com/q/is-ethereum-bullish-today</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-ethereum-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.83</priority></url>
+  <url><loc>https://oraclebull.com/q/will-ethereum-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.83</priority></url>
+  <url><loc>https://oraclebull.com/q/ethereum-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.83</priority></url>
+  <url><loc>https://oraclebull.com/q/ethereum-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-ethereum-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/q/is-ethereum-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/q/ethereum-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/q/ethereum-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <!-- Solana Questions (12) -->
+  <url><loc>https://oraclebull.com/q/what-will-solana-price-be-today</loc><changefreq>daily</changefreq><priority>0.86</priority></url>
+  <url><loc>https://oraclebull.com/q/will-solana-go-up-today</loc><changefreq>daily</changefreq><priority>0.86</priority></url>
+  <url><loc>https://oraclebull.com/q/solana-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.86</priority></url>
+  <url><loc>https://oraclebull.com/q/is-solana-bullish-today</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-solana-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.81</priority></url>
+  <url><loc>https://oraclebull.com/q/will-solana-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.81</priority></url>
+  <url><loc>https://oraclebull.com/q/solana-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.81</priority></url>
+  <url><loc>https://oraclebull.com/q/solana-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-solana-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/q/is-solana-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/q/solana-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/q/solana-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
+  <!-- XRP Questions (12) -->
+  <url><loc>https://oraclebull.com/q/what-will-ripple-price-be-today</loc><changefreq>daily</changefreq><priority>0.86</priority></url>
+  <url><loc>https://oraclebull.com/q/will-ripple-go-up-today</loc><changefreq>daily</changefreq><priority>0.86</priority></url>
+  <url><loc>https://oraclebull.com/q/ripple-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.86</priority></url>
+  <url><loc>https://oraclebull.com/q/is-ripple-bullish-today</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-ripple-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.81</priority></url>
+  <url><loc>https://oraclebull.com/q/will-ripple-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.81</priority></url>
+  <url><loc>https://oraclebull.com/q/ripple-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.81</priority></url>
+  <url><loc>https://oraclebull.com/q/ripple-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-ripple-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/q/is-ripple-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/q/ripple-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/q/ripple-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
+  <!-- Cardano Questions (12) -->
+  <url><loc>https://oraclebull.com/q/what-will-cardano-price-be-today</loc><changefreq>daily</changefreq><priority>0.84</priority></url>
+  <url><loc>https://oraclebull.com/q/will-cardano-go-up-today</loc><changefreq>daily</changefreq><priority>0.84</priority></url>
+  <url><loc>https://oraclebull.com/q/cardano-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.84</priority></url>
+  <url><loc>https://oraclebull.com/q/is-cardano-bullish-today</loc><changefreq>daily</changefreq><priority>0.81</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-cardano-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.79</priority></url>
+  <url><loc>https://oraclebull.com/q/will-cardano-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.79</priority></url>
+  <url><loc>https://oraclebull.com/q/cardano-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.79</priority></url>
+  <url><loc>https://oraclebull.com/q/cardano-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-cardano-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.74</priority></url>
+  <url><loc>https://oraclebull.com/q/is-cardano-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.74</priority></url>
+  <url><loc>https://oraclebull.com/q/cardano-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.74</priority></url>
+  <url><loc>https://oraclebull.com/q/cardano-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.71</priority></url>
+  <!-- Dogecoin Questions (12) -->
+  <url><loc>https://oraclebull.com/q/what-will-dogecoin-price-be-today</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/q/will-dogecoin-go-up-today</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/q/dogecoin-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
+  <url><loc>https://oraclebull.com/q/is-dogecoin-bullish-today</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-dogecoin-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/q/will-dogecoin-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/q/dogecoin-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/q/dogecoin-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.77</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-dogecoin-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/q/is-dogecoin-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/q/dogecoin-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/q/dogecoin-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.72</priority></url>
+  <!-- Shiba Inu Questions (12) -->
+  <url><loc>https://oraclebull.com/q/what-will-shiba-inu-price-be-today</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
+  <url><loc>https://oraclebull.com/q/will-shiba-inu-go-up-today</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
+  <url><loc>https://oraclebull.com/q/shiba-inu-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
+  <url><loc>https://oraclebull.com/q/is-shiba-inu-bullish-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-shiba-inu-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/q/will-shiba-inu-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/q/shiba-inu-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/q/shiba-inu-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-shiba-inu-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
+  <url><loc>https://oraclebull.com/q/is-shiba-inu-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
+  <url><loc>https://oraclebull.com/q/shiba-inu-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
+  <url><loc>https://oraclebull.com/q/shiba-inu-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <!-- Pepe Questions (12) -->
+  <url><loc>https://oraclebull.com/q/what-will-pepe-price-be-today</loc><changefreq>daily</changefreq><priority>0.84</priority></url>
+  <url><loc>https://oraclebull.com/q/will-pepe-go-up-today</loc><changefreq>daily</changefreq><priority>0.84</priority></url>
+  <url><loc>https://oraclebull.com/q/pepe-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.84</priority></url>
+  <url><loc>https://oraclebull.com/q/is-pepe-bullish-today</loc><changefreq>daily</changefreq><priority>0.81</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-pepe-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.79</priority></url>
+  <url><loc>https://oraclebull.com/q/will-pepe-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.79</priority></url>
+  <url><loc>https://oraclebull.com/q/pepe-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.79</priority></url>
+  <url><loc>https://oraclebull.com/q/pepe-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-pepe-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.74</priority></url>
+  <url><loc>https://oraclebull.com/q/is-pepe-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.74</priority></url>
+  <url><loc>https://oraclebull.com/q/pepe-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.74</priority></url>
+  <url><loc>https://oraclebull.com/q/pepe-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.71</priority></url>
+  <!-- Chainlink Questions (12) -->
+  <url><loc>https://oraclebull.com/q/what-will-chainlink-price-be-today</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
+  <url><loc>https://oraclebull.com/q/will-chainlink-go-up-today</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
+  <url><loc>https://oraclebull.com/q/chainlink-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
+  <url><loc>https://oraclebull.com/q/is-chainlink-bullish-today</loc><changefreq>daily</changefreq><priority>0.79</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-chainlink-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.77</priority></url>
+  <url><loc>https://oraclebull.com/q/will-chainlink-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.77</priority></url>
+  <url><loc>https://oraclebull.com/q/chainlink-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.77</priority></url>
+  <url><loc>https://oraclebull.com/q/chainlink-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.74</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-chainlink-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/q/is-chainlink-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/q/chainlink-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/q/chainlink-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.69</priority></url>
+  <!-- Polkadot Questions (12) -->
+  <url><loc>https://oraclebull.com/q/what-will-polkadot-price-be-today</loc><changefreq>daily</changefreq><priority>0.81</priority></url>
+  <url><loc>https://oraclebull.com/q/will-polkadot-go-up-today</loc><changefreq>daily</changefreq><priority>0.81</priority></url>
+  <url><loc>https://oraclebull.com/q/polkadot-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.81</priority></url>
+  <url><loc>https://oraclebull.com/q/is-polkadot-bullish-today</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-polkadot-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/q/will-polkadot-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/q/polkadot-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/q/polkadot-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.73</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-polkadot-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.71</priority></url>
+  <url><loc>https://oraclebull.com/q/is-polkadot-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.71</priority></url>
+  <url><loc>https://oraclebull.com/q/polkadot-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.71</priority></url>
+  <url><loc>https://oraclebull.com/q/polkadot-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.68</priority></url>
+  <!-- BNB Questions (12) -->
+  <url><loc>https://oraclebull.com/q/what-will-binancecoin-price-be-today</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
+  <url><loc>https://oraclebull.com/q/will-binancecoin-go-up-today</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
+  <url><loc>https://oraclebull.com/q/binancecoin-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
+  <url><loc>https://oraclebull.com/q/is-binancecoin-bullish-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-binancecoin-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/q/will-binancecoin-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/q/binancecoin-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/q/binancecoin-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-binancecoin-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
+  <url><loc>https://oraclebull.com/q/is-binancecoin-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
+  <url><loc>https://oraclebull.com/q/binancecoin-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
+  <url><loc>https://oraclebull.com/q/binancecoin-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <!-- Toncoin Questions (12) -->
+  <url><loc>https://oraclebull.com/q/what-will-toncoin-price-be-today</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
+  <url><loc>https://oraclebull.com/q/will-toncoin-go-up-today</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
+  <url><loc>https://oraclebull.com/q/toncoin-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.83</priority></url>
+  <url><loc>https://oraclebull.com/q/is-toncoin-bullish-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-toncoin-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/q/will-toncoin-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/q/toncoin-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/q/toncoin-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-toncoin-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
+  <url><loc>https://oraclebull.com/q/is-toncoin-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
+  <url><loc>https://oraclebull.com/q/toncoin-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
+  <url><loc>https://oraclebull.com/q/toncoin-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <!-- Avalanche Questions (12) -->
+  <url><loc>https://oraclebull.com/q/what-will-avalanche-2-price-be-today</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
+  <url><loc>https://oraclebull.com/q/will-avalanche-2-go-up-today</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
+  <url><loc>https://oraclebull.com/q/avalanche-2-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.82</priority></url>
+  <url><loc>https://oraclebull.com/q/is-avalanche-2-bullish-today</loc><changefreq>daily</changefreq><priority>0.79</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-avalanche-2-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.77</priority></url>
+  <url><loc>https://oraclebull.com/q/will-avalanche-2-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.77</priority></url>
+  <url><loc>https://oraclebull.com/q/avalanche-2-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.77</priority></url>
+  <url><loc>https://oraclebull.com/q/avalanche-2-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.74</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-avalanche-2-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/q/is-avalanche-2-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/q/avalanche-2-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/q/avalanche-2-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.69</priority></url>
+  <!-- Aptos Questions (12) -->
+  <url><loc>https://oraclebull.com/q/what-will-aptos-price-be-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/q/will-aptos-go-up-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/q/aptos-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/q/is-aptos-bullish-today</loc><changefreq>daily</changefreq><priority>0.77</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-aptos-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/q/will-aptos-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/q/aptos-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/q/aptos-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-aptos-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/q/is-aptos-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/q/aptos-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/q/aptos-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.67</priority></url>
+  <!-- Sui Questions (12) -->
+  <url><loc>https://oraclebull.com/q/what-will-sui-price-be-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/q/will-sui-go-up-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/q/sui-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/q/is-sui-bullish-today</loc><changefreq>daily</changefreq><priority>0.77</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-sui-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/q/will-sui-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/q/sui-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/q/sui-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-sui-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/q/is-sui-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/q/sui-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/q/sui-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.67</priority></url>
+  <!-- Arbitrum Questions (12) -->
+  <url><loc>https://oraclebull.com/q/what-will-arbitrum-price-be-today</loc><changefreq>daily</changefreq><priority>0.81</priority></url>
+  <url><loc>https://oraclebull.com/q/will-arbitrum-go-up-today</loc><changefreq>daily</changefreq><priority>0.81</priority></url>
+  <url><loc>https://oraclebull.com/q/arbitrum-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.81</priority></url>
+  <url><loc>https://oraclebull.com/q/is-arbitrum-bullish-today</loc><changefreq>daily</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-arbitrum-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/q/will-arbitrum-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/q/arbitrum-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/q/arbitrum-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.73</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-arbitrum-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.71</priority></url>
+  <url><loc>https://oraclebull.com/q/is-arbitrum-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.71</priority></url>
+  <url><loc>https://oraclebull.com/q/arbitrum-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.71</priority></url>
+  <url><loc>https://oraclebull.com/q/arbitrum-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.68</priority></url>
+  <!-- NEAR Questions (12) -->
+  <url><loc>https://oraclebull.com/q/what-will-near-price-be-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/q/will-near-go-up-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/q/near-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/q/is-near-bullish-today</loc><changefreq>daily</changefreq><priority>0.77</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-near-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/q/will-near-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/q/near-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/q/near-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-near-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/q/is-near-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/q/near-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/q/near-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.67</priority></url>
+  <!-- TRON Questions (12) -->
+  <url><loc>https://oraclebull.com/q/what-will-tron-price-be-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/q/will-tron-go-up-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/q/tron-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/q/is-tron-bullish-today</loc><changefreq>daily</changefreq><priority>0.77</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-tron-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/q/will-tron-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/q/tron-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/q/tron-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-tron-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/q/is-tron-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/q/tron-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/q/tron-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.67</priority></url>
+  <!-- Floki Questions (12) -->
+  <url><loc>https://oraclebull.com/q/what-will-floki-price-be-today</loc><changefreq>daily</changefreq><priority>0.79</priority></url>
+  <url><loc>https://oraclebull.com/q/will-floki-go-up-today</loc><changefreq>daily</changefreq><priority>0.79</priority></url>
+  <url><loc>https://oraclebull.com/q/floki-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.79</priority></url>
+  <url><loc>https://oraclebull.com/q/is-floki-bullish-today</loc><changefreq>daily</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-floki-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.74</priority></url>
+  <url><loc>https://oraclebull.com/q/will-floki-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.74</priority></url>
+  <url><loc>https://oraclebull.com/q/floki-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.74</priority></url>
+  <url><loc>https://oraclebull.com/q/floki-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.71</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-floki-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.69</priority></url>
+  <url><loc>https://oraclebull.com/q/is-floki-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.69</priority></url>
+  <url><loc>https://oraclebull.com/q/floki-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.69</priority></url>
+  <url><loc>https://oraclebull.com/q/floki-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.66</priority></url>
+  <!-- Bonk Questions (12) -->
+  <url><loc>https://oraclebull.com/q/what-will-bonk-price-be-today</loc><changefreq>daily</changefreq><priority>0.79</priority></url>
+  <url><loc>https://oraclebull.com/q/will-bonk-go-up-today</loc><changefreq>daily</changefreq><priority>0.79</priority></url>
+  <url><loc>https://oraclebull.com/q/bonk-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.79</priority></url>
+  <url><loc>https://oraclebull.com/q/is-bonk-bullish-today</loc><changefreq>daily</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-bonk-price-be-this-week</loc><changefreq>weekly</changefreq><priority>0.74</priority></url>
+  <url><loc>https://oraclebull.com/q/will-bonk-go-up-this-week</loc><changefreq>weekly</changefreq><priority>0.74</priority></url>
+  <url><loc>https://oraclebull.com/q/bonk-price-prediction-this-week</loc><changefreq>weekly</changefreq><priority>0.74</priority></url>
+  <url><loc>https://oraclebull.com/q/bonk-weekly-forecast</loc><changefreq>weekly</changefreq><priority>0.71</priority></url>
+  <url><loc>https://oraclebull.com/q/what-will-bonk-price-be-this-month</loc><changefreq>monthly</changefreq><priority>0.69</priority></url>
+  <url><loc>https://oraclebull.com/q/is-bonk-a-good-investment-this-month</loc><changefreq>monthly</changefreq><priority>0.69</priority></url>
+  <url><loc>https://oraclebull.com/q/bonk-price-prediction-this-month</loc><changefreq>monthly</changefreq><priority>0.69</priority></url>
+  <url><loc>https://oraclebull.com/q/bonk-monthly-forecast</loc><changefreq>monthly</changefreq><priority>0.66</priority></url>
 
-  <!-- ═══ EDUCATIONAL ARTICLES — 20 IN-DEPTH GUIDES ═══ -->
-  <url><loc>https://oraclebull.com/learn/what-is-crypto-market-sentiment</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/learn/how-ai-is-used-in-crypto-market-analysis</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/learn/bitcoin-market-cycles-explained</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://oraclebull.com/learn/risk-management-in-volatile-crypto-markets</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/learn/how-to-analyze-altcoins-using-market-data</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/learn/technical-analysis-vs-sentiment-analysis</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/learn/on-chain-data-explained-for-beginners</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
-  <url><loc>https://oraclebull.com/learn/how-market-psychology-affects-crypto-prices</loc><changefreq>monthly</changefreq><priority>0.72</priority></url>
-  <url><loc>https://oraclebull.com/learn/how-whales-influence-market-trends</loc><changefreq>monthly</changefreq><priority>0.72</priority></url>
-  <url><loc>https://oraclebull.com/learn/understanding-liquidity-in-crypto-markets</loc><changefreq>monthly</changefreq><priority>0.72</priority></url>
-  <url><loc>https://oraclebull.com/learn/what-is-the-forex-market-and-how-does-it-work</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/learn/forex-market-structure-explained</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/learn/currency-sentiment-analysis-explained</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/learn/forex-vs-crypto-key-market-differences</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/learn/macroeconomic-factors-that-move-forex-markets</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/learn/how-ai-forecasting-models-work-in-finance</loc><changefreq>monthly</changefreq><priority>0.72</priority></url>
-  <url><loc>https://oraclebull.com/learn/limitations-of-ai-market-predictions</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/learn/indicators-vs-ai-models-whats-the-difference</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/learn/data-sources-used-in-market-intelligence-platforms</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/learn/how-to-read-market-analytics-dashboards</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <!-- ═══ TIER 7: EDUCATIONAL ARTICLES — 20 IN-DEPTH GUIDES ═══ -->
+  <url><loc>https://oraclebull.com/learn/what-is-crypto-market-sentiment</loc><changefreq>monthly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/learn/how-ai-is-used-in-crypto-market-analysis</loc><changefreq>monthly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/learn/bitcoin-market-cycles-explained</loc><changefreq>monthly</changefreq><priority>0.78</priority></url>
+  <url><loc>https://oraclebull.com/learn/risk-management-in-volatile-crypto-markets</loc><changefreq>monthly</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/learn/how-to-analyze-altcoins-using-market-data</loc><changefreq>monthly</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/learn/technical-analysis-vs-sentiment-analysis</loc><changefreq>monthly</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/learn/on-chain-data-explained-for-beginners</loc><changefreq>monthly</changefreq><priority>0.76</priority></url>
+  <url><loc>https://oraclebull.com/learn/how-market-psychology-affects-crypto-prices</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/learn/how-whales-influence-market-trends</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/learn/understanding-liquidity-in-crypto-markets</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/learn/what-is-the-forex-market-and-how-does-it-work</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
+  <url><loc>https://oraclebull.com/learn/forex-market-structure-explained</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
+  <url><loc>https://oraclebull.com/learn/currency-sentiment-analysis-explained</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
+  <url><loc>https://oraclebull.com/learn/forex-vs-crypto-key-market-differences</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
+  <url><loc>https://oraclebull.com/learn/macroeconomic-factors-that-move-forex-markets</loc><changefreq>monthly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/learn/how-ai-forecasting-models-work-in-finance</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://oraclebull.com/learn/limitations-of-ai-market-predictions</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
+  <url><loc>https://oraclebull.com/learn/indicators-vs-ai-models-whats-the-difference</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
+  <url><loc>https://oraclebull.com/learn/data-sources-used-in-market-intelligence-platforms</loc><changefreq>monthly</changefreq><priority>0.72</priority></url>
+  <url><loc>https://oraclebull.com/learn/how-to-read-market-analytics-dashboards</loc><changefreq>monthly</changefreq><priority>0.73</priority></url>
 
 </urlset>
