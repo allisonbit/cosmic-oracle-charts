@@ -116,6 +116,11 @@ const Index = () => {
           <QuickStats />
         </Suspense>
 
+        {/* 2.5 Live Signals - high conviction trade setups */}
+        <Suspense fallback={<SectionFallback />}>
+          <LiveSignals />
+        </Suspense>
+
 
         {/* 3. Social Proof - animated platform metrics */}
         <Suspense fallback={<SectionFallback />}>
@@ -144,13 +149,6 @@ const Index = () => {
         <ViewportSection fallback={<SectionFallback />}>
           <Suspense fallback={<SectionFallback />}>
             <TopMovers />
-          </Suspense>
-        </ViewportSection>
-
-        {/* 8.5 Live Signals - high conviction trade setups */}
-        <ViewportSection fallback={<SectionFallback />}>
-          <Suspense fallback={<SectionFallback />}>
-            <LiveSignals />
           </Suspense>
         </ViewportSection>
 
