@@ -13,6 +13,7 @@ import { ChainExternalLinks } from "@/components/chain/ChainExternalLinks";
 import { ChainSpecificMetrics } from "@/components/chain/ChainSpecificMetrics";
 import { LiveTokenSearchPanel } from "@/components/chain/LiveTokenSearchPanel";
 import { ChainFAQSchema, ChainFAQDisplay } from "@/components/chain/ChainFAQSchema";
+import { InArticleAd } from "@/components/ads";
 import { ChainSEOContent } from "@/components/seo/index";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { LazySection } from "@/components/ui/LazySection";
@@ -402,6 +403,7 @@ export default function Chain() {
               </Tabs>
 
               {/* FAQ + SEO — always visible */}
+              <InArticleAd className="my-6" />
               <LazySection fallbackHeight="h-48">
                 <ChainFAQDisplay chain={chain} priceData={chainPrice} />
               </LazySection>

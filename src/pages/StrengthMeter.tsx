@@ -208,6 +208,7 @@ export default function StrengthMeter() {
           </p>
         </section>
         
+        <InArticleAd className="mt-12 mb-4" />
         <StrengthMeterSEOContent />
       </main>
     </Layout>

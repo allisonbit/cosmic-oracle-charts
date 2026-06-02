@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { format, formatDistanceToNow } from "date-fns";
 import { CryptoFactorySchema } from "@/components/seo/index";
 import { CryptoFactorySEOHeader, CryptoFactorySEOContent } from "@/components/seo/index";
+import { InArticleAd } from "@/components/ads";
 import { SEO } from "@/components/MainSEO";
 import { Helmet } from "react-helmet-async";
 
@@ -332,6 +333,7 @@ export default function CryptoFactory() {
             </TabsContent>
           </Tabs>
 
+          <InArticleAd className="my-8" />
           <CryptoFactorySEOContent />
         </div>
       </div>

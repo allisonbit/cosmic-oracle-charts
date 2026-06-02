@@ -34,7 +34,7 @@ export function Layout({ children, showTicker = true }: LayoutProps) {
         )}
       </header>
       
-      <main id="main-content" className={`flex-1 ${showTicker ? "" : "mt-14 md:mt-16"} pb-24 md:pb-0 scroll-smooth-touch`}>
+      <main id="main-content" className={`flex-1 ${showTicker ? "" : "mt-14 md:mt-16"} pb-36 md:pb-0 scroll-smooth-touch`}>
         <BreadcrumbNav />
         <Suspense fallback={<LoadingFallback />}>
           {children}

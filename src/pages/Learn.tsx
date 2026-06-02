@@ -18,6 +18,7 @@ import { useState, useMemo, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { format, parseISO, isToday, isYesterday } from "date-fns";
 import { Input } from "@/components/ui/input";
+import { InArticleAd } from "@/components/ads";
 import { Link } from "react-router-dom";
 import { LearnSEOContent } from "@/components/seo/index";
 import { useEducationalArticles } from "@/hooks/useEducationalArticles";
@@ -454,6 +455,8 @@ export default function Learn() {
               )}
             </div>
           </section>
+
+          <InArticleAd className="mt-12 mb-4" />
 
           <LearnSEOContent />
 

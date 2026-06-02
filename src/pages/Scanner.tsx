@@ -18,6 +18,7 @@ import { useStrengthMeter } from "@/hooks/useStrengthMeter";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 import { SEO } from "@/components/MainSEO";
 import { Helmet } from "react-helmet-async";
+import { InArticleAd } from "@/components/ads";
 
 const chains = ["all", "ethereum", "solana", "bsc", "arbitrum", "base", "polygon", "optimism", "avalanche"] as const;
 const sortOptions = [
@@ -544,6 +545,8 @@ export default function Scanner() {
             </div>
             </div>
           </Card>
+
+          <InArticleAd className="mt-8 mb-4" />
 
           {/* SEO Content */}
           <div className="prose prose-sm dark:prose-invert max-w-none mt-8">
