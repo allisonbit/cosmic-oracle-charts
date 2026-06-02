@@ -41,14 +41,31 @@ const Sparkline = ({ isPositive }: { isPositive: boolean }) => {
 };
 
 // AI Marquee Alert Bar
-const AIAlertMarquee = () => {
-  const alerts = [
-    { coin: "BTC", msg: "Whale accumulation detected", type: "bullish" },
-    { coin: "SOL", msg: "Network activity spikes 400%", type: "bullish" },
-    { coin: "ETH", msg: "Major exchange outflow", type: "neutral" },
-    { coin: "PEPE", msg: "Social volume surging", type: "bullish" },
-    { coin: "DOGE", msg: "Large sell wall forming", type: "bearish" }
-  ];
+const AIAlertMarquee = ({ prices = [] }: { prices: any[] }) => {
+  // Generate dynamic alerts based on live price data
+  const alerts = useMemo(() => {
+    if (!prices || prices.length === 0) {
+      return [
+        { coin: "BTC", msg: "Market analysis in progress...", type: "neutral" },
+        { coin: "ETH", msg: "Gathering network data...", type: "neutral" }
+      ];
+    }
+    
+    return prices.slice(0, 8).map(coin => {
+      const isPositive = coin.change24h > 0;
+      const type = isPositive ? "bullish" : coin.change24h < -5 ? "bearish" : "neutral";
+      
+      // Dynamic messages based on price action
+      let msg = "";
+      if (coin.change24h > 5) msg = `Surging +${coin.change24h.toFixed(1)}% in 24h`;
+      else if (coin.change24h > 2) msg = `Steady uptrend detected`;
+      else if (coin.change24h < -5) msg = `Sharp correction -${Math.abs(coin.change24h).toFixed(1)}%`;
+      else if (coin.change24h < 0) msg = `Minor pullback forming`;
+      else msg = `Consolidating at current levels`;
+
+      return { coin: coin.symbol, msg, type };
+    });
+  }, [prices]);
 
   return (
     <div className="w-full bg-card border-y border-border/50 overflow-hidden py-2 mb-12 flex items-center">
@@ -58,12 +75,12 @@ const AIAlertMarquee = () => {
       </div>
       <div className="flex-1 overflow-hidden relative">
         <div className="flex whitespace-nowrap animate-[marquee_20s_linear_infinite] hover:[animation-play-state:paused]">
-          {[...alerts, ...alerts].map((alert, i) => (
+          {[...alerts, ...alerts, ...alerts].map((alert, i) => (
             <div key={i} className="flex items-center mx-6 gap-2">
               <span className={cn(
                 "text-xs font-bold px-1.5 py-0.5 rounded uppercase",
                 alert.type === 'bullish' ? "bg-success/10 text-success" : 
-                alert.type === 'bearish' ? "bg-danger/10 text-danger" : "bg-muted text-muted-foreground"
+                alert.type === 'bearish' ? "bg-danger/10 text-danger" : "bg-muted text-foreground"
               )}>
                 {alert.coin}
               </span>
@@ -117,7 +134,7 @@ export function TopMovers() {
   return (
     <section className="pb-16 md:pb-24 pt-8" aria-labelledby="top-movers-heading">
       
-      <AIAlertMarquee />
+      <AIAlertMarquee prices={data?.prices || []} />
       
       <div className="container mx-auto px-4">
         <div className="text-center mb-10 md:mb-16">
