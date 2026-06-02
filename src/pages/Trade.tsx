@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { useAccount, useSendTransaction, useSwitchChain } from "wagmi";
+import { usePrivy } from "@privy-io/react-auth";
 import { formatUnits } from "viem";
 import { Layout } from "@/components/layout/Layout";
 import { useTrading } from "@/hooks/useTrading";
@@ -9,14 +9,12 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, ArrowDownUp, ArrowRight, Wallet, AlertTriangle, CheckCircle2, RefreshCw, Zap, Globe, Plus } from "lucide-react";
+import { Loader2, ArrowDownUp, ArrowRight, Wallet, AlertTriangle, CheckCircle2, RefreshCw, Zap, Globe, Plus, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { POPULAR_TOKENS, type TokenInfo } from "@/lib/tradingTokens";
 
 function SwapPanel() {
-  const { address, isConnected, chainId: walletChainId } = useAccount();
-  const { switchChain } = useSwitchChain();
-  const { sendTransaction, isPending: isSending } = useSendTransaction();
+  const { authenticated, login } = usePrivy();
   const { loading, error, getSwapQuote, getSwapPrice, supportedChains } = useTrading();
 
   const [chainId, setChainId] = useState(1);
@@ -41,7 +39,6 @@ function SwapPanel() {
     setPriceInfo(null);
     setShowCustomSell(false);
     setShowCustomBuy(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId]);
 
   const activeSellToken = showCustomSell && customSellAddress.startsWith("0x") ? customSellAddress : sellToken;
@@ -58,23 +55,17 @@ function SwapPanel() {
   }, [chainId, activeSellToken, activeBuyToken, sellAmount, sellTokenInfo, getSwapPrice]);
 
   const handleGetQuote = useCallback(async () => {
-    if (!activeSellToken || !activeBuyToken || !sellAmount || !address) return;
+    if (!activeSellToken || !activeBuyToken || !sellAmount) return;
     const decimals = sellTokenInfo?.decimals || 18;
     const rawAmount = BigInt(Math.floor(Number(sellAmount) * 10 ** decimals)).toString();
-    const result = await getSwapQuote(chainId, activeSellToken, activeBuyToken, rawAmount, address);
+    const fakeAddress = "0x0000000000000000000000000000000000000000";
+    const result = await getSwapQuote(chainId, activeSellToken, activeBuyToken, rawAmount, fakeAddress);
     if (result) setQuote(result);
-  }, [chainId, activeSellToken, activeBuyToken, sellAmount, address, sellTokenInfo, getSwapQuote]);
+  }, [chainId, activeSellToken, activeBuyToken, sellAmount, sellTokenInfo, getSwapQuote]);
 
   const handleSwap = useCallback(async () => {
-    if (!quote || !address) return;
-    if (walletChainId !== chainId) {
-      try { switchChain({ chainId }); toast.info("Switch network in your wallet"); return; } catch { toast.error("Failed to switch network"); return; }
-    }
-    try {
-      sendTransaction({ to: quote.to as `0x${string}`, data: quote.data as `0x${string}`, value: BigInt(quote.value || "0") });
-      toast.success("Transaction submitted!");
-    } catch (e: any) { toast.error(e.message || "Swap failed"); }
-  }, [quote, address, walletChainId, chainId, switchChain, sendTransaction]);
+    toast.error("Trading is disabled in email-only mode.");
+  }, []);
 
   const handleFlipTokens = () => {
     const tempSell = activeSellToken;
@@ -166,8 +157,10 @@ function SwapPanel() {
 
         {error && <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/10 rounded-lg p-3"><AlertTriangle className="w-4 h-4 flex-shrink-0" /><span>{error}</span></div>}
 
-        {!isConnected ? (
-          <p className="text-center text-sm text-muted-foreground py-2">Connect your wallet to swap</p>
+        {!authenticated ? (
+          <Button onClick={() => login()} className="w-full" size="lg">
+            Sign In to View Quotes
+          </Button>
         ) : !quote ? (
           <div className="flex gap-2">
             <Button onClick={handleGetPrice} disabled={loading || !activeSellToken || !activeBuyToken || !sellAmount} className="flex-1" variant="outline">
@@ -178,9 +171,8 @@ function SwapPanel() {
             </Button>
           </div>
         ) : (
-          <Button onClick={handleSwap} disabled={isSending} className="w-full" size="lg">
-            {isSending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <CheckCircle2 className="w-4 h-4 mr-2" />}
-            {walletChainId !== chainId ? "Switch Network & Swap" : "Confirm Swap"}
+          <Button onClick={handleSwap} disabled className="w-full bg-muted text-muted-foreground" size="lg">
+            <Lock className="w-4 h-4 mr-2" /> Trading disabled
           </Button>
         )}
       </CardContent>
@@ -189,8 +181,7 @@ function SwapPanel() {
 }
 
 function BridgePanel() {
-  const { address, isConnected } = useAccount();
-  const { sendTransaction, isPending: isSending } = useSendTransaction();
+  const { authenticated, login } = usePrivy();
   const { loading, error, getBridgeQuote, supportedChains } = useTrading();
 
   const [fromChainId, setFromChainId] = useState(1);
@@ -203,9 +194,7 @@ function BridgePanel() {
   const fromTokens = POPULAR_TOKENS[fromChainId] || POPULAR_TOKENS[1];
   const toTokens = POPULAR_TOKENS[toChainId] || POPULAR_TOKENS[1];
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { setFromToken(fromTokens[0]?.address || ""); setBridgeQuote(null); }, [fromChainId]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { setToToken(toTokens[0]?.address || ""); setBridgeQuote(null); }, [toChainId]);
 
   const fromTokenInfo = fromTokens.find(t => t.address === fromToken);
@@ -214,17 +203,13 @@ function BridgePanel() {
     if (!amount || Number(amount) <= 0) return;
     const decimals = fromTokenInfo?.decimals || 18;
     const rawAmount = BigInt(Math.floor(Number(amount) * 10 ** decimals)).toString();
-    const result = await getBridgeQuote(fromChainId, toChainId, fromToken, toToken, rawAmount, address);
+    const fakeAddress = "0x0000000000000000000000000000000000000000";
+    const result = await getBridgeQuote(fromChainId, toChainId, fromToken, toToken, rawAmount, fakeAddress);
     if (result) setBridgeQuote(result);
   };
 
   const handleBridge = async () => {
-    if (!bridgeQuote?.transactionRequest) { toast.error("No transaction data"); return; }
-    try {
-      const tx = bridgeQuote.transactionRequest;
-      sendTransaction({ to: tx.to as `0x${string}`, data: tx.data as `0x${string}`, value: BigInt(tx.value || "0") });
-      toast.success("Bridge transaction submitted!");
-    } catch (e: any) { toast.error(e.message || "Bridge failed"); }
+    toast.error("Bridging is disabled in email-only mode.");
   };
 
   return (
@@ -277,15 +262,17 @@ function BridgePanel() {
 
         {error && <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/10 rounded-lg p-3"><AlertTriangle className="w-4 h-4 flex-shrink-0" /><span>{error}</span></div>}
 
-        {!isConnected ? (
-          <p className="text-center text-sm text-muted-foreground py-2">Connect your wallet to bridge</p>
+        {!authenticated ? (
+          <Button onClick={() => login()} className="w-full" size="lg">
+            Sign In to View Quotes
+          </Button>
         ) : !bridgeQuote ? (
           <Button onClick={handleQuote} disabled={loading || !amount || fromChainId === toChainId} className="w-full">
             {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <RefreshCw className="w-4 h-4 mr-2" />} Get Bridge Quote
           </Button>
         ) : (
-          <Button onClick={handleBridge} disabled={isSending} className="w-full" size="lg">
-            {isSending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <CheckCircle2 className="w-4 h-4 mr-2" />} Confirm Bridge
+          <Button onClick={handleBridge} disabled className="w-full bg-muted text-muted-foreground" size="lg">
+            <Lock className="w-4 h-4 mr-2" /> Bridging disabled
           </Button>
         )}
       </CardContent>

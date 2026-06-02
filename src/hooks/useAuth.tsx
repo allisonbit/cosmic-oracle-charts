@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { useAccount } from "wagmi";
+import { usePrivy } from "@privy-io/react-auth";
 
 interface UserProfile {
   id: string;
@@ -35,38 +35,37 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const { address, isConnected } = useAccount();
+  const { user: privyUser, ready, authenticated, logout } = usePrivy();
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (isConnected && address) {
+    if (ready && authenticated && privyUser) {
       setProfile({
-        id: address,
-        display_name: `${address.slice(0, 6)}...${address.slice(-4)}`,
+        id: privyUser.id,
+        display_name: privyUser.email ? privyUser.email.address.split('@')[0] : `User-${privyUser.id.slice(-4)}`,
         avatar_url: null,
-        email: null,
+        email: privyUser.email?.address || null,
         watchlist: [],
         preferences: {},
         is_premium: true, // Everything is free
         email_notifications: false,
       });
-    } else {
+    } else if (ready && !authenticated) {
       setProfile(null);
     }
-    setLoading(false);
-  }, [isConnected, address]);
+  }, [ready, authenticated, privyUser]);
 
-  const user = isConnected && address ? { id: address } : null;
+  const user = authenticated && privyUser ? { id: privyUser.id } : null;
 
   const signOut = async () => {
+    await logout();
     setProfile(null);
   };
 
   const refreshProfile = async () => {};
 
   return (
-    <AuthContext.Provider value={{ user, session: null, profile, loading, signOut, refreshProfile }}>
+    <AuthContext.Provider value={{ user, session: null, profile, loading: !ready, signOut, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );

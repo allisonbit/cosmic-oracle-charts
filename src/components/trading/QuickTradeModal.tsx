@@ -5,20 +5,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { ArrowDownUp, ArrowRight, Globe, Loader2, Zap, RefreshCw, CheckCircle2, AlertTriangle, Wallet, Plus } from "lucide-react";
-import { useAccount, useSendTransaction, useSwitchChain, useConnect } from "wagmi";
+import { ArrowDownUp, ArrowRight, Globe, Loader2, Zap, RefreshCw, AlertTriangle, Plus, Lock } from "lucide-react";
 import { formatUnits } from "viem";
 import { useTrading } from "@/hooks/useTrading";
 import { useTrade } from "@/contexts/TradeContext";
 import { toast } from "sonner";
 import { POPULAR_TOKENS, CHAIN_NAME_TO_ID } from "@/lib/tradingTokens";
+import { usePrivy } from "@privy-io/react-auth";
 
 export function QuickTradeModal() {
   const { isOpen, target, closeTrade } = useTrade();
-  const { address, isConnected, chainId: walletChainId } = useAccount();
-  const { connect, connectors, isPending: isConnecting } = useConnect();
-  const { switchChain } = useSwitchChain();
-  const { sendTransaction, isPending: isSending } = useSendTransaction();
+  const { authenticated, login } = usePrivy();
   const { loading, error, getSwapQuote, getSwapPrice, getBridgeQuote, supportedChains } = useTrading();
 
   const defaultTab = target?.action === "bridge" ? "bridge" : "swap";
@@ -56,7 +53,6 @@ export function QuickTradeModal() {
       setShowCustomBuy(false);
     } else if (target.contractAddress) {
       setSellToken(tokens[0]?.address || "");
-      // Check if contract is in our list
       const found = tokens.find(t => t.address.toLowerCase() === target.contractAddress?.toLowerCase());
       if (found) {
         setBuyToken(found.address);
@@ -81,8 +77,7 @@ export function QuickTradeModal() {
     setPriceInfo(null);
     setBridgeQuote(null);
     setBridgeAmount("");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [target]);
+  }, [target, toChainId]);
 
   const tokens = POPULAR_TOKENS[chainId] || POPULAR_TOKENS[1];
   const activeBuyToken = showCustomBuy && customBuyAddress.startsWith("0x") ? customBuyAddress : buyToken;
@@ -101,44 +96,30 @@ export function QuickTradeModal() {
   }, [chainId, sellToken, activeBuyToken, sellAmount, sellTokenInfo, getSwapPrice]);
 
   const handleGetQuote = useCallback(async () => {
-    if (!sellToken || !activeBuyToken || !sellAmount || !address) return;
+    if (!sellToken || !activeBuyToken || !sellAmount) return;
     const decimals = sellTokenInfo?.decimals || 18;
     const rawAmount = BigInt(Math.floor(Number(sellAmount) * 10 ** decimals)).toString();
-    const result = await getSwapQuote(chainId, sellToken, activeBuyToken, rawAmount, address);
+    // Use a zero address for quote simulation since we don't have a wallet connected
+    const fakeAddress = "0x0000000000000000000000000000000000000000";
+    const result = await getSwapQuote(chainId, sellToken, activeBuyToken, rawAmount, fakeAddress);
     if (result) setQuote(result);
-  }, [chainId, sellToken, activeBuyToken, sellAmount, address, sellTokenInfo, getSwapQuote]);
+  }, [chainId, sellToken, activeBuyToken, sellAmount, sellTokenInfo, getSwapQuote]);
 
   const handleSwap = useCallback(async () => {
-    if (!quote || !address) return;
-    if (walletChainId !== chainId) {
-      try { switchChain({ chainId }); toast.info("Switch network in your wallet"); return; } catch { toast.error("Failed to switch network"); return; }
-    }
-    try {
-      sendTransaction({ to: quote.to as `0x${string}`, data: quote.data as `0x${string}`, value: BigInt(quote.value || "0") });
-      toast.success("Transaction submitted!");
-    } catch (e: any) { toast.error(e.message || "Swap failed"); }
-  }, [quote, address, walletChainId, chainId, switchChain, sendTransaction]);
+    toast.error("Trading is disabled in email-only mode.");
+  }, []);
 
   const handleBridgeQuote = async () => {
     if (!bridgeAmount || Number(bridgeAmount) <= 0) return;
     const decimals = fromTokenInfo?.decimals || 18;
     const rawAmount = BigInt(Math.floor(Number(bridgeAmount) * 10 ** decimals)).toString();
-    const result = await getBridgeQuote(fromChainId, toChainId, fromToken, toToken, rawAmount, address);
+    const fakeAddress = "0x0000000000000000000000000000000000000000";
+    const result = await getBridgeQuote(fromChainId, toChainId, fromToken, toToken, rawAmount, fakeAddress);
     if (result) setBridgeQuote(result);
   };
 
   const handleBridge = async () => {
-    if (!bridgeQuote?.transactionRequest) { toast.error("No transaction data"); return; }
-    try {
-      const tx = bridgeQuote.transactionRequest;
-      sendTransaction({ to: tx.to as `0x${string}`, data: tx.data as `0x${string}`, value: BigInt(tx.value || "0") });
-      toast.success("Bridge submitted!");
-    } catch (e: any) { toast.error(e.message || "Bridge failed"); }
-  };
-
-  const handleConnect = () => {
-    const connector = connectors.find(c => c.id === 'walletConnect' || c.id === 'injected') || connectors[0];
-    if (connector) connect({ connector });
+    toast.error("Bridging is disabled in email-only mode.");
   };
 
   return (
@@ -218,9 +199,9 @@ export function QuickTradeModal() {
 
             {error && <div className="flex items-center gap-2 text-xs text-destructive bg-destructive/10 rounded-lg p-2"><AlertTriangle className="w-3 h-3" /><span>{error}</span></div>}
 
-            {!isConnected ? (
-              <Button onClick={handleConnect} disabled={isConnecting} className="w-full" size="sm">
-                <Wallet className="w-3 h-3 mr-1" /> {isConnecting ? "Connecting..." : "Connect Wallet to Trade"}
+            {!authenticated ? (
+              <Button onClick={() => login()} className="w-full" size="sm">
+                Sign In to View Quotes
               </Button>
             ) : !quote ? (
               <div className="flex gap-2">
@@ -232,9 +213,8 @@ export function QuickTradeModal() {
                 </Button>
               </div>
             ) : (
-              <Button onClick={handleSwap} disabled={isSending} className="w-full">
-                {isSending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <CheckCircle2 className="w-4 h-4 mr-2" />}
-                {walletChainId !== chainId ? "Switch & Swap" : "Confirm Swap"}
+              <Button onClick={handleSwap} disabled className="w-full bg-muted text-muted-foreground">
+                <Lock className="w-4 h-4 mr-2" /> Trading disabled
               </Button>
             )}
           </TabsContent>
@@ -282,17 +262,17 @@ export function QuickTradeModal() {
 
             {error && <div className="flex items-center gap-2 text-xs text-destructive bg-destructive/10 rounded-lg p-2"><AlertTriangle className="w-3 h-3" /><span>{error}</span></div>}
 
-            {!isConnected ? (
-              <Button onClick={handleConnect} disabled={isConnecting} className="w-full" size="sm">
-                <Wallet className="w-3 h-3 mr-1" /> {isConnecting ? "Connecting..." : "Connect Wallet to Bridge"}
+            {!authenticated ? (
+              <Button onClick={() => login()} className="w-full" size="sm">
+                Sign In to View Quotes
               </Button>
             ) : !bridgeQuote ? (
               <Button onClick={handleBridgeQuote} disabled={loading || !bridgeAmount} className="w-full" size="sm">
                 {loading ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Globe className="w-3 h-3 mr-1" />} Get Bridge Quote
               </Button>
             ) : (
-              <Button onClick={handleBridge} disabled={isSending} className="w-full">
-                {isSending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <CheckCircle2 className="w-4 h-4 mr-2" />} Confirm Bridge
+              <Button onClick={handleBridge} disabled className="w-full bg-muted text-muted-foreground">
+                <Lock className="w-4 h-4 mr-2" /> Bridging disabled
               </Button>
             )}
           </TabsContent>

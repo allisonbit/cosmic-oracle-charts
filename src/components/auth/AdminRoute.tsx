@@ -1,33 +1,27 @@
 import { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { useAccount } from "wagmi";
+import { usePrivy } from "@privy-io/react-auth";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
 
 const ADMIN_EMAILS = [
-  // Add emails here if needed
-];
-
-const ADMIN_WALLETS = [
-  "0x3ACA071D6cA66462612d04eB6f31Ab7924F86FF0", // Example admin wallet
-  // Add other admin wallets here
+  "admin@oraclebull.com", // Example admin email
 ];
 
 export function AdminRoute({ children }: { children: ReactNode }) {
   const { user, loading: authLoading } = useAuth();
-  const { address, isConnected } = useAccount();
+  const { user: privyUser } = usePrivy();
 
   const { data: isAdmin, isLoading } = useQuery({
-    queryKey: ["admin-check", user?.id, address],
+    queryKey: ["admin-check", user?.id],
     queryFn: async () => {
-      // 1. Check hardcoded wallet list
-      if (address && ADMIN_WALLETS.includes(address)) return true;
+      // 1. Check hardcoded email list
+      const email = privyUser?.email?.address;
+      if (email && ADMIN_EMAILS.includes(email)) return true;
       
-      // 2. Check hardcoded email list (skipped for wallet-only auth)
-
-      // 3. Fallback to Supabase roles
+      // 2. Fallback to Supabase roles
       if (!user?.id) return false;
       const { data } = await supabase
         .from("user_roles")
@@ -37,7 +31,7 @@ export function AdminRoute({ children }: { children: ReactNode }) {
         .maybeSingle();
       return !!data;
     },
-    enabled: !!user?.id || !!address,
+    enabled: !!user?.id,
   });
 
   if (authLoading || isLoading) {

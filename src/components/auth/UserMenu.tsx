@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { usePrivy } from "@privy-io/react-auth";
 import { useAuth } from "@/hooks/useAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -16,15 +16,12 @@ import { useNavigate } from "react-router-dom";
 
 export function UserMenu({ className }: { className?: string }) {
   const { profile, loading: authLoading } = useAuth();
-  const { isConnected, address } = useAccount();
-  const { connect, connectors, isPending } = useConnect();
-  const { disconnect } = useDisconnect();
+  const { ready, authenticated, login, logout } = usePrivy();
   const navigate = useNavigate();
 
   const handleSignIn = async () => {
     try {
-      const connector = connectors.find(c => c.id === 'walletConnect' || c.id === 'injected') || connectors[0];
-      if (connector) connect({ connector });
+      login();
     } catch (e) {
       console.error("Connect error:", e);
     }
@@ -32,38 +29,37 @@ export function UserMenu({ className }: { className?: string }) {
 
   const handleSignOut = async () => {
     try {
-      disconnect();
+      await logout();
     } catch (e) {
       console.error(e)
     }
   };
 
-  if (authLoading && !isConnected) {
+  if (authLoading || !ready) {
     return (
       <div className={cn("w-9 h-9 rounded-full bg-muted animate-pulse", className)} />
     );
   }
 
-  if (!isConnected) {
+  if (!authenticated) {
     return (
       <Button
         variant="outline"
         size="sm"
         onClick={handleSignIn}
-        disabled={isPending}
         className={cn("gap-2 h-9 px-3 border-primary/30 hover:bg-primary/10 hover:text-primary", className)}
       >
         <LogIn className="w-4 h-4" />
-        <span className="hidden sm:inline">Connect Wallet</span>
+        <span className="hidden sm:inline">Sign In</span>
       </Button>
     );
   }
 
-  const shortenedAddress = address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "Wallet";
+  const emailDisplay = profile?.email || profile?.display_name || "User";
 
   const initials = profile?.display_name
     ? profile.display_name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2)
-    : "W";
+    : "U";
 
   return (
     <DropdownMenu>
@@ -80,10 +76,10 @@ export function UserMenu({ className }: { className?: string }) {
       <DropdownMenuContent align="end" className="w-56 bg-card border-border">
         <div className="px-3 py-2">
           <p className="text-sm font-medium text-foreground truncate">
-            {profile?.display_name || "Connected"}
+            {profile?.display_name || "Authenticated"}
           </p>
           <p className="text-xs text-muted-foreground truncate">
-            {shortenedAddress}
+            {emailDisplay}
           </p>
         </div>
         <DropdownMenuSeparator />
@@ -125,7 +121,7 @@ export function UserMenu({ className }: { className?: string }) {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut} className="gap-2 cursor-pointer text-destructive focus:text-destructive">
-          <LogOut className="w-4 h-4" /> Disconnect
+          <LogOut className="w-4 h-4" /> Sign Out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

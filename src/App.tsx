@@ -4,8 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { lazy, Suspense, memo, useEffect } from "react";
-import { WagmiProvider } from 'wagmi';
-import { config } from './wagmi';
+import { PrivyProvider } from '@privy-io/react-auth';
 import React from 'react';
 import { Loader2 } from "lucide-react";
 import { SEO, StructuredData } from "@/components/MainSEO";
@@ -148,19 +147,17 @@ const ChunkLoadRecovery = memo(function ChunkLoadRecovery() {
   return null;
 });
 
-// Safety wrapper: if WagmiProvider crashes, render children without it.
-class WagmiSafety extends React.Component<{ children: React.ReactNode }, { failed: boolean }> {
-  state = { failed: false };
-  static getDerivedStateFromError() { return { failed: true }; }
-  componentDidCatch(err: unknown) { console.warn('WagmiProvider failed, running without wallet support:', err); }
-  render() {
-    if (this.state.failed) return this.props.children;
-    return <WagmiProvider config={config}>{this.props.children}</WagmiProvider>;
-  }
-}
-
 const App = () => (
-  <WagmiSafety>
+  <PrivyProvider
+    appId={import.meta.env.VITE_PRIVY_APP_ID || "cmpuydouj00l80bl1mp98d6lk"}
+    config={{
+      loginMethods: ['email'],
+      appearance: {
+        theme: 'dark',
+        accentColor: '#676FFF',
+      },
+    }}
+  >
     <QueryClientProvider client={queryClient}>
     <AuthProvider>
     <TradeProvider>
@@ -234,7 +231,7 @@ const App = () => (
     </TradeProvider>
     </AuthProvider>
   </QueryClientProvider>
-  </WagmiSafety>
+  </PrivyProvider>
 );
 
 export default App;
