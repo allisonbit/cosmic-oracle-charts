@@ -49,7 +49,7 @@ export function DeepFinancialMetrics({ chain, financialData, isLoading }: DeepFi
     if (Math.abs(n) >= 1e9) return (n / 1e9).toFixed(decimals) + "B";
     if (Math.abs(n) >= 1e6) return (n / 1e6).toFixed(decimals) + "M";
     if (Math.abs(n) >= 1e3) return (n / 1e3).toFixed(decimals) + "K";
-    return n.toFixed(decimals);
+    return (n ?? 0).toFixed(decimals);
   };
 
   if (isLoading || !financialData) {
@@ -87,10 +87,10 @@ export function DeepFinancialMetrics({ chain, financialData, isLoading }: DeepFi
             <span className="text-xs text-muted-foreground">Realized Price</span>
           </div>
           <div className="text-xl font-bold text-foreground">
-            ${financialData.realizedPrice.toLocaleString()}
+            ${(financialData.realizedPrice ?? 0).toLocaleString()}
           </div>
           <span className={`text-xs ${financialData.currentPrice > financialData.realizedPrice ? "text-green-400" : "text-red-400"}`}>
-            Current: ${financialData.currentPrice.toLocaleString()}
+            Current: ${(financialData.currentPrice ?? 0).toLocaleString()}
           </span>
         </div>
 
@@ -100,7 +100,7 @@ export function DeepFinancialMetrics({ chain, financialData, isLoading }: DeepFi
             <span className="text-xs text-muted-foreground">MVRV Ratio</span>
           </div>
           <div className={`text-xl font-bold ${mvrvStatus === "overvalued" ? "text-red-400" : mvrvStatus === "undervalued" ? "text-green-400" : "text-yellow-400"}`}>
-            {financialData.mvrvRatio.toFixed(2)}
+            {(financialData.mvrvRatio ?? 0).toFixed(2)}
           </div>
           <Badge variant="outline" className={`text-xs ${mvrvStatus === "overvalued" ? "border-red-400/30 text-red-400" : mvrvStatus === "undervalued" ? "border-green-400/30 text-green-400" : "border-yellow-400/30 text-yellow-400"}`}>
             {mvrvStatus}
@@ -113,7 +113,7 @@ export function DeepFinancialMetrics({ chain, financialData, isLoading }: DeepFi
             <span className="text-xs text-muted-foreground">SOPR</span>
           </div>
           <div className={`text-xl font-bold ${financialData.soprValue > 1 ? "text-green-400" : "text-red-400"}`}>
-            {financialData.soprValue.toFixed(3)}
+            {(financialData.soprValue ?? 0).toFixed(3)}
           </div>
           <span className="text-xs text-muted-foreground">
             {financialData.soprValue > 1 ? "Profit taking" : "Loss realization"}
@@ -126,7 +126,7 @@ export function DeepFinancialMetrics({ chain, financialData, isLoading }: DeepFi
             <span className="text-xs text-muted-foreground">NVT Ratio</span>
           </div>
           <div className="text-xl font-bold text-foreground">
-            {financialData.nvtRatio.toFixed(1)}
+            {(financialData.nvtRatio ?? 0).toFixed(1)}
           </div>
           <span className={`text-xs ${financialData.nvtRatio < 50 ? "text-green-400" : financialData.nvtRatio > 100 ? "text-red-400" : "text-yellow-400"}`}>
             {financialData.nvtRatio < 50 ? "Undervalued" : financialData.nvtRatio > 100 ? "Overvalued" : "Fair Value"}
@@ -146,7 +146,7 @@ export function DeepFinancialMetrics({ chain, financialData, isLoading }: DeepFi
                   <Progress value={band.percentage} className="h-3" />
                 </div>
                 <span className="text-xs font-medium text-foreground w-12 text-right">
-                  {band.percentage.toFixed(1)}%
+                  {(band.percentage ?? 0).toFixed(1)}%
                 </span>
               </div>
             ))}
@@ -195,7 +195,7 @@ export function DeepFinancialMetrics({ chain, financialData, isLoading }: DeepFi
           <div className="bg-background/40 border border-border/30 rounded-lg p-4">
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm text-muted-foreground">Dominance</span>
-              <span className="text-lg font-bold text-foreground">{financialData.stablecoinMetrics.dominance.toFixed(1)}%</span>
+              <span className="text-lg font-bold text-foreground">{(financialData.stablecoinMetrics.dominance ?? 0).toFixed(1)}%</span>
             </div>
             <div className="grid grid-cols-3 gap-2 mb-3">
               <div className="text-center">
@@ -242,7 +242,7 @@ export function DeepFinancialMetrics({ chain, financialData, isLoading }: DeepFi
               </div>
               <div>
                 <span className="text-xs text-muted-foreground block">Long Ratio</span>
-                <span className="text-lg font-bold text-foreground">{financialData.futuresData.longRatio.toFixed(1)}%</span>
+                <span className="text-lg font-bold text-foreground">{(financialData.futuresData.longRatio ?? 0).toFixed(1)}%</span>
               </div>
               <div>
                 <span className="text-xs text-muted-foreground block">24h Liquidations</span>
@@ -270,17 +270,17 @@ export function DeepFinancialMetrics({ chain, financialData, isLoading }: DeepFi
               <div>
                 <span className="text-xs text-muted-foreground block">Put/Call Ratio</span>
                 <span className={`text-lg font-bold ${financialData.optionsData.putCallRatio > 1 ? "text-red-400" : "text-green-400"}`}>
-                  {financialData.optionsData.putCallRatio.toFixed(2)}
+                  {(financialData.optionsData.putCallRatio ?? 0).toFixed(2)}
                 </span>
               </div>
               <div>
                 <span className="text-xs text-muted-foreground block">Max Pain</span>
-                <span className="text-lg font-bold text-yellow-400">${financialData.optionsData.maxPainPrice.toLocaleString()}</span>
+                <span className="text-lg font-bold text-yellow-400">${(financialData.optionsData.maxPainPrice ?? 0).toLocaleString()}</span>
               </div>
             </div>
             <div className="mt-3 pt-3 border-t border-border/30 flex items-center justify-between">
               <span className="text-sm text-muted-foreground">Implied Volatility</span>
-              <span className="text-lg font-bold text-foreground">{financialData.optionsData.impliedVolatility.toFixed(1)}%</span>
+              <span className="text-lg font-bold text-foreground">{(financialData.optionsData.impliedVolatility ?? 0).toFixed(1)}%</span>
             </div>
           </div>
         </div>

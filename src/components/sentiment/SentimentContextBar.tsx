@@ -105,7 +105,7 @@ export function SentimentContextBar({
                 "text-xs",
                 sectorChange >= 0 ? "text-success" : "text-danger"
               )}>
-                {sectorChange >= 0 ? '+' : ''}{sectorChange.toFixed(0)}%
+                {sectorChange >= 0 ? '+' : ''}{(sectorChange ?? 0).toFixed(0)}%
               </span>
             </div>
           </div>

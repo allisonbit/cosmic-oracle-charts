@@ -36,9 +36,9 @@ export function EnhancedMarketInsightsPanel() {
     const items: Insight[] = [];
 
     if (avgChange > 3) {
-      items.push({ type: "bullish", title: "Strong Uptrend Active", description: `Market is showing ${bullishCount} of ${topCoins.length} coins in green. Average gain: +${avgChange.toFixed(1)}%.`, action: "Consider taking partial profits on winners", importance: "high", category: "Market Direction", details: ["Momentum indicators suggest continuation", "Volume supporting the upward move", "Watch for resistance levels on major coins"], links: [{ label: "TradingView", url: "https://www.tradingview.com/chart/?symbol=CRYPTOCAP:TOTAL" }] });
+      items.push({ type: "bullish", title: "Strong Uptrend Active", description: `Market is showing ${bullishCount} of ${topCoins.length} coins in green. Average gain: +${(avgChange ?? 0).toFixed(1)}%.`, action: "Consider taking partial profits on winners", importance: "high", category: "Market Direction", details: ["Momentum indicators suggest continuation", "Volume supporting the upward move", "Watch for resistance levels on major coins"], links: [{ label: "TradingView", url: "https://www.tradingview.com/chart/?symbol=CRYPTOCAP:TOTAL" }] });
     } else if (avgChange < -3) {
-      items.push({ type: "bearish", title: "Market Correction", description: `${bearishCount} of ${topCoins.length} coins are in red. Average loss: ${avgChange.toFixed(1)}%.`, action: "Look for oversold opportunities", importance: "high", category: "Market Direction", details: ["Check if this is a healthy correction or trend reversal", "Monitor key support levels", "Wait for volume confirmation before buying dips"], links: [{ label: "Fear & Greed", url: "https://alternative.me/crypto/fear-and-greed-index/" }] });
+      items.push({ type: "bearish", title: "Market Correction", description: `${bearishCount} of ${topCoins.length} coins are in red. Average loss: ${(avgChange ?? 0).toFixed(1)}%.`, action: "Look for oversold opportunities", importance: "high", category: "Market Direction", details: ["Check if this is a healthy correction or trend reversal", "Monitor key support levels", "Wait for volume confirmation before buying dips"], links: [{ label: "Fear & Greed", url: "https://alternative.me/crypto/fear-and-greed-index/" }] });
     } else {
       items.push({ type: "info", title: "Consolidation Phase", description: "Market is moving sideways with mixed signals across assets.", action: "Wait for clearer direction", importance: "medium", category: "Market Direction", details: ["Accumulation or distribution phase possible", "Watch for breakout above or below range"] });
     }
@@ -52,12 +52,12 @@ export function EnhancedMarketInsightsPanel() {
     if (global?.totalVolume24h && global?.totalMarketCap) {
       const volToMcap = (global.totalVolume24h / global.totalMarketCap) * 100;
       if (volToMcap > 6) {
-        items.push({ type: "activity", title: "Unusually High Trading Activity", description: `24h volume is ${volToMcap.toFixed(1)}% of market cap - significantly above average.`, action: "Increased volatility expected", importance: "high", category: "Volume" });
+        items.push({ type: "activity", title: "Unusually High Trading Activity", description: `24h volume is ${(volToMcap ?? 0).toFixed(1)}% of market cap - significantly above average.`, action: "Increased volatility expected", importance: "high", category: "Volume" });
       }
     }
 
     if (global?.btcDominance && global.btcDominance > 58) {
-      items.push({ type: "warning", title: "BTC Dominance Rising", description: `At ${global.btcDominance.toFixed(1)}% - Capital flowing to Bitcoin.`, action: "Altcoins may underperform short-term", importance: "medium", category: "Dominance" });
+      items.push({ type: "warning", title: "BTC Dominance Rising", description: `At ${(global.btcDominance ?? 0).toFixed(1)}% - Capital flowing to Bitcoin.`, action: "Altcoins may underperform short-term", importance: "medium", category: "Dominance" });
     }
 
     if (strongGainers > 5) items.push({ type: "bullish", title: "Strong Momentum", description: `${strongGainers} coins showing gains over 5%.`, action: "Momentum favors continuation", importance: "medium", category: "Momentum" });

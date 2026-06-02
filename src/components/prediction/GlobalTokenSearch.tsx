@@ -126,11 +126,11 @@ export function GlobalTokenSearch({ onSelect, onSearchResults, placeholder }: Gl
               {token.price && token.price > 0 && (
                 <div className="text-right">
                   <div className="font-mono text-sm">
-                    ${token.price >= 1 ? token.price.toFixed(2) : token.price.toPrecision(4)}
+                    ${token.price >= 1 ? (token.price ?? 0).toFixed(2) : (token.price ?? 0).toPrecision(4)}
                   </div>
                   {token.change24h !== undefined && (
                     <div className={cn("text-xs", token.change24h >= 0 ? 'text-green-400' : 'text-red-400')}>
-                      {token.change24h >= 0 ? '+' : ''}{token.change24h.toFixed(2)}%
+                      {token.change24h >= 0 ? '+' : ''}{(token.change24h ?? 0).toFixed(2)}%
                     </div>
                   )}
                 </div>

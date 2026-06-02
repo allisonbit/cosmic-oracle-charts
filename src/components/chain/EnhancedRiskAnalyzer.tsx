@@ -48,20 +48,20 @@ function calculateRisk(token: DiscoveryToken): AnalyzedToken {
   const volatility = token.volatility || Math.abs(token.change24h) * 2;
   if (volatility > 50) {
     riskScore += 35;
-    reasons.push(`Extreme volatility: ${volatility.toFixed(1)}%`);
+    reasons.push(`Extreme volatility: ${(volatility ?? 0).toFixed(1)}%`);
   } else if (volatility > 25) {
     riskScore += 20;
-    reasons.push(`High volatility: ${volatility.toFixed(1)}%`);
+    reasons.push(`High volatility: ${(volatility ?? 0).toFixed(1)}%`);
   } else if (volatility > 10) {
     riskScore += 10;
   }
 
   if (Math.abs(token.change24h) > 30) {
     riskScore += 25;
-    reasons.push(`Major 24h move: ${token.change24h > 0 ? '+' : ''}${token.change24h.toFixed(1)}%`);
+    reasons.push(`Major 24h move: ${token.change24h > 0 ? '+' : ''}${(token.change24h ?? 0).toFixed(1)}%`);
   } else if (Math.abs(token.change24h) > 15) {
     riskScore += 15;
-    reasons.push(`Significant 24h change: ${token.change24h > 0 ? '+' : ''}${token.change24h.toFixed(1)}%`);
+    reasons.push(`Significant 24h change: ${token.change24h > 0 ? '+' : ''}${(token.change24h ?? 0).toFixed(1)}%`);
   }
 
   const liquidity = token.liquidityScore || (token.volume24h / (token.marketCap || 1)) * 100;
@@ -86,7 +86,7 @@ function calculateRisk(token: DiscoveryToken): AnalyzedToken {
 
   if (token.volumeSpike > 300) {
     riskScore += 20;
-    reasons.push(`Volume spike: ${token.volumeSpike.toFixed(0)}% above normal`);
+    reasons.push(`Volume spike: ${(token.volumeSpike ?? 0).toFixed(0)}% above normal`);
   }
 
   riskScore = Math.max(5, Math.min(100, riskScore));
@@ -210,7 +210,7 @@ export function EnhancedRiskAnalyzer({ chain }: EnhancedRiskAnalyzerProps) {
     if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
     if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
     if (num >= 1e3) return `$${(num / 1e3).toFixed(0)}K`;
-    return `$${num.toFixed(2)}`;
+    return `$${(num ?? 0).toFixed(2)}`;
   };
 
   // Calculate overall risk metrics
@@ -264,7 +264,7 @@ export function EnhancedRiskAnalyzer({ chain }: EnhancedRiskAnalyzerProps) {
           >
             <Activity className="h-6 w-6 mx-auto text-warning mb-2" />
             <p className="text-xs text-muted-foreground">Avg Risk Score</p>
-            <p className="text-2xl font-display text-foreground">{overallMetrics.avgRiskScore.toFixed(0)}</p>
+            <p className="text-2xl font-display text-foreground">{(overallMetrics.avgRiskScore ?? 0).toFixed(0)}</p>
           </button>
           <button
             onClick={() => openRiskModal('category', 'High Risk Tokens', groupedRisks.high || [])}
@@ -381,7 +381,7 @@ export function EnhancedRiskAnalyzer({ chain }: EnhancedRiskAnalyzerProps) {
                                     </div>
                                     <div className="flex items-center gap-3">
                                       <span className={cn("text-xs", token.change24h >= 0 ? "text-success" : "text-danger")}>
-                                        {token.change24h >= 0 ? "+" : ""}{token.change24h.toFixed(1)}%
+                                        {token.change24h >= 0 ? "+" : ""}{(token.change24h ?? 0).toFixed(1)}%
                                       </span>
                                       <span className={cn(
                                         "text-sm font-bold px-2 py-0.5 rounded",

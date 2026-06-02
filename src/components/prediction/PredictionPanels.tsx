@@ -192,13 +192,13 @@ export function TechnicalIndicatorsPanel({ data }: TechnicalIndicatorsPanelProps
           {(ti as any).atr != null && (
             <div className="p-2 bg-muted/30 rounded-lg text-center">
               <span className="text-xs text-muted-foreground block">ATR</span>
-              <p className="font-mono text-sm">${(ti as any).atr.toLocaleString()}</p>
+              <p className="font-mono text-sm">${((ti as any).atr  ?? 0).toLocaleString()}</p>
             </div>
           )}
           {(ti as any).vwap != null && (
             <div className="p-2 bg-muted/30 rounded-lg text-center">
               <span className="text-xs text-muted-foreground block">VWAP</span>
-              <p className="font-mono text-sm">${(ti as any).vwap.toLocaleString()}</p>
+              <p className="font-mono text-sm">${((ti as any).vwap  ?? 0).toLocaleString()}</p>
             </div>
           )}
           {(ti as any).obv != null && (
@@ -235,7 +235,7 @@ export function PriceTargetsPanel({ data, timeframe }: PriceTargetsPanelProps) {
         {/* Current Price */}
         <div className="text-center p-4 bg-primary/10 rounded-lg border border-primary/20">
           <span className="text-sm text-muted-foreground">Current Price</span>
-          <p className="text-2xl font-bold text-primary">${data.currentPrice.toLocaleString()}</p>
+          <p className="text-2xl font-bold text-primary">${(data.currentPrice ?? 0).toLocaleString()}</p>
         </div>
         
         {/* Target Ranges */}
@@ -246,9 +246,9 @@ export function PriceTargetsPanel({ data, timeframe }: PriceTargetsPanelProps) {
               <Badge variant="outline" className="text-xs border-green-500/50 text-green-400">Low Risk</Badge>
             </div>
             <div className="flex justify-between text-sm">
-              <span>${data.priceTargets.conservative.low.toLocaleString()}</span>
+              <span>${(data.priceTargets.conservative.low  ?? 0).toLocaleString()}</span>
               <span>—</span>
-              <span>${data.priceTargets.conservative.high.toLocaleString()}</span>
+              <span>${(data.priceTargets.conservative.high  ?? 0).toLocaleString()}</span>
             </div>
           </div>
           
@@ -258,9 +258,9 @@ export function PriceTargetsPanel({ data, timeframe }: PriceTargetsPanelProps) {
               <Badge variant="outline" className="text-xs border-yellow-500/50 text-yellow-400">Medium Risk</Badge>
             </div>
             <div className="flex justify-between text-sm">
-              <span>${data.priceTargets.moderate.low.toLocaleString()}</span>
+              <span>${(data.priceTargets.moderate.low  ?? 0).toLocaleString()}</span>
               <span>—</span>
-              <span>${data.priceTargets.moderate.high.toLocaleString()}</span>
+              <span>${(data.priceTargets.moderate.high  ?? 0).toLocaleString()}</span>
             </div>
           </div>
           
@@ -270,9 +270,9 @@ export function PriceTargetsPanel({ data, timeframe }: PriceTargetsPanelProps) {
               <Badge variant="outline" className="text-xs border-red-500/50 text-red-400">High Risk</Badge>
             </div>
             <div className="flex justify-between text-sm">
-              <span>${data.priceTargets.aggressive.low.toLocaleString()}</span>
+              <span>${(data.priceTargets.aggressive.low  ?? 0).toLocaleString()}</span>
               <span>—</span>
-              <span>${data.priceTargets.aggressive.high.toLocaleString()}</span>
+              <span>${(data.priceTargets.aggressive.high  ?? 0).toLocaleString()}</span>
             </div>
           </div>
         </div>
@@ -345,16 +345,16 @@ export function TradingZonesPanel({ data }: TradingZonesPanelProps) {
         <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
           <span className="text-sm font-medium text-blue-400">Entry Zone</span>
           <div className="flex justify-between mt-1 text-lg font-mono">
-            <span>${entryMin.toLocaleString()}</span>
+            <span>${(entryMin ?? 0).toLocaleString()}</span>
             <span className="text-muted-foreground">—</span>
-            <span>${entryMax.toLocaleString()}</span>
+            <span>${(entryMax ?? 0).toLocaleString()}</span>
           </div>
         </div>
         
         {/* Stop Loss */}
         <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
           <span className="text-sm font-medium text-red-400">Stop Loss</span>
-          <p className="text-lg font-mono mt-1">${stopLoss.toLocaleString()}</p>
+          <p className="text-lg font-mono mt-1">${(stopLoss ?? 0).toLocaleString()}</p>
         </div>
         
         {/* Take Profits */}
@@ -363,15 +363,15 @@ export function TradingZonesPanel({ data }: TradingZonesPanelProps) {
           <div className="grid grid-cols-3 gap-2">
             <div className="p-2 bg-green-500/10 border border-green-500/20 rounded text-center">
               <span className="text-xs text-muted-foreground">TP1</span>
-              <p className="font-mono text-sm">${tp1.toLocaleString()}</p>
+              <p className="font-mono text-sm">${(tp1 ?? 0).toLocaleString()}</p>
             </div>
             <div className="p-2 bg-green-500/15 border border-green-500/30 rounded text-center">
               <span className="text-xs text-muted-foreground">TP2</span>
-              <p className="font-mono text-sm">${tp2.toLocaleString()}</p>
+              <p className="font-mono text-sm">${(tp2 ?? 0).toLocaleString()}</p>
             </div>
             <div className="p-2 bg-green-500/20 border border-green-500/40 rounded text-center">
               <span className="text-xs text-muted-foreground">TP3</span>
-              <p className="font-mono text-sm">${tp3.toLocaleString()}</p>
+              <p className="font-mono text-sm">${(tp3 ?? 0).toLocaleString()}</p>
             </div>
           </div>
         </div>
@@ -416,7 +416,7 @@ export function ScenariosPanel({ data }: ScenariosPanelProps) {
             </Badge>
           </div>
           <p className="text-lg font-mono text-green-400 mb-3">
-            Target: ${bullTarget.toLocaleString()}
+            Target: ${(bullTarget ?? 0).toLocaleString()}
           </p>
           <div className="space-y-1">
             <span className="text-xs text-muted-foreground">Triggers:</span>
@@ -443,7 +443,7 @@ export function ScenariosPanel({ data }: ScenariosPanelProps) {
             </Badge>
           </div>
           <p className="text-lg font-mono text-red-400 mb-3">
-            Target: ${bearTarget.toLocaleString()}
+            Target: ${(bearTarget ?? 0).toLocaleString()}
           </p>
           <div className="space-y-1">
             <span className="text-xs text-muted-foreground">Triggers:</span>

@@ -33,7 +33,7 @@ export function EnhancedWalletStats({ analysis }: WalletStatsProps) {
     if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
     if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
     if (num >= 1e3) return `$${(num / 1e3).toFixed(2)}K`;
-    return `$${num.toFixed(2)}`;
+    return `$${(num ?? 0).toFixed(2)}`;
   };
 
   // Calculate additional metrics
@@ -68,7 +68,7 @@ export function EnhancedWalletStats({ analysis }: WalletStatsProps) {
           { label: 'Total Portfolio Value', value: formatNumber(analysis.totalValue) },
           { label: 'Number of Tokens', value: totalTokens.toString() },
           { label: 'Largest Holding', value: `${largestHolding?.symbol || 'N/A'} (${formatNumber(largestHolding?.value || 0)})` },
-          { label: 'Stablecoin Holdings', value: `${formatNumber(stablecoinValue)} (${stablecoinPct.toFixed(1)}%)` },
+          { label: 'Stablecoin Holdings', value: `${formatNumber(stablecoinValue)} (${(stablecoinPct ?? 0).toFixed(1)}%)` },
           { label: '24h PnL (Est.)', value: `${avgChange24h >= 0 ? '+' : ''}${formatNumber(analysis.totalValue * avgChange24h / 100)}` },
         ]
       }
@@ -105,7 +105,7 @@ export function EnhancedWalletStats({ analysis }: WalletStatsProps) {
         content: [
           { label: 'Diversification Score', value: `${analysis.diversificationScore}/100` },
           { label: 'Total Positions', value: totalTokens.toString() },
-          { label: 'Top Holding Concentration', value: `${concentrationPct.toFixed(1)}%` },
+          { label: 'Top Holding Concentration', value: `${(concentrationPct ?? 0).toFixed(1)}%` },
           { label: 'Unique Sectors', value: `${Math.min(totalTokens, 5)}+` },
           { label: 'Recommendation', value: concentrationPct > 50 ? 'Consider rebalancing' : 'Portfolio is balanced' },
         ]
@@ -133,7 +133,7 @@ export function EnhancedWalletStats({ analysis }: WalletStatsProps) {
     {
       id: 'performance',
       label: '24h Change',
-      value: `${avgChange24h >= 0 ? '+' : ''}${avgChange24h.toFixed(2)}%`,
+      value: `${avgChange24h >= 0 ? '+' : ''}${(avgChange24h ?? 0).toFixed(2)}%`,
       subtext: `${positiveTokens}↑ ${negativeTokens}↓`,
       icon: avgChange24h >= 0 ? TrendingUp : TrendingDown,
       color: avgChange24h >= 0 ? 'text-success' : 'text-danger',
@@ -141,7 +141,7 @@ export function EnhancedWalletStats({ analysis }: WalletStatsProps) {
       details: {
         title: 'Performance Analysis',
         content: [
-          { label: 'Average 24h Change', value: `${avgChange24h >= 0 ? '+' : ''}${avgChange24h.toFixed(2)}%` },
+          { label: 'Average 24h Change', value: `${avgChange24h >= 0 ? '+' : ''}${(avgChange24h ?? 0).toFixed(2)}%` },
           { label: 'Tokens in Green', value: `${positiveTokens} of ${totalTokens}` },
           { label: 'Tokens in Red', value: `${negativeTokens} of ${totalTokens}` },
           { label: 'Best Performer', value: analysis.holdings.length > 0 ? `${analysis.holdings.reduce((best, h) => h.change24h > best.change24h ? h : best).symbol} (+${analysis.holdings.reduce((best, h) => h.change24h > best.change24h ? h : best).change24h.toFixed(1)}%)` : 'N/A' },

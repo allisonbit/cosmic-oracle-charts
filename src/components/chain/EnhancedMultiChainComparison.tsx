@@ -62,12 +62,12 @@ export function EnhancedMultiChainComparison({ chain, comparisonData, isLoading 
     if (n >= 1e9) return "$" + (n / 1e9).toFixed(decimals) + "B";
     if (n >= 1e6) return "$" + (n / 1e6).toFixed(decimals) + "M";
     if (n >= 1e3) return "$" + (n / 1e3).toFixed(decimals) + "K";
-    return "$" + n.toFixed(decimals);
+    return "$" + (n ?? 0).toFixed(decimals);
   };
 
   const formatFee = (n: number) => {
     if (n < 0.01) return "<$0.01";
-    return "$" + n.toFixed(2);
+    return "$" + (n ?? 0).toFixed(2);
   };
 
   const openDetailModal = (type: DetailModalData['type'], title: string, data: any) => {
@@ -196,7 +196,7 @@ export function EnhancedMultiChainComparison({ chain, comparisonData, isLoading 
                           </td>
                           <td className="p-3 text-right">
                             <span className={`font-mono ${metric.tps > 1000 ? "text-green-400" : "text-foreground"}`}>
-                              {metric.tps.toLocaleString()}
+                              {(metric.tps ?? 0).toLocaleString()}
                             </span>
                           </td>
                           <td className="p-3 text-right">
@@ -233,7 +233,7 @@ export function EnhancedMultiChainComparison({ chain, comparisonData, isLoading 
                   <div className="flex items-center justify-between mb-3">
                     <span className="font-medium text-foreground">{l2.name}</span>
                     <Badge variant="outline" className={`text-xs ${l2.sequencerUptime > 99 ? "text-green-400 border-green-400/30" : "text-yellow-400 border-yellow-400/30"}`}>
-                      {l2.sequencerUptime.toFixed(1)}% uptime
+                      {(l2.sequencerUptime ?? 0).toFixed(1)}% uptime
                     </Badge>
                   </div>
                   <div className="space-y-2">

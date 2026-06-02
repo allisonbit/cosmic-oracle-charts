@@ -84,7 +84,7 @@ function NarrativeCard({ narrative }: { narrative: any }) {
             "text-sm font-medium",
             narrative.weeklyChange >= 0 ? "text-green-400" : "text-red-400"
           )}>
-            {narrative.weeklyChange >= 0 ? '+' : ''}{narrative.weeklyChange.toFixed(1)}% (7d)
+            {narrative.weeklyChange >= 0 ? '+' : ''}{(narrative.weeklyChange ?? 0).toFixed(1)}% (7d)
           </p>
         </div>
       </div>

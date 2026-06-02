@@ -111,7 +111,7 @@ export function EnhancedDailySummary({ chain, forecast, isLoading, onRefresh }: 
                 >
                   <marketSignal.icon className={cn("h-4 w-4", marketSignal.color)} />
                   <span className={cn("text-sm font-medium", marketSignal.color)}>{marketSignal.signal}</span>
-                  <span className={cn("text-xs", marketSignal.color)}>({marketSignal.score.toFixed(0)}%)</span>
+                  <span className={cn("text-xs", marketSignal.color)}>({(marketSignal.score ?? 0).toFixed(0)}%)</span>
                 </button>
               )}
               <button onClick={() => openDetailModal('methodology', 'AI Methodology', {})} className="p-2 rounded-lg bg-muted/20 hover:bg-muted/40 transition-colors">
@@ -144,7 +144,7 @@ export function EnhancedDailySummary({ chain, forecast, isLoading, onRefresh }: 
             >
               {keyMetrics.sentiment >= 50 ? <TrendingUp className="h-5 w-5 mx-auto text-success mb-1" /> : <TrendingDown className="h-5 w-5 mx-auto text-danger mb-1" />}
               <p className="text-xs text-muted-foreground">Sentiment</p>
-              <p className={cn("text-lg font-display", keyMetrics.sentiment >= 50 ? "text-success" : "text-danger")}>{keyMetrics.sentiment.toFixed(0)}%</p>
+              <p className={cn("text-lg font-display", keyMetrics.sentiment >= 50 ? "text-success" : "text-danger")}>{(keyMetrics.sentiment ?? 0).toFixed(0)}%</p>
             </button>
             <button
               onClick={() => openDetailModal('insights', 'Volatility Index', keyMetrics)}

@@ -38,7 +38,7 @@ export function WhaleActivityRadar({ chain, whaleActivity: initialWhaleActivity,
   useEffect(() => {
     if (newAlert) {
       setShowNewAlertBanner(true);
-      toast.info(`🐳 New whale ${newAlert.type}: ${newAlert.amount.toLocaleString()} ${newAlert.token}`, {
+      toast.info(`🐳 New whale ${newAlert.type}: ${(newAlert.amount ?? 0).toLocaleString()} ${newAlert.token}`, {
         description: `Value: $${(newAlert.value / 1e6).toFixed(2)}M`,
         duration: 5000,
       });
@@ -49,7 +49,7 @@ export function WhaleActivityRadar({ chain, whaleActivity: initialWhaleActivity,
   const formatValue = (num: number) => {
     if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
     if (num >= 1e3) return `$${(num / 1e3).toFixed(0)}K`;
-    return `$${num.toFixed(0)}`;
+    return `$${(num ?? 0).toFixed(0)}`;
   };
 
   const formatTime = (timestamp: number) => {
@@ -108,7 +108,7 @@ export function WhaleActivityRadar({ chain, whaleActivity: initialWhaleActivity,
         <div className="absolute top-0 left-0 right-0 bg-warning/20 border-b border-warning/40 px-4 py-2 flex items-center gap-2 animate-pulse z-10">
           <Bell className="h-4 w-4 text-warning" />
           <span className="text-xs text-warning font-medium">
-            New whale alert: {newAlert.amount.toLocaleString()} {newAlert.token}
+            New whale alert: {(newAlert.amount ?? 0).toLocaleString()} {newAlert.token}
           </span>
         </div>
       )}
@@ -267,7 +267,7 @@ export function WhaleActivityRadar({ chain, whaleActivity: initialWhaleActivity,
                   {activity.type === "transfer" && <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 text-warning flex-shrink-0" />}
                   <div className="min-w-0">
                     <p className="text-xs sm:text-sm text-foreground truncate">
-                      {activity.amount.toLocaleString()} {activity.token}
+                      {(activity.amount ?? 0).toLocaleString()} {activity.token}
                     </p>
                     <div className="flex items-center gap-1">
                       <p className="text-[10px] sm:text-xs text-muted-foreground">{formatTime(activity.timestamp)}</p>

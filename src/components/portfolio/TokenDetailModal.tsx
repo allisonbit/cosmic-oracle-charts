@@ -142,20 +142,20 @@ export function TokenDetailModal({ token, isOpen, onClose }: TokenDetailModalPro
             <div className="flex items-center justify-between mb-4">
               <div>
                 <div className="text-2xl font-bold">
-                  ${token.price < 0.01 ? token.price.toFixed(8) : token.price.toLocaleString()}
+                  ${token.price < 0.01 ? (token.price ?? 0).toFixed(8) : (token.price ?? 0).toLocaleString()}
                 </div>
                 <div className={cn(
                   "flex items-center gap-1 text-sm font-medium",
                   token.change24h >= 0 ? "text-success" : "text-danger"
                 )}>
                   {token.change24h >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
-                  {token.change24h >= 0 ? "+" : ""}{token.change24h.toFixed(2)}% (24h)
+                  {token.change24h >= 0 ? "+" : ""}{(token.change24h ?? 0).toFixed(2)}% (24h)
                 </div>
               </div>
               <div className="text-right">
                 <div className="text-sm text-muted-foreground">Your Holdings</div>
-                <div className="font-bold">${token.value.toLocaleString()}</div>
-                <div className="text-xs text-muted-foreground">{token.balance.toLocaleString()} {token.symbol}</div>
+                <div className="font-bold">${(token.value ?? 0).toLocaleString()}</div>
+                <div className="text-xs text-muted-foreground">{(token.balance ?? 0).toLocaleString()} {token.symbol}</div>
               </div>
             </div>
             <div className="h-24">
@@ -184,13 +184,13 @@ export function TokenDetailModal({ token, isOpen, onClose }: TokenDetailModalPro
             <div className="bg-muted/30 rounded-lg p-3 text-center">
               <Coins className="w-5 h-5 mx-auto mb-1 text-primary" />
               <div className="text-xs text-muted-foreground">Value</div>
-              <div className="font-bold">${token.value.toLocaleString()}</div>
+              <div className="font-bold">${(token.value ?? 0).toLocaleString()}</div>
             </div>
             <div className="bg-muted/30 rounded-lg p-3 text-center">
               <Percent className="w-5 h-5 mx-auto mb-1 text-primary" />
               <div className="text-xs text-muted-foreground">24h Change</div>
               <div className={cn("font-bold", token.change24h >= 0 ? "text-success" : "text-danger")}>
-                {token.change24h >= 0 ? "+" : ""}{token.change24h.toFixed(2)}%
+                {token.change24h >= 0 ? "+" : ""}{(token.change24h ?? 0).toFixed(2)}%
               </div>
             </div>
             <div className="bg-muted/30 rounded-lg p-3 text-center">

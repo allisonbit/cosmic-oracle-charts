@@ -79,7 +79,7 @@ export function EnhancedAdvancedPredictionModels({ chain, predictionData, isLoad
     if (n >= 1e9) return (n / 1e9).toFixed(decimals) + "B";
     if (n >= 1e6) return (n / 1e6).toFixed(decimals) + "M";
     if (n >= 1e3) return (n / 1e3).toFixed(decimals) + "K";
-    return n.toFixed(decimals);
+    return (n ?? 0).toFixed(decimals);
   };
 
   const getPredictionIcon = (pred: string) => {
@@ -143,7 +143,7 @@ export function EnhancedAdvancedPredictionModels({ chain, predictionData, isLoad
         details: [
           { label: "Prediction", value: predictionData.ensembleModels.lstm.prediction.toUpperCase(), trend: predictionData.ensembleModels.lstm.prediction === "bullish" ? "up" : predictionData.ensembleModels.lstm.prediction === "bearish" ? "down" : "neutral" },
           { label: "Confidence Score", value: `${predictionData.ensembleModels.lstm.confidence}%`, trend: predictionData.ensembleModels.lstm.confidence > 70 ? "up" : "neutral" },
-          { label: "Price Target", value: `$${predictionData.ensembleModels.lstm.priceTarget.toLocaleString()}` },
+          { label: "Price Target", value: `$${(predictionData.ensembleModels.lstm.priceTarget  ?? 0).toLocaleString()}` },
           { label: "Training Data", value: "2 Years", info: "Historical price data used" },
           { label: "Sequence Length", value: "60 days", info: "Input window size" },
           { label: "Last Retrained", value: "2h ago", info: "Model update frequency" },
@@ -180,7 +180,7 @@ export function EnhancedAdvancedPredictionModels({ chain, predictionData, isLoad
         details: [
           { label: "Prediction", value: predictionData.ensembleModels.transformer.prediction.toUpperCase(), trend: predictionData.ensembleModels.transformer.prediction === "bullish" ? "up" : predictionData.ensembleModels.transformer.prediction === "bearish" ? "down" : "neutral" },
           { label: "Confidence Score", value: `${predictionData.ensembleModels.transformer.confidence}%`, trend: predictionData.ensembleModels.transformer.confidence > 70 ? "up" : "neutral" },
-          { label: "Price Target", value: `$${predictionData.ensembleModels.transformer.priceTarget.toLocaleString()}` },
+          { label: "Price Target", value: `$${(predictionData.ensembleModels.transformer.priceTarget  ?? 0).toLocaleString()}` },
           { label: "Attention Heads", value: "8", info: "Parallel attention mechanisms" },
           { label: "Context Window", value: "90 days", info: "Historical context length" },
           { label: "Cross-Asset Data", value: "Yes", info: "Includes correlated assets" },
@@ -217,7 +217,7 @@ export function EnhancedAdvancedPredictionModels({ chain, predictionData, isLoad
         details: [
           { label: "Prediction", value: predictionData.ensembleModels.prophet.prediction.toUpperCase(), trend: predictionData.ensembleModels.prophet.prediction === "bullish" ? "up" : predictionData.ensembleModels.prophet.prediction === "bearish" ? "down" : "neutral" },
           { label: "Confidence Score", value: `${predictionData.ensembleModels.prophet.confidence}%`, trend: predictionData.ensembleModels.prophet.confidence > 70 ? "up" : "neutral" },
-          { label: "Price Target", value: `$${predictionData.ensembleModels.prophet.priceTarget.toLocaleString()}` },
+          { label: "Price Target", value: `$${(predictionData.ensembleModels.prophet.priceTarget  ?? 0).toLocaleString()}` },
           { label: "Seasonality", value: "Weekly + Monthly", info: "Detected patterns" },
           { label: "Trend Strength", value: "Strong", info: "Current trend clarity" },
           { label: "Changepoints", value: "12", info: "Trend change detections" },
@@ -376,7 +376,7 @@ export function EnhancedAdvancedPredictionModels({ chain, predictionData, isLoad
         details: [
           { label: "Consensus Signal", value: predictionData.ensembleModels.consensus.toUpperCase(), trend: predictionData.ensembleModels.consensus === "bullish" ? "up" : predictionData.ensembleModels.consensus === "bearish" ? "down" : "neutral" },
           { label: "Consensus Confidence", value: `${predictionData.ensembleModels.consensusConfidence}%` },
-          { label: "Avg Price Target", value: `$${avgPriceTarget.toLocaleString()}` },
+          { label: "Avg Price Target", value: `$${(avgPriceTarget ?? 0).toLocaleString()}` },
           { label: "Model Agreement", value: "2/3", info: "Models in consensus" },
           { label: "LSTM Weight", value: "35%", info: "Ensemble contribution" },
           { label: "Transformer Weight", value: "40%", info: "Ensemble contribution" },
@@ -497,7 +497,7 @@ export function EnhancedAdvancedPredictionModels({ chain, predictionData, isLoad
         <Progress value={model.data.confidence} className="h-1.5" />
         <div className="flex items-center justify-between text-xs">
           <span className="text-muted-foreground">Target</span>
-          <span className="font-medium text-foreground">${model.data.priceTarget.toLocaleString()}</span>
+          <span className="font-medium text-foreground">${(model.data.priceTarget ?? 0).toLocaleString()}</span>
         </div>
       </div>
     </div>
@@ -570,11 +570,11 @@ export function EnhancedAdvancedPredictionModels({ chain, predictionData, isLoad
         title: `${nft.collection} Price Prediction`,
         icon: <ImageIcon className="h-6 w-6 text-purple-400" />,
         color: "purple",
-        value: `${nft.predictedFloor.toFixed(2)} ETH`,
+        value: `${(nft.predictedFloor ?? 0).toFixed(2)} ETH`,
         description: `AI-powered floor price prediction for ${nft.collection} based on trading patterns, holder behavior, and market sentiment.`,
         details: [
-          { label: "Current Floor", value: `${nft.currentFloor.toFixed(2)} ETH` },
-          { label: "Predicted Floor", value: `${nft.predictedFloor.toFixed(2)} ETH`, trend: nft.trend === "up" ? "up" : nft.trend === "down" ? "down" : "neutral" },
+          { label: "Current Floor", value: `${(nft.currentFloor ?? 0).toFixed(2)} ETH` },
+          { label: "Predicted Floor", value: `${(nft.predictedFloor ?? 0).toFixed(2)} ETH`, trend: nft.trend === "up" ? "up" : nft.trend === "down" ? "down" : "neutral" },
           { label: "Price Change", value: `${((nft.predictedFloor - nft.currentFloor) / nft.currentFloor * 100).toFixed(1)}%`, trend: nft.trend === "up" ? "up" : nft.trend === "down" ? "down" : "neutral" },
           { label: "Confidence", value: `${nft.confidence}%`, trend: nft.confidence > 70 ? "up" : "neutral" },
           { label: "7D Volume", value: "234 ETH", trend: "up" },
@@ -604,14 +604,14 @@ export function EnhancedAdvancedPredictionModels({ chain, predictionData, isLoad
       <div className="flex-1">
         <div className="text-sm font-medium text-foreground">{nft.collection}</div>
         <div className="text-xs text-muted-foreground">
-          Current: {nft.currentFloor.toFixed(2)} ETH
+          Current: {(nft.currentFloor ?? 0).toFixed(2)} ETH
         </div>
       </div>
       <div className="text-right flex items-center gap-2">
         <div>
           <div className={`text-sm font-bold flex items-center gap-1 ${nft.trend === "up" ? "text-green-400" : nft.trend === "down" ? "text-red-400" : "text-yellow-400"}`}>
             {nft.trend === "up" ? <TrendingUp className="h-3 w-3" /> : nft.trend === "down" ? <TrendingDown className="h-3 w-3" /> : null}
-            {nft.predictedFloor.toFixed(2)} ETH
+            {(nft.predictedFloor ?? 0).toFixed(2)} ETH
           </div>
           <div className="text-xs text-muted-foreground">
             {nft.confidence}% conf.
@@ -680,7 +680,7 @@ export function EnhancedAdvancedPredictionModels({ chain, predictionData, isLoad
                 </div>
               </div>
               <div className="mt-2 text-sm opacity-80">
-                Average Price Target: ${avgPriceTarget.toLocaleString()} • Model Agreement: 2/3
+                Average Price Target: ${(avgPriceTarget ?? 0).toLocaleString()} • Model Agreement: 2/3
               </div>
             </div>
           </TabsContent>
@@ -709,7 +709,7 @@ export function EnhancedAdvancedPredictionModels({ chain, predictionData, isLoad
                       {cluster.icon}
                     </div>
                     <div className="text-xs text-muted-foreground">{cluster.name}</div>
-                    <div className="text-lg font-bold text-foreground">{cluster.value.toLocaleString()}</div>
+                    <div className="text-lg font-bold text-foreground">{(cluster.value ?? 0).toLocaleString()}</div>
                   </div>
                 ))}
               </div>

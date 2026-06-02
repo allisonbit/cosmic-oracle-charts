@@ -42,10 +42,10 @@ export function TokenDetailModal({ open, onOpenChange, token }: TokenDetailModal
   const formatPrice = (price: number | undefined) => {
     if (!price) return "$0.00";
     const p = Number(price) || 0;
-    if (p >= 1000) return `$${p.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
-    if (p >= 1) return `$${p.toFixed(2)}`;
-    if (p >= 0.0001) return `$${p.toFixed(6)}`;
-    return `$${p.toExponential(2)}`;
+    if (p >= 1000) return `$${(p ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+    if (p >= 1) return `$${(p ?? 0).toFixed(2)}`;
+    if (p >= 0.0001) return `$${(p ?? 0).toFixed(6)}`;
+    return `$${(p ?? 0).toExponential(2)}`;
   };
 
   const formatLargeNumber = (num: number | undefined) => {
@@ -54,7 +54,7 @@ export function TokenDetailModal({ open, onOpenChange, token }: TokenDetailModal
     if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
     if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
     if (num >= 1e3) return `$${(num / 1e3).toFixed(2)}K`;
-    return `$${num.toFixed(0)}`;
+    return `$${(num ?? 0).toFixed(0)}`;
   };
 
   const renderSparkline = () => {
@@ -205,7 +205,7 @@ export function TokenDetailModal({ open, onOpenChange, token }: TokenDetailModal
                   <div>
                     <div className="flex justify-between text-xs mb-1">
                       <span className="text-muted-foreground">Momentum</span>
-                      <span className="text-foreground">{token.momentum.toFixed(0)}%</span>
+                      <span className="text-foreground">{(token.momentum ?? 0).toFixed(0)}%</span>
                     </div>
                     <div className="h-2 bg-muted/30 rounded-full overflow-hidden">
                       <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${Math.min(100, token.momentum)}%` }} />
@@ -216,7 +216,7 @@ export function TokenDetailModal({ open, onOpenChange, token }: TokenDetailModal
                   <div>
                     <div className="flex justify-between text-xs mb-1">
                       <span className="text-muted-foreground">Volume Spike</span>
-                      <span className="text-foreground">{token.volumeSpike.toFixed(0)}%</span>
+                      <span className="text-foreground">{(token.volumeSpike ?? 0).toFixed(0)}%</span>
                     </div>
                     <div className="h-2 bg-muted/30 rounded-full overflow-hidden">
                       <div className="h-full bg-secondary rounded-full transition-all" style={{ width: `${Math.min(100, token.volumeSpike)}%` }} />
@@ -227,7 +227,7 @@ export function TokenDetailModal({ open, onOpenChange, token }: TokenDetailModal
                   <div>
                     <div className="flex justify-between text-xs mb-1">
                       <span className="text-muted-foreground">Liquidity</span>
-                      <span className="text-foreground">{token.liquidityScore.toFixed(0)}%</span>
+                      <span className="text-foreground">{(token.liquidityScore ?? 0).toFixed(0)}%</span>
                     </div>
                     <div className="h-2 bg-muted/30 rounded-full overflow-hidden">
                       <div className="h-full bg-success rounded-full transition-all" style={{ width: `${Math.min(100, token.liquidityScore)}%` }} />

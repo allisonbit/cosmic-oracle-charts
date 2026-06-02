@@ -35,10 +35,10 @@ interface TokenRow {
 
 function formatPrice(price: number): string {
   if (price === 0) return 'N/A';
-  if (price < 0.0001) return `$${price.toFixed(8)}`;
-  if (price < 0.01) return `$${price.toFixed(6)}`;
-  if (price < 1) return `$${price.toFixed(4)}`;
-  return `$${price.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+  if (price < 0.0001) return `$${(price ?? 0).toFixed(8)}`;
+  if (price < 0.01) return `$${(price ?? 0).toFixed(6)}`;
+  if (price < 1) return `$${(price ?? 0).toFixed(4)}`;
+  return `$${(price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
 }
 
 function formatNumber(num: number | undefined | null): string {
@@ -46,7 +46,7 @@ function formatNumber(num: number | undefined | null): string {
   if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
   if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
   if (num >= 1e3) return `$${(num / 1e3).toFixed(2)}K`;
-  return `$${num.toFixed(0)}`;
+  return `$${(num ?? 0).toFixed(0)}`;
 }
 
 // Generate mock tokens
@@ -202,17 +202,17 @@ export function TopTokensTable({ chain, onTokenSelect }: TopTokensTableProps) {
                 </td>
                 <td className="py-3 px-2 text-right font-medium">{formatPrice(token.price)}</td>
                 <td className={cn("py-3 px-2 text-right font-bold", token.change1h >= 0 ? "text-success" : "text-danger")}>
-                  {token.change1h >= 0 ? "+" : ""}{token.change1h.toFixed(2)}%
+                  {token.change1h >= 0 ? "+" : ""}{(token.change1h ?? 0).toFixed(2)}%
                 </td>
                 <td className={cn("py-3 px-2 text-right font-bold", token.change24h >= 0 ? "text-success" : "text-danger")}>
-                  {token.change24h >= 0 ? "+" : ""}{token.change24h.toFixed(2)}%
+                  {token.change24h >= 0 ? "+" : ""}{(token.change24h ?? 0).toFixed(2)}%
                 </td>
                 <td className={cn("py-3 px-2 text-right font-bold hidden lg:table-cell", token.change7d >= 0 ? "text-success" : "text-danger")}>
-                  {token.change7d >= 0 ? "+" : ""}{token.change7d.toFixed(2)}%
+                  {token.change7d >= 0 ? "+" : ""}{(token.change7d ?? 0).toFixed(2)}%
                 </td>
                 <td className="py-3 px-2 text-right hidden sm:table-cell text-muted-foreground">{formatNumber(token.volume24h)}</td>
                 <td className="py-3 px-2 text-right hidden md:table-cell text-muted-foreground">{formatNumber(token.liquidity)}</td>
-                <td className="py-3 px-2 text-right hidden lg:table-cell text-muted-foreground">{token.txns24h.toLocaleString()}</td>
+                <td className="py-3 px-2 text-right hidden lg:table-cell text-muted-foreground">{(token.txns24h ?? 0).toLocaleString()}</td>
                 <td className="py-3 px-2 text-right">
                   <div className="flex items-center justify-end gap-1" onClick={e => e.stopPropagation()}>
                     <Button 

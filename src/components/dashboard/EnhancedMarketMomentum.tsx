@@ -58,7 +58,7 @@ export function EnhancedMarketMomentum() {
             {momentum.direction}
           </div>
           <div className="text-[10px] sm:text-xs text-muted-foreground flex items-center gap-2">
-            <span>Strength: {momentum.strength.toFixed(0)}%</span>
+            <span>Strength: {(momentum.strength ?? 0).toFixed(0)}%</span>
             <span className="text-primary">•</span>
             <span className={cn(
               momentum.velocity === "accelerating" ? "text-success" : 
@@ -98,7 +98,7 @@ export function EnhancedMarketMomentum() {
         <div className="bg-muted/30 rounded-lg p-2 text-center">
           <div className="text-[10px] text-muted-foreground mb-1">Avg Change</div>
           <div className={cn("text-sm font-bold", momentum.avgChange >= 0 ? "text-success" : "text-danger")}>
-            {momentum.avgChange >= 0 ? "+" : ""}{momentum.avgChange.toFixed(2)}%
+            {momentum.avgChange >= 0 ? "+" : ""}{(momentum.avgChange ?? 0).toFixed(2)}%
           </div>
         </div>
         <div className="bg-muted/30 rounded-lg p-2 text-center">
@@ -125,7 +125,7 @@ export function EnhancedMarketMomentum() {
             >
               <div className="text-[10px] text-muted-foreground mb-1">{sector.sector}</div>
               <div className={cn("text-sm font-bold", sector.avgChange >= 0 ? "text-success" : "text-danger")}>
-                {sector.avgChange >= 0 ? "+" : ""}{sector.avgChange.toFixed(1)}%
+                {sector.avgChange >= 0 ? "+" : ""}{(sector.avgChange ?? 0).toFixed(1)}%
               </div>
             </button>
             {expandedSector === sector.sector && (
@@ -133,7 +133,7 @@ export function EnhancedMarketMomentum() {
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Top Mover:</span>
                   <Link to={`/price-prediction/${sector.topMover.toLowerCase()}/daily`} className="text-primary hover:underline">
-                    {sector.topMover} ({sector.topMoverChange >= 0 ? "+" : ""}{sector.topMoverChange.toFixed(1)}%)
+                    {sector.topMover} ({sector.topMoverChange >= 0 ? "+" : ""}{(sector.topMoverChange ?? 0).toFixed(1)}%)
                   </Link>
                 </div>
               </div>

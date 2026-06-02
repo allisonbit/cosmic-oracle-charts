@@ -33,7 +33,7 @@ function deriveSentiment(coin: TopCoinData, globalData?: GlobalMarketData | null
     volumeScore: Math.round(volumeScore),
     athScore: Math.round(athScore),
     rangePosition: Math.round(rangePosition),
-    volumeRatio: volumeRatio.toFixed(2),
+    volumeRatio: (volumeRatio ?? 0).toFixed(2),
     whaleActivity: volumeRatio > 15 ? 'high' as const : volumeRatio > 8 ? 'medium' as const : 'low' as const,
   };
 }
@@ -58,7 +58,7 @@ export function SocialSentimentPanel({ tokens, globalData, isLoading }: SocialSe
     if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
     if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
     if (num >= 1e6) return `$${(num / 1e6).toFixed(1)}M`;
-    return `$${num.toLocaleString()}`;
+    return `$${(num ?? 0).toLocaleString()}`;
   };
 
   const getSentimentColor = (value: number) => {
@@ -120,7 +120,7 @@ export function SocialSentimentPanel({ tokens, globalData, isLoading }: SocialSe
               <div className="p-3 rounded-lg bg-muted/30 text-center">
                 <div className="text-xs text-muted-foreground mb-1">24h Change</div>
                 <div className={cn("font-bold", selectedCoin.change24h >= 0 ? "text-success" : "text-danger")}>
-                  {selectedCoin.change24h >= 0 ? "+" : ""}{selectedCoin.change24h.toFixed(2)}%
+                  {selectedCoin.change24h >= 0 ? "+" : ""}{(selectedCoin.change24h ?? 0).toFixed(2)}%
                 </div>
               </div>
               <div className="p-3 rounded-lg bg-muted/30 text-center">
@@ -140,7 +140,7 @@ export function SocialSentimentPanel({ tokens, globalData, isLoading }: SocialSe
               <div className="p-3 rounded-lg bg-muted/30 text-center">
                 <div className="text-xs text-muted-foreground mb-1">From ATH</div>
                 <div className={cn("font-bold", selectedCoin.athChangePercentage > -20 ? "text-warning" : "text-danger")}>
-                  {selectedCoin.athChangePercentage.toFixed(0)}%
+                  {(selectedCoin.athChangePercentage ?? 0).toFixed(0)}%
                 </div>
               </div>
             </div>
@@ -232,7 +232,7 @@ export function SocialSentimentPanel({ tokens, globalData, isLoading }: SocialSe
                           "text-xs w-16 text-right",
                           coin.change24h >= 0 ? "text-success" : "text-danger"
                         )}>
-                          {coin.change24h >= 0 ? "+" : ""}{coin.change24h.toFixed(1)}%
+                          {coin.change24h >= 0 ? "+" : ""}{(coin.change24h ?? 0).toFixed(1)}%
                         </span>
                       </button>
                     );

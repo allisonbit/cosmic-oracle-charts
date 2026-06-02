@@ -246,7 +246,7 @@ function SocialContent() {
                         <div className="flex items-center gap-3">
                           <Badge variant="outline" className="text-[10px]">{entry.correct}/{entry.total}</Badge>
                           <span className={cn("font-bold text-sm", entry.accuracy >= 60 ? "text-emerald-500" : "text-muted-foreground")}>
-                            {entry.accuracy.toFixed(1)}%
+                            {(entry.accuracy ?? 0).toFixed(1)}%
                           </span>
                         </div>
                       </div>
@@ -306,8 +306,8 @@ function PredictionCard({ prediction: p, isOwn }: { prediction: Prediction; isOw
           </div>
         </div>
         <div className="flex items-center gap-4 text-xs text-muted-foreground mb-2">
-          <span>Entry: ${p.entry_price.toLocaleString()}</span>
-          <span>Target: ${p.target_price.toLocaleString()}</span>
+          <span>Entry: ${(p.entry_price ?? 0).toLocaleString()}</span>
+          <span>Target: ${(p.target_price ?? 0).toLocaleString()}</span>
           <span>{new Date(p.created_at).toLocaleDateString()}</span>
         </div>
         {p.reasoning && <p className="text-sm text-muted-foreground">{p.reasoning}</p>}

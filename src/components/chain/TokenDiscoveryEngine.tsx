@@ -101,9 +101,9 @@ export function TokenDiscoveryEngine({ chain }: TokenDiscoveryEngineProps) {
   const formatPrice = (price: number | string | undefined) => {
     const p = Number(price) || 0;
     if (p >= 1000) return `$${(p / 1000).toFixed(1)}K`;
-    if (p >= 1) return `$${p.toFixed(2)}`;
-    if (p >= 0.01) return `$${p.toFixed(4)}`;
-    return `$${p.toFixed(6)}`;
+    if (p >= 1) return `$${(p ?? 0).toFixed(2)}`;
+    if (p >= 0.01) return `$${(p ?? 0).toFixed(4)}`;
+    return `$${(p ?? 0).toFixed(6)}`;
   };
 
   const formatVolume = (vol: number | string | undefined) => {
@@ -111,7 +111,7 @@ export function TokenDiscoveryEngine({ chain }: TokenDiscoveryEngineProps) {
     if (v >= 1e9) return `$${(v / 1e9).toFixed(1)}B`;
     if (v >= 1e6) return `$${(v / 1e6).toFixed(1)}M`;
     if (v >= 1e3) return `$${(v / 1e3).toFixed(1)}K`;
-    return `$${v.toFixed(0)}`;
+    return `$${(v ?? 0).toFixed(0)}`;
   };
 
   const formatMarketCap = (mc: number | string | undefined) => {
@@ -187,7 +187,7 @@ export function TokenDiscoveryEngine({ chain }: TokenDiscoveryEngineProps) {
                 "text-xs font-bold",
                 token.change24h >= 0 ? "text-success" : "text-danger"
               )}>
-                {token.change24h >= 0 ? "+" : ""}{token.change24h.toFixed(2)}%
+                {token.change24h >= 0 ? "+" : ""}{(token.change24h ?? 0).toFixed(2)}%
               </span>
             </div>
             <p className="text-xs text-muted-foreground truncate">{token.name}</p>
@@ -212,26 +212,26 @@ export function TokenDiscoveryEngine({ chain }: TokenDiscoveryEngineProps) {
                   "text-xs font-medium",
                   token.change7d >= 0 ? "text-success" : "text-danger"
                 )}>
-                  {token.change7d >= 0 ? "+" : ""}{token.change7d.toFixed(1)}%
+                  {token.change7d >= 0 ? "+" : ""}{(token.change7d ?? 0).toFixed(1)}%
                 </p>
               </div>
             </div>
 
             {/* Momentum Bars */}
             <div className="flex items-center gap-1.5 mt-2">
-              <div className="flex-1 h-1.5 rounded-full bg-muted/30 overflow-hidden" title={`Momentum: ${token.momentum.toFixed(0)}%`}>
+              <div className="flex-1 h-1.5 rounded-full bg-muted/30 overflow-hidden" title={`Momentum: ${(token.momentum ?? 0).toFixed(0)}%`}>
                 <div 
                   className="h-full bg-primary rounded-full transition-all" 
                   style={{ width: `${Math.min(100, token.momentum)}%` }} 
                 />
               </div>
-              <div className="flex-1 h-1.5 rounded-full bg-muted/30 overflow-hidden" title={`Volume Spike: ${token.volumeSpike.toFixed(0)}%`}>
+              <div className="flex-1 h-1.5 rounded-full bg-muted/30 overflow-hidden" title={`Volume Spike: ${(token.volumeSpike ?? 0).toFixed(0)}%`}>
                 <div 
                   className="h-full bg-secondary rounded-full transition-all" 
                   style={{ width: `${Math.min(100, token.volumeSpike)}%` }} 
                 />
               </div>
-              <div className="flex-1 h-1.5 rounded-full bg-muted/30 overflow-hidden" title={`Volatility: ${token.volatility.toFixed(0)}%`}>
+              <div className="flex-1 h-1.5 rounded-full bg-muted/30 overflow-hidden" title={`Volatility: ${(token.volatility ?? 0).toFixed(0)}%`}>
                 <div 
                   className="h-full bg-warning rounded-full transition-all" 
                   style={{ width: `${Math.min(100, token.volatility)}%` }} 

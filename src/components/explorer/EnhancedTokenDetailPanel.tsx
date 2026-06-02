@@ -33,10 +33,10 @@ interface EnhancedTokenDetailPanelProps {
 
 function formatPrice(price: number): string {
   if (price === 0) return 'N/A';
-  if (price < 0.0001) return `$${price.toFixed(8)}`;
-  if (price < 0.01) return `$${price.toFixed(6)}`;
-  if (price < 1) return `$${price.toFixed(4)}`;
-  return `$${price.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+  if (price < 0.0001) return `$${(price ?? 0).toFixed(8)}`;
+  if (price < 0.01) return `$${(price ?? 0).toFixed(6)}`;
+  if (price < 1) return `$${(price ?? 0).toFixed(4)}`;
+  return `$${(price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
 }
 
 function formatNumber(num: number | undefined | null): string {
@@ -46,7 +46,7 @@ function formatNumber(num: number | undefined | null): string {
   if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
   if (num >= 1e3) return `$${(num / 1e3).toFixed(2)}K`;
   if (num === 0) return '$0';
-  return `$${num.toFixed(2)}`;
+  return `$${(num ?? 0).toFixed(2)}`;
 }
 
 function formatNumberRaw(num: number | undefined | null): string {
@@ -55,7 +55,7 @@ function formatNumberRaw(num: number | undefined | null): string {
   if (num >= 1e9) return `${(num / 1e9).toFixed(2)}B`;
   if (num >= 1e6) return `${(num / 1e6).toFixed(2)}M`;
   if (num >= 1e3) return `${(num / 1e3).toFixed(2)}K`;
-  return num.toFixed(0);
+  return (num ?? 0).toFixed(0);
 }
 
 export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: EnhancedTokenDetailPanelProps) {
@@ -132,7 +132,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
         {change !== undefined && (
           <div className={cn("text-xs flex items-center gap-1", change >= 0 ? "text-success" : "text-danger")}>
             {change >= 0 ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
-            {change >= 0 ? "+" : ""}{change.toFixed(2)}%
+            {change >= 0 ? "+" : ""}{(change ?? 0).toFixed(2)}%
           </div>
         )}
       </button>
@@ -170,7 +170,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
             {token.change24h !== 0 && (
               <div className={cn("flex items-center gap-1 text-lg font-medium", token.change24h >= 0 ? "text-success" : "text-danger")}>
                 {token.change24h >= 0 ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
-                {token.change24h >= 0 ? "+" : ""}{token.change24h.toFixed(2)}% (24h)
+                {token.change24h >= 0 ? "+" : ""}{(token.change24h ?? 0).toFixed(2)}% (24h)
               </div>
             )}
             <div className="flex gap-2 mt-2">
@@ -351,14 +351,14 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
                     <ArrowUpRight className="w-4 h-4 text-success" />
                     <span className="text-sm">Buy Transactions</span>
                   </div>
-                  <span className="font-bold text-success">{mockStats.buys24h.toLocaleString()}</span>
+                  <span className="font-bold text-success">{(mockStats.buys24h ?? 0).toLocaleString()}</span>
                 </button>
                 <button onClick={() => setDetailModal({ type: 'sells', data: mockStats })} className="w-full flex items-center justify-between p-3 rounded-lg bg-danger/10 hover:bg-danger/20 transition-colors">
                   <div className="flex items-center gap-2">
                     <ArrowDownRight className="w-4 h-4 text-danger" />
                     <span className="text-sm">Sell Transactions</span>
                   </div>
-                  <span className="font-bold text-danger">{mockStats.sells24h.toLocaleString()}</span>
+                  <span className="font-bold text-danger">{(mockStats.sells24h ?? 0).toLocaleString()}</span>
                 </button>
                 <div className="p-3 rounded-lg bg-muted/30">
                   <div className="text-xs text-muted-foreground mb-2">Buy/Sell Ratio</div>

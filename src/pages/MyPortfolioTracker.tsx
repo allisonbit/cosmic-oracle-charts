@@ -34,7 +34,7 @@ const COLORS = [
 function formatCompact(n: number): string {
   if (n >= 1e6) return `$${(n / 1e6).toFixed(2)}M`;
   if (n >= 1e3) return `$${(n / 1e3).toFixed(1)}K`;
-  return `$${n.toFixed(2)}`;
+  return `$${(n ?? 0).toFixed(2)}`;
 }
 
 function TrackerContent() {
@@ -146,13 +146,13 @@ function TrackerContent() {
 
   const pieData = enriched.filter(h => h.currentValue > 0).map(h => ({
     name: h.symbol,
-    value: parseFloat(h.currentValue.toFixed(2)),
+    value: parseFloat((h.currentValue ?? 0).toFixed(2)),
   }));
 
   const barData = enriched.map(h => ({
     name: h.symbol,
-    pnl: parseFloat(h.pnl.toFixed(2)),
-    pnlPct: parseFloat(h.pnlPct.toFixed(1)),
+    pnl: parseFloat((h.pnl ?? 0).toFixed(2)),
+    pnlPct: parseFloat((h.pnlPct ?? 0).toFixed(1)),
   }));
 
   const mask = (val: string) => hideBalances ? '•••••' : val;
@@ -211,7 +211,7 @@ function TrackerContent() {
               {mask(`${totalPnL >= 0 ? '+' : ''}${formatCompact(totalPnL)}`)}
             </p>
             <p className={cn("text-xs font-mono", totalPnLPct >= 0 ? "text-success" : "text-danger")}>
-              {totalPnLPct >= 0 ? '+' : ''}{totalPnLPct.toFixed(2)}%
+              {totalPnLPct >= 0 ? '+' : ''}{(totalPnLPct ?? 0).toFixed(2)}%
             </p>
           </CardContent></Card>
           <Card className="border-border"><CardContent className="p-3">
@@ -222,12 +222,12 @@ function TrackerContent() {
           <Card className="border-border"><CardContent className="p-3">
             <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Best</p>
             <p className="text-sm font-bold text-success">{bestPerformer?.symbol || '—'}</p>
-            <p className="text-xs text-success font-mono">{bestPerformer ? `+${bestPerformer.pnlPct.toFixed(1)}%` : ''}</p>
+            <p className="text-xs text-success font-mono">{bestPerformer ? `+${(bestPerformer.pnlPct ?? 0).toFixed(1)}%` : ''}</p>
           </CardContent></Card>
           <Card className="border-border"><CardContent className="p-3">
             <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Worst</p>
             <p className="text-sm font-bold text-danger">{worstPerformer?.symbol || '—'}</p>
-            <p className="text-xs text-danger font-mono">{worstPerformer ? `${worstPerformer.pnlPct.toFixed(1)}%` : ''}</p>
+            <p className="text-xs text-danger font-mono">{worstPerformer ? `${(worstPerformer.pnlPct ?? 0).toFixed(1)}%` : ''}</p>
           </CardContent></Card>
         </div>
 
@@ -244,7 +244,7 @@ function TrackerContent() {
                         label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
                         {pieData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                       </Pie>
-                      <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`}
+                      <Tooltip formatter={(v: number) => `$${(v ?? 0).toLocaleString()}`}
                         contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px', fontSize: '12px' }} />
                     </PieChart>
                   </ResponsiveContainer>
@@ -345,14 +345,14 @@ function TrackerContent() {
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="font-bold text-sm">{h.symbol}</span>
                             <span className="text-xs text-muted-foreground">{h.name}</span>
-                            <Badge variant="outline" className="text-[8px]">{allocationPct.toFixed(1)}%</Badge>
+                            <Badge variant="outline" className="text-[8px]">{(allocationPct ?? 0).toFixed(1)}%</Badge>
                           </div>
                           <div className="flex items-center gap-3 text-xs text-muted-foreground mt-0.5">
                             <span>{h.quantity} units</span>
-                            <span>Buy: ${h.buy_price.toLocaleString(undefined, { maximumFractionDigits: 4 })}</span>
-                            <span>Now: ${h.currentPrice.toLocaleString(undefined, { maximumFractionDigits: 4 })}</span>
+                            <span>Buy: ${(h.buy_price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 4 })}</span>
+                            <span>Now: ${(h.currentPrice ?? 0).toLocaleString(undefined, { maximumFractionDigits: 4 })}</span>
                             <span className={cn(h.change24h >= 0 ? "text-success" : "text-danger")}>
-                              24h: {h.change24h >= 0 ? '+' : ''}{h.change24h.toFixed(2)}%
+                              24h: {h.change24h >= 0 ? '+' : ''}{(h.change24h ?? 0).toFixed(2)}%
                             </span>
                           </div>
                         </div>
@@ -361,7 +361,7 @@ function TrackerContent() {
                         <div className="text-right">
                           <p className="text-sm font-mono font-medium">{mask(formatCompact(h.currentValue))}</p>
                           <p className={cn("text-xs font-mono font-bold", h.pnl >= 0 ? "text-success" : "text-danger")}>
-                            {h.pnl >= 0 ? '+' : ''}{mask(formatCompact(h.pnl))} ({h.pnlPct >= 0 ? '+' : ''}{h.pnlPct.toFixed(1)}%)
+                            {h.pnl >= 0 ? '+' : ''}{mask(formatCompact(h.pnl))} ({h.pnlPct >= 0 ? '+' : ''}{(h.pnlPct ?? 0).toFixed(1)}%)
                           </p>
                         </div>
                         {/* Allocation bar */}

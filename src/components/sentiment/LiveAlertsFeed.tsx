@@ -71,7 +71,7 @@ export function LiveAlertsFeed({ whaleData, coins }: LiveAlertsFeedProps) {
         severity: coin.volume > 5e9 ? 'high' : 'medium',
         symbol: coin.symbol,
         title: 'Volume Spike Detected',
-        description: `${coin.symbol} trading volume surged to $${(coin.volume / 1e9).toFixed(1)}B with ${coin.change24h >= 0 ? '+' : ''}${coin.change24h.toFixed(1)}% price movement`,
+        description: `${coin.symbol} trading volume surged to $${(coin.volume / 1e9).toFixed(1)}B with ${coin.change24h >= 0 ? '+' : ''}${(coin.change24h ?? 0).toFixed(1)}% price movement`,
         value: coin.volume,
         change: coin.change24h,
         timestamp: Date.now() - Math.random() * 1800000,
@@ -87,7 +87,7 @@ export function LiveAlertsFeed({ whaleData, coins }: LiveAlertsFeedProps) {
         severity: Math.abs(coin.change24h) > 10 ? 'critical' : 'high',
         symbol: coin.symbol,
         title: coin.change24h > 0 ? 'Strong Bullish Momentum' : 'Sharp Price Decline',
-        description: `${coin.symbol} moved ${coin.change24h >= 0 ? '+' : ''}${coin.change24h.toFixed(1)}% in 24 hours`,
+        description: `${coin.symbol} moved ${coin.change24h >= 0 ? '+' : ''}${(coin.change24h ?? 0).toFixed(1)}% in 24 hours`,
         value: coin.price,
         change: coin.change24h,
         timestamp: Date.now() - Math.random() * 3600000,
@@ -172,7 +172,7 @@ export function LiveAlertsFeed({ whaleData, coins }: LiveAlertsFeedProps) {
     if (value >= 1e9) return `$${(value / 1e9).toFixed(2)}B`;
     if (value >= 1e6) return `$${(value / 1e6).toFixed(2)}M`;
     if (value >= 1e3) return `$${(value / 1e3).toFixed(2)}K`;
-    return `$${value.toLocaleString()}`;
+    return `$${(value ?? 0).toLocaleString()}`;
   };
 
   const getCoinId = (symbol: string) => {
@@ -304,7 +304,7 @@ export function LiveAlertsFeed({ whaleData, coins }: LiveAlertsFeedProps) {
                     alert.change >= 0 ? "text-success" : "text-danger"
                   )}>
                     <div className="font-bold">
-                      {alert.change >= 0 ? '+' : ''}{alert.change.toFixed(1)}%
+                      {alert.change >= 0 ? '+' : ''}{(alert.change ?? 0).toFixed(1)}%
                     </div>
                   </div>
                 )}

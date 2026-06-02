@@ -152,13 +152,13 @@ export function ExpandableStrengthCard({ data, rank, onCompare }: ExpandableStre
             {/* Quick Stats */}
             <div className="flex items-center gap-4 mt-3 text-xs">
               <span className={cn(data.priceChange24h >= 0 ? "text-success" : "text-danger")}>
-                24h: {data.priceChange24h >= 0 ? '+' : ''}{data.priceChange24h.toFixed(2)}%
+                24h: {data.priceChange24h >= 0 ? '+' : ''}{(data.priceChange24h ?? 0).toFixed(2)}%
               </span>
               <span className={cn(data.volumeChange >= 0 ? "text-success" : "text-danger")}>
-                Vol: {data.volumeChange >= 0 ? '+' : ''}{data.volumeChange.toFixed(1)}%
+                Vol: {data.volumeChange >= 0 ? '+' : ''}{(data.volumeChange ?? 0).toFixed(1)}%
               </span>
               <span className="text-muted-foreground">
-                Trend: {data.trendConsistency.toFixed(0)}%
+                Trend: {(data.trendConsistency ?? 0).toFixed(0)}%
               </span>
             </div>
           </CardContent>
@@ -177,7 +177,7 @@ export function ExpandableStrengthCard({ data, rank, onCompare }: ExpandableStre
                       "font-medium",
                       factor.score >= 55 ? "text-success" : factor.score >= 45 ? "text-warning" : "text-danger"
                     )}>
-                      {factor.score.toFixed(0)}
+                      {(factor.score ?? 0).toFixed(0)}
                     </span>
                   </div>
                   <Progress 

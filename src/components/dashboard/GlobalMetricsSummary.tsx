@@ -9,7 +9,7 @@ function formatNumber(num: number | undefined | null): string {
   if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
   if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
   if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
-  return `$${num.toLocaleString()}`;
+  return `$${(num ?? 0).toLocaleString()}`;
 }
 
 export function GlobalMetricsSummary() {
@@ -61,7 +61,7 @@ export function GlobalMetricsSummary() {
           <div className="text-sm sm:text-base font-bold">{formatNumber(global.totalMarketCap)}</div>
           <div className={cn("text-[10px] flex items-center gap-0.5", global.marketCapChange24h >= 0 ? "text-success" : "text-danger")}>
             {global.marketCapChange24h >= 0 ? <TrendingUp className="w-2.5 h-2.5" /> : <TrendingDown className="w-2.5 h-2.5" />}
-            {global.marketCapChange24h >= 0 ? "+" : ""}{global.marketCapChange24h.toFixed(2)}%
+            {global.marketCapChange24h >= 0 ? "+" : ""}{(global.marketCapChange24h ?? 0).toFixed(2)}%
           </div>
         </Link>
 
@@ -83,7 +83,7 @@ export function GlobalMetricsSummary() {
             <BarChart3 className="w-3.5 h-3.5 text-amber-400" />
             <span className="text-[10px] sm:text-xs text-muted-foreground">BTC Dominance</span>
           </div>
-          <div className="text-sm sm:text-base font-bold">{global.btcDominance.toFixed(1)}%</div>
+          <div className="text-sm sm:text-base font-bold">{(global.btcDominance ?? 0).toFixed(1)}%</div>
           <div className="w-full h-1.5 bg-muted rounded-full mt-1.5">
             <div className="h-full bg-amber-400 rounded-full" style={{ width: `${global.btcDominance}%` }} />
           </div>
@@ -95,7 +95,7 @@ export function GlobalMetricsSummary() {
             <Layers className="w-3.5 h-3.5 text-indigo-400" />
             <span className="text-[10px] sm:text-xs text-muted-foreground">ETH Dominance</span>
           </div>
-          <div className="text-sm sm:text-base font-bold">{global.ethDominance.toFixed(1)}%</div>
+          <div className="text-sm sm:text-base font-bold">{(global.ethDominance ?? 0).toFixed(1)}%</div>
           <div className="w-full h-1.5 bg-muted rounded-full mt-1.5">
             <div className="h-full bg-indigo-400 rounded-full" style={{ width: `${global.ethDominance}%` }} />
           </div>
@@ -124,7 +124,7 @@ export function GlobalMetricsSummary() {
             <span className="text-[10px] sm:text-xs text-muted-foreground">Avg 24h Change</span>
           </div>
           <div className={cn("text-sm sm:text-base font-bold", metrics.avgChange >= 0 ? "text-success" : "text-danger")}>
-            {metrics.avgChange >= 0 ? "+" : ""}{metrics.avgChange.toFixed(2)}%
+            {metrics.avgChange >= 0 ? "+" : ""}{(metrics.avgChange ?? 0).toFixed(2)}%
           </div>
         </div>
 
@@ -136,7 +136,7 @@ export function GlobalMetricsSummary() {
               <span className="text-[10px] sm:text-xs text-muted-foreground">Top Gainer</span>
             </div>
             <div className="text-sm font-bold text-success">{metrics.topGainer.symbol}</div>
-            <div className="text-[10px] text-success">+{metrics.topGainer.change24h.toFixed(2)}%</div>
+            <div className="text-[10px] text-success">+{(metrics.topGainer.change24h ?? 0).toFixed(2)}%</div>
           </Link>
         )}
 
@@ -148,7 +148,7 @@ export function GlobalMetricsSummary() {
               <span className="text-[10px] sm:text-xs text-muted-foreground">Top Loser</span>
             </div>
             <div className="text-sm font-bold text-danger">{metrics.topLoser.symbol}</div>
-            <div className="text-[10px] text-danger">{metrics.topLoser.change24h.toFixed(2)}%</div>
+            <div className="text-[10px] text-danger">{(metrics.topLoser.change24h ?? 0).toFixed(2)}%</div>
           </Link>
         )}
       </div>
@@ -165,7 +165,7 @@ export function GlobalMetricsSummary() {
         </div>
         <div className="p-3 rounded-lg bg-muted/20 border border-border/50 col-span-2 sm:col-span-1">
           <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">Active Cryptos</div>
-          <div className="text-sm font-bold">{global.activeCryptocurrencies.toLocaleString()}</div>
+          <div className="text-sm font-bold">{(global.activeCryptocurrencies ?? 0).toLocaleString()}</div>
         </div>
       </div>
     </div>

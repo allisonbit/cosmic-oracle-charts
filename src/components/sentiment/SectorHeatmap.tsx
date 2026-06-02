@@ -122,7 +122,7 @@ export function SectorHeatmap({ coins }: SectorHeatmapProps) {
   const formatVolume = (vol: number) => {
     if (vol >= 1e9) return `$${(vol / 1e9).toFixed(1)}B`;
     if (vol >= 1e6) return `$${(vol / 1e6).toFixed(0)}M`;
-    return `$${vol.toLocaleString()}`;
+    return `$${(vol ?? 0).toLocaleString()}`;
   };
 
   return (
@@ -158,7 +158,7 @@ export function SectorHeatmap({ coins }: SectorHeatmapProps) {
                   sector.change >= 0 ? "text-success" : "text-danger"
                 )}>
                   {sector.change >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                  {sector.change >= 0 ? '+' : ''}{sector.change.toFixed(1)}%
+                  {sector.change >= 0 ? '+' : ''}{(sector.change ?? 0).toFixed(1)}%
                 </div>
               </div>
               <div className="font-display font-bold text-sm mb-1">{sector.name}</div>

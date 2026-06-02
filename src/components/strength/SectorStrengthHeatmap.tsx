@@ -117,7 +117,7 @@ export function SectorStrengthHeatmap({ assets }: SectorStrengthHeatmapProps) {
                           "text-xs font-medium",
                           sector.change >= 0 ? "text-success" : "text-danger"
                         )}>
-                          {sector.change >= 0 ? '+' : ''}{sector.change.toFixed(1)}%
+                          {sector.change >= 0 ? '+' : ''}{(sector.change ?? 0).toFixed(1)}%
                         </span>
                       </div>
                     </div>

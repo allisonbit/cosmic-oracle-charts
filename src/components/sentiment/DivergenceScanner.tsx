@@ -97,9 +97,9 @@ export function DivergenceScanner({ coins }: DivergenceScannerProps) {
                   {div.strength > 70 && <Zap className="w-3 h-3 text-warning" />}
                 </div>
                 <div className="text-xs text-muted-foreground mt-0.5">
-                  Price: <span className={div.priceChange >= 0 ? "text-success" : "text-danger"}>{div.priceChange >= 0 ? '+' : ''}{div.priceChange.toFixed(1)}%</span>
+                  Price: <span className={div.priceChange >= 0 ? "text-success" : "text-danger"}>{div.priceChange >= 0 ? '+' : ''}{(div.priceChange ?? 0).toFixed(1)}%</span>
                   {' • '}
-                  Sentiment: <span className={div.sentimentChange >= 0 ? "text-success" : "text-danger"}>{div.sentimentChange >= 0 ? '+' : ''}{div.sentimentChange.toFixed(1)}%</span>
+                  Sentiment: <span className={div.sentimentChange >= 0 ? "text-success" : "text-danger"}>{div.sentimentChange >= 0 ? '+' : ''}{(div.sentimentChange ?? 0).toFixed(1)}%</span>
                   {' • '}
                   <span className="text-foreground">{div.description}</span>
                 </div>
@@ -108,7 +108,7 @@ export function DivergenceScanner({ coins }: DivergenceScannerProps) {
             <div className="flex items-center gap-2">
               <div className="text-right">
                 <div className="text-xs text-muted-foreground">Strength</div>
-                <div className={cn("font-bold", div.strength > 70 ? "text-primary" : "text-foreground")}>{div.strength.toFixed(0)}%</div>
+                <div className={cn("font-bold", div.strength > 70 ? "text-primary" : "text-foreground")}>{(div.strength ?? 0).toFixed(0)}%</div>
               </div>
               <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
             </div>

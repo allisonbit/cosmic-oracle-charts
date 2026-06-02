@@ -86,7 +86,7 @@ export function MyWatchlist() {
                   <span className="font-medium text-foreground">{coin.symbol}</span>
                   <span className="text-sm text-muted-foreground">{coin.name}</span>
                 </div>
-                <span className="text-sm text-muted-foreground">${coin.price.toLocaleString()}</span>
+                <span className="text-sm text-muted-foreground">${(coin.price ?? 0).toLocaleString()}</span>
               </button>
             ))}
           </div>
@@ -119,7 +119,7 @@ export function MyWatchlist() {
               </div>
               <div className="flex items-center gap-4">
                 <span className="font-mono font-semibold text-foreground">
-                  ${coin.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                  ${(coin.price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}
                 </span>
                 <span className={cn(
                   "flex items-center gap-1 text-sm font-medium",

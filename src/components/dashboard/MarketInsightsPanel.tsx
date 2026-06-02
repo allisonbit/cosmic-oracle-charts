@@ -24,14 +24,14 @@ export function MarketInsightsPanel() {
       items.push({
         type: "bullish",
         title: "Strong Uptrend",
-        description: `Market is showing ${bullishCount} of ${topCoins.length} coins in green. Average gain: +${avgChange.toFixed(1)}%`,
+        description: `Market is showing ${bullishCount} of ${topCoins.length} coins in green. Average gain: +${(avgChange ?? 0).toFixed(1)}%`,
         action: "Consider taking partial profits on winners"
       });
     } else if (avgChange < -2) {
       items.push({
         type: "bearish",
         title: "Market Correction",
-        description: `${bearishCount} of ${topCoins.length} coins are in red. Average loss: ${avgChange.toFixed(1)}%`,
+        description: `${bearishCount} of ${topCoins.length} coins are in red. Average loss: ${(avgChange ?? 0).toFixed(1)}%`,
         action: "Look for oversold opportunities"
       });
     } else {
@@ -67,7 +67,7 @@ export function MarketInsightsPanel() {
         items.push({
           type: "activity",
           title: "High Trading Activity",
-          description: `24h volume is ${volToMcap.toFixed(1)}% of market cap - above average`,
+          description: `24h volume is ${(volToMcap ?? 0).toFixed(1)}% of market cap - above average`,
           action: "Increased volatility expected"
         });
       }
@@ -79,14 +79,14 @@ export function MarketInsightsPanel() {
         items.push({
           type: "info",
           title: "BTC Dominance Rising",
-          description: `At ${global.btcDominance.toFixed(1)}% - capital flowing to Bitcoin`,
+          description: `At ${(global.btcDominance ?? 0).toFixed(1)}% - capital flowing to Bitcoin`,
           action: "Altcoins may underperform short-term"
         });
       } else if (global.btcDominance < 45) {
         items.push({
           type: "opportunity",
           title: "Alt Season Signals",
-          description: `BTC dominance at ${global.btcDominance.toFixed(1)}% - altcoins gaining`,
+          description: `BTC dominance at ${(global.btcDominance ?? 0).toFixed(1)}% - altcoins gaining`,
           action: "Look for quality altcoin opportunities"
         });
       }

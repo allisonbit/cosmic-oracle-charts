@@ -95,7 +95,7 @@ export function WhaleAlertModal({ open, onOpenChange, alert }: WhaleAlertModalPr
                     <span className="text-xs">Current Price</span>
                   </div>
                   <p className="text-lg font-semibold text-foreground">
-                    ${alert.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                    ${(alert.price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}
                   </p>
                 </div>
               )}
@@ -109,7 +109,7 @@ export function WhaleAlertModal({ open, onOpenChange, alert }: WhaleAlertModalPr
                     "text-lg font-semibold",
                     alert.change24h >= 0 ? "text-success" : "text-danger"
                   )}>
-                    {alert.change24h >= 0 ? "+" : ""}{alert.change24h.toFixed(2)}%
+                    {alert.change24h >= 0 ? "+" : ""}{(alert.change24h ?? 0).toFixed(2)}%
                   </p>
                 </div>
               )}

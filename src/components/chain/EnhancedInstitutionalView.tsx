@@ -73,7 +73,7 @@ export function EnhancedInstitutionalView({ chain, institutionalData, isLoading 
     if (Math.abs(n) >= 1e9) return "$" + (n / 1e9).toFixed(decimals) + "B";
     if (Math.abs(n) >= 1e6) return "$" + (n / 1e6).toFixed(decimals) + "M";
     if (Math.abs(n) >= 1e3) return "$" + (n / 1e3).toFixed(decimals) + "K";
-    return "$" + n.toFixed(decimals);
+    return "$" + (n ?? 0).toFixed(decimals);
   };
 
   const openDetailModal = (type: DetailModalData['type'], title: string, data: any) => {
@@ -149,7 +149,7 @@ export function EnhancedInstitutionalView({ chain, institutionalData, isLoading 
           >
             <Wallet className="h-5 w-5 text-amber-400 mb-2" />
             <p className="text-xs text-muted-foreground">Inst. Holdings</p>
-            <p className="text-xl font-display text-foreground">{totalHoldings.toLocaleString()} {chain.symbol}</p>
+            <p className="text-xl font-display text-foreground">{(totalHoldings ?? 0).toLocaleString()} {chain.symbol}</p>
           </button>
           <button
             onClick={() => openDetailModal('cme', 'CME Futures Analysis', institutionalData.cmeFuturesAnalysis)}
@@ -223,11 +223,11 @@ export function EnhancedInstitutionalView({ chain, institutionalData, isLoading 
                       onClick={() => openDetailModal('grayscale', `${product.product} Details`, product)}
                     >
                       <td className="p-3 font-medium text-foreground">{product.product}</td>
-                      <td className="p-3 text-right text-foreground">${product.nav.toFixed(2)}</td>
-                      <td className="p-3 text-right text-foreground">${product.marketPrice.toFixed(2)}</td>
+                      <td className="p-3 text-right text-foreground">${(product.nav ?? 0).toFixed(2)}</td>
+                      <td className="p-3 text-right text-foreground">${(product.marketPrice ?? 0).toFixed(2)}</td>
                       <td className="p-3 text-right">
                         <span className={`font-medium ${product.premiumDiscount > 0 ? "text-green-400" : "text-red-400"}`}>
-                          {product.premiumDiscount > 0 ? "+" : ""}{product.premiumDiscount.toFixed(2)}%
+                          {product.premiumDiscount > 0 ? "+" : ""}{(product.premiumDiscount ?? 0).toFixed(2)}%
                         </span>
                       </td>
                       <td className="p-3 text-right text-foreground">{formatNumber(product.aum)}</td>
@@ -261,16 +261,16 @@ export function EnhancedInstitutionalView({ chain, institutionalData, isLoading 
                 <div className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Spot Price</span>
-                    <span className="text-sm font-medium text-foreground">${institutionalData.cmeFuturesAnalysis.spotPrice.toLocaleString()}</span>
+                    <span className="text-sm font-medium text-foreground">${(institutionalData.cmeFuturesAnalysis.spotPrice ?? 0).toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Front Month</span>
-                    <span className="text-sm font-medium text-foreground">${institutionalData.cmeFuturesAnalysis.frontMonthPrice.toLocaleString()}</span>
+                    <span className="text-sm font-medium text-foreground">${(institutionalData.cmeFuturesAnalysis.frontMonthPrice ?? 0).toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Basis</span>
                     <span className={`text-sm font-medium ${institutionalData.cmeFuturesAnalysis.basis > 0 ? "text-green-400" : "text-red-400"}`}>
-                      {institutionalData.cmeFuturesAnalysis.basis > 0 ? "+" : ""}{institutionalData.cmeFuturesAnalysis.basis.toFixed(2)}%
+                      {institutionalData.cmeFuturesAnalysis.basis > 0 ? "+" : ""}{(institutionalData.cmeFuturesAnalysis.basis ?? 0).toFixed(2)}%
                     </span>
                   </div>
                 </div>
@@ -290,7 +290,7 @@ export function EnhancedInstitutionalView({ chain, institutionalData, isLoading 
                     <div className="p-3 rounded-lg bg-muted/10">
                       <p className="text-xs text-muted-foreground mb-1">Contango/Backwardation</p>
                       <p className={cn("text-sm font-medium", institutionalData.cmeFuturesAnalysis.basis > 0 ? "text-success" : "text-danger")}>
-                        {institutionalData.cmeFuturesAnalysis.basis > 0 ? "Contango" : "Backwardation"} ({institutionalData.cmeFuturesAnalysis.basisAnnualized.toFixed(2)}% annualized)
+                        {institutionalData.cmeFuturesAnalysis.basis > 0 ? "Contango" : "Backwardation"} ({(institutionalData.cmeFuturesAnalysis.basisAnnualized ?? 0).toFixed(2)}% annualized)
                       </p>
                     </div>
                     <div className="p-3 rounded-lg bg-muted/10">
@@ -318,7 +318,7 @@ export function EnhancedInstitutionalView({ chain, institutionalData, isLoading 
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>
                     <span className="text-xs text-muted-foreground block">Total Validators</span>
-                    <span className="text-xl font-bold text-foreground">{institutionalData.validatorEconomics.totalValidators.toLocaleString()}</span>
+                    <span className="text-xl font-bold text-foreground">{(institutionalData.validatorEconomics.totalValidators ?? 0).toLocaleString()}</span>
                   </div>
                   <div>
                     <span className="text-xs text-muted-foreground block">Profitability Score</span>
@@ -330,7 +330,7 @@ export function EnhancedInstitutionalView({ chain, institutionalData, isLoading 
                 <div className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Staking Yield</span>
-                    <span className="text-sm font-medium text-green-400">{institutionalData.validatorEconomics.stakingYield.toFixed(2)}%</span>
+                    <span className="text-sm font-medium text-green-400">{(institutionalData.validatorEconomics.stakingYield ?? 0).toFixed(2)}%</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">MEV Revenue (avg)</span>
@@ -338,7 +338,7 @@ export function EnhancedInstitutionalView({ chain, institutionalData, isLoading 
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Break-Even Price</span>
-                    <span className="text-sm font-medium text-yellow-400">${institutionalData.validatorEconomics.breakEvenPrice.toLocaleString()}</span>
+                    <span className="text-sm font-medium text-yellow-400">${(institutionalData.validatorEconomics.breakEvenPrice ?? 0).toLocaleString()}</span>
                   </div>
                 </div>
               </button>
@@ -399,12 +399,12 @@ export function EnhancedInstitutionalView({ chain, institutionalData, isLoading 
                     onClick={() => openDetailModal('holdings', `${holder.holder} Holdings`, holder)}
                   >
                     <td className="p-3 font-medium text-foreground">{holder.holder}</td>
-                    <td className="p-3 text-right text-foreground">{holder.holdings.toLocaleString()} {chain.symbol}</td>
-                    <td className="p-3 text-right text-foreground">{holder.percentSupply.toFixed(2)}%</td>
+                    <td className="p-3 text-right text-foreground">{(holder.holdings ?? 0).toLocaleString()} {chain.symbol}</td>
+                    <td className="p-3 text-right text-foreground">{(holder.percentSupply ?? 0).toFixed(2)}%</td>
                     <td className="p-3 text-right">
                       <span className={`flex items-center justify-end gap-1 ${holder.change30d > 0 ? "text-green-400" : "text-red-400"}`}>
                         {holder.change30d > 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
-                        {holder.change30d > 0 ? "+" : ""}{holder.change30d.toFixed(2)}%
+                        {holder.change30d > 0 ? "+" : ""}{(holder.change30d ?? 0).toFixed(2)}%
                       </span>
                     </td>
                   </tr>

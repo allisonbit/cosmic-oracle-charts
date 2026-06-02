@@ -46,7 +46,7 @@ export function DivergenceWatchlist({ assets }: DivergenceWatchlistProps) {
           type: 'bullish' as const,
           strength: magnitude > 15 ? 'strong' : magnitude > 8 ? 'moderate' : 'weak',
           description: 'Price weakness not confirmed by fundamentals',
-          priceAction: `${asset.priceChange24h.toFixed(2)}%`,
+          priceAction: `${(asset.priceChange24h ?? 0).toFixed(2)}%`,
           strengthAction: `Strength: ${asset.strengthScore}`,
         };
       }
@@ -59,7 +59,7 @@ export function DivergenceWatchlist({ assets }: DivergenceWatchlistProps) {
           type: 'bearish' as const,
           strength: magnitude > 15 ? 'strong' : magnitude > 8 ? 'moderate' : 'weak',
           description: 'Price rally not supported by fundamentals',
-          priceAction: `+${asset.priceChange24h.toFixed(2)}%`,
+          priceAction: `+${(asset.priceChange24h ?? 0).toFixed(2)}%`,
           strengthAction: `Strength: ${asset.strengthScore}`,
         };
       }

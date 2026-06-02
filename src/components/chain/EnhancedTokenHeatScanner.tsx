@@ -83,10 +83,10 @@ export function EnhancedTokenHeatScanner({ chain, tokenHeat, isLoading }: TokenH
   };
 
   const formatPrice = (price: number) => {
-    if (price >= 1000) return `$${price.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
-    if (price >= 1) return `$${price.toFixed(2)}`;
-    if (price >= 0.0001) return `$${price.toFixed(6)}`;
-    return `$${price.toExponential(2)}`;
+    if (price >= 1000) return `$${(price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+    if (price >= 1) return `$${(price ?? 0).toFixed(2)}`;
+    if (price >= 0.0001) return `$${(price ?? 0).toFixed(6)}`;
+    return `$${(price ?? 0).toExponential(2)}`;
   };
 
   const getRiskLevel = (token: TokenHeat) => {
@@ -231,7 +231,7 @@ export function EnhancedTokenHeatScanner({ chain, tokenHeat, isLoading }: TokenH
                     heat.level === "warm" && "text-warning border-warning/30",
                     heat.level === "cool" && "text-primary border-primary/30"
                   )}>
-                    {heat.score.toFixed(0)}
+                    {(heat.score ?? 0).toFixed(0)}
                   </Badge>
                 </div>
 
@@ -253,7 +253,7 @@ export function EnhancedTokenHeatScanner({ chain, tokenHeat, isLoading }: TokenH
                     token.change24h >= 0 ? "text-success" : "text-danger"
                   )}>
                     {token.change24h >= 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
-                    <span>{token.change24h >= 0 ? "+" : ""}{token.change24h.toFixed(2)}%</span>
+                    <span>{token.change24h >= 0 ? "+" : ""}{(token.change24h ?? 0).toFixed(2)}%</span>
                   </div>
 
                   {/* Signal */}

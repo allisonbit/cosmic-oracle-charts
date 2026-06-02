@@ -143,7 +143,7 @@ export function EcosystemTokenSearch({ chain, ecosystemTokens = [] }: EcosystemT
                   {/* Price */}
                   <div className="text-right">
                     <p className="text-sm font-display text-foreground">
-                      ${token.price.toFixed(token.price > 10 ? 2 : 4)}
+                      ${(token.price ?? 0).toFixed(token.price > 10 ? 2 : 4)}
                     </p>
                     <p className={cn(
                       "text-xs flex items-center justify-end gap-0.5",
@@ -154,7 +154,7 @@ export function EcosystemTokenSearch({ chain, ecosystemTokens = [] }: EcosystemT
                       ) : (
                         <TrendingDown className="h-3 w-3" />
                       )}
-                      {token.change24h >= 0 ? "+" : ""}{token.change24h.toFixed(2)}%
+                      {token.change24h >= 0 ? "+" : ""}{(token.change24h ?? 0).toFixed(2)}%
                     </p>
                   </div>
 

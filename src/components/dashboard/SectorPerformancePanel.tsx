@@ -68,7 +68,7 @@ export function SectorPerformancePanel() {
                     "text-[10px] sm:text-xs font-bold",
                     sector.change >= 0 ? "text-success" : "text-danger"
                   )}>
-                    {sector.change >= 0 ? "+" : ""}{sector.change.toFixed(2)}%
+                    {sector.change >= 0 ? "+" : ""}{(sector.change ?? 0).toFixed(2)}%
                   </span>
                 </div>
               </div>

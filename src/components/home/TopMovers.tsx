@@ -99,10 +99,10 @@ export function TopMovers() {
                   <div className="text-right">
                     <div className="text-success font-bold flex items-center gap-1">
                       <TrendingUp className="w-3.5 h-3.5" />
-                      +{coin.change24h.toFixed(2)}%
+                      +{(coin.change24h ?? 0).toFixed(2)}%
                     </div>
                     <div className="text-xs text-muted-foreground">
-                      ${coin.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                      ${(coin.price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}
                     </div>
                   </div>
                 </Link>
@@ -149,10 +149,10 @@ export function TopMovers() {
                   <div className="text-right">
                     <div className="text-danger font-bold flex items-center gap-1">
                       <TrendingDown className="w-3.5 h-3.5" />
-                      {coin.change24h.toFixed(2)}%
+                      {(coin.change24h ?? 0).toFixed(2)}%
                     </div>
                     <div className="text-xs text-muted-foreground">
-                      ${coin.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                      ${(coin.price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}
                     </div>
                   </div>
                 </Link>

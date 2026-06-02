@@ -27,10 +27,10 @@ import { useQuery } from "@tanstack/react-query";
 
 const formatPrice = (p: number) => {
   if (!p || p <= 0) return '—';
-  if (p >= 1000) return `$${p.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
-  if (p >= 1) return `$${p.toFixed(2)}`;
-  if (p >= 0.01) return `$${p.toFixed(4)}`;
-  return `$${p.toPrecision(4)}`;
+  if (p >= 1000) return `$${(p ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+  if (p >= 1) return `$${(p ?? 0).toFixed(2)}`;
+  if (p >= 0.01) return `$${(p ?? 0).toFixed(4)}`;
+  return `$${(p ?? 0).toPrecision(4)}`;
 };
 
 const formatCompact = (n: number) => {
@@ -38,7 +38,7 @@ const formatCompact = (n: number) => {
   if (n >= 1e12) return `$${(n / 1e12).toFixed(1)}T`;
   if (n >= 1e9) return `$${(n / 1e9).toFixed(1)}B`;
   if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
-  return `$${n.toLocaleString()}`;
+  return `$${(n ?? 0).toLocaleString()}`;
 };
 
 // Fetch cached predictions from database
@@ -408,7 +408,7 @@ export default function PredictionHub() {
                             "font-mono text-xs font-medium tabular-nums",
                             crypto.change24h >= 0 ? "text-success" : "text-danger"
                           )}>
-                            {crypto.change24h >= 0 ? '+' : ''}{crypto.change24h.toFixed(2)}%
+                            {crypto.change24h >= 0 ? '+' : ''}{(crypto.change24h ?? 0).toFixed(2)}%
                           </span>
                         </td>
                         <td className="p-3 text-center">

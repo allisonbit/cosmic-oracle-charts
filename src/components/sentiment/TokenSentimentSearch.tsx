@@ -132,10 +132,10 @@ export function TokenSentimentSearch() {
     score >= 75 ? "Very Bullish" : score >= 60 ? "Bullish" : score >= 45 ? "Neutral" : score >= 30 ? "Bearish" : "Very Bearish";
 
   const formatPrice = (p: number) =>
-    p >= 1 ? `$${p.toLocaleString(undefined, { maximumFractionDigits: 2 })}` : `$${p.toPrecision(4)}`;
+    p >= 1 ? `$${(p ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}` : `$${(p ?? 0).toPrecision(4)}`;
 
   const formatVol = (v: number) =>
-    v >= 1e9 ? `$${(v / 1e9).toFixed(2)}B` : v >= 1e6 ? `$${(v / 1e6).toFixed(2)}M` : v >= 1e3 ? `$${(v / 1e3).toFixed(1)}K` : `$${v.toFixed(0)}`;
+    v >= 1e9 ? `$${(v / 1e9).toFixed(2)}B` : v >= 1e6 ? `$${(v / 1e6).toFixed(2)}M` : v >= 1e3 ? `$${(v / 1e3).toFixed(1)}K` : `$${(v ?? 0).toFixed(0)}`;
 
   return (
     <div className="holo-card p-4 sm:p-6 mb-6" ref={containerRef}>
@@ -184,7 +184,7 @@ export function TokenSentimentSearch() {
                 </div>
                 <div className="text-right shrink-0">
                   <div className={cn("text-xs font-bold", r.token.change24h >= 0 ? "text-success" : "text-danger")}>
-                    {r.token.change24h >= 0 ? "+" : ""}{r.token.change24h.toFixed(2)}%
+                    {r.token.change24h >= 0 ? "+" : ""}{(r.token.change24h ?? 0).toFixed(2)}%
                   </div>
                   <div className={cn("text-[10px] font-mono", getSentimentColor(r.sentiment.overall))}>
                     {getSentimentLabel(r.sentiment.overall)}
@@ -211,7 +211,7 @@ export function TokenSentimentSearch() {
                 <div className="flex items-center gap-3 text-xs text-muted-foreground">
                   <span className="font-mono">{formatPrice(selectedToken.token.price)}</span>
                   <span className={cn("font-bold", selectedToken.token.change24h >= 0 ? "text-success" : "text-danger")}>
-                    {selectedToken.token.change24h >= 0 ? "+" : ""}{selectedToken.token.change24h.toFixed(2)}%
+                    {selectedToken.token.change24h >= 0 ? "+" : ""}{(selectedToken.token.change24h ?? 0).toFixed(2)}%
                   </span>
                   {selectedToken.token.chain !== "unknown" && (
                     <span className="px-1.5 py-0.5 rounded bg-muted">{selectedToken.token.chain}</span>
@@ -286,9 +286,9 @@ export function TokenSentimentSearch() {
               </div>
             </div>
             <div className="flex justify-between text-xs">
-              <span className="text-success font-mono">▲ {selectedToken.token.buys24h.toLocaleString()} buys</span>
-              <span className="text-muted-foreground font-mono">{selectedToken.token.txns24h.toLocaleString()} total</span>
-              <span className="text-danger font-mono">▼ {selectedToken.token.sells24h.toLocaleString()} sells</span>
+              <span className="text-success font-mono">▲ {(selectedToken.token.buys24h ?? 0).toLocaleString()} buys</span>
+              <span className="text-muted-foreground font-mono">{(selectedToken.token.txns24h ?? 0).toLocaleString()} total</span>
+              <span className="text-danger font-mono">▼ {(selectedToken.token.sells24h ?? 0).toLocaleString()} sells</span>
             </div>
           </div>
 

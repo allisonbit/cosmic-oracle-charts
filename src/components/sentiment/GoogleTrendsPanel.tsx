@@ -76,7 +76,7 @@ export function GoogleTrendsPanel({ trending, trendingCategories, fearGreed, isL
                     cat.marketCapChange24h >= 0 ? "text-success" : "text-danger"
                   )}>
                     {cat.marketCapChange24h >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                    {cat.marketCapChange24h >= 0 ? "+" : ""}{cat.marketCapChange24h.toFixed(1)}%
+                    {cat.marketCapChange24h >= 0 ? "+" : ""}{(cat.marketCapChange24h ?? 0).toFixed(1)}%
                   </span>
                 </div>
               </div>

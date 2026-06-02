@@ -13,7 +13,7 @@ interface EnhancedFAQProps {
 
 export function EnhancedFAQ({ coinName, symbol, timeframe, currentPrice, bias, confidence }: EnhancedFAQProps) {
   const timeframeText = timeframe === 'daily' ? 'today' : timeframe === 'weekly' ? 'this week' : 'this month';
-  const priceText = currentPrice ? `$${currentPrice.toLocaleString()}` : 'current levels';
+  const priceText = currentPrice ? `$${(currentPrice ?? 0).toLocaleString()}` : 'current levels';
   
   // High-intent money-focused FAQs
   const faqs = [

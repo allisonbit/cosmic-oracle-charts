@@ -201,7 +201,7 @@ export function EnhancedTokenDetailModal({ token, isOpen, onClose, walletAddress
     if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
     if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
     if (num >= 1e3) return `$${(num / 1e3).toFixed(2)}K`;
-    return `$${num.toFixed(2)}`;
+    return `$${(num ?? 0).toFixed(2)}`;
   };
 
   return (
@@ -230,14 +230,14 @@ export function EnhancedTokenDetailModal({ token, isOpen, onClose, walletAddress
             </div>
             <div className="text-right">
               <div className="text-2xl font-bold">
-                ${token.price < 0.01 ? token.price.toFixed(8) : token.price.toLocaleString()}
+                ${token.price < 0.01 ? (token.price ?? 0).toFixed(8) : (token.price ?? 0).toLocaleString()}
               </div>
               <div className={cn(
                 "flex items-center justify-end gap-1 text-sm font-medium",
                 token.change24h >= 0 ? "text-success" : "text-danger"
               )}>
                 {token.change24h >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
-                {token.change24h >= 0 ? "+" : ""}{token.change24h.toFixed(2)}% (24h)
+                {token.change24h >= 0 ? "+" : ""}{(token.change24h ?? 0).toFixed(2)}% (24h)
               </div>
             </div>
           </DialogTitle>
@@ -283,7 +283,7 @@ export function EnhancedTokenDetailModal({ token, isOpen, onClose, walletAddress
                     <YAxis hide domain={['dataMin', 'dataMax']} />
                     <Tooltip
                       contentStyle={{ background: 'hsl(var(--background))', border: '1px solid hsl(var(--border))' }}
-                      formatter={(value: number) => [`$${value.toFixed(6)}`, 'Price']}
+                      formatter={(value: number) => [`$${(value ?? 0).toFixed(6)}`, 'Price']}
                     />
                     <Area
                       type="monotone"
@@ -306,11 +306,11 @@ export function EnhancedTokenDetailModal({ token, isOpen, onClose, walletAddress
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <div className="text-xs text-muted-foreground">Balance</div>
-                  <div className="font-bold">{token.balance.toLocaleString(undefined, { maximumFractionDigits: 4 })} {token.symbol}</div>
+                  <div className="font-bold">{(token.balance ?? 0).toLocaleString(undefined, { maximumFractionDigits: 4 })} {token.symbol}</div>
                 </div>
                 <div>
                   <div className="text-xs text-muted-foreground">Value (USD)</div>
-                  <div className="font-bold text-primary">${token.value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
+                  <div className="font-bold text-primary">${(token.value ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
                 </div>
                 <div>
                   <div className="text-xs text-muted-foreground">Avg. Entry (Est.)</div>
@@ -339,7 +339,7 @@ export function EnhancedTokenDetailModal({ token, isOpen, onClose, walletAddress
               <div className="bg-muted/30 rounded-lg p-3 text-center hover:bg-muted/50 transition-colors cursor-pointer group">
                 <Users className="w-5 h-5 mx-auto mb-1 text-primary group-hover:scale-110 transition-transform" />
                 <div className="text-xs text-muted-foreground">Holders</div>
-                <div className="font-bold">{holders.toLocaleString()}</div>
+                <div className="font-bold">{(holders ?? 0).toLocaleString()}</div>
               </div>
             </div>
 
@@ -351,7 +351,7 @@ export function EnhancedTokenDetailModal({ token, isOpen, onClose, walletAddress
                   token.change24h >= 0 ? "text-success" : "text-danger"
                 )}>
                   {token.change24h >= 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
-                  {token.change24h >= 0 ? "+" : ""}{token.change24h.toFixed(2)}%
+                  {token.change24h >= 0 ? "+" : ""}{(token.change24h ?? 0).toFixed(2)}%
                 </div>
               </div>
               <div className="bg-muted/30 rounded-lg p-3 text-center">
@@ -360,7 +360,7 @@ export function EnhancedTokenDetailModal({ token, isOpen, onClose, walletAddress
                   priceChange7d >= 0 ? "text-success" : "text-danger"
                 )}>
                   {priceChange7d >= 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
-                  {priceChange7d >= 0 ? "+" : ""}{priceChange7d.toFixed(2)}%
+                  {priceChange7d >= 0 ? "+" : ""}{(priceChange7d ?? 0).toFixed(2)}%
                 </div>
               </div>
               <div className="bg-muted/30 rounded-lg p-3 text-center">
@@ -369,7 +369,7 @@ export function EnhancedTokenDetailModal({ token, isOpen, onClose, walletAddress
                   priceChange30d >= 0 ? "text-success" : "text-danger"
                 )}>
                   {priceChange30d >= 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
-                  {priceChange30d >= 0 ? "+" : ""}{priceChange30d.toFixed(2)}%
+                  {priceChange30d >= 0 ? "+" : ""}{(priceChange30d ?? 0).toFixed(2)}%
                 </div>
               </div>
             </div>
@@ -459,8 +459,8 @@ export function EnhancedTokenDetailModal({ token, isOpen, onClose, walletAddress
                   />
                 </div>
                 <div className="flex gap-4 text-sm">
-                  <span className="text-success font-bold">{volumeData[0].value.toFixed(0)}% Buy</span>
-                  <span className="text-danger font-bold">{volumeData[1].value.toFixed(0)}% Sell</span>
+                  <span className="text-success font-bold">{(volumeData[0].value ?? 0).toFixed(0)}% Buy</span>
+                  <span className="text-danger font-bold">{(volumeData[1].value ?? 0).toFixed(0)}% Sell</span>
                 </div>
               </div>
             </div>
@@ -494,7 +494,7 @@ export function EnhancedTokenDetailModal({ token, isOpen, onClose, walletAddress
                 <h4 className="font-display font-bold text-sm">Token Info</h4>
                 <div className="space-y-2">
                   {[
-                    { label: 'Holders', value: holders.toLocaleString(), icon: Users },
+                    { label: 'Holders', value: (holders ?? 0).toLocaleString(), icon: Users },
                     { label: 'Liquidity', value: formatLargeNumber(liquidity), icon: Lock },
                     { label: 'ATH', value: `$${(token.price * 1.8).toFixed(6)}`, icon: TrendingUp },
                     { label: 'ATL', value: `$${(token.price * 0.2).toFixed(6)}`, icon: TrendingDown },

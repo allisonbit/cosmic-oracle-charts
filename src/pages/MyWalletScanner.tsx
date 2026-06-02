@@ -78,11 +78,11 @@ function ScannerContent() {
   const getRiskLabel = (score: number) => score <= 30 ? "Low Risk" : score <= 60 ? "Medium Risk" : "High Risk";
 
   const pieData = analysis?.holdings.filter(h => h.value_usd > 0).slice(0, 8).map(h => ({
-    name: h.symbol, value: parseFloat(h.value_usd.toFixed(2)),
+    name: h.symbol, value: parseFloat((h.value_usd ?? 0).toFixed(2)),
   })) || [];
 
   const barData = analysis?.holdings.filter(h => h.change_24h !== 0).slice(0, 10).map(h => ({
-    name: h.symbol, change: parseFloat(h.change_24h.toFixed(2)),
+    name: h.symbol, change: parseFloat((h.change_24h ?? 0).toFixed(2)),
   })) || [];
 
   const topGainer = analysis?.holdings.reduce((a, b) => (a.change_24h > b.change_24h ? a : b), analysis.holdings[0]);
@@ -157,7 +157,7 @@ function ScannerContent() {
             <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
               <Card className="border-border"><CardContent className="p-3 text-center">
                 <p className="text-[10px] text-muted-foreground uppercase">Total Value</p>
-                <p className="text-lg font-bold font-mono">${analysis.totalValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
+                <p className="text-lg font-bold font-mono">${(analysis.totalValue ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
               </CardContent></Card>
               <Card className="border-border"><CardContent className="p-3 text-center">
                 <p className="text-[10px] text-muted-foreground uppercase">Tokens</p>
@@ -179,7 +179,7 @@ function ScannerContent() {
               </CardContent></Card>
               <Card className="border-border"><CardContent className="p-3 text-center">
                 <p className="text-[10px] text-muted-foreground uppercase">Stablecoin %</p>
-                <p className="text-lg font-bold font-mono">{stablePct.toFixed(1)}%</p>
+                <p className="text-lg font-bold font-mono">{(stablePct ?? 0).toFixed(1)}%</p>
               </CardContent></Card>
             </div>
 
@@ -253,12 +253,12 @@ function ScannerContent() {
                                     </div>
                                   </div>
                                 </td>
-                                <td className="p-3 text-right font-mono text-xs">{token.balance.toLocaleString(undefined, { maximumFractionDigits: 4 })}</td>
-                                <td className="p-3 text-right font-mono text-xs">${token.price < 0.01 ? token.price.toExponential(2) : token.price.toLocaleString(undefined, { maximumFractionDigits: 4 })}</td>
-                                <td className="p-3 text-right font-mono text-xs font-medium">${token.value_usd.toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
+                                <td className="p-3 text-right font-mono text-xs">{(token.balance ?? 0).toLocaleString(undefined, { maximumFractionDigits: 4 })}</td>
+                                <td className="p-3 text-right font-mono text-xs">${token.price < 0.01 ? (token.price ?? 0).toExponential(2) : (token.price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 4 })}</td>
+                                <td className="p-3 text-right font-mono text-xs font-medium">${(token.value_usd ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
                                 <td className="p-3 text-right">
                                   <span className={cn("text-xs font-mono", token.change_24h >= 0 ? "text-success" : "text-danger")}>
-                                    {token.change_24h >= 0 ? '+' : ''}{token.change_24h.toFixed(2)}%
+                                    {token.change_24h >= 0 ? '+' : ''}{(token.change_24h ?? 0).toFixed(2)}%
                                   </span>
                                 </td>
                                 <td className="p-3 text-right">
@@ -266,7 +266,7 @@ function ScannerContent() {
                                     <div className="w-12 h-1.5 bg-muted rounded-full overflow-hidden">
                                       <div className="h-full rounded-full" style={{ width: `${Math.min(share, 100)}%`, background: COLORS[i % COLORS.length] }} />
                                     </div>
-                                    <span className="text-[10px] text-muted-foreground w-8 text-right">{share.toFixed(1)}%</span>
+                                    <span className="text-[10px] text-muted-foreground w-8 text-right">{(share ?? 0).toFixed(1)}%</span>
                                   </div>
                                 </td>
                               </tr>
@@ -290,7 +290,7 @@ function ScannerContent() {
                               label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
                               {pieData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                             </Pie>
-                            <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`}
+                            <Tooltip formatter={(v: number) => `$${(v ?? 0).toLocaleString()}`}
                               contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px', fontSize: '12px' }} />
                           </PieChart>
                         </ResponsiveContainer>
@@ -304,7 +304,7 @@ function ScannerContent() {
                           <BarChart data={pieData.slice(0, 8)} layout="vertical">
                             <XAxis type="number" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
                             <YAxis dataKey="name" type="category" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" width={40} />
-                            <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`}
+                            <Tooltip formatter={(v: number) => `$${(v ?? 0).toLocaleString()}`}
                               contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px', fontSize: '12px' }} />
                             <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                               {pieData.slice(0, 8).map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}

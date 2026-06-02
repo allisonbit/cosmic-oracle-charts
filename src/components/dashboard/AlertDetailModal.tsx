@@ -128,7 +128,7 @@ export function AlertDetailModal({ alert, open, onOpenChange }: AlertDetailModal
               "ml-auto text-lg font-display font-bold",
               alert.change >= 0 ? "text-success" : "text-danger"
             )}>
-              {alert.change >= 0 ? "+" : ""}{alert.change.toFixed(1)}%
+              {alert.change >= 0 ? "+" : ""}{(alert.change ?? 0).toFixed(1)}%
             </span>
           </DialogTitle>
         </DialogHeader>

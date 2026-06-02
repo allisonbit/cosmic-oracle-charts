@@ -17,17 +17,17 @@ export function ChainFAQSchema({ chain, priceData }: ChainFAQSchemaProps) {
   });
 
   const formatPrice = (price: number) => {
-    if (price >= 1000) return `$${price.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
-    if (price >= 1) return `$${price.toFixed(2)}`;
-    if (price >= 0.0001) return `$${price.toFixed(4)}`;
-    return `$${price.toPrecision(4)}`;
+    if (price >= 1000) return `$${(price ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+    if (price >= 1) return `$${(price ?? 0).toFixed(2)}`;
+    if (price >= 0.0001) return `$${(price ?? 0).toFixed(4)}`;
+    return `$${(price ?? 0).toPrecision(4)}`;
   };
 
   const formatMarketCap = (cap: number) => {
     if (cap >= 1e12) return `$${(cap / 1e12).toFixed(2)}T`;
     if (cap >= 1e9) return `$${(cap / 1e9).toFixed(2)}B`;
     if (cap >= 1e6) return `$${(cap / 1e6).toFixed(2)}M`;
-    return `$${cap.toLocaleString()}`;
+    return `$${(cap ?? 0).toLocaleString()}`;
   };
 
   const faqSchema = useMemo(() => {
@@ -115,10 +115,10 @@ interface ChainFAQDisplayProps {
 
 export function ChainFAQDisplay({ chain, priceData }: ChainFAQDisplayProps) {
   const formatPrice = (price: number) => {
-    if (price >= 1000) return `$${price.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
-    if (price >= 1) return `$${price.toFixed(2)}`;
-    if (price >= 0.0001) return `$${price.toFixed(4)}`;
-    return `$${price.toPrecision(4)}`;
+    if (price >= 1000) return `$${(price ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+    if (price >= 1) return `$${(price ?? 0).toFixed(2)}`;
+    if (price >= 0.0001) return `$${(price ?? 0).toFixed(4)}`;
+    return `$${(price ?? 0).toPrecision(4)}`;
   };
 
   const faqs = [

@@ -19,7 +19,7 @@ export function CorrelationMatrix() {
         } else {
           // Generate correlated values - crypto tends to be positively correlated
           const base = 0.3 + Math.random() * 0.5;
-          matrix[asset1][asset2] = Number(base.toFixed(2));
+          matrix[asset1][asset2] = Number((base ?? 0).toFixed(2));
         }
       });
     });

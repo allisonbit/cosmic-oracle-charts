@@ -211,22 +211,22 @@ export function SocialSentimentGalaxy({ chain, socialSentiment, isLoading }: Soc
 
                     {/* Volume */}
                     <p className="text-[10px] text-muted-foreground mt-2">
-                      {"volume" in data ? `${data.volume.toLocaleString()} mentions` : `${(data as any).count} articles`}
+                      {"volume" in data ? `${(data.volume ?? 0).toLocaleString()} mentions` : `${(data as any).count} articles`}
                     </p>
 
                     <CollapsibleContent>
                       <div className="mt-3 pt-3 border-t border-border/30 space-y-2">
                         <div className="flex justify-between text-xs">
                           <span className="text-muted-foreground">Positive</span>
-                          <span className="text-success">{data.positive.toLocaleString()}</span>
+                          <span className="text-success">{(data.positive ?? 0).toLocaleString()}</span>
                         </div>
                         <div className="flex justify-between text-xs">
                           <span className="text-muted-foreground">Neutral</span>
-                          <span className="text-warning">{data.neutral.toLocaleString()}</span>
+                          <span className="text-warning">{(data.neutral ?? 0).toLocaleString()}</span>
                         </div>
                         <div className="flex justify-between text-xs">
                           <span className="text-muted-foreground">Negative</span>
-                          <span className="text-danger">{data.negative.toLocaleString()}</span>
+                          <span className="text-danger">{(data.negative ?? 0).toLocaleString()}</span>
                         </div>
                         {platform.link && (
                           <a

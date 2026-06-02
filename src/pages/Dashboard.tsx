@@ -36,7 +36,7 @@ function formatNumber(num: number | undefined | null): string {
   if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
   if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
   if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
-  return `$${num.toLocaleString()}`;
+  return `$${(num ?? 0).toLocaleString()}`;
 }
 
 function CryptoChart({ price, isPositive }: { price: number; isPositive: boolean }) {
@@ -72,7 +72,7 @@ function CryptoChart({ price, isPositive }: { price: number; isPositive: boolean
             color: "hsl(200, 100%, 95%)",
             fontSize: "12px",
           }}
-          formatter={(value: number) => [`$${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}`, "Price"]}
+          formatter={(value: number) => [`$${(value ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}`, "Price"]}
         />
         <Area
           type="monotone"
@@ -180,8 +180,8 @@ function SortableCryptoTable({ coins }: { coins: any[] }) {
                 </td>
                 <td className="py-2.5 sm:py-3 px-1.5 sm:px-3 text-right font-medium text-xs sm:text-sm">
                   ${coin.price >= 1
-                    ? coin.price.toLocaleString(undefined, { maximumFractionDigits: 2 })
-                    : coin.price.toLocaleString(undefined, { maximumSignificantDigits: 4 })}
+                    ? (coin.price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })
+                    : (coin.price ?? 0).toLocaleString(undefined, { maximumSignificantDigits: 4 })}
                 </td>
                 <td className={cn(
                   "py-2.5 sm:py-3 px-1.5 sm:px-3 text-right font-medium text-xs sm:text-sm",
@@ -189,7 +189,7 @@ function SortableCryptoTable({ coins }: { coins: any[] }) {
                 )}>
                   <span className="inline-flex items-center gap-0.5">
                     {coin.change24h >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                    {coin.change24h >= 0 ? "+" : ""}{coin.change24h.toFixed(2)}%
+                    {coin.change24h >= 0 ? "+" : ""}{(coin.change24h ?? 0).toFixed(2)}%
                   </span>
                 </td>
                 <td className="py-2.5 sm:py-3 px-1.5 sm:px-3 text-right text-muted-foreground text-xs sm:text-sm hidden sm:table-cell">
@@ -289,8 +289,8 @@ const Dashboard = () => {
               {[
                 { label: "Market Cap", value: global ? formatNumber(global.totalMarketCap) : null, icon: Globe, change: global?.marketCapChange24h, link: "/sentiment" },
                 { label: "24h Volume", value: global ? formatNumber(global.totalVolume24h) : null, icon: Activity, link: "/dashboard" },
-                { label: "Active Coins", value: global ? global.activeCryptocurrencies.toLocaleString() : null, icon: Zap, link: "/explorer" },
-                { label: "BTC Dom", value: global ? `${global.btcDominance.toFixed(1)}%` : null, icon: TrendingUp, link: "/chain/bitcoin" },
+                { label: "Active Coins", value: global ? (global.activeCryptocurrencies ?? 0).toLocaleString() : null, icon: Zap, link: "/explorer" },
+                { label: "BTC Dom", value: global ? `${(global.btcDominance ?? 0).toFixed(1)}%` : null, icon: TrendingUp, link: "/chain/bitcoin" },
               ].map((stat) => (
                 <Link 
                   key={stat.label} 
@@ -311,7 +311,7 @@ const Dashboard = () => {
                       stat.change >= 0 ? "text-success" : "text-danger"
                     )}>
                       {stat.change >= 0 ? <TrendingUp className="w-2.5 h-2.5 sm:w-3 sm:h-3" /> : <TrendingDown className="w-2.5 h-2.5 sm:w-3 sm:h-3" />}
-                      {stat.change >= 0 ? "+" : ""}{stat.change.toFixed(1)}%
+                      {stat.change >= 0 ? "+" : ""}{(stat.change ?? 0).toFixed(1)}%
                     </div>
                   )}
                 </Link>
@@ -548,13 +548,13 @@ const Dashboard = () => {
 
                       <div className="flex items-end justify-between">
                         <div className="min-w-0">
-                          <div className="text-sm sm:text-base md:text-lg font-bold truncate">${coin.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
+                          <div className="text-sm sm:text-base md:text-lg font-bold truncate">${(coin.price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
                           <div className={cn(
                             "flex items-center gap-0.5 text-[10px] sm:text-xs font-medium",
                             coin.change24h >= 0 ? "text-success" : "text-danger"
                           )}>
                             {coin.change24h >= 0 ? <TrendingUp className="w-2.5 h-2.5 sm:w-3 sm:h-3" /> : <TrendingDown className="w-2.5 h-2.5 sm:w-3 sm:h-3" />}
-                            {coin.change24h >= 0 ? "+" : ""}{coin.change24h.toFixed(2)}%
+                            {coin.change24h >= 0 ? "+" : ""}{(coin.change24h ?? 0).toFixed(2)}%
                           </div>
                         </div>
                         <span className={cn(
@@ -608,7 +608,7 @@ const Dashboard = () => {
                       "text-[9px] sm:text-[10px] md:text-xs font-medium",
                       coin.change24h >= 0 ? "text-success" : "text-danger"
                     )}>
-                      {coin.change24h >= 0 ? "+" : ""}{coin.change24h.toFixed(1)}%
+                      {coin.change24h >= 0 ? "+" : ""}{(coin.change24h ?? 0).toFixed(1)}%
                     </div>
                   </Link>
                 ))}

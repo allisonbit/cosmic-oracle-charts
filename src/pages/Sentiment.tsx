@@ -30,7 +30,7 @@ function formatNumber(num: number | undefined | null): string {
   if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
   if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
   if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
-  return `$${num.toLocaleString()}`;
+  return `$${(num ?? 0).toLocaleString()}`;
 }
 
 const SentimentPage = () => {
@@ -147,8 +147,8 @@ const SentimentPage = () => {
             <div className="holo-card p-4 text-center">
               <div className="text-xs text-muted-foreground mb-1">Total Market Cap</div>
               <div className="font-bold text-lg">{formatNumber(sentimentData.global.totalMarketCap)}</div>
-              <div className={cn("text-xs font-medium", sentimentData.global.marketCapChange24h >= 0 ? "text-success" : "text-danger")}>
-                {sentimentData.global.marketCapChange24h >= 0 ? "+" : ""}{sentimentData.global.marketCapChange24h.toFixed(2)}%
+              <div className={cn("text-xs font-medium", (sentimentData.global.marketCapChange24h ?? 0) >= 0 ? "text-success" : "text-danger")}>
+                {(sentimentData.global.marketCapChange24h ?? 0) >= 0 ? "+" : ""}{(sentimentData.global.marketCapChange24h ?? 0).toFixed(2)}%
               </div>
             </div>
             <div className="holo-card p-4 text-center">
@@ -157,11 +157,11 @@ const SentimentPage = () => {
             </div>
             <div className="holo-card p-4 text-center">
               <div className="text-xs text-muted-foreground mb-1">BTC Dominance</div>
-              <div className="font-bold text-lg">{sentimentData.global.btcDominance.toFixed(1)}%</div>
+              <div className="font-bold text-lg">{(sentimentData.global.btcDominance ?? 0).toFixed(1)}%</div>
             </div>
             <div className="holo-card p-4 text-center">
               <div className="text-xs text-muted-foreground mb-1">Active Cryptos</div>
-              <div className="font-bold text-lg">{sentimentData.global.activeCryptos.toLocaleString()}</div>
+              <div className="font-bold text-lg">{(sentimentData.global.activeCryptos ?? sentimentData.global.activeCryptocurrencies ?? 0).toLocaleString()}</div>
             </div>
           </div>
         )}

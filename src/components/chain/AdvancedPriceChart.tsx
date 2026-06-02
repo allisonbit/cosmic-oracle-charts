@@ -103,13 +103,13 @@ export function AdvancedPriceChart({ chain, priceData }: AdvancedPriceChartProps
       {priceData && (
         <div className="flex items-baseline gap-2 sm:gap-4 mb-3 sm:mb-4">
           <span className="text-xl sm:text-3xl font-display text-foreground glow-text">
-            ${priceData.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            ${(priceData.price ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </span>
           <span className={cn(
             "text-sm sm:text-lg font-medium",
             priceData.change24h >= 0 ? "text-success" : "text-danger"
           )}>
-            {priceData.change24h >= 0 ? "+" : ""}{priceData.change24h.toFixed(2)}%
+            {priceData.change24h >= 0 ? "+" : ""}{(priceData.change24h ?? 0).toFixed(2)}%
           </span>
         </div>
       )}
@@ -147,7 +147,7 @@ export function AdvancedPriceChart({ chain, priceData }: AdvancedPriceChartProps
               tickLine={false}
               axisLine={false}
               domain={["dataMin * 0.98", "dataMax * 1.02"]}
-              tickFormatter={(value) => `$${value.toFixed(0)}`}
+              tickFormatter={(value) => `$${(value ?? 0).toFixed(0)}`}
             />
             <Tooltip
               contentStyle={{

@@ -27,7 +27,7 @@ function formatLargeNumber(num: number): string {
   if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
   if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
   if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
-  return `$${num.toLocaleString()}`;
+  return `$${(num ?? 0).toLocaleString()}`;
 }
 
 export function CoinDetailModal({ open, onOpenChange, coin }: CoinDetailModalProps) {
@@ -81,7 +81,7 @@ export function CoinDetailModal({ open, onOpenChange, coin }: CoinDetailModalPro
             <div>
               <p className="text-sm text-muted-foreground">Current Price</p>
               <p className="text-3xl font-bold text-foreground">
-                ${coin.price.toLocaleString(undefined, { maximumFractionDigits: coin.price < 1 ? 6 : 2 })}
+                ${(coin.price ?? 0).toLocaleString(undefined, { maximumFractionDigits: coin.price < 1 ? 6 : 2 })}
               </p>
             </div>
             <div className="text-right">
@@ -90,7 +90,7 @@ export function CoinDetailModal({ open, onOpenChange, coin }: CoinDetailModalPro
                 isPositive ? "text-success" : "text-danger"
               )}>
                 {isPositive ? <TrendingUp className="h-5 w-5" /> : <TrendingDown className="h-5 w-5" />}
-                {isPositive ? "+" : ""}{coin.change24h.toFixed(2)}%
+                {isPositive ? "+" : ""}{(coin.change24h ?? 0).toFixed(2)}%
               </div>
               <p className="text-xs text-muted-foreground">24h change</p>
             </div>
@@ -135,7 +135,7 @@ export function CoinDetailModal({ open, onOpenChange, coin }: CoinDetailModalPro
                 <Activity className="h-4 w-4" />
                 <span className="text-xs">Vol/MCap</span>
               </div>
-              <p className="text-lg font-semibold text-foreground">{volumeToMcap.toFixed(2)}%</p>
+              <p className="text-lg font-semibold text-foreground">{(volumeToMcap ?? 0).toFixed(2)}%</p>
             </div>
             <div className="p-3 rounded-lg bg-muted/10 border border-border/30">
               <div className="flex items-center gap-2 text-muted-foreground mb-1">
@@ -158,13 +158,13 @@ export function CoinDetailModal({ open, onOpenChange, coin }: CoinDetailModalPro
               <div>
                 <p className="text-xs text-muted-foreground mb-1">Support</p>
                 <p className="text-lg font-bold text-success">
-                  ${support.toLocaleString(undefined, { maximumFractionDigits: support < 1 ? 6 : 2 })}
+                  ${(support ?? 0).toLocaleString(undefined, { maximumFractionDigits: support < 1 ? 6 : 2 })}
                 </p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground mb-1">Resistance</p>
                 <p className="text-lg font-bold text-danger">
-                  ${resistance.toLocaleString(undefined, { maximumFractionDigits: resistance < 1 ? 6 : 2 })}
+                  ${(resistance ?? 0).toLocaleString(undefined, { maximumFractionDigits: resistance < 1 ? 6 : 2 })}
                 </p>
               </div>
             </div>

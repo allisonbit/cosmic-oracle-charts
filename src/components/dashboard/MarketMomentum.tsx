@@ -30,7 +30,7 @@ export function MarketMomentum() {
             {momentum}
           </div>
           <div className="text-[10px] sm:text-xs text-muted-foreground">
-            Strength: {strength.toFixed(0)}%
+            Strength: {(strength ?? 0).toFixed(0)}%
           </div>
         </div>
         <div className="flex gap-4 sm:gap-6 text-center">

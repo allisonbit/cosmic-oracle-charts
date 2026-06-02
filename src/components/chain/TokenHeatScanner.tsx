@@ -149,7 +149,7 @@ export function TokenHeatScanner({ chain, tokenHeat, isLoading }: TokenHeatScann
 
                   {/* Price */}
                   <p className="text-sm sm:text-lg font-display text-foreground mb-0.5 sm:mb-1 truncate">
-                    ${token.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}
+                    ${(token.price ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}
                   </p>
 
                   {/* Change */}
@@ -162,7 +162,7 @@ export function TokenHeatScanner({ chain, tokenHeat, isLoading }: TokenHeatScann
                     ) : (
                       <TrendingDown className="h-3 w-3" />
                     )}
-                    <span>{token.change24h >= 0 ? "+" : ""}{token.change24h.toFixed(2)}%</span>
+                    <span>{token.change24h >= 0 ? "+" : ""}{(token.change24h ?? 0).toFixed(2)}%</span>
                   </div>
 
                   {/* Metrics Bar */}

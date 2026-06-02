@@ -288,7 +288,7 @@ export function EnhancedOverviewPanel({
           <div className="text-center">
             <div className="text-xs text-muted-foreground">Avg 24h Change</div>
             <div className={cn("font-bold", avgChange >= 0 ? "text-success" : "text-danger")}>
-              {avgChange >= 0 ? "+" : ""}{avgChange.toFixed(2)}%
+              {avgChange >= 0 ? "+" : ""}{(avgChange ?? 0).toFixed(2)}%
             </div>
           </div>
           <div className="text-center">

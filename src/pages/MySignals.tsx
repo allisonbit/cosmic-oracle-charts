@@ -142,7 +142,7 @@ function SignalsContent() {
             </CardContent></Card>
             <Card className="border-border"><CardContent className="p-3">
               <p className="text-[10px] text-muted-foreground uppercase">Avg Confidence</p>
-              <p className="text-lg font-bold font-mono">{avgConfidence.toFixed(0)}%</p>
+              <p className="text-lg font-bold font-mono">{(avgConfidence ?? 0).toFixed(0)}%</p>
             </CardContent></Card>
             <Card className="border-border"><CardContent className="p-3">
               <p className="text-[10px] text-muted-foreground uppercase">Strongest</p>
@@ -210,17 +210,17 @@ function SignalsContent() {
                   <div className="grid grid-cols-3 gap-2">
                     <div className="p-2.5 rounded-lg bg-muted/50 text-center">
                       <p className="text-[9px] text-muted-foreground uppercase">Entry</p>
-                      <p className="text-sm font-bold font-mono">${signal.entry.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
+                      <p className="text-sm font-bold font-mono">${(signal.entry ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
                     </div>
                     <div className="p-2.5 rounded-lg bg-success/10 text-center">
                       <p className="text-[9px] text-success uppercase">Target</p>
-                      <p className="text-sm font-bold font-mono text-success">${signal.target.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
-                      <p className="text-[9px] font-mono text-success">{potentialGain >= 0 ? '+' : ''}{potentialGain.toFixed(1)}%</p>
+                      <p className="text-sm font-bold font-mono text-success">${(signal.target ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
+                      <p className="text-[9px] font-mono text-success">{potentialGain >= 0 ? '+' : ''}{(potentialGain ?? 0).toFixed(1)}%</p>
                     </div>
                     <div className="p-2.5 rounded-lg bg-danger/10 text-center">
                       <p className="text-[9px] text-danger uppercase">Stop Loss</p>
-                      <p className="text-sm font-bold font-mono text-danger">${signal.stopLoss.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
-                      <p className="text-[9px] font-mono text-danger">{potentialLoss >= 0 ? '+' : ''}{potentialLoss.toFixed(1)}%</p>
+                      <p className="text-sm font-bold font-mono text-danger">${(signal.stopLoss ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
+                      <p className="text-[9px] font-mono text-danger">{potentialLoss >= 0 ? '+' : ''}{(potentialLoss ?? 0).toFixed(1)}%</p>
                     </div>
                   </div>
 
@@ -231,7 +231,7 @@ function SignalsContent() {
                         <Shield className="w-3 h-3 text-muted-foreground" />
                         <span className="text-[10px] text-muted-foreground">R:R</span>
                         <span className={cn("text-xs font-bold font-mono", rr >= 2 ? "text-success" : rr >= 1 ? "text-warning" : "text-danger")}>
-                          1:{rr.toFixed(1)}
+                          1:{(rr ?? 0).toFixed(1)}
                         </span>
                       </div>
                       <Badge variant={rr >= 2 ? "default" : "outline"} className="text-[8px]">

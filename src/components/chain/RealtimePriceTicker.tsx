@@ -12,14 +12,14 @@ export function RealtimePriceTicker({ chain }: RealtimePriceTickerProps) {
   const priceData = prices[chain.id];
 
   const formatPrice = (price: number) => {
-    if (price >= 1000) return `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    if (price >= 1) return `$${price.toFixed(2)}`;
-    return `$${price.toFixed(4)}`;
+    if (price >= 1000) return `$${(price ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    if (price >= 1) return `$${(price ?? 0).toFixed(2)}`;
+    return `$${(price ?? 0).toFixed(4)}`;
   };
 
   const formatChange = (change: number) => {
     const prefix = change >= 0 ? "+" : "";
-    return `${prefix}${change.toFixed(2)}%`;
+    return `${prefix}${(change ?? 0).toFixed(2)}%`;
   };
 
   const formatVolume = (vol: number) => {

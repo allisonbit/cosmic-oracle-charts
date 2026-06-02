@@ -20,12 +20,12 @@ type TimeFilter = '5m' | '1h' | '6h' | '24h';
 // ─── Formatters ───
 function formatPrice(p: number): string {
   if (!p || p === 0) return '$0.00';
-  if (p < 0.000001) return `$${p.toFixed(10)}`;
-  if (p < 0.0001) return `$${p.toFixed(8)}`;
-  if (p < 0.01) return `$${p.toFixed(6)}`;
-  if (p < 1) return `$${p.toFixed(4)}`;
-  if (p < 1000) return `$${p.toFixed(2)}`;
-  return `$${p.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+  if (p < 0.000001) return `$${(p ?? 0).toFixed(10)}`;
+  if (p < 0.0001) return `$${(p ?? 0).toFixed(8)}`;
+  if (p < 0.01) return `$${(p ?? 0).toFixed(6)}`;
+  if (p < 1) return `$${(p ?? 0).toFixed(4)}`;
+  if (p < 1000) return `$${(p ?? 0).toFixed(2)}`;
+  return `$${(p ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
 }
 
 function formatCompact(n: number | undefined): string {
@@ -34,12 +34,12 @@ function formatCompact(n: number | undefined): string {
   if (n >= 1e9) return `$${(n / 1e9).toFixed(2)}B`;
   if (n >= 1e6) return `$${(n / 1e6).toFixed(2)}M`;
   if (n >= 1e3) return `$${(n / 1e3).toFixed(1)}K`;
-  return `$${n.toFixed(0)}`;
+  return `$${(n ?? 0).toFixed(0)}`;
 }
 
 function formatChange(c: number | undefined): string {
   if (c === undefined || c === null) return '—';
-  return `${c >= 0 ? '+' : ''}${c.toFixed(2)}%`;
+  return `${c >= 0 ? '+' : ''}${(c ?? 0).toFixed(2)}%`;
 }
 
 function formatAge(hours?: number): string {
@@ -387,7 +387,7 @@ const ExplorerPage = () => {
           {/* Stats bar */}
           <div className="flex items-center gap-4 px-3 py-2 border-b border-border bg-card text-xs">
             <span className="text-muted-foreground">24H VOLUME: <strong className="text-foreground">{formatCompact(totalVolume)}</strong></span>
-            <span className="text-muted-foreground hidden sm:inline">24H TXNS: <strong className="text-foreground">{totalTxns.toLocaleString()}</strong></span>
+            <span className="text-muted-foreground hidden sm:inline">24H TXNS: <strong className="text-foreground">{(totalTxns ?? 0).toLocaleString()}</strong></span>
             <span className="text-muted-foreground hidden md:inline">TOKENS: <strong className="text-foreground">{allTokens.length}</strong></span>
             <span className="text-muted-foreground hidden md:inline">CHAIN: <strong className="text-foreground">{chainData.icon} {chainData.name}</strong></span>
             <div className="ml-auto flex items-center gap-1.5">

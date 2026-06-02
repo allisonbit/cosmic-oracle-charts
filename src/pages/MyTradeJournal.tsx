@@ -42,7 +42,7 @@ const PIE_COLORS = ['hsl(var(--success))', 'hsl(var(--danger))', 'hsl(var(--warn
 function formatCompact(n: number): string {
   if (Math.abs(n) >= 1e6) return `$${(n / 1e6).toFixed(2)}M`;
   if (Math.abs(n) >= 1e3) return `$${(n / 1e3).toFixed(1)}K`;
-  return `$${n.toFixed(2)}`;
+  return `$${(n ?? 0).toFixed(2)}`;
 }
 
 export default function MyTradeJournal() {
@@ -94,7 +94,7 @@ export default function MyTradeJournal() {
     });
     if (error) toast.error("Failed to add trade");
     else {
-      toast.success(`Trade logged! Position: $${posSize.toFixed(2)}`);
+      toast.success(`Trade logged! Position: $${(posSize ?? 0).toFixed(2)}`);
       setShowForm(false);
       setSymbol(""); setName(""); setEntryPrice(""); setQuantity(""); setFees("0"); setNotes(""); setTags("");
       fetchTrades();
@@ -111,7 +111,7 @@ export default function MyTradeJournal() {
       exit_price: exit, pnl, pnl_percent: pnlPct, status: "closed", exited_at: new Date().toISOString(),
     }).eq("id", trade.id);
     if (error) toast.error("Failed to close trade");
-    else { toast.success(`Trade closed! P&L: $${pnl.toFixed(2)}`); fetchTrades(); }
+    else { toast.success(`Trade closed! P&L: $${(pnl ?? 0).toFixed(2)}`); fetchTrades(); }
   };
 
   const deleteTrade = async (id: string) => {
@@ -153,7 +153,7 @@ export default function MyTradeJournal() {
     let cumPnl = 0;
     return sorted.map((t, i) => {
       cumPnl += t.pnl || 0;
-      return { trade: i + 1, pnl: parseFloat(cumPnl.toFixed(2)), date: new Date(t.exited_at || t.entered_at).toLocaleDateString('en', { month: 'short', day: 'numeric' }) };
+      return { trade: i + 1, pnl: parseFloat((cumPnl ?? 0).toFixed(2)), date: new Date(t.exited_at || t.entered_at).toLocaleDateString('en', { month: 'short', day: 'numeric' }) };
     });
   }, [closedTrades]);
 
@@ -163,14 +163,14 @@ export default function MyTradeJournal() {
     acc[month] = (acc[month] || 0) + (t.pnl || 0);
     return acc;
   }, {} as Record<string, number>);
-  const monthData = Object.entries(pnlByMonth).map(([month, pnl]) => ({ month, pnl: parseFloat(pnl.toFixed(2)) }));
+  const monthData = Object.entries(pnlByMonth).map(([month, pnl]) => ({ month, pnl: parseFloat((pnl ?? 0).toFixed(2)) }));
 
   // By asset
   const byAsset = closedTrades.reduce((acc, t) => {
     acc[t.symbol] = (acc[t.symbol] || 0) + (t.pnl || 0);
     return acc;
   }, {} as Record<string, number>);
-  const assetData = Object.entries(byAsset).map(([name, pnl]) => ({ name, pnl: parseFloat(pnl.toFixed(2)) })).sort((a, b) => b.pnl - a.pnl);
+  const assetData = Object.entries(byAsset).map(([name, pnl]) => ({ name, pnl: parseFloat((pnl ?? 0).toFixed(2)) })).sort((a, b) => b.pnl - a.pnl);
 
   const pieData = [
     { name: 'Wins', value: wins },
@@ -206,11 +206,11 @@ export default function MyTradeJournal() {
             </CardContent></Card>
             <Card className="border-border"><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Win Rate</p>
-              <p className={cn("text-lg font-bold font-mono", winRate >= 50 ? "text-success" : "text-danger")}>{winRate.toFixed(1)}%</p>
+              <p className={cn("text-lg font-bold font-mono", winRate >= 50 ? "text-success" : "text-danger")}>{(winRate ?? 0).toFixed(1)}%</p>
             </CardContent></Card>
             <Card className="border-border"><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Profit Factor</p>
-              <p className={cn("text-lg font-bold font-mono", profitFactor >= 1 ? "text-success" : "text-danger")}>{profitFactor.toFixed(2)}</p>
+              <p className={cn("text-lg font-bold font-mono", profitFactor >= 1 ? "text-success" : "text-danger")}>{(profitFactor ?? 0).toFixed(2)}</p>
             </CardContent></Card>
             <Card className="border-border"><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Streak</p>
@@ -416,7 +416,7 @@ function TradeRow({ trade, onClose, onDelete }: { trade: Trade; onClose: (t: Tra
           <div className="flex items-center gap-4 text-xs">
             <div className="text-right hidden md:block">
               <p className="text-muted-foreground">Position</p>
-              <p className="font-mono font-medium">${positionSize.toFixed(2)}</p>
+              <p className="font-mono font-medium">${(positionSize ?? 0).toFixed(2)}</p>
             </div>
             <div className="text-right">
               <p className="text-muted-foreground">Entry</p>

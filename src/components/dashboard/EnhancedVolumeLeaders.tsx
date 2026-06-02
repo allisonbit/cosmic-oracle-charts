@@ -38,7 +38,7 @@ export function EnhancedVolumeLeaders() {
     if (vol >= 1e9) return `$${(vol / 1e9).toFixed(2)}B`;
     if (vol >= 1e6) return `$${(vol / 1e6).toFixed(1)}M`;
     if (vol >= 1e3) return `$${(vol / 1e3).toFixed(1)}K`;
-    return `$${vol.toLocaleString()}`;
+    return `$${(vol ?? 0).toLocaleString()}`;
   };
 
   const maxVolume = volumeLeaders[0]?.volume || 1;
@@ -83,7 +83,7 @@ export function EnhancedVolumeLeaders() {
                   coin.change24h >= 0 ? "text-success" : "text-danger"
                 )}>
                   {coin.change24h >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                  {coin.change24h.toFixed(1)}%
+                  {(coin.change24h ?? 0).toFixed(1)}%
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -98,7 +98,7 @@ export function EnhancedVolumeLeaders() {
               />
             </div>
             <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-              <span>Vol/MCap: {coin.volumeToMcap.toFixed(1)}%</span>
+              <span>Vol/MCap: {(coin.volumeToMcap ?? 0).toFixed(1)}%</span>
               <span className={cn(
                 coin.volumeToMcap > 10 ? "text-success" : coin.volumeToMcap > 5 ? "text-warning" : "text-muted-foreground"
               )}>

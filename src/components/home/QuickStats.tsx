@@ -31,7 +31,7 @@ export function QuickStats() {
     {
       label: "BTC Dominance",
       value: data?.global?.btcDominance
-        ? `${data.global.btcDominance.toFixed(1)}%`
+        ? `${(data.global.btcDominance ?? 0).toFixed(1)}%`
         : null,
       icon: BarChart3,
       link: "/price-prediction/bitcoin/daily",
@@ -87,7 +87,7 @@ export function QuickStats() {
                       <TrendingDown className="w-3 h-3" />
                     )}
                     {stat.change >= 0 ? "+" : ""}
-                    {stat.change.toFixed(1)}% <span className="text-muted-foreground ml-1">24h</span>
+                    {(stat.change ?? 0).toFixed(1)}% <span className="text-muted-foreground ml-1">24h</span>
                   </div>
                 )}
               </Link>

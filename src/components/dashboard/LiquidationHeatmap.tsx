@@ -13,9 +13,9 @@ export function LiquidationHeatmap() {
   };
 
   const formatPrice = (price: number): string => {
-    if (price >= 1000) return `$${price.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
-    if (price >= 1) return `$${price.toFixed(2)}`;
-    return `$${price.toPrecision(4)}`;
+    if (price >= 1000) return `$${(price ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+    if (price >= 1) return `$${(price ?? 0).toFixed(2)}`;
+    return `$${(price ?? 0).toPrecision(4)}`;
   };
 
   const getTypeLabel = (type: string) => {
@@ -79,7 +79,7 @@ export function LiquidationHeatmap() {
           />
         </div>
         <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
-          <span>{longPercentage.toFixed(1)}%</span>
+          <span>{(longPercentage ?? 0).toFixed(1)}%</span>
           <span>{(100 - longPercentage).toFixed(1)}%</span>
         </div>
       </div>
@@ -130,7 +130,7 @@ export function LiquidationHeatmap() {
                   <div>
                     <div className="font-medium text-sm">{level.asset}: {formatPrice(level.price)}</div>
                     <div className="text-[10px] sm:text-xs text-muted-foreground">
-                      {formatAmount(totalLiq)} in liquidations • {level.priceDistance.toFixed(1)}% away
+                      {formatAmount(totalLiq)} in liquidations • {(level.priceDistance ?? 0).toFixed(1)}% away
                     </div>
                   </div>
                 </div>

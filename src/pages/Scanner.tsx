@@ -28,11 +28,11 @@ const sortOptions = [
 
 function formatPrice(n: number | undefined): string {
   if (!n) return "$0.00";
-  if (n < 0.00001) return `$${n.toExponential(2)}`;
-  if (n < 0.01) return `$${n.toFixed(6)}`;
-  if (n < 1) return `$${n.toFixed(4)}`;
-  if (n < 1000) return `$${n.toFixed(2)}`;
-  return `$${n.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+  if (n < 0.00001) return `$${(n ?? 0).toExponential(2)}`;
+  if (n < 0.01) return `$${(n ?? 0).toFixed(6)}`;
+  if (n < 1) return `$${(n ?? 0).toFixed(4)}`;
+  if (n < 1000) return `$${(n ?? 0).toFixed(2)}`;
+  return `$${(n ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
 }
 
 function formatCompact(n: number | undefined): string {
@@ -41,7 +41,7 @@ function formatCompact(n: number | undefined): string {
   if (n >= 1e9) return `$${(n / 1e9).toFixed(2)}B`;
   if (n >= 1e6) return `$${(n / 1e6).toFixed(2)}M`;
   if (n >= 1e3) return `$${(n / 1e3).toFixed(1)}K`;
-  return `$${n.toFixed(2)}`;
+  return `$${(n ?? 0).toFixed(2)}`;
 }
 
 function calcTokenStrength(token: LiveToken, btcChange: number): number {
@@ -85,7 +85,7 @@ function BuyPressureBar({ buys, sells }: { buys?: number; sells?: number }) {
         <div className="h-full bg-success rounded-full" style={{ width: `${pct}%` }} />
       </div>
       <span className={cn("text-[10px] font-mono", pct > 55 ? "text-success" : pct < 45 ? "text-danger" : "text-muted-foreground")}>
-        {pct.toFixed(0)}%
+        {(pct ?? 0).toFixed(0)}%
       </span>
     </div>
   );
@@ -141,7 +141,7 @@ function ScannerTokenRow({ token, strength, onClick }: { token: LiveToken; stren
       {/* 1h Change - hidden on mobile */}
       <div className="text-right hidden md:block">
         <span className={cn("text-[11px] font-mono", is1hUp ? "text-success" : "text-danger")}>
-          {change1h !== 0 ? `${is1hUp ? '+' : ''}${change1h.toFixed(2)}%` : '—'}
+          {change1h !== 0 ? `${is1hUp ? '+' : ''}${(change1h ?? 0).toFixed(2)}%` : '—'}
         </span>
       </div>
 

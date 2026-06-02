@@ -92,7 +92,7 @@ export function HoldingsDistribution({ holdings, totalValue }: HoldingsDistribut
                     borderRadius: '8px',
                     padding: '8px'
                   }}
-                  formatter={(value: number, name: string) => [`$${value.toLocaleString()}`, name]}
+                  formatter={(value: number, name: string) => [`$${(value ?? 0).toLocaleString()}`, name]}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -143,7 +143,7 @@ export function HoldingsDistribution({ holdings, totalValue }: HoldingsDistribut
                     borderRadius: '8px',
                     padding: '8px'
                   }}
-                  formatter={(value: number, name: string) => [`$${value.toLocaleString()}`, name]}
+                  formatter={(value: number, name: string) => [`$${(value ?? 0).toLocaleString()}`, name]}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -156,7 +156,7 @@ export function HoldingsDistribution({ holdings, totalValue }: HoldingsDistribut
                   <span className="font-medium">{item.name}</span>
                 </div>
                 <span className="text-muted-foreground">
-                  ${item.value.toLocaleString()}
+                  ${(item.value ?? 0).toLocaleString()}
                 </span>
               </div>
             ))}

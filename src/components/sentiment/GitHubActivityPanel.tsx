@@ -17,7 +17,7 @@ export function GitHubActivityPanel({ topCoins, isLoading }: GitHubActivityPanel
     if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
     if (num >= 1e6) return `$${(num / 1e6).toFixed(1)}M`;
     if (num >= 1e3) return `$${(num / 1e3).toFixed(1)}K`;
-    return `$${num.toFixed(2)}`;
+    return `$${(num ?? 0).toFixed(2)}`;
   };
 
   if (isLoading) {
@@ -60,7 +60,7 @@ export function GitHubActivityPanel({ topCoins, isLoading }: GitHubActivityPanel
                   coin.change24h >= 0 ? "bg-success/20 text-success" : "bg-danger/20 text-danger"
                 )}>
                   {coin.change24h >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                  {coin.change24h >= 0 ? "+" : ""}{coin.change24h.toFixed(2)}%
+                  {coin.change24h >= 0 ? "+" : ""}{(coin.change24h ?? 0).toFixed(2)}%
                 </span>
               </div>
 

@@ -20,7 +20,7 @@ export function SmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: SmartMoneyF
     if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
     if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
     if (num >= 1e3) return `$${(num / 1e3).toFixed(0)}K`;
-    return `$${num.toFixed(0)}`;
+    return `$${(num ?? 0).toFixed(0)}`;
   };
 
   const inflowPercent = smartMoneyFlow
@@ -80,7 +80,7 @@ export function SmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: SmartMoneyF
                   <ArrowDownLeft className="h-3 w-3" /> Inflow
                 </p>
                 <p className="text-xl font-display text-foreground">{formatValue(smartMoneyFlow.inflow)}</p>
-                <p className="text-xs text-muted-foreground">{inflowPercent.toFixed(1)}% of total</p>
+                <p className="text-xs text-muted-foreground">{(inflowPercent ?? 0).toFixed(1)}% of total</p>
               </div>
               <div className="text-center">
                 <p className="text-sm text-muted-foreground">Net Flow</p>

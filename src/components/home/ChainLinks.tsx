@@ -116,7 +116,7 @@ function ChainPreviewWidget() {
           <p className="text-xs text-muted-foreground mt-1">Combined TVL</p>
         </div>
         <div>
-          <p className="text-2xl md:text-3xl font-display font-bold text-warning">{avgTps.toLocaleString()}</p>
+          <p className="text-2xl md:text-3xl font-display font-bold text-warning">{(avgTps ?? 0).toLocaleString()}</p>
           <p className="text-xs text-muted-foreground mt-1">Avg TPS</p>
         </div>
       </div>

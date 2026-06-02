@@ -12,7 +12,7 @@ function formatNumber(num: number | undefined | null): string {
   if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
   if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
   if (num >= 1e3) return `$${(num / 1e3).toFixed(2)}K`;
-  return `$${num.toFixed(0)}`;
+  return `$${(num ?? 0).toFixed(0)}`;
 }
 
 export function MarketStatsBar({ chain }: MarketStatsBarProps) {
@@ -41,7 +41,7 @@ export function MarketStatsBar({ chain }: MarketStatsBarProps) {
         <div className="flex items-center gap-2">
           <BarChart3 className="w-4 h-4 text-primary" />
           <span className="text-xs text-muted-foreground">Pairs:</span>
-          <span className="text-sm font-medium">{stats.totalPairs.toLocaleString()}</span>
+          <span className="text-sm font-medium">{(stats.totalPairs ?? 0).toLocaleString()}</span>
         </div>
 
         <div className="flex items-center gap-2">
@@ -49,7 +49,7 @@ export function MarketStatsBar({ chain }: MarketStatsBarProps) {
           <span className="text-xs text-muted-foreground">24h Vol:</span>
           <span className="text-sm font-medium">{formatNumber(stats.volume24h)}</span>
           <span className={cn("text-xs", stats.volumeChange >= 0 ? "text-success" : "text-danger")}>
-            {stats.volumeChange >= 0 ? "+" : ""}{stats.volumeChange.toFixed(1)}%
+            {stats.volumeChange >= 0 ? "+" : ""}{(stats.volumeChange ?? 0).toFixed(1)}%
           </span>
         </div>
 
@@ -62,7 +62,7 @@ export function MarketStatsBar({ chain }: MarketStatsBarProps) {
         <div className="flex items-center gap-2">
           <Users className="w-4 h-4 text-warning" />
           <span className="text-xs text-muted-foreground">Traders:</span>
-          <span className="text-sm font-medium">{stats.activeTraders.toLocaleString()}</span>
+          <span className="text-sm font-medium">{(stats.activeTraders ?? 0).toLocaleString()}</span>
         </div>
 
         <div className="flex items-center gap-2">

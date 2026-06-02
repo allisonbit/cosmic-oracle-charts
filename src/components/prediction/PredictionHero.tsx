@@ -72,7 +72,7 @@ export function PredictionHero({ coinName, coinId, symbol, timeframe, data }: Pr
               <div className="text-right">
                 <div className="text-xs text-muted-foreground mb-0.5">Current Price</div>
                 <div className="text-2xl md:text-3xl font-bold font-mono text-primary">
-                  ${data.currentPrice.toLocaleString()}
+                  ${(data.currentPrice ?? 0).toLocaleString()}
                 </div>
               </div>
             </div>

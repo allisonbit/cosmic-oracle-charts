@@ -28,7 +28,7 @@ export function CryptoFactoryWidget() {
 
   const getActivityDescription = (activity: typeof recentActivity[0]) => {
     const direction = activity.direction === 'inflow' ? 'into' : 'from';
-    return `${activity.amount.toLocaleString()} ${activity.asset} ${direction} ${activity.to}`;
+    return `${(activity.amount ?? 0).toLocaleString()} ${activity.asset} ${direction} ${activity.to}`;
   };
 
   return (

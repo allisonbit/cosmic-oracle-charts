@@ -58,7 +58,7 @@ export function DominanceChart() {
                 />
                 <span className="font-display font-bold text-sm sm:text-base">{item.name}</span>
               </div>
-              <span className="text-base sm:text-lg font-bold">{item.value.toFixed(1)}%</span>
+              <span className="text-base sm:text-lg font-bold">{(item.value ?? 0).toFixed(1)}%</span>
             </div>
           ))}
         </div>

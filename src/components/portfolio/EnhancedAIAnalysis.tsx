@@ -89,7 +89,7 @@ export function EnhancedAIAnalysis({ analysis }: EnhancedAIAnalysisProps) {
     ...analysis.holdings.filter(h => h.recommendation === 'take_profit').slice(0, 2).map(h => ({
       type: 'warning' as const,
       action: `Take profits on ${h.symbol}`,
-      reason: `Up ${h.change24h.toFixed(1)}% - consider partial exit`,
+      reason: `Up ${(h.change24h ?? 0).toFixed(1)}% - consider partial exit`,
       icon: Target
     })),
     ...analysis.holdings.filter(h => h.recommendation === 'accumulate').slice(0, 2).map(h => ({

@@ -191,7 +191,7 @@ export function MyAlerts() {
                       {alert.condition === "above" ? "rises above" : "drops below"}
                     </span>
                     <span className="font-mono font-semibold text-foreground">
-                      ${alert.target_price.toLocaleString()}
+                      ${(alert.target_price ?? 0).toLocaleString()}
                     </span>
                   </div>
                   {alert.note && (

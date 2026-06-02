@@ -51,7 +51,7 @@ function MetricItem({ metric }: { metric: typeof metrics[0] }) {
   const { count, ref } = useCountUp(metric.target, 2500);
   const displayValue = metric.format
     ? `${(count / 1000000).toFixed(1)}M`
-    : count.toLocaleString();
+    : (count ?? 0).toLocaleString();
 
   return (
     <div

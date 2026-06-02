@@ -63,7 +63,7 @@ export function EnhancedWhaleActivityRadar({ chain, whaleActivity: initialWhaleA
     if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
     if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
     if (num >= 1e3) return `$${(num / 1e3).toFixed(0)}K`;
-    return `$${num.toFixed(0)}`;
+    return `$${(num ?? 0).toFixed(0)}`;
   };
 
   const formatTime = (timestamp: number) => {
@@ -306,7 +306,7 @@ export function EnhancedWhaleActivityRadar({ chain, whaleActivity: initialWhaleA
                     {activity.type === "transfer" && <ArrowRight className="h-3.5 w-3.5 text-warning flex-shrink-0" />}
                     <div className="min-w-0">
                       <p className="text-xs sm:text-sm text-foreground truncate font-medium">
-                        {activity.amount.toLocaleString()} {activity.token}
+                        {(activity.amount ?? 0).toLocaleString()} {activity.token}
                       </p>
                       <div className="flex items-center gap-2">
                         <p className="text-[10px] sm:text-xs text-muted-foreground">{formatTime(activity.timestamp)}</p>

@@ -130,10 +130,10 @@ export function EnhancedPredictionCard({ crypto, showFullDetails = false }: Enha
   
   const formatPrice = (price: number) => {
     if (!price || price === 0) return '$0.00';
-    if (price >= 1000) return `$${price.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
-    if (price >= 1) return `$${price.toFixed(2)}`;
-    if (price >= 0.001) return `$${price.toFixed(4)}`;
-    return `$${price.toPrecision(4)}`;
+    if (price >= 1000) return `$${(price ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+    if (price >= 1) return `$${(price ?? 0).toFixed(2)}`;
+    if (price >= 0.001) return `$${(price ?? 0).toFixed(4)}`;
+    return `$${(price ?? 0).toPrecision(4)}`;
   };
 
   const indicators = calculateIndicators(crypto);
@@ -408,7 +408,7 @@ export function EnhancedPredictionCard({ crypto, showFullDetails = false }: Enha
               </div>
               <div className="p-2 rounded bg-primary/10">
                 <span className="text-primary">R:R Ratio:</span>
-                <div className="font-mono">1:{zones.riskRewardRatio.toFixed(1)}</div>
+                <div className="font-mono">1:{(zones.riskRewardRatio ?? 0).toFixed(1)}</div>
               </div>
             </div>
           </div>

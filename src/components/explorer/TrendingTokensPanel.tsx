@@ -18,10 +18,10 @@ interface TrendingTokensPanelProps {
 
 function formatPrice(price: number): string {
   if (price === 0) return 'N/A';
-  if (price < 0.0001) return `$${price.toFixed(8)}`;
-  if (price < 0.01) return `$${price.toFixed(6)}`;
-  if (price < 1) return `$${price.toFixed(4)}`;
-  return `$${price.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+  if (price < 0.0001) return `$${(price ?? 0).toFixed(8)}`;
+  if (price < 0.01) return `$${(price ?? 0).toFixed(6)}`;
+  if (price < 1) return `$${(price ?? 0).toFixed(4)}`;
+  return `$${(price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
 }
 
 function formatNumber(num: number | undefined | null): string {
@@ -29,7 +29,7 @@ function formatNumber(num: number | undefined | null): string {
   if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
   if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
   if (num >= 1e3) return `$${(num / 1e3).toFixed(2)}K`;
-  return `$${num.toFixed(0)}`;
+  return `$${(num ?? 0).toFixed(0)}`;
 }
 
 export function TrendingTokensPanel({ chain, onTokenSelect }: TrendingTokensPanelProps) {
@@ -99,7 +99,7 @@ export function TrendingTokensPanel({ chain, onTokenSelect }: TrendingTokensPane
             token.change24h >= 0 ? "text-success" : "text-danger"
           )}>
             {token.change24h >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-            {token.change24h >= 0 ? "+" : ""}{token.change24h.toFixed(2)}%
+            {token.change24h >= 0 ? "+" : ""}{(token.change24h ?? 0).toFixed(2)}%
           </div>
         </div>
         <ChevronRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -197,7 +197,7 @@ export function TrendingTokensPanel({ chain, onTokenSelect }: TrendingTokensPane
                   <div className="text-left">
                     <div className="font-medium text-sm">{token.symbol}</div>
                     <div className="text-xs text-warning flex items-center gap-1">
-                      <Flame className="w-3 h-3" /> Vol Spike: {token.volumeSpike.toFixed(0)}%
+                      <Flame className="w-3 h-3" /> Vol Spike: {(token.volumeSpike ?? 0).toFixed(0)}%
                     </div>
                   </div>
                 </div>
@@ -211,7 +211,7 @@ export function TrendingTokensPanel({ chain, onTokenSelect }: TrendingTokensPane
                     <div className={cn("text-xs flex items-center justify-end gap-0.5", 
                       token.change24h >= 0 ? "text-success" : "text-danger"
                     )}>
-                      {token.change24h >= 0 ? "+" : ""}{token.change24h.toFixed(2)}%
+                      {token.change24h >= 0 ? "+" : ""}{(token.change24h ?? 0).toFixed(2)}%
                   </div>
                 </div>
                   <ChevronRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />

@@ -62,7 +62,7 @@ export function ChainHealthMetrics({ chain, healthData, isLoading, onRefresh }: 
     if (n >= 1e9) return (n / 1e9).toFixed(decimals) + "B";
     if (n >= 1e6) return (n / 1e6).toFixed(decimals) + "M";
     if (n >= 1e3) return (n / 1e3).toFixed(decimals) + "K";
-    return n.toFixed(decimals);
+    return (n ?? 0).toFixed(decimals);
   };
 
   const getHealthColor = (value: number) => {
@@ -129,7 +129,7 @@ export function ChainHealthMetrics({ chain, healthData, isLoading, onRefresh }: 
               <div>
                 <p className="text-xs text-muted-foreground">Block Height</p>
                 <div className="flex items-center gap-2">
-                  <p className="text-lg font-display text-foreground">#{healthData.blockNumber.toLocaleString()}</p>
+                  <p className="text-lg font-display text-foreground">#{(healthData.blockNumber ?? 0).toLocaleString()}</p>
                   <button
                     onClick={() => copyToClipboard(healthData.blockNumber!.toString())}
                     className="p-1 rounded hover:bg-muted/30"
@@ -141,7 +141,7 @@ export function ChainHealthMetrics({ chain, healthData, isLoading, onRefresh }: 
               {healthData.gasPrice && (
                 <div className="pl-4 border-l border-border/50">
                   <p className="text-xs text-muted-foreground">Gas Price</p>
-                  <p className="text-lg font-display text-foreground">{healthData.gasPrice.toFixed(2)} Gwei</p>
+                  <p className="text-lg font-display text-foreground">{(healthData.gasPrice ?? 0).toFixed(2)} Gwei</p>
                 </div>
               )}
             </div>
@@ -165,7 +165,7 @@ export function ChainHealthMetrics({ chain, healthData, isLoading, onRefresh }: 
             <span className="text-[10px] sm:text-xs text-muted-foreground">Finality Rate</span>
           </div>
           <div className={`text-lg sm:text-2xl font-bold ${getHealthColor(healthData.finalityRate)}`}>
-            {healthData.finalityRate.toFixed(1)}%
+            {(healthData.finalityRate ?? 0).toFixed(1)}%
           </div>
           <Progress value={healthData.finalityRate} className="h-1 mt-1.5 sm:mt-2" />
         </div>
@@ -176,7 +176,7 @@ export function ChainHealthMetrics({ chain, healthData, isLoading, onRefresh }: 
             <span className="text-[10px] sm:text-xs text-muted-foreground">Block Time</span>
           </div>
           <div className="text-lg sm:text-2xl font-bold text-foreground">
-            {healthData.avgBlockTime.toFixed(1)}s
+            {(healthData.avgBlockTime ?? 0).toFixed(1)}s
           </div>
           <span className="text-[10px] sm:text-xs text-muted-foreground">
             {formatNumber(healthData.blockProduction)} blocks/day
@@ -189,7 +189,7 @@ export function ChainHealthMetrics({ chain, healthData, isLoading, onRefresh }: 
             <span className="text-[10px] sm:text-xs text-muted-foreground">Validator Health</span>
           </div>
           <div className={`text-lg sm:text-2xl font-bold ${getHealthColor(healthData.validatorHealth)}`}>
-            {healthData.validatorHealth.toFixed(1)}%
+            {(healthData.validatorHealth ?? 0).toFixed(1)}%
           </div>
           <span className="text-[10px] sm:text-xs text-muted-foreground">
             {formatNumber(healthData.activeValidators, 0)} active
@@ -229,7 +229,7 @@ export function ChainHealthMetrics({ chain, healthData, isLoading, onRefresh }: 
             <div className="grid grid-cols-3 gap-4 mb-4">
               <div className="text-center p-3 rounded-lg bg-muted/10">
                 <span className="text-xs text-muted-foreground block mb-1">Flashbots</span>
-                <span className="text-lg font-bold text-foreground">{healthData.mevMetrics.flashbotsBlocks.toFixed(0)}%</span>
+                <span className="text-lg font-bold text-foreground">{(healthData.mevMetrics.flashbotsBlocks ?? 0).toFixed(0)}%</span>
               </div>
               <div className="text-center p-3 rounded-lg bg-muted/10">
                 <span className="text-xs text-muted-foreground block mb-1">Sandwich</span>
@@ -356,7 +356,7 @@ export function ChainHealthMetrics({ chain, healthData, isLoading, onRefresh }: 
                   "text-xs font-medium",
                   healthData.eip1559.supplyChange < 0 ? "text-success" : "text-danger"
                 )}>
-                  {healthData.eip1559.supplyChange > 0 ? "+" : ""}{healthData.eip1559.supplyChange.toFixed(2)}%
+                  {healthData.eip1559.supplyChange > 0 ? "+" : ""}{(healthData.eip1559.supplyChange ?? 0).toFixed(2)}%
                 </span>
                 {stakingExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
               </div>
@@ -372,12 +372,12 @@ export function ChainHealthMetrics({ chain, healthData, isLoading, onRefresh }: 
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Supply Change</span>
                   <span className={`text-lg font-bold ${healthData.eip1559.supplyChange < 0 ? "text-success" : "text-danger"}`}>
-                    {healthData.eip1559.supplyChange > 0 ? "+" : ""}{healthData.eip1559.supplyChange.toFixed(2)}%
+                    {healthData.eip1559.supplyChange > 0 ? "+" : ""}{(healthData.eip1559.supplyChange ?? 0).toFixed(2)}%
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Base Fee</span>
-                  <span className="text-lg font-bold text-foreground">{healthData.eip1559.baseFee.toFixed(1)} Gwei</span>
+                  <span className="text-lg font-bold text-foreground">{(healthData.eip1559.baseFee ?? 0).toFixed(1)} Gwei</span>
                 </div>
               </div>
               <a
@@ -401,7 +401,7 @@ export function ChainHealthMetrics({ chain, healthData, isLoading, onRefresh }: 
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">Native Staking</span>
               <Badge variant="outline" className="text-success border-success/30">
-                {healthData.stakingMetrics.stakingAPR.toFixed(2)}%
+                {(healthData.stakingMetrics.stakingAPR ?? 0).toFixed(2)}%
               </Badge>
             </div>
             <div className="flex items-center justify-between">
@@ -409,7 +409,7 @@ export function ChainHealthMetrics({ chain, healthData, isLoading, onRefresh }: 
                 Lido (stETH) <ExternalLink className="h-3 w-3" />
               </a>
               <Badge variant="outline" className="text-primary border-primary/30">
-                {healthData.stakingMetrics.lidoYield.toFixed(2)}%
+                {(healthData.stakingMetrics.lidoYield ?? 0).toFixed(2)}%
               </Badge>
             </div>
             <div className="flex items-center justify-between">
@@ -417,7 +417,7 @@ export function ChainHealthMetrics({ chain, healthData, isLoading, onRefresh }: 
                 Rocket Pool <ExternalLink className="h-3 w-3" />
               </a>
               <Badge variant="outline" className="text-orange-400 border-orange-400/30">
-                {healthData.stakingMetrics.rocketPoolYield.toFixed(2)}%
+                {(healthData.stakingMetrics.rocketPoolYield ?? 0).toFixed(2)}%
               </Badge>
             </div>
             <div className="flex items-center justify-between">
@@ -425,7 +425,7 @@ export function ChainHealthMetrics({ chain, healthData, isLoading, onRefresh }: 
                 Coinbase (cbETH) <ExternalLink className="h-3 w-3" />
               </a>
               <Badge variant="outline" className="text-secondary border-secondary/30">
-                {healthData.stakingMetrics.cbETHYield.toFixed(2)}%
+                {(healthData.stakingMetrics.cbETHYield ?? 0).toFixed(2)}%
               </Badge>
             </div>
           </div>

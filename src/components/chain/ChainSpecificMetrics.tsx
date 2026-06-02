@@ -575,7 +575,7 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
                         </span>
                       </div>
                       <p className="text-xs text-muted-foreground mt-0.5">
-                        {zk.tps ? `${zk.tps.toLocaleString()} TPS` : zk.description}
+                        {zk.tps ? `${(zk.tps ?? 0).toLocaleString()} TPS` : zk.description}
                       </p>
                     </div>
                   ))}

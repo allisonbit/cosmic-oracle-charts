@@ -55,7 +55,7 @@ export function MultiDimensionalSentiment({
         </div>
         <div className="text-right">
           <div className={cn("text-4xl font-display font-bold", getScoreColor(compositeScore))}>
-            {compositeScore.toFixed(0)}
+            {(compositeScore ?? 0).toFixed(0)}
           </div>
           <div className={cn("text-sm font-medium", getScoreColor(compositeScore))}>
             {getScoreLabel(compositeScore)}
@@ -87,7 +87,7 @@ export function MultiDimensionalSentiment({
                 <span className="text-xs text-muted-foreground">({(dim.weight * 100).toFixed(0)}%)</span>
                 <span className="text-xs">{getTrendArrow(dim.trend)}</span>
               </div>
-              <span className={cn("font-bold text-lg", getScoreColor(dim.score))}>{dim.score.toFixed(0)}</span>
+              <span className={cn("font-bold text-lg", getScoreColor(dim.score))}>{(dim.score ?? 0).toFixed(0)}</span>
             </div>
             <div className="h-2 bg-muted rounded-full overflow-hidden mb-2">
               <div className={cn("h-full rounded-full transition-all",

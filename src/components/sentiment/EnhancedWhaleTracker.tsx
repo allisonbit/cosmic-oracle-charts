@@ -198,7 +198,7 @@ export function EnhancedWhaleTracker({ whaleAlerts }: EnhancedWhaleTrackerProps)
                     <div className="text-xs text-muted-foreground">{alert.time}</div>
                     {alert.change24h !== undefined && (
                       <div className={cn("text-xs", alert.change24h >= 0 ? "text-success" : "text-danger")}>
-                        {alert.change24h >= 0 ? "+" : ""}{alert.change24h.toFixed(2)}%
+                        {alert.change24h >= 0 ? "+" : ""}{(alert.change24h ?? 0).toFixed(2)}%
                       </div>
                     )}
                   </div>

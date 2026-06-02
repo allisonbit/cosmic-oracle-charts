@@ -21,7 +21,7 @@ export function PredictionSEO({ coinName, symbol, timeframe, currentPrice, bias,
   
   const biasEmoji = bias === 'bullish' ? '📈' : bias === 'bearish' ? '📉' : '➡️';
   const title = `${coinName} (${symbol.toUpperCase()}) Price Prediction ${timeframeText} ${biasEmoji} ${dateTag}`;
-  const description = `Will ${symbol.toUpperCase()} go up ${timeframeLower}? ${coinName} AI prediction with ${bias || 'neutral'} bias${confidence ? ` (${confidence}% confidence)` : ''}. ${currentPrice ? `Current price: $${currentPrice.toLocaleString()}.` : ''} Free technical analysis, targets & risk levels.`;
+  const description = `Will ${symbol.toUpperCase()} go up ${timeframeLower}? ${coinName} AI prediction with ${bias || 'neutral'} bias${confidence ? ` (${confidence}% confidence)` : ''}. ${currentPrice ? `Current price: $${(currentPrice ?? 0).toLocaleString()}.` : ''} Free technical analysis, targets & risk levels.`;
   
   const currentDate = new Date();
   const dateStr = currentDate.toISOString().split('T')[0];
@@ -37,7 +37,7 @@ export function PredictionSEO({ coinName, symbol, timeframe, currentPrice, bias,
         "name": `What will ${coinName} price be ${timeframeLower}?`,
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": `Based on our technical analysis and AI models, ${coinName} shows ${bias || 'mixed'} signals ${timeframeLower}. ${currentPrice ? `Current price: $${currentPrice.toLocaleString()}.` : ''} Check our detailed prediction above for support/resistance levels and price targets.`
+          "text": `Based on our technical analysis and AI models, ${coinName} shows ${bias || 'mixed'} signals ${timeframeLower}. ${currentPrice ? `Current price: $${(currentPrice ?? 0).toLocaleString()}.` : ''} Check our detailed prediction above for support/resistance levels and price targets.`
         }
       },
       {
@@ -190,7 +190,7 @@ export function PredictionSEO({ coinName, symbol, timeframe, currentPrice, bias,
       <meta name="twitter:site" content="@oracle_bulls" />
       
       {/* AI Search Optimization */}
-      <meta name="ai-summary" content={`${coinName} ${timeframe} price prediction with ${bias || 'neutral'} outlook. Technical analysis includes RSI, MACD, moving averages, support/resistance levels. Current price: ${currentPrice ? `$${currentPrice.toLocaleString()}` : 'Loading'}.`} />
+      <meta name="ai-summary" content={`${coinName} ${timeframe} price prediction with ${bias || 'neutral'} outlook. Technical analysis includes RSI, MACD, moving averages, support/resistance levels. Current price: ${currentPrice ? `$${(currentPrice ?? 0).toLocaleString()}` : 'Loading'}.`} />
       
       {/* Canonical */}
       <link rel="canonical" href={canonicalUrl} />

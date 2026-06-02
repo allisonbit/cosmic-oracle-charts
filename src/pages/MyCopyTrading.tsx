@@ -168,7 +168,7 @@ export default function MyCopyTrading() {
             </CardContent></Card>
             <Card className="border-border"><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Avg Win Rate</p>
-              <p className={cn("text-lg font-bold font-mono", avgWinRate >= 50 ? "text-success" : "text-danger")}>{avgWinRate.toFixed(1)}%</p>
+              <p className={cn("text-lg font-bold font-mono", avgWinRate >= 50 ? "text-success" : "text-danger")}>{(avgWinRate ?? 0).toFixed(1)}%</p>
             </CardContent></Card>
             <Card className="border-border"><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Total Calls</p>
@@ -238,13 +238,13 @@ export default function MyCopyTrading() {
                           <div className="text-center">
                             <p className="text-muted-foreground">Win Rate</p>
                             <p className={cn("text-lg font-bold font-mono", trader.win_rate >= 50 ? "text-success" : "text-danger")}>
-                              {trader.win_rate.toFixed(0)}%
+                              {(trader.win_rate ?? 0).toFixed(0)}%
                             </p>
                           </div>
                           <div className="text-center hidden md:block">
                             <p className="text-muted-foreground">Avg Return</p>
                             <p className={cn("font-bold font-mono", trader.avg_return >= 0 ? "text-success" : "text-danger")}>
-                              {trader.avg_return >= 0 ? '+' : ''}{trader.avg_return.toFixed(1)}%
+                              {trader.avg_return >= 0 ? '+' : ''}{(trader.avg_return ?? 0).toFixed(1)}%
                             </p>
                           </div>
                           <div className="text-center hidden md:block">
@@ -330,13 +330,13 @@ function PredictionCard({ pred }: { pred: PublicPrediction }) {
           <div className="flex items-center gap-3 text-xs">
             <div className="text-right">
               <p className="text-muted-foreground">Entry</p>
-              <p className="font-mono">${pred.entry_price.toLocaleString()}</p>
+              <p className="font-mono">${(pred.entry_price ?? 0).toLocaleString()}</p>
             </div>
             <div className="text-right">
               <p className="text-muted-foreground">Target</p>
-              <p className="font-mono font-medium">${pred.target_price.toLocaleString()}</p>
+              <p className="font-mono font-medium">${(pred.target_price ?? 0).toLocaleString()}</p>
               <p className={cn("text-[10px] font-mono", potentialReturn >= 0 ? "text-success" : "text-danger")}>
-                {potentialReturn >= 0 ? '+' : ''}{potentialReturn.toFixed(1)}%
+                {potentialReturn >= 0 ? '+' : ''}{(potentialReturn ?? 0).toFixed(1)}%
               </p>
             </div>
             {pred.is_resolved && (

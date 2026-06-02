@@ -39,14 +39,14 @@ export function ChainOverviewPanel({ chain, overview, isLoading }: ChainOverview
     if (num >= 1e9) return `$${(num / 1e9).toFixed(decimals)}B`;
     if (num >= 1e6) return `$${(num / 1e6).toFixed(decimals)}M`;
     if (num >= 1e3) return `$${(num / 1e3).toFixed(decimals)}K`;
-    return `$${num.toFixed(decimals)}`;
+    return `$${(num ?? 0).toFixed(decimals)}`;
   };
 
   const formatSimple = (num: number) => {
     if (num >= 1e9) return `${(num / 1e9).toFixed(2)}B`;
     if (num >= 1e6) return `${(num / 1e6).toFixed(2)}M`;
     if (num >= 1e3) return `${(num / 1e3).toFixed(2)}K`;
-    return num.toFixed(0);
+    return (num ?? 0).toFixed(0);
   };
 
   const copyAddress = () => {
@@ -79,14 +79,14 @@ export function ChainOverviewPanel({ chain, overview, isLoading }: ChainOverview
     },
     {
       label: "Gas Fees",
-      value: overview ? `${overview.gasFees.toFixed(2)} Gwei` : "--",
+      value: overview ? `${(overview.gasFees ?? 0).toFixed(2)} Gwei` : "--",
       icon: Zap,
       color: "primary",
       tooltip: "Current average gas price",
     },
     {
       label: "TPS",
-      value: overview ? overview.tps.toFixed(0) : "--",
+      value: overview ? (overview.tps ?? 0).toFixed(0) : "--",
       icon: TrendingUp,
       color: "success",
       tooltip: "Transactions per second",
@@ -166,7 +166,7 @@ export function ChainOverviewPanel({ chain, overview, isLoading }: ChainOverview
                 priceFlash === "down" && "text-danger scale-105",
                 !priceFlash && "text-foreground"
               )}>
-                ${realtimePrice.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                ${(realtimePrice.price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}
               </div>
             )}
             
@@ -176,7 +176,7 @@ export function ChainOverviewPanel({ chain, overview, isLoading }: ChainOverview
               displayChange >= 0 ? "bg-success/20 text-success" : "bg-danger/20 text-danger"
             )}>
               {displayChange >= 0 ? <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5" /> : <TrendingDown className="h-4 w-4 sm:h-5 sm:w-5" />}
-              <span className="font-medium text-sm sm:text-base">{displayChange >= 0 ? "+" : ""}{displayChange.toFixed(2)}%</span>
+              <span className="font-medium text-sm sm:text-base">{displayChange >= 0 ? "+" : ""}{(displayChange ?? 0).toFixed(2)}%</span>
             </div>
           </div>
           

@@ -38,9 +38,9 @@ export function SignalStrengthMeter({ signals }: SignalStrengthMeterProps) {
   };
 
   const formatPrice = (price: number) => {
-    if (price >= 1000) return `$${price.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
-    if (price >= 1) return `$${price.toFixed(2)}`;
-    return `$${price.toPrecision(4)}`;
+    if (price >= 1000) return `$${(price ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+    if (price >= 1) return `$${(price ?? 0).toFixed(2)}`;
+    return `$${(price ?? 0).toPrecision(4)}`;
   };
 
   return (
@@ -89,7 +89,7 @@ export function SignalStrengthMeter({ signals }: SignalStrengthMeterProps) {
                 <div className="text-right">
                   <div className="font-mono font-bold text-sm">{formatPrice(signal.price)}</div>
                   <div className={cn("text-xs", signal.change24h >= 0 ? 'text-green-400' : 'text-red-400')}>
-                    {signal.change24h >= 0 ? '+' : ''}{signal.change24h.toFixed(2)}%
+                    {signal.change24h >= 0 ? '+' : ''}{(signal.change24h ?? 0).toFixed(2)}%
                   </div>
                 </div>
               </div>

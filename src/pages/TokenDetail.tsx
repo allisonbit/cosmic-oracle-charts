@@ -24,11 +24,11 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, 
 // ─── Formatters ───
 function formatPrice(p: number): string {
   if (!p) return '$0.00';
-  if (p < 0.000001) return `$${p.toFixed(10)}`;
-  if (p < 0.0001) return `$${p.toFixed(8)}`;
-  if (p < 0.01) return `$${p.toFixed(6)}`;
-  if (p < 1) return `$${p.toFixed(4)}`;
-  return `$${p.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+  if (p < 0.000001) return `$${(p ?? 0).toFixed(10)}`;
+  if (p < 0.0001) return `$${(p ?? 0).toFixed(8)}`;
+  if (p < 0.01) return `$${(p ?? 0).toFixed(6)}`;
+  if (p < 1) return `$${(p ?? 0).toFixed(4)}`;
+  return `$${(p ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
 }
 
 function formatCompact(n: number | undefined): string {
@@ -37,7 +37,7 @@ function formatCompact(n: number | undefined): string {
   if (n >= 1e9) return `$${(n / 1e9).toFixed(2)}B`;
   if (n >= 1e6) return `$${(n / 1e6).toFixed(2)}M`;
   if (n >= 1e3) return `$${(n / 1e3).toFixed(1)}K`;
-  return `$${n.toFixed(2)}`;
+  return `$${(n ?? 0).toFixed(2)}`;
 }
 
 function formatNumber(n: number | undefined): string {
@@ -45,12 +45,12 @@ function formatNumber(n: number | undefined): string {
   if (n >= 1e9) return `${(n / 1e9).toFixed(2)}B`;
   if (n >= 1e6) return `${(n / 1e6).toFixed(2)}M`;
   if (n >= 1e3) return `${(n / 1e3).toFixed(1)}K`;
-  return n.toLocaleString();
+  return (n ?? 0).toLocaleString();
 }
 
 function formatChange(c: number | undefined): string {
   if (c === undefined || c === null) return '—';
-  return `${c >= 0 ? '+' : ''}${c.toFixed(2)}%`;
+  return `${c >= 0 ? '+' : ''}${(c ?? 0).toFixed(2)}%`;
 }
 
 // ─── Mini Stat Card ───
@@ -110,7 +110,7 @@ function HolderDistribution({ topHolders }: { topHolders: { label: string; pct: 
         <div key={i} className="space-y-1">
           <div className="flex justify-between text-xs">
             <span className="text-muted-foreground">{h.label}</span>
-            <span className="font-mono font-medium">{h.pct.toFixed(1)}%</span>
+            <span className="font-mono font-medium">{(h.pct ?? 0).toFixed(1)}%</span>
           </div>
           <div className="h-2 rounded-full bg-muted overflow-hidden">
             <div className="h-full rounded-full transition-all duration-700" style={{ width: `${h.pct}%`, backgroundColor: h.color }} />
@@ -439,7 +439,7 @@ export default function TokenDetail() {
                     </div>
                     <div className="flex justify-between text-xs">
                       <span className="text-muted-foreground">24h Volatility</span>
-                      <span className="font-mono font-medium">{derivedMetrics.volatility24h.toFixed(2)}%</span>
+                      <span className="font-mono font-medium">{(derivedMetrics.volatility24h ?? 0).toFixed(2)}%</span>
                     </div>
                     <div className="flex justify-between text-xs">
                       <span className="text-muted-foreground">Avg Tx Size</span>
@@ -500,7 +500,7 @@ export default function TokenDetail() {
               </div>
               <div className="p-3 rounded-lg bg-muted/50 border border-border">
                 <p className="text-[10px] text-muted-foreground uppercase">Buy Pressure</p>
-                <p className="text-lg font-bold font-mono">{derivedMetrics ? derivedMetrics.buyPressure.toFixed(1) + '%' : '—'}</p>
+                <p className="text-lg font-bold font-mono">{derivedMetrics ? (derivedMetrics.buyPressure ?? 0).toFixed(1) + '%' : '—'}</p>
                 <p className={cn("text-[10px]", derivedMetrics && derivedMetrics.buyPressure > 55 ? "text-success" : "text-muted-foreground")}>
                   {derivedMetrics && derivedMetrics.buyPressure > 55 ? '🟢 Bullish' : '⚪ Neutral'}
                 </p>
@@ -662,7 +662,7 @@ export default function TokenDetail() {
                         {Object.entries(forecast.technicals).slice(0, 12).map(([key, val]) => (
                           <div key={key} className="p-3 rounded-lg bg-muted/50">
                             <p className="text-[10px] text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1')}</p>
-                            <p className="text-sm font-bold font-mono">{typeof val === 'number' ? val.toFixed(2) : String(val)}</p>
+                            <p className="text-sm font-bold font-mono">{typeof val === 'number' ? (val ?? 0).toFixed(2) : String(val)}</p>
                           </div>
                         ))}
                       </div>

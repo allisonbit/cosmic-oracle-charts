@@ -30,7 +30,7 @@ export function EnhancedSmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: Enh
     if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
     if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
     if (num >= 1e3) return `$${(num / 1e3).toFixed(0)}K`;
-    return `$${num.toFixed(0)}`;
+    return `$${(num ?? 0).toFixed(0)}`;
   };
 
   const inflowPercent = smartMoneyFlow
@@ -106,7 +106,7 @@ export function EnhancedSmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: Enh
                     <span className="text-xs text-muted-foreground">Inflow</span>
                   </div>
                   <p className="text-xl font-display text-foreground">{formatValue(smartMoneyFlow.inflow)}</p>
-                  <p className="text-xs text-success">{inflowPercent.toFixed(1)}% of total</p>
+                  <p className="text-xs text-success">{(inflowPercent ?? 0).toFixed(1)}% of total</p>
                 </button>
 
                 <button

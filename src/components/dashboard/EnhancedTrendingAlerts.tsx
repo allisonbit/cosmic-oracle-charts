@@ -37,21 +37,21 @@ export function EnhancedTrendingAlerts({ compact }: EnhancedTrendingAlertsProps)
       const volumeToMcap = (coin.volume / coin.marketCap) * 100;
       
       if (coin.change24h > 15) {
-        alertList.push({ type: "pump", symbol: coin.symbol, name: coin.name, message: `Massive pump - up ${coin.change24h.toFixed(1)}% in 24h`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(Date.now() - Math.random() * 3600000), severity: "critical" });
+        alertList.push({ type: "pump", symbol: coin.symbol, name: coin.name, message: `Massive pump - up ${(coin.change24h ?? 0).toFixed(1)}% in 24h`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(Date.now() - Math.random() * 3600000), severity: "critical" });
       } else if (coin.change24h > 8) {
-        alertList.push({ type: "breakout", symbol: coin.symbol, name: coin.name, message: `Strong breakout with ${coin.change24h.toFixed(1)}% gains`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(Date.now() - Math.random() * 3600000), severity: "high" });
+        alertList.push({ type: "breakout", symbol: coin.symbol, name: coin.name, message: `Strong breakout with ${(coin.change24h ?? 0).toFixed(1)}% gains`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(Date.now() - Math.random() * 3600000), severity: "high" });
       } else if (coin.change24h > 5) {
-        alertList.push({ type: "breakout", symbol: coin.symbol, name: coin.name, message: `Breaking out with ${coin.change24h.toFixed(1)}% gains`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(Date.now() - Math.random() * 7200000), severity: "medium" });
+        alertList.push({ type: "breakout", symbol: coin.symbol, name: coin.name, message: `Breaking out with ${(coin.change24h ?? 0).toFixed(1)}% gains`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(Date.now() - Math.random() * 7200000), severity: "medium" });
       } else if (coin.change24h < -15) {
         alertList.push({ type: "dump", symbol: coin.symbol, name: coin.name, message: `Major crash - down ${Math.abs(coin.change24h).toFixed(1)}%`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(Date.now() - Math.random() * 1800000), severity: "critical" });
       } else if (coin.change24h < -8) {
         alertList.push({ type: "dump", symbol: coin.symbol, name: coin.name, message: `Sharp decline - down ${Math.abs(coin.change24h).toFixed(1)}%`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(Date.now() - Math.random() * 3600000), severity: "high" });
       } else if (coin.change24h < -5) {
-        alertList.push({ type: "warning", symbol: coin.symbol, name: coin.name, message: `Correction underway - ${coin.change24h.toFixed(1)}%`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(Date.now() - Math.random() * 7200000), severity: "medium" });
+        alertList.push({ type: "warning", symbol: coin.symbol, name: coin.name, message: `Correction underway - ${(coin.change24h ?? 0).toFixed(1)}%`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(Date.now() - Math.random() * 7200000), severity: "medium" });
       }
 
       if (volumeToMcap > 15) {
-        alertList.push({ type: "volume_spike", symbol: coin.symbol, name: coin.name, message: `Unusual volume - ${volumeToMcap.toFixed(1)}% of market cap traded`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(Date.now() - Math.random() * 1800000), severity: volumeToMcap > 25 ? "critical" : "high" });
+        alertList.push({ type: "volume_spike", symbol: coin.symbol, name: coin.name, message: `Unusual volume - ${(volumeToMcap ?? 0).toFixed(1)}% of market cap traded`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(Date.now() - Math.random() * 1800000), severity: volumeToMcap > 25 ? "critical" : "high" });
       }
     });
 
@@ -144,7 +144,7 @@ export function EnhancedTrendingAlerts({ compact }: EnhancedTrendingAlertsProps)
                   <div className="flex items-center gap-2">
                     <span className="font-display font-bold">{alert.symbol}</span>
                     <span className={cn("text-xs font-bold", alert.change >= 0 ? "text-success" : "text-danger")}>
-                      {alert.change >= 0 ? "+" : ""}{alert.change.toFixed(1)}%
+                      {alert.change >= 0 ? "+" : ""}{(alert.change ?? 0).toFixed(1)}%
                     </span>
                     <span className="text-[10px] text-muted-foreground ml-auto">{getTimeAgo(alert.timestamp)}</span>
                   </div>

@@ -55,7 +55,7 @@ export function PerformanceTracker() {
             <Target className="w-4 h-4 text-primary" />
           </div>
           <div className={cn("text-xl font-bold", getAccuracyColor(overallAccuracy))}>
-            {overallAccuracy.toFixed(1)}%
+            {(overallAccuracy ?? 0).toFixed(1)}%
           </div>
           <div className="text-[10px] text-muted-foreground">Overall Accuracy</div>
         </div>
@@ -100,7 +100,7 @@ export function PerformanceTracker() {
                   <div className="flex items-center justify-end gap-2">
                     <div className={cn("h-2 rounded-full", getAccuracyBg(data.accuracy))} style={{ width: `${data.accuracy}px` }} />
                     <span className={cn("font-bold", getAccuracyColor(data.accuracy))}>
-                      {data.accuracy.toFixed(1)}%
+                      {(data.accuracy ?? 0).toFixed(1)}%
                     </span>
                   </div>
                 </td>

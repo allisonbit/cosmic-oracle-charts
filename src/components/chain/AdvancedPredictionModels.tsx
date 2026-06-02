@@ -57,7 +57,7 @@ export function AdvancedPredictionModels({ chain, predictionData, isLoading }: A
     if (n >= 1e9) return (n / 1e9).toFixed(decimals) + "B";
     if (n >= 1e6) return (n / 1e6).toFixed(decimals) + "M";
     if (n >= 1e3) return (n / 1e3).toFixed(decimals) + "K";
-    return n.toFixed(decimals);
+    return (n ?? 0).toFixed(decimals);
   };
 
   const getPredictionIcon = (pred: string) => {
@@ -123,7 +123,7 @@ export function AdvancedPredictionModels({ chain, predictionData, isLoading }: A
               </div>
               <Progress value={model.data.confidence} className="h-1 mt-1" />
               <div className="mt-2 text-xs text-muted-foreground">
-                Target: <span className="text-foreground">${model.data.priceTarget.toLocaleString()}</span>
+                Target: <span className="text-foreground">${(model.data.priceTarget ?? 0).toLocaleString()}</span>
               </div>
             </div>
           ))}
@@ -193,7 +193,7 @@ export function AdvancedPredictionModels({ chain, predictionData, isLoading }: A
                 <div key={cluster.name} className="flex items-center gap-3">
                   <div className={`w-3 h-3 rounded-full ${cluster.color}`} />
                   <span className="text-sm text-muted-foreground flex-1">{cluster.name}</span>
-                  <span className="text-sm font-medium text-foreground">{cluster.value.toLocaleString()}</span>
+                  <span className="text-sm font-medium text-foreground">{(cluster.value ?? 0).toLocaleString()}</span>
                 </div>
               ))}
             </div>
@@ -294,13 +294,13 @@ export function AdvancedPredictionModels({ chain, predictionData, isLoading }: A
                   <div className="flex-1">
                     <div className="text-sm font-medium text-foreground">{nft.collection}</div>
                     <div className="text-xs text-muted-foreground">
-                      Current: {nft.currentFloor.toFixed(2)} ETH
+                      Current: {(nft.currentFloor ?? 0).toFixed(2)} ETH
                     </div>
                   </div>
                   <div className="text-right">
                     <div className={`text-sm font-bold flex items-center gap-1 ${nft.trend === "up" ? "text-green-400" : nft.trend === "down" ? "text-red-400" : "text-yellow-400"}`}>
                       {nft.trend === "up" ? <TrendingUp className="h-3 w-3" /> : nft.trend === "down" ? <TrendingDown className="h-3 w-3" /> : null}
-                      {nft.predictedFloor.toFixed(2)} ETH
+                      {(nft.predictedFloor ?? 0).toFixed(2)} ETH
                     </div>
                     <div className="text-xs text-muted-foreground">
                       {nft.confidence}% confidence

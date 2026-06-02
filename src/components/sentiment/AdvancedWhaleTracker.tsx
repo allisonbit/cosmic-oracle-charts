@@ -59,7 +59,7 @@ export function AdvancedWhaleTracker({ onRefresh }: AdvancedWhaleTrackerProps) {
     if (value >= 1e9) return `$${(value / 1e9).toFixed(2)}B`;
     if (value >= 1e6) return `$${(value / 1e6).toFixed(2)}M`;
     if (value >= 1e3) return `$${(value / 1e3).toFixed(0)}K`;
-    return `$${value.toLocaleString()}`;
+    return `$${(value ?? 0).toLocaleString()}`;
   };
 
   const getTimeAgo = (timestamp: number) => {
@@ -248,7 +248,7 @@ export function AdvancedWhaleTracker({ onRefresh }: AdvancedWhaleTrackerProps) {
                   <div className="text-right">
                     <div className="font-bold text-lg">{formatValue(tx.value)}</div>
                     <div className="text-xs text-muted-foreground">
-                      {tx.amount.toFixed(4)} {tx.asset}
+                      {(tx.amount ?? 0).toFixed(4)} {tx.asset}
                     </div>
                   </div>
                   <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />

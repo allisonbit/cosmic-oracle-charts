@@ -114,7 +114,7 @@ export function GlobalSearch() {
           type: 'token',
           title: token.name,
           symbol: token.symbol,
-          price: token.price ? `$${token.price.toLocaleString(undefined, { maximumFractionDigits: 6 })}` : undefined,
+          price: token.price ? `$${(token.price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 6 })}` : undefined,
           change24h: token.change24h,
           url: `/price-prediction/${token.coingeckoId || token.symbol.toLowerCase()}/daily`,
           icon: token.logo ? (
@@ -282,7 +282,7 @@ export function GlobalSearch() {
                           "text-xs",
                           result.change24h >= 0 ? "text-success" : "text-danger"
                         )}>
-                          {result.change24h >= 0 ? "+" : ""}{result.change24h.toFixed(2)}%
+                          {result.change24h >= 0 ? "+" : ""}{(result.change24h ?? 0).toFixed(2)}%
                         </div>
                       )}
                     </div>

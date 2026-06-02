@@ -185,7 +185,7 @@ export function HeroSection() {
             {/* Animated stats below image */}
             <div className="grid grid-cols-3 gap-4 mt-8 w-full max-w-sm">
               <div ref={tokensRef} className="text-center">
-                <div className="text-lg md:text-xl font-bold text-foreground tabular-nums">{tokensCount.toLocaleString()}+</div>
+                <div className="text-lg md:text-xl font-bold text-foreground tabular-nums">{(tokensCount ?? 0).toLocaleString()}+</div>
                 <div className="text-[10px] text-muted-foreground">Tokens</div>
               </div>
               <div ref={chainsRef} className="text-center">

@@ -117,7 +117,7 @@ export function StrengthComparisonGauge({ assets, chains }: StrengthComparisonGa
                     "text-sm",
                     asset.priceChange24h >= 0 ? "text-success" : "text-danger"
                   )}>
-                    {asset.priceChange24h >= 0 ? '+' : ''}{asset.priceChange24h.toFixed(2)}%
+                    {asset.priceChange24h >= 0 ? '+' : ''}{(asset.priceChange24h ?? 0).toFixed(2)}%
                   </span>
                 </div>
               </div>

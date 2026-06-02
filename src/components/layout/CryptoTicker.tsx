@@ -14,8 +14,8 @@ const TickerItem = memo(function TickerItem({ symbol, price, change24h }: Ticker
   const isPositive = change24h >= 0;
   
   const formattedPrice = price >= 1
-    ? price.toLocaleString(undefined, { maximumFractionDigits: 2 })
-    : price.toLocaleString(undefined, { maximumSignificantDigits: 4 });
+    ? (price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })
+    : (price ?? 0).toLocaleString(undefined, { maximumSignificantDigits: 4 });
   
   return (
     <div className="flex items-center gap-2 md:gap-3 whitespace-nowrap shrink-0 touch-manipulation">
@@ -37,7 +37,7 @@ const TickerItem = memo(function TickerItem({ symbol, price, change24h }: Ticker
           <TrendingDown className="w-3 h-3" />
         )}
         {isPositive ? "+" : ""}
-        {change24h.toFixed(2)}%
+        {(change24h ?? 0).toFixed(2)}%
       </span>
     </div>
   );

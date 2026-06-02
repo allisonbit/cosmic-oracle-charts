@@ -49,13 +49,13 @@ export function MyPortfolio() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="p-5 rounded-xl bg-card border border-border">
           <p className="text-sm text-muted-foreground">Total Value</p>
-          <p className="text-2xl font-bold text-foreground">${totalValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
+          <p className="text-2xl font-bold text-foreground">${(totalValue ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
         </div>
         <div className="p-5 rounded-xl bg-card border border-border">
           <p className="text-sm text-muted-foreground">24h Change</p>
           <p className={cn("text-2xl font-bold flex items-center gap-2", totalChange >= 0 ? "text-success" : "text-destructive")}>
             {totalChange >= 0 ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
-            {totalChange >= 0 ? "+" : ""}{totalChange.toFixed(2)}%
+            {totalChange >= 0 ? "+" : ""}{(totalChange ?? 0).toFixed(2)}%
           </p>
         </div>
         <div className="p-5 rounded-xl bg-card border border-border">
@@ -78,7 +78,7 @@ export function MyPortfolio() {
                   <Cell key={i} fill={COLORS[i % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip formatter={(v: number) => `$${v.toLocaleString()}`} />
+              <Tooltip formatter={(v: number) => `$${(v ?? 0).toLocaleString()}`} />
             </RechartsPie>
           </ResponsiveContainer>
           <div className="flex flex-wrap gap-3 mt-4">
@@ -105,9 +105,9 @@ export function MyPortfolio() {
                   <span className="text-xs text-muted-foreground ml-2">{h.name}</span>
                 </div>
                 <div className="text-right">
-                  <p className="font-mono text-sm text-foreground">${h.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
+                  <p className="font-mono text-sm text-foreground">${(h.price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
                   <p className={cn("text-xs", h.change >= 0 ? "text-success" : "text-destructive")}>
-                    {h.change >= 0 ? "+" : ""}{h.change.toFixed(2)}%
+                    {h.change >= 0 ? "+" : ""}{(h.change ?? 0).toFixed(2)}%
                   </p>
                 </div>
               </div>

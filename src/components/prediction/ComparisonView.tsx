@@ -52,9 +52,9 @@ export function ComparisonView({ tokens }: ComparisonViewProps) {
   }), [tokens]);
 
   const formatPrice = (price: number) => {
-    if (price >= 1000) return `$${price.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
-    if (price >= 1) return `$${price.toFixed(2)}`;
-    return `$${price.toPrecision(4)}`;
+    if (price >= 1000) return `$${(price ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+    if (price >= 1) return `$${(price ?? 0).toFixed(2)}`;
+    return `$${(price ?? 0).toPrecision(4)}`;
   };
 
   if (tokens.length === 0) return null;
@@ -197,7 +197,7 @@ export function ComparisonView({ tokens }: ComparisonViewProps) {
                       t.change24h >= 0 ? "text-success" : "text-danger"
                     )}>
                       {t.change24h >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                      {t.change24h >= 0 ? "+" : ""}{t.change24h.toFixed(2)}%
+                      {t.change24h >= 0 ? "+" : ""}{(t.change24h ?? 0).toFixed(2)}%
                     </span>
                   </td>
                 )}

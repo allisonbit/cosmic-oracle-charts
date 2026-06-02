@@ -38,9 +38,9 @@ export default function QuestionIntent() {
   const TimeIcon = timeframeIcon;
 
   const formatPrice = (price: number) => {
-    if (price >= 1000) return `$${price.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
-    if (price >= 1) return `$${price.toFixed(2)}`;
-    return `$${price.toPrecision(4)}`;
+    if (price >= 1000) return `$${(price ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+    if (price >= 1) return `$${(price ?? 0).toFixed(2)}`;
+    return `$${(price ?? 0).toPrecision(4)}`;
   };
 
   const currentDate = new Date().toLocaleDateString('en-US', { 

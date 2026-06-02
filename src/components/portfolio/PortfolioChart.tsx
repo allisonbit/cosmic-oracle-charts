@@ -66,7 +66,7 @@ export function PortfolioChart({ totalValue, holdings }: PortfolioChartProps) {
       points.push({
         time: formatTime(date),
         value: Math.max(0, value),
-        label: `$${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}`
+        label: `$${(value ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}`
       });
     }
 
@@ -84,12 +84,12 @@ export function PortfolioChart({ totalValue, holdings }: PortfolioChartProps) {
         <div>
           <h3 className="font-display font-bold text-lg mb-1">Portfolio Performance</h3>
           <div className="flex items-center gap-3">
-            <span className="text-2xl font-bold">${totalValue.toLocaleString()}</span>
+            <span className="text-2xl font-bold">${(totalValue ?? 0).toLocaleString()}</span>
             <span className={cn(
               "text-sm font-medium px-2 py-1 rounded",
               isPositive ? "text-success bg-success/20" : "text-danger bg-danger/20"
             )}>
-              {isPositive ? "+" : ""}{changePercent.toFixed(2)}%
+              {isPositive ? "+" : ""}{(changePercent ?? 0).toFixed(2)}%
             </span>
           </div>
         </div>
@@ -142,7 +142,7 @@ export function PortfolioChart({ totalValue, holdings }: PortfolioChartProps) {
                 padding: '8px 12px'
               }}
               labelStyle={{ color: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-              formatter={(value: number) => [`$${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}`, 'Value']}
+              formatter={(value: number) => [`$${(value ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}`, 'Value']}
             />
             <Area
               type="monotone"

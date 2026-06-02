@@ -8,7 +8,7 @@ function formatNumber(num: number | undefined | null): string {
   if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
   if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
   if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
-  return `$${num.toLocaleString()}`;
+  return `$${(num ?? 0).toLocaleString()}`;
 }
 
 export function MarketOverview() {
@@ -79,7 +79,7 @@ export function MarketOverview() {
                         </div>
                       </td>
                       <td className="py-3 md:py-4 px-1 md:px-2 text-right font-medium text-xs md:text-base">
-                        ${coin.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                        ${(coin.price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}
                       </td>
                       <td className={cn(
                         "py-3 md:py-4 px-1 md:px-2 text-right font-medium text-xs md:text-base",
@@ -91,7 +91,7 @@ export function MarketOverview() {
                           ) : (
                             <TrendingDown className="w-3 h-3 md:w-4 md:h-4" />
                           )}
-                          <span>{coin.change24h >= 0 ? "+" : ""}{coin.change24h.toFixed(2)}%</span>
+                          <span>{coin.change24h >= 0 ? "+" : ""}{(coin.change24h ?? 0).toFixed(2)}%</span>
                         </div>
                       </td>
                       <td className="py-3 md:py-4 px-1 md:px-2 text-right text-muted-foreground text-xs md:text-sm hidden sm:table-cell">
@@ -151,7 +151,7 @@ export function MarketOverview() {
                 <div>
                   <div className="text-muted-foreground text-[10px] md:text-sm">BTC Dominance</div>
                   <div className="text-base md:text-xl font-bold text-primary">
-                    {global ? `${global.btcDominance.toFixed(1)}%` : <span className="inline-block h-5 w-16 bg-muted animate-pulse rounded" />}
+                    {global ? `${(global.btcDominance ?? 0).toFixed(1)}%` : <span className="inline-block h-5 w-16 bg-muted animate-pulse rounded" />}
                   </div>
                 </div>
               </div>

@@ -159,9 +159,9 @@ export function PredictionLeaderboard() {
 
   const formatPrice = (price: number | null | undefined) => {
     if (price == null || typeof price !== 'number' || isNaN(price)) return '—';
-    if (price >= 1000) return `$${price.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
-    if (price >= 1) return `$${price.toFixed(2)}`;
-    return `$${price.toPrecision(4)}`;
+    if (price >= 1000) return `$${(price ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+    if (price >= 1) return `$${(price ?? 0).toFixed(2)}`;
+    return `$${(price ?? 0).toPrecision(4)}`;
   };
 
   return (
@@ -184,7 +184,7 @@ export function PredictionLeaderboard() {
       <div className="grid grid-cols-3 gap-3 mb-4">
         <div className="p-3 rounded-lg bg-muted/30 text-center">
           <Award className="w-4 h-4 text-primary mx-auto mb-1" />
-          <div className="text-xl font-bold text-primary">{stats.avgAccuracy.toFixed(1)}%</div>
+          <div className="text-xl font-bold text-primary">{(stats.avgAccuracy ?? 0).toFixed(1)}%</div>
           <div className="text-[10px] text-muted-foreground">Avg Accuracy</div>
         </div>
         <div className="p-3 rounded-lg bg-muted/30 text-center">
@@ -295,7 +295,7 @@ export function PredictionLeaderboard() {
                             entry.accuracy >= 80 ? "text-success" :
                             entry.accuracy >= 60 ? "text-warning" : "text-danger"
                           )}>
-                            {entry.accuracy.toFixed(1)}%
+                            {(entry.accuracy ?? 0).toFixed(1)}%
                           </span>
                         </div>
                       ) : (

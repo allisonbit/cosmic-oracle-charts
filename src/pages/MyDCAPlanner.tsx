@@ -37,7 +37,7 @@ interface DcaPlan {
 function formatCompact(n: number): string {
   if (Math.abs(n) >= 1e6) return `$${(n / 1e6).toFixed(2)}M`;
   if (Math.abs(n) >= 1e3) return `$${(n / 1e3).toFixed(1)}K`;
-  return `$${n.toFixed(2)}`;
+  return `$${(n ?? 0).toFixed(2)}`;
 }
 
 export default function MyDCAPlanner() {
@@ -121,7 +121,7 @@ export default function MyDCAPlanner() {
     }).eq("id", plan.id);
 
     if (entryError || planError) toast.error("Failed to record buy");
-    else { toast.success(`Bought ${unitsBought.toFixed(6)} ${plan.symbol} at $${currentPrice.toLocaleString()}`); fetchPlans(); }
+    else { toast.success(`Bought ${(unitsBought ?? 0).toFixed(6)} ${plan.symbol} at $${(currentPrice ?? 0).toLocaleString()}`); fetchPlans(); }
   };
 
   const togglePlan = async (plan: DcaPlan) => {
@@ -157,7 +157,7 @@ export default function MyDCAPlanner() {
     for (let i = 0; i <= 12; i++) {
       data.push({
         month: i === 0 ? 'Now' : `+${i}m`,
-        invested: parseFloat(projInvested.toFixed(0)),
+        invested: parseFloat((projInvested ?? 0).toFixed(0)),
         conservative: parseFloat((projValue * Math.pow(1.005, i)).toFixed(0)),
         moderate: parseFloat((projValue * Math.pow(1.015, i)).toFixed(0)),
         aggressive: parseFloat((projValue * Math.pow(1.03, i)).toFixed(0)),
@@ -202,7 +202,7 @@ export default function MyDCAPlanner() {
               <p className={cn("text-lg font-bold font-mono", totalPnL >= 0 ? "text-success" : "text-danger")}>
                 {totalPnL >= 0 ? '+' : ''}{formatCompact(totalPnL)}
               </p>
-              <p className={cn("text-xs font-mono", totalPnLPct >= 0 ? "text-success" : "text-danger")}>{totalPnLPct >= 0 ? '+' : ''}{totalPnLPct.toFixed(1)}%</p>
+              <p className={cn("text-xs font-mono", totalPnLPct >= 0 ? "text-success" : "text-danger")}>{totalPnLPct >= 0 ? '+' : ''}{(totalPnLPct ?? 0).toFixed(1)}%</p>
             </CardContent></Card>
             <Card className="border-border"><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Monthly Cost</p>
@@ -341,7 +341,7 @@ export default function MyDCAPlanner() {
                               {pnl >= 0 ? '+' : ''}{formatCompact(pnl)}
                             </p>
                             <p className={cn("text-[10px] font-mono", pnlPct >= 0 ? "text-success" : "text-danger")}>
-                              {pnlPct >= 0 ? '+' : ''}{pnlPct.toFixed(1)}%
+                              {pnlPct >= 0 ? '+' : ''}{(pnlPct ?? 0).toFixed(1)}%
                             </p>
                           </div>
                         </div>
@@ -366,17 +366,17 @@ export default function MyDCAPlanner() {
                           <div className="grid grid-cols-2 md:grid-cols-5 gap-3 text-xs">
                             <div className="bg-muted/30 rounded-lg p-2">
                               <p className="text-muted-foreground">Current Price</p>
-                              <p className="font-mono font-medium">${currentPrice.toLocaleString()}</p>
-                              <p className={cn("text-[10px] font-mono", change24h >= 0 ? "text-success" : "text-danger")}>{change24h >= 0 ? '+' : ''}{change24h.toFixed(2)}% 24h</p>
+                              <p className="font-mono font-medium">${(currentPrice ?? 0).toLocaleString()}</p>
+                              <p className={cn("text-[10px] font-mono", change24h >= 0 ? "text-success" : "text-danger")}>{change24h >= 0 ? '+' : ''}{(change24h ?? 0).toFixed(2)}% 24h</p>
                             </div>
                             <div className="bg-muted/30 rounded-lg p-2">
                               <p className="text-muted-foreground">Avg Buy Price</p>
-                              <p className="font-mono font-medium">${plan.avg_buy_price > 0 ? plan.avg_buy_price.toFixed(2) : '—'}</p>
-                              {plan.avg_buy_price > 0 && <p className={cn("text-[10px] font-mono", priceVsAvg >= 0 ? "text-success" : "text-danger")}>{priceVsAvg >= 0 ? '+' : ''}{priceVsAvg.toFixed(1)}% vs avg</p>}
+                              <p className="font-mono font-medium">${plan.avg_buy_price > 0 ? (plan.avg_buy_price ?? 0).toFixed(2) : '—'}</p>
+                              {plan.avg_buy_price > 0 && <p className={cn("text-[10px] font-mono", priceVsAvg >= 0 ? "text-success" : "text-danger")}>{priceVsAvg >= 0 ? '+' : ''}{(priceVsAvg ?? 0).toFixed(1)}% vs avg</p>}
                             </div>
                             <div className="bg-muted/30 rounded-lg p-2">
                               <p className="text-muted-foreground">Total Units</p>
-                              <p className="font-mono font-medium">{plan.total_units.toFixed(6)}</p>
+                              <p className="font-mono font-medium">{(plan.total_units ?? 0).toFixed(6)}</p>
                             </div>
                             <div className="bg-muted/30 rounded-lg p-2">
                               <p className="text-muted-foreground">Total Buys</p>

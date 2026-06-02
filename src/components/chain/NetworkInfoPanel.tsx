@@ -52,7 +52,7 @@ export function NetworkInfoPanel({ chain, overview, isLoading }: NetworkInfoPane
     if (num >= 1e9) return `${(num / 1e9).toFixed(2)}B`;
     if (num >= 1e6) return `${(num / 1e6).toFixed(2)}M`;
     if (num >= 1e3) return `${(num / 1e3).toFixed(2)}K`;
-    return num.toLocaleString();
+    return (num ?? 0).toLocaleString();
   };
 
   const networkMetrics: MetricDetail[] = [
@@ -84,14 +84,14 @@ export function NetworkInfoPanel({ chain, overview, isLoading }: NetworkInfoPane
     },
     { 
       label: "Gas Price", 
-      value: overview?.gasFees ? `${overview.gasFees.toFixed(2)} Gwei` : "N/A", 
+      value: overview?.gasFees ? `${(overview.gasFees ?? 0).toFixed(2)} Gwei` : "N/A", 
       description: "Current average cost per unit of computation on the network",
       icon: Fuel,
       color: "warning",
       details: [
-        { label: "Current Gas", value: overview?.gasFees ? `${overview.gasFees.toFixed(2)} Gwei` : "N/A" },
+        { label: "Current Gas", value: overview?.gasFees ? `${(overview.gasFees ?? 0).toFixed(2)} Gwei` : "N/A" },
         { label: "Slow", value: overview?.gasFees ? `${(overview.gasFees * 0.8).toFixed(2)} Gwei` : "N/A" },
-        { label: "Standard", value: overview?.gasFees ? `${overview.gasFees.toFixed(2)} Gwei` : "N/A" },
+        { label: "Standard", value: overview?.gasFees ? `${(overview.gasFees ?? 0).toFixed(2)} Gwei` : "N/A" },
         { label: "Fast", value: overview?.gasFees ? `${(overview.gasFees * 1.5).toFixed(2)} Gwei` : "N/A" },
       ]
     },
@@ -181,7 +181,7 @@ export function NetworkInfoPanel({ chain, overview, isLoading }: NetworkInfoPane
       label: "DeFi TVL", 
       value: `$${formatNumber(overview?.defiTvl)}`,
       icon: Lock,
-      change: overview?.priceChange24h ? `${overview.priceChange24h > 0 ? '+' : ''}${overview.priceChange24h.toFixed(1)}%` : "0%",
+      change: overview?.priceChange24h ? `${overview.priceChange24h > 0 ? '+' : ''}${(overview.priceChange24h ?? 0).toFixed(1)}%` : "0%",
       positive: (overview?.priceChange24h || 0) >= 0,
     },
     { 

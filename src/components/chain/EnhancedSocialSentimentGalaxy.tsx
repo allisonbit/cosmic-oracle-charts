@@ -166,7 +166,7 @@ export function EnhancedSocialSentimentGalaxy({ chain, socialSentiment, isLoadin
 
                           {/* Volume */}
                           <p className="text-xs text-muted-foreground mt-2">
-                            {"volume" in data ? `${data.volume.toLocaleString()} mentions` : `${(data as any).count} articles`}
+                            {"volume" in data ? `${(data.volume ?? 0).toLocaleString()} mentions` : `${(data as any).count} articles`}
                           </p>
                         </button>
 
@@ -178,15 +178,15 @@ export function EnhancedSocialSentimentGalaxy({ chain, socialSentiment, isLoadin
                           <div className="mt-3 pt-3 border-t border-border/30 space-y-2">
                             <div className="flex justify-between text-xs">
                               <span className="text-muted-foreground">Positive</span>
-                              <span className="text-success">{data.positive.toLocaleString()}</span>
+                              <span className="text-success">{(data.positive ?? 0).toLocaleString()}</span>
                             </div>
                             <div className="flex justify-between text-xs">
                               <span className="text-muted-foreground">Neutral</span>
-                              <span className="text-warning">{data.neutral.toLocaleString()}</span>
+                              <span className="text-warning">{(data.neutral ?? 0).toLocaleString()}</span>
                             </div>
                             <div className="flex justify-between text-xs">
                               <span className="text-muted-foreground">Negative</span>
-                              <span className="text-danger">{data.negative.toLocaleString()}</span>
+                              <span className="text-danger">{(data.negative ?? 0).toLocaleString()}</span>
                             </div>
                             {platform.link && (
                               <a
@@ -225,11 +225,11 @@ export function EnhancedSocialSentimentGalaxy({ chain, socialSentiment, isLoadin
                         "text-sm font-medium",
                         topic.sentiment >= 55 ? "text-success" : topic.sentiment >= 45 ? "text-warning" : "text-danger"
                       )}>
-                        {topic.sentiment.toFixed(0)}% positive
+                        {(topic.sentiment ?? 0).toFixed(0)}% positive
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">{topic.mentions.toLocaleString()} mentions</span>
+                      <span className="text-sm text-muted-foreground">{(topic.mentions ?? 0).toLocaleString()} mentions</span>
                       <Progress value={topic.sentiment} className="w-24 h-2" />
                     </div>
                   </button>
@@ -365,7 +365,7 @@ export function EnhancedSocialSentimentGalaxy({ chain, socialSentiment, isLoadin
                   className="p-3 rounded-lg bg-muted/10 hover:bg-muted/20 transition-all text-center"
                 >
                   <p className="text-xs text-muted-foreground mb-1">Total Mentions (24h)</p>
-                  <p className="text-lg font-display text-foreground">{totalMentions.toLocaleString()}</p>
+                  <p className="text-lg font-display text-foreground">{(totalMentions ?? 0).toLocaleString()}</p>
                 </button>
                 <div className="p-3 rounded-lg bg-muted/10 text-center">
                   <p className="text-xs text-muted-foreground mb-1">Sentiment Trend</p>

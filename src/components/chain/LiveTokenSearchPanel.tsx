@@ -40,22 +40,22 @@ export function LiveTokenSearchPanel({ chain }: LiveTokenSearchPanelProps) {
     if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
     if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
     if (num >= 1e3) return `$${(num / 1e3).toFixed(2)}K`;
-    return `$${num.toFixed(2)}`;
+    return `$${(num ?? 0).toFixed(2)}`;
   };
 
   const formatPrice = (price: number | undefined) => {
     if (!price) return "$0.00";
-    if (price >= 1000) return `$${price.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
-    if (price >= 1) return `$${price.toFixed(2)}`;
-    if (price >= 0.0001) return `$${price.toFixed(6)}`;
-    return `$${price.toExponential(2)}`;
+    if (price >= 1000) return `$${(price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+    if (price >= 1) return `$${(price ?? 0).toFixed(2)}`;
+    if (price >= 0.0001) return `$${(price ?? 0).toFixed(6)}`;
+    return `$${(price ?? 0).toExponential(2)}`;
   };
 
   const formatCompact = (num: number | undefined) => {
     if (!num) return "0";
     if (num >= 1e6) return `${(num / 1e6).toFixed(1)}M`;
     if (num >= 1e3) return `${(num / 1e3).toFixed(1)}K`;
-    return num.toLocaleString();
+    return (num ?? 0).toLocaleString();
   };
 
   const getDexScreenerUrl = (token: LiveToken) => {

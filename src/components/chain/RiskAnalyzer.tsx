@@ -35,20 +35,20 @@ function calculateRisk(token: DiscoveryToken): AnalyzedToken {
   const volatility = token.volatility || Math.abs(token.change24h) * 2;
   if (volatility > 50) {
     riskScore += 35;
-    reasons.push(`Extreme volatility: ${volatility.toFixed(1)}%`);
+    reasons.push(`Extreme volatility: ${(volatility ?? 0).toFixed(1)}%`);
   } else if (volatility > 25) {
     riskScore += 20;
-    reasons.push(`High volatility: ${volatility.toFixed(1)}%`);
+    reasons.push(`High volatility: ${(volatility ?? 0).toFixed(1)}%`);
   } else if (volatility > 10) {
     riskScore += 10;
   }
 
   if (Math.abs(token.change24h) > 30) {
     riskScore += 25;
-    reasons.push(`Major 24h move: ${token.change24h > 0 ? '+' : ''}${token.change24h.toFixed(1)}%`);
+    reasons.push(`Major 24h move: ${token.change24h > 0 ? '+' : ''}${(token.change24h ?? 0).toFixed(1)}%`);
   } else if (Math.abs(token.change24h) > 15) {
     riskScore += 15;
-    reasons.push(`Significant 24h change: ${token.change24h > 0 ? '+' : ''}${token.change24h.toFixed(1)}%`);
+    reasons.push(`Significant 24h change: ${token.change24h > 0 ? '+' : ''}${(token.change24h ?? 0).toFixed(1)}%`);
   }
 
   const liquidity = token.liquidityScore || (token.volume24h / (token.marketCap || 1)) * 100;
@@ -73,7 +73,7 @@ function calculateRisk(token: DiscoveryToken): AnalyzedToken {
 
   if (token.volumeSpike > 300) {
     riskScore += 20;
-    reasons.push(`Volume spike: ${token.volumeSpike.toFixed(0)}% above normal`);
+    reasons.push(`Volume spike: ${(token.volumeSpike ?? 0).toFixed(0)}% above normal`);
   }
 
   riskScore = Math.max(5, Math.min(100, riskScore));

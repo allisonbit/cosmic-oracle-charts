@@ -15,13 +15,13 @@ function formatNum(n: number | undefined): string {
   if (n >= 1e9) return `$${(n / 1e9).toFixed(2)}B`;
   if (n >= 1e6) return `$${(n / 1e6).toFixed(2)}M`;
   if (n >= 1e3) return `$${(n / 1e3).toFixed(2)}K`;
-  return `$${n.toFixed(2)}`;
+  return `$${(n ?? 0).toFixed(2)}`;
 }
 
 function formatPrice(n: number | undefined): string {
   if (!n) return "—";
-  if (n >= 1) return `$${n.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
-  return `$${n.toFixed(8)}`;
+  if (n >= 1) return `$${(n ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+  return `$${(n ?? 0).toFixed(8)}`;
 }
 
 export function MarketDataPanel({ data, coinName }: MarketDataPanelProps) {
@@ -86,7 +86,7 @@ export function MarketDataPanel({ data, coinName }: MarketDataPanelProps) {
               <span className="text-xs text-muted-foreground">7d Change</span>
             </div>
             <p className={cn("font-mono font-semibold", (md?.change7d ?? 0) >= 0 ? "text-green-500" : "text-red-500")}>
-              {md?.change7d != null ? `${md.change7d >= 0 ? '+' : ''}${md.change7d.toFixed(2)}%` : "—"}
+              {md?.change7d != null ? `${md.change7d >= 0 ? '+' : ''}${(md.change7d ?? 0).toFixed(2)}%` : "—"}
             </p>
           </div>
 
@@ -99,7 +99,7 @@ export function MarketDataPanel({ data, coinName }: MarketDataPanelProps) {
               <span className="text-xs text-muted-foreground">30d Change</span>
             </div>
             <p className={cn("font-mono font-semibold", (md?.change30d ?? 0) >= 0 ? "text-green-500" : "text-red-500")}>
-              {md?.change30d != null ? `${md.change30d >= 0 ? '+' : ''}${md.change30d.toFixed(2)}%` : "—"}
+              {md?.change30d != null ? `${md.change30d >= 0 ? '+' : ''}${(md.change30d ?? 0).toFixed(2)}%` : "—"}
             </p>
           </div>
 

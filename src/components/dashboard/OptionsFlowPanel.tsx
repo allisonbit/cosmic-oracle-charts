@@ -104,7 +104,7 @@ export function OptionsFlowPanel() {
             "text-lg sm:text-xl font-bold",
             putCallRatio > 1 ? "text-danger" : putCallRatio < 0.8 ? "text-success" : "text-warning"
           )}>
-            {putCallRatio.toFixed(2)}
+            {(putCallRatio ?? 0).toFixed(2)}
           </div>
         </div>
         <div className="text-center p-2 sm:p-3 bg-muted/30 rounded-lg">

@@ -28,14 +28,14 @@ export function TrendingAlerts({ compact }: TrendingAlertsProps) {
         alertList.push({
           type: "pump",
           symbol: coin.symbol,
-          message: `Major pump detected - up ${coin.change24h.toFixed(1)}% in 24h`,
+          message: `Major pump detected - up ${(coin.change24h ?? 0).toFixed(1)}% in 24h`,
           change: coin.change24h
         });
       } else if (coin.change24h > 5) {
         alertList.push({
           type: "breakout",
           symbol: coin.symbol,
-          message: `Breaking out with ${coin.change24h.toFixed(1)}% gains`,
+          message: `Breaking out with ${(coin.change24h ?? 0).toFixed(1)}% gains`,
           change: coin.change24h
         });
       } else if (coin.change24h < -10) {
@@ -49,7 +49,7 @@ export function TrendingAlerts({ compact }: TrendingAlertsProps) {
         alertList.push({
           type: "warning",
           symbol: coin.symbol,
-          message: `Correction underway - ${coin.change24h.toFixed(1)}%`,
+          message: `Correction underway - ${(coin.change24h ?? 0).toFixed(1)}%`,
           change: coin.change24h
         });
       }
@@ -97,7 +97,7 @@ export function TrendingAlerts({ compact }: TrendingAlertsProps) {
                     <div className="flex items-center gap-2">
                       <span className="font-display font-bold">{alert.symbol}</span>
                       <span className={cn("text-xs font-bold", alert.change >= 0 ? "text-success" : "text-danger")}>
-                        {alert.change >= 0 ? "+" : ""}{alert.change.toFixed(1)}%
+                        {alert.change >= 0 ? "+" : ""}{(alert.change ?? 0).toFixed(1)}%
                       </span>
                     </div>
                     <div className="text-xs text-muted-foreground truncate">{alert.message}</div>

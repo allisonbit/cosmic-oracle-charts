@@ -140,18 +140,18 @@ export function EnhancedPriceAnalysis({ chain, priceData }: EnhancedPriceAnalysi
       case "price":
         return {
           title: "Current Price",
-          value: `$${metrics.currentPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+          value: `$${(metrics.currentPrice ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
           change: metrics.change24h,
           description: `The current trading price of ${chain.name} across major exchanges. This is the weighted average of all active trading pairs.`,
           insights: [
             `${metrics.change24h >= 0 ? "Bullish" : "Bearish"} momentum detected in short-term timeframe`,
-            `Price ${metrics.currentPrice > metrics.support ? "holding above" : "testing"} key support at $${metrics.support.toLocaleString()}`,
-            `Next resistance zone at $${metrics.resistance.toLocaleString()}`,
+            `Price ${metrics.currentPrice > metrics.support ? "holding above" : "testing"} key support at $${(metrics.support ?? 0).toLocaleString()}`,
+            `Next resistance zone at $${(metrics.resistance ?? 0).toLocaleString()}`,
             `RSI indicates ${metrics.rsi > 70 ? "overbought" : metrics.rsi < 30 ? "oversold" : "neutral"} conditions`,
           ],
           relatedMetrics: [
-            { label: "24h High", value: `$${metrics.high24h.toLocaleString()}` },
-            { label: "24h Low", value: `$${metrics.low24h.toLocaleString()}` },
+            { label: "24h High", value: `$${(metrics.high24h ?? 0).toLocaleString()}` },
+            { label: "24h Low", value: `$${(metrics.low24h ?? 0).toLocaleString()}` },
             { label: "24h Range", value: `${((metrics.high24h - metrics.low24h) / metrics.low24h * 100).toFixed(2)}%` },
           ],
         };
@@ -180,9 +180,9 @@ export function EnhancedPriceAnalysis({ chain, priceData }: EnhancedPriceAnalysi
           description: "Total value of all circulating tokens at current price. Market cap indicates overall network value.",
           insights: [
             `Rank #${chain.id === "bitcoin" ? 1 : chain.id === "ethereum" ? 2 : Math.floor(Math.random() * 20 + 3)} by market cap`,
-            `Dominance: ${metrics.dominance.toFixed(2)}% of total crypto market`,
+            `Dominance: ${(metrics.dominance ?? 0).toFixed(2)}% of total crypto market`,
             `Fully diluted valuation: $${(metrics.marketCap * 1.15 / 1e12).toFixed(3)}T`,
-            `Market cap change 24h: ${metrics.change24h >= 0 ? "+" : ""}${metrics.change24h.toFixed(2)}%`,
+            `Market cap change 24h: ${metrics.change24h >= 0 ? "+" : ""}${(metrics.change24h ?? 0).toFixed(2)}%`,
           ],
           relatedMetrics: [
             { label: "Circulating Supply", value: chain.id === "bitcoin" ? "19.5M BTC" : "120M ETH" },
@@ -193,10 +193,10 @@ export function EnhancedPriceAnalysis({ chain, priceData }: EnhancedPriceAnalysi
       case "rsi":
         return {
           title: "Relative Strength Index (RSI)",
-          value: metrics.rsi.toFixed(1),
+          value: (metrics.rsi ?? 0).toFixed(1),
           description: "Momentum oscillator measuring speed and magnitude of price changes. RSI above 70 is overbought, below 30 is oversold.",
           insights: [
-            `Current RSI: ${metrics.rsi.toFixed(1)} - ${metrics.rsi > 70 ? "OVERBOUGHT" : metrics.rsi < 30 ? "OVERSOLD" : "NEUTRAL"}`,
+            `Current RSI: ${(metrics.rsi ?? 0).toFixed(1)} - ${metrics.rsi > 70 ? "OVERBOUGHT" : metrics.rsi < 30 ? "OVERSOLD" : "NEUTRAL"}`,
             metrics.rsi > 70 ? "Consider taking profits or waiting for pullback" : metrics.rsi < 30 ? "Potential buying opportunity emerging" : "No extreme conditions detected",
             `14-period RSI trend: ${metrics.change24h > 0 ? "Rising" : "Falling"}`,
             `Previous overbought: 3 days ago | Previous oversold: 12 days ago`,
@@ -210,11 +210,11 @@ export function EnhancedPriceAnalysis({ chain, priceData }: EnhancedPriceAnalysi
       case "support":
         return {
           title: "Support & Resistance",
-          value: `$${metrics.support.toLocaleString()} / $${metrics.resistance.toLocaleString()}`,
+          value: `$${(metrics.support ?? 0).toLocaleString()} / $${(metrics.resistance ?? 0).toLocaleString()}`,
           description: "Key price levels where buying (support) or selling (resistance) pressure is expected to be strong.",
           insights: [
-            `Strong support at $${metrics.support.toLocaleString()} - ${((metrics.currentPrice - metrics.support) / metrics.support * 100).toFixed(1)}% below current price`,
-            `Key resistance at $${metrics.resistance.toLocaleString()} - ${((metrics.resistance - metrics.currentPrice) / metrics.currentPrice * 100).toFixed(1)}% above current price`,
+            `Strong support at $${(metrics.support ?? 0).toLocaleString()} - ${((metrics.currentPrice - metrics.support) / metrics.support * 100).toFixed(1)}% below current price`,
+            `Key resistance at $${(metrics.resistance ?? 0).toLocaleString()} - ${((metrics.resistance - metrics.currentPrice) / metrics.currentPrice * 100).toFixed(1)}% above current price`,
             `Support tested ${Math.floor(Math.random() * 5 + 2)} times in past 30 days`,
             `Breakout probability: ${Math.floor(Math.random() * 30 + 35)}% (next 48h)`,
           ],
@@ -227,16 +227,16 @@ export function EnhancedPriceAnalysis({ chain, priceData }: EnhancedPriceAnalysi
       case "volatility":
         return {
           title: "Volatility Analysis",
-          value: `${metrics.volatility.toFixed(2)}%`,
+          value: `${(metrics.volatility ?? 0).toFixed(2)}%`,
           description: "Measures price fluctuation intensity. Higher volatility means greater price swings and risk/opportunity.",
           insights: [
-            `Current volatility: ${metrics.volatility.toFixed(2)}% - ${metrics.volatility > 5 ? "HIGH" : metrics.volatility > 2 ? "MODERATE" : "LOW"}`,
-            `Average True Range (ATR): $${metrics.avgTrueRange.toFixed(2)}`,
+            `Current volatility: ${(metrics.volatility ?? 0).toFixed(2)}% - ${metrics.volatility > 5 ? "HIGH" : metrics.volatility > 2 ? "MODERATE" : "LOW"}`,
+            `Average True Range (ATR): $${(metrics.avgTrueRange ?? 0).toFixed(2)}`,
             `Historical volatility (30d): ${(metrics.volatility * 0.85).toFixed(2)}%`,
             `Implied volatility (options): ${(metrics.volatility * 1.2).toFixed(2)}%`,
           ],
           relatedMetrics: [
-            { label: "ATR (14)", value: `$${metrics.avgTrueRange.toFixed(2)}` },
+            { label: "ATR (14)", value: `$${(metrics.avgTrueRange ?? 0).toFixed(2)}` },
             { label: "Bollinger Width", value: `${(metrics.volatility * 0.4).toFixed(2)}%` },
             { label: "VIX Correlation", value: "0.34" },
           ],
@@ -292,7 +292,7 @@ export function EnhancedPriceAnalysis({ chain, priceData }: EnhancedPriceAnalysi
               <ChevronRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
             </div>
             <div className="text-sm sm:text-lg font-display text-foreground glow-text">
-              ${metrics.currentPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              ${(metrics.currentPrice ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
             <div className={cn("text-[10px] sm:text-xs flex items-center gap-1", metrics.change24h >= 0 ? "text-success" : "text-danger")}>
               {metrics.change24h >= 0 ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
@@ -348,7 +348,7 @@ export function EnhancedPriceAnalysis({ chain, priceData }: EnhancedPriceAnalysi
               <ChevronRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
             </div>
             <div className="text-sm sm:text-lg font-display text-foreground">
-              {metrics.rsi.toFixed(1)}
+              {(metrics.rsi ?? 0).toFixed(1)}
             </div>
             <div className={cn(
               "text-[10px] sm:text-xs",
@@ -387,7 +387,7 @@ export function EnhancedPriceAnalysis({ chain, priceData }: EnhancedPriceAnalysi
               <ChevronRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
             </div>
             <div className="text-sm sm:text-lg font-display text-foreground">
-              {metrics.volatility.toFixed(2)}%
+              {(metrics.volatility ?? 0).toFixed(2)}%
             </div>
             <div className={cn(
               "text-[10px] sm:text-xs",
@@ -411,7 +411,7 @@ export function EnhancedPriceAnalysis({ chain, priceData }: EnhancedPriceAnalysi
                 </linearGradient>
               </defs>
               <XAxis dataKey="time" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} interval="preserveStartEnd" />
-              <YAxis yAxisId="price" orientation="right" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(v) => `$${v.toFixed(0)}`} />
+              <YAxis yAxisId="price" orientation="right" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(v) => `$${(v ?? 0).toFixed(0)}`} />
               <YAxis yAxisId="volume" orientation="left" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(v) => `${(v/1e6).toFixed(0)}M`} />
               <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px" }} />
               <Bar yAxisId="volume" dataKey="volume" fill={`url(#volume-gradient-${chain.id})`} radius={[2, 2, 0, 0]} />
@@ -431,7 +431,7 @@ export function EnhancedPriceAnalysis({ chain, priceData }: EnhancedPriceAnalysi
               </defs>
               
               <XAxis dataKey="time" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} interval="preserveStartEnd" />
-              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} domain={["dataMin * 0.97", "dataMax * 1.03"]} tickFormatter={(value) => `$${value.toFixed(0)}`} />
+              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} domain={["dataMin * 0.97", "dataMax * 1.03"]} tickFormatter={(value) => `$${(value ?? 0).toFixed(0)}`} />
               <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px" }} labelStyle={{ color: "hsl(var(--foreground))" }} />
 
               {/* Support/Resistance lines for volatility mode */}

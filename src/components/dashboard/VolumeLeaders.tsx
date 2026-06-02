@@ -16,7 +16,7 @@ export function VolumeLeaders() {
   const formatVolume = (vol: number) => {
     if (vol >= 1e9) return `$${(vol / 1e9).toFixed(1)}B`;
     if (vol >= 1e6) return `$${(vol / 1e6).toFixed(0)}M`;
-    return `$${vol.toLocaleString()}`;
+    return `$${(vol ?? 0).toLocaleString()}`;
   };
 
   const maxVolume = volumeLeaders[0]?.volume || 1;
@@ -40,7 +40,7 @@ export function VolumeLeaders() {
                   coin.change24h >= 0 ? "text-success" : "text-danger"
                 )}>
                   {coin.change24h >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                  {coin.change24h.toFixed(1)}%
+                  {(coin.change24h ?? 0).toFixed(1)}%
                 </span>
               </div>
               <span className="text-xs sm:text-sm text-muted-foreground">{formatVolume(coin.volume)}</span>

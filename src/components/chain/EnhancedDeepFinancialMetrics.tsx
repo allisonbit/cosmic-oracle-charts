@@ -71,11 +71,11 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
     if (Math.abs(n) >= 1e9) return (n / 1e9).toFixed(decimals) + "B";
     if (Math.abs(n) >= 1e6) return (n / 1e6).toFixed(decimals) + "M";
     if (Math.abs(n) >= 1e3) return (n / 1e3).toFixed(decimals) + "K";
-    return n.toFixed(decimals);
+    return (n ?? 0).toFixed(decimals);
   };
 
   const formatPercent = (n: number, decimals = 2) => {
-    return (n >= 0 ? "+" : "") + n.toFixed(decimals) + "%";
+    return (n >= 0 ? "+" : "") + (n ?? 0).toFixed(decimals) + "%";
   };
 
   if (isLoading || !financialData) {
@@ -107,8 +107,8 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
       id: "realized-price",
       icon: <DollarSign className="h-5 w-5" />,
       title: "Realized Price",
-      value: `$${financialData.realizedPrice.toLocaleString()}`,
-      subtitle: `Current: $${financialData.currentPrice.toLocaleString()}`,
+      value: `$${(financialData.realizedPrice ?? 0).toLocaleString()}`,
+      subtitle: `Current: $${(financialData.currentPrice ?? 0).toLocaleString()}`,
       color: "text-green-400",
       bgColor: "bg-green-500/20",
       trend: priceVsRealized > 0 ? "up" as const : "down" as const,
@@ -117,11 +117,11 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
         title: "Realized Price Analysis",
         icon: <DollarSign className="h-6 w-6 text-green-400" />,
         color: "green",
-        value: `$${financialData.realizedPrice.toLocaleString()}`,
+        value: `$${(financialData.realizedPrice ?? 0).toLocaleString()}`,
         description: "The average price at which all coins were last moved on-chain. Represents the aggregate cost basis of all holders.",
         details: [
-          { label: "Realized Price", value: `$${financialData.realizedPrice.toLocaleString()}`, info: "Average acquisition cost" },
-          { label: "Current Price", value: `$${financialData.currentPrice.toLocaleString()}`, trend: priceVsRealized > 0 ? "up" : "down" },
+          { label: "Realized Price", value: `$${(financialData.realizedPrice ?? 0).toLocaleString()}`, info: "Average acquisition cost" },
+          { label: "Current Price", value: `$${(financialData.currentPrice ?? 0).toLocaleString()}`, trend: priceVsRealized > 0 ? "up" : "down" },
           { label: "Premium/Discount", value: formatPercent(priceVsRealized), trend: priceVsRealized > 0 ? "up" : "down" },
           { label: "Realized Cap", value: `$${formatNumber(financialData.realizedPrice * 19500000)}`, info: "Total realized value" },
           { label: "Market/Realized Ratio", value: (financialData.currentPrice / financialData.realizedPrice).toFixed(3), trend: priceVsRealized > 0 ? "up" : "down" },
@@ -147,7 +147,7 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
       id: "mvrv",
       icon: <TrendingUp className="h-5 w-5" />,
       title: "MVRV Ratio",
-      value: financialData.mvrvRatio.toFixed(3),
+      value: (financialData.mvrvRatio ?? 0).toFixed(3),
       subtitle: mvrvStatus.charAt(0).toUpperCase() + mvrvStatus.slice(1),
       color: mvrvStatus === "overvalued" ? "text-red-400" : mvrvStatus === "undervalued" ? "text-green-400" : "text-yellow-400",
       bgColor: mvrvStatus === "overvalued" ? "bg-red-500/20" : mvrvStatus === "undervalued" ? "bg-green-500/20" : "bg-yellow-500/20",
@@ -157,10 +157,10 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
         title: "MVRV Ratio Deep Dive",
         icon: <TrendingUp className="h-6 w-6 text-primary" />,
         color: "primary",
-        value: financialData.mvrvRatio.toFixed(3),
+        value: (financialData.mvrvRatio ?? 0).toFixed(3),
         description: "Market Value to Realized Value ratio measures aggregate profit/loss of all holders. Key indicator for market cycle positioning.",
         details: [
-          { label: "Current MVRV", value: financialData.mvrvRatio.toFixed(3), trend: mvrvStatus === "overvalued" ? "up" : mvrvStatus === "undervalued" ? "down" : "neutral" },
+          { label: "Current MVRV", value: (financialData.mvrvRatio ?? 0).toFixed(3), trend: mvrvStatus === "overvalued" ? "up" : mvrvStatus === "undervalued" ? "down" : "neutral" },
           { label: "Market Valuation", value: mvrvStatus.toUpperCase(), info: "Relative to historical norms" },
           { label: "Z-Score", value: ((financialData.mvrvRatio - 1.5) / 0.8).toFixed(2), info: "Standard deviations from mean" },
           { label: "Historical Peak", value: "3.7", info: "Cycle top indicator" },
@@ -189,7 +189,7 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
       id: "sopr",
       icon: <Activity className="h-5 w-5" />,
       title: "SOPR",
-      value: financialData.soprValue.toFixed(4),
+      value: (financialData.soprValue ?? 0).toFixed(4),
       subtitle: soprStatus === "profit" ? "Profit Taking" : soprStatus === "loss" ? "Loss Realization" : "Break-even",
       color: soprStatus === "profit" ? "text-green-400" : soprStatus === "loss" ? "text-red-400" : "text-yellow-400",
       bgColor: soprStatus === "profit" ? "bg-green-500/20" : soprStatus === "loss" ? "bg-red-500/20" : "bg-yellow-500/20",
@@ -199,10 +199,10 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
         title: "SOPR Analysis",
         icon: <Activity className="h-6 w-6 text-orange-400" />,
         color: "orange",
-        value: financialData.soprValue.toFixed(4),
+        value: (financialData.soprValue ?? 0).toFixed(4),
         description: "Spent Output Profit Ratio measures profit/loss of coins moved on-chain. Values above 1 indicate profit-taking, below 1 indicates selling at a loss.",
         details: [
-          { label: "Current SOPR", value: financialData.soprValue.toFixed(4), trend: soprStatus === "profit" ? "up" : soprStatus === "loss" ? "down" : "neutral" },
+          { label: "Current SOPR", value: (financialData.soprValue ?? 0).toFixed(4), trend: soprStatus === "profit" ? "up" : soprStatus === "loss" ? "down" : "neutral" },
           { label: "Market Phase", value: soprStatus.toUpperCase(), info: "Current selling behavior" },
           { label: "aSOPR (Adjusted)", value: (financialData.soprValue * 1.02).toFixed(4), info: "Excludes short-term holders" },
           { label: "STH-SOPR", value: (financialData.soprValue * 0.98).toFixed(4), info: "Short-term holder SOPR" },
@@ -229,7 +229,7 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
       id: "nvt",
       icon: <BarChart3 className="h-5 w-5" />,
       title: "NVT Ratio",
-      value: financialData.nvtRatio.toFixed(2),
+      value: (financialData.nvtRatio ?? 0).toFixed(2),
       subtitle: nvtStatus.charAt(0).toUpperCase() + nvtStatus.slice(1),
       color: nvtStatus === "undervalued" ? "text-green-400" : nvtStatus === "overvalued" ? "text-red-400" : "text-yellow-400",
       bgColor: nvtStatus === "undervalued" ? "bg-green-500/20" : nvtStatus === "overvalued" ? "bg-red-500/20" : "bg-yellow-500/20",
@@ -239,10 +239,10 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
         title: "NVT Ratio Analysis",
         icon: <BarChart3 className="h-6 w-6 text-purple-400" />,
         color: "purple",
-        value: financialData.nvtRatio.toFixed(2),
+        value: (financialData.nvtRatio ?? 0).toFixed(2),
         description: "Network Value to Transactions ratio - the 'P/E ratio' of crypto. Compares market cap to on-chain transaction volume.",
         details: [
-          { label: "Current NVT", value: financialData.nvtRatio.toFixed(2), trend: nvtStatus === "overvalued" ? "up" : nvtStatus === "undervalued" ? "down" : "neutral" },
+          { label: "Current NVT", value: (financialData.nvtRatio ?? 0).toFixed(2), trend: nvtStatus === "overvalued" ? "up" : nvtStatus === "undervalued" ? "down" : "neutral" },
           { label: "Valuation", value: nvtStatus.toUpperCase(), info: "Relative to network usage" },
           { label: "NVT Signal", value: (financialData.nvtRatio * 0.9).toFixed(2), info: "90D MA smoothed" },
           { label: "Network Value", value: `$${formatNumber(financialData.currentPrice * 19500000)}` },
@@ -314,7 +314,7 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
       id: "stablecoin-flows",
       icon: <Wallet className="h-5 w-5" />,
       title: "Stablecoin Dominance",
-      value: `${financialData.stablecoinMetrics.dominance.toFixed(1)}%`,
+      value: `${(financialData.stablecoinMetrics.dominance ?? 0).toFixed(1)}%`,
       subtitle: `24h Flow: ${formatNumber(financialData.stablecoinMetrics.netFlow24h)}`,
       color: financialData.stablecoinMetrics.dominance > 10 ? "text-yellow-400" : "text-green-400",
       bgColor: financialData.stablecoinMetrics.dominance > 10 ? "bg-yellow-500/20" : "bg-green-500/20",
@@ -324,10 +324,10 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
         title: "Stablecoin Analysis",
         icon: <Wallet className="h-6 w-6 text-green-400" />,
         color: "green",
-        value: `${financialData.stablecoinMetrics.dominance.toFixed(1)}%`,
+        value: `${(financialData.stablecoinMetrics.dominance ?? 0).toFixed(1)}%`,
         description: "Stablecoin dominance and flows indicate market positioning. High dominance suggests sideline capital waiting to deploy.",
         details: [
-          { label: "Stablecoin Dominance", value: `${financialData.stablecoinMetrics.dominance.toFixed(2)}%`, info: "Share of total market cap" },
+          { label: "Stablecoin Dominance", value: `${(financialData.stablecoinMetrics.dominance ?? 0).toFixed(2)}%`, info: "Share of total market cap" },
           { label: "USDT Market Cap", value: `$${formatNumber(financialData.stablecoinMetrics.usdt)}`, trend: "up" },
           { label: "USDC Market Cap", value: `$${formatNumber(financialData.stablecoinMetrics.usdc)}` },
           { label: "DAI Market Cap", value: `$${formatNumber(financialData.stablecoinMetrics.dai)}` },
@@ -440,7 +440,7 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
       icon: <Scale className="h-5 w-5" />,
       title: "Long/Short Ratio",
       value: longShortRatio,
-      subtitle: `Longs: ${financialData.futuresData.longRatio.toFixed(1)}%`,
+      subtitle: `Longs: ${(financialData.futuresData.longRatio ?? 0).toFixed(1)}%`,
       color: financialData.futuresData.longRatio > 55 ? "text-green-400" : financialData.futuresData.longRatio < 45 ? "text-red-400" : "text-yellow-400",
       bgColor: financialData.futuresData.longRatio > 55 ? "bg-green-500/20" : financialData.futuresData.longRatio < 45 ? "bg-red-500/20" : "bg-yellow-500/20",
       trend: financialData.futuresData.longRatio > 50 ? "up" as const : "down" as const,
@@ -449,11 +449,11 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
         title: "Long/Short Analysis",
         icon: <Scale className="h-6 w-6 text-yellow-400" />,
         color: "yellow",
-        value: `${financialData.futuresData.longRatio.toFixed(1)}% / ${shortRatio.toFixed(1)}%`,
+        value: `${(financialData.futuresData.longRatio ?? 0).toFixed(1)}% / ${(shortRatio ?? 0).toFixed(1)}%`,
         description: "Ratio of traders positioned long vs short. Extreme readings often signal contrarian opportunities.",
         details: [
-          { label: "Long Ratio", value: `${financialData.futuresData.longRatio.toFixed(1)}%`, trend: financialData.futuresData.longRatio > 50 ? "up" : "down" },
-          { label: "Short Ratio", value: `${shortRatio.toFixed(1)}%`, trend: shortRatio > 50 ? "up" : "down" },
+          { label: "Long Ratio", value: `${(financialData.futuresData.longRatio ?? 0).toFixed(1)}%`, trend: financialData.futuresData.longRatio > 50 ? "up" : "down" },
+          { label: "Short Ratio", value: `${(shortRatio ?? 0).toFixed(1)}%`, trend: shortRatio > 50 ? "up" : "down" },
           { label: "L/S Ratio", value: longShortRatio },
           { label: "Top Traders Long", value: `${(financialData.futuresData.longRatio + 5).toFixed(1)}%`, info: "Whale positioning" },
           { label: "Top Traders Short", value: `${(shortRatio - 5).toFixed(1)}%` },
@@ -525,7 +525,7 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
       icon: <PieChart className="h-5 w-5" />,
       title: "Options Volume",
       value: `$${formatNumber(financialData.optionsData.callVolume + financialData.optionsData.putVolume)}`,
-      subtitle: `P/C: ${financialData.optionsData.putCallRatio.toFixed(2)}`,
+      subtitle: `P/C: ${(financialData.optionsData.putCallRatio ?? 0).toFixed(2)}`,
       color: financialData.optionsData.putCallRatio < 1 ? "text-green-400" : "text-red-400",
       bgColor: financialData.optionsData.putCallRatio < 1 ? "bg-green-500/20" : "bg-red-500/20",
       trend: financialData.optionsData.putCallRatio < 1 ? "up" as const : "down" as const,
@@ -540,7 +540,7 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
           { label: "Total Volume", value: `$${formatNumber(financialData.optionsData.callVolume + financialData.optionsData.putVolume)}` },
           { label: "Call Volume", value: `$${formatNumber(financialData.optionsData.callVolume)}`, trend: "up" },
           { label: "Put Volume", value: `$${formatNumber(financialData.optionsData.putVolume)}` },
-          { label: "Put/Call Ratio", value: financialData.optionsData.putCallRatio.toFixed(3), trend: financialData.optionsData.putCallRatio < 1 ? "down" : "up" },
+          { label: "Put/Call Ratio", value: (financialData.optionsData.putCallRatio ?? 0).toFixed(3), trend: financialData.optionsData.putCallRatio < 1 ? "down" : "up" },
           { label: "Deribit Volume", value: `$${formatNumber((financialData.optionsData.callVolume + financialData.optionsData.putVolume) * 0.85)}`, info: "85% market share" },
           { label: "OI Call", value: `$${formatNumber(financialData.optionsData.callVolume * 3)}` },
           { label: "OI Put", value: `$${formatNumber(financialData.optionsData.putVolume * 3)}` },
@@ -566,7 +566,7 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
       id: "max-pain",
       icon: <Target className="h-5 w-5" />,
       title: "Max Pain",
-      value: `$${financialData.optionsData.maxPainPrice.toLocaleString()}`,
+      value: `$${(financialData.optionsData.maxPainPrice ?? 0).toLocaleString()}`,
       subtitle: "Options Expiry Target",
       color: "text-yellow-400",
       bgColor: "bg-yellow-500/20",
@@ -576,10 +576,10 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
         title: "Max Pain Analysis",
         icon: <Target className="h-6 w-6 text-yellow-400" />,
         color: "yellow",
-        value: `$${financialData.optionsData.maxPainPrice.toLocaleString()}`,
+        value: `$${(financialData.optionsData.maxPainPrice ?? 0).toLocaleString()}`,
         description: "The price at which option holders would experience maximum losses. Price often gravitates toward this level near expiry.",
         details: [
-          { label: "Max Pain Price", value: `$${financialData.optionsData.maxPainPrice.toLocaleString()}` },
+          { label: "Max Pain Price", value: `$${(financialData.optionsData.maxPainPrice ?? 0).toLocaleString()}` },
           { label: "Current Distance", value: `${((financialData.currentPrice - financialData.optionsData.maxPainPrice) / financialData.optionsData.maxPainPrice * 100).toFixed(2)}%`, trend: financialData.currentPrice > financialData.optionsData.maxPainPrice ? "up" : "down" },
           { label: "Weekly Expiry", value: `$${(financialData.optionsData.maxPainPrice * 0.98).toLocaleString()}` },
           { label: "Monthly Expiry", value: `$${(financialData.optionsData.maxPainPrice * 1.02).toLocaleString()}` },
@@ -604,7 +604,7 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
       id: "implied-volatility",
       icon: <LineChart className="h-5 w-5" />,
       title: "Implied Volatility",
-      value: `${financialData.optionsData.impliedVolatility.toFixed(1)}%`,
+      value: `${(financialData.optionsData.impliedVolatility ?? 0).toFixed(1)}%`,
       subtitle: "30D ATM IV",
       color: financialData.optionsData.impliedVolatility > 60 ? "text-red-400" : financialData.optionsData.impliedVolatility < 40 ? "text-green-400" : "text-yellow-400",
       bgColor: financialData.optionsData.impliedVolatility > 60 ? "bg-red-500/20" : financialData.optionsData.impliedVolatility < 40 ? "bg-green-500/20" : "bg-yellow-500/20",
@@ -614,10 +614,10 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
         title: "Volatility Analysis",
         icon: <LineChart className="h-6 w-6 text-cyan-400" />,
         color: "cyan",
-        value: `${financialData.optionsData.impliedVolatility.toFixed(1)}%`,
+        value: `${(financialData.optionsData.impliedVolatility ?? 0).toFixed(1)}%`,
         description: "Market's expectation of future volatility derived from options prices. High IV = expensive options, low IV = cheap options.",
         details: [
-          { label: "30D ATM IV", value: `${financialData.optionsData.impliedVolatility.toFixed(1)}%` },
+          { label: "30D ATM IV", value: `${(financialData.optionsData.impliedVolatility ?? 0).toFixed(1)}%` },
           { label: "7D IV", value: `${(financialData.optionsData.impliedVolatility * 1.1).toFixed(1)}%`, trend: "up" },
           { label: "90D IV", value: `${(financialData.optionsData.impliedVolatility * 0.9).toFixed(1)}%` },
           { label: "Realized Vol (30D)", value: `${(financialData.optionsData.impliedVolatility * 0.85).toFixed(1)}%` },
@@ -725,7 +725,7 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
                         <Progress value={band.percentage} className="h-3" />
                       </div>
                       <span className="text-xs font-medium text-foreground w-14 text-right">
-                        {band.percentage.toFixed(1)}%
+                        {(band.percentage ?? 0).toFixed(1)}%
                       </span>
                     </div>
                   ))}
@@ -829,7 +829,7 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
                       <Badge variant="outline" className={`text-xs ${liq.type === "Long" ? "border-red-400/30 text-red-400" : "border-green-400/30 text-green-400"}`}>
                         {liq.type}
                       </Badge>
-                      <span className="text-sm font-medium">${liq.level.toLocaleString()}</span>
+                      <span className="text-sm font-medium">${(liq.level ?? 0).toLocaleString()}</span>
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="text-sm text-muted-foreground">${formatNumber(liq.amount * 1000000)}</span>
@@ -878,7 +878,7 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
                       </div>
                       <div className="flex justify-between text-xs pt-1 border-t border-border/20">
                         <span className="text-muted-foreground">Max Pain</span>
-                        <span className="text-yellow-400">${exp.maxPain.toLocaleString()}</span>
+                        <span className="text-yellow-400">${(exp.maxPain ?? 0).toLocaleString()}</span>
                       </div>
                     </div>
                   </div>

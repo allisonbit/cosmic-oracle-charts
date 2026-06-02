@@ -89,7 +89,7 @@ export function TopPerformers({ onCoinClick }: TopPerformersProps) {
                   <span className="text-[10px] sm:text-xs text-muted-foreground truncate hidden xs:inline">{coin.name}</span>
                 </div>
                 <div className="text-[10px] sm:text-xs text-muted-foreground">
-                  ${coin.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                  ${(coin.price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}
                 </div>
               </div>
 
@@ -99,7 +99,7 @@ export function TopPerformers({ onCoinClick }: TopPerformersProps) {
                   isPositive ? "text-success" : "text-danger"
                 )}>
                   {isPositive ? <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <TrendingDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
-                  {isPositive ? "+" : ""}{coin.change24h.toFixed(1)}%
+                  {isPositive ? "+" : ""}{(coin.change24h ?? 0).toFixed(1)}%
                 </div>
                 <div className="text-[10px] sm:text-xs text-primary flex items-center gap-1 justify-end">
                   <span className="hidden sm:inline">Details</span> <ArrowRight className="w-3 h-3" />

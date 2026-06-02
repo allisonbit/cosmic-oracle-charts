@@ -30,10 +30,10 @@ interface TokenDetailPanelProps {
 
 function formatPrice(price: number): string {
   if (price === 0) return 'N/A';
-  if (price < 0.0001) return `$${price.toFixed(8)}`;
-  if (price < 0.01) return `$${price.toFixed(6)}`;
-  if (price < 1) return `$${price.toFixed(4)}`;
-  return `$${price.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+  if (price < 0.0001) return `$${(price ?? 0).toFixed(8)}`;
+  if (price < 0.01) return `$${(price ?? 0).toFixed(6)}`;
+  if (price < 1) return `$${(price ?? 0).toFixed(4)}`;
+  return `$${(price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
 }
 
 function formatNumber(num: number | undefined | null): string {
@@ -43,7 +43,7 @@ function formatNumber(num: number | undefined | null): string {
   if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
   if (num >= 1e3) return `$${(num / 1e3).toFixed(2)}K`;
   if (num === 0) return '$0';
-  return `$${num.toFixed(2)}`;
+  return `$${(num ?? 0).toFixed(2)}`;
 }
 
 // Mock data generators for demo purposes
@@ -139,7 +139,7 @@ export function TokenDetailPanel({ token, chain, forecast, aiLoading }: TokenDet
                 token.change24h >= 0 ? "text-success" : "text-danger"
               )}>
                 {token.change24h >= 0 ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
-                {token.change24h >= 0 ? "+" : ""}{token.change24h.toFixed(2)}% (24h)
+                {token.change24h >= 0 ? "+" : ""}{(token.change24h ?? 0).toFixed(2)}% (24h)
               </div>
             )}
           </div>

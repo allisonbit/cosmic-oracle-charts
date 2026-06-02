@@ -54,10 +54,10 @@ const ComponentLoader = memo(function ComponentLoader() {
 });
 
 function formatPrice(price: number): string {
-  if (price >= 1000) return `$${price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-  if (price >= 1) return `$${price.toFixed(2)}`;
-  if (price >= 0.01) return `$${price.toFixed(4)}`;
-  return `$${price.toFixed(6)}`;
+  if (price >= 1000) return `$${(price ?? 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  if (price >= 1) return `$${(price ?? 0).toFixed(2)}`;
+  if (price >= 0.01) return `$${(price ?? 0).toFixed(4)}`;
+  return `$${(price ?? 0).toFixed(6)}`;
 }
 
 function formatCompact(num: number): string {
@@ -65,14 +65,14 @@ function formatCompact(num: number): string {
   if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
   if (num >= 1e6) return `$${(num / 1e6).toFixed(1)}M`;
   if (num >= 1e3) return `$${(num / 1e3).toFixed(1)}K`;
-  return `$${num.toFixed(0)}`;
+  return `$${(num ?? 0).toFixed(0)}`;
 }
 
 function formatNum(num: number): string {
   if (num >= 1e9) return `${(num / 1e9).toFixed(1)}B`;
   if (num >= 1e6) return `${(num / 1e6).toFixed(1)}M`;
   if (num >= 1e3) return `${(num / 1e3).toFixed(0)}K`;
-  return num.toFixed(0);
+  return (num ?? 0).toFixed(0);
 }
 
 export default function Chain() {
@@ -200,7 +200,7 @@ export default function Chain() {
                       {currentPrice > 0 && (
                         <div className={cn("flex items-center gap-1 text-sm font-medium mt-0.5", isPositive ? "text-emerald-400" : "text-red-400")}>
                           {isPositive ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
-                          <span>{isPositive ? "+" : ""}{priceChange.toFixed(2)}%</span>
+                          <span>{isPositive ? "+" : ""}{(priceChange ?? 0).toFixed(2)}%</span>
                           <span className="text-muted-foreground text-xs ml-1">24h</span>
                         </div>
                       )}
@@ -216,7 +216,7 @@ export default function Chain() {
                     { label: "TPS", value: overview ? `${formatNum(overview.tps)}` : "—", icon: Zap },
                     { label: "Active Wallets", value: overview ? formatNum(overview.activeWallets) : "—", icon: Users },
                     { label: "DeFi TVL", value: overview ? formatCompact(overview.defiTvl) : "—", icon: Layers },
-                    { label: "Gas", value: overview ? `$${overview.gasFees < 0.01 ? overview.gasFees.toFixed(4) : overview.gasFees.toFixed(2)}` : "—", icon: Flame },
+                    { label: "Gas", value: overview ? `$${overview.gasFees < 0.01 ? (overview.gasFees ?? 0).toFixed(4) : (overview.gasFees ?? 0).toFixed(2)}` : "—", icon: Flame },
                   ].map((stat) => (
                     <div key={stat.label} className="flex items-center gap-2">
                       <stat.icon className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />

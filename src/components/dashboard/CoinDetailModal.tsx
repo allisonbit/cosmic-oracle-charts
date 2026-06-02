@@ -25,7 +25,7 @@ function formatNumber(num: number | undefined | null): string {
   if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
   if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
   if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
-  return `$${num.toLocaleString()}`;
+  return `$${(num ?? 0).toLocaleString()}`;
 }
 
 export function CoinDetailModal({ coin, open, onOpenChange }: CoinDetailModalProps) {
@@ -110,13 +110,13 @@ export function CoinDetailModal({ coin, open, onOpenChange }: CoinDetailModalPro
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="holo-card p-4">
               <div className="text-xs text-muted-foreground mb-1">Current Price</div>
-              <div className="text-xl font-bold">${coin.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
+              <div className="text-xl font-bold">${(coin.price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
             </div>
             <div className="holo-card p-4">
               <div className="text-xs text-muted-foreground mb-1">24h Change</div>
               <div className={cn("text-xl font-bold flex items-center gap-1", isPositive ? "text-success" : "text-danger")}>
                 {isPositive ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
-                {isPositive ? "+" : ""}{coin.change24h.toFixed(2)}%
+                {isPositive ? "+" : ""}{(coin.change24h ?? 0).toFixed(2)}%
               </div>
             </div>
             <div className="holo-card p-4">
@@ -152,7 +152,7 @@ export function CoinDetailModal({ coin, open, onOpenChange }: CoinDetailModalPro
                     borderRadius: "8px",
                     fontSize: "12px",
                   }}
-                  formatter={(value: number) => [`$${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}`, "Price"]}
+                  formatter={(value: number) => [`$${(value ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}`, "Price"]}
                 />
                 <Area
                   type="monotone"
@@ -193,11 +193,11 @@ export function CoinDetailModal({ coin, open, onOpenChange }: CoinDetailModalPro
                 <div className="space-y-2">
                   <div className="flex justify-between items-center p-2 rounded bg-success/10 border border-success/20">
                     <span className="text-xs text-success">Strong Support</span>
-                    <span className="font-bold text-sm">${levels.strongSupport.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
+                    <span className="font-bold text-sm">${(levels.strongSupport ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
                   </div>
                   <div className="flex justify-between items-center p-2 rounded bg-success/5 border border-success/10">
                     <span className="text-xs text-success/70">Support</span>
-                    <span className="font-bold text-sm">${levels.support.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
+                    <span className="font-bold text-sm">${(levels.support ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
                   </div>
                 </div>
               </div>
@@ -206,11 +206,11 @@ export function CoinDetailModal({ coin, open, onOpenChange }: CoinDetailModalPro
                 <div className="space-y-2">
                   <div className="flex justify-between items-center p-2 rounded bg-danger/5 border border-danger/10">
                     <span className="text-xs text-danger/70">Resistance</span>
-                    <span className="font-bold text-sm">${levels.resistance.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
+                    <span className="font-bold text-sm">${(levels.resistance ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
                   </div>
                   <div className="flex justify-between items-center p-2 rounded bg-danger/10 border border-danger/20">
                     <span className="text-xs text-danger">Strong Resistance</span>
-                    <span className="font-bold text-sm">${levels.strongResistance.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
+                    <span className="font-bold text-sm">${(levels.strongResistance ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
                   </div>
                 </div>
               </div>
@@ -245,7 +245,7 @@ export function CoinDetailModal({ coin, open, onOpenChange }: CoinDetailModalPro
               <div className="text-center p-3 rounded-lg bg-muted/50">
                 <div className="text-xs text-muted-foreground mb-1">Vol/MCap</div>
                 <div className="text-sm font-bold text-primary">
-                  {analysis.volumeToMcap.toFixed(1)}%
+                  {(analysis.volumeToMcap ?? 0).toFixed(1)}%
                 </div>
               </div>
             </div>

@@ -124,7 +124,7 @@ export function DailyStrengthReport({ assets, chains }: DailyStrengthReportProps
             <TrendingUp className="w-4 h-4 text-success shrink-0" />
             <p className="text-sm">
               <strong className="text-success">{report.biggestGainer.symbol}</strong> leads gains with 
-              {' '}{report.biggestGainer.priceChange24h >= 0 ? '+' : ''}{report.biggestGainer.priceChange24h.toFixed(2)}% in 24h
+              {' '}{report.biggestGainer.priceChange24h >= 0 ? '+' : ''}{(report.biggestGainer.priceChange24h ?? 0).toFixed(2)}% in 24h
             </p>
           </div>
           

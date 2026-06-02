@@ -23,9 +23,9 @@ interface PredictionCardProps {
 
 export function PredictionCard({ crypto }: PredictionCardProps) {
   const formatPrice = (price: number) => {
-    if (price >= 1000) return `$${price.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
-    if (price >= 1) return `$${price.toFixed(2)}`;
-    return `$${price.toPrecision(4)}`;
+    if (price >= 1000) return `$${(price ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+    if (price >= 1) return `$${(price ?? 0).toFixed(2)}`;
+    return `$${(price ?? 0).toPrecision(4)}`;
   };
 
   const indicatorAlignment = crypto.indicatorAlignment || Math.floor(30 + Math.random() * 18);
@@ -82,7 +82,7 @@ export function PredictionCard({ crypto }: PredictionCardProps) {
           {formatPrice(crypto.price)}
         </span>
         <span className={cn("text-sm font-medium", crypto.change24h >= 0 ? 'text-green-400' : 'text-red-400')}>
-          {crypto.change24h >= 0 ? '+' : ''}{crypto.change24h.toFixed(2)}%
+          {crypto.change24h >= 0 ? '+' : ''}{(crypto.change24h ?? 0).toFixed(2)}%
         </span>
       </div>
 

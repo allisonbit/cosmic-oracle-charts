@@ -75,7 +75,7 @@ export function EnhancedChainHealthMonitor({ chain, healthData, isLoading, onRef
     if (n >= 1e9) return (n / 1e9).toFixed(decimals) + "B";
     if (n >= 1e6) return (n / 1e6).toFixed(decimals) + "M";
     if (n >= 1e3) return (n / 1e3).toFixed(decimals) + "K";
-    return n.toFixed(decimals);
+    return (n ?? 0).toFixed(decimals);
   };
 
   const getHealthColor = (value: number) => {
@@ -415,7 +415,7 @@ export function EnhancedChainHealthMonitor({ chain, healthData, isLoading, onRef
                 >
                   <p className="text-xs text-muted-foreground">Block Height</p>
                   <div className="flex items-center gap-2">
-                    <p className="text-lg font-display text-foreground">#{healthData.blockNumber.toLocaleString()}</p>
+                    <p className="text-lg font-display text-foreground">#{(healthData.blockNumber ?? 0).toLocaleString()}</p>
                     <Info className="h-3 w-3 text-muted-foreground/50" />
                   </div>
                 </button>
@@ -432,7 +432,7 @@ export function EnhancedChainHealthMonitor({ chain, healthData, isLoading, onRef
                   >
                     <p className="text-xs text-muted-foreground">Gas Price</p>
                     <div className="flex items-center gap-2">
-                      <p className="text-lg font-display text-foreground">{healthData.gasPrice.toFixed(2)} Gwei</p>
+                      <p className="text-lg font-display text-foreground">{(healthData.gasPrice ?? 0).toFixed(2)} Gwei</p>
                       <Info className="h-3 w-3 text-muted-foreground/50" />
                     </div>
                   </button>
@@ -461,21 +461,21 @@ export function EnhancedChainHealthMonitor({ chain, healthData, isLoading, onRef
           <MetricCard
             icon={<Blocks className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />}
             label="Finality Rate"
-            value={`${healthData.finalityRate.toFixed(1)}%`}
+            value={`${(healthData.finalityRate ?? 0).toFixed(1)}%`}
             color={getHealthColor(healthData.finalityRate)}
             onClick={() => setSelectedMetric(getFinalityMetricData())}
           />
           <MetricCard
             icon={<Clock className="h-3 w-3 sm:h-4 sm:w-4 text-secondary" />}
             label="Block Time"
-            value={`${healthData.avgBlockTime.toFixed(1)}s`}
+            value={`${(healthData.avgBlockTime ?? 0).toFixed(1)}s`}
             subValue={`${formatNumber(healthData.blockProduction)} blocks/day`}
             onClick={() => setSelectedMetric(getBlockMetricData())}
           />
           <MetricCard
             icon={<Shield className="h-3 w-3 sm:h-4 sm:w-4 text-success" />}
             label="Validator Health"
-            value={`${healthData.validatorHealth.toFixed(1)}%`}
+            value={`${(healthData.validatorHealth ?? 0).toFixed(1)}%`}
             subValue={`${formatNumber(healthData.activeValidators, 0)} active`}
             color={getHealthColor(healthData.validatorHealth)}
             onClick={() => setSelectedMetric(getValidatorMetricData())}
@@ -501,7 +501,7 @@ export function EnhancedChainHealthMonitor({ chain, healthData, isLoading, onRef
             </div>
             <p className="text-sm font-bold text-foreground">{formatNumber(healthData.eip1559.burnRate)}</p>
             <p className={cn("text-xs", healthData.eip1559.supplyChange < 0 ? "text-success" : "text-danger")}>
-              {healthData.eip1559.supplyChange > 0 ? '+' : ''}{healthData.eip1559.supplyChange.toFixed(2)}%
+              {healthData.eip1559.supplyChange > 0 ? '+' : ''}{(healthData.eip1559.supplyChange ?? 0).toFixed(2)}%
             </p>
           </button>
 
@@ -514,7 +514,7 @@ export function EnhancedChainHealthMonitor({ chain, healthData, isLoading, onRef
               <span className="text-xs text-muted-foreground">MEV (24h)</span>
             </div>
             <p className="text-sm font-bold text-foreground">${formatNumber(healthData.mevMetrics.mevRevenue24h)}</p>
-            <p className="text-xs text-muted-foreground">{healthData.mevMetrics.flashbotsBlocks.toFixed(0)}% Flashbots</p>
+            <p className="text-xs text-muted-foreground">{(healthData.mevMetrics.flashbotsBlocks ?? 0).toFixed(0)}% Flashbots</p>
           </button>
 
           <button
@@ -539,8 +539,8 @@ export function EnhancedChainHealthMonitor({ chain, healthData, isLoading, onRef
               <TrendingUp className="h-4 w-4 text-success" />
               <span className="text-xs text-muted-foreground">Staking APR</span>
             </div>
-            <p className="text-sm font-bold text-foreground">{healthData.stakingMetrics.stakingAPR.toFixed(2)}%</p>
-            <p className="text-xs text-muted-foreground">Lido: {healthData.stakingMetrics.lidoYield.toFixed(2)}%</p>
+            <p className="text-sm font-bold text-foreground">{(healthData.stakingMetrics.stakingAPR ?? 0).toFixed(2)}%</p>
+            <p className="text-xs text-muted-foreground">Lido: {(healthData.stakingMetrics.lidoYield ?? 0).toFixed(2)}%</p>
           </button>
 
           <button

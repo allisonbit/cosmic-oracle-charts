@@ -220,7 +220,7 @@ export function TokenStrengthSearch({ allAssets }: TokenStrengthSearchProps) {
                       ) : (
                         <TrendingDown className="w-3 h-3" />
                       )}
-                      {result.priceChange24h >= 0 ? '+' : ''}{result.priceChange24h.toFixed(2)}%
+                      {result.priceChange24h >= 0 ? '+' : ''}{(result.priceChange24h ?? 0).toFixed(2)}%
                     </div>
                   </div>
                   <ExternalLink className="w-4 h-4 text-muted-foreground" />

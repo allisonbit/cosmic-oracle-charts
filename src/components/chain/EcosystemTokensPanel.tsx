@@ -71,14 +71,14 @@ export function EcosystemTokensPanel({ chain, ecosystemTokens = [] }: EcosystemT
     if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
     if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
     if (num >= 1e3) return `$${(num / 1e3).toFixed(2)}K`;
-    return `$${num.toFixed(0)}`;
+    return `$${(num ?? 0).toFixed(0)}`;
   };
 
   const formatSimple = (num: number | undefined) => {
     if (!num) return "0";
     if (num >= 1e6) return `${(num / 1e6).toFixed(2)}M`;
     if (num >= 1e3) return `${(num / 1e3).toFixed(2)}K`;
-    return num.toLocaleString();
+    return (num ?? 0).toLocaleString();
   };
 
   const getExplorerUrl = (address: string) => {
@@ -184,7 +184,7 @@ export function EcosystemTokensPanel({ chain, ecosystemTokens = [] }: EcosystemT
                   <div>
                     <p className="text-xs text-muted-foreground">Price</p>
                     <p className="text-lg font-display text-foreground">
-                      ${token.price.toFixed(token.price > 10 ? 2 : 4)}
+                      ${(token.price ?? 0).toFixed(token.price > 10 ? 2 : 4)}
                     </p>
                   </div>
                   <div className={cn(
@@ -192,7 +192,7 @@ export function EcosystemTokensPanel({ chain, ecosystemTokens = [] }: EcosystemT
                     token.change24h >= 0 ? "bg-success/20 text-success" : "bg-danger/20 text-danger"
                   )}>
                     {token.change24h >= 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
-                    {token.change24h >= 0 ? "+" : ""}{token.change24h.toFixed(2)}%
+                    {token.change24h >= 0 ? "+" : ""}{(token.change24h ?? 0).toFixed(2)}%
                   </div>
                 </div>
 

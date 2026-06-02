@@ -52,37 +52,37 @@ export function EnhancedSignalsPanel({ coins, onCoinClick }: EnhancedSignalsPane
     if (change >= 10) {
       type = 'pump';
       title = 'Major Pump Detected';
-      description = `${coin.symbol} is experiencing a significant pump with +${change.toFixed(2)}% gains. High volume confirms the move.`;
+      description = `${coin.symbol} is experiencing a significant pump with +${(change ?? 0).toFixed(2)}% gains. High volume confirms the move.`;
       action = 'Consider taking partial profits if already in position. New entries should wait for pullback.';
       triggers = ['High volume spike', 'Social media buzz', 'Breaking resistance', 'FOMO momentum'];
     } else if (change >= 5) {
       type = 'bullish';
       title = 'Strong Bullish Momentum';
-      description = `${coin.symbol} showing bullish momentum with +${change.toFixed(2)}% gain. Volume supports the uptrend.`;
+      description = `${coin.symbol} showing bullish momentum with +${(change ?? 0).toFixed(2)}% gain. Volume supports the uptrend.`;
       action = 'Monitor for continuation. Consider adding on pullbacks with defined stop-loss.';
       triggers = ['Breaking key level', 'Increasing volume', 'Positive sentiment shift'];
     } else if (change <= -10) {
       type = 'dump';
       title = 'Sharp Decline Alert';
-      description = `${coin.symbol} experiencing sharp decline of ${change.toFixed(2)}%. High selling pressure detected.`;
+      description = `${coin.symbol} experiencing sharp decline of ${(change ?? 0).toFixed(2)}%. High selling pressure detected.`;
       action = 'Avoid catching falling knife. Wait for stabilization and volume decrease before considering entry.';
       triggers = ['Massive selling', 'Breaking support', 'Fear spreading', 'Whale distribution'];
     } else if (change <= -5) {
       type = 'bearish';
       title = 'Bearish Pressure';
-      description = `${coin.symbol} under selling pressure with ${change.toFixed(2)}% decline. Monitor support levels.`;
+      description = `${coin.symbol} under selling pressure with ${(change ?? 0).toFixed(2)}% decline. Monitor support levels.`;
       action = 'Exercise caution. Tighten stop-losses on existing positions.';
       triggers = ['Support breakdown', 'Negative news', 'Market weakness'];
     } else if (change > 0) {
       type = 'bullish';
       title = 'Positive Momentum';
-      description = `${coin.symbol} maintaining positive momentum at +${change.toFixed(2)}%.`;
+      description = `${coin.symbol} maintaining positive momentum at +${(change ?? 0).toFixed(2)}%.`;
       action = 'Hold existing positions. Monitor for breakout confirmation.';
       triggers = ['Gradual accumulation', 'Stable volume'];
     } else {
       type = 'bearish';
       title = 'Slight Weakness';
-      description = `${coin.symbol} showing minor weakness at ${change.toFixed(2)}%.`;
+      description = `${coin.symbol} showing minor weakness at ${(change ?? 0).toFixed(2)}%.`;
       action = 'Monitor key support levels. Prepare for potential bounce or breakdown.';
       triggers = ['Light selling', 'Consolidation phase'];
     }
@@ -108,7 +108,7 @@ export function EnhancedSignalsPanel({ coins, onCoinClick }: EnhancedSignalsPane
     if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
     if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
     if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
-    return `$${num.toLocaleString()}`;
+    return `$${(num ?? 0).toLocaleString()}`;
   };
 
   const filteredCoins = coins.filter(coin => {
@@ -146,7 +146,7 @@ export function EnhancedSignalsPanel({ coins, onCoinClick }: EnhancedSignalsPane
         <div className="holo-card p-4 text-center">
           <Activity className="w-6 h-6 text-warning mx-auto mb-2" />
           <div className={cn("text-2xl font-display font-bold", avgChange >= 0 ? "text-success" : "text-danger")}>
-            {avgChange >= 0 ? "+" : ""}{avgChange.toFixed(2)}%
+            {avgChange >= 0 ? "+" : ""}{(avgChange ?? 0).toFixed(2)}%
           </div>
           <div className="text-xs text-muted-foreground">Avg Change</div>
         </div>
@@ -236,7 +236,7 @@ export function EnhancedSignalsPanel({ coins, onCoinClick }: EnhancedSignalsPane
                       <DollarSign className="w-3 h-3" /> {formatNumber(coin.marketCap)}
                     </span>
                     <span className="flex items-center gap-1">
-                      <Target className="w-3 h-3" /> Confidence: {signal.confidence.toFixed(0)}%
+                      <Target className="w-3 h-3" /> Confidence: {(signal.confidence ?? 0).toFixed(0)}%
                     </span>
                   </div>
                 </div>
@@ -247,9 +247,9 @@ export function EnhancedSignalsPanel({ coins, onCoinClick }: EnhancedSignalsPane
                   )}>
                     <div className="font-bold text-lg flex items-center gap-1">
                       {coin.change24h >= 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
-                      {coin.change24h >= 0 ? "+" : ""}{coin.change24h.toFixed(2)}%
+                      {coin.change24h >= 0 ? "+" : ""}{(coin.change24h ?? 0).toFixed(2)}%
                     </div>
-                    <div className="text-xs text-muted-foreground">${coin.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
+                    <div className="text-xs text-muted-foreground">${(coin.price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
                   </div>
                   <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
                 </div>

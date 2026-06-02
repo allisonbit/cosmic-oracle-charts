@@ -101,11 +101,11 @@ export function EnhancedDominanceChart() {
                   {item.change !== undefined && (
                     <span className={cn("text-xs flex items-center gap-0.5", item.change >= 0 ? "text-success" : "text-danger")}>
                       {item.change >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                      {item.change >= 0 ? "+" : ""}{item.change.toFixed(1)}%
+                      {item.change >= 0 ? "+" : ""}{(item.change ?? 0).toFixed(1)}%
                     </span>
                   )}
                 </div>
-                <span className="text-base sm:text-lg font-bold">{item.value.toFixed(1)}%</span>
+                <span className="text-base sm:text-lg font-bold">{(item.value ?? 0).toFixed(1)}%</span>
               </button>
               
               {expandedSegment === item.name && (

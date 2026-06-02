@@ -31,9 +31,9 @@ export function OrderBookPanel() {
   });
 
   const formatPrice = (price: number) => {
-    if (price >= 1000) return price.toFixed(2);
-    if (price >= 1) return price.toFixed(4);
-    return price.toFixed(6);
+    if (price >= 1000) return (price ?? 0).toFixed(2);
+    if (price >= 1) return (price ?? 0).toFixed(4);
+    return (price ?? 0).toFixed(6);
   };
 
   const maxTotal = Math.max(
@@ -93,7 +93,7 @@ export function OrderBookPanel() {
                       style={{ width: `${maxTotal > 0 ? (bid.total / maxTotal) * 100 : 0}%` }}
                     />
                     <span className="relative text-success">{formatPrice(bid.price)}</span>
-                    <span className="relative text-muted-foreground">{bid.amount.toFixed(4)}</span>
+                    <span className="relative text-muted-foreground">{(bid.amount ?? 0).toFixed(4)}</span>
                   </div>
                 ))}
                 {(!data?.bids || data.bids.length === 0) && (
@@ -116,7 +116,7 @@ export function OrderBookPanel() {
                       style={{ width: `${maxTotal > 0 ? (ask.total / maxTotal) * 100 : 0}%` }}
                     />
                     <span className="relative text-danger">{formatPrice(ask.price)}</span>
-                    <span className="relative text-muted-foreground">{ask.amount.toFixed(4)}</span>
+                    <span className="relative text-muted-foreground">{(ask.amount ?? 0).toFixed(4)}</span>
                   </div>
                 ))}
                 {(!data?.asks || data.asks.length === 0) && (

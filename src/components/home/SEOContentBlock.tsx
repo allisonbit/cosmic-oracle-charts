@@ -83,7 +83,7 @@ function AnimatedStat({ label, target, suffix, color }: { label: string; target:
   return (
     <div ref={ref} className="text-center p-4">
       <div className={`text-[clamp(1.5rem,5vw,2.25rem)] font-display font-bold ${color} tabular-nums`}>
-        {count.toLocaleString()}{suffix}
+        {(count ?? 0).toLocaleString()}{suffix}
       </div>
       <div className="text-xs md:text-sm text-muted-foreground mt-1">{label}</div>
     </div>

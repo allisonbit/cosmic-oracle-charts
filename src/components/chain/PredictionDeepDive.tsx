@@ -245,7 +245,7 @@ export function PredictionDeepDive({ chain, forecast, isLoading }: PredictionDee
                       <div className="mt-3 pt-3 border-t border-border/30">
                         <span className="text-xs text-muted-foreground">Target: </span>
                         <span className="text-sm font-display text-primary glow-text">
-                          ${data.priceTarget.toLocaleString()}
+                          ${(data.priceTarget ?? 0).toLocaleString()}
                         </span>
                       </div>
                     )}

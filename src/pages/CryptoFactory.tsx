@@ -28,7 +28,7 @@ function formatCompact(n: number): string {
   if (n >= 1e9) return `$${(n / 1e9).toFixed(1)}B`;
   if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
   if (n >= 1e3) return `$${(n / 1e3).toFixed(0)}K`;
-  return `$${n.toFixed(0)}`;
+  return `$${(n ?? 0).toFixed(0)}`;
 }
 
 export default function CryptoFactory() {
@@ -140,7 +140,7 @@ export default function CryptoFactory() {
                     </p>
                     {stat.change !== undefined && (
                       <span className={cn("text-xs font-mono", stat.change >= 0 ? "text-green-400" : "text-red-400")}>
-                        {stat.change >= 0 ? '+' : ''}{stat.change.toFixed(2)}%
+                        {stat.change >= 0 ? '+' : ''}{(stat.change ?? 0).toFixed(2)}%
                       </span>
                     )}
                   </CardContent>

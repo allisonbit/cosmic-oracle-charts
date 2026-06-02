@@ -43,7 +43,7 @@ export function EnhancedTopPerformers({ onCoinClick }: EnhancedTopPerformersProp
     if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
     if (num >= 1e6) return `$${(num / 1e6).toFixed(2)}M`;
     if (num >= 1e3) return `$${(num / 1e3).toFixed(2)}K`;
-    return `$${num.toFixed(2)}`;
+    return `$${(num ?? 0).toFixed(2)}`;
   };
 
   const getCoinId = (coin: CoinData) => coin.name?.toLowerCase().replace(/\s+/g, '-') || coin.symbol.toLowerCase();
@@ -109,7 +109,7 @@ export function EnhancedTopPerformers({ onCoinClick }: EnhancedTopPerformersProp
                   {volumeToMcap > 10 && <Activity className="w-3 h-3 text-warning" />}
                 </div>
                 <div className="text-[10px] sm:text-xs text-muted-foreground flex items-center gap-2">
-                  <span>${coin.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
+                  <span>${(coin.price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
                   <span className="text-primary/50">•</span>
                   <span>Vol: {formatNumber(coin.volume)}</span>
                 </div>
@@ -121,7 +121,7 @@ export function EnhancedTopPerformers({ onCoinClick }: EnhancedTopPerformersProp
                   isPositive ? "text-success" : "text-danger"
                 )}>
                   {isPositive ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
-                  {isPositive ? "+" : ""}{coin.change24h.toFixed(1)}%
+                  {isPositive ? "+" : ""}{(coin.change24h ?? 0).toFixed(1)}%
                 </div>
                 <div className="text-[10px] sm:text-xs text-primary flex items-center gap-1 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
                   <Eye className="w-3 h-3" /> View
