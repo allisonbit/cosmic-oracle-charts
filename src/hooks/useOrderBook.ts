@@ -39,32 +39,11 @@ export function useOrderBook(options: UseOrderBookOptions = {}) {
 
   const fetchOrderBook = useCallback(async () => {
     try {
-      const { data: responseData, error: fetchError } = await supabase.functions.invoke('orderbook', {
-        body: {},
-        headers: {},
+      const { data: orderBookData, error: fetchError } = await supabase.functions.invoke('orderbook', {
+        body: { pair, exchange: exchange.toLowerCase(), limit },
       });
-
-      // Use query params approach
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/orderbook?pair=${pair}&exchange=${exchange.toLowerCase()}&limit=${limit}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-            'Content-Type': 'application/json',
-          }
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch order book');
-      }
-
-      const orderBookData = await response.json();
-      
-      if (orderBookData.error) {
-        throw new Error(orderBookData.error);
-      }
-
+      if (fetchError) throw fetchError;
+      if (orderBookData?.error) throw new Error(orderBookData.error);
       setData(orderBookData);
       setError(null);
     } catch (err) {
