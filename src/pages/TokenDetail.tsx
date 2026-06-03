@@ -47,68 +47,60 @@ export default function TokenDetail() {
   );
   const forecast = aiData?.forecast;
 
-  // Generate chart data based on timeframe
-  const chartData = useMemo(() => {
-    if (!token) return [];
-    const base = token.price;
-    const vol = Math.abs(token.change24h || 5) / 100;
-    const points = chartTimeframe === '1h' ? 60 : chartTimeframe === '24h' ? 48 : chartTimeframe === '7d' ? 168 : 720;
-    return Array.from({ length: points }, (_, i) => {
-      const noise = (Math.random() - 0.5) * 2 * vol * base;
-      const trend = (token.change24h || 0) > 0 ? (i / points) * vol * base * 0.5 : -(i / points) * vol * base * 0.5;
-      const timeLabel = chartTimeframe === '1h' ? `${i}m`
-        : chartTimeframe === '24h' ? `${Math.floor(i / 2)}:${i % 2 === 0 ? '00' : '30'}`
-        : chartTimeframe === '7d' ? `D${Math.floor(i / 24) + 1}` : `D${Math.floor(i / 24) + 1}`;
-      return {
-        time: timeLabel,
-        price: Math.max(0, base - vol * base + trend + noise),
-        volume: Math.floor(Math.random() * (token.volume24h || 1000) / points),
-      };
-    });
-  }, [token, chartTimeframe]);
+  // Real OHLC sparkline via edge fn (CoinGecko)
+  const { data: sparkData } = useQuery({
+    queryKey: ["sparkline", token?.symbol, token?.coingeckoId, chartTimeframe],
+    queryFn: async () => {
+      const days = chartTimeframe === '1h' ? 1 : chartTimeframe === '24h' ? 1 : chartTimeframe === '7d' ? 7 : 30;
+      const { data, error } = await supabase.functions.invoke("sparkline", {
+        body: { symbol: token!.symbol, id: token!.coingeckoId, days },
+      });
+      if (error) throw error;
+      return (data?.points ?? []) as Array<{ time: string; price: number }>;
+    },
+    enabled: !!token && (!!token.coingeckoId || !!token.symbol),
+    refetchInterval: 120_000,
+    refetchIntervalInBackground: true,
+    staleTime: 60_000,
+  });
 
-  // Simulated derived metrics
+  const chartData = useMemo(
+    () => (sparkData ?? []).map((p, i) => ({ time: `${i}`, price: p.price, volume: 0 })),
+    [sparkData]
+  );
+
+  // Real derived metrics — only from live token fields, no random
   const derivedMetrics = useMemo(() => {
     if (!token) return null;
     const volLiqRatio = token.liquidity ? (token.volume24h / token.liquidity) : 0;
-    const buyPressure = token.buys24h && token.sells24h ? (token.buys24h / Math.max(1, token.buys24h + token.sells24h)) * 100 : 50;
+    const buyPressure = token.buys24h && token.sells24h
+      ? (token.buys24h / Math.max(1, token.buys24h + token.sells24h)) * 100
+      : 50;
     const riskScore = Math.min(100, Math.max(5,
       (token.liquidity && token.liquidity > 500000 ? 0 : 30) +
       (token.txns24h && token.txns24h > 500 ? 0 : 20) +
       (volLiqRatio > 5 ? 25 : volLiqRatio > 1 ? 10 : 0) +
-      (token.verified ? 0 : 15) +
-      Math.floor(Math.random() * 10)
+      (token.verified ? 0 : 15)
     ));
-    const circulatingSupply = token.marketCap ? token.marketCap / token.price : undefined;
-    const totalSupply = circulatingSupply ? circulatingSupply * (1 + Math.random() * 0.3) : undefined;
-    const supplyRatio = circulatingSupply && totalSupply ? (circulatingSupply / totalSupply) * 100 : undefined;
-
+    const circulatingSupply = token.marketCap && token.price ? token.marketCap / token.price : undefined;
     return {
       volLiqRatio,
       buyPressure,
       riskScore,
       circulatingSupply,
-      totalSupply,
-      supplyRatio,
-      holders: Math.floor(Math.random() * 50000 + 1000),
+      totalSupply: undefined,
+      supplyRatio: undefined,
+      holders: null,
       avgTxSize: token.volume24h && token.txns24h ? token.volume24h / token.txns24h : 0,
-      volatility24h: Math.abs(token.change24h || 0) * (1 + Math.random() * 0.5),
-      ath: token.price * (1 + Math.random() * 3),
-      atl: token.price * (Math.random() * 0.3),
-      athDate: '2024-11-15',
-      atlDate: '2023-06-12',
-      fromAth: -((Math.random() * 60) + 5),
-      fromAtl: (Math.random() * 500) + 20,
+      volatility24h: Math.abs(token.change24h || 0),
+      ath: null,
+      atl: null,
+      athDate: null,
+      atlDate: null,
+      fromAth: null,
+      fromAtl: null,
     };
   }, [token]);
-
-  // Simulated whale holders
-  const whaleHolders = useMemo(() => [
-    { label: 'Top 10 Holders', pct: 15 + Math.random() * 30, color: 'hsl(var(--primary))' },
-    { label: 'Top 11-50 Holders', pct: 10 + Math.random() * 15, color: 'hsl(var(--success))' },
-    { label: 'Top 51-100 Holders', pct: 5 + Math.random() * 10, color: 'hsl(var(--warning))' },
-    { label: 'Remaining', pct: 30 + Math.random() * 20, color: 'hsl(var(--muted-foreground))' },
-  ], []);
 
   // Radar data for token health
   const radarData = useMemo(() => {
@@ -123,14 +115,8 @@ export default function TokenDetail() {
     ];
   }, [derivedMetrics, token]);
 
-  // Supply distribution pie
-  const supplyPie = useMemo(() => {
-    if (!derivedMetrics?.circulatingSupply || !derivedMetrics?.totalSupply) return [];
-    return [
-      { name: 'Circulating', value: derivedMetrics.circulatingSupply },
-      { name: 'Locked/Reserved', value: derivedMetrics.totalSupply - derivedMetrics.circulatingSupply },
-    ];
-  }, [derivedMetrics]);
+  // Supply pie only renders when real circ+total are present
+  const supplyPie: Array<{ name: string; value: number }> = [];
 
   const copyAddress = () => {
     navigator.clipboard.writeText(address);
@@ -275,12 +261,12 @@ export default function TokenDetail() {
 
           {/* ─── Holders Tab ─── */}
           <TabsContent value="holders" className="mt-4">
-            <TokenHoldersTab whaleHolders={whaleHolders} derivedMetrics={derivedMetrics} />
+            <TokenHoldersTab derivedMetrics={derivedMetrics} />
           </TabsContent>
 
           {/* ─── Security Tab ─── */}
           <TabsContent value="security" className="mt-4">
-            <TokenSecurityTab token={token} derivedMetrics={derivedMetrics} whaleHolders={whaleHolders} />
+            <TokenSecurityTab token={token} derivedMetrics={derivedMetrics} />
           </TabsContent>
         </Tabs>
       </div>
