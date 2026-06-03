@@ -12,6 +12,7 @@ const desktopNavItems = [
   { path: "/trade", label: "Trade" },
   { path: "/airdrops", label: "Airdrops" },
   { path: "/tools", label: "Tools" },
+  { path: "/compare", label: "Compare" },
   { path: "/predictions", label: "Predictions" },
   { path: "/sentiment", label: "Sentiment" },
   { path: "/strength", label: "Strength" },

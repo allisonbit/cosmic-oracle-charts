@@ -140,9 +140,18 @@ const questionIntentCoins = [
   'shiba-inu', 'pepe', 'chainlink', 'polkadot', 'binancecoin', 'toncoin',
   'avalanche-2', 'aptos', 'sui', 'arbitrum', 'near', 'tron', 'floki', 'bonk',
 ];
-const questionRoutes = questionIntentCoins.flatMap(coin =>
-  questionPatterns.map(pattern => `/q/${pattern.replace('{coin}', coin)}`)
+const questionRoutes = [...new Set(topCryptoIds)].flatMap(id => 
+  questionPatterns.map(pattern => `/q/${pattern.replace('{coin}', id)}`)
 );
+
+// Generate unique pair comparisons for pSEO
+const uniqueCoins = [...new Set(topCryptoIds)];
+const comparisonRoutes: string[] = [];
+for (let i = 0; i < uniqueCoins.length; i++) {
+  for (let j = i + 1; j < uniqueCoins.length; j++) {
+    comparisonRoutes.push(`/compare/${uniqueCoins[i]}-vs-${uniqueCoins[j]}`);
+  }
+}
 
 const marketQuestionRoutes = [
   "/market/best-crypto-to-buy-today",
@@ -175,8 +184,17 @@ const marketQuestionRoutes = [
 
 const coinMarketRoutes: string[] = [];
 
-// All routes combined
-const allRoutes = [...staticRoutes, ...chainRoutes, ...predictionRoutes, ...questionRoutes, ...marketQuestionRoutes, ...coinMarketRoutes, ...educationalRoutes];
+// All routes combined — includes 1,700+ comparison pairs for pSEO
+const allRoutes = [
+  ...staticRoutes,
+  ...chainRoutes,
+  ...predictionRoutes,
+  ...questionRoutes,
+  ...comparisonRoutes,
+  ...marketQuestionRoutes,
+  ...coinMarketRoutes,
+  ...educationalRoutes,
+];
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({

@@ -72,6 +72,8 @@ const ToolsHub = lazy(() => import("./pages/ToolsHub"));
 const ProfitCalculator = lazy(() => import("./pages/tools/ProfitCalculator"));
 const DCACalculator = lazy(() => import("./pages/tools/DCACalculator"));
 const ILCalculator = lazy(() => import("./pages/tools/ILCalculator"));
+const CompareHub = lazy(() => import("./pages/CompareHub"));
+const CoinComparison = lazy(() => import("./pages/CoinComparison"));
 // Loading fallback component
 const PageLoader = memo(function PageLoader() {
   return (
@@ -211,6 +213,8 @@ const App = () => (
                 <Route path="/tools/profit-calculator" element={<ProfitCalculator />} />
                 <Route path="/tools/dca-calculator" element={<DCACalculator />} />
                 <Route path="/tools/impermanent-loss-calculator" element={<ILCalculator />} />
+                <Route path="/compare" element={<CompareHub />} />
+                <Route path="/compare/:coins" element={<CoinComparison />} />
                 {/* Legal & About pages */}
                 <Route path="/about" element={<About />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
