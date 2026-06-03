@@ -90,12 +90,11 @@ export function TokenTradingTab({ token, derivedMetrics }: TokenTradingTabProps)
       <Card className="border-border">
         <CardHeader className="pb-2"><CardTitle className="text-sm">Price Changes</CardTitle></CardHeader>
         <CardContent>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             {[
               { label: '5m', val: token.change5m },
               { label: '1h', val: token.change1h },
               { label: '24h', val: token.change24h },
-              { label: '7d', val: (token.change24h || 0) * (1 + Math.random()) },
             ].map(t => (
               <div key={t.label} className="p-3 rounded-lg bg-muted/50 text-center">
                 <p className="text-[10px] text-muted-foreground uppercase">{t.label}</p>

@@ -1,12 +1,11 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { 
-  TrendingUp, TrendingDown, Eye, Star, 
-  Copy, CheckCircle, ChevronDown, ChevronUp, Filter
+  ChevronDown, ChevronUp, Filter
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
 import { SearchToken } from "@/hooks/useTokenSearch";
 import { ExplorerChain } from "@/lib/explorerChains";
 import { TradeButtons } from "@/components/trading/TradeButtons";
@@ -18,23 +17,22 @@ interface TopTokensTableProps {
 
 interface TokenRow {
   rank: number;
+  id: string;
   symbol: string;
   name: string;
+  image?: string;
   price: number;
   change1h: number;
   change24h: number;
   change7d: number;
   volume24h: number;
-  liquidity: number;
+  marketCap: number;
   fdv: number;
-  txns24h: number;
-  buys: number;
-  sells: number;
-  contractAddress: string;
+  contractAddress: string | null;
 }
 
 function formatPrice(price: number): string {
-  if (price === 0) return 'N/A';
+  if (!price || price === 0) return 'N/A';
   if (price < 0.0001) return `$${(price ?? 0).toFixed(8)}`;
   if (price < 0.01) return `$${(price ?? 0).toFixed(6)}`;
   if (price < 1) return `$${(price ?? 0).toFixed(4)}`;
@@ -49,55 +47,23 @@ function formatNumber(num: number | undefined | null): string {
   return `$${(num ?? 0).toFixed(0)}`;
 }
 
-// Generate mock tokens
-const generateTokens = (count: number): TokenRow[] => {
-  const tokenList = [
-    { symbol: 'WETH', name: 'Wrapped Ether' },
-    { symbol: 'USDC', name: 'USD Coin' },
-    { symbol: 'USDT', name: 'Tether' },
-    { symbol: 'WBTC', name: 'Wrapped Bitcoin' },
-    { symbol: 'DAI', name: 'Dai Stablecoin' },
-    { symbol: 'LINK', name: 'Chainlink' },
-    { symbol: 'UNI', name: 'Uniswap' },
-    { symbol: 'AAVE', name: 'Aave' },
-    { symbol: 'MKR', name: 'Maker' },
-    { symbol: 'SNX', name: 'Synthetix' },
-    { symbol: 'CRV', name: 'Curve DAO' },
-    { symbol: 'COMP', name: 'Compound' },
-    { symbol: 'LDO', name: 'Lido DAO' },
-    { symbol: 'APE', name: 'ApeCoin' },
-    { symbol: 'SHIB', name: 'Shiba Inu' },
-    { symbol: 'PEPE', name: 'Pepe' },
-    { symbol: 'ARB', name: 'Arbitrum' },
-    { symbol: 'OP', name: 'Optimism' },
-    { symbol: 'BLUR', name: 'Blur' },
-    { symbol: 'GMX', name: 'GMX' },
-  ];
-
-  return tokenList.slice(0, count).map((t, i) => ({
-    rank: i + 1,
-    symbol: t.symbol,
-    name: t.name,
-    price: Math.random() * 2000 + 0.0001,
-    change1h: (Math.random() - 0.5) * 10,
-    change24h: (Math.random() - 0.5) * 30,
-    change7d: (Math.random() - 0.5) * 50,
-    volume24h: Math.random() * 100000000 + 100000,
-    liquidity: Math.random() * 50000000 + 100000,
-    fdv: Math.random() * 10000000000 + 1000000,
-    txns24h: Math.floor(Math.random() * 50000) + 100,
-    buys: Math.floor(Math.random() * 25000) + 50,
-    sells: Math.floor(Math.random() * 25000) + 50,
-    contractAddress: `0x${Math.random().toString(16).slice(2, 42)}`,
-  }));
-};
-
 export function TopTokensTable({ chain, onTokenSelect }: TopTokensTableProps) {
-  const [tokens] = useState(() => generateTokens(20));
+  const { data: tokens = [], isLoading } = useQuery({
+    queryKey: ["top-tokens", chain.id],
+    queryFn: async () => {
+      const { data, error } = await supabase.functions.invoke("top-tokens", {
+        body: { chain: chain.id, limit: 25 },
+      });
+      if (error) throw error;
+      return (data?.tokens ?? []) as TokenRow[];
+    },
+    refetchInterval: 120_000,
+    refetchIntervalInBackground: true,
+    staleTime: 60_000,
+  });
+
   const [sortBy, setSortBy] = useState<keyof TokenRow>('volume24h');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
-  const [selectedToken, setSelectedToken] = useState<TokenRow | null>(null);
-  const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
 
   const sortedTokens = [...tokens].sort((a, b) => {
     const aVal = a[sortBy];
@@ -117,18 +83,11 @@ export function TopTokensTable({ chain, onTokenSelect }: TopTokensTableProps) {
     }
   };
 
-  const copyAddress = (address: string) => {
-    navigator.clipboard.writeText(address);
-    setCopiedAddress(address);
-    toast.success("Copied to clipboard");
-    setTimeout(() => setCopiedAddress(null), 2000);
-  };
-
   const handleViewDetails = (token: TokenRow) => {
     onTokenSelect({
       symbol: token.symbol,
       name: token.name,
-      contractAddress: token.contractAddress,
+      contractAddress: token.contractAddress ?? '',
       decimals: 18,
       chain: chain.id,
       price: token.price,
@@ -172,28 +131,37 @@ export function TopTokensTable({ chain, onTokenSelect }: TopTokensTableProps) {
               <th className="text-right py-2 px-2 cursor-pointer hover:text-primary hidden sm:table-cell" onClick={() => handleSort('volume24h')}>
                 <span className="flex items-center justify-end gap-1">Volume <SortIcon column="volume24h" /></span>
               </th>
-              <th className="text-right py-2 px-2 cursor-pointer hover:text-primary hidden md:table-cell" onClick={() => handleSort('liquidity')}>
-                <span className="flex items-center justify-end gap-1">Liquidity <SortIcon column="liquidity" /></span>
+              <th className="text-right py-2 px-2 cursor-pointer hover:text-primary hidden md:table-cell" onClick={() => handleSort('marketCap')}>
+                <span className="flex items-center justify-end gap-1">Market Cap <SortIcon column="marketCap" /></span>
               </th>
-              <th className="text-right py-2 px-2 cursor-pointer hover:text-primary hidden lg:table-cell" onClick={() => handleSort('txns24h')}>
-                <span className="flex items-center justify-end gap-1">Txns <SortIcon column="txns24h" /></span>
+              <th className="text-right py-2 px-2 cursor-pointer hover:text-primary hidden lg:table-cell" onClick={() => handleSort('fdv')}>
+                <span className="flex items-center justify-end gap-1">FDV <SortIcon column="fdv" /></span>
               </th>
               <th className="text-right py-2 px-2">Actions</th>
             </tr>
           </thead>
           <tbody>
+            {isLoading && tokens.length === 0 && Array.from({ length: 10 }).map((_, i) => (
+              <tr key={`sk-${i}`} className="border-b border-border/50">
+                <td colSpan={10} className="py-3 px-2"><div className="h-6 rounded bg-muted/30 animate-pulse" /></td>
+              </tr>
+            ))}
             {sortedTokens.map((token) => (
               <tr 
-                key={token.symbol}
+                key={token.id}
                 className="border-b border-border/50 hover:bg-muted/30 cursor-pointer transition-colors"
-                onClick={() => setSelectedToken(token)}
+                onClick={() => handleViewDetails(token)}
               >
                 <td className="py-3 px-2 text-muted-foreground">{token.rank}</td>
                 <td className="py-3 px-2">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                      <span className="font-display font-bold text-primary text-xs">{token.symbol[0]}</span>
-                    </div>
+                    {token.image ? (
+                      <img src={token.image} alt={token.symbol} width={28} height={28} className="rounded-full" loading="lazy" />
+                    ) : (
+                      <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                        <span className="font-display font-bold text-primary text-xs">{token.symbol[0]}</span>
+                      </div>
+                    )}
                     <div className="min-w-0">
                       <div className="font-medium truncate">{token.symbol}</div>
                       <div className="text-xs text-muted-foreground truncate max-w-[100px]">{token.name}</div>
@@ -202,32 +170,27 @@ export function TopTokensTable({ chain, onTokenSelect }: TopTokensTableProps) {
                 </td>
                 <td className="py-3 px-2 text-right font-medium">{formatPrice(token.price)}</td>
                 <td className={cn("py-3 px-2 text-right font-bold", token.change1h >= 0 ? "text-success" : "text-danger")}>
-                  {token.change1h >= 0 ? "+" : ""}{(token.change1h ?? 0).toFixed(2)}%
+                  {(token.change1h ?? 0) >= 0 ? "+" : ""}{(token.change1h ?? 0).toFixed(2)}%
                 </td>
                 <td className={cn("py-3 px-2 text-right font-bold", token.change24h >= 0 ? "text-success" : "text-danger")}>
-                  {token.change24h >= 0 ? "+" : ""}{(token.change24h ?? 0).toFixed(2)}%
+                  {(token.change24h ?? 0) >= 0 ? "+" : ""}{(token.change24h ?? 0).toFixed(2)}%
                 </td>
                 <td className={cn("py-3 px-2 text-right font-bold hidden lg:table-cell", token.change7d >= 0 ? "text-success" : "text-danger")}>
-                  {token.change7d >= 0 ? "+" : ""}{(token.change7d ?? 0).toFixed(2)}%
+                  {(token.change7d ?? 0) >= 0 ? "+" : ""}{(token.change7d ?? 0).toFixed(2)}%
                 </td>
                 <td className="py-3 px-2 text-right hidden sm:table-cell text-muted-foreground">{formatNumber(token.volume24h)}</td>
-                <td className="py-3 px-2 text-right hidden md:table-cell text-muted-foreground">{formatNumber(token.liquidity)}</td>
-                <td className="py-3 px-2 text-right hidden lg:table-cell text-muted-foreground">{(token.txns24h ?? 0).toLocaleString()}</td>
+                <td className="py-3 px-2 text-right hidden md:table-cell text-muted-foreground">{formatNumber(token.marketCap)}</td>
+                <td className="py-3 px-2 text-right hidden lg:table-cell text-muted-foreground">{formatNumber(token.fdv)}</td>
                 <td className="py-3 px-2 text-right">
                   <div className="flex items-center justify-end gap-1" onClick={e => e.stopPropagation()}>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="h-7 w-7 p-0"
-                      onClick={(e) => { e.stopPropagation(); copyAddress(token.contractAddress); }}
-                    >
-                      {copiedAddress === token.contractAddress ? <CheckCircle className="w-3 h-3 text-success" /> : <Copy className="w-3 h-3" />}
-                    </Button>
-                    <TradeButtons symbol={token.symbol} name={token.name} contractAddress={token.contractAddress} chain={chain.id} price={token.price} variant="inline" />
+                    <TradeButtons symbol={token.symbol} name={token.name} contractAddress={token.contractAddress ?? ''} chain={chain.id} price={token.price} variant="inline" />
                   </div>
                 </td>
               </tr>
             ))}
+            {!isLoading && tokens.length === 0 && (
+              <tr><td colSpan={10} className="py-6 text-center text-muted-foreground text-xs">No tokens listed for {chain.name} yet.</td></tr>
+            )}
           </tbody>
         </table>
       </div>

@@ -1,6 +1,8 @@
-import { TrendingUp, TrendingDown, DollarSign, BarChart3, Users, Activity, Flame, Zap } from "lucide-react";
+import { DollarSign, BarChart3, Activity, TrendingUp, TrendingDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ExplorerChain } from "@/lib/explorerChains";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface MarketStatsBarProps {
   chain: ExplorerChain;
@@ -16,21 +18,33 @@ function formatNumber(num: number | undefined | null): string {
 }
 
 export function MarketStatsBar({ chain }: MarketStatsBarProps) {
-  // Mock chain stats
-  const stats = {
-    totalPairs: Math.floor(Math.random() * 50000) + 10000,
-    volume24h: Math.random() * 500000000 + 50000000,
-    volumeChange: (Math.random() - 0.5) * 50,
-    tvl: Math.random() * 10000000000 + 1000000000,
-    transactions24h: Math.floor(Math.random() * 1000000) + 100000,
-    activeTraders: Math.floor(Math.random() * 100000) + 10000,
-    newPairs24h: Math.floor(Math.random() * 500) + 50,
-    trendingPairs: Math.floor(Math.random() * 100) + 20,
-  };
+  const { data, isLoading } = useQuery({
+    queryKey: ["chain-stats", chain.id],
+    queryFn: async () => {
+      const { data, error } = await supabase.functions.invoke("chain-stats", {
+        body: { chain: chain.id },
+      });
+      if (error) throw error;
+      return data as {
+        tvl: number | null;
+        tvlChange1d: number | null;
+        nativePrice: number | null;
+        nativeChange24h: number | null;
+        nativeVolume24h: number | null;
+        nativeMarketCap: number | null;
+      };
+    },
+    refetchInterval: 5 * 60_000,
+    refetchIntervalInBackground: true,
+    staleTime: 2 * 60_000,
+  });
+
+  const change = data?.nativeChange24h ?? null;
+  const tvlChange = data?.tvlChange1d ?? null;
 
   return (
     <div className="holo-card p-4 overflow-x-auto">
-      <div className="flex items-center gap-6 min-w-max">
+      <div className="flex items-center gap-6 min-w-max text-sm">
         <div className="flex items-center gap-2">
           <span className="text-xl">{chain.icon}</span>
           <span className="font-display font-bold text-sm">{chain.name}</span>
@@ -38,44 +52,46 @@ export function MarketStatsBar({ chain }: MarketStatsBarProps) {
         
         <div className="h-6 w-px bg-border" />
 
+        {isLoading ? (
+          <div className="h-5 w-72 rounded bg-muted/30 animate-pulse" />
+        ) : (
+          <>
         <div className="flex items-center gap-2">
-          <BarChart3 className="w-4 h-4 text-primary" />
-          <span className="text-xs text-muted-foreground">Pairs:</span>
-          <span className="text-sm font-medium">{(stats.totalPairs ?? 0).toLocaleString()}</span>
+          <DollarSign className="w-4 h-4 text-primary" />
+          <span className="text-xs text-muted-foreground">{chain.symbol} Price:</span>
+          <span className="text-sm font-medium">{data?.nativePrice ? `$${data.nativePrice.toLocaleString(undefined, { maximumFractionDigits: 4 })}` : "—"}</span>
+          {change !== null && (
+            <span className={cn("text-xs flex items-center gap-0.5", change >= 0 ? "text-success" : "text-danger")}>
+              {change >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+              {change >= 0 ? "+" : ""}{change.toFixed(2)}%
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
-          <DollarSign className="w-4 h-4 text-primary" />
+          <BarChart3 className="w-4 h-4 text-primary" />
           <span className="text-xs text-muted-foreground">24h Vol:</span>
-          <span className="text-sm font-medium">{formatNumber(stats.volume24h)}</span>
-          <span className={cn("text-xs", stats.volumeChange >= 0 ? "text-success" : "text-danger")}>
-            {stats.volumeChange >= 0 ? "+" : ""}{(stats.volumeChange ?? 0).toFixed(1)}%
-          </span>
+          <span className="text-sm font-medium">{formatNumber(data?.nativeVolume24h)}</span>
         </div>
 
         <div className="flex items-center gap-2">
           <Activity className="w-4 h-4 text-secondary" />
           <span className="text-xs text-muted-foreground">TVL:</span>
-          <span className="text-sm font-medium">{formatNumber(stats.tvl)}</span>
+          <span className="text-sm font-medium">{formatNumber(data?.tvl)}</span>
+          {tvlChange !== null && (
+            <span className={cn("text-xs", tvlChange >= 0 ? "text-success" : "text-danger")}>
+              {tvlChange >= 0 ? "+" : ""}{tvlChange.toFixed(1)}%
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
-          <Users className="w-4 h-4 text-warning" />
-          <span className="text-xs text-muted-foreground">Traders:</span>
-          <span className="text-sm font-medium">{(stats.activeTraders ?? 0).toLocaleString()}</span>
+          <DollarSign className="w-4 h-4 text-warning" />
+          <span className="text-xs text-muted-foreground">Market Cap:</span>
+          <span className="text-sm font-medium">{formatNumber(data?.nativeMarketCap)}</span>
         </div>
-
-        <div className="flex items-center gap-2">
-          <Zap className="w-4 h-4 text-success" />
-          <span className="text-xs text-muted-foreground">New Pairs:</span>
-          <span className="text-sm font-medium text-success">+{stats.newPairs24h}</span>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Flame className="w-4 h-4 text-danger" />
-          <span className="text-xs text-muted-foreground">Trending:</span>
-          <span className="text-sm font-medium text-danger">{stats.trendingPairs}</span>
-        </div>
+          </>
+        )}
       </div>
     </div>
   );
