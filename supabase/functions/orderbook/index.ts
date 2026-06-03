@@ -19,9 +19,17 @@ serve(async (req) => {
 
   try {
     const url = new URL(req.url);
-    const pair = url.searchParams.get('pair') || 'BTCUSDT';
-    const exchange = url.searchParams.get('exchange') || 'binance';
-    const limit = parseInt(url.searchParams.get('limit') || '10');
+    let pair = url.searchParams.get('pair') || 'BTCUSDT';
+    let exchange = url.searchParams.get('exchange') || 'binance';
+    let limit = parseInt(url.searchParams.get('limit') || '10');
+    if (req.method === 'POST') {
+      try {
+        const body = await req.json();
+        if (body?.pair) pair = String(body.pair);
+        if (body?.exchange) exchange = String(body.exchange);
+        if (body?.limit) limit = Number(body.limit);
+      } catch { /* ignore */ }
+    }
 
     console.log(`Fetching orderbook for ${pair} from ${exchange}`);
 

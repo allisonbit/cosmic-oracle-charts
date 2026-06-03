@@ -58,7 +58,7 @@ export function DashboardTopCryptos({ topCoins }: { topCoins: any[] }) {
               </div>
 
               <div className="hidden sm:block">
-                <CryptoChart price={coin.price} isPositive={coin.change24h >= 0} />
+                <CryptoChart price={coin.price} isPositive={coin.change24h >= 0} symbol={coin.symbol} />
               </div>
 
               <div className="flex justify-between text-[8px] sm:text-[10px] text-muted-foreground pt-1.5 sm:pt-2 border-t border-border/50">

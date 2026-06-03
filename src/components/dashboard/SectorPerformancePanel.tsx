@@ -1,35 +1,37 @@
-import { BarChart3, TrendingUp, TrendingDown, Layers, ArrowRight } from "lucide-react";
+import { Layers, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useMarketData } from "@/hooks/useMarketData";
-import { useMemo } from "react";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Sector {
   name: string;
   change: number;
-  leaders: string[];
+  marketCap: number;
+  volume: number;
   link: string;
 }
 
-export function SectorPerformancePanel() {
-  const { data } = useMarketData();
-  const topCoins = useMemo(() => data?.topCoins || [], [data?.topCoins]);
+function formatCap(n: number): string {
+  if (n >= 1e12) return `$${(n / 1e12).toFixed(2)}T`;
+  if (n >= 1e9) return `$${(n / 1e9).toFixed(1)}B`;
+  if (n >= 1e6) return `$${(n / 1e6).toFixed(0)}M`;
+  return `$${n.toFixed(0)}`;
+}
 
-  const sectors = useMemo((): Sector[] => {
-    const avgChange = topCoins.reduce((s, c) => s + c.change24h, 0) / (topCoins.length || 1);
-    const base = avgChange;
-    
-    return [
-      { name: "Layer 1", change: base + (Math.random() - 0.3) * 4, leaders: ["ETH", "SOL", "ADA"], link: "/chain/ethereum" },
-      { name: "Layer 2", change: base + (Math.random() - 0.4) * 5, leaders: ["ARB", "OP", "MATIC"], link: "/chain/base" },
-      { name: "DeFi", change: base + (Math.random() - 0.5) * 6, leaders: ["UNI", "AAVE", "MKR"], link: "/explorer" },
-      { name: "AI & Big Data", change: base + (Math.random() - 0.2) * 7, leaders: ["FET", "RNDR", "TAO"], link: "/explorer" },
-      { name: "Meme Coins", change: base + (Math.random() - 0.5) * 10, leaders: ["DOGE", "SHIB", "PEPE"], link: "/explorer" },
-      { name: "Gaming", change: base + (Math.random() - 0.4) * 5, leaders: ["AXS", "SAND", "IMX"], link: "/explorer" },
-      { name: "Infrastructure", change: base + (Math.random() - 0.3) * 4, leaders: ["LINK", "DOT", "ATOM"], link: "/explorer" },
-      { name: "Privacy", change: base + (Math.random() - 0.5) * 3, leaders: ["XMR", "ZEC", "SCRT"], link: "/explorer" },
-    ].sort((a, b) => b.change - a.change);
-  }, [topCoins]);
+export function SectorPerformancePanel() {
+  const { data, isLoading } = useQuery({
+    queryKey: ["sector-performance"],
+    queryFn: async () => {
+      const { data, error } = await supabase.functions.invoke("sector-performance", { body: {} });
+      if (error) throw error;
+      return (data?.sectors ?? []) as Sector[];
+    },
+    refetchInterval: 120_000,
+    refetchIntervalInBackground: true,
+    staleTime: 60_000,
+  });
+  const sectors = (data ?? []).slice().sort((a, b) => b.change - a.change);
 
   return (
     <div className="holo-card p-4 sm:p-6">
@@ -40,8 +42,11 @@ export function SectorPerformancePanel() {
       </h3>
 
       <div className="space-y-2">
+        {isLoading && sectors.length === 0 && Array.from({ length: 8 }).map((_, i) => (
+          <div key={i} className="h-10 rounded-lg bg-muted/20 animate-pulse" />
+        ))}
         {sectors.map((sector) => {
-          const maxChange = Math.max(...sectors.map(s => Math.abs(s.change)));
+          const maxChange = Math.max(...sectors.map(s => Math.abs(s.change)), 0.01);
           const barWidth = Math.min(100, (Math.abs(sector.change) / maxChange) * 100);
           
           return (
@@ -74,7 +79,7 @@ export function SectorPerformancePanel() {
               </div>
 
               <div className="hidden sm:flex items-center gap-1 text-[10px] text-muted-foreground w-24 justify-end">
-                {sector.leaders.slice(0, 2).join(", ")}
+                {formatCap(sector.marketCap)}
               </div>
               
               <ArrowRight className="w-3 h-3 text-primary opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />

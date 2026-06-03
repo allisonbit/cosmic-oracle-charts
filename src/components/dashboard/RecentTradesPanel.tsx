@@ -1,53 +1,33 @@
 import { Activity, ArrowUpRight, ArrowDownRight, Clock, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useMarketData } from "@/hooks/useMarketData";
-import { useMemo, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Trade {
+  id: number;
   symbol: string;
   side: "buy" | "sell";
   price: number;
   amount: number;
   value: number;
-  time: Date;
+  time: number;
   exchange: string;
 }
 
 export function RecentTradesPanel() {
-  const { data } = useMarketData();
-  const topCoins = useMemo(() => data?.topCoins || [], [data?.topCoins]);
-  const [trades, setTrades] = useState<Trade[]>([]);
-
-  // Simulate live trades from market data
-  useEffect(() => {
-    if (topCoins.length === 0) return;
-    
-    const generateTrades = () => {
-      const newTrades: Trade[] = Array.from({ length: 15 }, () => {
-        const coin = topCoins[Math.floor(Math.random() * Math.min(topCoins.length, 20))];
-        if (!coin) return null;
-        const side: "buy" | "sell" = Math.random() > 0.45 ? "buy" : "sell";
-        const amount = (Math.random() * 50 + 0.1) * (100000 / coin.price);
-        const exchanges = ["Binance", "Coinbase", "Kraken", "OKX", "Bybit"];
-        return {
-          symbol: coin.symbol,
-          side,
-          price: coin.price * (1 + (Math.random() - 0.5) * 0.002),
-          amount,
-          value: amount * coin.price,
-          time: new Date(Date.now() - Math.random() * 60000),
-          exchange: exchanges[Math.floor(Math.random() * exchanges.length)],
-        };
-      }).filter(Boolean) as Trade[];
-      
-      setTrades(newTrades.sort((a, b) => b.time.getTime() - a.time.getTime()));
-    };
-
-    generateTrades();
-    const interval = setInterval(generateTrades, 8000);
-    return () => clearInterval(interval);
-  }, [topCoins]);
+  const { data } = useQuery({
+    queryKey: ["live-trades"],
+    queryFn: async () => {
+      const { data, error } = await supabase.functions.invoke("live-trades", { body: {} });
+      if (error) throw error;
+      return (data?.trades ?? []) as Trade[];
+    },
+    refetchInterval: 5000,
+    refetchIntervalInBackground: true,
+    staleTime: 4000,
+  });
+  const trades = data ?? [];
 
   function formatValue(num: number): string {
     if (num >= 1e6) return `$${(num / 1e6).toFixed(1)}M`;
@@ -67,9 +47,16 @@ export function RecentTradesPanel() {
       </h3>
 
       <div className="space-y-1.5 max-h-[400px] overflow-y-auto">
+        {trades.length === 0 && (
+          <div className="space-y-1.5">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="h-9 rounded-lg bg-muted/20 animate-pulse" />
+            ))}
+          </div>
+        )}
         {trades.map((trade, i) => (
           <Link
-            key={`${trade.symbol}-${i}`}
+            key={`${trade.symbol}-${trade.id}-${i}`}
             to={`/price-prediction/${trade.symbol.toLowerCase()}/daily`}
             className={cn(
               "flex items-center gap-2 sm:gap-3 p-2 rounded-lg text-xs sm:text-sm hover:bg-muted/30 transition-all animate-fade-in",
@@ -103,7 +90,7 @@ export function RecentTradesPanel() {
             <span className="text-muted-foreground w-14 sm:w-16 text-right text-[10px] sm:text-xs">{trade.exchange}</span>
             
             <span className="text-muted-foreground text-[10px] w-8 text-right flex-shrink-0">
-              {Math.floor((Date.now() - trade.time.getTime()) / 1000)}s
+              {Math.max(0, Math.floor((Date.now() - trade.time) / 1000))}s
             </span>
           </Link>
         ))}

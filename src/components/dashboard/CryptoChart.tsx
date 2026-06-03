@@ -1,15 +1,30 @@
-import { useMemo } from "react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
-export function CryptoChart({ price, isPositive }: { price: number; isPositive: boolean }) {
-  const data = useMemo(() => {
-    const points = Array.from({ length: 24 }, (_, i) => ({
-      time: `${i}h`,
-      price: price * (0.95 + Math.random() * 0.1),
-    }));
-    points[points.length - 1].price = price;
-    return points;
-  }, [price]);
+export function CryptoChart({ price, isPositive, symbol }: { price: number; isPositive: boolean; symbol?: string }) {
+  const { data: points } = useQuery({
+    queryKey: ["sparkline", symbol ?? "BTC"],
+    queryFn: async () => {
+      const { data, error } = await supabase.functions.invoke("sparkline", {
+        body: { symbol: symbol ?? "BTC", days: 1 },
+      });
+      if (error) throw error;
+      return (data?.points ?? []) as Array<{ time: string; price: number }>;
+    },
+    enabled: !!symbol,
+    refetchInterval: 120_000,
+    refetchIntervalInBackground: true,
+    staleTime: 60_000,
+  });
+
+  const data = (points ?? []).length > 0
+    ? points!.map((p, i) => ({ time: `${i}`, price: p.price }))
+    : [];
+
+  if (data.length === 0) {
+    return <div className="h-[80px] bg-muted/20 rounded animate-pulse" />;
+  }
 
   return (
     <ResponsiveContainer width="100%" height={80}>
