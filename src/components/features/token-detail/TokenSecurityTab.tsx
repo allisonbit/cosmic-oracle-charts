@@ -6,10 +6,13 @@ import { Shield, Droplets, Activity, Users, PieChart, Gauge, AlertTriangle } fro
 interface TokenSecurityTabProps {
   token: any;
   derivedMetrics: any;
-  whaleHolders: any[];
+  topHolderPct?: number | null;
 }
 
-export function TokenSecurityTab({ token, derivedMetrics, whaleHolders }: TokenSecurityTabProps) {
+export function TokenSecurityTab({ token, derivedMetrics, topHolderPct }: TokenSecurityTabProps) {
+  const hasHolderInfo = typeof topHolderPct === "number" && topHolderPct > 0;
+  const holderValue = !hasHolderInfo ? "—" : (topHolderPct as number) > 30 ? "High" : "Distributed";
+  const holderOk = hasHolderInfo ? (topHolderPct as number) < 30 : true;
   return (
     <Card className="border-border">
       <CardHeader>
@@ -22,7 +25,7 @@ export function TokenSecurityTab({ token, derivedMetrics, whaleHolders }: TokenS
             { label: 'Liquidity Depth', value: (token.liquidity || 0) > 100000 ? 'Strong' : (token.liquidity || 0) > 10000 ? 'Moderate' : 'Low', ok: (token.liquidity || 0) > 10000, icon: Droplets },
             { label: 'Trading Activity', value: (token.txns24h || 0) > 1000 ? 'High' : (token.txns24h || 0) > 100 ? 'Medium' : 'Low', ok: (token.txns24h || 0) > 100, icon: Activity },
             { label: 'Buy/Sell Health', value: derivedMetrics && derivedMetrics.buyPressure > 40 && derivedMetrics.buyPressure < 70 ? 'Balanced' : 'Skewed', ok: derivedMetrics ? derivedMetrics.buyPressure > 35 : false, icon: Users },
-            { label: 'Holder Concentration', value: whaleHolders[0].pct > 30 ? 'High' : 'Distributed', ok: whaleHolders[0].pct < 30, icon: PieChart },
+            { label: 'Holder Concentration', value: holderValue, ok: holderOk, icon: PieChart },
             { label: 'Vol/Liq Ratio', value: derivedMetrics && derivedMetrics.volLiqRatio > 2 ? 'Risky' : 'Safe', ok: derivedMetrics ? derivedMetrics.volLiqRatio < 2 : true, icon: Gauge },
           ].map((check, i) => (
             <div key={i} className="p-3 rounded-lg bg-muted/50 flex items-center gap-3">
