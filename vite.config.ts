@@ -153,6 +153,12 @@ for (let i = 0; i < uniqueCoins.length; i++) {
   }
 }
 
+// How-to-buy guides — one page per coin for beginner SEO
+const howToBuyRoutes = [
+  '/how-to-buy',
+  ...uniqueCoins.map(id => `/how-to-buy/${id}`),
+];
+
 const marketQuestionRoutes = [
   "/market/best-crypto-to-buy-today",
   "/market/top-crypto-gainers-today",
@@ -184,13 +190,14 @@ const marketQuestionRoutes = [
 
 const coinMarketRoutes: string[] = [];
 
-// All routes combined — includes 1,700+ comparison pairs for pSEO
+// All routes combined — includes 1,700+ comparison pairs + how-to-buy guides for pSEO
 const allRoutes = [
   ...staticRoutes,
   ...chainRoutes,
   ...predictionRoutes,
   ...questionRoutes,
   ...comparisonRoutes,
+  ...howToBuyRoutes,
   ...marketQuestionRoutes,
   ...coinMarketRoutes,
   ...educationalRoutes,

@@ -74,6 +74,8 @@ const DCACalculator = lazy(() => import("./pages/tools/DCACalculator"));
 const ILCalculator = lazy(() => import("./pages/tools/ILCalculator"));
 const CompareHub = lazy(() => import("./pages/CompareHub"));
 const CoinComparison = lazy(() => import("./pages/CoinComparison"));
+const HowToBuyHub = lazy(() => import("./pages/HowToBuyHub"));
+const HowToBuyCoin = lazy(() => import("./pages/HowToBuyCoin"));
 // Loading fallback component
 const PageLoader = memo(function PageLoader() {
   return (
@@ -215,6 +217,8 @@ const App = () => (
                 <Route path="/tools/impermanent-loss-calculator" element={<ILCalculator />} />
                 <Route path="/compare" element={<CompareHub />} />
                 <Route path="/compare/:coins" element={<CoinComparison />} />
+                <Route path="/how-to-buy" element={<HowToBuyHub />} />
+                <Route path="/how-to-buy/:coin" element={<HowToBuyCoin />} />
                 {/* Legal & About pages */}
                 <Route path="/about" element={<About />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
