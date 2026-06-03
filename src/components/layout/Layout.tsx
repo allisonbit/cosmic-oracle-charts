@@ -4,6 +4,7 @@ import { CryptoTicker } from "./CryptoTicker";
 import { Footer } from "./Footer";
 import { MobileBottomNav } from "./MobileBottomNav";
 import { BreadcrumbNav } from "./BreadcrumbNav";
+import { CookieBanner } from "../legal/CookieBanner";
 import { Loader2 } from "lucide-react";
 
 interface LayoutProps {
@@ -43,6 +44,7 @@ export function Layout({ children, showTicker = true }: LayoutProps) {
       
       <Footer />
       <MobileBottomNav />
+      <CookieBanner />
     </div>
   );
 }

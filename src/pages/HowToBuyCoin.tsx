@@ -164,9 +164,12 @@ export default function HowToBuyCoin() {
             <h1 className="text-3xl md:text-4xl font-bold font-display mb-3 glow-text">
               How to Buy {meta.name} ({meta.ticker})
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl">
+            <p className="text-lg text-muted-foreground max-w-2xl mb-4">
               {meta.tagline} Follow our complete guide to buy {meta.ticker} safely today.
             </p>
+            <div className="inline-block px-4 py-2 bg-background/50 border border-border rounded-lg text-xs text-muted-foreground/80 max-w-2xl">
+              <strong>Advertiser Disclosure:</strong> OracleBull is an independent platform. We may receive compensation from the cryptocurrency exchanges or brokers recommended in this guide at no additional cost to you. This compensation does not impact our AI-driven market analysis or ratings.
+            </div>
           </div>
 
           {/* Live Stats Bar */}

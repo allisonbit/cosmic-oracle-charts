@@ -82,31 +82,31 @@ const PrivacyPolicy = () => {
           <section className="holo-card p-6 md:p-8">
             <div className="flex items-center gap-3 mb-4">
               <Cookie className="w-6 h-6 text-warning" />
-              <h2 className="text-xl font-display font-bold m-0">Cookies and Tracking</h2>
+              <h2 className="text-xl font-display font-bold m-0">Cookies and Advertising (Google AdSense)</h2>
             </div>
             <p className="text-muted-foreground">
-              We use cookies and similar technologies to enhance your experience. These include:
+              We use cookies and similar technologies to enhance your experience, analyze our traffic, and serve targeted advertisements.
             </p>
-            <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-4 mt-4">
-              <li><strong>Essential cookies:</strong> Required for basic website functionality</li>
-              <li><strong>Analytics cookies:</strong> Help us understand how visitors use our site (Google Analytics)</li>
-              <li><strong>Advertising cookies:</strong> Used by Google AdSense to serve relevant advertisements</li>
+            <h3 className="text-lg font-bold mt-6 mb-3">Google AdSense & DoubleClick Cookie</h3>
+            <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-4">
+              <li>Third party vendors, including Google, use cookies to serve ads based on a user's prior visits to this website or other websites.</li>
+              <li>Google's use of advertising cookies enables it and its partners to serve ads to our users based on their visit to our site and/or other sites on the Internet.</li>
+              <li>Users may opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Google Ads Settings</a>.</li>
             </ul>
             <p className="text-muted-foreground mt-4">
-              You can control cookie preferences through your browser settings. Disabling cookies may 
-              affect some website functionality.
+              Alternatively, you can opt out of a third-party vendor's use of cookies for personalized advertising by visiting <a href="https://www.aboutads.info" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">www.aboutads.info</a>.
             </p>
           </section>
 
           <section className="holo-card p-6 md:p-8">
-            <h2 className="text-xl font-display font-bold mb-4">Third-Party Services</h2>
+            <h2 className="text-xl font-display font-bold mb-4">Third-Party Services & Affiliates</h2>
             <p className="text-muted-foreground">
               We use the following third-party services that may collect information:
             </p>
             <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-4 mt-4">
-              <li><strong>Google Analytics:</strong> Website analytics and usage tracking</li>
-              <li><strong>Google AdSense:</strong> Advertising services</li>
-              <li><strong>Cryptocurrency data providers:</strong> Market data APIs for real-time prices</li>
+              <li><strong>Google Analytics:</strong> Website analytics and usage tracking.</li>
+              <li><strong>Google AdSense:</strong> Advertising services and personalized ad delivery.</li>
+              <li><strong>Affiliate Partners:</strong> We may include affiliate links to cryptocurrency exchanges. If you click on these links and make a purchase, we may earn a commission at no extra cost to you.</li>
             </ul>
             <p className="text-muted-foreground mt-4">
               These services have their own privacy policies governing data collection and use.

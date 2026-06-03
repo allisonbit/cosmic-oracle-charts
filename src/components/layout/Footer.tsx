@@ -253,10 +253,10 @@ export function Footer() {
           </div>
 
           <div className="text-center text-xs md:text-sm text-muted-foreground">
-            <p>© {new Date().getFullYear()} OracleBull.com — Free AI Crypto Analytics Platform. All rights reserved.</p>
-            <p className="mt-1 text-xs text-muted-foreground/60">
-              Market analysis for educational purposes only. Not financial advice. Cryptocurrency investments carry significant risk.
-            </p>
+            <p>© {new Date().getFullYear()} OracleBull.com - Free AI Crypto Analytics Platform. All rights reserved.</p>
+            <div className="mt-4 p-4 rounded-xl bg-background/50 border border-border text-[11px] md:text-xs text-muted-foreground max-w-5xl mx-auto text-left md:text-center leading-relaxed">
+              <span className="font-bold text-foreground">Financial Risk Warning:</span> Cryptocurrency trading and investments are highly volatile and carry a high degree of risk. You could lose some or all of your initial investment. OracleBull provides data, market analysis, and AI predictions for informational and educational purposes only, and does not constitute financial or investment advice. We are not a registered broker or financial advisor. Never invest money you cannot afford to lose. Past performance is not indicative of future results.
+            </div>
           </div>
         </div>
       </div>
