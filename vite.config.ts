@@ -49,6 +49,7 @@ const staticRoutes = [
   "/my/news",
   "/my/dca",
   "/my/copy",
+  "/news",
 ];
 
 // Chain routes

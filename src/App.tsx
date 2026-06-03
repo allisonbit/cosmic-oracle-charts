@@ -76,6 +76,8 @@ const CompareHub = lazy(() => import("./pages/CompareHub"));
 const CoinComparison = lazy(() => import("./pages/CoinComparison"));
 const HowToBuyHub = lazy(() => import("./pages/HowToBuyHub"));
 const HowToBuyCoin = lazy(() => import("./pages/HowToBuyCoin"));
+const NewsHub = lazy(() => import("./pages/NewsHub"));
+const NewsArticle = lazy(() => import("./pages/NewsArticle"));
 // Loading fallback component
 const PageLoader = memo(function PageLoader() {
   return (
@@ -219,6 +221,8 @@ const App = () => (
                 <Route path="/compare/:coins" element={<CoinComparison />} />
                 <Route path="/how-to-buy" element={<HowToBuyHub />} />
                 <Route path="/how-to-buy/:coin" element={<HowToBuyCoin />} />
+                <Route path="/news" element={<NewsHub />} />
+                <Route path="/news/:slug" element={<NewsArticle />} />
                 {/* Legal & About pages */}
                 <Route path="/about" element={<About />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
