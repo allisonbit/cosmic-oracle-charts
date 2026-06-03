@@ -104,7 +104,7 @@ function HeroCard({ article }: { article: NewsItem }) {
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
         <div className="absolute top-4 left-4 flex gap-2">
           <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border ${sentiment.color}`}>
-            ⚡ AI: {sentiment.label}
+            AI: {sentiment.label}
           </span>
           <span className="text-[10px] font-bold px-2.5 py-1 rounded-full border border-border bg-background/80 text-muted-foreground">
             {article.source_info?.name ?? article.source}
@@ -116,7 +116,7 @@ function HeroCard({ article }: { article: NewsItem }) {
           {article.title}
         </h2>
         <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-          {article.body?.slice(0, 180)}…
+          {article.body?.slice(0, 180)}...
         </p>
         <div className="flex items-center justify-between">
           <span className="text-xs text-muted-foreground flex items-center gap-1.5">
@@ -177,13 +177,13 @@ export default function NewsHub() {
     <Layout>
       <Helmet>
         <title>Crypto News & AI Market Analysis | Oracle Bull</title>
-        <meta name="description" content="Live cryptocurrency news with AI-powered sentiment analysis. Every story rated Bullish, Bearish or Neutral by Oracle AI — so you know how the market might react." />
+        <meta name="description" content="Live cryptocurrency news with AI-powered sentiment analysis. Every story rated Bullish, Bearish or Neutral by Oracle AI - so you know how the market might react." />
         <link rel="canonical" href="https://oraclebull.com/news" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebPage",
           "name": "Crypto News & AI Market Analysis | Oracle Bull",
-          "description": "Live crypto news with AI sentiment ratings — Bullish, Bearish or Neutral — updated every 5 minutes.",
+          "description": "Live crypto news with AI sentiment ratings - Bullish, Bearish or Neutral - updated every 5 minutes.",
           "url": "https://oraclebull.com/news",
           "publisher": { "@type": "Organization", "name": "Oracle Bull", "url": "https://oraclebull.com" }
         })}</script>
@@ -197,13 +197,13 @@ export default function NewsHub() {
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wider mb-3">
                 <Newspaper className="w-4 h-4" />
-                <span>LIVE · AUTO-UPDATES EVERY 5 MIN</span>
+                <span>LIVE - AUTO-UPDATES EVERY 5 MIN</span>
               </div>
               <h1 className="text-3xl md:text-4xl font-bold font-display glow-text">
                 Crypto News + AI Analysis
               </h1>
               <p className="text-muted-foreground mt-2 max-w-xl">
-                Every story rated <span className="text-success font-semibold">Bullish</span>, <span className="text-danger font-semibold">Bearish</span>, or <span className="text-warning font-semibold">Neutral</span> by Oracle AI — so you know how the market might react.
+                Every story rated <span className="text-success font-semibold">Bullish</span>, <span className="text-danger font-semibold">Bearish</span>, or <span className="text-warning font-semibold">Neutral</span> by Oracle AI - so you know how the market might react.
               </p>
             </div>
             <button
@@ -301,10 +301,10 @@ export default function NewsHub() {
                         ))}
                         <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
                           Based on the last 20 headlines. {bullCount > bearCount + 2
-                            ? "The news flow is overwhelmingly bullish. Caution — sentiment extremes often precede reversals."
+                            ? "The news flow is overwhelmingly bullish. Caution - sentiment extremes often precede reversals."
                             : bearCount > bullCount + 2
                               ? "Bearish news is dominating. Fear-driven dips can be opportunities for the prepared."
-                              : "Mixed signals in the news cycle. No clear directional edge — wait for a catalyst."}
+                              : "Mixed signals in the news cycle. No clear directional edge - wait for a catalyst."}
                         </p>
                       </div>
                     );

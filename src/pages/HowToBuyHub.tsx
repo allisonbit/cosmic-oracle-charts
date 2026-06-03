@@ -39,7 +39,7 @@ export default function HowToBuyHub() {
   return (
     <Layout>
       <Helmet>
-        <title>How to Buy Crypto — Step-by-Step Guides | Oracle Bull</title>
+        <title>How to Buy Crypto - Step-by-Step Guides | Oracle Bull</title>
         <meta name="description" content="Learn how to buy Bitcoin, Ethereum, Solana and 80+ cryptocurrencies safely. Step-by-step beginner guides with AI-powered tips on timing your purchase." />
         <link rel="canonical" href="https://oraclebull.com/how-to-buy" />
         <script type="application/ld+json">{JSON.stringify({
@@ -65,7 +65,7 @@ export default function HowToBuyHub() {
               How to Buy Crypto
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Simple, accurate, up-to-date guides for buying any cryptocurrency safely — with AI-powered tips on <em>when</em> to buy, not just <em>how</em>.
+              Simple, accurate, up-to-date guides for buying any cryptocurrency safely - with AI-powered tips on <em>when</em> to buy, not just <em>how</em>.
             </p>
           </div>
 
@@ -110,7 +110,7 @@ export default function HowToBuyHub() {
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <div className="text-xs text-muted-foreground">{guide.readTime} read · {guide.searches} searches</div>
+                  <div className="text-xs text-muted-foreground">{guide.readTime} read - {guide.searches} searches</div>
                   <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
                 </div>
               </Link>

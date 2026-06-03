@@ -20,13 +20,13 @@ const COIN_META: Record<string, {
   "ripple":             { name: "XRP",            ticker: "XRP",    color: "#00aae4", tagline: "Instant, low-cost international payment settlement.", category: "Payment Protocol", year: 2012, founder: "Ripple Labs" },
   "cardano":            { name: "Cardano",        ticker: "ADA",    color: "#3cc8c8", tagline: "Peer-reviewed, research-driven blockchain for secure transactions.", category: "Smart Contract Platform", year: 2017, founder: "Charles Hoskinson" },
   "dogecoin":           { name: "Dogecoin",       ticker: "DOGE",   color: "#c3a634", tagline: "The original meme coin with the strongest community in crypto.", category: "Meme Coin", year: 2013, founder: "Billy Markus & Jackson Palmer" },
-  "polkadot":           { name: "Polkadot",       ticker: "DOT",    color: "#e6007a", tagline: "The blockchain of blockchains — connecting multiple networks.", category: "Interoperability", year: 2020, founder: "Gavin Wood" },
+  "polkadot":           { name: "Polkadot",       ticker: "DOT",    color: "#e6007a", tagline: "The blockchain of blockchains - connecting multiple networks.", category: "Interoperability", year: 2020, founder: "Gavin Wood" },
   "chainlink":          { name: "Chainlink",      ticker: "LINK",   color: "#375bd2", tagline: "Decentralised oracles connecting blockchains to real-world data.", category: "Oracle Network", year: 2017, founder: "Sergey Nazarov" },
   "avalanche-2":        { name: "Avalanche",      ticker: "AVAX",   color: "#e84142", tagline: "Blazing-fast blockchain with sub-second finality.", category: "Layer 1 Blockchain", year: 2020, founder: "Emin Gün Sirer" },
   "matic-network":      { name: "Polygon",        ticker: "MATIC",  color: "#8247e5", tagline: "Ethereum's leading scaling solution for cheap, fast transactions.", category: "Layer 2 Scaling", year: 2017, founder: "Sandeep Nailwal" },
   "shiba-inu":          { name: "Shiba Inu",      ticker: "SHIB",   color: "#e84040", tagline: "Ethereum-based meme coin with its own DEX and metaverse.", category: "Meme Coin", year: 2020, founder: "Ryoshi" },
   "binancecoin":        { name: "BNB",            ticker: "BNB",    color: "#f3ba2f", tagline: "Binance's exchange token powering the BNB Chain ecosystem.", category: "Exchange Token", year: 2017, founder: "Changpeng Zhao (CZ)" },
-  "litecoin":           { name: "Litecoin",       ticker: "LTC",    color: "#bfbbbb", tagline: "The silver to Bitcoin's gold — faster, cheaper transactions.", category: "Payments", year: 2011, founder: "Charlie Lee" },
+  "litecoin":           { name: "Litecoin",       ticker: "LTC",    color: "#bfbbbb", tagline: "The silver to Bitcoin's gold - faster, cheaper transactions.", category: "Payments", year: 2011, founder: "Charlie Lee" },
   "uniswap":            { name: "Uniswap",        ticker: "UNI",    color: "#ff007a", tagline: "The largest decentralised exchange on Ethereum.", category: "DeFi / DEX", year: 2018, founder: "Hayden Adams" },
   "near":               { name: "NEAR Protocol",  ticker: "NEAR",   color: "#00ec97", tagline: "Developer-friendly Layer 1 with sharding for infinite scale.", category: "Layer 1 Blockchain", year: 2020, founder: "Illia Polosukhin" },
   "arbitrum":           { name: "Arbitrum",       ticker: "ARB",    color: "#28a0f0", tagline: "Ethereum's leading optimistic rollup for cheap DeFi.", category: "Layer 2 Scaling", year: 2021, founder: "Ed Felten" },
@@ -34,7 +34,7 @@ const COIN_META: Record<string, {
   "aptos":              { name: "Aptos",           ticker: "APT",    color: "#00c0ff", tagline: "High-performance L1 built by ex-Meta Diem engineers.", category: "Layer 1 Blockchain", year: 2022, founder: "Mo Shaikh" },
   "sui":                { name: "Sui",             ticker: "SUI",    color: "#6fbcf0", tagline: "Move-language L1 designed for speed and game/NFT apps.", category: "Layer 1 Blockchain", year: 2023, founder: "Evan Cheng" },
   "pepe":               { name: "Pepe",            ticker: "PEPE",   color: "#4caf50", tagline: "The most iconic frog-themed meme coin on Ethereum.", category: "Meme Coin", year: 2023, founder: "Anonymous" },
-  "dogwifcoin":         { name: "dogwifhat",       ticker: "WIF",    color: "#ce8d3e", tagline: "Solana's most popular meme coin — a dog in a hat.", category: "Meme Coin", year: 2023, founder: "Anonymous" },
+  "dogwifcoin":         { name: "dogwifhat",       ticker: "WIF",    color: "#ce8d3e", tagline: "Solana's most popular meme coin - a dog in a hat.", category: "Meme Coin", year: 2023, founder: "Anonymous" },
   "render-token":       { name: "Render",          ticker: "RENDER", color: "#c81010", tagline: "Decentralised GPU rendering network for AI and 3D content.", category: "AI / DePIN", year: 2017, founder: "Jules Urbach" },
   "fetch-ai":           { name: "Fetch.ai",        ticker: "FET",    color: "#1eb4fb", tagline: "AI autonomous agents operating on a decentralised network.", category: "AI Crypto", year: 2019, founder: "Humayun Sheikh" },
   "bittensor":          { name: "Bittensor",       ticker: "TAO",    color: "#e6c87e", tagline: "Decentralised AI network incentivising machine learning.", category: "AI Crypto", year: 2021, founder: "Jacob Steeves" },
@@ -48,11 +48,11 @@ const COIN_META: Record<string, {
 };
 
 const EXCHANGES = [
-  { name: "Coinbase", flag: "🇺🇸", rating: 4.8, fee: "0.6%", best: "USA & UK Beginners", kycRequired: true, regulated: true, url: "https://coinbase.com" },
-  { name: "Binance", flag: "🌐", rating: 4.7, fee: "0.1%", best: "Lowest Fees Globally", kycRequired: true, regulated: true, url: "https://binance.com" },
-  { name: "Kraken", flag: "🇺🇸🇬🇧", rating: 4.6, fee: "0.26%", best: "Security-First Traders", kycRequired: true, regulated: true, url: "https://kraken.com" },
-  { name: "Bybit", flag: "🌐", rating: 4.5, fee: "0.1%", best: "Advanced & Derivatives", kycRequired: true, regulated: true, url: "https://bybit.com" },
-  { name: "KuCoin", flag: "🌐", rating: 4.3, fee: "0.1%", best: "Altcoin Variety", kycRequired: true, regulated: false, url: "https://kucoin.com" },
+  { name: "Coinbase", flag: "", rating: 4.8, fee: "0.6%", best: "USA & UK Beginners", kycRequired: true, regulated: true, url: "https://coinbase.com" },
+  { name: "Binance", flag: "", rating: 4.7, fee: "0.1%", best: "Lowest Fees Globally", kycRequired: true, regulated: true, url: "https://binance.com" },
+  { name: "Kraken", flag: "", rating: 4.6, fee: "0.26%", best: "Security-First Traders", kycRequired: true, regulated: true, url: "https://kraken.com" },
+  { name: "Bybit", flag: "", rating: 4.5, fee: "0.1%", best: "Advanced & Derivatives", kycRequired: true, regulated: true, url: "https://bybit.com" },
+  { name: "KuCoin", flag: "", rating: 4.3, fee: "0.1%", best: "Altcoin Variety", kycRequired: true, regulated: false, url: "https://kucoin.com" },
 ];
 
 const PAYMENT_METHODS = [
@@ -104,7 +104,7 @@ export default function HowToBuyCoin() {
   const rank = liveData?.market_data?.market_cap_rank;
   const sentiment = liveData?.sentiment_votes_up_percentage ?? 60;
 
-  const pageTitle = `How to Buy ${meta.name} (${meta.ticker}) in 2025 — Step-by-Step Guide | Oracle Bull`;
+  const pageTitle = `How to Buy ${meta.name} (${meta.ticker}) in 2025 - Step-by-Step Guide | Oracle Bull`;
   const pageDesc = `Learn exactly how to buy ${meta.name} (${meta.ticker}) safely in 2025. Compare the best exchanges, payment methods, and fees. Get AI-powered tips on the best time to buy ${meta.ticker}.`;
   const canonical = `https://oraclebull.com/how-to-buy/${id}`;
 
@@ -159,7 +159,7 @@ export default function HowToBuyCoin() {
           <div className="mb-10">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wider mb-4">
               <BookOpen className="w-4 h-4" />
-              <span>STEP-BY-STEP GUIDE · UPDATED 2025</span>
+              <span>STEP-BY-STEP GUIDE - UPDATED 2025</span>
             </div>
             <h1 className="text-3xl md:text-4xl font-bold font-display mb-3 glow-text">
               How to Buy {meta.name} ({meta.ticker})
@@ -174,7 +174,7 @@ export default function HowToBuyCoin() {
             <div className="holo-card p-4">
               <div className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold mb-1">Current Price</div>
               <div className="font-bold text-xl font-display">
-                {currentPrice ? `$${currentPrice.toLocaleString()}` : <span className="animate-pulse text-muted-foreground">Loading…</span>}
+                {currentPrice ? `$${currentPrice.toLocaleString()}` : <span className="animate-pulse text-muted-foreground">Loading...</span>}
               </div>
             </div>
             <div className="holo-card p-4">
@@ -230,7 +230,7 @@ export default function HowToBuyCoin() {
           </div>
 
           {/* Steps */}
-          <h2 className="text-2xl font-bold font-display mb-6">How to Buy {meta.name} — Step by Step</h2>
+          <h2 className="text-2xl font-bold font-display mb-6">How to Buy {meta.name} - Step by Step</h2>
           <div className="space-y-4 mb-12">
             {STEPS.map((step) => (
               <div key={step.num} className="holo-card p-5 flex gap-5">

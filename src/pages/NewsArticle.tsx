@@ -84,14 +84,14 @@ function generateExtendedAnalysis(article: NewsItem, sentiment: { label: string 
   const title = article.title.toLowerCase();
   const paragraphs: string[] = [];
 
-  // Para 1 — Market Impact
+  // Para 1 - Market Impact
   if (sentiment.label === "Bullish") {
     paragraphs.push(
-      `Oracle AI classifies this as a bullish catalyst. Stories of this nature — particularly those referencing institutional activity, regulatory approvals, or technological milestones — have historically triggered 3–12% price reactions in the affected assets within 48–72 hours. Retail traders tend to underestimate the second-order effects: increased spot buying pressure typically flows from large caps (Bitcoin, Ethereum) into mid and small-cap altcoins within 24–48 hours as confidence spreads.`
+      `Oracle AI classifies this as a bullish catalyst. Stories of this nature - particularly those referencing institutional activity, regulatory approvals, or technological milestones - have historically triggered 3–12% price reactions in the affected assets within 48–72 hours. Retail traders tend to underestimate the second-order effects: increased spot buying pressure typically flows from large caps (Bitcoin, Ethereum) into mid and small-cap altcoins within 24–48 hours as confidence spreads.`
     );
   } else if (sentiment.label === "Bearish") {
     paragraphs.push(
-      `Oracle AI flags this as a bearish event. Historically, news items of this type generate a 5–15% initial price decline in the directly named assets before markets attempt a recovery. The critical variable is whether institutional players use the dip as an accumulation opportunity. Monitor the 4-hour RSI on the affected assets — a reading below 30 combined with rising volume is the classic signal that the flush is complete and smart money is entering.`
+      `Oracle AI flags this as a bearish event. Historically, news items of this type generate a 5–15% initial price decline in the directly named assets before markets attempt a recovery. The critical variable is whether institutional players use the dip as an accumulation opportunity. Monitor the 4-hour RSI on the affected assets - a reading below 30 combined with rising volume is the classic signal that the flush is complete and smart money is entering.`
     );
   } else {
     paragraphs.push(
@@ -99,12 +99,12 @@ function generateExtendedAnalysis(article: NewsItem, sentiment: { label: string 
     );
   }
 
-  // Para 2 — Trading context
+  // Para 2 - Trading context
   paragraphs.push(
-    `In the current market cycle, news-driven volatility is amplified by high levels of leveraged positions in the futures market. This means price reactions to headlines — both positive and negative — are often exaggerated in the short term before mean-reverting. Experienced traders use these spikes as entry or exit opportunities rather than chasing the initial move. If you are holding a position in an asset mentioned in this story, we recommend checking our live AI Price Predictions to see if the sentiment shift has altered the medium-term forecast.`
+    `In the current market cycle, news-driven volatility is amplified by high levels of leveraged positions in the futures market. This means price reactions to headlines - both positive and negative - are often exaggerated in the short term before mean-reverting. Experienced traders use these spikes as entry or exit opportunities rather than chasing the initial move. If you are holding a position in an asset mentioned in this story, we recommend checking our live AI Price Predictions to see if the sentiment shift has altered the medium-term forecast.`
   );
 
-  // Para 3 — What to watch next
+  // Para 3 - What to watch next
   paragraphs.push(
     `Key levels to monitor: If the affected assets break above their 50-day moving average on strong volume following this news, it signals genuine market conviction. If volume is low, treat the move as a fakeout. For a real-time picture of market-wide sentiment and which sectors of the market are absorbing this news the best, visit our Market Sentiment dashboard and Coin Comparison Engine to see which assets are outperforming their peers right now.`
   );
@@ -163,8 +163,8 @@ export default function NewsArticle() {
   return (
     <Layout>
       <Helmet>
-        <title>{article.title} — Oracle Bull AI Analysis</title>
-        <meta name="description" content={`${article.body?.slice(0, 160)}… Oracle AI rates this ${sentiment.label}. Get the full AI market analysis on Oracle Bull.`} />
+        <title>{article.title} - Oracle Bull AI Analysis</title>
+        <meta name="description" content={`${article.body?.slice(0, 160)}... Oracle AI rates this ${sentiment.label}. Get the full AI market analysis on Oracle Bull.`} />
         <link rel="canonical" href={canonical} />
         <meta property="og:title" content={article.title} />
         <meta property="og:description" content={article.body?.slice(0, 160)} />
@@ -184,7 +184,7 @@ export default function NewsArticle() {
             <span>/</span>
             <Link to="/news" className="hover:text-primary transition-colors">News</Link>
             <span>/</span>
-            <span className="text-foreground line-clamp-1">{article.title.slice(0, 50)}…</span>
+            <span className="text-foreground line-clamp-1">{article.title.slice(0, 50)}...</span>
           </nav>
 
           <div className="grid lg:grid-cols-3 gap-10">
@@ -195,10 +195,10 @@ export default function NewsArticle() {
               {/* Meta */}
               <div className="flex flex-wrap items-center gap-3 mb-5">
                 <span className={`text-xs font-bold px-3 py-1 rounded-full border ${sentiment.color}`}>
-                  ⚡ Oracle AI: {sentiment.label}
+                  Oracle AI: {sentiment.label}
                 </span>
                 <span className="text-xs text-muted-foreground flex items-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5" />{publishDate} · {timeAgo(article.published_on)}
+                  <Clock className="w-3.5 h-3.5" />{publishDate} - {timeAgo(article.published_on)}
                 </span>
                 <span className="text-xs text-muted-foreground">
                   Source: <span className="text-foreground font-medium">{article.source_info?.name ?? article.source}</span>
@@ -246,7 +246,7 @@ export default function NewsArticle() {
                   </div>
                   <div>
                     <h2 className="font-bold font-display text-xl">Oracle AI Market Analysis</h2>
-                    <p className="text-xs text-muted-foreground">Generated from live market context · Not financial advice</p>
+                    <p className="text-xs text-muted-foreground">Generated from live market context - Not financial advice</p>
                   </div>
                 </div>
 
@@ -258,7 +258,7 @@ export default function NewsArticle() {
                   {extendedAnalysis.map((para, i) => (
                     <div key={i}>
                       <h3 className="text-sm font-bold text-foreground mb-2">
-                        {i === 0 ? "🔍 Market Impact Assessment" : i === 1 ? "📊 Trading Context" : "👁 What to Watch Next"}
+                        {i === 0 ? "Market Impact Assessment" : i === 1 ? "Trading Context" : "What to Watch Next"}
                       </h3>
                       <p className="text-sm text-muted-foreground leading-relaxed">{para}</p>
                     </div>

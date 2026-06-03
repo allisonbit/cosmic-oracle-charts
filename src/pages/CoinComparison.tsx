@@ -276,7 +276,7 @@ function AIVerdict({ coinAData, coinBData, metaA, metaB }: { coinAData: CoinData
           <strong className="text-foreground">{formatNum(mktB.market_cap.usd)}</strong> in total market cap.
         </p>
         <p>
-          Across 7 weighted indicators — covering momentum, liquidity, community strength, and volume —{" "}
+          Across 7 weighted indicators - covering momentum, liquidity, community strength, and volume -{" "}
           <strong className="text-foreground">{winner.name}</strong> scores higher with a{" "}
           <strong className="text-primary">{winnerScore}% AI confidence rating</strong>.{" "}
           {scoreA === scoreB
