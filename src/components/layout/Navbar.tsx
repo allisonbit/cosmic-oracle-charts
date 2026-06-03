@@ -11,6 +11,7 @@ const desktopNavItems = [
   { path: "/dashboard", label: "Dashboard" },
   { path: "/trade", label: "Trade" },
   { path: "/airdrops", label: "Airdrops" },
+  { path: "/tools", label: "Tools" },
   { path: "/predictions", label: "Predictions" },
   { path: "/sentiment", label: "Sentiment" },
   { path: "/strength", label: "Strength" },

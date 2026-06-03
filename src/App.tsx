@@ -68,6 +68,10 @@ const MyCopyTrading = lazy(() => import("./pages/MyCopyTrading"));
 const Trade = lazy(() => import("./pages/Trade"));
 const MarketPage = lazy(() => import("./pages/MarketPage"));
 const Airdrops = lazy(() => import("./pages/Airdrops"));
+const ToolsHub = lazy(() => import("./pages/ToolsHub"));
+const ProfitCalculator = lazy(() => import("./pages/tools/ProfitCalculator"));
+const DCACalculator = lazy(() => import("./pages/tools/DCACalculator"));
+const ILCalculator = lazy(() => import("./pages/tools/ILCalculator"));
 // Loading fallback component
 const PageLoader = memo(function PageLoader() {
   return (
@@ -203,6 +207,10 @@ const App = () => (
                 <Route path="/q/:slug" element={<QuestionIntent />} />
                 <Route path="/market/:slug" element={<MarketPage />} />
                 <Route path="/airdrops" element={<Airdrops />} />
+                <Route path="/tools" element={<ToolsHub />} />
+                <Route path="/tools/profit-calculator" element={<ProfitCalculator />} />
+                <Route path="/tools/dca-calculator" element={<DCACalculator />} />
+                <Route path="/tools/impermanent-loss-calculator" element={<ILCalculator />} />
                 {/* Legal & About pages */}
                 <Route path="/about" element={<About />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />

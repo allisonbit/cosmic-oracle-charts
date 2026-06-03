@@ -9,6 +9,10 @@ import { VitePWA } from "vite-plugin-pwa";
 const staticRoutes = [
   "/",
   "/dashboard",
+  "/tools",
+  "/tools/profit-calculator",
+  "/tools/dca-calculator",
+  "/tools/impermanent-loss-calculator",
   "/airdrops",
   "/predictions",
   "/price-prediction",
