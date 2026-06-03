@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, TrendingUp, BookOpen, Globe, Radio, Layers, Wallet, Home, Zap, Calendar, Target, Sparkles, BarChart3, Search } from "lucide-react";
+import { Menu, X, TrendingUp, BookOpen, Globe, Radio, Layers, Wallet, Home, Zap, Calendar, Target, Sparkles, BarChart3, Search, Gift } from "lucide-react";
 import { cn } from "@/lib/utils";
 import oracleLogo from "@/assets/oracle-bull-logo.jpg";
 import { GlobalSearch } from "@/components/search/GlobalSearch";
@@ -10,6 +10,7 @@ const desktopNavItems = [
   { path: "/", label: "Home" },
   { path: "/dashboard", label: "Dashboard" },
   { path: "/trade", label: "Trade" },
+  { path: "/airdrops", label: "Airdrops" },
   { path: "/predictions", label: "Predictions" },
   { path: "/sentiment", label: "Sentiment" },
   { path: "/strength", label: "Strength" },
@@ -24,8 +25,8 @@ const mobileNavItems = [
   { path: "/", label: "Home", icon: Home },
   { path: "/dashboard", label: "Dashboard", icon: TrendingUp },
   { path: "/trade", label: "Trade", icon: Wallet },
+  { path: "/airdrops", label: "Airdrops", icon: Gift },
   { path: "/predictions", label: "Predictions", icon: Target },
-  
   { path: "/strength", label: "Strength", icon: Zap },
   { path: "/factory", label: "Factory", icon: Calendar },
   { path: "/chain/ethereum", label: "Chains", icon: Layers },
@@ -33,7 +34,6 @@ const mobileNavItems = [
   { path: "/explorer", label: "Explorer", icon: Globe },
   { path: "/scanner", label: "Scanner", icon: Search },
   { path: "/insights", label: "Insights", icon: BookOpen },
-  
 ];
 
 export function Navbar() {

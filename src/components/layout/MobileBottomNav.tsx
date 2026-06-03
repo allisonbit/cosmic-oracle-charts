@@ -1,5 +1,5 @@
 import { 
-  Home, LayoutDashboard, TrendingUp, Brain, Zap, ScanLine, Search
+  Home, LayoutDashboard, TrendingUp, Brain, Zap, ScanLine, Search, Gift
 } from "lucide-react";
 import { NavLink as RouterNavLink, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -11,6 +11,7 @@ const navItems = [
   { icon: Brain, label: "Sentiment", path: "/sentiment" },
   { icon: ScanLine, label: "Scanner", path: "/scanner" },
   { icon: Search, label: "Explorer", path: "/explorer" },
+  { icon: Gift, label: "Airdrops", path: "/airdrops" },
 ];
 
 export function MobileBottomNav() {
