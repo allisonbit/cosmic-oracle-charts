@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, TrendingUp, BookOpen, Globe, Radio, Layers, Wallet, Home, Zap, Calendar, Target, Sparkles, BarChart3, Search, Gift } from "lucide-react";
+import { Menu, X, TrendingUp, BookOpen, Globe, Radio, Layers, Wallet, Home, Zap, Calendar, Target, Sparkles, BarChart3, Search, Gift, Calculator, ArrowRightLeft, Compass, Newspaper } from "lucide-react";
 import { cn } from "@/lib/utils";
 import oracleLogo from "@/assets/oracle-bull-logo.jpg";
 import { GlobalSearch } from "@/components/search/GlobalSearch";
@@ -30,6 +30,10 @@ const mobileNavItems = [
   { path: "/dashboard", label: "Dashboard", icon: TrendingUp },
   { path: "/trade", label: "Trade", icon: Wallet },
   { path: "/airdrops", label: "Airdrops", icon: Gift },
+  { path: "/tools", label: "Tools", icon: Calculator },
+  { path: "/compare", label: "Compare", icon: ArrowRightLeft },
+  { path: "/how-to-buy", label: "Guides", icon: Compass },
+  { path: "/news", label: "News", icon: Newspaper },
   { path: "/predictions", label: "Predictions", icon: Target },
   { path: "/strength", label: "Strength", icon: Zap },
   { path: "/factory", label: "Factory", icon: Calendar },
