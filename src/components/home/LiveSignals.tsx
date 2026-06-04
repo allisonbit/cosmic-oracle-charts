@@ -54,32 +54,66 @@ function fmtPrice(p: number) {
 
 // Signal derived from live data + optional AI prediction
 function deriveSignal(livePrice: CryptoPrice | undefined, prediction: any) {
-  const price = prediction?.currentPrice || livePrice?.price || 0;
-  const change = livePrice?.change24h ?? 0;
-  
-  // Prefer AI bias if available, otherwise derive from 24h momentum
-  const bias = prediction?.bias || (change > 0.5 ? "bullish" : change < -0.5 ? "bearish" : "neutral");
-  const isBullish = bias === "bullish";
-  
-  // Confidence: prefer AI, else derive from strength of move (5% move = ~80% conf)
-  const rawConf = prediction?.confidence || Math.min(92, 60 + Math.abs(change) * 3.5);
-  const confidence = Math.round(rawConf);
+  // ALWAYS use live CoinGecko price as entry — never stale prediction price
+  const entry   = livePrice?.price    || 0;
+  const change  = livePrice?.change24h ?? 0;
+  const high24h = livePrice?.high24h  || entry * 1.03;
+  const low24h  = livePrice?.low24h   || entry * 0.97;
 
-  // Entry price: always use live price if available (most accurate)
-  const entry = price;
+  if (entry === 0) return { bias: "neutral", isBullish: true, confidence: 65, entry: 0, tp: 0, sl: 0, riskReward: "2.0", rangePosition: 0.5 };
 
-  // TP/SL: prefer AI prediction data, else derive at 2:1 RR
-  const volatility = Math.max(Math.abs(change) / 100, 0.02);
-  const tp = prediction?.tradingZones?.takeProfit1 ||
-    (isBullish ? entry * (1 + volatility * 2.5) : entry * (1 - volatility * 2.5));
-  const sl = prediction?.tradingZones?.stopLoss ||
-    (isBullish ? entry * (1 - volatility * 1.2) : entry * (1 + volatility * 1.2));
+  // Price position within today's range (0 = at low, 1 = at high)
+  const rangePosition = high24h > low24h
+    ? Math.min(1, Math.max(0, (entry - low24h) / (high24h - low24h)))
+    : 0.5;
 
-  const riskReward = entry > 0 && tp > 0 && sl > 0
+  // ── Multi-factor bias scoring ──────────────────────────────────────────────
+  // Factor 1: 24h momentum
+  const momentumScore = change > 3 ? 2 : change > 0.8 ? 1 : change < -3 ? -2 : change < -0.8 ? -1 : 0;
+  // Factor 2: Range position (price near 24h high = bearish pressure; near low = bullish opportunity)
+  const rangeScore = rangePosition > 0.80 ? -1 : rangePosition < 0.20 ? 1 : 0;
+  // Factor 3: AI model bias (use ONLY for direction, not for price levels)
+  const aiScore = prediction?.bias === "bullish" ? 1 : prediction?.bias === "bearish" ? -1 : 0;
+
+  const totalScore = momentumScore + rangeScore + aiScore;
+  const isBullish  = totalScore >= 0;
+  const bias       = isBullish ? "bullish" : "bearish";
+
+  // Confidence based on factor alignment + move magnitude
+  const alignment  = Math.abs(totalScore) / 4;  // 0-1
+  const baseConf   = prediction?.confidence ?? Math.min(92, 58 + Math.abs(change) * 3.5);
+  const confidence = Math.round(Math.min(95, baseConf + alignment * 8));
+
+  // ── TP / SL using natural support/resistance from 24h range ──────────────
+  // Validate prediction levels: they MUST be on the correct side of entry
+  const predTP  = prediction?.tradingZones?.takeProfit1;
+  const predSL  = prediction?.tradingZones?.stopLoss;
+  const predTPOk = predTP != null && (isBullish ? predTP > entry * 1.001 : predTP < entry * 0.999);
+  const predSLOk = predSL != null && (isBullish ? predSL < entry * 0.999 : predSL > entry * 1.001);
+
+  let sl: number, tp: number;
+
+  if (isBullish) {
+    // LONG: SL just below 24h low (natural support), TP at 2:1 RR above entry
+    sl = predSLOk ? predSL : Math.min(low24h  * 0.994, entry * 0.965);
+    tp = predTPOk ? predTP : entry + (entry - sl) * 2.2;
+    // Safety guardrails — TP must be above entry, SL must be below entry
+    if (tp <= entry) tp = entry * 1.045;
+    if (sl >= entry) sl = entry * 0.964;
+  } else {
+    // SHORT: SL just above 24h high (natural resistance), TP at 2:1 RR below entry
+    sl = predSLOk ? predSL : Math.max(high24h * 1.006, entry * 1.035);
+    tp = predTPOk ? predTP : entry - (sl - entry) * 2.2;
+    // Safety guardrails — TP must be below entry, SL must be above entry
+    if (tp >= entry) tp = entry * 0.955;
+    if (sl <= entry) sl = entry * 1.035;
+  }
+
+  const riskReward = Math.abs(entry - sl) > 0
     ? (Math.abs(tp - entry) / Math.abs(entry - sl)).toFixed(1)
     : "2.0";
 
-  return { bias, isBullish, confidence, entry, tp, sl, riskReward };
+  return { bias, isBullish, confidence, entry, tp, sl, riskReward, rangePosition };
 }
 
 function SignalCard({ coin, livePrice, idx }: {
