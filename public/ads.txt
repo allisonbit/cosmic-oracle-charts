@@ -1,1 +1,20 @@
+# OracleBull.com - Authorized Digital Sellers (ads.txt)
+# https://iabtechlab.com/ads-txt/
+# Last updated: June 2025
+
+# ===== GOOGLE ADSENSE =====
 google.com, pub-1336344158133611, DIRECT, f08c47fec0942fa0
+
+# ===== BITMEDIA.IO (Crypto Ad Network) =====
+# IMPORTANT: Replace YOUR_PUBLISHER_ID below with your actual Bitmedia Publisher ID
+# Found in your Bitmedia dashboard under: Account > Sites & Zones > your site
+bitmedia.io, YOUR_PUBLISHER_ID, DIRECT
+
+# ===== COINZILLA (Crypto Ad Network) =====
+# coinzilla.com, YOUR_COINZILLA_ID, DIRECT
+
+# ===== COINTRAFFIC =====
+# cointraffic.io, YOUR_COINTRAFFIC_ID, DIRECT
+
+# ===== A-ADS (Crypto Ad Network) =====
+# a-ads.com, YOUR_AADS_ID, DIRECT

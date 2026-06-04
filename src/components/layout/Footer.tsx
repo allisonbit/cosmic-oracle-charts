@@ -131,11 +131,12 @@ export function Footer() {
             <ul className="space-y-2">
               <li><Link to="/about" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"><Info className="w-3 h-3" /> About Us</Link></li>
               <li><Link to="/contact" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Contact</Link></li>
+              <li><Link to="/advertise" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Advertise With Us</Link></li>
+              <li><Link to="/editorial-policy" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Editorial Policy</Link></li>
               <li><Link to="/privacy-policy" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"><Shield className="w-3 h-3" /> Privacy Policy</Link></li>
               <li><Link to="/terms" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"><FileText className="w-3 h-3" /> Terms of Service</Link></li>
               <li><Link to="/risk-disclaimer" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"><AlertTriangle className="w-3 h-3" /> Risk Disclaimer</Link></li>
               <li><Link to="/sitemap" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Sitemap</Link></li>
-              <li><a href="/html-sitemap.html" className="block text-sm text-muted-foreground hover:text-primary transition-colors">HTML Sitemap</a></li>
             </ul>
           </nav>
         </div>

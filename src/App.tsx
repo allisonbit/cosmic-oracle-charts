@@ -50,6 +50,8 @@ const About = lazy(() => import("./pages/About"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const RiskDisclaimer = lazy(() => import("./pages/RiskDisclaimer"));
+const EditorialPolicy = lazy(() => import("./pages/EditorialPolicy"));
+const Advertise = lazy(() => import("./pages/Advertise"));
 const Scanner = lazy(() => import("./pages/Scanner"));
 const Admin = lazy(() => import("./pages/Admin"));
 const MyHub = lazy(() => import("./pages/MyHub"));
@@ -228,6 +230,8 @@ const App = () => (
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/risk-disclaimer" element={<RiskDisclaimer />} />
+                <Route path="/editorial-policy" element={<EditorialPolicy />} />
+                <Route path="/advertise" element={<Advertise />} />
                 <Route path="/admin" element={<ProtectedRoute><AdminRoute><Admin /></AdminRoute></ProtectedRoute>} />
                 <Route path="/my" element={<MyHub />} />
                 <Route path="/my/watchlist" element={<MyWatchlistPage />} />

@@ -105,8 +105,9 @@ const PrivacyPolicy = () => {
             </p>
             <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-4 mt-4">
               <li><strong>Google Analytics:</strong> Website analytics and usage tracking.</li>
-              <li><strong>Google AdSense:</strong> Advertising services and personalized ad delivery.</li>
-              <li><strong>Affiliate Partners:</strong> We may include affiliate links to cryptocurrency exchanges. If you click on these links and make a purchase, we may earn a commission at no extra cost to you.</li>
+              <li><strong>Google AdSense:</strong> Display advertising services and personalized ad delivery.</li>
+              <li><strong>Bitmedia.io:</strong> Cryptocurrency-focused display advertising network. Bitmedia may use cookies and tracking technologies to serve relevant crypto advertisements. View <a href="https://bitmedia.io/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Bitmedia's Privacy Policy</a>.</li>
+              <li><strong>Affiliate Partners:</strong> We may include affiliate links to cryptocurrency exchanges (e.g., Binance, Coinbase, Bybit). If you click these links and register or transact, we may earn a commission at no extra cost to you.</li>
             </ul>
             <p className="text-muted-foreground mt-4">
               These services have their own privacy policies governing data collection and use.

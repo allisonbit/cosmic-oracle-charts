@@ -31,6 +31,8 @@ const staticRoutes = [
   "/contact",
   "/sitemap",
   "/about",
+  "/advertise",
+  "/editorial-policy",
   "/privacy-policy",
   "/terms",
   "/risk-disclaimer",
