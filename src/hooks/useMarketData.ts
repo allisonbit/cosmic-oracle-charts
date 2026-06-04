@@ -18,10 +18,14 @@ export interface TrendingCoin {
 }
 
 export interface TopCoin {
+  id?: string;
   symbol: string;
   name: string;
+  image?: string;
   price: number;
+  change1h?: number;
   change24h: number;
+  change7d?: number;
   volume: number;
   marketCap: number;
   rank: number;
