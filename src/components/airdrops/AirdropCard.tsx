@@ -1,4 +1,4 @@
-import { Brain, CheckCircle2, AlertTriangle, Coins, Shield, Zap, Star, TrendingUp, Clock } from "lucide-react";
+import { Brain, CheckCircle2, AlertTriangle, Coins, Shield, Zap, Star, TrendingUp, Clock, BookOpen } from "lucide-react";
 import { type AirdropProject } from "./AirdropList";
 import { AirdropCountdown } from "./AirdropCountdown";
 import { cn } from "@/lib/utils";
@@ -52,7 +52,7 @@ function StatusDot({ status }: { status: "Live" | "Upcoming" | "Ended" }) {
   );
 }
 
-export function AirdropCard({ project, rank }: { project: AirdropProject; rank?: number }) {
+export function AirdropCard({ project, rank, onReadMore }: { project: AirdropProject; rank?: number; onReadMore?: () => void }) {
   const effortLabel = project.effortScore <= 1 ? "Very Easy" : project.effortScore <= 2 ? "Easy" : project.effortScore <= 3 ? "Medium" : project.effortScore <= 4 ? "Hard" : "Very Hard";
   const effortColor = project.effortScore <= 2 ? "text-success" : project.effortScore <= 3 ? "text-warning" : "text-danger";
 
@@ -179,6 +179,17 @@ export function AirdropCard({ project, rank }: { project: AirdropProject; rank?:
           </div>
         </div>
       </div>
+
+      {/* Read Full Guide button */}
+      {project.fullGuide && onReadMore && (
+        <button
+          onClick={onReadMore}
+          className="mt-3 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-primary/25 text-primary text-xs font-bold hover:bg-primary/8 transition-all relative z-10"
+        >
+          <BookOpen className="w-3.5 h-3.5" />
+          Read Full Guide · 2,000+ words
+        </button>
+      )}
     </div>
   );
 }
