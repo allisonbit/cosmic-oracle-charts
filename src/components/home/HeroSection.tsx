@@ -91,14 +91,15 @@ export function HeroSection() {
 
   return (
     <section
-      className="relative min-h-[92vh] flex items-center justify-center overflow-hidden pt-20 pb-10"
+      className="relative flex items-center justify-center overflow-hidden pt-8 pb-10 md:pt-16 md:pb-14 min-h-[85vh] md:min-h-[88vh]"
       aria-labelledby="hero-heading"
     >
       {/* Background layers */}
       <div className="absolute inset-0 bg-background" aria-hidden="true" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,hsl(var(--primary)/0.15),transparent)]" aria-hidden="true" />
-      <div className="absolute top-0 right-0 w-[900px] h-[900px] bg-primary/8 rounded-full blur-[140px] translate-x-1/3 -translate-y-1/4 pointer-events-none animate-pulse-slow" aria-hidden="true" />
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary/12 rounded-full blur-[120px] -translate-x-1/4 translate-y-1/4 pointer-events-none animate-pulse-slow" style={{ animationDelay: "2s" }} aria-hidden="true" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,hsl(var(--primary)/0.12),transparent)]" aria-hidden="true" />
+      {/* Blur orbs — static (no animation) for smooth 60fps on all devices */}
+      <div className="blur-orb absolute top-0 right-0 w-[500px] h-[500px] md:w-[700px] md:h-[700px] bg-primary/6 rounded-full blur-[80px] md:blur-[110px] translate-x-1/3 -translate-y-1/4" aria-hidden="true" />
+      <div className="blur-orb absolute bottom-0 left-0 w-[350px] h-[350px] md:w-[500px] md:h-[500px] bg-secondary/8 rounded-full blur-[60px] md:blur-[90px] -translate-x-1/4 translate-y-1/4" aria-hidden="true" />
 
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-10 lg:gap-6 items-center">

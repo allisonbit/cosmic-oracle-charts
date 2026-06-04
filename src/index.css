@@ -103,6 +103,7 @@
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
+    overflow-x: hidden;  /* prevent horizontal scroll at root level */
   }
 
   body {
@@ -338,6 +339,36 @@
 @keyframes twinkle {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.3; }
+}
+
+/* ── Performance: respect reduced-motion preference ─────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── Section performance: contain layout so sections don't trigger full reflows */
+section {
+  contain: layout style;
+}
+
+/* ── Blur orb utility: GPU-isolated, no animations on mobile ─────────────── */
+.blur-orb {
+  will-change: auto;         /* don't pre-allocate GPU layer */
+  transform: translateZ(0);  /* own compositing layer */
+  pointer-events: none;
+}
+
+/* Reduced blur on mobile to prevent GPU overload */
+@media (max-width: 768px) {
+  .blur-orb {
+    filter: blur(40px) !important;
+    opacity: 0.4 !important;
+  }
 }
 
 /* Custom scrollbar */
