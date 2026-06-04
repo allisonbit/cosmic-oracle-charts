@@ -1,31 +1,25 @@
-import { useMemo } from "react";
 import { Link2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
-const ASSETS = ["BTC", "ETH", "SOL", "XRP", "BNB", "ADA"];
+const FALLBACK_ASSETS = ["BTC", "ETH", "SOL", "XRP", "BNB", "ADA"];
 
 export function CorrelationMatrix() {
-  const correlations = useMemo(() => {
-    // Generate a realistic correlation matrix
-    const matrix: Record<string, Record<string, number>> = {};
-    
-    ASSETS.forEach(asset1 => {
-      matrix[asset1] = {};
-      ASSETS.forEach(asset2 => {
-        if (asset1 === asset2) {
-          matrix[asset1][asset2] = 1;
-        } else if (matrix[asset2]?.[asset1] !== undefined) {
-          matrix[asset1][asset2] = matrix[asset2][asset1];
-        } else {
-          // Generate correlated values - crypto tends to be positively correlated
-          const base = 0.3 + Math.random() * 0.5;
-          matrix[asset1][asset2] = Number((base ?? 0).toFixed(2));
-        }
-      });
-    });
-    
-    return matrix;
-  }, []);
+  const { data } = useQuery({
+    queryKey: ["correlation-matrix"],
+    queryFn: async () => {
+      const { data } = await supabase.functions.invoke("correlation-matrix");
+      return data as { matrix: Record<string, Record<string, number>>; symbols: string[] };
+    },
+    refetchInterval: 10 * 60 * 1000,
+    refetchIntervalInBackground: true,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const ASSETS = data?.symbols?.length ? data.symbols : FALLBACK_ASSETS;
+  const correlations = data?.matrix ?? {};
+  const getVal = (a: string, b: string) => correlations[a]?.[b] ?? (a === b ? 1 : 0);
 
   const getCorrelationColor = (value: number) => {
     if (value === 1) return "bg-primary/20 text-primary";
@@ -68,7 +62,7 @@ export function CorrelationMatrix() {
                       getCorrelationColor(correlations[asset1][asset2])
                     )}
                   >
-                    {correlations[asset1][asset2].toFixed(2)}
+                    {getVal(asset1, asset2).toFixed(2)}
                   </td>
                 ))}
               </tr>

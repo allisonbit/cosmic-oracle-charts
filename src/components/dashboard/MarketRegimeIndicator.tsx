@@ -1,33 +1,41 @@
 import { useMemo } from "react";
 import { Target, TrendingUp, TrendingDown, Activity } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useMarketData } from "@/hooks/useMarketData";
 
 export function MarketRegimeIndicator() {
+  const { data } = useMarketData();
+
   const regime = useMemo(() => {
-    const position = 35 + Math.random() * 30; // Position on the meter (0-100)
-    
+    const coins = data?.topCoins ?? [];
+    const fgi = data?.fearGreedIndex ?? 50;
+    const mcChange = data?.global?.marketCapChange24h ?? 0;
+    const top = coins.slice(0, 20);
+
+    const avgChange = top.length ? top.reduce((a, c) => a + (c.change24h || 0), 0) / top.length : 0;
+    const avgVol = top.length ? top.reduce((a, c) => a + Math.abs(c.change24h || 0), 0) / top.length : 0;
+    const bullish = top.filter(c => (c.change24h || 0) > 2).length;
+    const bearish = top.filter(c => (c.change24h || 0) < -2).length;
+
+    // Map fear/greed (0-100) directly to regime position
+    const position = Math.max(0, Math.min(100, fgi));
     let label: string;
     if (position < 25) label = "Bear Trend";
     else if (position < 40) label = "Sideways";
     else if (position < 60) label = "Neutral";
     else if (position < 75) label = "Bull Trend";
-    else label = "High Vol";
+    else label = "High Greed";
 
-    const volatilities = ["Low", "Medium", "High"];
-    const strengths = ["Weak", "Moderate", "Strong"];
-    const momentums = ["Negative", "Neutral", "Positive"];
+    const volatility = avgVol > 6 ? "High" : avgVol > 3 ? "Medium" : "Low";
+    const strengthScore = Math.abs(bullish - bearish) / Math.max(top.length, 1);
+    const trendStrength = strengthScore > 0.5 ? "Strong" : strengthScore > 0.25 ? "Moderate" : "Weak";
+    const momentum = mcChange > 1 ? "Positive" : mcChange < -1 ? "Negative" : "Neutral";
+    // Similarity = how close fgi & mc change agree (0-100)
+    const similarity = Math.round(100 - Math.min(100, Math.abs((fgi - 50) - mcChange * 5)));
+    const historicalMatch = position >= 60 && avgVol > 5 ? "Late-stage bull run" : position >= 60 ? "Sustained uptrend" : position <= 40 ? "Capitulation phase" : "Consolidation range";
 
-    return {
-      position,
-      label,
-      volatility: volatilities[Math.floor(Math.random() * 3)],
-      trendStrength: strengths[Math.floor(Math.random() * 3)],
-      momentum: momentums[Math.floor(Math.random() * 3)],
-      duration: Math.floor(Math.random() * 30) + 5,
-      similarity: Math.floor(Math.random() * 30) + 60,
-      historicalMatch: "Q1 2024 consolidation"
-    };
-  }, []);
+    return { position, label, volatility, trendStrength, momentum, similarity, historicalMatch };
+  }, [data]);
 
   const getVolatilityColor = (v: string) => {
     if (v === "Low") return "text-success";
@@ -104,16 +112,16 @@ export function MarketRegimeIndicator() {
           </div>
         </div>
         <div className="bg-muted/30 p-2 sm:p-3 rounded-lg">
-          <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">Duration</div>
+          <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">Regime</div>
           <div className="text-sm sm:text-base font-bold text-primary">
-            {regime.duration} days
+            {regime.label}
           </div>
         </div>
       </div>
 
-      {/* Historical Similarity */}
+      {/* Signal Confluence */}
       <div className="pt-3 border-t border-border">
-        <div className="text-[10px] sm:text-xs text-muted-foreground mb-2">Historical Similarity:</div>
+        <div className="text-[10px] sm:text-xs text-muted-foreground mb-2">Signal Confluence:</div>
         <div className="flex items-center gap-2">
           <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
             <div 
@@ -124,7 +132,7 @@ export function MarketRegimeIndicator() {
           <span className="text-xs sm:text-sm font-bold text-foreground">{regime.similarity}%</span>
         </div>
         <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">
-          Similar to {regime.historicalMatch}
+          {regime.historicalMatch}
         </p>
       </div>
     </div>

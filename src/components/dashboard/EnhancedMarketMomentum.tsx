@@ -5,6 +5,8 @@ import {
 import { cn } from "@/lib/utils";
 import { useMarketData } from "@/hooks/useMarketData";
 import { useState, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 
 export function EnhancedMarketMomentum() {
@@ -29,12 +31,26 @@ export function EnhancedMarketMomentum() {
     return { bullish, bearish, neutral, direction, strength, avgChange, velocity, volatilityLevel };
   }, [topCoins]);
 
-  const sectors = useMemo(() => [
-    { sector: "Large Caps", avgChange: momentum.avgChange * (1 + (Math.random() - 0.5) * 0.5), topMover: topCoins[0]?.symbol || "BTC", topMoverChange: topCoins[0]?.change24h || 0 },
-    { sector: "DeFi", avgChange: momentum.avgChange * (1 + (Math.random() - 0.5) * 0.8), topMover: "UNI", topMoverChange: (Math.random() - 0.3) * 15 },
-    { sector: "Layer 1s", avgChange: momentum.avgChange * (1 + (Math.random() - 0.5) * 0.6), topMover: "SOL", topMoverChange: (Math.random() - 0.3) * 12 },
-    { sector: "Memes", avgChange: momentum.avgChange * (1 + (Math.random() - 0.5) * 2), topMover: "DOGE", topMoverChange: (Math.random() - 0.3) * 20 },
-  ], [topCoins, momentum.avgChange]);
+  const { data: sectorData } = useQuery({
+    queryKey: ["sector-performance"],
+    queryFn: async () => {
+      const { data } = await supabase.functions.invoke("sector-performance");
+      return (data?.sectors ?? []) as Array<{ name: string; change: number }>;
+    },
+    refetchInterval: 120_000,
+    refetchIntervalInBackground: true,
+    staleTime: 60_000,
+  });
+
+  const sectors = useMemo(() => {
+    const list = (sectorData ?? []).slice(0, 4);
+    return list.map(s => ({
+      sector: s.name,
+      avgChange: s.change ?? 0,
+      topMover: topCoins[0]?.symbol || "BTC",
+      topMoverChange: topCoins[0]?.change24h || 0,
+    }));
+  }, [sectorData, topCoins]);
 
   return (
     <div className="holo-card p-3 sm:p-4 md:p-6">

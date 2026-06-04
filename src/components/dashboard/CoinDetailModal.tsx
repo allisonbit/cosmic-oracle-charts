@@ -3,6 +3,8 @@ import { TrendingUp, TrendingDown, Activity, Clock, AlertTriangle, Target, BarCh
 import { cn } from "@/lib/utils";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface CoinData {
   symbol: string;
@@ -32,16 +34,25 @@ export function CoinDetailModal({ coin, open, onOpenChange }: CoinDetailModalPro
   const trend = coin ? (coin.change24h >= 2 ? "BULLISH" : coin.change24h <= -2 ? "BEARISH" : "NEUTRAL") : "NEUTRAL";
   const isPositive = coin ? coin.change24h >= 0 : false;
 
-  // Generate mock chart data
+  const { data: sparkData } = useQuery({
+    queryKey: ["sparkline", coin?.name?.toLowerCase() || coin?.symbol?.toLowerCase()],
+    queryFn: async () => {
+      if (!coin) return [];
+      const id = coin.name?.toLowerCase() || coin.symbol?.toLowerCase();
+      const { data } = await supabase.functions.invoke(`sparkline?id=${id}&days=2`);
+      return (data?.prices ?? []) as Array<[number, number]>;
+    },
+    enabled: !!coin && open,
+    refetchInterval: 60_000,
+    refetchIntervalInBackground: true,
+    staleTime: 30_000,
+  });
+
   const chartData = useMemo(() => {
     if (!coin) return [];
-    const points = Array.from({ length: 48 }, (_, i) => ({
-      time: `${i}h`,
-      price: coin.price * (0.92 + Math.random() * 0.16),
-    }));
-    points[points.length - 1].price = coin.price;
-    return points;
-  }, [coin]);
+    if (!sparkData?.length) return [];
+    return sparkData.map(([t, p]) => ({ time: new Date(t).getHours() + "h", price: p }));
+  }, [coin, sparkData]);
 
   // Generate analysis based on the coin's performance
   const analysis = useMemo(() => {
