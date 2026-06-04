@@ -13,6 +13,7 @@ import { AdSenseManager, StickyFooterAd } from "@/components/ads";
 import { usePageTracking } from "@/hooks/usePageTracking";
 import { useSearchEnginePing } from "@/hooks/useSearchEnginePing";
 import { AppErrorBoundary } from "@/components/system/AppErrorBoundary";
+import { ScrollToTop } from "@/components/system/ScrollToTop";
 import { GlobalSchemas } from "@/components/seo/RichSchemas";
 import { AIChatBubble } from "@/components/chat/AIChatBubble";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
@@ -180,6 +181,7 @@ const App = () => (
         <Sonner position="top-right" closeButton richColors />
         <AppErrorBoundary>
           <BrowserRouter>
+            <ScrollToTop />
             <ChunkLoadRecovery />
             <PageTracker />
             <AdSenseManager />
