@@ -13,6 +13,8 @@ import { AdSenseManager, StickyFooterAd } from "@/components/ads";
 import { usePageTracking } from "@/hooks/usePageTracking";
 import { useSearchEnginePing } from "@/hooks/useSearchEnginePing";
 import { AppErrorBoundary } from "@/components/system/AppErrorBoundary";
+import { RouteErrorBoundary } from "@/components/system/RouteErrorBoundary";
+
 import { ScrollToTop } from "@/components/system/ScrollToTop";
 import { GlobalSchemas } from "@/components/seo/RichSchemas";
 import { AIChatBubble } from "@/components/chat/AIChatBubble";
@@ -113,7 +115,14 @@ const queryClient = new QueryClient({
       networkMode: 'offlineFirst',
     },
   },
+  // Never throw query errors into React — handle them in the UI layer
+  queryCache: undefined,
 });
+
+// Wrap a route element so each page has its own isolated error boundary.
+// A crash on /dashboard cannot kill /predictions or the navbar.
+const B = (el: JSX.Element) => <RouteErrorBoundary>{el}</RouteErrorBoundary>;
+
 
 // Page tracking wrapper component
 const PageTracker = memo(function PageTracker() {
@@ -190,71 +199,71 @@ const App = () => (
             <GlobalSchemas />
             <Suspense fallback={<PageLoader />}>
               <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                
-                <Route path="/sentiment" element={<Sentiment />} />
-                <Route path="/scanner" element={<Scanner />} />
-                <Route path="/explorer" element={<Explorer />} />
-                <Route path="/explorer/:chain/:address" element={<TokenDetail />} />
-                <Route path="/learn" element={<Learn />} />
-                <Route path="/learn/:slug" element={<LearnArticle />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/chain/:chainId" element={<Chain />} />
-                <Route path="/strength" element={<StrengthMeter />} />
-                <Route path="/strength-meter" element={<StrengthMeter />} />
-                <Route path="/factory" element={<CryptoFactory />} />
-                <Route path="/factory/events" element={<FactoryEvents />} />
-                <Route path="/factory/onchain" element={<FactoryOnchain />} />
-                <Route path="/factory/narratives" element={<FactoryNarratives />} />
-                <Route path="/factory/news" element={<FactoryNews />} />
-                <Route path="/sitemap" element={<Sitemap />} />
-                <Route path="/insights" element={<Insights />} />
-                <Route path="/insights/:slug" element={<InsightArticle />} />
-                <Route path="/predictions" element={<PredictionHub />} />
-                <Route path="/price-prediction" element={<PredictionHub />} />
-                <Route path="/price-prediction/:coinId" element={<PricePrediction />} />
-                <Route path="/price-prediction/:coinId/2026" element={<YearPrediction />} />
-                <Route path="/price-prediction/:coinId/2027" element={<YearPrediction />} />
-                <Route path="/price-prediction/:coinId/2028" element={<YearPrediction />} />
-                <Route path="/price-prediction/:coinId/2030" element={<YearPrediction />} />
-                <Route path="/price-prediction/:coinId/:timeframe" element={<PricePrediction />} />
-                <Route path="/q/:slug" element={<QuestionIntent />} />
-                <Route path="/market/:slug" element={<MarketPage />} />
-                <Route path="/airdrops" element={<Airdrops />} />
-                <Route path="/tools" element={<ToolsHub />} />
-                <Route path="/tools/profit-calculator" element={<ProfitCalculator />} />
-                <Route path="/tools/dca-calculator" element={<DCACalculator />} />
-                <Route path="/tools/impermanent-loss-calculator" element={<ILCalculator />} />
-                <Route path="/compare" element={<CompareHub />} />
-                <Route path="/compare/:coins" element={<CoinComparison />} />
-                <Route path="/how-to-buy" element={<HowToBuyHub />} />
-                <Route path="/how-to-buy/:coin" element={<HowToBuyCoin />} />
-                <Route path="/news" element={<NewsHub />} />
-                <Route path="/news/:slug" element={<NewsArticle />} />
+                <Route path="/" element={B(<Index />)} />
+                <Route path="/dashboard" element={B(<Dashboard />)} />
+
+                <Route path="/sentiment" element={B(<Sentiment />)} />
+                <Route path="/scanner" element={B(<Scanner />)} />
+                <Route path="/explorer" element={B(<Explorer />)} />
+                <Route path="/explorer/:chain/:address" element={B(<TokenDetail />)} />
+                <Route path="/learn" element={B(<Learn />)} />
+                <Route path="/learn/:slug" element={B(<LearnArticle />)} />
+                <Route path="/contact" element={B(<Contact />)} />
+                <Route path="/chain/:chainId" element={B(<Chain />)} />
+                <Route path="/strength" element={B(<StrengthMeter />)} />
+                <Route path="/strength-meter" element={B(<StrengthMeter />)} />
+                <Route path="/factory" element={B(<CryptoFactory />)} />
+                <Route path="/factory/events" element={B(<FactoryEvents />)} />
+                <Route path="/factory/onchain" element={B(<FactoryOnchain />)} />
+                <Route path="/factory/narratives" element={B(<FactoryNarratives />)} />
+                <Route path="/factory/news" element={B(<FactoryNews />)} />
+                <Route path="/sitemap" element={B(<Sitemap />)} />
+                <Route path="/insights" element={B(<Insights />)} />
+                <Route path="/insights/:slug" element={B(<InsightArticle />)} />
+                <Route path="/predictions" element={B(<PredictionHub />)} />
+                <Route path="/price-prediction" element={B(<PredictionHub />)} />
+                <Route path="/price-prediction/:coinId" element={B(<PricePrediction />)} />
+                <Route path="/price-prediction/:coinId/2026" element={B(<YearPrediction />)} />
+                <Route path="/price-prediction/:coinId/2027" element={B(<YearPrediction />)} />
+                <Route path="/price-prediction/:coinId/2028" element={B(<YearPrediction />)} />
+                <Route path="/price-prediction/:coinId/2030" element={B(<YearPrediction />)} />
+                <Route path="/price-prediction/:coinId/:timeframe" element={B(<PricePrediction />)} />
+                <Route path="/q/:slug" element={B(<QuestionIntent />)} />
+                <Route path="/market/:slug" element={B(<MarketPage />)} />
+                <Route path="/airdrops" element={B(<Airdrops />)} />
+                <Route path="/tools" element={B(<ToolsHub />)} />
+                <Route path="/tools/profit-calculator" element={B(<ProfitCalculator />)} />
+                <Route path="/tools/dca-calculator" element={B(<DCACalculator />)} />
+                <Route path="/tools/impermanent-loss-calculator" element={B(<ILCalculator />)} />
+                <Route path="/compare" element={B(<CompareHub />)} />
+                <Route path="/compare/:coins" element={B(<CoinComparison />)} />
+                <Route path="/how-to-buy" element={B(<HowToBuyHub />)} />
+                <Route path="/how-to-buy/:coin" element={B(<HowToBuyCoin />)} />
+                <Route path="/news" element={B(<NewsHub />)} />
+                <Route path="/news/:slug" element={B(<NewsArticle />)} />
                 {/* Legal & About pages */}
-                <Route path="/about" element={<About />} />
-                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                <Route path="/terms" element={<Terms />} />
-                <Route path="/risk-disclaimer" element={<RiskDisclaimer />} />
-                <Route path="/editorial-policy" element={<EditorialPolicy />} />
-                <Route path="/advertise" element={<Advertise />} />
-                <Route path="/admin" element={<ProtectedRoute><AdminRoute><Admin /></AdminRoute></ProtectedRoute>} />
-                <Route path="/my" element={<MyHub />} />
-                <Route path="/my/watchlist" element={<MyWatchlistPage />} />
-                <Route path="/my/portfolio" element={<MyPortfolioPage />} />
-                <Route path="/my/alerts" element={<MyAlertsPage />} />
-                <Route path="/my/settings" element={<MySettingsPage />} />
-                <Route path="/my/scanner" element={<MyWalletScanner />} />
-                <Route path="/my/signals" element={<MySignals />} />
-                <Route path="/my/tracker" element={<MyPortfolioTracker />} />
-                <Route path="/my/social" element={<MySocial />} />
-                <Route path="/my/journal" element={<MyTradeJournal />} />
-                <Route path="/my/news" element={<MyNewsFeed />} />
-                <Route path="/my/dca" element={<MyDCAPlanner />} />
-                <Route path="/my/copy" element={<MyCopyTrading />} />
-                <Route path="/trade" element={<Trade />} />
-                <Route path="*" element={<NotFound />} />
+                <Route path="/about" element={B(<About />)} />
+                <Route path="/privacy-policy" element={B(<PrivacyPolicy />)} />
+                <Route path="/terms" element={B(<Terms />)} />
+                <Route path="/risk-disclaimer" element={B(<RiskDisclaimer />)} />
+                <Route path="/editorial-policy" element={B(<EditorialPolicy />)} />
+                <Route path="/advertise" element={B(<Advertise />)} />
+                <Route path="/admin" element={B(<ProtectedRoute><AdminRoute><Admin /></AdminRoute></ProtectedRoute>)} />
+                <Route path="/my" element={B(<MyHub />)} />
+                <Route path="/my/watchlist" element={B(<MyWatchlistPage />)} />
+                <Route path="/my/portfolio" element={B(<MyPortfolioPage />)} />
+                <Route path="/my/alerts" element={B(<MyAlertsPage />)} />
+                <Route path="/my/settings" element={B(<MySettingsPage />)} />
+                <Route path="/my/scanner" element={B(<MyWalletScanner />)} />
+                <Route path="/my/signals" element={B(<MySignals />)} />
+                <Route path="/my/tracker" element={B(<MyPortfolioTracker />)} />
+                <Route path="/my/social" element={B(<MySocial />)} />
+                <Route path="/my/journal" element={B(<MyTradeJournal />)} />
+                <Route path="/my/news" element={B(<MyNewsFeed />)} />
+                <Route path="/my/dca" element={B(<MyDCAPlanner />)} />
+                <Route path="/my/copy" element={B(<MyCopyTrading />)} />
+                <Route path="/trade" element={B(<Trade />)} />
+                <Route path="*" element={B(<NotFound />)} />
               </Routes>
             </Suspense>
             <AIChatBubble />
