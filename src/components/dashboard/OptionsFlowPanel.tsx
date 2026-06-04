@@ -1,6 +1,8 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { LineChart, TrendingUp, TrendingDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface OptionTrade {
   type: "call" | "put";
@@ -14,22 +16,19 @@ interface OptionTrade {
 
 export function OptionsFlowPanel() {
   const [selectedAsset, setSelectedAsset] = useState("BTC");
-
-  const { trades, putCallRatio, maxPain } = useMemo(() => {
-    const optionTrades: OptionTrade[] = [
-      { type: "call", asset: "BTC", strike: "$95K", expiry: "31 Jan", size: "500 contracts", premium: "+$2.4M", direction: "buy" },
-      { type: "put", asset: "BTC", strike: "$85K", expiry: "28 Feb", size: "1,200 contracts", premium: "-$1.8M", direction: "sell" },
-      { type: "call", asset: "BTC", strike: "$100K", expiry: "31 Mar", size: "300 contracts", premium: "+$890K", direction: "buy" },
-      { type: "put", asset: "ETH", strike: "$2,800", expiry: "31 Jan", size: "2,500 contracts", premium: "-$1.2M", direction: "sell" },
-      { type: "call", asset: "ETH", strike: "$3,500", expiry: "28 Feb", size: "1,800 contracts", premium: "+$2.1M", direction: "buy" },
-    ];
-
-    const filtered = optionTrades.filter(t => t.asset === selectedAsset);
-    const ratio = 0.75 + Math.random() * 0.3;
-    const pain = selectedAsset === "BTC" ? "$92,500" : selectedAsset === "ETH" ? "$3,100" : "$190";
-
-    return { trades: filtered, putCallRatio: ratio, maxPain: pain };
-  }, [selectedAsset]);
+  const { data } = useQuery({
+    queryKey: ["options-flow", selectedAsset],
+    queryFn: async () => {
+      const { data } = await supabase.functions.invoke(`options-flow?asset=${selectedAsset}`);
+      return data as { trades: OptionTrade[]; putCallRatio: number; maxPain: string };
+    },
+    refetchInterval: 60_000,
+    refetchIntervalInBackground: true,
+    staleTime: 30_000,
+  });
+  const trades = data?.trades ?? [];
+  const putCallRatio = data?.putCallRatio ?? 0;
+  const maxPain = data?.maxPain ?? "—";
 
   return (
     <div className="holo-card p-4 sm:p-6">
