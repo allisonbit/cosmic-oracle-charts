@@ -1,47 +1,48 @@
 import { TrendingUp, TrendingDown, Loader2 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 import { useMarketData } from "@/hooks/useMarketData";
-import { memo, useMemo } from "react";
+import { CoinImage } from "@/components/ui/CoinImage";
+import { memo, useMemo, useState } from "react";
+
 
 interface TickerItemProps {
   symbol: string;
+  coinId: string;
   price: number;
   change24h: number;
+  image?: string;
 }
 
-const TickerItem = memo(function TickerItem({ symbol, price, change24h }: TickerItemProps) {
+const TickerItem = memo(function TickerItem({ symbol, coinId, price, change24h, image }: TickerItemProps) {
   const isPositive = change24h >= 0;
-  
+
   const formattedPrice = price >= 1
     ? (price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })
     : (price ?? 0).toLocaleString(undefined, { maximumSignificantDigits: 4 });
-  
+
   return (
-    <div className="flex items-center gap-2 md:gap-3 whitespace-nowrap shrink-0 touch-manipulation">
-      <span className="font-display font-bold text-primary text-xs md:text-sm">
-        {symbol}
+    <Link
+      to={`/price-prediction/${coinId}/daily`}
+      className="flex items-center gap-1.5 md:gap-2 whitespace-nowrap shrink-0 touch-manipulation hover:opacity-75 transition-opacity cursor-pointer"
+      title={`${symbol} prediction`}
+      tabIndex={-1} // ticker items don't need tab focus
+    >
+      <CoinImage symbol={symbol} image={image} size={16} className="hidden sm:block" />
+      <span className="font-display font-bold text-primary text-xs md:text-sm">{symbol}</span>
+      <span className="text-foreground font-medium text-xs md:text-sm tabular-nums">${formattedPrice}</span>
+      <span className={cn(
+        "flex items-center gap-0.5 text-xs font-medium tabular-nums",
+        isPositive ? "text-success" : "text-danger"
+      )}>
+        {isPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+        {isPositive ? "+" : ""}{(change24h ?? 0).toFixed(2)}%
       </span>
-      <span className="text-foreground font-medium text-xs md:text-sm tabular-nums">
-        ${formattedPrice}
-      </span>
-      <span
-        className={cn(
-          "flex items-center gap-1 text-xs font-medium tabular-nums",
-          isPositive ? "text-success" : "text-danger"
-        )}
-      >
-        {isPositive ? (
-          <TrendingUp className="w-3 h-3" />
-        ) : (
-          <TrendingDown className="w-3 h-3" />
-        )}
-        {isPositive ? "+" : ""}
-        {(change24h ?? 0).toFixed(2)}%
-      </span>
-    </div>
+    </Link>
   );
 });
+
 
 export function CryptoTicker() {
   const { data: pricesData, isLoading: pricesLoading } = useCryptoPrices();
@@ -49,14 +50,14 @@ export function CryptoTicker() {
 
   const tickerData = useMemo(() => {
     const seen = new Set<string>();
-    const coins: { symbol: string; price: number; change24h: number }[] = [];
+    const coins: { symbol: string; coinId: string; price: number; change24h: number; image?: string }[] = [];
 
     // Primary source: crypto-prices (more accurate per-coin data)
     if (pricesData?.prices) {
       for (const coin of pricesData.prices) {
         if (coin.price > 0 && coin.change24h !== 0 && !seen.has(coin.symbol)) {
           seen.add(coin.symbol);
-          coins.push({ symbol: coin.symbol, price: coin.price, change24h: coin.change24h });
+          coins.push({ symbol: coin.symbol, coinId: coin.id || coin.symbol.toLowerCase(), price: coin.price, change24h: coin.change24h, image: coin.image });
         }
       }
     }
@@ -65,11 +66,10 @@ export function CryptoTicker() {
     if (marketData?.topCoins) {
       for (const coin of marketData.topCoins) {
         if (coin.price > 0 && !seen.has(coin.symbol) && coins.length < 50) {
-          // Skip stablecoins and obscure tokens for the ticker
           const skipSymbols = ['USDT', 'USDC', 'USDS', 'DAI', 'USDE', 'PYUSD', 'USD1', 'USDG', 'USDF', 'BUIDL', 'USYC', 'FIGR_HELOC', 'XAUT', 'PAXG'];
           if (skipSymbols.includes(coin.symbol)) continue;
           seen.add(coin.symbol);
-          coins.push({ symbol: coin.symbol, price: coin.price, change24h: coin.change24h });
+          coins.push({ symbol: coin.symbol, coinId: coin.id || coin.name?.toLowerCase() || coin.symbol.toLowerCase(), price: coin.price, change24h: coin.change24h });
         }
       }
     }
@@ -77,9 +77,8 @@ export function CryptoTicker() {
     return coins;
   }, [pricesData, marketData]);
 
-  // Duplicate twice for seamless infinite scroll
   const duplicatedData = useMemo(() => [...tickerData, ...tickerData], [tickerData]);
-
+  const [paused, setPaused] = useState(false);
   const isLoading = pricesLoading && marketLoading;
 
   if (isLoading && tickerData.length === 0) {
@@ -99,15 +98,31 @@ export function CryptoTicker() {
   }
 
   return (
-    <div className="w-full overflow-hidden bg-muted/50 border-y border-primary/20 py-2 md:py-3 stable-layout touch-action-pan scroll-smooth-touch">
-      <div className="ticker flex gap-6 md:gap-12 gpu-accelerated will-change-transform">
+    <div
+      className="w-full overflow-hidden bg-muted/50 border-y border-primary/20 py-2 md:py-3 stable-layout touch-action-pan scroll-smooth-touch group/ticker"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      title="Hover to pause • Click any coin to see prediction"
+    >
+      <div
+        className="ticker flex gap-6 md:gap-10 gpu-accelerated will-change-transform"
+        style={{ animationPlayState: paused ? 'paused' : 'running' }}
+      >
         {duplicatedData.map((coin, index) => (
           <TickerItem
             key={`${coin.symbol}-${index}`}
             symbol={coin.symbol}
+            coinId={coin.coinId}
             price={coin.price}
             change24h={coin.change24h}
+            image={coin.image}
           />
+        ))}
+      </div>
+    </div>
+  );
+}
+
         ))}
       </div>
     </div>

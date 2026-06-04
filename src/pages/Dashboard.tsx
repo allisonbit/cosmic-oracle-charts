@@ -36,6 +36,7 @@ import { DashboardTopCryptos } from "@/components/dashboard/DashboardTopCryptos"
 import { DashboardHeatMap } from "@/components/dashboard/DashboardHeatMap";
 import { DashboardStatsRow } from "@/components/dashboard/DashboardStatsRow";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { LiveSignals } from "@/components/home/LiveSignals";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -85,15 +86,84 @@ const Dashboard = () => {
             {/* Stats Row */}
             <DashboardStatsRow global={global} />
 
-            {/* Global Metrics Summary - More data */}
+            {/* ── Fear & Greed — Prominent Full-Width Card ───────────────────── */}
+            {fearGreedIndex !== null && (
+              <Link
+                to="/sentiment"
+                className="holo-card p-4 sm:p-6 mb-4 sm:mb-6 flex flex-col sm:flex-row items-center gap-4 sm:gap-8 group hover:border-primary/40 transition-all"
+              >
+                {/* Gauge */}
+                <div className="relative w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0">
+                  <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="42" stroke="hsl(var(--muted))" strokeWidth="10" fill="none" />
+                    <circle
+                      cx="50" cy="50" r="42"
+                      stroke={fearGreedIndex >= 60 ? "hsl(var(--success))" : fearGreedIndex >= 40 ? "hsl(var(--warning))" : "hsl(var(--danger))"}
+                      strokeWidth="10"
+                      fill="none"
+                      strokeDasharray={`${fearGreedIndex * 2.64} 264`}
+                      strokeLinecap="round"
+                      className="transition-all duration-1000"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className={cn(
+                      "text-2xl sm:text-3xl font-display font-bold",
+                      fearGreedIndex >= 60 ? "text-success" : fearGreedIndex >= 40 ? "text-warning" : "text-danger"
+                    )}>{fearGreedIndex}</span>
+                    <span className="text-[9px] text-muted-foreground font-bold uppercase tracking-wide">/100</span>
+                  </div>
+                </div>
+
+                {/* Label + context */}
+                <div className="flex-1 text-center sm:text-left">
+                  <div className="flex items-center gap-2 justify-center sm:justify-start mb-1">
+                    <Brain className="w-4 h-4 text-primary" />
+                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Fear &amp; Greed Index</span>
+                    <ArrowRight className="w-4 h-4 text-primary ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                  <p className={cn(
+                    "text-2xl sm:text-3xl font-display font-bold mb-1",
+                    fearGreedIndex >= 60 ? "text-success" : fearGreedIndex >= 40 ? "text-warning" : "text-danger"
+                  )}>
+                    {fearGreedIndex >= 80 ? "Extreme Greed" : fearGreedIndex >= 60 ? "Greed" : fearGreedIndex >= 40 ? "Neutral" : fearGreedIndex >= 20 ? "Fear" : "Extreme Fear"}
+                  </p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">
+                    {fearGreedIndex >= 70
+                      ? "Market is euphoric — consider taking profits. Historically signals elevated risk."
+                      : fearGreedIndex >= 50
+                      ? "Markets leaning bullish but not overheated. Moderate risk environment."
+                      : fearGreedIndex >= 30
+                      ? "Cautious sentiment prevails. Historically presents buying opportunities."
+                      : "Extreme fear in the market — historically a strong buy signal for long-term holders."}
+                  </p>
+                </div>
+
+                {/* 5-zone scale */}
+                <div className="hidden md:flex flex-col gap-1 text-xs shrink-0">
+                  {[["0-20","Extreme Fear","text-danger"],["20-40","Fear","text-orange-400"],["40-60","Neutral","text-warning"],["60-80","Greed","text-success"],["80-100","Extreme Greed","text-success"]].map(([range, label, color]) => (
+                    <div key={range} className={cn("flex items-center gap-2 font-medium", color)}>
+                      <span className="w-10 text-right text-muted-foreground font-normal">{range}</span>
+                      <span>{label}</span>
+                    </div>
+                  ))}
+                </div>
+              </Link>
+            )}
+
+            {/* ── AI Trade Signals — First thing users see ──────────────────────────── */}
+            <div className="mb-4 sm:mb-6">
+              <LiveSignals />
+            </div>
+
+            {/* Global Metrics Summary */}
             <GlobalMetricsSummary />
 
             {/* Main Grid */}
             <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
               {/* Left Column */}
               <div className="lg:col-span-2 space-y-4 sm:space-y-6">
-                {/* Fear & Greed + AI */}
-                <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
+
                   {/* Fear & Greed - Clickable */}
                   <Link to="/sentiment" className="holo-card p-3 sm:p-4 md:p-6 card-touch group">
                     <h3 className="font-display text-xs sm:text-sm md:text-base font-bold mb-3 sm:mb-4 flex items-center gap-2">
