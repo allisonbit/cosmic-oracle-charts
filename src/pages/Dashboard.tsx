@@ -37,6 +37,7 @@ import { DashboardHeatMap } from "@/components/dashboard/DashboardHeatMap";
 import { DashboardStatsRow } from "@/components/dashboard/DashboardStatsRow";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { LiveSignals } from "@/components/home/LiveSignals";
+import { WidgetErrorBoundary } from "@/components/system/RouteErrorBoundary";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -80,11 +81,11 @@ const Dashboard = () => {
           <>
             {/* Quick Actions */}
             <div className="mb-4 sm:mb-6">
-              <EnhancedQuickActions />
+              <WidgetErrorBoundary><EnhancedQuickActions /></WidgetErrorBoundary>
             </div>
 
             {/* Stats Row */}
-            <DashboardStatsRow global={global} />
+            <WidgetErrorBoundary><DashboardStatsRow global={global} /></WidgetErrorBoundary>
 
             {/* ── Fear & Greed — Prominent Full-Width Card ───────────────────── */}
             {fearGreedIndex !== null && (
@@ -153,36 +154,34 @@ const Dashboard = () => {
 
             {/* ── AI Trade Signals — First thing users see ──────────────────────────── */}
             <div className="mb-4 sm:mb-6">
-              <LiveSignals />
+              <WidgetErrorBoundary><LiveSignals /></WidgetErrorBoundary>
             </div>
 
             {/* Global Metrics Summary */}
-            <GlobalMetricsSummary />
+            <WidgetErrorBoundary><GlobalMetricsSummary /></WidgetErrorBoundary>
 
             {/* Main Grid */}
             <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
               {/* Left Column */}
               <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+                <WidgetErrorBoundary><EnhancedMarketMomentum /></WidgetErrorBoundary>
+                <WidgetErrorBoundary><EnhancedMarketInsightsPanel /></WidgetErrorBoundary>
 
-
-                <EnhancedMarketMomentum />
-                <EnhancedMarketInsightsPanel />
-                
                 {/* Order Book and Funding Rates */}
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <OrderBookPanel />
-                  <FundingRatesPanel />
+                  <WidgetErrorBoundary><OrderBookPanel /></WidgetErrorBoundary>
+                  <WidgetErrorBoundary><FundingRatesPanel /></WidgetErrorBoundary>
                 </div>
-                
+
                 {/* Correlation Matrix */}
-                <CorrelationMatrix />
+                <WidgetErrorBoundary><CorrelationMatrix /></WidgetErrorBoundary>
               </div>
 
               {/* Right Column */}
               <div className="space-y-4 sm:space-y-6">
-                <EnhancedTrendingAlerts />
-                <EnhancedTopPerformers onCoinClick={(coin: any) => navigate(`/price-prediction/${coin.name?.toLowerCase() || coin.symbol?.toLowerCase()}/daily`)} />
-                <MarketRegimeIndicator />
+                <WidgetErrorBoundary><EnhancedTrendingAlerts /></WidgetErrorBoundary>
+                <WidgetErrorBoundary><EnhancedTopPerformers onCoinClick={(coin: any) => navigate(`/price-prediction/${coin.name?.toLowerCase() || coin.symbol?.toLowerCase()}/daily`)} /></WidgetErrorBoundary>
+                <WidgetErrorBoundary><MarketRegimeIndicator /></WidgetErrorBoundary>
                 {/* Sidebar ad */}
                 <SidebarAd />
               </div>
@@ -190,23 +189,23 @@ const Dashboard = () => {
 
             {/* Sector Performance & Live Trades */}
             <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
-              <SectorPerformancePanel />
-              <RecentTradesPanel />
+              <WidgetErrorBoundary><SectorPerformancePanel /></WidgetErrorBoundary>
+              <WidgetErrorBoundary><RecentTradesPanel /></WidgetErrorBoundary>
             </div>
-            
+
             {/* In-article ad between major sections */}
             <InArticleAd className="mb-4 sm:mb-6" />
-            
+
             {/* Advanced Analytics Section */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
-              <LiquidationHeatmap />
-              <WhaleActivityPanel />
-              <OptionsFlowPanel />
+              <WidgetErrorBoundary><LiquidationHeatmap /></WidgetErrorBoundary>
+              <WidgetErrorBoundary><WhaleActivityPanel /></WidgetErrorBoundary>
+              <WidgetErrorBoundary><OptionsFlowPanel /></WidgetErrorBoundary>
             </div>
             
             {/* Custom Alerts */}
             <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
-              <CustomAlertsPanel />
+              <WidgetErrorBoundary><CustomAlertsPanel /></WidgetErrorBoundary>
               <div className="holo-card p-4 sm:p-6">
                 <h3 className="font-display text-sm sm:text-base font-bold mb-4 flex items-center gap-2">
                   <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
@@ -231,29 +230,29 @@ const Dashboard = () => {
 
             {/* Strength Meter & Crypto Factory Widgets */}
             <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
-              <StrengthMeterWidget />
-              <CryptoFactoryWidget />
+              <WidgetErrorBoundary><StrengthMeterWidget /></WidgetErrorBoundary>
+              <WidgetErrorBoundary><CryptoFactoryWidget /></WidgetErrorBoundary>
             </div>
             
             {/* Full Sortable Crypto Table */}
-            <SortableCryptoTable coins={allCoins} />
-            
+            <WidgetErrorBoundary><SortableCryptoTable coins={allCoins} /></WidgetErrorBoundary>
+
             {/* SEO Content Block */}
             <DashboardSEOContent />
-            
+
             {/* How to Read the Dashboard - SEO friendly explanations */}
             <HowToReadDashboard />
 
             {/* Volume & Dominance with explanatory text */}
             <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
               <div>
-                <EnhancedVolumeLeaders />
+                <WidgetErrorBoundary><EnhancedVolumeLeaders /></WidgetErrorBoundary>
                 <p className="text-xs text-muted-foreground mt-2 p-3 bg-muted/10 rounded-lg">
                   <strong className="text-foreground">Volume Leaders:</strong> Cryptocurrencies with the highest 24-hour trading activity. High volume confirms price movements and indicates strong market interest.
                 </p>
               </div>
               <div>
-                <EnhancedDominanceChart />
+                <WidgetErrorBoundary><EnhancedDominanceChart /></WidgetErrorBoundary>
                 <p className="text-xs text-muted-foreground mt-2 p-3 bg-muted/10 rounded-lg">
                   <strong className="text-foreground">Market Dominance:</strong> Shows percentage of total market cap held by each cryptocurrency. BTC dominance above 50% typically indicates a risk-off environment.
                 </p>
@@ -261,10 +260,10 @@ const Dashboard = () => {
             </div>
 
             {/* Coin Cards - Clickable */}
-            <DashboardTopCryptos topCoins={topCoins} />
+            <WidgetErrorBoundary><DashboardTopCryptos topCoins={topCoins} /></WidgetErrorBoundary>
 
             {/* Heat Map - Clickable */}
-            <DashboardHeatMap topCoins={topCoins} />
+            <WidgetErrorBoundary><DashboardHeatMap topCoins={topCoins} /></WidgetErrorBoundary>
             
             {/* What Makes Oracle Bull Different */}
             <WhatMakesUsDifferent />
