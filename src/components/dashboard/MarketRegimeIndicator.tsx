@@ -112,9 +112,9 @@ export function MarketRegimeIndicator() {
           </div>
         </div>
         <div className="bg-muted/30 p-2 sm:p-3 rounded-lg">
-          <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">Duration</div>
-          <div className="text-sm sm:text-base font-bold text-primary">
-            {regime.duration} days
+          <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">Trend Strength</div>
+          <div className={cn("text-sm sm:text-base font-bold", regime.trendStrength === "Strong" ? "text-success" : regime.trendStrength === "Moderate" ? "text-warning" : "text-muted-foreground")}>
+            {regime.trendStrength}
           </div>
         </div>
       </div>
