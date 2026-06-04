@@ -140,6 +140,59 @@ async function fetchTokenPrices(tokens: { symbol: string; name: string; coingeck
   }
 }
 
+// Alchemy network map for EVM chains
+const alchemyNetworks: Record<string, string> = {
+  ethereum: 'eth-mainnet',
+  polygon:  'polygon-mainnet',
+  arbitrum: 'arb-mainnet',
+  optimism: 'opt-mainnet',
+  base:     'base-mainnet',
+};
+
+function getAlchemyApiKey(): string {
+  return Deno.env.get('ALCHEMY_API_KEY_1') ||
+         Deno.env.get('ALCHEMY_API_KEY_2') ||
+         Deno.env.get('ALCHEMY_API_KEY_3') || '';
+}
+
+async function fetchAlchemyGasData(chainId: string): Promise<{ gasFees: number | null; latestBlock: number | null }> {
+  const network = alchemyNetworks[chainId];
+  const apiKey  = getAlchemyApiKey();
+  if (!network || !apiKey) return { gasFees: null, latestBlock: null };
+
+  const url = `https://${network}.g.alchemy.com/v2/${apiKey}`;
+
+  try {
+    const [gasRes, blockRes] = await Promise.all([
+      fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'eth_gasPrice', params: [] }),
+      }),
+      fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jsonrpc: '2.0', id: 2, method: 'eth_blockNumber', params: [] }),
+      }),
+    ]);
+
+    const gasData   = await gasRes.json();
+    const blockData = await blockRes.json();
+
+    const gasPriceWei  = parseInt(gasData?.result  || '0x0', 16);
+    const latestBlock  = parseInt(blockData?.result || '0x0', 16);
+    const gasFees      = gasPriceWei / 1e9;  // convert wei → gwei
+
+    return {
+      gasFees:     gasFees     > 0 ? parseFloat(gasFees.toFixed(2))    : null,
+      latestBlock: latestBlock > 0 ? latestBlock                        : null,
+    };
+  } catch (e) {
+    console.warn('Alchemy gas fetch failed:', e);
+    return { gasFees: null, latestBlock: null };
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -160,20 +213,26 @@ serve(async (req) => {
     const baseOverview = chainOverviews[chainId] || chainOverviews.ethereum;
     const tokens = tokenSets[chainId] || tokenSets.ethereum;
 
-    // Fetch real prices from CoinGecko
-    const realPrices = await fetchTokenPrices(tokens);
+    // Fetch real prices from CoinGecko + real gas price from Alchemy in parallel
+    const [realPrices, alchemyData] = await Promise.all([
+      fetchTokenPrices(tokens),
+      fetchAlchemyGasData(chainId),
+    ]);
     const hasRealPrices = Object.keys(realPrices).length > 0;
 
-    // Update overview with real native token data
+    // Update overview with real native token data + live gas price
     const nativeSymbol = tokens[0]?.symbol;
     const nativePrice = realPrices[nativeSymbol];
     // Use real volume ratio to estimate live tx count - no random
     const volumeRatio = nativePrice?.volume ? nativePrice.volume / (baseOverview.volume24h || 1) : 1;
+    const liveGasFees = alchemyData.gasFees ?? baseOverview.gasFees;
     const overview = {
       marketCap: nativePrice?.marketCap || baseOverview.marketCap,
       volume24h: nativePrice?.volume || baseOverview.volume24h,
       transactions24h: Math.floor(baseOverview.transactions24h * Math.min(Math.max(volumeRatio, 0.5), 2.0)),
-      gasFees: baseOverview.gasFees,
+      gasFees: liveGasFees,
+      gasFeeSource: alchemyData.gasFees !== null ? 'alchemy' : 'estimate',
+      latestBlock: alchemyData.latestBlock,
       tps: baseOverview.tps,
       activeWallets: Math.floor(baseOverview.activeWallets * Math.min(Math.max(volumeRatio, 0.7), 1.5)),
       defiTvl: baseOverview.defiTvl,
