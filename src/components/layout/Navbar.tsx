@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, TrendingUp, BookOpen, Globe, Radio, Layers, Wallet, Home, Zap, Calendar, Target, Sparkles, BarChart3, Search, Gift, Calculator, ArrowRightLeft, Compass, Newspaper } from "lucide-react";
+import { Menu, X, TrendingUp, BookOpen, Globe, Radio, Layers, Wallet, Home, Zap, Calendar, Target, Sparkles, BarChart3, Search, Gift, Calculator, ArrowRightLeft, Compass, Newspaper, ChevronDown, LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
 import oracleLogo from "@/assets/oracle-bull-logo.jpg";
 import { GlobalSearch } from "@/components/search/GlobalSearch";
