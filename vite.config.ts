@@ -90,6 +90,33 @@ const educationalRoutes = [
   "/learn/indicators-vs-ai-models-whats-the-difference",
   "/learn/data-sources-used-in-market-intelligence-platforms",
   "/learn/how-to-read-market-analytics-dashboards",
+  // New high-traffic educational articles
+  "/learn/what-is-bitcoin-halving-and-why-does-it-matter",
+  "/learn/how-to-read-crypto-candlestick-charts",
+  "/learn/what-is-defi-decentralized-finance-explained",
+  "/learn/what-is-a-crypto-wallet-and-how-to-use-it",
+  "/learn/how-to-spot-a-crypto-bull-market",
+  "/learn/how-to-spot-a-crypto-bear-market",
+  "/learn/what-is-ethereum-staking-explained",
+  "/learn/what-are-layer-2-blockchains",
+  "/learn/what-is-tokenomics-explained",
+  "/learn/how-to-read-a-crypto-whitepaper",
+  "/learn/what-is-market-capitalization-in-crypto",
+  "/learn/dollar-cost-averaging-dca-strategy-for-crypto",
+  "/learn/how-to-use-stop-loss-orders-in-crypto-trading",
+  "/learn/crypto-tax-basics-what-you-need-to-know",
+  "/learn/what-is-a-crypto-airdrop-and-how-to-get-one",
+  "/learn/best-crypto-exchanges-compared",
+  "/learn/how-to-buy-bitcoin-for-beginners",
+  "/learn/how-to-buy-ethereum-for-beginners",
+  "/learn/how-to-buy-solana-for-beginners",
+  "/learn/what-is-nft-and-how-does-it-work",
+  "/learn/what-is-web3-explained",
+  "/learn/proof-of-work-vs-proof-of-stake",
+  "/learn/what-is-a-blockchain-explained-simply",
+  "/learn/crypto-portfolio-diversification-strategy",
+  "/learn/how-to-identify-crypto-scams",
+  "/learn/what-are-stablecoins-and-how-do-they-work",
 ];
 
 // Top crypto prediction routes (for SEO) — 60+ coins for maximum sitemap coverage
@@ -107,11 +134,23 @@ const topCryptoIds = [
   'jito-governance-token', 'pendle', 'eigenlayer', 'dogwifcoin', 'brett-based',
   'mog-coin', 'mantle', 'immutable-x', 'blur', 'beam-2', 'gala',
   // Tier 4 — Trending / high search volume
-  'hamster-kombat', 'notcoin', 'catizen', 'dogs-2', 'toncoin',
-  'raydium', 'jupiter-ag', 'helium', 'hive', 'terra-luna-2',
+  'hamster-kombat', 'notcoin', 'catizen', 'dogs-2',
+  'raydium', 'helium', 'hive', 'terra-luna-2',
   'elrond', 'harmony', 'zilliqa', 'enjincoin', 'decentraland', 'sandbox',
   'axie-infinity', 'the-graph', 'aave', 'compound', 'maker', 'synthetix-network-token',
   'curve-dao-token', 'yearn-finance', '1inch', 'balancer', 'sushi',
+  // Tier 5 — Additional high-search coins
+  'ondo-finance', 'hyperliquid', 'berachain-bera', 'sonic-3', 'kaito',
+  'virtual-protocol', 'ai16z', 'story-protocol', 'movement', 'abstract',
+  'cronos', 'kava', 'band-protocol', 'ocean-protocol', 'numeraire',
+  'reserve-rights-token', 'orbs', 'superfarm', 'api3', 'dydx',
+  'loopring', 'zksync', 'scroll', 'linea', 'base',
+  'bitcoin-cash', 'bitcoin-sv', 'litecoin', 'dash', 'zcash',
+  'ravencoin', 'digibyte', 'horizen', 'komodo', 'pivx',
+  'eos', 'tezos', 'nano', 'waves', 'qtum',
+  'icon', 'ontology', 'nuls', 'elastos', 'ark',
+  'neo', 'algorand', 'vechain', 'iota', 'nem',
+  'xdc-network', 'quant-network', 'fantom', 'celo', 'klaytn',
 ];
 
 const predictionRoutes = [...new Set(topCryptoIds)].flatMap(id => [
@@ -119,6 +158,11 @@ const predictionRoutes = [...new Set(topCryptoIds)].flatMap(id => [
   `/price-prediction/${id}/daily`,
   `/price-prediction/${id}/weekly`,
   `/price-prediction/${id}/monthly`,
+  // Year-based prediction pages — highest traffic keywords
+  `/price-prediction/${id}/2026`,
+  `/price-prediction/${id}/2027`,
+  `/price-prediction/${id}/2028`,
+  `/price-prediction/${id}/2030`,
 ]);
 
 // Question-intent routes for SEO
@@ -135,6 +179,23 @@ const questionPatterns = [
   'is-{coin}-a-good-investment-this-month',
   '{coin}-price-prediction-this-month',
   '{coin}-monthly-forecast',
+  // Year-based patterns — massive search volume
+  '{coin}-price-prediction-2026',
+  '{coin}-price-prediction-2027',
+  '{coin}-price-prediction-2028',
+  '{coin}-price-prediction-2030',
+  'will-{coin}-reach-all-time-high-in-2026',
+  'is-{coin}-a-good-investment-in-2026',
+  'is-{coin}-going-up-in-2026',
+  '{coin}-price-target-2026',
+  '{coin}-price-target-2030',
+  // Sentiment/action patterns
+  'should-i-buy-{coin}-now',
+  'is-{coin}-undervalued',
+  'is-{coin}-overvalued',
+  'is-{coin}-going-to-crash',
+  'will-{coin}-recover',
+  '{coin}-next-price-target',
 ];
 
 // Generate question-intent routes for top 20 coins
@@ -189,6 +250,28 @@ const marketQuestionRoutes = [
   "/market/best-layer-2-crypto",
   "/market/best-gaming-crypto-tokens",
   "/market/best-rwa-crypto-tokens",
+  // Year-based market pages — strong seasonal search traffic
+  "/market/best-crypto-to-buy-in-2026",
+  "/market/best-crypto-to-buy-in-2027",
+  "/market/top-crypto-picks-2026",
+  "/market/crypto-market-outlook-2026",
+  "/market/crypto-market-outlook-2027",
+  "/market/best-crypto-for-long-term-2026",
+  "/market/most-promising-crypto-2026",
+  "/market/best-crypto-under-1-dollar",
+  "/market/best-crypto-under-1-cent",
+  "/market/best-low-cap-crypto",
+  "/market/crypto-100x-potential",
+  "/market/best-crypto-to-stake",
+  "/market/best-crypto-dividends",
+  "/market/crypto-with-highest-staking-rewards",
+  "/market/bitcoin-dominance-today",
+  "/market/ethereum-dominance-today",
+  "/market/solana-ecosystem-tokens",
+  "/market/ethereum-ecosystem-tokens",
+  "/market/is-bitcoin-going-to-100k",
+  "/market/will-ethereum-flip-bitcoin",
+  "/market/will-solana-overtake-ethereum",
 ];
 
 const coinMarketRoutes: string[] = [];

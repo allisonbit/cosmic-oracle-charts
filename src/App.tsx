@@ -52,6 +52,7 @@ const Terms = lazy(() => import("./pages/Terms"));
 const RiskDisclaimer = lazy(() => import("./pages/RiskDisclaimer"));
 const EditorialPolicy = lazy(() => import("./pages/EditorialPolicy"));
 const Advertise = lazy(() => import("./pages/Advertise"));
+const YearPrediction = lazy(() => import("./pages/YearPrediction"));
 const Scanner = lazy(() => import("./pages/Scanner"));
 const Admin = lazy(() => import("./pages/Admin"));
 const MyHub = lazy(() => import("./pages/MyHub"));
@@ -211,6 +212,10 @@ const App = () => (
                 <Route path="/predictions" element={<PredictionHub />} />
                 <Route path="/price-prediction" element={<PredictionHub />} />
                 <Route path="/price-prediction/:coinId" element={<PricePrediction />} />
+                <Route path="/price-prediction/:coinId/2026" element={<YearPrediction />} />
+                <Route path="/price-prediction/:coinId/2027" element={<YearPrediction />} />
+                <Route path="/price-prediction/:coinId/2028" element={<YearPrediction />} />
+                <Route path="/price-prediction/:coinId/2030" element={<YearPrediction />} />
                 <Route path="/price-prediction/:coinId/:timeframe" element={<PricePrediction />} />
                 <Route path="/q/:slug" element={<QuestionIntent />} />
                 <Route path="/market/:slug" element={<MarketPage />} />
