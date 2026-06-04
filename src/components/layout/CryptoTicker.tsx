@@ -57,7 +57,7 @@ export function CryptoTicker() {
       for (const coin of pricesData.prices) {
         if (coin.price > 0 && coin.change24h !== 0 && !seen.has(coin.symbol)) {
           seen.add(coin.symbol);
-          coins.push({ symbol: coin.symbol, coinId: coin.id || coin.symbol.toLowerCase(), price: coin.price, change24h: coin.change24h, image: coin.image });
+          coins.push({ symbol: coin.symbol, coinId: (coin as any).id || coin.symbol.toLowerCase(), price: coin.price, change24h: coin.change24h, image: (coin as any).image });
         }
       }
     }
@@ -69,7 +69,7 @@ export function CryptoTicker() {
           const skipSymbols = ['USDT', 'USDC', 'USDS', 'DAI', 'USDE', 'PYUSD', 'USD1', 'USDG', 'USDF', 'BUIDL', 'USYC', 'FIGR_HELOC', 'XAUT', 'PAXG'];
           if (skipSymbols.includes(coin.symbol)) continue;
           seen.add(coin.symbol);
-          coins.push({ symbol: coin.symbol, coinId: coin.id || coin.name?.toLowerCase() || coin.symbol.toLowerCase(), price: coin.price, change24h: coin.change24h });
+          coins.push({ symbol: coin.symbol, coinId: (coin as any).id || coin.name?.toLowerCase() || coin.symbol.toLowerCase(), price: coin.price, change24h: coin.change24h });
         }
       }
     }
