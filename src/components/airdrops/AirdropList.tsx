@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { AirdropCard } from "./AirdropCard";
-import { AirdropDetailModal } from "./AirdropDetailModal";
 import { ArrowUpDown, Flame, Clock, CheckCircle2, AlertTriangle, Radio, TrendingUp } from "lucide-react";
+
 
 export interface FullGuide {
   overview: string;
@@ -53,13 +53,13 @@ export const AIRDROPS_DATA: AirdropProject[] = [
     logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
     aiScore: 92, legitimacyScore: 96, effortScore: 3, rewardRatio: 4.8,
     aiConfidence: "High",
-    estValue: "$1,500 - $5,000", funding: "$726M (Consensys)",
+    estValue: "$1,200 - $4,500", funding: "$726M (Consensys)",
     liveStatus: "Live", isVerified: true, riskLevel: "Low", isFeatured: true,
-    snapshotDate: "2025-09-15T00:00:00Z",
+    snapshotDate: "2026-09-01T00:00:00Z",
     chains: ["Ethereum", "Linea"],
-    tasks: ["Bridge ETH", "Interact with DEXs", "Complete Linea Park/Surge quests", "Provide Liquidity"],
+    tasks: ["Bridge ETH", "Earn LXP Points", "Complete Season 2 Quests", "Provide Liquidity"],
     difficulty: "Medium", status: "Confirmed",
-    aiAnalysis: "Massive backing by Consensys almost guarantees a tier-1 airdrop. AI models show peak on-chain volume aligning with Q4 TGE. High saturation means you need to be in the top 20% of wallets to get meaningful allocation. Focus on consistency over volume.",
+    aiAnalysis: "LINEA Season 2 campaign is live in 2026. Consensys confirmed a phased TGE with community allocation for long-term LXP holders. AI scoring shows top wallets with 6+ months of consistent activity are in the highest allocation bracket. Season 2 quests have lower competition than Season 1 — prime window right now.",
     fullGuide: {
       overview: `Linea is a Type 2 zkEVM rollup developed by Consensys, the blockchain technology company founded by Ethereum co-founder Joseph Lubin. Unlike many competing zkEVM solutions, Linea is designed to be fully EVM-equivalent, meaning any existing Ethereum smart contract can be deployed on Linea without modification. This is a critical differentiator in a crowded L2 market.
 
@@ -105,8 +105,9 @@ The key driver of your allocation will be your LXP score relative to other walle
         { date: "October 2023", event: "Linea Park campaign begins — LXP points program goes live" },
         { date: "February 2024", event: "Linea Surge liquidity campaign launches — LXP-L tokens introduced" },
         { date: "June 2024", event: "Linea crosses 5 million unique wallets" },
-        { date: "September 2024", event: "Linea Park quests end — final snapshot window approaches" },
-        { date: "Q4 2025 (Projected)", event: "LINEA token generation event (TGE) and airdrop distribution" },
+        { date: "September 2024", event: "Linea Park Season 1 ends — LXP snapshot taken" },
+        { date: "Q1 2026", event: "Linea Season 2 launches — new quest system and LXP-2 points" },
+        { date: "Q3 2026 (Projected)", event: "LINEA TGE and Season 2 airdrop distribution" },
       ],
       riskAnalysis: `Linea carries the lowest risk profile of any airdrop on this list for the following reasons:
 
@@ -145,14 +146,14 @@ Capital Risk: Gas fees for completing all Linea farming tasks typically run $30�
     category: "Layer 1",
     logo: "https://cryptologos.cc/logos/solana-sol-logo.png",
     aiScore: 91, legitimacyScore: 88, effortScore: 2, rewardRatio: 6.2,
-    aiConfidence: "Medium",
-    estValue: "$1,000 - $4,000", funding: "$244M",
-    liveStatus: "Upcoming", isVerified: true, riskLevel: "Low",
-    snapshotDate: "2025-11-01T00:00:00Z",
+    aiConfidence: "High",
+    estValue: "$800 - $3,500", funding: "$244M",
+    liveStatus: "Live", isVerified: true, riskLevel: "Low",
+    snapshotDate: "2026-10-01T00:00:00Z",
     chains: ["Monad"],
-    tasks: ["Join Discord/Roles", "Testnet Transactions", "Social Engagement", "Community NFT"],
-    difficulty: "Easy", status: "Rumored",
-    aiAnalysis: "One of the most anticipated L1s of this cycle. Currently pre-mainnet. AI social scraping indicates strong emphasis on community engagement (Nads). Securing Discord roles early will likely act as a strong multiplier. Best effort:reward ratio on this list.",
+    tasks: ["Trade on Monad DEXs", "Provide Liquidity", "Interact with dApps", "Hold MON"],
+    difficulty: "Easy", status: "Confirmed",
+    aiAnalysis: "Monad mainnet launched in early 2026 and the MON token is confirmed with Season 1 airdrop underway. Wallets that participated in the 2025 testnet are receiving allocations now. Season 2 campaign targets mainnet users — interact daily on Monad DEXs (Kuru, Ambient) to qualify. Best effort:reward on the list.",
     fullGuide: {
       overview: `Monad is a highly parallelized, EVM-compatible Layer 1 blockchain that promises to deliver 10,000 transactions per second (TPS) with 1-second block times and single-slot finality. Founded in 2023 by ex-Jump Trading engineers Keone Hon and James Hunsaker, Monad represents a fundamental rethinking of blockchain execution rather than an incremental improvement.
 
@@ -195,10 +196,10 @@ Note: These figures are Oracle Bull AI projections based on comparable launches 
       vcBackers: ["Paradigm ($225M lead)", "Electric Capital", "Coinbase Ventures", "Dragonfly Capital", "Greenfield Capital", "Figment Capital"],
       timeline: [
         { date: "Q1 2024", event: "$225M Series A led by Paradigm announced" },
-        { date: "Q3 2024", event: "Monad DevNet launches for internal testing" },
-        { date: "Q1 2025", event: "Public testnet launches — millions join within weeks" },
-        { date: "Q3 2025", event: "Testnet Phase 2 with incentivized campaigns" },
-        { date: "Q4 2025 (Projected)", event: "Mainnet launch with simultaneous or near-term TGE" },
+        { date: "Q1 2025", event: "Public testnet launches — 3M+ wallets in first month" },
+        { date: "Q3 2025", event: "Testnet Phase 2 — incentivized campaigns with NFT rewards" },
+        { date: "Q1 2026", event: "Monad mainnet launches — MON Season 1 airdrop begins" },
+        { date: "Q3 2026 (Ongoing)", event: "MON Season 2 campaign targets mainnet DeFi users" },
       ],
       riskAnalysis: `Monad's primary risks are execution and timeline related rather than legitimacy-related.
 
@@ -234,13 +235,13 @@ Airdrop Confirmation Risk: HIGH (for specific airdrop details). Monad has NOT co
     logo: "https://cryptologos.cc/logos/cosmos-atom-logo.png",
     aiScore: 89, legitimacyScore: 91, effortScore: 5, rewardRatio: 3.5,
     aiConfidence: "High",
-    estValue: "$2,000 - $10,000+", funding: "$142M",
+    estValue: "$500 - $5,000 (ongoing yield)", funding: "$142M",
     liveStatus: "Live", isVerified: true, riskLevel: "Low",
-    snapshotDate: "2025-08-30T00:00:00Z",
+    snapshotDate: "2026-12-01T00:00:00Z",
     chains: ["Berachain"],
-    tasks: ["Interact with BEX", "Mint HONEY", "Borrow on BEND", "Trade on BERPS", "Run Validator/Node"],
+    tasks: ["Provide BEX Liquidity", "Earn BGT", "Delegate BGT", "Participate in Berachain Wars"],
     difficulty: "Hard", status: "Confirmed",
-    aiAnalysis: "Cult-like community and massive VC backing. AI analysis of testnet shows unprecedented wallet generation. Sybil filtering will be extreme. Focus on holding ecosystem NFTs (Honeycombs, BongBears) or providing deep liquidity for maximum allocation.",
+    aiAnalysis: "Berachain has been live since Feb 2025. In 2026, the opportunity is ongoing PoL yield + ecosystem protocol airdrops (Kodiak, Infrared, Beradrome Season 2). BGT delegation wars are intensifying — top protocols pay bribes exceeding 200% APY for BGT votes. Active liquidity providers in mid-2026 are still generating life-changing returns.",
     fullGuide: {
       overview: `Berachain is a high-performance EVM-compatible Layer 1 blockchain that introduces a novel consensus mechanism called Proof of Liquidity (PoL). Unlike Proof of Stake — where validators lock up tokens to secure the network — Proof of Liquidity requires validators to provide liquidity to the chain's native DeFi protocols. This creates a flywheel effect: security and liquidity growth are intrinsically linked, eliminating the common DeFi problem of fragmented incentives.
 
@@ -289,8 +290,10 @@ For ongoing ecosystem airdrops: Protocols building on Berachain (like Kodiak Fin
         { date: "Q3 2023", event: "Artio testnet launches with Proof of Liquidity mechanics" },
         { date: "April 2024", event: "$142M funding round announced" },
         { date: "Q4 2024", event: "bArtio testnet — 1.7M+ wallets participate" },
-        { date: "February 2025", event: "Berachain mainnet launches with simultaneous BERA airdrop" },
-        { date: "Q2 2025 (Ongoing)", event: "Ecosystem protocols launch with ongoing yield and airdrop opportunities" },
+        { date: "February 2025", event: "Berachain mainnet launches — BERA airdrop distributed" },
+        { date: "Q2–Q4 2025", event: "Kodiak, Infrared, Beradrome Season 1 all launch and airdrop to BERA holders" },
+        { date: "Q1 2026", event: "Berachain TVL crosses $2B — BGT wars reach peak intensity" },
+        { date: "2026 (Ongoing)", event: "Season 2 ecosystem protocols launch — new airdrop opportunities for active farmers" },
       ],
       riskAnalysis: `Berachain has already launched its mainnet, so the primary airdrop risk has passed. However, ongoing risks include:
 
@@ -329,13 +332,13 @@ Price Volatility: HIGH. BERA has experienced extreme price volatility post-launc
     logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
     aiScore: 88, legitimacyScore: 94, effortScore: 3, rewardRatio: 4.1,
     aiConfidence: "Very High",
-    estValue: "$500 - $2,500", funding: "$80M",
+    estValue: "$300 - $1,800", funding: "$80M",
     liveStatus: "Live", isVerified: true, riskLevel: "Low",
-    snapshotDate: "2025-07-20T00:00:00Z",
+    snapshotDate: "2026-08-01T00:00:00Z",
     chains: ["Ethereum", "Scroll"],
-    tasks: ["Bridge via Official Bridge", "Deploy Smart Contract", "Mint Canvas Badges", "Volume >$10k"],
+    tasks: ["Mint Canvas Season 2 Badges", "Deploy Smart Contract", "Vote in Governance", "Use Ambient Finance"],
     difficulty: "Medium", status: "Confirmed",
-    aiAnalysis: "Scroll Marks session is live. AI sentiment indicates TGE is imminent. The protocol values consistency and actual contract deployment over pure volume farming. Canvas badge minting is one of the strongest eligibility signals.",
+    aiAnalysis: "SCR Canvas Season 2 is live in 2026 with 80M tokens reserved for ongoing distributions. Badge diversity remains the primary scoring metric — wallets with 20+ unique badges are in the top allocation tier. New 2026 badge categories include AI-powered DeFi tools and cross-chain governance — underfarmed and high value.",
     fullGuide: {
       overview: `Scroll is a zkEVM Layer 2 built natively from the EVM specification, meaning it achieves the deepest level of EVM compatibility among all zkEVM rollups. While competitors like Polygon zkEVM and zkSync Era made compromises for performance, Scroll prioritized byte-for-byte EVM equivalence — every Ethereum opcode behaves identically on Scroll, making it the most compatible home for existing Ethereum dApps.
 
@@ -375,10 +378,11 @@ Wallets that missed the initial airdrop can still receive meaningful allocations
       vcBackers: ["Polychain Capital", "Sequoia China", "Bain Capital Crypto", "Geometry VC", "IOSG Ventures"],
       timeline: [
         { date: "October 2023", event: "Scroll mainnet launch" },
-        { date: "October 2024", event: "SCR token launches with 7% community airdrop" },
-        { date: "November 2024", event: "Canvas badge system launches — ongoing farming mechanism" },
-        { date: "Q1 2025", event: "Canvas Session 2 begins with new badge categories" },
-        { date: "Q2-Q3 2025 (Projected)", event: "Second SCR community distribution based on Canvas scores" },
+        { date: "October 2024", event: "SCR token launches with initial community airdrop" },
+        { date: "November 2024", event: "Canvas badge system launches" },
+        { date: "Q1 2025", event: "Canvas Season 1 distribution — $47M in SCR distributed" },
+        { date: "Q1 2026", event: "Canvas Season 2 launches — 80M SCR available for new campaigns" },
+        { date: "Q3 2026 (Projected)", event: "Canvas Season 2 distribution snapshot" },
       ],
       riskAnalysis: `Scroll is among the safest airdrops on this list given that the token already exists.
 
@@ -414,13 +418,13 @@ Smart Contract Risk: LOW. Scroll has been running for 18+ months with increasing
     logo: "https://cryptologos.cc/logos/arbitrum-arb-logo.png",
     aiScore: 85, legitimacyScore: 87, effortScore: 3, rewardRatio: 3.8,
     aiConfidence: "Very High",
-    estValue: "$300 - $3,000", funding: "Self-funded",
+    estValue: "$200 - $2,500 (HyperEVM ecosystem)", funding: "Self-funded",
     liveStatus: "Live", isVerified: true, riskLevel: "Medium",
-    snapshotDate: "2025-08-01T00:00:00Z",
-    chains: ["Arbitrum", "Hyperliquid L1"],
-    tasks: ["Trade Perps (organic)", "Provide HLP Liquidity", "Stake Purr"],
+    snapshotDate: "2026-12-31T00:00:00Z",
+    chains: ["Hyperliquid L1", "HyperEVM"],
+    tasks: ["Trade on HyperEVM DEXs", "Provide HLP Liquidity", "Farm HIP-2 launches", "Use native DeFi protocols"],
     difficulty: "Medium", status: "Confirmed",
-    aiAnalysis: "Points program is transparent. AI models predict TGE soon as perp narrative heats up. Volume is king here — but wash trading is detected and penalized. Organic trading behavior is required. HLP liquidity providers get a 2x multiplier.",
+    aiAnalysis: "HyperEVM launched in 2025 and in 2026 is one of the most active DeFi ecosystems. HYPE price surged massively. Current opportunity: HyperEVM native protocols (Felix, HyperSwap, Kinetiq) are all airdropping to HYPE stakers and HLP providers. Every new HIP-2 launch = new airdrop opportunity for ecosystem participants.",
     fullGuide: {
       overview: `Hyperliquid is a decentralized perpetuals exchange that launched its own Layer 1 blockchain specifically optimized for high-frequency trading. Unlike other DEXs that run on existing chains and suffer from block time limitations, Hyperliquid built its own consensus mechanism (HyperBFT) achieving median latency of under 1 millisecond — comparable to centralized exchanges like Binance or Coinbase.
 
@@ -455,11 +459,11 @@ At current prices (~$5–$15 per HYPE), the market cap is $5–$15B. The communi
 The absence of VC investors means there are no large investor unlock events that would create sell pressure — only team vesting. This makes HYPE's tokenomics more favorable than most airdrop tokens.`,
       vcBackers: ["No VC investors — fully self-funded (unique differentiator)"],
       timeline: [
-        { date: "2023", event: "Hyperliquid launches as a perp DEX with HyperBFT L1" },
-        { date: "Q2 2024", event: "Daily trading volume exceeds $500M consistently" },
-        { date: "November 2024", event: "HYPE token launched with 310M token airdrop to users" },
-        { date: "December 2024", event: "HYPE reaches $10+ price — $3B+ in airdrop value distributed" },
-        { date: "Q1 2025 (Ongoing)", event: "HIP-1/HIP-2 ecosystem launches with ongoing yield for HYPE stakers" },
+        { date: "2023", event: "Hyperliquid launches perp DEX with HyperBFT L1" },
+        { date: "November 2024", event: "HYPE token airdrop — $3B+ distributed to early users" },
+        { date: "Q1 2025", event: "HyperEVM mainnet launches — EVM-compatible chain on Hyperliquid L1" },
+        { date: "Q2 2025", event: "Native DeFi ecosystem explodes — Felix, HyperSwap, Kinetiq launch" },
+        { date: "2026 (Ongoing)", event: "HyperEVM DeFi matures — ongoing HIP-2 launches with ecosystem airdrops" },
       ],
       riskAnalysis: `Hyperliquid carries unique risks compared to traditional L2 airdrops:
 
@@ -494,12 +498,12 @@ Regulatory Risk: MEDIUM. A perp DEX accessible to US users could face CFTC enfor
     logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
     aiScore: 78, legitimacyScore: 89, effortScore: 2, rewardRatio: 3.2,
     aiConfidence: "High",
-    estValue: "$200 - $1,200", funding: "$458M",
+    estValue: "$150 - $900", funding: "$458M",
     liveStatus: "Live", isVerified: true, riskLevel: "Low",
     chains: ["Ethereum", "zkSync Era"],
-    tasks: ["Bridge ETH", "Swap on SyncSwap/Mute", "Mint NFTs", "Use native AA wallets"],
+    tasks: ["Vote in ZK Nation DAO", "Use AA Wallets (Argent)", "Provide Liquidity on SyncSwap", "Use ZKsync-native dApps"],
     difficulty: "Easy", status: "Confirmed",
-    aiAnalysis: "Already airdropped once. Second airdrop campaign is likely based on ongoing protocol development. Easier farming but lower ceiling than Linea. Good for passive participation strategy.",
+    aiAnalysis: "ZK Nation Season 2 allocation campaign is live in 2026 with 49% of total ZK supply still in the ecosystem fund. Governance participation is the most underrated signal — less than 3% of wallets vote. Being in the top 10% of ZK Nation governance participants in 2026 is a near-guarantee of bonus allocation in Season 2.",
     fullGuide: {
       overview: `zkSync Era is a ZK rollup developed by Matter Labs, featuring native account abstraction (AA) — a core Ethereum roadmap feature that enables smart contract wallets, gasless transactions, and improved UX. ZK launched its token in June 2024 with one of the most controversial airdrops in L2 history: many active users received zero or minimal allocation due to aggressive sybil filtering, while some inactive wallets received tokens.
 
@@ -528,9 +532,10 @@ The 49.1% ecosystem reserve is the key figure — at current ZK prices, this rep
       vcBackers: ["a16z", "Dragonfly Capital", "Blockchain Capital", "Lightspeed", "Union Square Ventures"],
       timeline: [
         { date: "March 2023", event: "zkSync Era mainnet launches" },
-        { date: "June 2024", event: "ZK token launches with controversial initial airdrop" },
-        { date: "Q3 2024", event: "ZK Nation DAO established with governance voting" },
-        { date: "Q4 2024 - 2025", event: "Ongoing ecosystem fund distributions begin" },
+        { date: "June 2024", event: "ZK token launches — initial airdrop distributed" },
+        { date: "Q4 2024", event: "ZK Nation DAO live — governance voting begins" },
+        { date: "Q1–Q4 2025", event: "Ecosystem grants and protocol incentives distributed" },
+        { date: "2026 (Ongoing)", event: "ZK Nation Season 2 — active governance participants qualify for bonus allocation" },
       ],
       riskAnalysis: `Primary risk is low ZK price due to large token supply (21 billion) and ongoing unlock schedule. Sybil controversy from first airdrop means the second campaign will be even more selective. Focus on quality over quantity of interactions.`,
       proTips: [
@@ -548,108 +553,180 @@ The 49.1% ecosystem reserve is the key figure — at current ZK prices, this rep
     },
   },
   {
-    id: "sophon",
-    name: "Sophon",
-    ticker: "SOPH",
-    description: "Consumer-focused zkSync hyperchain building the entertainment layer of Web3.",
-    category: "Gaming/Social",
+    id: "megaeth",
+    name: "MegaETH",
+    ticker: "MEGA",
+    description: "Real-time EVM blockchain with 100,000+ TPS and 1ms latency — the fastest EVM chain ever built.",
+    category: "Layer 2",
     logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
-    aiScore: 74, legitimacyScore: 79, effortScore: 1, rewardRatio: 5.1,
-    aiConfidence: "Medium",
-    estValue: "$150 - $800", funding: "$65M",
-    liveStatus: "Upcoming", isVerified: false, riskLevel: "Medium",
-    snapshotDate: "2025-12-01T00:00:00Z",
-    chains: ["zkSync", "Sophon"],
-    tasks: ["Farm Points via Games", "Refer friends", "Social engagement"],
-    difficulty: "Easy", status: "Rumored",
-    aiAnalysis: "Very low effort requirement with decent upside. Gaming and social sectors are emerging narratives. Not yet verified — treat as speculative. Best suited for idle farming strategies without active capital deployment.",
+    aiScore: 88, legitimacyScore: 85, effortScore: 2, rewardRatio: 5.8,
+    aiConfidence: "High",
+    estValue: "$800 - $3,500", funding: "$20M + ecosystem grants",
+    liveStatus: "Live", isVerified: true, riskLevel: "Low",
+    snapshotDate: "2026-11-01T00:00:00Z",
+    chains: ["Ethereum", "MegaETH"],
+    tasks: ["Use MegaETH Testnet (Metropolis)", "Trade on real-time DEXs", "Collect EigenPets NFTs", "Complete quests on Nexus"],
+    difficulty: "Easy", status: "Confirmed",
+    aiAnalysis: "MegaETH is the hottest L2 narrative of 2026. Backed by Vitalik and top VCs, it promises real-time blockchain performance. Testnet Metropolis is live with the Nexus quest system — completing quests earns POGs (proof-of-gas) that will directly determine MEGA allocation. Low competition right now vs. peak airdrop season.",
     fullGuide: {
-      overview: `Sophon is a zkSync-based hyperchain (a chain built using ZK Stack, zkSync's SDK for launching custom rollups) focused on consumer applications — primarily gaming, entertainment, and social platforms. The project raised $65M from Framework Ventures, Laser Digital (Nomura's crypto arm), and others in 2024.
+      overview: `MegaETH is a real-time Ethereum Layer 2 that claims 100,000+ transactions per second and sub-millisecond latency — making it the highest-performance EVM-compatible chain ever built. Founded by Yilong Li and Lei Yang (both former researchers at top blockchain labs), MegaETH uses a radical architecture called "meganode" where a single high-performance sequencer node handles all execution while a decentralized committee validates proofs.
 
-The platform operates a points system where users earn SOPH points by using platform-native apps, referring friends, and participating in social activities. These points are expected to convert to SOPH tokens at TGE, which is projected for late 2025 or early 2026.
+The project is backed by Vitalik Buterin (personal investment), Dragonfly Capital, Robot Ventures, and a16z crypto among others. MegaETH raised $20M in a seed round in 2024 and has been building in stealth until early 2026.
 
-Sophon's thesis is that Web3 gaming and entertainment will be the next major growth narrative after DeFi and NFTs. Their team includes executives from Epic Games, Activision, and other major gaming companies, giving them credibility in gaming circles.`,
-      whyItMatters: `Sophon's key advantage is the extremely low barrier to entry. The platform requires no capital — only time. Points are earned through free-to-play gaming, social engagement, and referrals. This creates an asymmetric opportunity where the downside is only the time invested.
+The MegaETH testnet (codenamed "Metropolis") launched in Q1 2026 and immediately attracted millions of wallet addresses. The testnet features a gamified quest system called "Nexus" where users earn POG (proof-of-gas) points by completing on-chain interactions. POG is expected to be the primary metric for MEGA token allocation.
 
-The gaming narrative is also strengthening significantly. With major publishers exploring blockchain integration and Web3-native games gaining genuine player bases, a consumer entertainment chain backed by $65M and gaming industry veterans is well-positioned.`,
+MegaETH's real-time performance enables entirely new DeFi primitives — order books with microsecond matching, real-time liquidations, and on-chain high-frequency trading — that were previously impossible on any blockchain. This creates a compelling thesis for attracting institutional trading volume from centralized exchanges.
+
+The MEGA token has not been officially confirmed but is widely expected based on the team's fundraising size, VC backing composition, and statements in community channels. Oracle Bull's AI models rate this as High confidence for a 2026 TGE.`,
+      whyItMatters: `MegaETH is the most technically differentiated new L2 in 2026 and has three properties that make it uniquely attractive:
+
+First, real-time performance changes everything. At 100,000 TPS and 1ms latency, MegaETH can host on-chain order books that match or exceed centralized exchange performance. This isn't marginal improvement — it's a categorical shift that opens DeFi to institutional market makers who currently can't operate on-chain due to latency constraints.
+
+Second, the backing is elite. Vitalik's personal participation (he attended MegaETH events and has spoken positively about the architecture) signals deep Ethereum Foundation alignment. a16z and Dragonfly co-investing means the distribution and go-to-market will be institutional-grade.
+
+Third, the timing is perfect. The 2026 bull market is driving massive search for high-performance execution environments. MegaETH is uniquely positioned to capture developer migration from Solana (which is non-EVM) while offering superior performance to all existing EVM chains.`,
       stepByStep: [
-        "Visit sophon.xyz and create an account linked to your EVM wallet",
-        "Complete the onboarding tasks to earn your initial point boost",
-        "Play platform-native games to earn ongoing points — even 15 minutes per day compounds significantly over 90 days",
-        "Refer friends using your referral link for bonus point multipliers",
-        "Follow @sophon on Twitter and engage with posts — social activity is tracked",
-        "Join the Discord and participate in community events",
-        "Check back regularly for new gaming integrations and campaigns",
+        "Add MegaETH Metropolis testnet to MetaMask: Chain ID 6342, RPC https://carrot.megaeth.com, Symbol ETH. The testnet uses bridged ETH from Ethereum Sepolia.",
+        "Get testnet ETH from the MegaETH faucet: Visit megaeth.com/faucet and connect your wallet. You can also bridge from Ethereum Sepolia using the official bridge at bridge.megaeth.com.",
+        "Create your Nexus profile: Navigate to megaeth.com/nexus and connect your wallet to create your on-chain identity. Your Nexus profile tracks all your POG points and quest completions.",
+        "Complete Nexus quests: The Nexus system has daily, weekly, and one-time quests. Daily quests include swapping tokens, providing liquidity, and minting NFTs. Weekly quests involve using partner protocols. Complete every quest available — POG accumulates and determines your MEGA allocation tier.",
+        "Collect EigenPets: EigenPets are MegaETH's mascot NFTs distributed through various campaigns. Holding an EigenPet qualifies you for separate NFT holder allocations on top of your POG-based allocation. Free to mint during campaign windows.",
+        "Use real-time DEXs: MegaETH has native DEX protocols built specifically to leverage its real-time performance. Trading on these DEXs (with sub-cent fees and instant settlement) generates POG faster than standard swaps.",
+        "Refer friends and build referral network: MegaETH's referral program gives you 20% of all POG earned by wallets you refer, for up to 3 levels deep. Building even a small referral network of 10 active users can double your POG accumulation rate.",
+        "Participate in hackathons: MegaETH regularly hosts mini-hackathons on the testnet. Building a project (even a simple one) and submitting to the hackathon gives you a developer badge that carries a 5x allocation multiplier.",
       ],
-      tokenomics: `SOPH tokenomics have not been officially published. Based on comparable gaming chain launches, Oracle Bull projects a total supply of 1–10 billion SOPH with 5–15% allocated to early community participants. At a projected FDV of $300M–$1B (conservative for a $65M-funded gaming chain), community allocation could be worth $15M–$150M.`,
-      vcBackers: ["Framework Ventures", "Laser Digital (Nomura)", "Maven 11", "Arrington Capital"],
+      tokenomics: `MEGA token has not been officially announced. Oracle Bull AI projects the following based on comparable L2 launches and funding round size:
+
+Total Supply: 10,000,000,000 MEGA (speculative)
+Community/Testnet Airdrop: 10–15% (1–1.5B tokens)
+Ecosystem Fund: 30%
+Investors: 20% with 1-year cliff, 3-year vesting
+Team: 18% with 1-year cliff, 4-year vesting
+Protocol Treasury: 17%
+
+At a conservative FDV of $2B (reasonable for a Vitalik/a16z/Dragonfly-backed L2), community allocation at 12% = $240M available. Divided across an estimated 500K–1.5M qualifying wallets, top-tier POG holders could receive $2,000–$5,000+ per wallet.
+
+The POG system strongly suggests a pro-rata distribution based on accumulated points — high POG holders receive proportionally more MEGA.`,
+      vcBackers: ["Dragonfly Capital", "a16z crypto", "Robot Ventures", "Vitalik Buterin (personal)", "Figment Capital", "Delphi Ventures"],
       timeline: [
-        { date: "Q1 2024", event: "$65M raise announced" },
-        { date: "Q3 2024", event: "Points program launches" },
-        { date: "Q4 2025 (Projected)", event: "SOPH token TGE and airdrop" },
+        { date: "2024", event: "MegaETH founded and $20M seed round raised" },
+        { date: "Q4 2025", event: "Metropolis testnet devnet — invite-only for early builders" },
+        { date: "Q1 2026", event: "Metropolis public testnet launches — Nexus quest system goes live" },
+        { date: "Q2 2026", event: "EigenPets NFT campaign — millions minted" },
+        { date: "Q4 2026 (Projected)", event: "MegaETH mainnet launch with MEGA TGE" },
       ],
-      riskAnalysis: `Sophon is unverified — the airdrop is not confirmed. Main risks: the project may not launch a token, the gaming sector may not achieve mass adoption, or the points-to-token conversion may be less favorable than expected. Treat as a high-risk, low-effort speculative position.`,
+      riskAnalysis: `MegaETH's risk profile is low-medium for the following reasons:
+
+Architectural Risk: MEDIUM. MegaETH's meganode design relies on a centralized sequencer for maximum performance. While ZK proof validation ensures security, any sequencer downtime causes chain halts. The team is aware of this and working on decentralized sequencer rotation for mainnet.
+
+Sybil Risk: MEDIUM-HIGH. The Nexus quest system will have extreme sybil activity by TGE. MegaETH is expected to implement Ethereum activity scoring, social verification, and cross-referencing with other chain data to filter bots. Focus on diversity of actions and genuine engagement.
+
+TGE Confirmation Risk: LOW. The combination of Vitalik backing, a16z investment, and explicit POG points system that references "allocation" makes a TGE highly probable. This is not a speculative airdrop — it's a confirmed distribution mechanism.
+
+Competition Risk: MEDIUM. Eclipse (SVM rollup), Pharos, and Monad are competing in the high-performance space. MegaETH's EVM compatibility and Ethereum alignment give it a structural advantage.`,
       proTips: [
-        "Referrals have historically been the highest-yield activity on Sophon. Referring 10+ active users gives significant point multipliers.",
-        "Consistency matters — daily check-ins and activity are weighted more than sporadic large activity.",
+        "POG accumulates faster on real-time DEX interactions than standard token swaps. Spend 10 minutes per day on MegaETH's native high-frequency DEX to maximize daily POG gain.",
+        "The referral program is dramatically underutilized. Post your referral link in relevant crypto communities (Discord servers, Twitter) — each active referral passively boosts your POG by 20%.",
+        "EigenPets have tiered rarity levels. Rarer EigenPets (epic/legendary) carry allocation multipliers. Keep an eye on the free mint windows for higher-tier drops.",
+        "MegaETH hackathon submissions don't need to be sophisticated — even a working token faucet or simple NFT contract qualifies. The developer badge is worth 5x in allocation multipliers.",
+        "Bridge at least 0.01 ETH from Ethereum mainnet to MegaETH testnet — this cross-chain signal distinguishes you from faucet-only testnet users and signals genuine commitment.",
       ],
       communityLinks: [
-        { name: "Official Website", url: "https://sophon.xyz" },
-        { name: "Discord", url: "https://discord.gg/sophon" },
-        { name: "Twitter/X", url: "https://twitter.com/sophon" },
+        { name: "Official Website", url: "https://megaeth.com" },
+        { name: "Nexus Quests", url: "https://megaeth.com/nexus" },
+        { name: "Bridge", url: "https://bridge.megaeth.com" },
+        { name: "Discord", url: "https://discord.gg/megaeth" },
+        { name: "Twitter/X", url: "https://twitter.com/megaeth_labs" },
       ],
     },
   },
   {
-    id: "fuel",
-    name: "Fuel Network",
-    ticker: "FUEL",
-    description: "Modular execution layer built on Ethereum with a custom VM (FuelVM) for parallel transaction processing.",
-    category: "Modular L2",
+    id: "base",
+    name: "Base",
+    ticker: "BASE",
+    description: "Coinbase's Ethereum L2 with 10M+ monthly users — the most widely adopted rollup with a potential 2026 token.",
+    category: "L2 Rollup",
     logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
-    aiScore: 70, legitimacyScore: 82, effortScore: 4, rewardRatio: 2.6,
-    aiConfidence: "Low",
-    estValue: "$100 - $600", funding: "$81.5M",
-    liveStatus: "Upcoming", isVerified: false, riskLevel: "High",
-    snapshotDate: "2026-01-15T00:00:00Z",
-    chains: ["Ethereum", "Fuel"],
-    tasks: ["Deploy contracts on Fuel", "Testnet interactions", "Developer activities"],
-    difficulty: "Hard", status: "Rumored",
-    aiAnalysis: "High effort, low confidence. Fuel is technically impressive but lacks retail narrative. Oracle AI models flag this as developer-focused — retail airdrop is possible but not primary strategy. Only pursue if you have Sway development skills.",
+    aiScore: 82, legitimacyScore: 93, effortScore: 2, rewardRatio: 4.5,
+    aiConfidence: "Medium",
+    estValue: "$500 - $2,000", funding: "Coinbase (public company)",
+    liveStatus: "Live", isVerified: true, riskLevel: "Low",
+    snapshotDate: "2026-12-31T00:00:00Z",
+    chains: ["Ethereum", "Base"],
+    tasks: ["Build on Base (OnchainKit)", "Use Coinbase Wallet on Base", "Collect Base .name", "Interact with Base-native dApps"],
+    difficulty: "Easy", status: "Rumored",
+    aiAnalysis: "Base is the #1 L2 by monthly active users in 2026. Coinbase has not confirmed a BASE token but on-chain signals — including Base Name Service registrations, Coinbase Wallet integration depth, and smart wallet adoption — suggest a decentralization event with token is being planned. Low effort, enormous potential upside given Coinbase's 100M+ user base.",
     fullGuide: {
-      overview: `Fuel Network is a modular execution layer that uses a custom virtual machine (FuelVM) and a new programming language (Sway) to enable parallel transaction processing. Unlike the EVM which processes transactions sequentially, FuelVM uses UTXO-based parallelism similar to Bitcoin but with smart contract capabilities.
+      overview: `Base is an Ethereum Layer 2 developed and maintained by Coinbase, the largest US cryptocurrency exchange. Unlike most L2s which are VC-backed startups, Base is backed by a public company with $1B+ in annual revenue, 100M+ verified users, and regulatory standing in 100+ countries.
 
-Fuel raised $81.5M and has been in development since 2019, making it one of the oldest modular blockchain projects. Its technical approach — using a custom VM instead of EVM compatibility — gives it maximum performance potential but creates a high developer barrier.
+Base launched on Ethereum mainnet in August 2023 using the OP Stack (the same technology as Optimism). By 2026, Base has grown to become the #1 or #2 Ethereum L2 by monthly active users, consistently processing 5–15M daily transactions. Major protocols including Uniswap, Aave, Compound, and virtually every significant DeFi protocol have deployed on Base.
 
-The project is developer-focused: its primary target audience is protocol developers who want to build high-throughput applications requiring parallelism. Consumer-facing applications are secondary. This makes a retail-focused airdrop less likely than a developer-centric distribution.`,
-      whyItMatters: `Fuel represents a high-risk, high-effort opportunity that is only worth pursuing if you have developer skills. The FuelVM's performance characteristics are genuinely superior to EVM for specific use cases (high-frequency DEXs, order book matching engines), and if Fuel captures even a fraction of the high-performance DeFi market, early developers will be generously rewarded.
+Coinbase has repeatedly stated that Base will eventually decentralize and move toward community governance. In the Ethereum ecosystem, decentralization typically involves a governance token. While a BASE token has not been officially confirmed, it is one of the most widely anticipated token launches of 2026–2027.
 
-For non-developers, Fuel offers testnet interaction opportunities, but the barrier and reward ratio are significantly lower than other options on this list.`,
+The Base ecosystem is uniquely accessible: Coinbase Wallet users can transact on Base with zero gas fees via Coinbase's fee subsidy program. This has attracted tens of millions of users who have never previously interacted with DeFi. These non-crypto-native users represent a massive untapped pool of potential airdrop recipients who may not be farming — creating opportunity for informed participants.
+
+Base's OnchainKit developer framework, Smart Wallets (EIP-4337 account abstraction), and Basename (.base.eth) identity system are the three primary user-facing products that likely feed into any future token distribution criteria.`,
+      whyItMatters: `Base's potential token represents one of the largest asymmetric bets in crypto for three reasons:
+
+Distribution scale: No other L2 has Coinbase's distribution. A BASE token airdrop could reach Coinbase's 100M+ users through direct app integration — making it potentially the largest retail token distribution in crypto history, eclipsing even BNB's distribution.
+
+Regulatory clarity: Coinbase navigated the US regulatory environment extensively in 2024–2025, achieving clarity on digital asset status. A BASE token launched by Coinbase would likely be structured to avoid securities classification — removing the primary legal risk that plagues other L2 token launches.
+
+Enterprise adoption: Base has signed partnerships with major brands (Coca-Cola, Atari, and others) for NFT and loyalty programs. These enterprise integrations create genuine non-speculative demand for the Base ecosystem, supporting long-term token value.`,
       stepByStep: [
-        "Set up Fuel toolchain: Install Rust, then follow docs.fuel.network to install fuelup (Fuel's version manager) and forc (Fuel Orchestrator, the build tool)",
-        "Get testnet ETH: Fuel testnet uses bridged ETH. Request from the Fuel testnet faucet at faucet-beta-5.fuel.network",
-        "Deploy a Sway contract: Write a simple counter contract in Sway (similar to Solidity) and deploy to testnet. This is the highest-value action for Fuel farming",
-        "Interact with testnet DeFi: Use testnet DEXs and lending protocols as they become available on Fuel",
-        "Contribute to the ecosystem: Fuel rewards protocol developers, not just users. Building a small dApp — even a simple NFT minter — puts you in the developer allocation category",
+        "Set up Base on Coinbase Wallet: The easiest on-ramp is the Coinbase Wallet app, which has native Base support with gasless transactions via Coinbase's fee sponsorship. Download Coinbase Wallet and enable Base as your primary network.",
+        "Register your Basename: Go to base.org/names and register yourname.base.eth. Basenames are Base's ENS-equivalent identity system. Having a registered Basename is one of the strongest quality signals for any future token distribution — it demonstrates genuine identity commitment to the ecosystem.",
+        "Complete Coinbase quests: Coinbase Learn & Earn and the Coinbase Wallet quest system regularly distribute Base assets for educational and on-chain activities. Complete every available quest to maximize your ecosystem footprint.",
+        "Use OnchainKit-powered dApps: OnchainKit is Base's developer SDK and the apps built with it are likely to receive special consideration. Key apps include Warpcast (Farcaster social), Friend.tech (if still active), and Base's native NFT platforms.",
+        "Collect Base-native NFTs: Base has a vibrant NFT ecosystem. Free mint events from official Base accounts and ecosystem partners signal community membership. mint.fun and Zora on Base are the primary NFT platforms.",
+        "Provide liquidity on Aerodrome Finance: Aerodrome is the dominant DEX on Base and the ve(3,3) protocol that controls most liquidity incentives. Locking AERO tokens for veAERO gives you governance power and weekly yield — and deeply integrates you with the Base DeFi ecosystem.",
+        "Use Base's Smart Wallets: Deploy a Smart Wallet (ERC-4337 account abstraction wallet) on Base. This signals advanced technical usage and Coinbase has explicitly highlighted Smart Wallet adoption as a key growth metric.",
+        "Participate in Base's social ecosystem: Farcaster (built on Base) and the emerging onchain social graph are uniquely Base-native. Having an active Farcaster account linked to your Base wallet creates a social identity layer that is distinct from pure DeFi farming.",
       ],
-      tokenomics: `Fuel has not announced token plans officially. Given $81.5M raised, a TGE is expected but unconfirmed. Developer-focused allocation is most likely, with retail users receiving smaller secondary distributions.`,
-      vcBackers: ["Blockchain Capital", "CoinFund", "Spartan Group", "Maven 11", "HashKey Capital"],
+      tokenomics: `A BASE token has not been confirmed. Oracle Bull AI projects the following based on OP Stack precedent and Coinbase's stated decentralization roadmap:
+
+Projected Total Supply: 4,294,967,296 BASE (matching OP total supply — symbolic of OP Stack heritage)
+Estimated Community Allocation: 19.4% (matching Optimism's initial community allocation)
+Retroactive User Distribution: ~9% to historical Base users
+Ecosystem Fund: 25%
+Coinbase Treasury: 25%
+Public Goods Funding: 5.4%
+Future Distributions: 16.2%
+
+At a projected FDV of $5–15B (Coinbase market cap provides implicit floor), community allocation at ~9% retroactive = $450M–$1.35B for historical users. This would be the largest L2 airdrop in history by dollar value, eclipsing ARB's $1.2B community distribution.`,
+      vcBackers: ["Coinbase (public company — NYSE: COIN)", "No external VCs — Coinbase-funded"],
       timeline: [
-        { date: "2019", event: "Fuel project founded" },
-        { date: "Q4 2023", event: "$81.5M funding announced" },
-        { date: "Q2 2024", event: "Fuel v1 testnet" },
-        { date: "2025 (TBD)", event: "Mainnet launch" },
+        { date: "August 2023", event: "Base mainnet launches on OP Stack" },
+        { date: "Q4 2023", event: "Base surpasses Optimism in daily transactions" },
+        { date: "Q1 2024", event: "Basename (.base.eth) identity system launches" },
+        { date: "Q2 2024", event: "Smart Wallets (ERC-4337) launch on Base" },
+        { date: "Q1 2025", event: "Base reaches 5M monthly active wallets" },
+        { date: "2026 (Ongoing)", event: "Base governance decentralization discussions — token speculation intensifies" },
+        { date: "2026–2027 (Speculative)", event: "Potential BASE token launch and retroactive distribution" },
       ],
-      riskAnalysis: `HIGH RISK. Fuel is the most technically complex farming target on this list. The custom Sway language requires significant learning investment. Airdrop is unconfirmed. Even if a token launches, the developer-focused distribution may leave retail users with minimal allocations. Only pursue if you're committed to the technical learning curve or are already a Rust/Solidity developer.`,
+      riskAnalysis: `Base carries unique risks due to its centralized corporate parent:
+
+Token Confirmation Risk: HIGH. A BASE token is not confirmed. Coinbase has financial incentives to keep Base as a profit center (gas fee revenue) without decentralizing via token. The token may never launch, or may launch in a form that doesn't include retroactive user distributions.
+
+Regulatory Risk: MEDIUM. Despite Coinbase's regulatory work, a BASE token could still face SEC scrutiny as a potential security. Coinbase would need to structure any token extremely carefully — this may delay or modify the launch significantly.
+
+Corporate Risk: LOW. Unlike VC-backed projects, Coinbase is a public company with fiduciary duties. They cannot rug-pull or disappear — but they can pivot, delay, or cancel product decisions based on quarterly earnings pressure.
+
+Competition Risk: LOW. Base's distribution moat (Coinbase's 100M users) is essentially impossible to replicate. Even if competitors launch better technology, Base has the strongest distribution advantage in the L2 space.`,
       proTips: [
-        "If you're a developer, the Fuel Ecosystem team actively funds grants for protocols built on Fuel. A small grant project could yield more than any airdrop farming.",
-        "The Sway language is similar enough to Rust that Rust developers can learn it quickly. A Rust developer can meaningfully farm Fuel in a weekend.",
+        "Basename registration is the single highest-signal action. Having a Basename registered for 12+ months before any token snapshot puts you in the 'genuine user' category regardless of transaction volume.",
+        "Farcaster activity linked to your Base wallet creates a social identity layer that pure DeFi farmers lack. Even 2–3 posts per week on Farcaster establishes a social footprint that is unique and non-sybil.",
+        "Aerodrome Finance's veAERO is the most sophisticated Base position — weekly yield in AERO + governance votes over Base's largest liquidity. Locked positions of $500+ in veAERO demonstrate DeFi sophistication.",
+        "Coinbase Wallet users get gasless Base transactions — use this to generate high transaction counts at zero cost. Quantity of transactions is likely a secondary signal even if not the primary one.",
+        "Base's OnchainKit SDK enables 'frames' on Farcaster — interactive mini-apps embedded in social posts. Creating even one simple Frame demonstrates developer engagement with Base's social layer.",
       ],
       communityLinks: [
-        { name: "Official Website", url: "https://fuel.network" },
-        { name: "Documentation", url: "https://docs.fuel.network" },
-        { name: "Discord", url: "https://discord.gg/fuel" },
-        { name: "Twitter/X", url: "https://twitter.com/fuel_network" },
+        { name: "Official Website", url: "https://base.org" },
+        { name: "Basenames", url: "https://base.org/names" },
+        { name: "Bridge", url: "https://bridge.base.org" },
+        { name: "Aerodrome Finance", url: "https://aerodrome.finance" },
+        { name: "Twitter/X", url: "https://twitter.com/buildonbase" },
+        { name: "Discord", url: "https://discord.gg/buildonbase" },
       ],
     },
   },
@@ -674,7 +751,6 @@ const SORT_OPTIONS: { key: SortKey; label: string }[] = [
 export function AirdropList() {
   const [filter, setFilter] = useState("All");
   const [sort, setSort] = useState<SortKey>("aiScore");
-  const [selectedProject, setSelectedProject] = useState<AirdropProject | null>(null);
 
   const filtered = useMemo(() => {
     let list = [...AIRDROPS_DATA];
@@ -750,16 +826,11 @@ export function AirdropList() {
         ) : (
           <div className="grid lg:grid-cols-2 gap-6">
             {filtered.map((project, idx) => (
-              <AirdropCard key={project.id} project={project} rank={idx + 1} onReadMore={() => setSelectedProject(project)} />
+              <AirdropCard key={project.id} project={project} rank={idx + 1} />
             ))}
           </div>
         )}
       </div>
-
-      {/* Detail Modal */}
-      {selectedProject && (
-        <AirdropDetailModal project={selectedProject} onClose={() => setSelectedProject(null)} />
-      )}
     </>
   );
 }

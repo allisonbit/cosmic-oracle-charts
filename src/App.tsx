@@ -74,6 +74,7 @@ const MyCopyTrading = lazy(() => import("./pages/MyCopyTrading"));
 const Trade = lazy(() => import("./pages/Trade"));
 const MarketPage = lazy(() => import("./pages/MarketPage"));
 const Airdrops = lazy(() => import("./pages/Airdrops"));
+const AirdropDetail = lazy(() => import("./pages/AirdropDetail"));
 const ToolsHub = lazy(() => import("./pages/ToolsHub"));
 const ProfitCalculator = lazy(() => import("./pages/tools/ProfitCalculator"));
 const DCACalculator = lazy(() => import("./pages/tools/DCACalculator"));
@@ -231,6 +232,8 @@ const App = () => (
                 <Route path="/q/:slug" element={B(<QuestionIntent />)} />
                 <Route path="/market/:slug" element={B(<MarketPage />)} />
                 <Route path="/airdrops" element={B(<Airdrops />)} />
+                <Route path="/airdrops/:id" element={B(<AirdropDetail />)} />
+
                 <Route path="/tools" element={B(<ToolsHub />)} />
                 <Route path="/tools/profit-calculator" element={B(<ProfitCalculator />)} />
                 <Route path="/tools/dca-calculator" element={B(<DCACalculator />)} />

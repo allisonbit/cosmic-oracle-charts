@@ -12,9 +12,9 @@ const Airdrops = () => {
   return (
     <Layout>
       <Helmet>
-        <title>Best Crypto Airdrops 2025 — AI Ranked & Verified | Oracle Bull</title>
+        <title>Best Crypto Airdrops 2026 — AI Ranked & Verified | Oracle Bull</title>
         <meta name="description" content="Discover the highest-value crypto airdrops ranked by Oracle Bull AI. Each drop scored for legitimacy, effort:reward ratio, and estimated value. Includes wallet eligibility checker and scam protection." />
-        <meta name="keywords" content="crypto airdrops 2025, best airdrops, airdrop tracker, token airdrop, wallet eligibility, AI airdrop score, upcoming airdrops, verified airdrops" />
+        <meta name="keywords" content="crypto airdrops 2026, best airdrops, airdrop tracker, token airdrop, wallet eligibility, AI airdrop score, upcoming airdrops, verified airdrops" />
       </Helmet>
 
       <div className="container mx-auto px-3 sm:px-4 py-6 md:py-8">
