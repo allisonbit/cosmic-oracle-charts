@@ -3,6 +3,8 @@ import { Flame, TrendingUp, TrendingDown, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CryptoChart } from "./CryptoChart";
 import { formatDashboardNumber } from "./utils";
+import { CoinImage } from "@/components/ui/CoinImage";
+
 
 export function DashboardTopCryptos({ topCoins }: { topCoins: any[] }) {
   return (
@@ -24,9 +26,7 @@ export function DashboardTopCryptos({ topCoins }: { topCoins: any[] }) {
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
-                  <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                    <span className="font-display font-bold text-primary text-[10px] sm:text-xs">{coin.symbol[0]}</span>
-                  </div>
+                  <CoinImage symbol={coin.symbol} image={coin.image} size={28} className="sm:w-7 sm:h-7" />
                   <div className="min-w-0">
                     <h3 className="font-display font-bold text-primary text-xs sm:text-sm truncate">{coin.symbol}</h3>
                     <p className="text-[8px] sm:text-[10px] text-muted-foreground truncate">{coin.name}</p>

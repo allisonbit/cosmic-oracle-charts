@@ -6,7 +6,8 @@ import { cn } from "@/lib/utils";
 import { useMarketData } from "@/hooks/useMarketData";
 import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { TokenIcon } from "@/components/ui/token-icon";
+import { CoinImage } from "@/components/ui/CoinImage";
+
 import { TradeButtons } from "@/components/trading/TradeButtons";
 
 interface CoinData {
@@ -100,7 +101,8 @@ export function EnhancedTopPerformers({ onCoinClick }: EnhancedTopPerformersProp
                 isPositive ? "bg-success/5 border-success/20 hover:border-success/40" : "bg-danger/5 border-danger/20 hover:border-danger/40"
               )}
             >
-              <TokenIcon coinId={coinId} symbol={coin.symbol} size="sm" />
+              <CoinImage symbol={coin.symbol} size={24} />
+
               
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5 sm:gap-2">

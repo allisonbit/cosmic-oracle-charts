@@ -5,7 +5,8 @@ import { cn } from "@/lib/utils";
 import { useMarketData } from "@/hooks/useMarketData";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { TokenIcon } from "@/components/ui/token-icon";
+import { CoinImage } from "@/components/ui/CoinImage";
+
 
 interface VolumeLeader {
   symbol: string;
@@ -76,7 +77,8 @@ export function EnhancedVolumeLeaders() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 sm:gap-2">
                 <span className="text-[10px] sm:text-xs text-muted-foreground w-4 sm:w-5">{i + 1}</span>
-                <TokenIcon coinId={getCoinId(coin)} symbol={coin.symbol} size="sm" />
+                <CoinImage symbol={coin.symbol} size={24} />
+
                 <span className="font-display font-bold text-sm sm:text-base">{coin.symbol}</span>
                 <span className={cn(
                   "text-[10px] sm:text-xs flex items-center gap-0.5",
