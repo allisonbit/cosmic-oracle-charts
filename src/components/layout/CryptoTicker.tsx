@@ -122,9 +122,3 @@ export function CryptoTicker() {
     </div>
   );
 }
-
-        ))}
-      </div>
-    </div>
-  );
-}
