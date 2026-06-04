@@ -24,21 +24,18 @@ export function EnhancedDominanceChart() {
   const dominanceData: DominanceData[] = useMemo(() => [
     { 
       name: "BTC", value: global?.btcDominance || 55, color: "hsl(38, 92%, 50%)",
-      change: (Math.random() - 0.5) * 2,
       description: "Bitcoin's share of total crypto market capitalization",
       implications: ["High BTC dominance often signals risk-off sentiment", "Capital tends to flow to BTC during uncertainty", "Altcoins may underperform when BTC dominance rises"],
       chainLink: "/chain/bitcoin"
     },
     { 
       name: "ETH", value: global?.ethDominance || 18, color: "hsl(230, 60%, 50%)",
-      change: (Math.random() - 0.5) * 1.5,
       description: "Ethereum's share of total crypto market capitalization",
       implications: ["ETH dominance reflects DeFi and NFT ecosystem health", "Rising ETH dominance may signal alt season beginning"],
       chainLink: "/chain/ethereum"
     },
     { 
       name: "Others", value: 100 - (global?.btcDominance || 55) - (global?.ethDominance || 18), color: "hsl(190, 100%, 50%)",
-      change: (Math.random() - 0.5) * 3,
       description: "Combined share of all other cryptocurrencies",
       implications: ["High 'Others' dominance signals alt season", "Capital rotating into smaller projects"]
     },
