@@ -76,26 +76,33 @@ serve(async (req) => {
       console.log('Could not fetch fear & greed');
     }
 
-    // Fetch top coins
+    // Fetch top 250 coins across 2 parallel pages for full market coverage
     let topCoins: any[] = [];
     try {
-      const marketsResponse = await fetch(
-        'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=false&price_change_percentage=24h',
-        { headers: { 'Accept': 'application/json' } }
+      const pages = [1, 2];
+      const responses = await Promise.all(
+        pages.map((page) =>
+          fetch(
+            `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=${page}&sparkline=false&price_change_percentage=1h,24h,7d`,
+            { headers: { 'Accept': 'application/json' } }
+          ).then((r) => (r.ok ? r.json() : []))
+           .catch(() => [])
+        )
       );
-      
-      if (marketsResponse.ok) {
-        const marketsData = await marketsResponse.json();
-        topCoins = marketsData.map((coin: any) => ({
-          symbol: coin.symbol.toUpperCase(),
-          name: coin.name,
-          price: coin.current_price,
-          change24h: coin.price_change_percentage_24h || 0,
-          volume: coin.total_volume,
-          marketCap: coin.market_cap,
-          rank: coin.market_cap_rank,
-        }));
-      }
+      const merged = responses.flat();
+      topCoins = merged.map((coin: any) => ({
+        id: coin.id,
+        symbol: (coin.symbol || '').toUpperCase(),
+        name: coin.name,
+        image: coin.image,
+        price: coin.current_price ?? 0,
+        change1h: coin.price_change_percentage_1h_in_currency ?? 0,
+        change24h: coin.price_change_percentage_24h_in_currency ?? coin.price_change_percentage_24h ?? 0,
+        change7d: coin.price_change_percentage_7d_in_currency ?? 0,
+        volume: coin.total_volume ?? 0,
+        marketCap: coin.market_cap ?? 0,
+        rank: coin.market_cap_rank ?? 0,
+      })).filter((c: any) => c.price > 0);
     } catch {
       console.log('Could not fetch markets, using fallback');
     }
