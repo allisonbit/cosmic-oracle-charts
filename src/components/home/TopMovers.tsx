@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 import { useFavorites } from "@/hooks/useFavorites";
+import { CoinImage } from "@/components/ui/CoinImage";
 import { cn } from "@/lib/utils";
 import { useMemo, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -255,7 +256,7 @@ function MoverRow({ coin, isFavorite, onFavorite, isPositive }: MoverRowProps) {
         </button>
         <Link to={`/price-prediction/${coin.name.toLowerCase()}/daily`} className="flex items-center gap-2">
           {coin.image && (
-            <img src={coin.image} alt={coin.name} className="w-6 h-6 rounded-full" />
+            <CoinImage symbol={coin.symbol} image={coin.image} size={24} />
           )}
           <div>
             <div className="font-bold text-sm text-foreground group-hover/row:text-primary transition-colors">{coin.symbol}</div>

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { usePricePrediction } from "@/hooks/usePricePrediction";
 import { useCryptoPrices, CryptoPrice } from "@/hooks/useCryptoPrices";
+import { CoinImage } from "@/components/ui/CoinImage";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMemo, useState, useEffect } from "react";
 
@@ -130,12 +131,7 @@ function SignalCard({ coin, livePrice, idx }: {
         {/* Header row */}
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-2">
-            <div
-              className="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-black text-white"
-              style={{ backgroundColor: coin.color + "33", border: `1px solid ${coin.color}55` }}
-            >
-              <span style={{ color: coin.color }}>{coin.symbol[0]}</span>
-            </div>
+            <CoinImage symbol={coin.symbol} image={livePrice?.image} size={32} />
             <div>
               <p className="font-bold text-sm leading-none">{coin.symbol}</p>
               <p className="text-[10px] text-muted-foreground mt-0.5">{coin.name} • 1D</p>
@@ -171,6 +167,30 @@ function SignalCard({ coin, livePrice, idx }: {
         <div className="mb-3 -mx-1">
           <MiniSparkline change24h={change} color={sig.isBullish ? "#22c55e" : "#ef4444"} />
         </div>
+
+        {/* 24h High / Low range bar */}
+        {livePrice?.high24h && livePrice?.low24h && livePrice.high24h > livePrice.low24h && (
+          <div className="mb-3">
+            <div className="flex justify-between text-[9px] text-muted-foreground mb-1">
+              <span>L {fmtPrice(livePrice.low24h)}</span>
+              <span className="text-[9px] font-medium text-foreground">24h Range</span>
+              <span>H {fmtPrice(livePrice.high24h)}</span>
+            </div>
+            <div className="h-1 w-full bg-muted/60 rounded-full overflow-hidden relative">
+              <div
+                className="h-full bg-gradient-to-r from-danger via-warning to-success rounded-full"
+                style={{ width: '100%', opacity: 0.6 }}
+              />
+              {/* Current price marker */}
+              <div
+                className="absolute top-0 h-full w-0.5 bg-foreground rounded-full"
+                style={{
+                  left: `${Math.min(100, Math.max(0, ((livePrice.price - livePrice.low24h) / (livePrice.high24h - livePrice.low24h)) * 100))}%`
+                }}
+              />
+            </div>
+          </div>
+        )}
 
         {/* Confidence bar */}
         <div className="mb-4">

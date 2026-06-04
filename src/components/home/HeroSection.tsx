@@ -4,6 +4,7 @@ import { Sparkles, Shield, Users, TrendingUp, TrendingDown, CheckCircle, Activit
 import { Link } from "react-router-dom";
 import cosmicOracle from "@/assets/oracle-bull-logo.jpg";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
+import { CoinImage } from "@/components/ui/CoinImage";
 import { cn } from "@/lib/utils";
 
 // Animated counter hook
@@ -133,6 +134,7 @@ export function HeroSection() {
                       to={`/price-prediction/${coin.symbol.toLowerCase()}/daily`}
                       className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-muted/60 border border-border/40 hover:border-primary/40 hover:bg-muted transition-all group"
                     >
+                      <CoinImage symbol={coin.symbol} image={coin.image} size={18} />
                       <span className="text-xs font-bold text-foreground">{coin.symbol}</span>
                       <span className="text-xs font-mono text-foreground">{fmt(coin.price)}</span>
                       <span className={cn("text-[11px] font-semibold flex items-center gap-0.5", up ? "text-success" : "text-danger")}>

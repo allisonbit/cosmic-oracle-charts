@@ -6,30 +6,51 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Cache to avoid rate limiting - increased duration
 let cachedData: any = null;
 let cacheTimestamp = 0;
-const CACHE_DURATION = 30000; // 30 second cache for stability
+const CACHE_DURATION = 30000; // 30s
 
-// Fallback data when API is unavailable
+// Fallback — includes CoinGecko image CDN URLs for all coins
 const fallbackPrices = [
-  { symbol: 'BTC', name: 'Bitcoin', price: 97500, change24h: 2.5, volume24h: 45000000000, marketCap: 1900000000000 },
-  { symbol: 'ETH', name: 'Ethereum', price: 3650, change24h: 1.8, volume24h: 18000000000, marketCap: 440000000000 },
-  { symbol: 'SOL', name: 'Solana', price: 225, change24h: 3.2, volume24h: 4500000000, marketCap: 105000000000 },
-  { symbol: 'BNB', name: 'BNB', price: 680, change24h: 1.2, volume24h: 2000000000, marketCap: 100000000000 },
-  { symbol: 'XRP', name: 'Ripple', price: 2.35, change24h: -0.5, volume24h: 8000000000, marketCap: 130000000000 },
-  { symbol: 'ADA', name: 'Cardano', price: 1.05, change24h: 4.1, volume24h: 1200000000, marketCap: 37000000000 },
-  { symbol: 'DOGE', name: 'Dogecoin', price: 0.41, change24h: -1.2, volume24h: 3500000000, marketCap: 60000000000 },
-  { symbol: 'DOT', name: 'Polkadot', price: 9.50, change24h: 2.8, volume24h: 500000000, marketCap: 14000000000 },
-  { symbol: 'AVAX', name: 'Avalanche', price: 52, change24h: 5.2, volume24h: 800000000, marketCap: 21000000000 },
-  { symbol: 'MATIC', name: 'Polygon', price: 0.62, change24h: 1.5, volume24h: 400000000, marketCap: 6000000000 },
-  { symbol: 'LINK', name: 'Chainlink', price: 28, change24h: 2.1, volume24h: 600000000, marketCap: 17000000000 },
-  { symbol: 'UNI', name: 'Uniswap', price: 16.5, change24h: 0.8, volume24h: 250000000, marketCap: 10000000000 },
-  { symbol: 'ATOM', name: 'Cosmos', price: 12, change24h: 1.9, volume24h: 300000000, marketCap: 4500000000 },
-  { symbol: 'LTC', name: 'Litecoin', price: 115, change24h: 0.5, volume24h: 700000000, marketCap: 8500000000 },
-  { symbol: 'ARB', name: 'Arbitrum', price: 1.15, change24h: 3.5, volume24h: 450000000, marketCap: 4600000000 },
-  { symbol: 'NEAR', name: 'NEAR Protocol', price: 7.20, change24h: 4.8, volume24h: 350000000, marketCap: 8000000000 },
+  { symbol: 'BTC',  name: 'Bitcoin',       price: 97500,  change24h:  2.5,  volume24h: 45e9,  marketCap: 1.9e12, high24h: 99000, low24h: 95000, image: 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png' },
+  { symbol: 'ETH',  name: 'Ethereum',      price: 3650,   change24h:  1.8,  volume24h: 18e9,  marketCap: 440e9,  high24h: 3750,  low24h: 3580,  image: 'https://assets.coingecko.com/coins/images/279/small/ethereum.png' },
+  { symbol: 'SOL',  name: 'Solana',        price: 225,    change24h:  3.2,  volume24h: 4.5e9, marketCap: 105e9,  high24h: 232,   low24h: 215,   image: 'https://assets.coingecko.com/coins/images/4128/small/solana.png' },
+  { symbol: 'BNB',  name: 'BNB',           price: 680,    change24h:  1.2,  volume24h: 2e9,   marketCap: 100e9,  high24h: 695,   low24h: 670,   image: 'https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png' },
+  { symbol: 'XRP',  name: 'XRP',           price: 2.35,   change24h: -0.5,  volume24h: 8e9,   marketCap: 130e9,  high24h: 2.45,  low24h: 2.28,  image: 'https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png' },
+  { symbol: 'ADA',  name: 'Cardano',       price: 1.05,   change24h:  4.1,  volume24h: 1.2e9, marketCap: 37e9,   high24h: 1.10,  low24h: 0.99,  image: 'https://assets.coingecko.com/coins/images/975/small/cardano.png' },
+  { symbol: 'DOGE', name: 'Dogecoin',      price: 0.41,   change24h: -1.2,  volume24h: 3.5e9, marketCap: 60e9,   high24h: 0.43,  low24h: 0.39,  image: 'https://assets.coingecko.com/coins/images/5/small/dogecoin.png' },
+  { symbol: 'DOT',  name: 'Polkadot',      price: 9.50,   change24h:  2.8,  volume24h: 500e6, marketCap: 14e9,   high24h: 9.80,  low24h: 9.10,  image: 'https://assets.coingecko.com/coins/images/12171/small/polkadot.png' },
+  { symbol: 'AVAX', name: 'Avalanche',     price: 52,     change24h:  5.2,  volume24h: 800e6, marketCap: 21e9,   high24h: 54,    low24h: 49,    image: 'https://assets.coingecko.com/coins/images/12559/small/Avalanche_Circle_RedWhite_Trans.png' },
+  { symbol: 'MATIC',name: 'Polygon',       price: 0.62,   change24h:  1.5,  volume24h: 400e6, marketCap: 6e9,    high24h: 0.64,  low24h: 0.60,  image: 'https://assets.coingecko.com/coins/images/4713/small/matic-token-icon.png' },
+  { symbol: 'LINK', name: 'Chainlink',     price: 28,     change24h:  2.1,  volume24h: 600e6, marketCap: 17e9,   high24h: 29,    low24h: 27,    image: 'https://assets.coingecko.com/coins/images/877/small/chainlink-new-logo.png' },
+  { symbol: 'UNI',  name: 'Uniswap',       price: 16.5,   change24h:  0.8,  volume24h: 250e6, marketCap: 10e9,   high24h: 17,    low24h: 16,    image: 'https://assets.coingecko.com/coins/images/12504/small/uniswap-uni.png' },
+  { symbol: 'ATOM', name: 'Cosmos',        price: 12,     change24h:  1.9,  volume24h: 300e6, marketCap: 4.5e9,  high24h: 12.5,  low24h: 11.5,  image: 'https://assets.coingecko.com/coins/images/1481/small/cosmos_hub.png' },
+  { symbol: 'LTC',  name: 'Litecoin',      price: 115,    change24h:  0.5,  volume24h: 700e6, marketCap: 8.5e9,  high24h: 118,   low24h: 112,   image: 'https://assets.coingecko.com/coins/images/2/small/litecoin.png' },
+  { symbol: 'ARB',  name: 'Arbitrum',      price: 1.15,   change24h:  3.5,  volume24h: 450e6, marketCap: 4.6e9,  high24h: 1.20,  low24h: 1.10,  image: 'https://assets.coingecko.com/coins/images/16547/small/photo_2023-03-29_21.47.00.jpeg' },
+  { symbol: 'NEAR', name: 'NEAR Protocol', price: 7.20,   change24h:  4.8,  volume24h: 350e6, marketCap: 8e9,    high24h: 7.50,  low24h: 6.90,  image: 'https://assets.coingecko.com/coins/images/10365/small/near.jpg' },
 ];
+
+// CoinGecko ID → symbol/name mapping
+const coinMapping: Record<string, { symbol: string; name: string }> = {
+  'bitcoin':       { symbol: 'BTC',  name: 'Bitcoin'       },
+  'ethereum':      { symbol: 'ETH',  name: 'Ethereum'      },
+  'solana':        { symbol: 'SOL',  name: 'Solana'        },
+  'binancecoin':   { symbol: 'BNB',  name: 'BNB'           },
+  'ripple':        { symbol: 'XRP',  name: 'XRP'           },
+  'cardano':       { symbol: 'ADA',  name: 'Cardano'       },
+  'dogecoin':      { symbol: 'DOGE', name: 'Dogecoin'      },
+  'polkadot':      { symbol: 'DOT',  name: 'Polkadot'      },
+  'avalanche-2':   { symbol: 'AVAX', name: 'Avalanche'     },
+  'matic-network': { symbol: 'MATIC',name: 'Polygon'       },
+  'chainlink':     { symbol: 'LINK', name: 'Chainlink'     },
+  'uniswap':       { symbol: 'UNI',  name: 'Uniswap'       },
+  'cosmos':        { symbol: 'ATOM', name: 'Cosmos'        },
+  'litecoin':      { symbol: 'LTC',  name: 'Litecoin'      },
+  'arbitrum':      { symbol: 'ARB',  name: 'Arbitrum'      },
+  'near':          { symbol: 'NEAR', name: 'NEAR Protocol' },
+};
+
+const COIN_IDS = Object.keys(coinMapping).join(',');
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -37,82 +58,61 @@ serve(async (req) => {
   }
 
   try {
-    // Return cached data if still valid
     if (cachedData && Date.now() - cacheTimestamp < CACHE_DURATION) {
-      console.log('Returning cached price data');
       return new Response(JSON.stringify(cachedData), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    console.log('Fetching crypto prices from CoinGecko...');
+    console.log('Fetching crypto prices + images from CoinGecko /coins/markets ...');
 
+    // Use /coins/markets — returns images, high24h, low24h, sparkline, everything
     const response = await fetch(
-      'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,binancecoin,ripple,cardano,dogecoin,polkadot,avalanche-2,matic-network,chainlink,uniswap,cosmos,litecoin,arbitrum,near&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_market_cap=true',
-      {
-        headers: { 'Accept': 'application/json' },
-      }
+      `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${COIN_IDS}&order=market_cap_desc&per_page=20&page=1&sparkline=false&price_change_percentage=24h`,
+      { headers: { 'Accept': 'application/json' } }
     );
 
     if (!response.ok) {
-      console.error('CoinGecko API error:', response.status);
-      // Return fallback data on rate limit
-      const fallbackResponse = { prices: fallbackPrices, timestamp: Date.now(), cached: true };
-      return new Response(JSON.stringify(fallbackResponse), {
+      console.warn('CoinGecko API error:', response.status, '— using fallback');
+      const fallback = { prices: fallbackPrices, timestamp: Date.now(), source: 'fallback' };
+      return new Response(JSON.stringify(fallback), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    const data = await response.json();
+    const markets: any[] = await response.json();
 
-    const coinMapping: Record<string, { symbol: string; name: string }> = {
-      'bitcoin': { symbol: 'BTC', name: 'Bitcoin' },
-      'ethereum': { symbol: 'ETH', name: 'Ethereum' },
-      'solana': { symbol: 'SOL', name: 'Solana' },
-      'binancecoin': { symbol: 'BNB', name: 'BNB' },
-      'ripple': { symbol: 'XRP', name: 'Ripple' },
-      'cardano': { symbol: 'ADA', name: 'Cardano' },
-      'dogecoin': { symbol: 'DOGE', name: 'Dogecoin' },
-      'polkadot': { symbol: 'DOT', name: 'Polkadot' },
-      'avalanche-2': { symbol: 'AVAX', name: 'Avalanche' },
-      'matic-network': { symbol: 'MATIC', name: 'Polygon' },
-      'chainlink': { symbol: 'LINK', name: 'Chainlink' },
-      'uniswap': { symbol: 'UNI', name: 'Uniswap' },
-      'cosmos': { symbol: 'ATOM', name: 'Cosmos' },
-      'litecoin': { symbol: 'LTC', name: 'Litecoin' },
-      'arbitrum': { symbol: 'ARB', name: 'Arbitrum' },
-      'near': { symbol: 'NEAR', name: 'NEAR Protocol' },
-    };
-
-    const prices = Object.entries(data).map(([id, info]: [string, any]) => {
-      const coin = coinMapping[id];
-      if (!coin) return null;
+    const prices = markets.map((coin: any) => {
+      const meta = coinMapping[coin.id];
+      if (!meta) return null;
       return {
-        symbol: coin.symbol,
-        name: coin.name,
-        price: info.usd || 0,
-        change24h: info.usd_24h_change || 0,
-        volume24h: info.usd_24h_vol || 0,
-        marketCap: info.usd_market_cap || 0,
+        symbol:    meta.symbol,
+        name:      meta.name,
+        price:     coin.current_price     || 0,
+        change24h: coin.price_change_percentage_24h || 0,
+        volume24h: coin.total_volume      || 0,
+        marketCap: coin.market_cap        || 0,
+        high24h:   coin.high_24h          || 0,
+        low24h:    coin.low_24h           || 0,
+        // Real image from CoinGecko CDN
+        image:     coin.image             || '',
+        rank:      coin.market_cap_rank   || 0,
       };
     }).filter(Boolean);
 
-    const result = { prices, timestamp: Date.now() };
-    
-    // Cache the result
+    const result = { prices, timestamp: Date.now(), source: 'coingecko' };
     cachedData = result;
     cacheTimestamp = Date.now();
 
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
+
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Unknown error';
-    console.error('Error fetching crypto prices:', message);
-    
-    // Return fallback on any error
-    const fallbackResponse = { prices: fallbackPrices, timestamp: Date.now(), cached: true };
-    return new Response(JSON.stringify(fallbackResponse), {
+    console.error('Error:', message);
+    const fallback = { prices: fallbackPrices, timestamp: Date.now(), source: 'fallback' };
+    return new Response(JSON.stringify(fallback), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
