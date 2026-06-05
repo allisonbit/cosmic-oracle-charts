@@ -36,7 +36,7 @@ const AdPlaceholder = memo(function AdPlaceholder({
   return (
     <div 
       className={cn(
-        "bg-muted/10 rounded-lg flex items-center justify-center",
+        "bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 rounded-lg border border-primary/10 flex items-center justify-center overflow-hidden relative group cursor-pointer",
         className
       )}
       style={{ 
@@ -44,8 +44,18 @@ const AdPlaceholder = memo(function AdPlaceholder({
         contain: "layout style",
       }}
       aria-hidden="true"
+      onClick={() => window.location.href = '/advertise'}
     >
-      <span className="text-muted-foreground/20 text-xs animate-pulse">Loading...</span>
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
+      <div className="flex flex-col items-center justify-center gap-1">
+        <span className="text-primary/60 text-xs font-semibold uppercase tracking-widest flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-primary/50 animate-pulse" />
+          Advertisement Space
+        </span>
+        {parseInt(height) > 50 && (
+          <span className="text-muted-foreground/40 text-[10px]">Click to advertise with Oracle Bull</span>
+        )}
+      </div>
     </div>
   );
 });
