@@ -710,10 +710,6 @@ html {
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.card-touch:active {
-  transform: scale(0.98);
-}
-
 @media (pointer: fine) {
   .card-touch:hover {
     transform: translateY(-2px);
