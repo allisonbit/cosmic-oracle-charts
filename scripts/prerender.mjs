@@ -258,14 +258,8 @@ async function prerenderRoute(page, route) {
 // Main
 // ──────────────────────────────────────────────────────────────────────────────
 async function runPrerender() {
-  // Write sitemap.xml to dist/
-  const sitemap = generateSitemap(SEO_ROUTES);
-  fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemap, 'utf8');
-  console.log(`✅ sitemap.xml written (${SEO_ROUTES.length} URLs)`);
-
-  // Write robots.txt to dist/
-  fs.writeFileSync(path.join(distDir, 'robots.txt'), generateRobots(), 'utf8');
-  console.log('✅ robots.txt written');
+  // NOTE: sitemap.xml and robots.txt are served from public/ — Vite copies them
+  // to dist/ automatically during build. Do NOT overwrite them here.
 
   console.log(`\nStarting local server on port ${PORT}...`);
   await new Promise(resolve => server.listen(PORT, resolve));
