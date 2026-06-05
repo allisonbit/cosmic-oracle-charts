@@ -41,9 +41,9 @@ export const StickyFooterAd = memo(function StickyFooterAd({
   return (
     <div
       className={cn(
-        "fixed bottom-0 left-0 right-0 z-40",
+        "fixed md:bottom-0 bottom-[64px] left-0 right-0 z-40",
         "bg-background/95 backdrop-blur-sm border-t border-border",
-        "py-2 px-4 pb-safe",
+        "py-2 px-4 pb-safe md:pb-safe-0",
         "transition-transform duration-300",
         className
       )}
