@@ -123,7 +123,7 @@ function TrendingSection({ articles }: { articles: NewsItem[] }) {
       </div>
       <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-none snap-x">
         {trending.map(article => (
-          <Link key={article.id} to={`/news/${articleToSlug(article)}`} state={{ article }} className="holo-card p-3 min-w-[280px] w-[280px] shrink-0 snap-start group hover:border-primary/50 transition-all">
+          <Link key={article.id} to={`/news/${articleToSlug(article)}`} state={{ article }} className="bg-background border border-border rounded-xl p-4 min-w-[280px] w-[280px] shrink-0 snap-start group hover:border-primary/50 transition-all">
             <div className="flex items-center gap-2 text-[10px] text-muted-foreground mb-2">
               <span className="text-primary font-bold uppercase tracking-wider">{article.source_info?.name ?? article.source}</span>
               <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
@@ -146,8 +146,8 @@ function HeroCard({ article }: { article: NewsItem }) {
   const categories = article.categories.split("|").slice(0, 2);
 
   return (
-    <Link to={`/news/${slug}`} state={{ article }} className="group relative holo-card overflow-hidden flex flex-col md:flex-row mb-6">
-      <div className="w-full md:w-1/2 aspect-video md:aspect-auto relative overflow-hidden shrink-0">
+    <Link to={`/news/${slug}`} state={{ article }} className="group flex flex-col mb-12 pb-12 border-b border-border">
+      <div className="w-full aspect-video md:aspect-[21/9] rounded-2xl overflow-hidden mb-8 relative">
         <img
           src={article.imageurl}
           alt={article.title}
@@ -155,9 +155,9 @@ function HeroCard({ article }: { article: NewsItem }) {
           loading="lazy"
           onError={(e) => { (e.target as HTMLImageElement).src = "/og-image.jpg"; }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background md:bg-gradient-to-r md:from-transparent md:to-background to-transparent md:opacity-0 opacity-80" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-60" />
       </div>
-      <div className="p-6 md:p-8 flex flex-col justify-center flex-1">
+      <div className="flex flex-col justify-center w-full">
         <div className="flex flex-wrap items-center gap-2 mb-4">
           <span className="text-[10px] font-bold px-2.5 py-1 rounded-full border border-primary/50 bg-primary/20 text-primary shadow-[0_0_10px_rgba(var(--primary),0.5)] animate-pulse flex items-center gap-1">
             <div className="w-1.5 h-1.5 rounded-full bg-primary animate-ping" />
@@ -169,19 +169,19 @@ function HeroCard({ article }: { article: NewsItem }) {
             </span>
           ))}
         </div>
-        <h2 className="text-2xl md:text-3xl font-bold font-display leading-tight mb-4 group-hover:text-primary transition-colors">
+        <h2 className="text-3xl md:text-5xl font-bold font-display leading-tight mb-5 group-hover:text-primary transition-colors tracking-tight">
           {article.title}
         </h2>
-        <p className="text-base text-muted-foreground line-clamp-3 mb-6">
-          {article.body?.slice(0, 200)}...
+        <p className="text-lg text-muted-foreground line-clamp-3 mb-6 leading-relaxed">
+          {article.body?.slice(0, 250)}...
         </p>
-        <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground mb-6">
-          <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" />{timeAgo(article.published_on)}</span>
+        <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-8">
+          <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" />{timeAgo(article.published_on)}</span>
           <span className="flex items-center gap-1.5 border-l border-border pl-4">{getReadTime(article.body)} min read</span>
-          <span className="flex items-center gap-1.5 border-l border-border pl-4 text-foreground font-medium">{article.source_info?.name ?? article.source}</span>
+          <span className="flex items-center gap-1.5 border-l border-border pl-4 text-foreground font-bold">{article.source_info?.name ?? article.source}</span>
         </div>
-        <div className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all self-start shadow-[0_0_15px_rgba(var(--primary),0.3)]">
-          Read Full Story <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+        <div className="inline-flex items-center gap-2 text-primary font-bold transition-all self-start hover:underline text-lg">
+          Read Full Story <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
         </div>
       </div>
     </Link>
@@ -201,16 +201,16 @@ function NewsCard({ article }: { article: NewsItem }) {
   };
 
   return (
-    <Link to={`/news/${slug}`} state={{ article }} className="holo-card p-4 md:p-5 flex flex-col sm:flex-row gap-5 group hover:border-primary/50 transition-all relative">
+    <Link to={`/news/${slug}`} state={{ article }} className="py-8 flex flex-col sm:flex-row gap-8 group border-b border-border relative">
       <button 
         onClick={handleBookmark}
-        className="absolute top-4 right-4 z-10 p-2 rounded-full bg-background/50 backdrop-blur-md border border-border opacity-0 group-hover:opacity-100 transition-opacity hover:text-primary"
+        className="absolute top-8 right-0 z-10 p-2 rounded-full bg-background/50 backdrop-blur-md border border-border opacity-0 group-hover:opacity-100 transition-opacity hover:text-primary"
         title="Save for later"
       >
         <Bookmark className="w-4 h-4" />
       </button>
 
-      <div className="w-full sm:w-40 h-48 sm:h-32 rounded-xl overflow-hidden shrink-0 bg-muted relative">
+      <div className="w-full sm:w-64 h-48 sm:h-40 rounded-2xl overflow-hidden shrink-0 bg-muted relative">
         <img
           src={article.imageurl}
           alt={article.title}
@@ -219,31 +219,31 @@ function NewsCard({ article }: { article: NewsItem }) {
           onError={(e) => { (e.target as HTMLImageElement).src = "/og-image.jpg"; }}
         />
       </div>
-      <div className="flex-1 min-w-0 flex flex-col justify-between">
+      <div className="flex-1 min-w-0 flex flex-col justify-between pr-8">
         <div>
-          <div className="flex flex-wrap items-center gap-3 text-[10px] md:text-xs text-muted-foreground mb-2">
+          <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground mb-3">
             <span className="text-primary font-bold uppercase tracking-wider">{category}</span>
             <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
-            <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{timeAgo(article.published_on)}</span>
+            <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" />{timeAgo(article.published_on)}</span>
             <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
             <span>{getReadTime(article.body)} min read</span>
             <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
-            <span className="text-foreground">{article.source_info?.name ?? article.source}</span>
+            <span className="text-foreground font-medium">{article.source_info?.name ?? article.source}</span>
           </div>
-          <h3 className="font-bold text-base md:text-lg leading-snug line-clamp-2 mb-2 group-hover:text-primary transition-colors pr-8">
+          <h3 className="font-bold font-display text-xl md:text-2xl leading-snug line-clamp-2 mb-3 group-hover:text-primary transition-colors tracking-tight">
             {article.title}
           </h3>
-          <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
-            {article.body?.slice(0, 150)}
+          <p className="text-base text-muted-foreground line-clamp-2 mb-4">
+            {article.body?.slice(0, 180)}...
           </p>
         </div>
         
         {/* Minimal AI Insight Box */}
-        <div className="mt-2 bg-background/40 border border-border rounded-lg p-2.5 flex items-start gap-2.5">
+        <div className="flex items-center gap-3 mt-auto">
           <div className={`shrink-0 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${sentiment.color.replace('bg-', 'bg-').replace('/10', '/20')}`}>
             {sentiment.label}
           </div>
-          <p className="text-xs text-foreground/80 leading-snug flex-1">
+          <p className="text-xs text-foreground/80 leading-snug flex-1 truncate">
             <span className="font-semibold text-primary">AI Insight: </span>
             {sentiment.commentary}
           </p>
