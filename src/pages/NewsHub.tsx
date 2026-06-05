@@ -7,6 +7,7 @@ import {
   Newspaper, Brain, TrendingUp, Clock, ExternalLink,
   Zap, ArrowRight, RefreshCw, Tag, Loader2, Bookmark, Share2, Flame
 } from "lucide-react";
+import { InArticleAd } from "@/components/ads";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 export interface NewsItem {
@@ -363,8 +364,11 @@ export default function NewsHub() {
                       {category === "All" && visibleCount === 15 && <HeroCard article={articles[0]} />}
                       
                       <div className="space-y-4">
-                        {articles.slice(category === "All" ? 1 : 0, visibleCount).map(article => (
-                          <NewsCard key={article.id} article={article} />
+                        {articles.slice(category === "All" ? 1 : 0, visibleCount).map((article, i) => (
+                          <div key={article.id}>
+                            <NewsCard article={article} />
+                            {i === 2 && <InArticleAd className="my-8" />}
+                          </div>
                         ))}
                       </div>
 

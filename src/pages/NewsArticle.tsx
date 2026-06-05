@@ -9,6 +9,7 @@ import {
   MessageSquare, Bookmark, Twitter, Facebook, Link as LinkIcon
 } from "lucide-react";
 import { generateAISentiment, articleToSlug, type NewsItem } from "./NewsHub";
+import { InArticleAd, SidebarAd } from "@/components/ads";
 
 // ── Time helper ───────────────────────────────────────────────────────────────
 function formatDate(unix: number): string {
@@ -251,6 +252,8 @@ export default function NewsArticle() {
                 </div>
               </div>
 
+              <InArticleAd className="my-10" />
+
               <a
                 href={article.url}
                 target="_blank"
@@ -333,6 +336,8 @@ export default function NewsArticle() {
             {/* Sidebar */}
             <aside className="space-y-8">
               
+              <SidebarAd className="mb-6 hidden lg:flex" />
+
               {/* Mobile Share (Visible only on small screens) */}
               <div className="xl:hidden holo-card p-5 flex items-center justify-center gap-4">
                 <span className="text-sm font-bold">Share:</span>
