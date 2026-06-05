@@ -90,12 +90,11 @@ const formatMarketCap = (mc: number) => {
 export default function YearPrediction() {
   const { coinId = "bitcoin", year = "2025" } = useParams<{ coinId: string; year: string }>();
 
-  if (!VALID_YEARS.includes(year)) {
-    return <Navigate to={`/price-prediction/${coinId}/daily`} replace />;
-  }
+  const isInvalidYear = !VALID_YEARS.includes(year);
+  const safeYear = isInvalidYear ? "2026" : year;
 
   const crypto = getCryptoBySlug(coinId) || TOP_CRYPTOS[0];
-  const proj = YEAR_PROJECTIONS[year];
+  const proj = YEAR_PROJECTIONS[safeYear];
 
   // Fetch live price from CoinGecko
   const { data: marketData } = useQuery({
@@ -109,6 +108,10 @@ export default function YearPrediction() {
     },
     staleTime: 5 * 60 * 1000,
   });
+
+  if (isInvalidYear) {
+    return <Navigate to={`/price-prediction/${coinId}/daily`} replace />;
+  }
 
   const currentPrice: number = marketData?.[crypto.id]?.usd ?? 0;
   const change24h: number = marketData?.[crypto.id]?.usd_24h_change ?? 0;

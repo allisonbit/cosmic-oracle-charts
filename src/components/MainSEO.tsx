@@ -436,7 +436,7 @@ export function SEO({ title, description, keywords, image, type = "website", can
     // Speakable / voice search optimization
     setMeta("speakable", finalDescription.slice(0, 150));
 
-  }, [finalTitle, finalDescription, finalKeywords, finalImage, canonicalUrl, type]);
+  }, [finalTitle, finalDescription, finalKeywords, finalImage, canonicalUrl, type, currentPath]);
 
   return null;
 }

@@ -354,14 +354,13 @@ function LastUpdated() {
 
 export function LiveSignals() {
   const { data: pricesData } = useCryptoPrices();
-  const prices = pricesData?.prices ?? [];
-
   // Map symbol → live price for quick lookup
   const priceMap = useMemo(() => {
     const m: Record<string, CryptoPrice> = {};
+    const prices = pricesData?.prices ?? [];
     prices.forEach(p => { m[p.symbol] = p; });
     return m;
-  }, [prices]);
+  }, [pricesData?.prices]);
 
   return (
     <section className="py-12 relative overflow-hidden" aria-labelledby="live-signals-heading">

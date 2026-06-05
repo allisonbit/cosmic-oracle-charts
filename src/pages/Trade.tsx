@@ -39,7 +39,7 @@ function SwapPanel() {
     setPriceInfo(null);
     setShowCustomSell(false);
     setShowCustomBuy(false);
-  }, [chainId]);
+  }, [chainId, tokens]);
 
   const activeSellToken = showCustomSell && customSellAddress.startsWith("0x") ? customSellAddress : sellToken;
   const activeBuyToken = showCustomBuy && customBuyAddress.startsWith("0x") ? customBuyAddress : buyToken;
@@ -194,8 +194,8 @@ function BridgePanel() {
   const fromTokens = POPULAR_TOKENS[fromChainId] || POPULAR_TOKENS[1];
   const toTokens = POPULAR_TOKENS[toChainId] || POPULAR_TOKENS[1];
 
-  useEffect(() => { setFromToken(fromTokens[0]?.address || ""); setBridgeQuote(null); }, [fromChainId]);
-  useEffect(() => { setToToken(toTokens[0]?.address || ""); setBridgeQuote(null); }, [toChainId]);
+  useEffect(() => { setFromToken(fromTokens[0]?.address || ""); setBridgeQuote(null); }, [fromChainId, fromTokens]);
+  useEffect(() => { setToToken(toTokens[0]?.address || ""); setBridgeQuote(null); }, [toChainId, toTokens]);
 
   const fromTokenInfo = fromTokens.find(t => t.address === fromToken);
 

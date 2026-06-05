@@ -339,7 +339,7 @@ serve(async (req) => {
     // Generate whale activity seeded from real token volume - deterministic per cache window
     const seed = Math.floor(Date.now() / CACHE_TTL);
     const seededRandom = (n: number) => {
-      let x = Math.sin(seed + n) * 10000;
+      const x = Math.sin(seed + n) * 10000;
       return x - Math.floor(x);
     };
     const tokenCount = Math.min(tokens.length, 6);

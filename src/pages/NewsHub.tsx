@@ -30,8 +30,8 @@ export function generateAISentiment(article: NewsItem): { label: string; color: 
   const bullish = ["bull", "surge", "rally", "gain", "rise", "pump", "ath", "high", "break", "moon", "buy", "adoption", "launch", "approve", "etf", "growth"];
   const bearish = ["bear", "crash", "drop", "fall", "plunge", "loss", "hack", "ban", "sec", "lawsuit", "fear", "dump", "sell", "warning", "decline", "low"];
 
-  let bScore = bullish.filter(w => title.includes(w)).length;
-  let beScore = bearish.filter(w => title.includes(w)).length;
+  const bScore = bullish.filter(w => title.includes(w)).length;
+  const beScore = bearish.filter(w => title.includes(w)).length;
 
   if (bScore > beScore + 1) {
     return {

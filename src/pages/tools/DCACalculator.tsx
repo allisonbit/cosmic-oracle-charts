@@ -43,7 +43,7 @@ export default function DCACalculator() {
 
   const { data, totalInvested, portfolioValue } = useMemo(() => 
     generateHistoricalData(frequency, amount, parseInt(years)), 
-  [amount, frequency, years, coin]);
+  [amount, frequency, years]);
 
   const roi = ((portfolioValue - totalInvested) / totalInvested) * 100;
 

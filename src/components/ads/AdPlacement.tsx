@@ -41,14 +41,14 @@ function initBitmedia() {
   w.__bitmedia_init = true;
 
   try {
-    !function(e,n,c,t,o,r,d){
-      !function e(n,c,t,o,r,m,d,s,a: any){
+    void function(e,n,c,t,o,r,d){
+      void function e(n,c,t,o,r,m,d,s,a: any){
         s=c.getElementsByTagName(t)[0];
         if(!s) return;
         a=c.createElement(t);
         a.async=!0;
         a.src="https://"+r[m]+"/js/"+o+".js?v="+d;
-        a.onerror=function(){a.remove();(m+=1)>=r.length||e(n,c,t,o,r,m)};
+        a.onerror=function(){a.remove(); if (++m < r.length) { e(n,c,t,o,r,m,d,s,a); }};
         s.parentNode?.insertBefore(a,s);
       }(window,document,"script","6a22a70dfb44766f7a7d8425",["cdn.bmcdn6.com"], 0, new Date().getTime())
     }();

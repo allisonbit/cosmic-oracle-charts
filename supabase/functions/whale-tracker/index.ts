@@ -298,7 +298,7 @@ function generateMockTransactions(chain: string): WhaleTransaction[] {
   const exchanges = ['Binance', 'Coinbase', 'Kraken', 'OKX', 'Gemini'];
   // Seed by minute so data is stable within each 60s window
   const seed = Math.floor(Date.now() / 60000);
-  const sr = (n: number) => { let x = Math.sin(seed * 9301 + n * 49297 + 233) * 1e9; return x - Math.floor(x); };
+  const sr = (n: number) => { const x = Math.sin(seed * 9301 + n * 49297 + 233) * 1e9; return x - Math.floor(x); };
 
   return Array.from({ length: 8 }, (_, i) => {
     const asset = assets[Math.floor(sr(i * 3) * assets.length)];
