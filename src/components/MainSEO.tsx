@@ -16,7 +16,7 @@ const currentYear = new Date().getFullYear();
 
 const defaultMeta = {
   siteName: SITE_NAME,
-  title: `Best Free AI Crypto Predictions & Forecasts (${currentMonth} ${currentYear}) – Oracle Bull`,
+  title: `Free AI Crypto Predictions | Oracle Bull`,
   description: "Get free AI-powered crypto price predictions for Bitcoin, Ethereum & 1000+ tokens. Real-time charts, whale alerts, sentiment analysis. No signup needed.",
   keywords: "crypto prediction today, AI crypto forecast, bitcoin price prediction, free crypto signals, crypto analysis tool, best crypto prediction site",
   image: "https://storage.googleapis.com/gpt-engineer-file-uploads/uDg0k7BDXGRxsHZqK6gSbdN9o0l1/social-images/social-1765566965381-WhatsApp Image 2025-12-12 at 10.50.30_d13b6f53.jpg",
@@ -27,13 +27,13 @@ const defaultMeta = {
 
 const pageSEO: Record<string, { title: string; description: string; keywords: string }> = {
   "/": {
-    title: `Best Free AI Crypto Predictions & Forecasts (${currentMonth} ${currentYear}) – Oracle Bull`,
+    title: `Free AI Crypto Predictions | Oracle Bull`,
     description: `Get free AI-powered crypto price predictions for Bitcoin, Ethereum & 1000+ tokens. Real-time charts, whale alerts, sentiment analysis. Updated ${currentMonth} ${currentYear}. No signup needed.`,
     keywords: "crypto prediction today, AI crypto forecast, bitcoin price prediction, free crypto signals, crypto analysis tool, best crypto prediction site, will crypto go up today, best crypto to buy today"
   },
   "/dashboard": {
-    title: `Crypto Market Dashboard – Live Prices, Signals & Top Gainers (${currentMonth} ${currentYear})`,
-    description: `Live crypto dashboard: real-time prices, top gainers & losers, market momentum, volume leaders & AI insights. Track BTC, ETH & 1000+ altcoins in one view. Free & updated every 30 seconds. ${currentMonth} ${currentYear}.`,
+    title: `Crypto Dashboard | Live Prices & Signals`,
+    description: `Live crypto dashboard with real-time prices, top gainers, market momentum, and AI insights for BTC, ETH & 1000+ altcoins.`,
     keywords: "crypto dashboard live, real time crypto prices, crypto market today, top crypto gainers today, crypto market cap live, crypto prices now, bitcoin price live, altcoin dashboard"
   },
   "/strength-meter": {
@@ -151,6 +151,61 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
     title: `My Hub – Personal Crypto Dashboard & Tools (${currentMonth} ${currentYear})`,
     description: "Your personal crypto command center. Track your portfolio, set price alerts, manage watchlists, journal trades, and access AI trading signals all in one place.",
     keywords: "crypto dashboard personal, crypto portfolio tracker, crypto alerts, trading journal, watchlist crypto"
+  },
+  "/my/watchlist": {
+    title: "My Watchlist | Oracle Bull",
+    description: "Track your favorite cryptocurrencies with real-time prices, alerts, and market signals in your personal watchlist.",
+    keywords: "crypto watchlist, portfolio watchlist, price alerts, token tracker"
+  },
+  "/my/portfolio": {
+    title: "My Portfolio | Oracle Bull",
+    description: "Monitor your crypto holdings, P&L, and asset allocation across wallets in one personalized dashboard.",
+    keywords: "crypto portfolio, portfolio tracker, crypto holdings, asset allocation"
+  },
+  "/my/alerts": {
+    title: "My Alerts | Oracle Bull",
+    description: "Manage price alerts and notifications for Bitcoin, Ethereum, and your favorite crypto tokens.",
+    keywords: "crypto alerts, price notifications, bitcoin alert, ethereum alert"
+  },
+  "/my/settings": {
+    title: "My Settings | Oracle Bull",
+    description: "Customize your Oracle Bull preferences, notifications, and account settings.",
+    keywords: "crypto dashboard settings, notification preferences, account settings"
+  },
+  "/my/signals": {
+    title: "My Signals | Oracle Bull",
+    description: "View personalized AI trading signals with entry zones, price targets, and confidence scores.",
+    keywords: "AI trading signals, crypto signals, buy sell signals, price targets"
+  },
+  "/my/tracker": {
+    title: "My Tracker | Oracle Bull",
+    description: "Advanced portfolio tracking with profit & loss analysis, historical charts, and performance metrics.",
+    keywords: "portfolio tracker, crypto P&L, investment tracking, performance analytics"
+  },
+  "/my/social": {
+    title: "My Social | Oracle Bull",
+    description: "Curated crypto social feed with real-time sentiment from Twitter, Reddit, and Telegram.",
+    keywords: "crypto social feed, sentiment analysis, twitter crypto, reddit crypto"
+  },
+  "/my/journal": {
+    title: "My Journal | Oracle Bull",
+    description: "Log and review your crypto trades with performance notes and analytics to refine your strategy.",
+    keywords: "trading journal, crypto trade log, trade review, strategy tracker"
+  },
+  "/my/news": {
+    title: "My News | Oracle Bull",
+    description: "Personalized crypto news feed with AI-tagged bullish and bearish market headlines and analysis.",
+    keywords: "crypto news feed, personalized crypto news, market headlines, AI news tags"
+  },
+  "/my/dca": {
+    title: "My DCA Planner | Oracle Bull",
+    description: "Plan your dollar-cost averaging strategy with automated schedules and projected return estimates.",
+    keywords: "DCA planner, dollar cost averaging crypto, automated investing, crypto DCA"
+  },
+  "/my/copy": {
+    title: "My Copy Trading | Oracle Bull",
+    description: "Discover top crypto traders and set up automated copy trading based on verified performance.",
+    keywords: "copy trading crypto, follow traders, automated trading, social trading"
   },
   "/market/best-crypto-to-buy-today": {
     title: `Best Crypto to Buy Today – AI Picks (${currentMonth} ${currentYear})`,
