@@ -102,11 +102,15 @@ function HeroCard({ article }: { article: NewsItem }) {
           onError={(e) => { (e.target as HTMLImageElement).src = "/og-image.jpg"; }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
-        <div className="absolute top-4 left-4 flex gap-2">
+        <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+          <span className="text-[10px] font-bold px-2.5 py-1 rounded-full border border-primary/50 bg-primary/20 text-primary shadow-[0_0_10px_rgba(var(--primary),0.5)] animate-pulse flex items-center gap-1">
+            <div className="w-1.5 h-1.5 rounded-full bg-primary animate-ping" />
+            BREAKING
+          </span>
           <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border ${sentiment.color}`}>
             AI: {sentiment.label}
           </span>
-          <span className="text-[10px] font-bold px-2.5 py-1 rounded-full border border-border bg-background/80 text-muted-foreground">
+          <span className="text-[10px] font-bold px-2.5 py-1 rounded-full border border-border bg-background/80 text-muted-foreground backdrop-blur-sm">
             {article.source_info?.name ?? article.source}
           </span>
         </div>
@@ -369,6 +373,40 @@ export default function NewsHub() {
               <button onClick={() => refetch()} className="mt-4 text-primary hover:underline text-sm">Retry</button>
             </div>
           )}
+
+          {/* Premium Newsletter CTA */}
+          <div className="mt-16 mb-8">
+            <div className="holo-card p-1 relative overflow-hidden rounded-3xl">
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-primary/20 opacity-50 pointer-events-none" />
+              <div className="bg-background/80 backdrop-blur-2xl rounded-[22px] p-8 md:p-12 text-center relative z-10 border border-white/5">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary/50 mx-auto flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(var(--primary),0.3)]">
+                  <Brain className="w-8 h-8 text-primary-foreground" />
+                </div>
+                <h2 className="text-3xl md:text-4xl font-bold font-display glow-text mb-4">
+                  Get AI Alpha in Your Inbox
+                </h2>
+                <p className="text-muted-foreground max-w-2xl mx-auto mb-8 text-lg">
+                  Join 50,000+ traders getting our daily AI-curated news breakdown. We analyze 10,000+ headlines daily to send you only the 5 most actionable market catalysts.
+                </p>
+                <form className="flex flex-col sm:flex-row max-w-lg mx-auto gap-3" onSubmit={(e) => { e.preventDefault(); alert("Thanks for subscribing! Watch your inbox."); }}>
+                  <div className="relative flex-1">
+                    <input 
+                      type="email" 
+                      placeholder="Enter your email address" 
+                      className="w-full bg-background border border-border rounded-xl px-5 py-4 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm"
+                      required
+                    />
+                  </div>
+                  <button type="submit" className="bg-primary text-primary-foreground px-8 py-4 rounded-xl font-bold hover:bg-primary/90 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_20px_rgba(var(--primary),0.3)] flex items-center justify-center gap-2">
+                    Subscribe Free <ArrowRight className="w-4 h-4" />
+                  </button>
+                </form>
+                <p className="text-xs text-muted-foreground mt-4 flex items-center justify-center gap-2">
+                  <Zap className="w-3 h-3 text-warning" /> No spam. Unsubscribe anytime.
+                </p>
+              </div>
+            </div>
+          </div>
 
         </div>
       </div>
