@@ -91,7 +91,7 @@ export function AirdropCard({ project, rank }: { project: AirdropProject; rank?:
             <h3 className="font-display font-bold text-base text-foreground flex items-center gap-2 flex-wrap">
               {project.name}
               <span className="text-xs font-normal px-1.5 py-0.5 rounded-md bg-muted text-muted-foreground border border-border">{project.ticker}</span>
-              {project.isVerified && <CheckCircle2 className="w-3.5 h-3.5 text-success" title="Verified" />}
+              {project.isVerified && <CheckCircle2 className="w-3.5 h-3.5 text-success" aria-label="Verified" />}
             </h3>
             <p className="text-xs text-primary font-medium">{project.category}</p>
           </div>
