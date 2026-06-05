@@ -417,7 +417,7 @@ section {
   /* Better touch scrolling */
   .overflow-x-auto, .overflow-y-auto {
     -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
+    
   }
 }
 
@@ -836,7 +836,7 @@ html {
 /* Improved scrolling on mobile */
 .scroll-mobile {
   -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
+  
   scroll-behavior: smooth;
 }
 
