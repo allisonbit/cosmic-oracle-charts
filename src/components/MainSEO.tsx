@@ -27,13 +27,13 @@ const defaultMeta = {
 
 const pageSEO: Record<string, { title: string; description: string; keywords: string }> = {
   "/": {
-    title: `Best Free AI Crypto Predictions & Forecasts (${currentMonth} ${currentYear}) – Oracle Bull`,
+    title: `Free AI Crypto Predictions | Oracle Bull`,
     description: `Get free AI-powered crypto price predictions for Bitcoin, Ethereum & 1000+ tokens. Real-time charts, whale alerts, sentiment analysis. Updated ${currentMonth} ${currentYear}. No signup needed.`,
     keywords: "crypto prediction today, AI crypto forecast, bitcoin price prediction, free crypto signals, crypto analysis tool, best crypto prediction site, will crypto go up today, best crypto to buy today"
   },
   "/dashboard": {
-    title: `Crypto Market Dashboard – Live Prices, Signals & Top Gainers (${currentMonth} ${currentYear})`,
-    description: `Live crypto dashboard: real-time prices, top gainers & losers, market momentum, volume leaders & AI insights. Track BTC, ETH & 1000+ altcoins in one view. Free & updated every 30 seconds. ${currentMonth} ${currentYear}.`,
+    title: `Crypto Dashboard | Live Prices & Signals`,
+    description: `Live crypto dashboard with real-time prices, top gainers, market momentum, and AI insights for BTC, ETH & 1000+ altcoins.`,
     keywords: "crypto dashboard live, real time crypto prices, crypto market today, top crypto gainers today, crypto market cap live, crypto prices now, bitcoin price live, altcoin dashboard"
   },
   "/strength-meter": {
