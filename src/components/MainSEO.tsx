@@ -16,7 +16,7 @@ const currentYear = new Date().getFullYear();
 
 const defaultMeta = {
   siteName: SITE_NAME,
-  title: `Best Free AI Crypto Predictions & Forecasts (${currentMonth} ${currentYear}) – Oracle Bull`,
+  title: `Free AI Crypto Predictions | Oracle Bull`,
   description: "Get free AI-powered crypto price predictions for Bitcoin, Ethereum & 1000+ tokens. Real-time charts, whale alerts, sentiment analysis. No signup needed.",
   keywords: "crypto prediction today, AI crypto forecast, bitcoin price prediction, free crypto signals, crypto analysis tool, best crypto prediction site",
   image: "https://storage.googleapis.com/gpt-engineer-file-uploads/uDg0k7BDXGRxsHZqK6gSbdN9o0l1/social-images/social-1765566965381-WhatsApp Image 2025-12-12 at 10.50.30_d13b6f53.jpg",
