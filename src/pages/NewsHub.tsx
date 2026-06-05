@@ -87,48 +87,53 @@ function timeAgo(unix: number): string {
 
 const CATEGORIES = ["All", "BTC", "ETH", "SOL", "XRP", "DOGE", "DeFi", "NFT", "Regulation", "Mining"];
 
+// ── Estimated Read Time Helper ────────────────────────────────────────────────
+function getReadTime(body: string): number {
+  return Math.max(2, Math.ceil((body?.length || 0) / 100));
+}
+
 // ── Featured Hero Card ────────────────────────────────────────────────────────
 function HeroCard({ article }: { article: NewsItem }) {
   const sentiment = generateAISentiment(article);
   const slug = articleToSlug(article);
+  const categories = article.categories.split("|").slice(0, 2);
 
   return (
-    <Link to={`/news/${slug}`} state={{ article }} className="group relative holo-card overflow-hidden block">
-      <div className="aspect-[2/1] relative overflow-hidden rounded-t-2xl">
+    <Link to={`/news/${slug}`} state={{ article }} className="group relative holo-card overflow-hidden flex flex-col md:flex-row">
+      <div className="w-full md:w-1/2 aspect-video md:aspect-auto relative overflow-hidden shrink-0">
         <img
           src={article.imageurl}
           alt={article.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           onError={(e) => { (e.target as HTMLImageElement).src = "/og-image.jpg"; }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
-        <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+        <div className="absolute inset-0 bg-gradient-to-t from-background md:bg-gradient-to-r md:from-transparent md:to-background to-transparent md:opacity-0 opacity-80" />
+      </div>
+      <div className="p-6 md:p-8 flex flex-col justify-center flex-1">
+        <div className="flex flex-wrap items-center gap-2 mb-4">
           <span className="text-[10px] font-bold px-2.5 py-1 rounded-full border border-primary/50 bg-primary/20 text-primary shadow-[0_0_10px_rgba(var(--primary),0.5)] animate-pulse flex items-center gap-1">
             <div className="w-1.5 h-1.5 rounded-full bg-primary animate-ping" />
             BREAKING
           </span>
-          <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border ${sentiment.color}`}>
-            AI: {sentiment.label}
-          </span>
-          <span className="text-[10px] font-bold px-2.5 py-1 rounded-full border border-border bg-background/80 text-muted-foreground backdrop-blur-sm">
-            {article.source_info?.name ?? article.source}
-          </span>
+          {categories.map(cat => (
+            <span key={cat} className="text-[10px] font-bold px-2.5 py-1 rounded-full border border-border bg-background/80 text-muted-foreground uppercase tracking-wider">
+              {cat}
+            </span>
+          ))}
         </div>
-      </div>
-      <div className="p-6">
-        <h2 className="text-xl md:text-2xl font-bold font-display leading-snug mb-3 group-hover:text-primary transition-colors">
+        <h2 className="text-2xl md:text-3xl font-bold font-display leading-tight mb-4 group-hover:text-primary transition-colors">
           {article.title}
         </h2>
-        <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-          {article.body?.slice(0, 180)}...
+        <p className="text-base text-muted-foreground line-clamp-3 mb-6">
+          {article.body?.slice(0, 200)}...
         </p>
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-muted-foreground flex items-center gap-1.5">
-            <Clock className="w-3.5 h-3.5" />{timeAgo(article.published_on)}
-          </span>
-          <span className="text-xs text-primary font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
-            Read Full Analysis <ArrowRight className="w-3.5 h-3.5" />
-          </span>
+        <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground mb-6">
+          <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" />{timeAgo(article.published_on)}</span>
+          <span className="flex items-center gap-1.5 border-l border-border pl-4">{getReadTime(article.body)} min read</span>
+          <span className="flex items-center gap-1.5 border-l border-border pl-4 text-foreground font-medium">{article.source_info?.name ?? article.source}</span>
+        </div>
+        <div className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all self-start shadow-[0_0_15px_rgba(var(--primary),0.3)]">
+          Read Full Story <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </div>
       </div>
     </Link>
@@ -139,32 +144,38 @@ function HeroCard({ article }: { article: NewsItem }) {
 function NewsCard({ article }: { article: NewsItem }) {
   const sentiment = generateAISentiment(article);
   const slug = articleToSlug(article);
+  const category = article.categories.split("|")[0];
 
   return (
-    <Link to={`/news/${slug}`} state={{ article }} className="holo-card p-4 flex gap-4 group hover:border-primary/50 transition-all">
-      <div className="w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden shrink-0 bg-muted">
+    <Link to={`/news/${slug}`} state={{ article }} className="holo-card p-4 md:p-5 flex flex-col sm:flex-row gap-5 group hover:border-primary/50 transition-all">
+      <div className="w-full sm:w-40 h-48 sm:h-28 rounded-xl overflow-hidden shrink-0 bg-muted relative">
         <img
           src={article.imageurl}
           alt={article.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           onError={(e) => { (e.target as HTMLImageElement).src = "/og-image.jpg"; }}
         />
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-1.5">
-          <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${sentiment.color}`}>
+        <div className="absolute top-2 left-2 flex gap-1">
+          <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border bg-background/90 backdrop-blur-sm ${sentiment.color}`}>
             {sentiment.label}
           </span>
-          <span className="text-[10px] text-muted-foreground">{article.source_info?.name ?? article.source}</span>
-          <span className="text-[10px] text-muted-foreground ml-auto shrink-0 flex items-center gap-1">
-            <Clock className="w-3 h-3" />{timeAgo(article.published_on)}
-          </span>
         </div>
-        <h3 className="font-bold text-sm leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+      </div>
+      <div className="flex-1 min-w-0 flex flex-col">
+        <div className="flex flex-wrap items-center gap-3 text-[10px] md:text-xs text-muted-foreground mb-2">
+          <span className="text-primary font-bold uppercase tracking-wider">{category}</span>
+          <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
+          <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{timeAgo(article.published_on)}</span>
+          <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
+          <span>{getReadTime(article.body)} min read</span>
+          <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
+          <span className="text-foreground">{article.source_info?.name ?? article.source}</span>
+        </div>
+        <h3 className="font-bold text-base md:text-lg leading-snug line-clamp-2 mb-2 group-hover:text-primary transition-colors">
           {article.title}
         </h3>
-        <p className="text-xs text-muted-foreground line-clamp-1 mt-1">
-          {article.body?.slice(0, 100)}
+        <p className="text-sm text-muted-foreground line-clamp-2 mt-auto">
+          {article.body?.slice(0, 150)}
         </p>
       </div>
     </Link>
@@ -373,40 +384,6 @@ export default function NewsHub() {
               <button onClick={() => refetch()} className="mt-4 text-primary hover:underline text-sm">Retry</button>
             </div>
           )}
-
-          {/* Premium Newsletter CTA */}
-          <div className="mt-16 mb-8">
-            <div className="holo-card p-1 relative overflow-hidden rounded-3xl">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-primary/20 opacity-50 pointer-events-none" />
-              <div className="bg-background/80 backdrop-blur-2xl rounded-[22px] p-8 md:p-12 text-center relative z-10 border border-white/5">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary/50 mx-auto flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(var(--primary),0.3)]">
-                  <Brain className="w-8 h-8 text-primary-foreground" />
-                </div>
-                <h2 className="text-3xl md:text-4xl font-bold font-display glow-text mb-4">
-                  Get AI Alpha in Your Inbox
-                </h2>
-                <p className="text-muted-foreground max-w-2xl mx-auto mb-8 text-lg">
-                  Join 50,000+ traders getting our daily AI-curated news breakdown. We analyze 10,000+ headlines daily to send you only the 5 most actionable market catalysts.
-                </p>
-                <form className="flex flex-col sm:flex-row max-w-lg mx-auto gap-3" onSubmit={(e) => { e.preventDefault(); alert("Thanks for subscribing! Watch your inbox."); }}>
-                  <div className="relative flex-1">
-                    <input 
-                      type="email" 
-                      placeholder="Enter your email address" 
-                      className="w-full bg-background border border-border rounded-xl px-5 py-4 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm"
-                      required
-                    />
-                  </div>
-                  <button type="submit" className="bg-primary text-primary-foreground px-8 py-4 rounded-xl font-bold hover:bg-primary/90 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_20px_rgba(var(--primary),0.3)] flex items-center justify-center gap-2">
-                    Subscribe Free <ArrowRight className="w-4 h-4" />
-                  </button>
-                </form>
-                <p className="text-xs text-muted-foreground mt-4 flex items-center justify-center gap-2">
-                  <Zap className="w-3 h-3 text-warning" /> No spam. Unsubscribe anytime.
-                </p>
-              </div>
-            </div>
-          </div>
 
         </div>
       </div>
