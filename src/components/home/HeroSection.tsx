@@ -222,6 +222,9 @@ export function HeroSection() {
                   className="w-full h-full object-cover scale-[1.02]"
                   loading="eager"
                   decoding="async"
+                  fetchPriority="high"
+                  width={448}
+                  height={448}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" aria-hidden="true" />
               </div>

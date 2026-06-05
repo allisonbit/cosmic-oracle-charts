@@ -109,7 +109,7 @@ export function Navbar() {
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 group relative z-[60] flex-shrink-0">
               <div className="w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden shadow-lg shadow-primary/30 group-hover:shadow-primary/50 transition-shadow flex-shrink-0">
-                <img src={oracleLogo} alt="Oracle - AI Crypto Forecasting" className="w-full h-full object-cover" />
+                <img src={oracleLogo} alt="Oracle - AI Crypto Forecasting" className="w-full h-full object-cover" width={40} height={40} loading="eager" decoding="async" />
               </div>
               <span className="text-base md:text-lg font-bold glow-text hidden sm:block">
                 Oracle Bull
