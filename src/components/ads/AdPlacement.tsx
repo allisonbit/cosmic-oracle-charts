@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+﻿import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState, memo } from "react";
 
 type AdSize =
@@ -33,33 +33,10 @@ const sizeConfig: Record<AdSize, {
   "sticky-footer": { width: "100%", height: "auto", minHeight: "50px", mobileHeight: "50px" },
 };
 
-// Wait for Bitmedia script to load once
-function initBitmedia() {
-  if (typeof window === "undefined") return;
-  const w = window as any;
-  if (w.__bitmedia_init) return;
-  w.__bitmedia_init = true;
-
-  try {
-    void function(){
-      void function e(n: any, c: any, t: string, o: string, r: string[], m: number, d: number, s?: any, a?: any){
-        s=c.getElementsByTagName(t)[0];
-        if(!s) return;
-        a=c.createElement(t);
-        a.async=!0;
-        a.src="https://"+r[m]+"/js/"+o+".js?v="+d;
-        a.onerror=function(){a.remove(); if (++m < r.length) { e(n,c,t,o,r,m,d,s,a); }};
-        s.parentNode?.insertBefore(a,s);
-      }(window,document,"script","6a22a70dfb44766f7a7d8425",["cdn.bmcdn6.com"], 0, new Date().getTime())
-    }();
-  } catch (err) {
-    console.error("Bitmedia init error:", err);
-  }
-}
-
 export const AdPlacement = memo(function AdPlacement({ 
   size, 
-  className, 
+  className,
+  slot,
   lazyLoad = true 
 }: AdPlacementProps) {
   const config = sizeConfig[size];
@@ -98,12 +75,21 @@ export const AdPlacement = memo(function AdPlacement({
     return () => observer.disconnect();
   }, [lazyLoad, isVisible]);
 
-  // Initialize Bitmedia when visible
+  // Push AdSense when visible
   useEffect(() => {
     if (!isVisible || hasInitialized.current) return;
     hasInitialized.current = true;
-    initBitmedia();
-  }, [isVisible]);
+    
+    // For manual AdSense units (if slot is provided)
+    if (slot && typeof window !== "undefined") {
+      try {
+        const w = window as any;
+        (w.adsbygoogle = w.adsbygoogle || []).push({});
+      } catch (err) {
+        console.error("AdSense push error:", err);
+      }
+    }
+  }, [isVisible, slot]);
 
   // Placeholder
   if (!isVisible) {
@@ -123,13 +109,20 @@ export const AdPlacement = memo(function AdPlacement({
     );
   }
 
-  // Bitmedia tag
-  const BitmediaIns = () => (
-    <ins 
-      className="6a22a70dfb44766f7a7d8425" 
-      style={{ display: "inline-block", width: "1px", height: "1px" }}
-    />
-  );
+  // Google AdSense Tag
+  const AdSenseIns = () => {
+    if (!slot) return null; // Let Auto Ads handle it if no slot
+    return (
+      <ins
+        className="adsbygoogle block w-full"
+        style={{ display: "block", minHeight: effectiveMinHeight }}
+        data-ad-client="ca-pub-1336344158133611"
+        data-ad-slot={slot}
+        data-ad-format={size === "in-article" ? "fluid" : "auto"}
+        data-full-width-responsive={isMobile ? "true" : "false"}
+      />
+    );
+  };
 
   // Sticky footer
   if (size === "sticky-footer") {
@@ -143,7 +136,7 @@ export const AdPlacement = memo(function AdPlacement({
         style={{ minHeight: parseInt(effectiveMinHeight) + 16, contain: "layout style" }}
         role="complementary"
       >
-        <BitmediaIns />
+        {slot ? <AdSenseIns /> : null}
       </div>
     );
   }
@@ -153,7 +146,8 @@ export const AdPlacement = memo(function AdPlacement({
     <div
       ref={adRef}
       className={cn(
-        "flex items-center justify-center bg-muted/5 rounded-lg border border-border/20",
+        "flex items-center justify-center overflow-hidden",
+        !slot && "bg-muted/5 rounded-lg border border-border/20",
         size === "in-article" && "my-6 w-full",
         className
       )}
@@ -166,7 +160,7 @@ export const AdPlacement = memo(function AdPlacement({
       }}
       role="complementary"
     >
-      <BitmediaIns />
+      {slot ? <AdSenseIns /> : null}
     </div>
   );
 });

@@ -23,10 +23,10 @@
       "purpose": "any"
     },
     {
-      "src": "/oracle-bot-mascot.jpg",
+      "src": "/oracle-bot-mascot-maskable.jpg",
       "sizes": "512x512",
       "type": "image/jpeg",
-      "purpose": "any maskable"
+      "purpose": "maskable"
     }
   ],
   "shortcuts": [
