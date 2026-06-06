@@ -1,4 +1,5 @@
 import { ReactNode, Suspense } from "react";
+import { useLocation } from "react-router-dom";
 import { Navbar } from "./Navbar";
 import { CryptoTicker } from "./CryptoTicker";
 import { Footer } from "./Footer";
@@ -6,6 +7,7 @@ import { MobileBottomNav } from "./MobileBottomNav";
 import { BreadcrumbNav } from "./BreadcrumbNav";
 import { CookieBanner } from "../legal/CookieBanner";
 import { Loader2 } from "lucide-react";
+import { NativeBannerAd } from "@/components/ads";
 
 interface LayoutProps {
   children: ReactNode;
@@ -24,6 +26,8 @@ function LoadingFallback() {
 }
 
 export function Layout({ children, showTicker = true }: LayoutProps) {
+  const location = useLocation();
+
   return (
     <div className="min-h-screen flex flex-col cosmic-bg w-full overflow-x-hidden stable-layout">
       <header>
@@ -37,6 +41,9 @@ export function Layout({ children, showTicker = true }: LayoutProps) {
       
       <main id="main-content" className={`flex-1 ${showTicker ? "" : "mt-14 md:mt-16"} pb-36 md:pb-28 scroll-smooth-touch`}>
         <BreadcrumbNav />
+        <div className="container mx-auto px-4 max-w-7xl">
+          <NativeBannerAd key={`ad-${location.pathname}`} />
+        </div>
         <Suspense fallback={<LoadingFallback />}>
           {children}
         </Suspense>

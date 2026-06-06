@@ -11,7 +11,7 @@ import { QuickAccessBar } from "@/components/home/QuickAccessBar";
 import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BannerAd, InArticleAd } from "@/components/ads";
+import { BannerAd, InArticleAd, NativeBannerAd } from "@/components/ads";
 import { SEO, StructuredData } from "@/components/MainSEO";
 import { HomepageSchema } from "@/components/home/HomepageSchema";
 
@@ -110,6 +110,9 @@ const Index = () => {
         {/* 1. Hero - first impression, trust badges, live prices */}
         <HeroSection />
 
+        <div className="container mx-auto px-4 mt-8">
+          <NativeBannerAd key="ad-home" />
+        </div>
 
         {/* 2. Live Signals - high conviction trade setups (Moved to be 2nd thing users see) */}
         <Suspense fallback={<SectionFallback />}>

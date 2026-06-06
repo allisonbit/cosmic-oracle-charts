@@ -4,3 +4,4 @@ export { SidebarAd } from "./SidebarAd";
 export { InArticleAd } from "./InArticleAd";
 export { StickyFooterAd } from "./StickyFooterAd";
 export { AdSenseManager } from "./AdSenseManager";
+export { NativeBannerAd } from "./NativeBannerAd";
