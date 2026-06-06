@@ -46,8 +46,8 @@ export default function MyNewsFeed() {
     const prices = priceData?.prices || [];
     const now = new Date();
 
-    prices.forEach((coin) => {
-      const isWatchlisted = watchlist.includes(coin.symbol?.toLowerCase());
+    prices.forEach((coin, idx) => {
+      const isWatchlisted = watchlist.includes(coin.symbol?.toUpperCase());
       const absChange = Math.abs(coin.change24h || 0);
 
       if (absChange > 3 || isWatchlisted) {
@@ -60,7 +60,7 @@ export default function MyNewsFeed() {
           symbol: coin.symbol,
           change: coin.change24h,
           value: `$${coin.price?.toLocaleString()}`,
-          timestamp: new Date(now.getTime() - Math.random() * 3600000),
+          timestamp: new Date(now.getTime() - (idx * 300000 + 60000)),
           priority: absChange > 5 ? 'high' : absChange > 2 ? 'medium' : 'low',
           read: readItems.has(`price-${coin.symbol}`),
           sentiment: isBullish ? 'bullish' : 'bearish',
@@ -75,7 +75,7 @@ export default function MyNewsFeed() {
           description: `Unusually high trading volume detected for ${coin.name}. Volume/MCap ratio is ${((coin.volume24h / coin.marketCap) * 100).toFixed(1)}%, which is significantly above average. This could indicate upcoming volatility, institutional interest, or a major narrative shift. Historical spikes of this magnitude often precede 5-15% moves.`,
           symbol: coin.symbol,
           value: `$${(coin.volume24h / 1e6).toFixed(0)}M vol`,
-          timestamp: new Date(now.getTime() - Math.random() * 7200000),
+          timestamp: new Date(now.getTime() - (idx * 300000 + 180000)),
           priority: 'medium',
           read: readItems.has(`vol-${coin.symbol}`),
           sentiment: 'neutral',
@@ -84,7 +84,7 @@ export default function MyNewsFeed() {
     });
 
     ['BTC', 'ETH', 'SOL'].forEach((sym, i) => {
-      const amount = (Math.random() * 500 + 100).toFixed(0);
+      const amount = (120 + i * 95).toString();
       const usdVal = sym === 'BTC' ? parseInt(amount) * 97000 : sym === 'ETH' ? parseInt(amount) * 3400 : parseInt(amount) * 190;
       items.push({
         id: `whale-${sym}-${i}`,
@@ -93,7 +93,7 @@ export default function MyNewsFeed() {
         description: `Large ${sym} transfer detected from exchange to unknown wallet. Transaction value: $${(usdVal / 1e6).toFixed(2)}M. This pattern is typically associated with accumulation — when whales move assets off exchanges, it reduces sell pressure and suggests long-term holding intent.`,
         symbol: sym,
         value: `$${(usdVal / 1e6).toFixed(1)}M`,
-        timestamp: new Date(now.getTime() - Math.random() * 14400000),
+        timestamp: new Date(now.getTime() - (i * 600000 + 1800000)),
         priority: 'high',
         read: readItems.has(`whale-${sym}-${i}`),
         sentiment: 'bullish',
@@ -123,7 +123,7 @@ export default function MyNewsFeed() {
 
   const filtered = useMemo(() => {
     let items = feedItems;
-    if (category === 'watchlist') items = items.filter(i => i.symbol && watchlist.includes(i.symbol.toLowerCase()));
+    if (category === 'watchlist') items = items.filter(i => i.symbol && watchlist.includes(i.symbol.toUpperCase()));
     else if (category === 'whale') items = items.filter(i => i.type === 'whale_alert');
     else if (category === 'market') items = items.filter(i => i.type === 'market_news');
     else if (category === 'alerts') items = items.filter(i => i.priority === 'high');
@@ -208,7 +208,7 @@ export default function MyNewsFeed() {
           <div className="flex gap-2 flex-wrap">
             {([
               { id: 'all', label: 'All Updates', icon: Flame, count: feedItems.length },
-              { id: 'watchlist', label: 'Watchlist', icon: Eye, count: feedItems.filter(i => i.symbol && watchlist.includes(i.symbol.toLowerCase())).length },
+              { id: 'watchlist', label: 'Watchlist', icon: Eye, count: feedItems.filter(i => i.symbol && watchlist.includes(i.symbol.toUpperCase())).length },
               { id: 'alerts', label: 'Urgent', icon: AlertTriangle, count: feedItems.filter(i => i.priority === 'high').length },
               { id: 'whale', label: 'Whale Alerts', icon: Zap, count: feedItems.filter(i => i.type === 'whale_alert').length },
               { id: 'market', label: 'Market News', icon: Globe, count: feedItems.filter(i => i.type === 'market_news').length },

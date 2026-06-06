@@ -223,7 +223,7 @@ export default function Scanner() {
   const { data: priceData } = useCryptoPrices();
 
   const btcChange = useMemo(() => {
-    const btc = priceData?.prices?.find((p) => p.symbol === "btc");
+    const btc = priceData?.prices?.find((p) => p.symbol?.toUpperCase() === "BTC");
     return btc?.change24h || 0;
   }, [priceData]);
 

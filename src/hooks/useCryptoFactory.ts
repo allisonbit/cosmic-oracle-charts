@@ -98,8 +98,12 @@ export function useCryptoFactory(filters?: {
         throw error;
       }
 
-      let { events, onChainActivity, narratives, news } = data;
-      const { trending, globalStats, fearGreed, topMovers, timestamp } = data;
+      let { events, onChainActivity, narratives, news } = data || {};
+      events = events || [];
+      onChainActivity = onChainActivity || [];
+      narratives = narratives || [];
+      news = news || [];
+      const { trending, globalStats, fearGreed, topMovers, timestamp } = data || {};
 
       // Apply filters
       if (filters?.chain && filters.chain !== 'All') {

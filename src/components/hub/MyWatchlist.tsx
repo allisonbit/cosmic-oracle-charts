@@ -46,13 +46,13 @@ export function MyWatchlist() {
     updateWatchlist(watchlist.filter(s => s !== symbol));
   };
 
-  const allCoins = prices ? Object.entries(prices).map(([id, data]: [string, any]) => ({
-    id,
-    symbol: data.symbol?.toUpperCase() || id.toUpperCase(),
-    name: data.name || id,
-    price: data.current_price || data.usd || 0,
-    change24h: data.price_change_percentage_24h || 0,
-  })) : [];
+  const allCoins = (prices?.prices || []).map((data) => ({
+    id: data.symbol.toLowerCase(),
+    symbol: data.symbol.toUpperCase(),
+    name: data.name,
+    price: data.price || 0,
+    change24h: data.change24h || 0,
+  }));
 
   const watchedCoins = allCoins.filter(c => watchlist.includes(c.symbol));
   const searchResults = search.length >= 2

@@ -17,9 +17,9 @@ interface TokenHolding {
   symbol: string;
   name: string;
   balance: number;
-  value_usd: number;
+  value: number;
   price: number;
-  change_24h: number;
+  change24h: number;
 }
 
 interface WalletAnalysis {
@@ -28,7 +28,7 @@ interface WalletAnalysis {
   holdings: TokenHolding[];
   riskScore: number;
   diversificationScore: number;
-  insight: string;
+  overallInsight: string;
   warnings: string[];
 }
 
@@ -77,18 +77,18 @@ function ScannerContent() {
   const getRiskBg = (score: number) => score <= 30 ? "bg-success/10" : score <= 60 ? "bg-warning/10" : "bg-danger/10";
   const getRiskLabel = (score: number) => score <= 30 ? "Low Risk" : score <= 60 ? "Medium Risk" : "High Risk";
 
-  const pieData = analysis?.holdings.filter(h => h.value_usd > 0).slice(0, 8).map(h => ({
-    name: h.symbol, value: parseFloat((h.value_usd ?? 0).toFixed(2)),
+  const pieData = analysis?.holdings.filter(h => h.value > 0).slice(0, 8).map(h => ({
+    name: h.symbol, value: parseFloat((h.value ?? 0).toFixed(2)),
   })) || [];
 
-  const barData = analysis?.holdings.filter(h => h.change_24h !== 0).slice(0, 10).map(h => ({
-    name: h.symbol, change: parseFloat((h.change_24h ?? 0).toFixed(2)),
+  const barData = analysis?.holdings.filter(h => h.change24h !== 0).slice(0, 10).map(h => ({
+    name: h.symbol, change: parseFloat((h.change24h ?? 0).toFixed(2)),
   })) || [];
 
-  const topGainer = analysis?.holdings.reduce((a, b) => (a.change_24h > b.change_24h ? a : b), analysis.holdings[0]);
-  const topLoser = analysis?.holdings.reduce((a, b) => (a.change_24h < b.change_24h ? a : b), analysis.holdings[0]);
+  const topGainer = analysis?.holdings.reduce((a, b) => (a.change24h > b.change24h ? a : b), analysis.holdings[0]);
+  const topLoser = analysis?.holdings.reduce((a, b) => (a.change24h < b.change24h ? a : b), analysis.holdings[0]);
   const stablecoins = analysis?.holdings.filter(h => ['USDT', 'USDC', 'DAI', 'BUSD'].includes(h.symbol.toUpperCase()));
-  const stablePct = analysis ? ((stablecoins?.reduce((s, h) => s + h.value_usd, 0) || 0) / Math.max(analysis.totalValue, 1)) * 100 : 0;
+  const stablePct = analysis ? ((stablecoins?.reduce((s, h) => s + h.value, 0) || 0) / Math.max(analysis.totalValue, 1)) * 100 : 0;
 
   return (
     <Layout>
@@ -175,7 +175,7 @@ function ScannerContent() {
               <Card className="border-border"><CardContent className="p-3 text-center">
                 <p className="text-[10px] text-muted-foreground uppercase">Top Gainer</p>
                 <p className="text-sm font-bold text-success">{topGainer?.symbol}</p>
-                <p className="text-xs text-success font-mono">+{topGainer?.change_24h.toFixed(1)}%</p>
+                <p className="text-xs text-success font-mono">+{(topGainer?.change24h ?? 0).toFixed(1)}%</p>
               </CardContent></Card>
               <Card className="border-border"><CardContent className="p-3 text-center">
                 <p className="text-[10px] text-muted-foreground uppercase">Stablecoin %</p>
@@ -190,7 +190,7 @@ function ScannerContent() {
                   <div className="p-2 rounded-lg bg-primary/10 shrink-0"><Shield className="w-5 h-5 text-primary" /></div>
                   <div>
                     <h3 className="font-semibold text-sm mb-1">AI Portfolio Analysis</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{analysis.insight}</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{analysis.overallInsight}</p>
                   </div>
                 </div>
               </CardContent>
@@ -237,8 +237,8 @@ function ScannerContent() {
                           </tr>
                         </thead>
                         <tbody>
-                          {analysis.holdings.sort((a, b) => b.value_usd - a.value_usd).map((token, i) => {
-                            const share = analysis.totalValue > 0 ? (token.value_usd / analysis.totalValue) * 100 : 0;
+                          {analysis.holdings.sort((a, b) => b.value - a.value).map((token, i) => {
+                            const share = analysis.totalValue > 0 ? (token.value / analysis.totalValue) * 100 : 0;
                             return (
                               <tr key={i} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
                                 <td className="p-3 text-xs text-muted-foreground">{i + 1}</td>
@@ -255,10 +255,10 @@ function ScannerContent() {
                                 </td>
                                 <td className="p-3 text-right font-mono text-xs">{(token.balance ?? 0).toLocaleString(undefined, { maximumFractionDigits: 4 })}</td>
                                 <td className="p-3 text-right font-mono text-xs">${token.price < 0.01 ? (token.price ?? 0).toExponential(2) : (token.price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 4 })}</td>
-                                <td className="p-3 text-right font-mono text-xs font-medium">${(token.value_usd ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
+                                <td className="p-3 text-right font-mono text-xs font-medium">${(token.value ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
                                 <td className="p-3 text-right">
-                                  <span className={cn("text-xs font-mono", token.change_24h >= 0 ? "text-success" : "text-danger")}>
-                                    {token.change_24h >= 0 ? '+' : ''}{(token.change_24h ?? 0).toFixed(2)}%
+                                  <span className={cn("text-xs font-mono", token.change24h >= 0 ? "text-success" : "text-danger")}>
+                                    {token.change24h >= 0 ? '+' : ''}{(token.change24h ?? 0).toFixed(2)}%
                                   </span>
                                 </td>
                                 <td className="p-3 text-right">

@@ -15,11 +15,11 @@ export function MyPortfolio() {
 
   // Derive portfolio from watchlist with simulated holdings
   const holdings = watchlist.map((symbol, i) => {
-    const coin = prices ? Object.values(prices as Record<string, any>).find(
-      (c: any) => c.symbol?.toUpperCase() === symbol
-    ) : null;
-    const price = coin?.current_price || coin?.usd || 0;
-    const change = coin?.price_change_percentage_24h || 0;
+    const coin = (prices?.prices || []).find(
+      (c) => c.symbol?.toUpperCase() === symbol
+    );
+    const price = coin?.price || 0;
+    const change = coin?.change24h || 0;
     const qty = 1; // placeholder quantity
     return { symbol, price, change, qty, value: price * qty, name: coin?.name || symbol };
   });

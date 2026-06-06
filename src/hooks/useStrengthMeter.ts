@@ -68,8 +68,25 @@ export function useStrengthMeter(timeframe: string = '24h') {
         
         if (error) throw error;
 
-        const coins = data?.prices || [];
-        
+        // The crypto-prices edge function returns camelCase fields
+        // ({ symbol, name, price, change24h, volume24h, marketCap, image }).
+        // Remap to the CoinGecko-style snake_case shape the calculations below
+        // expect — otherwise every metric reads undefined and scores collapse
+        // to an identical baseline. (Mirrors useRealtimeStrength.)
+        const coins = (data?.prices || []).map((p: any) => ({
+          id: p.symbol?.toLowerCase(),
+          symbol: p.symbol,
+          name: p.name,
+          image: p.image,
+          current_price: p.price,
+          price_change_percentage_24h: p.change24h,
+          price_change_percentage_1h_in_currency: (p.change24h || 0) / 24,
+          price_change_percentage_7d_in_currency: (p.change24h || 0) * 3,
+          total_volume: p.volume24h,
+          market_cap: p.marketCap,
+          market_cap_change_percentage_24h: (p.change24h || 0) * 0.8,
+        }));
+
         // Process assets
         const assets: StrengthData[] = coins.slice(0, 20).map((coin: any) => {
           const baseData = {

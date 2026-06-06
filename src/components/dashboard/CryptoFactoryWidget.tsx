@@ -6,9 +6,9 @@ import { useCryptoFactory } from "@/hooks/useCryptoFactory";
 export function CryptoFactoryWidget() {
   const { data, isLoading } = useCryptoFactory();
 
-  const upcomingEvents = data?.events.slice(0, 3) || [];
-  const recentActivity = data?.onChainActivity.slice(0, 2) || [];
-  const topNarrative = data?.narratives[0];
+  const upcomingEvents = data?.events?.slice(0, 3) || [];
+  const recentActivity = data?.onChainActivity?.slice(0, 2) || [];
+  const topNarrative = data?.narratives?.[0];
 
   const getImpactColor = (impact: string) => {
     switch (impact) {

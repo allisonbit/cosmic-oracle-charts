@@ -29,7 +29,7 @@ export function TokenTradingTab({ token, derivedMetrics }: TokenTradingTabProps)
                 <div className="grid grid-cols-2 gap-3 mt-3">
                   <div className="p-2 rounded bg-success/5 border border-success/20 text-center">
                     <p className="text-xs text-success">Buy Pressure</p>
-                    <p className="text-lg font-bold text-success">{derivedMetrics?.buyPressure.toFixed(1)}%</p>
+                    <p className="text-lg font-bold text-success">{(derivedMetrics?.buyPressure ?? 50).toFixed(1)}%</p>
                   </div>
                   <div className="p-2 rounded bg-danger/5 border border-danger/20 text-center">
                     <p className="text-xs text-danger">Sell Pressure</p>
