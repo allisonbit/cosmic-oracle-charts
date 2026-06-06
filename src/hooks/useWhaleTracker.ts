@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 
 interface WhaleTransaction {
   id: string;
@@ -25,7 +25,7 @@ interface WhaleData {
 }
 
 async function fetchWhaleData(chain: string = 'ethereum'): Promise<WhaleData> {
-  const { data, error } = await supabase.functions.invoke('whale-tracker', {
+  const { data, error } = await invokeFunction('whale-tracker', {
     body: { chain }
   });
   

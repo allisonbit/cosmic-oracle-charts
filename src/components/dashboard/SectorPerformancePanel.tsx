@@ -2,7 +2,7 @@ import { Layers, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 
 interface Sector {
   name: string;
@@ -23,7 +23,7 @@ export function SectorPerformancePanel() {
   const { data, isLoading } = useQuery({
     queryKey: ["sector-performance"],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke("sector-performance", { body: {} });
+      const { data, error } = await invokeFunction("sector-performance", { body: {} });
       if (error) throw error;
       return (data?.sectors ?? []) as Sector[];
     },

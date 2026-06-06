@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 
 export interface RealNewsArticle {
   title: string;
@@ -77,7 +77,7 @@ export interface SentimentData {
 }
 
 async function fetchSentimentData(): Promise<SentimentData> {
-  const { data, error } = await supabase.functions.invoke('sentiment-data');
+  const { data, error } = await invokeFunction('sentiment-data');
   if (error) throw error;
   return data;
 }

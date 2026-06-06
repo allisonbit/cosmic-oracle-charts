@@ -2,7 +2,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { Search, X, Loader2, TrendingUp, TrendingDown, Activity, ExternalLink, Zap, BarChart3, Users, MessageCircle, ArrowDownUp } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 import { TokenIcon } from "@/components/ui/token-icon";
 import { useNavigate } from "react-router-dom";
 
@@ -59,7 +59,7 @@ export function TokenSentimentSearch() {
     if (q.length < 2) { setResults([]); return; }
     setIsSearching(true);
     try {
-      const { data, error } = await supabase.functions.invoke("token-search", {
+      const { data, error } = await invokeFunction("token-search", {
         body: { query: q, mode: "search", limit: 15 },
       });
       if (!error && data?.tokens) {

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 import { debouncedFetch } from "@/lib/requestQueue";
 
 interface RealtimePrice {
@@ -40,7 +40,7 @@ export function useRealtimePricesWS(chainIds: string[]) {
       const data = await debouncedFetch(
         `realtime-prices-${chainIds.sort().join(",")}`,
         async () => {
-          const { data, error } = await supabase.functions.invoke("realtime-prices", {
+          const { data, error } = await invokeFunction("realtime-prices", {
             body: { chains: chainIds },
           });
           if (error) throw error;
@@ -99,7 +99,7 @@ export function useWhaleAlertsWS(chainId: string, enableNotifications = false) {
       const data = await debouncedFetch(
         `whale-alerts-${chainId}`,
         async () => {
-          const { data, error } = await supabase.functions.invoke("whale-alerts", {
+          const { data, error } = await invokeFunction("whale-alerts", {
             body: { chainId },
           });
           if (error) throw error;

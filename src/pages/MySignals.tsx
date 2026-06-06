@@ -3,7 +3,7 @@ import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/hooks/useAuth";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 import { useState, useMemo } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 import { Zap, TrendingUp, TrendingDown, Loader2, RefreshCw, Target, AlertTriangle, CheckCircle2, Shield, BarChart3, Clock, ArrowUpRight, ArrowDownRight, Activity } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -42,7 +42,7 @@ function SignalsContent() {
     setLoading(true);
     try {
       const coinsToAnalyze = watchlist.length > 0 ? watchlist : ["BTC", "ETH", "SOL", "BNB", "XRP"];
-      const { data, error } = await supabase.functions.invoke("ai-trading-signals", {
+      const { data, error } = await invokeFunction("ai-trading-signals", {
         body: { coins: coinsToAnalyze },
       });
       if (error) throw error;

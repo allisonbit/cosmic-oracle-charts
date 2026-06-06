@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { invokeFunction } from '@/integrations/supabase/functions';
 import { TOP_50_CRYPTOS, EXTENDED_CRYPTOS, searchCryptos } from '@/lib/extendedCryptos';
 
 export interface GlobalToken {
@@ -55,7 +55,7 @@ export function useGlobalTokenSearch() {
 
       // If contract address or no local results, search via API
       if (isContractAddress || localResults.length < 5) {
-        const { data, error: apiError } = await supabase.functions.invoke('token-search', {
+        const { data, error: apiError } = await invokeFunction('token-search', {
           body: { query, mode: 'search', limit: 30 }
         });
 

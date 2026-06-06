@@ -1,7 +1,7 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/MainSEO";
 import { useTokenByAddress, useLiveTokenSearch } from "@/hooks/useLiveTokenSearch";
@@ -54,7 +54,7 @@ export default function TokenDetail() {
     queryKey: ["sparkline", token?.symbol, token?.coingeckoId, chartTimeframe],
     queryFn: async () => {
       const days = chartTimeframe === '1h' ? 1 : chartTimeframe === '24h' ? 1 : chartTimeframe === '7d' ? 7 : 30;
-      const { data, error } = await supabase.functions.invoke("sparkline", {
+      const { data, error } = await invokeFunction("sparkline", {
         body: { symbol: token!.symbol, id: token!.coingeckoId, days },
       });
       if (error) throw error;

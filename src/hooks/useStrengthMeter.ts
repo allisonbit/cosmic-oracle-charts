@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 
 export interface StrengthData {
   id: string;
@@ -64,7 +64,7 @@ export function useStrengthMeter(timeframe: string = '24h') {
     queryKey: ['strength-meter', timeframe],
     queryFn: async () => {
       try {
-        const { data, error } = await supabase.functions.invoke('crypto-prices');
+        const { data, error } = await invokeFunction('crypto-prices');
         
         if (error) throw error;
 

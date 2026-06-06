@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 
 export interface GlobalMarketData {
   totalMarketCap: number;
@@ -68,7 +68,7 @@ export function useMarketData() {
     queryKey: ["crypto-market"],
     queryFn: async (): Promise<MarketDataResponse> => {
       try {
-        const { data, error } = await supabase.functions.invoke("crypto-market");
+        const { data, error } = await invokeFunction("crypto-market");
         
         if (error) {
           console.warn("Market data unavailable, using fallback:", error.message);

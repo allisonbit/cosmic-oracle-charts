@@ -24,7 +24,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RefreshCw, AlertTriangle, Radio, Clock, Activity, Globe, ChevronRight, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 
 interface DynamicToken {
   id: string;
@@ -68,7 +68,7 @@ export default function PricePrediction() {
       
       const fetchTokenInfo = async () => {
         try {
-          const { data, error } = await supabase.functions.invoke('crypto-prices');
+          const { data, error } = await invokeFunction('crypto-prices');
           if (!error && data?.prices) {
             const match = data.prices.find((p: any) => 
               p.id === coinId || p.symbol?.toLowerCase() === coinId.toLowerCase() || p.name?.toLowerCase() === coinId.toLowerCase()

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 import { 
   ChevronDown, ChevronUp, Filter
 } from "lucide-react";
@@ -51,7 +51,7 @@ export function TopTokensTable({ chain, onTokenSelect }: TopTokensTableProps) {
   const { data: tokens = [], isLoading } = useQuery({
     queryKey: ["top-tokens", chain.id],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke("top-tokens", {
+      const { data, error } = await invokeFunction("top-tokens", {
         body: { chain: chain.id, limit: 25 },
       });
       if (error) throw error;

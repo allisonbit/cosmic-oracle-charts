@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 
 /**
  * Pings Google, Bing, and IndexNow once per session to ensure
@@ -16,7 +16,7 @@ export function useSearchEnginePing() {
     }
 
     // Fire and forget - don't block UI
-    supabase.functions.invoke("ping-search-engines").catch(() => {
+    invokeFunction("ping-search-engines").catch(() => {
       // Silent fail - this is a background optimization
     });
   }, []);

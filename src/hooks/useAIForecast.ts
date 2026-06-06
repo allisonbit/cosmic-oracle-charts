@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 
 export interface CoinForecast {
   trend: "bullish" | "bearish" | "neutral";
@@ -39,7 +39,7 @@ export function useAIForecast(coinData: any, analysisType: "coin_forecast" | "ma
     queryKey: ["ai-forecast", analysisType, coinData?.symbol || "market"],
     queryFn: async () => {
       try {
-        const { data, error } = await supabase.functions.invoke("ai-forecast", {
+        const { data, error } = await invokeFunction("ai-forecast", {
           body: { coinData, analysisType },
         });
         

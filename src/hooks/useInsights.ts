@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 
 export interface InsightFAQ {
   question: string;
@@ -36,7 +36,7 @@ export function useInsights() {
   return useQuery<InsightsData>({
     queryKey: ['insights-articles'],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke('insights-engine');
+      const { data, error } = await invokeFunction('insights-engine');
       
       if (error) {
         console.error('Insights engine error:', error);

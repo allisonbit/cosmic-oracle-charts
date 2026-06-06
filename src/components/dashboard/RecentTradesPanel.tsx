@@ -2,7 +2,7 @@ import { Activity, ArrowUpRight, ArrowDownRight, Clock, Zap } from "lucide-react
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 
 interface Trade {
   id: number;
@@ -19,7 +19,7 @@ export function RecentTradesPanel() {
   const { data } = useQuery({
     queryKey: ["live-trades"],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke("live-trades", { body: {} });
+      const { data, error } = await invokeFunction("live-trades", { body: {} });
       if (error) throw error;
       return (data?.trades ?? []) as Trade[];
     },

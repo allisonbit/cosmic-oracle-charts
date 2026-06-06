@@ -4,7 +4,7 @@ import { formatNumber } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 import { Wallet, Flame } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 import { useParams } from "react-router-dom";
 
 interface TokenHoldersTabProps {
@@ -23,7 +23,7 @@ export function TokenHoldersTab({ derivedMetrics }: TokenHoldersTabProps) {
   const { data, isLoading } = useQuery({
     queryKey: ["token-holders", chain, address],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke("token-holders", {
+      const { data, error } = await invokeFunction("token-holders", {
         body: { chain, address },
       });
       if (error) throw error;

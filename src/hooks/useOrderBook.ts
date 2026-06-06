@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { invokeFunction } from '@/integrations/supabase/functions';
 
 interface OrderLevel {
   price: number;
@@ -39,7 +39,7 @@ export function useOrderBook(options: UseOrderBookOptions = {}) {
 
   const fetchOrderBook = useCallback(async () => {
     try {
-      const { data: orderBookData, error: fetchError } = await supabase.functions.invoke('orderbook', {
+      const { data: orderBookData, error: fetchError } = await invokeFunction('orderbook', {
         body: { pair, exchange: exchange.toLowerCase(), limit },
       });
       if (fetchError) throw fetchError;

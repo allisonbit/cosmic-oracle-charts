@@ -2,7 +2,7 @@ import { useState } from "react";
 import { LineChart, TrendingUp, TrendingDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 
 interface OptionTrade {
   type: "call" | "put";
@@ -19,7 +19,7 @@ export function OptionsFlowPanel() {
   const { data } = useQuery({
     queryKey: ["options-flow", selectedAsset],
     queryFn: async () => {
-      const { data } = await supabase.functions.invoke(`options-flow?asset=${selectedAsset}`);
+      const { data } = await invokeFunction(`options-flow?asset=${selectedAsset}`);
       return data as { trades: OptionTrade[]; putCallRatio: number; maxPain: string };
     },
     refetchInterval: 60_000,

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 import { ChainDataResponse } from "./useChainData";
 
 export interface ChainForecast {
@@ -123,7 +123,7 @@ export function useChainForecast(chainId: string, chainData: ChainDataResponse |
     queryKey: ["chain-forecast", chainId],
     queryFn: async (): Promise<ChainForecastResponse> => {
       try {
-        const { data, error } = await supabase.functions.invoke("chain-forecast", {
+        const { data, error } = await invokeFunction("chain-forecast", {
           body: { chainId, chainData },
         });
 

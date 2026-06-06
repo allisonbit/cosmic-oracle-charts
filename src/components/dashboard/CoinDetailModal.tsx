@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 
 interface CoinData {
   symbol: string;
@@ -39,7 +39,7 @@ export function CoinDetailModal({ coin, open, onOpenChange }: CoinDetailModalPro
     queryFn: async () => {
       if (!coin) return [];
       const id = coin.name?.toLowerCase() || coin.symbol?.toLowerCase();
-      const { data } = await supabase.functions.invoke(`sparkline?id=${id}&days=2`);
+      const { data } = await invokeFunction(`sparkline?id=${id}&days=2`);
       return (data?.prices ?? []) as Array<[number, number]>;
     },
     enabled: !!coin && open,

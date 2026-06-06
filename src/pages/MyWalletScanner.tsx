@@ -1,7 +1,7 @@
 import { Layout } from "@/components/layout/Layout";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 import { Search, Wallet, Loader2, TrendingUp, TrendingDown, AlertTriangle, Shield, ExternalLink, Copy, Check, PieChart as PieChartIcon, BarChart3, Activity, Zap, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,7 +51,7 @@ function ScannerContent() {
     if (!target) { toast.error("Enter a wallet address"); return; }
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("wallet-scanner", {
+      const { data, error } = await invokeFunction("wallet-scanner", {
         body: { address: target },
       });
       if (error) throw error;

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { invokeFunction } from '@/integrations/supabase/functions';
 import type { StrengthData } from './useStrengthMeter';
 
 interface RealtimeStrengthState {
@@ -84,7 +84,7 @@ export function useRealtimeStrength(timeframe: string = '24h') {
   const fetchData = useCallback(async () => {
     try {
       // Fetch market data from CoinGecko via our Edge Function to prevent rate limits
-      const { data, error } = await supabase.functions.invoke('crypto-prices');
+      const { data, error } = await invokeFunction('crypto-prices');
       
       let coins: any[] = [];
       

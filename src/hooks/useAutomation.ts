@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 
 export interface AutomationLog {
   id: string;
@@ -69,7 +70,7 @@ export function useTriggerAgent() {
 
   return useMutation({
     mutationFn: async ({ agent, params }: { agent: "content" | "restructure" | "full"; params?: Record<string, any> }) => {
-      const { data, error } = await supabase.functions.invoke(`trigger-${agent}`, {
+      const { data, error } = await invokeFunction(`trigger-${agent}`, {
         body: params || {},
       });
       if (error) throw error;

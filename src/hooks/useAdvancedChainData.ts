@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 import { ChainHealthData } from "@/components/chain/ChainHealthMetrics";
 import { FinancialMetricsData } from "@/components/chain/DeepFinancialMetrics";
 import { PredictionModelsData } from "@/components/chain/AdvancedPredictionModels";
@@ -19,7 +19,7 @@ export interface AdvancedChainDataResponse {
 // Fetch real health data from Alchemy via edge function
 const fetchRealHealthData = async (chainId: string): Promise<ChainHealthData | null> => {
   try {
-    const { data, error } = await supabase.functions.invoke("chain-health", {
+    const { data, error } = await invokeFunction("chain-health", {
       body: { chainId },
     });
     if (error) {

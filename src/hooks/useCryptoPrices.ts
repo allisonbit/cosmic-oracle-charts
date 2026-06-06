@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 
 export interface CryptoPrice {
   symbol: string;
@@ -36,7 +36,7 @@ export function useCryptoPrices() {
     queryKey: ["crypto-prices"],
     queryFn: async (): Promise<CryptoPricesResponse> => {
       try {
-        const { data, error } = await supabase.functions.invoke("crypto-prices");
+        const { data, error } = await invokeFunction("crypto-prices");
         
         if (error) {
           console.warn("Crypto prices unavailable, using fallback:", error.message);

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { invokeFunction } from '@/integrations/supabase/functions';
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 
 export interface LiveToken {
@@ -61,7 +61,7 @@ export function useLiveTokenSearch(query: string, chain: string = 'ethereum') {
         return { tokens: [], query: '', chain };
       }
 
-      const { data, error } = await supabase.functions.invoke('token-search', {
+      const { data, error } = await invokeFunction('token-search', {
         body: { query: debouncedQuery.trim(), chain, mode: 'search' }
       });
 
@@ -83,7 +83,7 @@ export function useTrendingTokens(chain: string = 'ethereum', limit: number = 50
   return useQuery<TokenSearchResult>({
     queryKey: ['trending-tokens', chain, limit],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke('token-search', {
+      const { data, error } = await invokeFunction('token-search', {
         body: { chain, mode: 'trending', limit }
       });
 
@@ -106,7 +106,7 @@ export function useInfiniteTrendingTokens(chain: string = 'ethereum', limit: num
     queryKey: ['infinite-trending-tokens', chain, limit],
     initialPageParam: 1,
     queryFn: async ({ pageParam = 1 }) => {
-      const { data, error } = await supabase.functions.invoke('token-search', {
+      const { data, error } = await invokeFunction('token-search', {
         body: { chain, mode: 'trending', limit, page: pageParam }
       });
 
@@ -130,7 +130,7 @@ export function useTokenByAddress(address: string, chain: string = 'ethereum') {
     queryFn: async () => {
       if (!address) return null;
 
-      const { data, error } = await supabase.functions.invoke('token-search', {
+      const { data, error } = await invokeFunction('token-search', {
         body: { query: address, chain, mode: 'search' }
       });
 

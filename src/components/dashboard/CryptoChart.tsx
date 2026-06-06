@@ -1,12 +1,12 @@
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 
 export function CryptoChart({ price, isPositive, symbol }: { price: number; isPositive: boolean; symbol?: string }) {
   const { data: points } = useQuery({
     queryKey: ["sparkline", symbol ?? "BTC"],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke("sparkline", {
+      const { data, error } = await invokeFunction("sparkline", {
         body: { symbol: symbol ?? "BTC", days: 1 },
       });
       if (error) throw error;

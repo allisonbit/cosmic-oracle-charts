@@ -2,7 +2,7 @@ import { DollarSign, BarChart3, Activity, TrendingUp, TrendingDown } from "lucid
 import { cn } from "@/lib/utils";
 import { ExplorerChain } from "@/lib/explorerChains";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 
 interface MarketStatsBarProps {
   chain: ExplorerChain;
@@ -21,7 +21,7 @@ export function MarketStatsBar({ chain }: MarketStatsBarProps) {
   const { data, isLoading } = useQuery({
     queryKey: ["chain-stats", chain.id],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke("chain-stats", {
+      const { data, error } = await invokeFunction("chain-stats", {
         body: { chain: chain.id },
       });
       if (error) throw error;

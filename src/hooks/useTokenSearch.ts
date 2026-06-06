@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { invokeFunction } from '@/integrations/supabase/functions';
 import { useQuery } from '@tanstack/react-query';
 
 export interface SearchToken {
@@ -41,7 +41,7 @@ export function useTokenSearch(query: string, chain: string = 'ethereum') {
         return { tokens: [], query: '', chain };
       }
 
-      const { data, error } = await supabase.functions.invoke('token-search', {
+      const { data, error } = await invokeFunction('token-search', {
         body: { query: query.trim(), chain }
       });
 
@@ -64,7 +64,7 @@ export function useTokenDetails(contractAddress: string, chain: string = 'ethere
     queryFn: async () => {
       if (!contractAddress) return null;
 
-      const { data, error } = await supabase.functions.invoke('token-search', {
+      const { data, error } = await invokeFunction('token-search', {
         body: { query: contractAddress, chain }
       });
 

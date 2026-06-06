@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 
 interface RealtimePrice {
   symbol: string;
@@ -18,7 +18,7 @@ export function useRealtimePrices(symbols: string[]) {
     if (!mountedRef.current || symbols.length === 0) return;
 
     try {
-      const { data, error } = await supabase.functions.invoke("crypto-prices");
+      const { data, error } = await invokeFunction("crypto-prices");
       
       if (error) {
         console.error("Error fetching realtime prices:", error);

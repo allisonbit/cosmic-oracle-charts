@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 
 export interface MarketEvent {
   id: string;
@@ -91,7 +91,7 @@ export function useCryptoFactory(filters?: {
   return useQuery<CryptoFactoryData>({
     queryKey: ['crypto-factory', filters],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke('crypto-factory');
+      const { data, error } = await invokeFunction('crypto-factory');
       
       if (error) {
         console.error('Crypto factory error:', error);

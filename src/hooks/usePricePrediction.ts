@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 import { toast } from "sonner";
 
 export interface TechnicalIndicators {
@@ -67,7 +67,7 @@ export function usePricePrediction(
   return useQuery<PredictionData>({
     queryKey: ['price-prediction', coinId, timeframe],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke('price-prediction', {
+      const { data, error } = await invokeFunction('price-prediction', {
         body: { coinId, symbol, timeframe }
       });
       

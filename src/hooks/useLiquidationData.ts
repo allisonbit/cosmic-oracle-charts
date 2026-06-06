@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 
 interface LiquidationLevel {
   asset: string;
@@ -20,7 +20,7 @@ interface LiquidationData {
 }
 
 async function fetchLiquidationData(): Promise<LiquidationData> {
-  const { data, error } = await supabase.functions.invoke('liquidation-data');
+  const { data, error } = await invokeFunction('liquidation-data');
   
   if (error) {
     console.error('Error fetching liquidation data:', error);

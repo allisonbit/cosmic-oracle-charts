@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 import { SITE_URL } from "@/lib/siteConfig";
 
 export interface SEOHealthResult {
@@ -44,7 +44,7 @@ export function useSEOMonitor() {
   return useQuery<SEOReport>({
     queryKey: ['seo-monitor'],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke('seo-monitor');
+      const { data, error } = await invokeFunction('seo-monitor');
       
       if (error) {
         console.error('SEO Monitor error:', error);
@@ -65,7 +65,7 @@ export function useSEOMonitor() {
 export function useContentRefresh() {
   return useMutation<ContentRefreshResult, Error, { count?: number }>({
     mutationFn: async ({ count = 3 }) => {
-      const { data, error } = await supabase.functions.invoke('content-refresh', {
+      const { data, error } = await invokeFunction('content-refresh', {
         body: { count }
       });
       

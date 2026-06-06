@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 import { MessageCircle, X, Send, Loader2, Sparkles, Bot } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -45,7 +46,7 @@ export function AIChatBubble() {
       });
 
       // Call AI via edge function
-      const { data, error } = await supabase.functions.invoke("ai-chat", {
+      const { data, error } = await invokeFunction("ai-chat", {
         body: {
           message: userMsg.content,
           history: messages.slice(-6).map(m => ({ role: m.role, content: m.content })),

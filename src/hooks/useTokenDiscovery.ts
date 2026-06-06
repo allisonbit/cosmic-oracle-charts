@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 
 export interface DiscoveryToken {
   symbol: string;
@@ -41,7 +41,7 @@ export function useTokenDiscovery(chain: string = 'ethereum', enabled = true) {
     queryKey: ['token-discovery', chain],
     queryFn: async () => {
       try {
-        const { data, error } = await supabase.functions.invoke('token-discovery', {
+        const { data, error } = await invokeFunction('token-discovery', {
           body: { chain }
         });
 

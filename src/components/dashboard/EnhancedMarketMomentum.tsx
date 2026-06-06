@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { useMarketData } from "@/hooks/useMarketData";
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 import { Link } from "react-router-dom";
 
 export function EnhancedMarketMomentum() {
@@ -34,7 +34,7 @@ export function EnhancedMarketMomentum() {
   const { data: sectorData } = useQuery({
     queryKey: ["sector-performance"],
     queryFn: async () => {
-      const { data } = await supabase.functions.invoke("sector-performance");
+      const { data } = await invokeFunction("sector-performance");
       return (data?.sectors ?? []) as Array<{ name: string; change: number }>;
     },
     refetchInterval: 120_000,

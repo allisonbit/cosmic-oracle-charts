@@ -17,7 +17,9 @@ import { RouteErrorBoundary } from "@/components/system/RouteErrorBoundary";
 import { ScrollToTop } from "@/components/system/ScrollToTop";
 import { GlobalSchemas } from "@/components/seo/RichSchemas";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
-import { AdminRoute } from "@/components/auth/AdminRoute";
+// AdminRoute is lazy so its supabase `.from()` dependency (the heavy
+// @supabase/supabase-js client) stays out of the initial bundle.
+const AdminRoute = lazy(() => import("@/components/auth/AdminRoute").then(m => ({ default: m.AdminRoute })));
 
 // Lazy load heavy global modals
 const AIChatBubble = lazy(() => import("@/components/chat/AIChatBubble").then(m => ({ default: m.AIChatBubble })));

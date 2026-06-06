@@ -1,7 +1,7 @@
 import { Link2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { invokeFunction } from "@/integrations/supabase/functions";
 
 const FALLBACK_ASSETS = ["BTC", "ETH", "SOL", "XRP", "BNB", "ADA"];
 
@@ -9,7 +9,7 @@ export function CorrelationMatrix() {
   const { data } = useQuery({
     queryKey: ["correlation-matrix"],
     queryFn: async () => {
-      const { data } = await supabase.functions.invoke("correlation-matrix");
+      const { data } = await invokeFunction("correlation-matrix");
       return data as { matrix: Record<string, Record<string, number>>; symbols: string[] };
     },
     refetchInterval: 10 * 60 * 1000,
