@@ -6,9 +6,10 @@
 google.com, pub-1336344158133611, DIRECT, f08c47fec0942fa0
 
 # ===== BITMEDIA.IO (Crypto Ad Network) =====
-# IMPORTANT: Replace YOUR_PUBLISHER_ID below with your actual Bitmedia Publisher ID
-# Found in your Bitmedia dashboard under: Account > Sites & Zones > your site
-bitmedia.io, YOUR_PUBLISHER_ID, DIRECT
+# Disabled until a real publisher ID is added. An ads.txt line containing the
+# literal "YOUR_PUBLISHER_ID" is INVALID and can flag the file as misconfigured.
+# To enable: uncomment and replace with your real Bitmedia Publisher ID.
+# bitmedia.io, YOUR_PUBLISHER_ID, DIRECT
 
 # ===== COINZILLA (Crypto Ad Network) =====
 # coinzilla.com, YOUR_COINZILLA_ID, DIRECT
