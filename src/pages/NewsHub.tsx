@@ -357,6 +357,12 @@ export default function NewsHub() {
           "url": "https://oraclebull.com/news",
           "publisher": { "@type": "Organization", "name": "Oracle Bull", "url": "https://oraclebull.com" }
         })}</script>
+        <script type="application/ld+json">{JSON.stringify(itemListLd)}</script>
+        <meta property="og:title" content="Crypto News & AI Market Analysis | Oracle Bull" />
+        <meta property="og:description" content="Live crypto news with AI Bullish / Bearish / Neutral sentiment ratings updated every 5 minutes." />
+        <meta property="og:url" content="https://oraclebull.com/news" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
 
       <div className="container mx-auto px-4 py-8">
