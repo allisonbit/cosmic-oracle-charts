@@ -17,11 +17,12 @@ import { RouteErrorBoundary } from "@/components/system/RouteErrorBoundary";
 
 import { ScrollToTop } from "@/components/system/ScrollToTop";
 import { GlobalSchemas } from "@/components/seo/RichSchemas";
-import { AIChatBubble } from "@/components/chat/AIChatBubble";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { AdminRoute } from "@/components/auth/AdminRoute";
-// Trade context removed in favor of Zustand store
-import { QuickTradeModal } from "@/components/trading/QuickTradeModal";
+
+// Lazy load heavy global modals
+const AIChatBubble = lazy(() => import("@/components/chat/AIChatBubble").then(m => ({ default: m.AIChatBubble })));
+const QuickTradeModal = lazy(() => import("@/components/trading/QuickTradeModal").then(m => ({ default: m.QuickTradeModal })));
 
 // Eager load critical pages
 import Index from "./pages/Index";

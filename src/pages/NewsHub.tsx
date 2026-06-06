@@ -108,7 +108,7 @@ export function useBookmarks() {
   const toggle = useCallback((id: string) => {
     setIds(prev => {
       const next = prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id];
-      try { localStorage.setItem(BOOKMARK_KEY, JSON.stringify(next)); } catch {}
+      try { localStorage.setItem(BOOKMARK_KEY, JSON.stringify(next)); } catch (e) { /* ignore */ }
       return next;
     });
   }, []);
@@ -302,7 +302,7 @@ function NewsFeedSkeleton() {
 export default function NewsHub() {
   const [category, setCategory] = useState("All");
   const { data, isLoading, refetch, isFetching } = useNews(category);
-  const articles = data?.Data ?? [];
+  const articles = useMemo(() => data?.Data ?? [], [data?.Data]);
 
   // Pagination + infinite scroll
   const [visibleCount, setVisibleCount] = useState(15);
