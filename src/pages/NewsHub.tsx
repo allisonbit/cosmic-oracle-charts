@@ -278,10 +278,10 @@ function NewsCard({ article }: { article: NewsItem }) {
 // ── Skeletons ─────────────────────────────────────────────────────────────────
 function NewsFeedSkeleton() {
   return (
-    <div className="space-y-4">
+    <div className="divide-y divide-border">
       {[...Array(5)].map((_, i) => (
-        <div key={i} className="holo-card p-4 md:p-5 flex flex-col sm:flex-row gap-5 animate-pulse">
-          <div className="w-full sm:w-40 h-48 sm:h-32 rounded-xl bg-muted shrink-0" />
+        <div key={i} className="py-8 flex flex-col sm:flex-row gap-8 animate-pulse">
+          <div className="w-full sm:w-64 h-48 sm:h-40 rounded-2xl bg-muted shrink-0" />
           <div className="flex-1 space-y-3 py-1">
             <div className="flex gap-2">
               <div className="h-3 bg-muted rounded w-16" />
