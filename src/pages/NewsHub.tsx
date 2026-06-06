@@ -140,9 +140,9 @@ function TrendingSection({ articles }: { articles: NewsItem[] }) {
         <Flame className="w-5 h-5 text-danger animate-pulse" />
         <h2 className="font-bold font-display text-lg">Trending Now</h2>
       </div>
-      <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-none snap-x">
+      <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-none snap-x">
         {trending.map(article => (
-          <Link key={article.id} to={`/news/${articleToSlug(article)}`} state={{ article }} className="bg-background border border-border rounded-xl p-4 min-w-[280px] w-[280px] shrink-0 snap-start group hover:border-primary/50 transition-all">
+          <Link key={article.id} to={`/news/${articleToSlug(article)}`} state={{ article }} className="min-w-[260px] w-[260px] shrink-0 snap-start group">
             <div className="flex items-center gap-2 text-[10px] text-muted-foreground mb-2">
               <span className="text-primary font-bold uppercase tracking-wider">{article.source_info?.name ?? article.source}</span>
               <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
@@ -278,10 +278,10 @@ function NewsCard({ article }: { article: NewsItem }) {
 // ── Skeletons ─────────────────────────────────────────────────────────────────
 function NewsFeedSkeleton() {
   return (
-    <div className="space-y-4">
+    <div className="divide-y divide-border">
       {[...Array(5)].map((_, i) => (
-        <div key={i} className="holo-card p-4 md:p-5 flex flex-col sm:flex-row gap-5 animate-pulse">
-          <div className="w-full sm:w-40 h-48 sm:h-32 rounded-xl bg-muted shrink-0" />
+        <div key={i} className="py-8 flex flex-col sm:flex-row gap-8 animate-pulse">
+          <div className="w-full sm:w-64 h-48 sm:h-40 rounded-2xl bg-muted shrink-0" />
           <div className="flex-1 space-y-3 py-1">
             <div className="flex gap-2">
               <div className="h-3 bg-muted rounded w-16" />
@@ -430,12 +430,9 @@ export default function NewsHub() {
                         <>
                           <div ref={sentinelRef} aria-hidden className="h-1" />
                           <div className="pt-8 pb-4 text-center">
-                            <button
-                              onClick={handleLoadMore}
-                              className="inline-flex items-center gap-2 px-8 py-3 rounded-xl font-bold bg-background border-2 border-primary/20 text-primary hover:border-primary/50 hover:bg-primary/5 transition-all"
-                            >
+                            <span className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground">
                               <Loader2 className="w-4 h-4 animate-spin" /> Loading more stories…
-                            </button>
+                            </span>
                           </div>
                         </>
                       )}
@@ -443,8 +440,7 @@ export default function NewsHub() {
 
                     {/* Sidebar */}
                     <div className="space-y-6 hidden lg:block">
-                      {/* AI Sentiment Tracker */}
-                      <div className="holo-card p-6 sticky top-24">
+                      <div className="sticky top-24">
                         <h2 className="font-bold font-display text-lg mb-5 flex items-center gap-2">
                           <Brain className="w-5 h-5 text-primary" /> Market Sentiment
                         </h2>
@@ -474,8 +470,8 @@ export default function NewsHub() {
                                   </div>
                                 </div>
                               ))}
-                              <div className="mt-6 p-3 bg-primary/5 border border-primary/20 rounded-xl">
-                                <p className="text-xs text-foreground font-medium leading-relaxed">
+                              <div className="mt-6 pt-4 border-t border-border">
+                                <p className="text-xs text-muted-foreground leading-relaxed">
                                   Oracle AI analyzed the latest 20 headlines. {bullCount > bearCount + 2
                                     ? "News flow is highly bullish. Sentiment extremes may precede short-term rallies."
                                     : bearCount > bullCount + 2
@@ -490,10 +486,10 @@ export default function NewsHub() {
                         <div className="mt-6 pt-6 border-t border-border">
                           <h3 className="text-sm font-bold mb-3 text-muted-foreground">Quick Actions</h3>
                           <div className="space-y-2">
-                            <Link to="/predictions" className="flex items-center gap-2 text-sm text-foreground hover:text-primary transition-colors p-2 rounded-lg hover:bg-muted">
+                            <Link to="/predictions" className="flex items-center gap-2 text-sm text-foreground hover:text-primary transition-colors py-1">
                               <TrendingUp className="w-4 h-4 text-primary" /> AI Price Predictions
                             </Link>
-                            <Link to="/sentiment" className="flex items-center gap-2 text-sm text-foreground hover:text-primary transition-colors p-2 rounded-lg hover:bg-muted">
+                            <Link to="/sentiment" className="flex items-center gap-2 text-sm text-foreground hover:text-primary transition-colors py-1">
                               <Brain className="w-4 h-4 text-primary" /> Fear & Greed Index
                             </Link>
                           </div>
@@ -503,11 +499,11 @@ export default function NewsHub() {
                   </div>
                 </>
               ) : (
-                <div className="text-center py-32 holo-card">
+                <div className="text-center py-32">
                   <Newspaper className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
                   <h3 className="text-xl font-bold mb-2">No stories found</h3>
                   <p className="text-muted-foreground max-w-sm mx-auto mb-6">We couldn't find any recent news for this category. The market might be quiet right now.</p>
-                  <button onClick={() => refetch()} className="bg-primary text-primary-foreground px-6 py-2.5 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center gap-2 mx-auto">
+                  <button onClick={() => refetch()} className="text-primary font-bold hover:underline inline-flex items-center gap-2 mx-auto">
                     <RefreshCw className="w-4 h-4" /> Refresh Feed
                   </button>
                 </div>
