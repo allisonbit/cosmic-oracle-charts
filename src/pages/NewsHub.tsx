@@ -430,12 +430,9 @@ export default function NewsHub() {
                         <>
                           <div ref={sentinelRef} aria-hidden className="h-1" />
                           <div className="pt-8 pb-4 text-center">
-                            <button
-                              onClick={handleLoadMore}
-                              className="inline-flex items-center gap-2 px-8 py-3 rounded-xl font-bold bg-background border-2 border-primary/20 text-primary hover:border-primary/50 hover:bg-primary/5 transition-all"
-                            >
+                            <span className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground">
                               <Loader2 className="w-4 h-4 animate-spin" /> Loading more stories…
-                            </button>
+                            </span>
                           </div>
                         </>
                       )}
