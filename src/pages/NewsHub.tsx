@@ -212,21 +212,24 @@ function NewsCard({ article }: { article: NewsItem }) {
   const sentiment = generateAISentiment(article);
   const slug = articleToSlug(article);
   const category = article.categories.split("|")[0];
+  const { isBookmarked, toggle } = useBookmarks();
+  const saved = isBookmarked(article.id);
 
   const handleBookmark = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    alert("Saved to bookmarks!");
+    toggle(article.id);
   };
 
   return (
     <Link to={`/news/${slug}`} state={{ article }} className="py-8 flex flex-col sm:flex-row gap-8 group border-b border-border relative">
       <button 
         onClick={handleBookmark}
-        className="absolute top-8 right-0 z-10 p-2 rounded-full bg-background/50 backdrop-blur-md border border-border opacity-0 group-hover:opacity-100 transition-opacity hover:text-primary"
-        title="Save for later"
+        aria-label={saved ? "Remove bookmark" : "Save for later"}
+        title={saved ? "Saved" : "Save for later"}
+        className={`absolute top-8 right-0 z-10 p-2 rounded-full bg-background/80 backdrop-blur-md border border-border transition-all hover:text-primary ${saved ? "text-primary opacity-100" : "opacity-0 group-hover:opacity-100"}`}
       >
-        <Bookmark className="w-4 h-4" />
+        <Bookmark className={`w-4 h-4 ${saved ? "fill-primary" : ""}`} />
       </button>
 
       <div className="w-full sm:w-64 h-48 sm:h-40 rounded-2xl overflow-hidden shrink-0 bg-muted relative">
