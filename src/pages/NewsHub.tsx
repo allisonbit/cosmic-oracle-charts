@@ -140,9 +140,9 @@ function TrendingSection({ articles }: { articles: NewsItem[] }) {
         <Flame className="w-5 h-5 text-danger animate-pulse" />
         <h2 className="font-bold font-display text-lg">Trending Now</h2>
       </div>
-      <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-none snap-x">
+      <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-none snap-x">
         {trending.map(article => (
-          <Link key={article.id} to={`/news/${articleToSlug(article)}`} state={{ article }} className="bg-background border border-border rounded-xl p-4 min-w-[280px] w-[280px] shrink-0 snap-start group hover:border-primary/50 transition-all">
+          <Link key={article.id} to={`/news/${articleToSlug(article)}`} state={{ article }} className="min-w-[260px] w-[260px] shrink-0 snap-start group">
             <div className="flex items-center gap-2 text-[10px] text-muted-foreground mb-2">
               <span className="text-primary font-bold uppercase tracking-wider">{article.source_info?.name ?? article.source}</span>
               <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
