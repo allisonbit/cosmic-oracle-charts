@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import {
   Clock, ExternalLink, Brain, ArrowRight, TrendingUp,
   Activity, DollarSign, Zap, ChevronLeft, Share2, BookOpen,
-  MessageSquare, Bookmark, Twitter, Facebook, Link as LinkIcon
+  MessageSquare, Bookmark, Twitter, Facebook, Link as LinkIcon, Newspaper
 } from "lucide-react";
 import { generateAISentiment, articleToSlug, type NewsItem } from "./NewsHub";
 import { InArticleAd, SidebarAd } from "@/components/ads";
