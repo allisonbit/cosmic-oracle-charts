@@ -2,7 +2,7 @@ import { Layout } from "@/components/layout/Layout";
 import { Helmet } from "react-helmet-async";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import {
   Newspaper, Brain, TrendingUp, Clock, ExternalLink,
   Zap, ArrowRight, RefreshCw, Tag, Loader2, Bookmark, Share2, Flame
@@ -95,6 +95,24 @@ function useNews(displayCategory: string) {
 // ── Slug util ─────────────────────────────────────────────────────────────────
 export function articleToSlug(article: NewsItem): string {
   return `${article.id}-${article.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 60)}`;
+}
+
+// ── Persistent bookmarks (localStorage) ───────────────────────────────────────
+const BOOKMARK_KEY = "oraclebull:news:bookmarks";
+function readBookmarks(): string[] {
+  if (typeof window === "undefined") return [];
+  try { return JSON.parse(localStorage.getItem(BOOKMARK_KEY) || "[]"); } catch { return []; }
+}
+export function useBookmarks() {
+  const [ids, setIds] = useState<string[]>(() => readBookmarks());
+  const toggle = useCallback((id: string) => {
+    setIds(prev => {
+      const next = prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id];
+      try { localStorage.setItem(BOOKMARK_KEY, JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }, []);
+  return { ids, toggle, isBookmarked: (id: string) => ids.includes(id) };
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
