@@ -443,8 +443,7 @@ export default function NewsHub() {
 
                     {/* Sidebar */}
                     <div className="space-y-6 hidden lg:block">
-                      {/* AI Sentiment Tracker */}
-                      <div className="holo-card p-6 sticky top-24">
+                      <div className="sticky top-24">
                         <h2 className="font-bold font-display text-lg mb-5 flex items-center gap-2">
                           <Brain className="w-5 h-5 text-primary" /> Market Sentiment
                         </h2>
@@ -474,8 +473,8 @@ export default function NewsHub() {
                                   </div>
                                 </div>
                               ))}
-                              <div className="mt-6 p-3 bg-primary/5 border border-primary/20 rounded-xl">
-                                <p className="text-xs text-foreground font-medium leading-relaxed">
+                              <div className="mt-6 pt-4 border-t border-border">
+                                <p className="text-xs text-muted-foreground leading-relaxed">
                                   Oracle AI analyzed the latest 20 headlines. {bullCount > bearCount + 2
                                     ? "News flow is highly bullish. Sentiment extremes may precede short-term rallies."
                                     : bearCount > bullCount + 2
@@ -490,10 +489,10 @@ export default function NewsHub() {
                         <div className="mt-6 pt-6 border-t border-border">
                           <h3 className="text-sm font-bold mb-3 text-muted-foreground">Quick Actions</h3>
                           <div className="space-y-2">
-                            <Link to="/predictions" className="flex items-center gap-2 text-sm text-foreground hover:text-primary transition-colors p-2 rounded-lg hover:bg-muted">
+                            <Link to="/predictions" className="flex items-center gap-2 text-sm text-foreground hover:text-primary transition-colors py-1">
                               <TrendingUp className="w-4 h-4 text-primary" /> AI Price Predictions
                             </Link>
-                            <Link to="/sentiment" className="flex items-center gap-2 text-sm text-foreground hover:text-primary transition-colors p-2 rounded-lg hover:bg-muted">
+                            <Link to="/sentiment" className="flex items-center gap-2 text-sm text-foreground hover:text-primary transition-colors py-1">
                               <Brain className="w-4 h-4 text-primary" /> Fear & Greed Index
                             </Link>
                           </div>
@@ -503,11 +502,11 @@ export default function NewsHub() {
                   </div>
                 </>
               ) : (
-                <div className="text-center py-32 holo-card">
+                <div className="text-center py-32">
                   <Newspaper className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
                   <h3 className="text-xl font-bold mb-2">No stories found</h3>
                   <p className="text-muted-foreground max-w-sm mx-auto mb-6">We couldn't find any recent news for this category. The market might be quiet right now.</p>
-                  <button onClick={() => refetch()} className="bg-primary text-primary-foreground px-6 py-2.5 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center gap-2 mx-auto">
+                  <button onClick={() => refetch()} className="text-primary font-bold hover:underline inline-flex items-center gap-2 mx-auto">
                     <RefreshCw className="w-4 h-4" /> Refresh Feed
                   </button>
                 </div>
