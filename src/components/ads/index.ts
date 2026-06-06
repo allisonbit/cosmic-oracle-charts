@@ -5,3 +5,5 @@ export { InArticleAd } from "./InArticleAd";
 export { StickyFooterAd } from "./StickyFooterAd";
 export { AdSenseManager } from "./AdSenseManager";
 export { NativeBannerAd } from "./NativeBannerAd";
+export { SmallBannerAd } from "./SmallBannerAd";
+export { LargeBannerAd } from "./LargeBannerAd";

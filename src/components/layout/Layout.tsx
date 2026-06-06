@@ -7,7 +7,7 @@ import { MobileBottomNav } from "./MobileBottomNav";
 import { BreadcrumbNav } from "./BreadcrumbNav";
 import { CookieBanner } from "../legal/CookieBanner";
 import { Loader2 } from "lucide-react";
-import { NativeBannerAd } from "@/components/ads";
+import { NativeBannerAd, SmallBannerAd, LargeBannerAd } from "@/components/ads";
 
 interface LayoutProps {
   children: ReactNode;
@@ -41,8 +41,10 @@ export function Layout({ children, showTicker = true }: LayoutProps) {
       
       <main id="main-content" className={`flex-1 ${showTicker ? "" : "mt-14 md:mt-16"} pb-36 md:pb-28 scroll-smooth-touch`}>
         <BreadcrumbNav />
-        <div className="container mx-auto px-4 max-w-7xl">
+        <div className="container mx-auto px-4 max-w-7xl flex flex-col md:flex-row gap-4 items-center justify-center flex-wrap">
           <NativeBannerAd key={`ad-${location.pathname}`} />
+          <LargeBannerAd key={`large-ad-${location.pathname}`} />
+          <SmallBannerAd key={`small-ad-${location.pathname}`} />
         </div>
         <Suspense fallback={<LoadingFallback />}>
           {children}
