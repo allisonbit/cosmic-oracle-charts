@@ -41,7 +41,7 @@ export function SmallBannerAd({ className }: SmallBannerAdProps) {
 
   return (
     <div 
-      className={cn("flex items-center justify-center min-h-[50px] w-[320px] mx-auto my-4 overflow-hidden", className)}
+      className={cn("flex md:hidden items-center justify-center min-h-[50px] w-[320px] mx-auto my-4 overflow-hidden", className)}
       ref={containerRef}
     />
   );

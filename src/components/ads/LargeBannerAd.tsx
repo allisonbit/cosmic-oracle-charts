@@ -41,7 +41,7 @@ export function LargeBannerAd({ className }: LargeBannerAdProps) {
 
   return (
     <div 
-      className={cn("flex items-center justify-center min-h-[90px] w-[728px] max-w-full mx-auto my-4 overflow-hidden", className)}
+      className={cn("hidden md:flex items-center justify-center min-h-[90px] w-[728px] max-w-full mx-auto my-4 overflow-hidden", className)}
       ref={containerRef}
     />
   );
