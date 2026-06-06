@@ -138,6 +138,18 @@
     height: auto;
     display: block;
   }
+
+  /* Media never forces horizontal overflow */
+  svg, video, canvas, iframe, embed, object, table {
+    max-width: 100%;
+  }
+
+  /* Long unbreakable strings (wallet/contract addresses, URLs, hashes) wrap
+     instead of pushing the layout wider than the viewport on small screens. */
+  body {
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
 }
 
 /* GPU-accelerated animations to reduce main thread work */

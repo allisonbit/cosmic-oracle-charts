@@ -353,21 +353,21 @@ export default function Scanner() {
       <div className="min-h-screen cosmic-bg">
         {/* Live status bar */}
         <div className="border-b border-border/30 bg-background/60 backdrop-blur-sm">
-          <div className="container mx-auto px-4 py-2 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1.5">
+          <div className="container mx-auto px-4 py-2 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="flex items-center gap-1.5 shrink-0">
                 <Wifi className="w-3.5 h-3.5 text-green-400 animate-pulse" />
                 <span className="text-xs text-green-400 font-mono">LIVE</span>
               </div>
-              <span className="text-xs text-muted-foreground font-mono">
+              <span className="text-xs text-muted-foreground font-mono truncate">
                 {liveTime.toLocaleTimeString()} UTC
               </span>
             </div>
-            <div className="flex items-center gap-4 text-xs text-muted-foreground">
-              <span>{stats.total} tokens loaded</span>
-              <span className="text-green-400">{stats.bullish} bullish</span>
-              <span className="text-red-400">{stats.bearish} bearish</span>
-              <Button size="sm" variant="ghost" className="h-6 px-2 text-xs" onClick={() => refreshTrending()}>
+            <div className="flex items-center gap-2 sm:gap-4 text-xs text-muted-foreground shrink-0">
+              <span className="hidden md:inline">{stats.total} tokens loaded</span>
+              <span className="hidden sm:inline text-green-400">{stats.bullish} bullish</span>
+              <span className="hidden sm:inline text-red-400">{stats.bearish} bearish</span>
+              <Button size="sm" variant="ghost" className="h-6 px-2 text-xs shrink-0" onClick={() => refreshTrending()}>
                 <RefreshCw className="w-3 h-3 mr-1" />
                 Refresh
               </Button>
@@ -447,7 +447,7 @@ export default function Scanner() {
                   ))}
                 </div>
 
-                <div className="flex items-center gap-1.5 md:ml-auto">
+                <div className="flex items-center flex-wrap gap-1.5 md:ml-auto">
                   <Filter className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                   {sortOptions.map(opt => (
                     <Button

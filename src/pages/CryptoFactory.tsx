@@ -83,19 +83,19 @@ export default function CryptoFactory() {
       <div className="min-h-screen cosmic-bg">
         {/* Live status bar */}
         <div className="border-b border-border/30 bg-background/60 backdrop-blur-sm">
-          <div className="container mx-auto px-4 py-2 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Wifi className="w-3.5 h-3.5 text-green-400 animate-pulse" />
-              <span className="text-xs text-green-400 font-mono">LIVE</span>
-              <span className="text-xs text-muted-foreground font-mono">{liveTime.toLocaleTimeString()}</span>
+          <div className="container mx-auto px-4 py-2 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-3 min-w-0">
+              <Wifi className="w-3.5 h-3.5 text-green-400 animate-pulse shrink-0" />
+              <span className="text-xs text-green-400 font-mono shrink-0">LIVE</span>
+              <span className="text-xs text-muted-foreground font-mono truncate">{liveTime.toLocaleTimeString()}</span>
             </div>
-            <div className="flex items-center gap-4 text-xs">
-              <span className={cn("font-mono font-bold", fgColor)}>
-                F&G: {fearGreed.value} {fearGreed.classification}
+            <div className="flex items-center gap-2 sm:gap-4 text-xs shrink-0">
+              <span className={cn("font-mono font-bold whitespace-nowrap", fgColor)}>
+                F&G: {fearGreed.value}<span className="hidden sm:inline"> {fearGreed.classification}</span>
               </span>
-              <span className="text-muted-foreground">{data?.news?.length || 0} articles</span>
-              <span className="text-muted-foreground">{filteredEvents.length} events</span>
-              <Button size="sm" variant="ghost" className="h-6 px-2 text-xs" onClick={() => refetch()}>
+              <span className="hidden md:inline text-muted-foreground">{data?.news?.length || 0} articles</span>
+              <span className="hidden sm:inline text-muted-foreground">{filteredEvents.length} events</span>
+              <Button size="sm" variant="ghost" className="h-6 px-2 text-xs shrink-0" onClick={() => refetch()}>
                 <RefreshCw className={cn("w-3 h-3 mr-1", isFetching && "animate-spin")} />
                 Refresh
               </Button>
