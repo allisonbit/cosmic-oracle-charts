@@ -41,8 +41,8 @@ function initBitmedia() {
   w.__bitmedia_init = true;
 
   try {
-    void function(e,n,c,t,o,r,d){
-      void function e(n,c,t,o,r,m,d,s,a: any){
+    void function(){
+      void function e(n: any, c: any, t: string, o: string, r: string[], m: number, d: number, s?: any, a?: any){
         s=c.getElementsByTagName(t)[0];
         if(!s) return;
         a=c.createElement(t);
