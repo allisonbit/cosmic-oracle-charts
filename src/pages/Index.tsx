@@ -11,7 +11,7 @@ import { QuickAccessBar } from "@/components/home/QuickAccessBar";
 import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BannerAd, InArticleAd, NativeBannerAd, SmallBannerAd, LargeBannerAd, MediumRectangleAd } from "@/components/ads";
+import { BannerAd, InArticleAd, NativeBannerAd, SmallBannerAd, LargeBannerAd, MediumRectangleAd, SmartlinkAd } from "@/components/ads";
 import { SEO, StructuredData } from "@/components/MainSEO";
 import { HomepageSchema } from "@/components/home/HomepageSchema";
 
@@ -115,6 +115,7 @@ const Index = () => {
           <LargeBannerAd key="large-ad-home" />
           <MediumRectangleAd key="medium-ad-home" />
           <SmallBannerAd key="small-ad-home" />
+          <SmartlinkAd key="smartlink-home" />
         </div>
 
         {/* 2. Live Signals - high conviction trade setups (Moved to be 2nd thing users see) */}

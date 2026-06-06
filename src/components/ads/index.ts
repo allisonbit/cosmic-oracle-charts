@@ -8,3 +8,4 @@ export { NativeBannerAd } from "./NativeBannerAd";
 export { SmallBannerAd } from "./SmallBannerAd";
 export { LargeBannerAd } from "./LargeBannerAd";
 export { MediumRectangleAd } from "./MediumRectangleAd";
+export { SmartlinkAd } from "./SmartlinkAd";

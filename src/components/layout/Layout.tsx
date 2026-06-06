@@ -7,7 +7,7 @@ import { MobileBottomNav } from "./MobileBottomNav";
 import { BreadcrumbNav } from "./BreadcrumbNav";
 import { CookieBanner } from "../legal/CookieBanner";
 import { Loader2 } from "lucide-react";
-import { NativeBannerAd, SmallBannerAd, LargeBannerAd, MediumRectangleAd } from "@/components/ads";
+import { NativeBannerAd, SmallBannerAd, LargeBannerAd, MediumRectangleAd, SmartlinkAd } from "@/components/ads";
 
 interface LayoutProps {
   children: ReactNode;
@@ -46,6 +46,7 @@ export function Layout({ children, showTicker = true }: LayoutProps) {
           <LargeBannerAd key={`large-ad-${location.pathname}`} />
           <MediumRectangleAd key={`medium-ad-${location.pathname}`} />
           <SmallBannerAd key={`small-ad-${location.pathname}`} />
+          <SmartlinkAd key={`smartlink-${location.pathname}`} />
         </div>
         <Suspense fallback={<LoadingFallback />}>
           {children}
