@@ -303,10 +303,11 @@ export default function NewsHub() {
   const [category, setCategory] = useState("All");
   const { data, isLoading, refetch, isFetching } = useNews(category);
   const articles = data?.Data ?? [];
-  
-  // Pagination State
+
+  // Pagination + infinite scroll
   const [visibleCount, setVisibleCount] = useState(15);
-  
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+
   // Reset pagination when category changes
   const handleCategoryChange = (cat: string) => {
     setCategory(cat);
@@ -316,6 +317,31 @@ export default function NewsHub() {
   const handleLoadMore = () => {
     setVisibleCount(prev => Math.min(prev + 10, articles.length));
   };
+
+  // IntersectionObserver-driven infinite scroll
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el || visibleCount >= articles.length) return;
+    const io = new IntersectionObserver(entries => {
+      if (entries.some(e => e.isIntersecting)) {
+        setVisibleCount(prev => Math.min(prev + 10, articles.length));
+      }
+    }, { rootMargin: "600px 0px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [articles.length, visibleCount]);
+
+  // ItemList JSON-LD for Google Discover / SEO
+  const itemListLd = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": articles.slice(0, 20).map((a, i) => ({
+      "@type": "ListItem",
+      "position": i + 1,
+      "url": `https://oraclebull.com/news/${articleToSlug(a)}`,
+      "name": a.title,
+    })),
+  }), [articles]);
 
   return (
     <Layout>
