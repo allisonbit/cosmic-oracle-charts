@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { usePrivy } from "@privy-io/react-auth";
 import { useAuth } from "@/hooks/useAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -15,8 +14,7 @@ import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 
 export function UserMenu({ className }: { className?: string }) {
-  const { profile, loading: authLoading } = useAuth();
-  const { ready, authenticated, login, logout } = usePrivy();
+  const { profile, loading: authLoading, ready, authenticated, login, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleSignIn = async () => {

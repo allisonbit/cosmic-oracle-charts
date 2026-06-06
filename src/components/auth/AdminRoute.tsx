@@ -1,7 +1,6 @@
 import { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { usePrivy } from "@privy-io/react-auth";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
@@ -11,14 +10,12 @@ const ADMIN_EMAILS = [
 ];
 
 export function AdminRoute({ children }: { children: ReactNode }) {
-  const { user, loading: authLoading } = useAuth();
-  const { user: privyUser } = usePrivy();
+  const { user, email, loading: authLoading } = useAuth();
 
   const { data: isAdmin, isLoading } = useQuery({
     queryKey: ["admin-check", user?.id],
     queryFn: async () => {
       // 1. Check hardcoded email list
-      const email = privyUser?.email?.address;
       if (email && ADMIN_EMAILS.includes(email)) return true;
       
       // 2. Fallback to Supabase roles

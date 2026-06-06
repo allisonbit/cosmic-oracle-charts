@@ -4,7 +4,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { lazy, Suspense, memo, useEffect } from "react";
-import { PrivyProvider } from '@privy-io/react-auth';
 import React from 'react';
 import { Loader2 } from "lucide-react";
 import { SEO, StructuredData } from "@/components/MainSEO";
@@ -175,16 +174,6 @@ const ChunkLoadRecovery = memo(function ChunkLoadRecovery() {
 });
 
 const App = () => (
-  <PrivyProvider
-    appId={import.meta.env.VITE_PRIVY_APP_ID || "cmpuydouj00l80bl1mp98d6lk"}
-    config={{
-      loginMethods: ['email'],
-      appearance: {
-        theme: 'dark',
-        accentColor: '#676FFF',
-      },
-    }}
-  >
     <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <TooltipProvider delayDuration={300}>
@@ -279,7 +268,6 @@ const App = () => (
       </TooltipProvider>
     </AuthProvider>
     </QueryClientProvider>
-  </PrivyProvider>
 );
 
 export default App;

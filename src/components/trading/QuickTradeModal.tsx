@@ -11,14 +11,17 @@ import { useTrading } from "@/hooks/useTrading";
 import { useAppStore } from "@/store/useAppStore";
 import { toast } from "sonner";
 import { POPULAR_TOKENS, CHAIN_NAME_TO_ID } from "@/lib/tradingTokens";
-import { usePrivy } from "@privy-io/react-auth";
+import { useAuth } from "@/hooks/useAuth";
 
 export function QuickTradeModal() {
   const isOpen = useAppStore(state => state.isTradeOpen);
   const target = useAppStore(state => state.tradeTarget);
   const closeTrade = useAppStore(state => state.closeTrade);
-  const { authenticated, login } = usePrivy();
+  const { authenticated, login, ensurePrivy } = useAuth();
   const { loading, error, getSwapQuote, getSwapPrice, getBridgeQuote, supportedChains } = useTrading();
+
+  // When the trade modal opens, load Privy so auth state resolves.
+  useEffect(() => { if (isOpen) ensurePrivy(); }, [isOpen, ensurePrivy]);
 
   const defaultTab = target?.action === "bridge" ? "bridge" : "swap";
   const [tab, setTab] = useState(defaultTab);

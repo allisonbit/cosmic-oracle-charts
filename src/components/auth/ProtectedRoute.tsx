@@ -1,13 +1,14 @@
-import { usePrivy } from "@privy-io/react-auth";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
 import { LogIn, Shield, Sparkles, TrendingUp, Bell, MessageCircle } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 
 export function ProtectedRoute({ children }: { children: ReactNode }) {
-  const { ready, authenticated, login } = usePrivy();
-  const { loading: authLoading } = useAuth();
+  const { privyReady, authenticated, login, ensurePrivy } = useAuth();
+
+  // Entering a protected route requires auth — load Privy now.
+  useEffect(() => { ensurePrivy(); }, [ensurePrivy]);
 
   const handleSignIn = async () => {
     try {
@@ -17,7 +18,7 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
     }
   };
 
-  if ((authLoading || !ready) && !authenticated) {
+  if (!privyReady && !authenticated) {
     return (
       <Layout>
         <div className="min-h-[60vh] flex items-center justify-center">

@@ -1,7 +1,6 @@
 import { lazy, Suspense, useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { usePrivy } from "@privy-io/react-auth";
 import { Navbar } from "@/components/layout/Navbar";
 import { CryptoTicker } from "@/components/layout/CryptoTicker";
 import { HeroSection } from "@/components/home/HeroSection";
@@ -70,8 +69,7 @@ const ViewportSection = ({ children, fallback }: { children: React.ReactNode; fa
 };
 
 const Index = () => {
-  const { user, loading } = useAuth();
-  const { ready, authenticated } = usePrivy();
+  const { user, loading, ready, authenticated } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {

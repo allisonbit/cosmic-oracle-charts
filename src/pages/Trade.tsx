@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { usePrivy } from "@privy-io/react-auth";
+import { useAuth } from "@/hooks/useAuth";
 import { formatUnits } from "viem";
 import { Layout } from "@/components/layout/Layout";
 import { useTrading } from "@/hooks/useTrading";
@@ -14,7 +14,8 @@ import { toast } from "sonner";
 import { POPULAR_TOKENS, type TokenInfo } from "@/lib/tradingTokens";
 
 function SwapPanel() {
-  const { authenticated, login } = usePrivy();
+  const { authenticated, login, ensurePrivy } = useAuth();
+  useEffect(() => { ensurePrivy(); }, [ensurePrivy]);
   const { loading, error, getSwapQuote, getSwapPrice, supportedChains } = useTrading();
 
   const [chainId, setChainId] = useState(1);
@@ -181,7 +182,8 @@ function SwapPanel() {
 }
 
 function BridgePanel() {
-  const { authenticated, login } = usePrivy();
+  const { authenticated, login, ensurePrivy } = useAuth();
+  useEffect(() => { ensurePrivy(); }, [ensurePrivy]);
   const { loading, error, getBridgeQuote, supportedChains } = useTrading();
 
   const [fromChainId, setFromChainId] = useState(1);
