@@ -26,7 +26,7 @@ export interface NewsItem {
 
 // ── AI Sentiment generator ───────────────────────────────────────────────────
 export function generateAISentiment(article: NewsItem): { label: string; color: string; commentary: string } {
-  const title = (article.title + " " + article.body).toLowerCase();
+  const title = ((article.title || "") + " " + (article.body || "")).toLowerCase();
   const bullish = ["bull", "surge", "rally", "gain", "rise", "pump", "ath", "high", "break", "moon", "buy", "adoption", "launch", "approve", "etf", "growth"];
   const bearish = ["bear", "crash", "drop", "fall", "plunge", "loss", "hack", "ban", "sec", "lawsuit", "fear", "dump", "sell", "warning", "decline", "low"];
 
@@ -94,7 +94,7 @@ function useNews(displayCategory: string) {
 
 // ── Slug util ─────────────────────────────────────────────────────────────────
 export function articleToSlug(article: NewsItem): string {
-  return `${article.id}-${article.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 60)}`;
+  return `${article.id}-${(article.title || "news").toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 60)}`;
 }
 
 // ── Persistent bookmarks (localStorage) ───────────────────────────────────────
@@ -162,7 +162,7 @@ function TrendingSection({ articles }: { articles: NewsItem[] }) {
 function HeroCard({ article }: { article: NewsItem }) {
   const sentiment = generateAISentiment(article);
   const slug = articleToSlug(article);
-  const categories = article.categories.split("|").slice(0, 2);
+  const categories = (article.categories || "Crypto").split("|").slice(0, 2);
 
   return (
     <Link to={`/news/${slug}`} state={{ article }} className="group flex flex-col mb-12 pb-12 border-b border-border">
@@ -211,7 +211,7 @@ function HeroCard({ article }: { article: NewsItem }) {
 function NewsCard({ article }: { article: NewsItem }) {
   const sentiment = generateAISentiment(article);
   const slug = articleToSlug(article);
-  const category = article.categories.split("|")[0];
+  const category = (article.categories || "Crypto").split("|")[0];
   const { isBookmarked, toggle } = useBookmarks();
   const saved = isBookmarked(article.id);
 

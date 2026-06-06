@@ -152,7 +152,7 @@ export default function NewsArticle() {
 
   const sentiment = generateAISentiment(article);
   const extendedAnalysis = generateExtendedAnalysis(article, sentiment);
-  const mentionedCoins = extractMentionedCoins(article.title + " " + article.body);
+  const mentionedCoins = extractMentionedCoins((article.title || "") + " " + (article.body || ""));
   const publishDate = formatDate(article.published_on);
   const canonical = `https://oraclebull.com/news/${slug}`;
 
@@ -181,7 +181,7 @@ export default function NewsArticle() {
           "author": { "@type": "Organization", "name": article.source_info?.name ?? article.source },
           "publisher": { "@type": "Organization", "name": "Oracle Bull", "logo": { "@type": "ImageObject", "url": "https://oraclebull.com/oracle-bull-logo.jpg" } },
           "mainEntityOfPage": canonical,
-          "articleSection": article.categories?.split("|")[0],
+          "articleSection": (article.categories || "Crypto").split("|")[0],
           "description": article.body?.slice(0, 200)
         })}</script>
         <script type="application/ld+json">{JSON.stringify({
@@ -229,7 +229,7 @@ export default function NewsArticle() {
                 <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border uppercase tracking-wider ${sentiment.color}`}>
                   AI: {sentiment.label}
                 </span>
-                {article.categories.split("|").slice(0, 2).map(cat => (
+                {(article.categories || "Crypto").split("|").slice(0, 2).map(cat => (
                   <span key={cat} className="text-[10px] font-bold px-2.5 py-1 rounded-full border border-border bg-background uppercase tracking-wider text-muted-foreground">
                     {cat}
                   </span>
@@ -404,7 +404,7 @@ export default function NewsArticle() {
                               {relSentiment.label}
                             </span>
                             <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full border border-border text-muted-foreground uppercase tracking-wider">
-                              {related.categories.split("|")[0]}
+                              {(related.categories || "Crypto").split("|")[0]}
                             </span>
                           </div>
                           <h3 className="text-sm font-bold leading-snug line-clamp-3 group-hover:text-primary transition-colors">
