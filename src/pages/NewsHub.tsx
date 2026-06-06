@@ -188,10 +188,10 @@ function HeroCard({ article }: { article: NewsItem }) {
             </span>
           ))}
         </div>
-        <h2 className="text-3xl md:text-5xl font-bold font-display leading-tight mb-5 group-hover:text-primary transition-colors tracking-tight">
+        <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold font-display leading-tight mb-5 group-hover:text-primary transition-colors tracking-tight">
           {article.title}
         </h2>
-        <p className="text-lg text-muted-foreground line-clamp-3 mb-6 leading-relaxed">
+        <p className="text-base sm:text-lg text-muted-foreground line-clamp-3 mb-6 leading-relaxed">
           {article.body?.slice(0, 250)}...
         </p>
         <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-8">
@@ -420,21 +420,24 @@ export default function NewsHub() {
                         {articles.slice(category === "All" ? 1 : 0, visibleCount).map((article, i) => (
                           <div key={article.id}>
                             <NewsCard article={article} />
-                            {i === 2 && <InArticleAd className="my-8" />}
+                            {(i + 1) % 6 === 0 && <InArticleAd className="my-8" />}
                           </div>
                         ))}
                       </div>
 
-                      {/* Load More */}
+                      {/* Infinite scroll sentinel + fallback Load More */}
                       {visibleCount < articles.length && (
-                        <div className="pt-8 pb-4 text-center">
-                          <button 
-                            onClick={handleLoadMore}
-                            className="inline-flex items-center gap-2 px-8 py-3 rounded-xl font-bold bg-background border-2 border-primary/20 text-primary hover:border-primary/50 hover:bg-primary/5 transition-all"
-                          >
-                            Load More Stories
-                          </button>
-                        </div>
+                        <>
+                          <div ref={sentinelRef} aria-hidden className="h-1" />
+                          <div className="pt-8 pb-4 text-center">
+                            <button
+                              onClick={handleLoadMore}
+                              className="inline-flex items-center gap-2 px-8 py-3 rounded-xl font-bold bg-background border-2 border-primary/20 text-primary hover:border-primary/50 hover:bg-primary/5 transition-all"
+                            >
+                              <Loader2 className="w-4 h-4 animate-spin" /> Loading more stories…
+                            </button>
+                          </div>
+                        </>
                       )}
                     </div>
 
