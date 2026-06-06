@@ -11,7 +11,7 @@ import { QuickAccessBar } from "@/components/home/QuickAccessBar";
 import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BannerAd, InArticleAd, NativeBannerAd, SmallBannerAd, LargeBannerAd } from "@/components/ads";
+import { BannerAd, InArticleAd, NativeBannerAd, SmallBannerAd, LargeBannerAd, MediumRectangleAd } from "@/components/ads";
 import { SEO, StructuredData } from "@/components/MainSEO";
 import { HomepageSchema } from "@/components/home/HomepageSchema";
 
@@ -113,6 +113,7 @@ const Index = () => {
         <div className="container mx-auto px-4 mt-8 flex flex-col md:flex-row gap-4 items-center justify-center flex-wrap">
           <NativeBannerAd key="ad-home" />
           <LargeBannerAd key="large-ad-home" />
+          <MediumRectangleAd key="medium-ad-home" />
           <SmallBannerAd key="small-ad-home" />
         </div>
 
