@@ -2,7 +2,7 @@ import { Layout } from "@/components/layout/Layout";
 import { Helmet } from "react-helmet-async";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import {
   Newspaper, Brain, TrendingUp, Clock, ExternalLink,
   Zap, ArrowRight, RefreshCw, Tag, Loader2, Bookmark, Share2, Flame
@@ -97,6 +97,24 @@ export function articleToSlug(article: NewsItem): string {
   return `${article.id}-${article.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 60)}`;
 }
 
+// ── Persistent bookmarks (localStorage) ───────────────────────────────────────
+const BOOKMARK_KEY = "oraclebull:news:bookmarks";
+function readBookmarks(): string[] {
+  if (typeof window === "undefined") return [];
+  try { return JSON.parse(localStorage.getItem(BOOKMARK_KEY) || "[]"); } catch { return []; }
+}
+export function useBookmarks() {
+  const [ids, setIds] = useState<string[]>(() => readBookmarks());
+  const toggle = useCallback((id: string) => {
+    setIds(prev => {
+      const next = prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id];
+      try { localStorage.setItem(BOOKMARK_KEY, JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }, []);
+  return { ids, toggle, isBookmarked: (id: string) => ids.includes(id) };
+}
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function timeAgo(unix: number): string {
   const diff = Math.floor(Date.now() / 1000) - unix;
@@ -170,10 +188,10 @@ function HeroCard({ article }: { article: NewsItem }) {
             </span>
           ))}
         </div>
-        <h2 className="text-3xl md:text-5xl font-bold font-display leading-tight mb-5 group-hover:text-primary transition-colors tracking-tight">
+        <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold font-display leading-tight mb-5 group-hover:text-primary transition-colors tracking-tight">
           {article.title}
         </h2>
-        <p className="text-lg text-muted-foreground line-clamp-3 mb-6 leading-relaxed">
+        <p className="text-base sm:text-lg text-muted-foreground line-clamp-3 mb-6 leading-relaxed">
           {article.body?.slice(0, 250)}...
         </p>
         <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-8">
@@ -194,21 +212,24 @@ function NewsCard({ article }: { article: NewsItem }) {
   const sentiment = generateAISentiment(article);
   const slug = articleToSlug(article);
   const category = article.categories.split("|")[0];
+  const { isBookmarked, toggle } = useBookmarks();
+  const saved = isBookmarked(article.id);
 
   const handleBookmark = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    alert("Saved to bookmarks!");
+    toggle(article.id);
   };
 
   return (
     <Link to={`/news/${slug}`} state={{ article }} className="py-8 flex flex-col sm:flex-row gap-8 group border-b border-border relative">
       <button 
         onClick={handleBookmark}
-        className="absolute top-8 right-0 z-10 p-2 rounded-full bg-background/50 backdrop-blur-md border border-border opacity-0 group-hover:opacity-100 transition-opacity hover:text-primary"
-        title="Save for later"
+        aria-label={saved ? "Remove bookmark" : "Save for later"}
+        title={saved ? "Saved" : "Save for later"}
+        className={`absolute top-8 right-0 z-10 p-2 rounded-full bg-background/80 backdrop-blur-md border border-border transition-all hover:text-primary ${saved ? "text-primary opacity-100" : "opacity-0 group-hover:opacity-100"}`}
       >
-        <Bookmark className="w-4 h-4" />
+        <Bookmark className={`w-4 h-4 ${saved ? "fill-primary" : ""}`} />
       </button>
 
       <div className="w-full sm:w-64 h-48 sm:h-40 rounded-2xl overflow-hidden shrink-0 bg-muted relative">
@@ -282,10 +303,11 @@ export default function NewsHub() {
   const [category, setCategory] = useState("All");
   const { data, isLoading, refetch, isFetching } = useNews(category);
   const articles = data?.Data ?? [];
-  
-  // Pagination State
+
+  // Pagination + infinite scroll
   const [visibleCount, setVisibleCount] = useState(15);
-  
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+
   // Reset pagination when category changes
   const handleCategoryChange = (cat: string) => {
     setCategory(cat);
@@ -295,6 +317,31 @@ export default function NewsHub() {
   const handleLoadMore = () => {
     setVisibleCount(prev => Math.min(prev + 10, articles.length));
   };
+
+  // IntersectionObserver-driven infinite scroll
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el || visibleCount >= articles.length) return;
+    const io = new IntersectionObserver(entries => {
+      if (entries.some(e => e.isIntersecting)) {
+        setVisibleCount(prev => Math.min(prev + 10, articles.length));
+      }
+    }, { rootMargin: "600px 0px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [articles.length, visibleCount]);
+
+  // ItemList JSON-LD for Google Discover / SEO
+  const itemListLd = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": articles.slice(0, 20).map((a, i) => ({
+      "@type": "ListItem",
+      "position": i + 1,
+      "url": `https://oraclebull.com/news/${articleToSlug(a)}`,
+      "name": a.title,
+    })),
+  }), [articles]);
 
   return (
     <Layout>
@@ -310,6 +357,12 @@ export default function NewsHub() {
           "url": "https://oraclebull.com/news",
           "publisher": { "@type": "Organization", "name": "Oracle Bull", "url": "https://oraclebull.com" }
         })}</script>
+        <script type="application/ld+json">{JSON.stringify(itemListLd)}</script>
+        <meta property="og:title" content="Crypto News & AI Market Analysis | Oracle Bull" />
+        <meta property="og:description" content="Live crypto news with AI Bullish / Bearish / Neutral sentiment ratings updated every 5 minutes." />
+        <meta property="og:url" content="https://oraclebull.com/news" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
 
       <div className="container mx-auto px-4 py-8">
@@ -367,21 +420,24 @@ export default function NewsHub() {
                         {articles.slice(category === "All" ? 1 : 0, visibleCount).map((article, i) => (
                           <div key={article.id}>
                             <NewsCard article={article} />
-                            {i === 2 && <InArticleAd className="my-8" />}
+                            {(i + 1) % 6 === 0 && <InArticleAd className="my-8" />}
                           </div>
                         ))}
                       </div>
 
-                      {/* Load More */}
+                      {/* Infinite scroll sentinel + fallback Load More */}
                       {visibleCount < articles.length && (
-                        <div className="pt-8 pb-4 text-center">
-                          <button 
-                            onClick={handleLoadMore}
-                            className="inline-flex items-center gap-2 px-8 py-3 rounded-xl font-bold bg-background border-2 border-primary/20 text-primary hover:border-primary/50 hover:bg-primary/5 transition-all"
-                          >
-                            Load More Stories
-                          </button>
-                        </div>
+                        <>
+                          <div ref={sentinelRef} aria-hidden className="h-1" />
+                          <div className="pt-8 pb-4 text-center">
+                            <button
+                              onClick={handleLoadMore}
+                              className="inline-flex items-center gap-2 px-8 py-3 rounded-xl font-bold bg-background border-2 border-primary/20 text-primary hover:border-primary/50 hover:bg-primary/5 transition-all"
+                            >
+                              <Loader2 className="w-4 h-4 animate-spin" /> Loading more stories…
+                            </button>
+                          </div>
+                        </>
                       )}
                     </div>
 

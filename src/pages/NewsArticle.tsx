@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import {
   Clock, ExternalLink, Brain, ArrowRight, TrendingUp,
   Activity, DollarSign, Zap, ChevronLeft, Share2, BookOpen,
-  MessageSquare, Bookmark, Twitter, Facebook, Link as LinkIcon
+  MessageSquare, Bookmark, Twitter, Facebook, Link as LinkIcon, Newspaper
 } from "lucide-react";
 import { generateAISentiment, articleToSlug, type NewsItem } from "./NewsHub";
 import { InArticleAd, SidebarAd } from "@/components/ads";
@@ -168,6 +168,31 @@ export default function NewsArticle() {
         <meta property="og:url" content={canonical} />
         <meta property="og:type" content="article" />
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={article.title} />
+        <meta name="twitter:description" content={article.body?.slice(0, 160)} />
+        <meta name="twitter:image" content={article.imageurl} />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "NewsArticle",
+          "headline": article.title,
+          "image": article.imageurl ? [article.imageurl] : undefined,
+          "datePublished": new Date(article.published_on * 1000).toISOString(),
+          "dateModified": new Date(article.published_on * 1000).toISOString(),
+          "author": { "@type": "Organization", "name": article.source_info?.name ?? article.source },
+          "publisher": { "@type": "Organization", "name": "Oracle Bull", "logo": { "@type": "ImageObject", "url": "https://oraclebull.com/oracle-bull-logo.jpg" } },
+          "mainEntityOfPage": canonical,
+          "articleSection": article.categories?.split("|")[0],
+          "description": article.body?.slice(0, 200)
+        })}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://oraclebull.com/" },
+            { "@type": "ListItem", "position": 2, "name": "News", "item": "https://oraclebull.com/news" },
+            { "@type": "ListItem", "position": 3, "name": article.title, "item": canonical }
+          ]
+        })}</script>
       </Helmet>
 
       {/* Reading Progress Bar */}
