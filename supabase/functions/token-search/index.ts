@@ -72,6 +72,8 @@ serve(async (req) => {
     const ALCHEMY_KEY = Deno.env.get('ALCHEMY_API_KEY_1') || Deno.env.get('ALCHEMY_API_KEY_2');
     const dexChain = DEXSCREENER_CHAINS[chain] || chain;
     const platformId = CHAIN_PLATFORM_IDS[chain] || chain;
+    // "all" = every chain worldwide → don't filter DexScreener results by a single chain.
+    const isAll = chain === 'all';
     
     let tokens: any[] = [];
     const offset = (page - 1) * limit;
@@ -86,27 +88,28 @@ serve(async (req) => {
         if (boostRes.ok) {
           const boostData = await boostRes.json();
           if (Array.isArray(boostData) && boostData.length > 0) {
-            // Get token addresses from boosts for this chain
-            const chainBoosts = boostData.filter((b: any) => b.chainId === dexChain);
+            // Get token addresses from boosts — all chains when "all", else this chain.
+            const chainBoosts = isAll ? boostData : boostData.filter((b: any) => b.chainId === dexChain);
             const addresses = chainBoosts.map((b: any) => b.tokenAddress).filter(Boolean).slice(0, 30);
-            
+
             if (addresses.length > 0) {
               // Fetch full pair data for boosted tokens
-              const pairPromises = addresses.slice(0, 10).map((addr: string) =>
+              const pairPromises = addresses.slice(0, isAll ? 18 : 10).map((addr: string) =>
                 fetch(`https://api.dexscreener.com/latest/dex/tokens/${addr}`).then(r => r.ok ? r.json() : null).catch(() => null)
               );
               const pairResults = await Promise.all(pairPromises);
-              
+
               const seenSymbols = new Set<string>();
               for (const result of pairResults) {
                 if (result?.pairs) {
-                  const chainPairs = result.pairs.filter((p: any) => p.chainId === dexChain);
-                  const best = chainPairs[0] || result.pairs[0];
+                  const chainPairs = isAll ? result.pairs : result.pairs.filter((p: any) => p.chainId === dexChain);
+                  // pick the most-liquid pair
+                  const best = [...chainPairs].sort((a: any, b: any) => (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0))[0] || result.pairs[0];
                   if (best) {
                     const sym = best.baseToken?.symbol?.toLowerCase();
                     if (sym && !seenSymbols.has(sym)) {
                       seenSymbols.add(sym);
-                      tokens.push(mapPair(best, chain));
+                      tokens.push(mapPair(best, isAll ? (best.chainId || chain) : chain));
                     }
                   }
                 }
@@ -118,22 +121,32 @@ serve(async (req) => {
         console.log('DexScreener boost error:', e);
       }
 
-      // Also fetch top pairs for this chain from DexScreener search
+      // Also fetch top pairs from DexScreener search. For a specific chain we
+      // query that chain; for "all" we sweep several major chains and merge so
+      // the global view has real DEX breadth (not just CoinGecko majors).
       if (tokens.length < limit) {
         try {
-          const topRes = await fetch(`https://api.dexscreener.com/latest/dex/search?q=${dexChain}`);
-          if (topRes.ok) {
-            const topData = await topRes.json();
-            if (topData.pairs) {
-              const chainPairs = topData.pairs.filter((p: any) => p.chainId === dexChain);
-              const seenSymbols = new Set(tokens.map(t => t.symbol.toLowerCase()));
-              
-              for (const pair of chainPairs.slice(0, limit)) {
-                const sym = pair.baseToken?.symbol?.toLowerCase();
-                if (sym && !seenSymbols.has(sym)) {
-                  seenSymbols.add(sym);
-                  tokens.push(mapPair(pair, chain));
-                }
+          const sweepChains = isAll
+            ? ['ethereum', 'solana', 'bsc', 'base', 'arbitrum']
+            : [dexChain];
+          const seenSymbols = new Set(tokens.map(t => t.symbol.toLowerCase()));
+          const topResults = await Promise.all(
+            sweepChains.map(c =>
+              fetch(`https://api.dexscreener.com/latest/dex/search?q=${c}`).then(r => r.ok ? r.json() : null).catch(() => null)
+            )
+          );
+          for (let i = 0; i < topResults.length; i++) {
+            const topData = topResults[i];
+            const wantChain = sweepChains[i];
+            if (!topData?.pairs) continue;
+            const chainPairs = topData.pairs
+              .filter((p: any) => p.chainId === wantChain)
+              .sort((a: any, b: any) => (b.volume?.h24 || 0) - (a.volume?.h24 || 0));
+            for (const pair of chainPairs.slice(0, isAll ? 12 : limit)) {
+              const sym = pair.baseToken?.symbol?.toLowerCase();
+              if (sym && !seenSymbols.has(sym)) {
+                seenSymbols.add(sym);
+                tokens.push(mapPair(pair, pair.chainId || chain));
               }
             }
           }
@@ -289,47 +302,57 @@ serve(async (req) => {
         console.log('DexScreener search error:', e);
       }
 
-      // CoinGecko fallback
-      if (tokens.length === 0) {
-        try {
-          const cgResponse = await fetch(`https://api.coingecko.com/api/v3/search?query=${encodeURIComponent(query)}`);
-          if (cgResponse.ok) {
-            const cgResult = await cgResponse.json();
-            if (cgResult.coins?.length > 0) {
-              const topCoins = cgResult.coins.slice(0, Math.min(20, limit));
-              const coinIds = topCoins.map((c: any) => c.id).join(',');
-              
-              let priceData: Record<string, any> = {};
-              try {
-                const priceResponse = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coinIds}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_market_cap=true`);
-                if (priceResponse.ok) priceData = await priceResponse.json();
-              } catch (e) {
-                console.log('CoinGecko price error:', e);
-              }
-              
-              tokens = topCoins.map((coin: any) => {
-                const prices = priceData[coin.id] || {};
-                return {
-                  symbol: coin.symbol?.toUpperCase() || 'UNKNOWN',
-                  name: coin.name || coin.symbol || 'Unknown',
-                  contractAddress: '',
-                  chain: 'multi',
-                  price: prices.usd || 0,
-                  change24h: prices.usd_24h_change || 0,
-                  volume24h: prices.usd_24h_vol || 0,
-                  marketCap: prices.usd_market_cap || 0,
-                  logo: coin.thumb || coin.large,
-                  verified: !!coin.market_cap_rank,
-                  rank: coin.market_cap_rank,
-                  coingeckoId: coin.id,
-                };
+      // CoinGecko search — runs ALWAYS (in parallel intent) and MERGES with the
+      // DexScreener results so a query returns both DEX tokens AND listed coins
+      // (e.g. the canonical BTC/ETH), not one or the other.
+      try {
+        const cgResponse = await fetch(`https://api.coingecko.com/api/v3/search?query=${encodeURIComponent(query)}`);
+        if (cgResponse.ok) {
+          const cgResult = await cgResponse.json();
+          if (cgResult.coins?.length > 0) {
+            const topCoins = cgResult.coins.slice(0, Math.min(20, limit));
+            const coinIds = topCoins.map((c: any) => c.id).join(',');
+
+            let priceData: Record<string, any> = {};
+            try {
+              const priceResponse = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coinIds}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_market_cap=true`);
+              if (priceResponse.ok) priceData = await priceResponse.json();
+            } catch (e) {
+              console.log('CoinGecko price error:', e);
+            }
+
+            // Dedupe against DexScreener results by symbol (and id).
+            const seenSymbols = new Set(tokens.map((t: any) => t.symbol?.toLowerCase()));
+            for (const coin of topCoins) {
+              const sym = (coin.symbol || '').toUpperCase();
+              if (!sym || seenSymbols.has(sym.toLowerCase())) continue;
+              seenSymbols.add(sym.toLowerCase());
+              const prices = priceData[coin.id] || {};
+              tokens.push({
+                symbol: sym,
+                name: coin.name || coin.symbol || 'Unknown',
+                contractAddress: '',
+                chain: 'multi',
+                price: prices.usd || 0,
+                change24h: prices.usd_24h_change || 0,
+                volume24h: prices.usd_24h_vol || 0,
+                marketCap: prices.usd_market_cap || 0,
+                logo: coin.thumb || coin.large,
+                verified: !!coin.market_cap_rank,
+                rank: coin.market_cap_rank,
+                coingeckoId: coin.id,
               });
             }
           }
-        } catch (e) {
-          console.log('CoinGecko search error:', e);
         }
+      } catch (e) {
+        console.log('CoinGecko search error:', e);
       }
+
+      // Surface the strongest matches first (market cap / liquidity / volume).
+      tokens.sort((a: any, b: any) =>
+        (b.marketCap || b.liquidity || b.volume24h || 0) - (a.marketCap || a.liquidity || a.volume24h || 0)
+      );
     }
 
     console.log(`Found ${tokens.length} tokens for query: ${query} on ${chain}`);

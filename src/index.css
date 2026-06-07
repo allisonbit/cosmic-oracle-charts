@@ -8,51 +8,52 @@
 @layer base {
   :root {
     /* ════════════════════════════════════════════════════════════════════
-       REFINED DARK · TERMINAL-LUXURY
-       Indigo + teal brand glowing on a near-black canvas. shadcn token names
-       are kept (Tailwind consumes them) so every component flips automatically;
+       PROFESSIONAL WHITE + BLUE · "BLUEPRINT FINTECH"
+       A cohesive two-blue brand (royal azure + bright sky) on a cool-white
+       canvas with blue-tinted neutrals — distinctive, clean, trustworthy.
+       shadcn token names are kept so every component re-themes automatically;
        the --color-* aliases below give the documented design vocabulary.
        ════════════════════════════════════════════════════════════════════ */
 
-    /* ── Surfaces: near-black canvas, raised panels ──────────────────────── */
-    --background: 230 22% 6%;        /* #0A0B0F canvas */
-    --foreground: 220 30% 96%;       /* high-contrast text */
+    /* ── Surfaces: cool-white canvas, pure-white panels ──────────────────── */
+    --background: 214 38% 98.5%;     /* faint cool-blue white */
+    --foreground: 222 47% 12%;       /* deep navy-slate ink */
 
-    --card: 228 16% 11%;             /* #14161D raised panel */
-    --card-foreground: 220 30% 96%;
+    --card: 0 0% 100%;               /* pure white panel */
+    --card-foreground: 222 47% 12%;
 
-    --popover: 228 15% 14%;          /* elevated (menus, dialogs) */
-    --popover-foreground: 220 30% 96%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 12%;
 
-    /* ── Brand: indigo primary, teal accent (brightened for dark) ────────── */
-    --primary: 231 70% 64%;
-    --primary-foreground: 230 22% 6%;
+    /* ── Brand: royal-azure primary, bright-sky accent ───────────────────── */
+    --primary: 222 89% 55%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 186 80% 50%;
-    --secondary-foreground: 230 22% 6%;
+    --secondary: 202 92% 47%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 228 14% 16%;
-    --muted-foreground: 220 12% 64%;
+    --muted: 214 32% 95%;            /* cool light blue-gray */
+    --muted-foreground: 217 19% 40%; /* slate */
 
-    --accent: 186 80% 50%;
-    --accent-foreground: 230 22% 6%;
+    --accent: 202 92% 47%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 356 75% 60%;
-    --destructive-foreground: 220 30% 96%;
+    --destructive: 356 70% 52%;
+    --destructive-foreground: 0 0% 100%;
 
-    /* Bullish green / bearish red / warning amber — tuned for dark contrast */
-    --success: 152 60% 48%;
-    --success-foreground: 230 22% 6%;
+    /* Bullish green / bearish red / warning amber — tuned for white contrast */
+    --success: 152 62% 38%;
+    --success-foreground: 0 0% 100%;
 
-    --danger: 356 75% 60%;
-    --danger-foreground: 220 30% 96%;
+    --danger: 356 70% 52%;
+    --danger-foreground: 0 0% 100%;
 
-    --warning: 38 95% 56%;
-    --warning-foreground: 230 22% 6%;
+    --warning: 36 92% 48%;
+    --warning-foreground: 222 47% 12%;
 
-    --border: 228 12% 20%;
-    --input: 228 12% 22%;
-    --ring: 231 70% 64%;
+    --border: 214 30% 89%;           /* cool light blue-gray hairline */
+    --input: 214 30% 89%;
+    --ring: 222 89% 55%;
 
     --radius: 0.75rem;
 
@@ -65,23 +66,23 @@
     --radius-full: 9999px;
 
     /* ── Data-viz palette (also backs chart-4 utilities) ─────────────────── */
-    --chart-1: 231 70% 64%;   /* indigo */
-    --chart-2: 186 80% 50%;   /* teal */
-    --chart-3: 152 60% 48%;   /* green */
-    --chart-4: 270 70% 66%;   /* violet */
-    --chart-5: 38 95% 56%;    /* amber */
+    --chart-1: 222 89% 55%;   /* royal azure */
+    --chart-2: 202 92% 47%;   /* bright sky */
+    --chart-3: 152 62% 38%;   /* green */
+    --chart-4: 250 75% 60%;   /* indigo-violet */
+    --chart-5: 36 92% 50%;    /* amber */
 
-    /* ── Elevation: dark-tuned shadows (black-based, deeper) ──────────────── */
-    --shadow-sm: 0 1px 2px hsl(230 40% 2% / 0.5), 0 1px 3px hsl(230 40% 2% / 0.4);
-    --shadow-md: 0 2px 8px hsl(230 40% 2% / 0.55), 0 6px 16px hsl(230 40% 2% / 0.45);
-    --shadow-lg: 0 8px 24px hsl(230 40% 2% / 0.6), 0 16px 40px hsl(230 40% 2% / 0.5);
-    --shadow-xl: 0 16px 48px hsl(230 40% 2% / 0.65), 0 32px 64px hsl(230 40% 2% / 0.55);
+    /* ── Elevation: soft, blue-tinted light shadows ──────────────────────── */
+    --shadow-sm: 0 1px 2px hsl(222 47% 30% / 0.06), 0 1px 3px hsl(222 47% 30% / 0.05);
+    --shadow-md: 0 2px 6px hsl(222 47% 30% / 0.07), 0 6px 16px hsl(222 47% 30% / 0.06);
+    --shadow-lg: 0 8px 20px hsl(222 47% 30% / 0.09), 0 16px 36px hsl(222 47% 30% / 0.07);
+    --shadow-xl: 0 14px 36px hsl(222 47% 30% / 0.11), 0 28px 56px hsl(222 47% 30% / 0.09);
 
-    /* Accent glows for key actions / focus on dark */
-    --glow-primary: 0 0 0 1px hsl(231 70% 64% / 0.25), 0 8px 28px hsl(231 70% 64% / 0.35);
-    --glow-secondary: 0 0 0 1px hsl(186 80% 50% / 0.25), 0 8px 28px hsl(186 80% 50% / 0.30);
-    --glow-success: 0 8px 24px hsl(152 60% 48% / 0.30);
-    --glow-danger: 0 8px 24px hsl(356 75% 60% / 0.30);
+    /* Blue accent glows for key actions / focus */
+    --glow-primary: 0 0 0 1px hsl(222 89% 55% / 0.18), 0 8px 22px hsl(222 89% 55% / 0.25);
+    --glow-secondary: 0 0 0 1px hsl(202 92% 47% / 0.18), 0 8px 22px hsl(202 92% 47% / 0.22);
+    --glow-success: 0 8px 20px hsl(152 62% 38% / 0.22);
+    --glow-danger: 0 8px 20px hsl(356 70% 52% / 0.22);
 
     /* ── Documented semantic aliases (design-system vocabulary) ──────────── */
     --color-bg: var(--background);
@@ -91,7 +92,7 @@
     --color-text-primary: var(--foreground);
     --color-text-muted: var(--muted-foreground);
     --color-accent: var(--primary);
-    --color-accent-hover: 231 70% 72%;
+    --color-accent-hover: 222 89% 48%;
     --color-success: var(--success);
     --color-warning: var(--warning);
     --color-danger: var(--danger);
@@ -122,15 +123,15 @@
     --dur: 200ms;
     --dur-slow: 360ms;
 
-    /* Sidebar (dark) */
-    --sidebar-background: 228 16% 9%;
-    --sidebar-foreground: 220 30% 96%;
-    --sidebar-primary: 231 70% 64%;
-    --sidebar-primary-foreground: 230 22% 6%;
-    --sidebar-accent: 186 80% 50%;
-    --sidebar-accent-foreground: 230 22% 6%;
-    --sidebar-border: 228 12% 20%;
-    --sidebar-ring: 231 70% 64%;
+    /* Sidebar (white + blue) */
+    --sidebar-background: 214 36% 97%;
+    --sidebar-foreground: 222 47% 12%;
+    --sidebar-primary: 222 89% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 202 92% 47%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 214 30% 89%;
+    --sidebar-ring: 222 89% 55%;
   }
 }
 
@@ -217,15 +218,7 @@
                 border-color var(--dur) var(--ease-out);
   }
 
-  /* Subtle top edge-light reads as a beveled surface on near-black */
-  .holo-card::before {
-    content: "";
-    position: absolute;
-    inset: 0 0 auto 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, hsl(0 0% 100% / 0.07), transparent);
-    pointer-events: none;
-  }
+  .holo-card::before { content: none; }
 
   @media (pointer: fine) {
     .holo-card:hover {
@@ -256,11 +249,11 @@
     font-weight: 700;
   }
 
-  /* Dark canvas with a faint, fixed indigo/teal aurora for depth (terminal-luxury) */
+  /* Cool-white canvas with a faint, fixed blue wash for subtle depth */
   .cosmic-bg {
     background:
-      radial-gradient(1100px 600px at 12% -8%, hsl(231 70% 64% / 0.08), transparent 60%),
-      radial-gradient(900px 500px at 100% 0%, hsl(186 80% 50% / 0.06), transparent 55%),
+      radial-gradient(1100px 600px at 12% -8%, hsl(222 89% 55% / 0.05), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, hsl(202 92% 47% / 0.045), transparent 55%),
       hsl(var(--background));
     background-attachment: fixed;
   }

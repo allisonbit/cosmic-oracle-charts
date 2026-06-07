@@ -3,7 +3,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { DataBadge } from "@/components/ui/DataBadge";
 import { TradeButtons } from "@/components/trading/TradeButtons";
-import { useActiveSetup, useSaveSetup, TradeSetup } from "@/hooks/useTradeSetups";
+import { useSaveSetup, TradeSetup } from "@/hooks/useTradeSetups";
+import { useCanonicalSetup } from "@/hooks/useCanonicalSetup";
 import { formatPrice } from "@/lib/coinFormat";
 import { formatRelativeTime, useNowTick } from "@/lib/relativeTime";
 
@@ -39,24 +40,16 @@ const STATUS_META: Record<TradeSetup["status"], { label: string; cls: string; ic
   expired:     { label: "Expired",      cls: "bg-muted text-muted-foreground border-border",  icon: Clock },
 };
 
-export function TradeSetupCard({ coinId, symbol, name, timeframe, contractAddress, chain, image, fallback }: TradeSetupCardProps) {
-  const { data: setup } = useActiveSetup(coinId, timeframe);
+export function TradeSetupCard({ coinId, symbol, name, timeframe, contractAddress, chain, image }: TradeSetupCardProps) {
+  // Single source of truth — identical to the home "high-conviction" cards.
+  const canonical = useCanonicalSetup(coinId, symbol, timeframe as any, { contractAddress, chain });
+  const setup = canonical.setup;
   const saveSetup = useSaveSetup();
   const now = useNowTick(1000);
 
-  // Use the persisted, monitored setup when present; otherwise the live prediction.
-  const bias = setup?.bias ?? fallback?.bias ?? "neutral";
-  const confidence = setup?.confidence ?? fallback?.confidence ?? 50;
-  const entryLow = setup?.entry_low ?? fallback?.entryLow ?? 0;
-  const entryHigh = setup?.entry_high ?? fallback?.entryHigh ?? 0;
-  const stopLoss = setup?.stop_loss ?? fallback?.stopLoss ?? 0;
-  const tp1 = setup?.take_profit_1 ?? fallback?.takeProfit1 ?? 0;
-  const tp2 = setup?.take_profit_2 ?? fallback?.takeProfit2 ?? 0;
-  const tp3 = setup?.take_profit_3 ?? fallback?.takeProfit3 ?? 0;
-  const lastPrice = setup?.last_price ?? fallback?.currentPrice ?? 0;
-  const pnl = setup?.pnl_percent ?? 0;
-  const status = setup?.status ?? "active";
-  const persisted = !!setup;
+  const { bias, confidence, entryLow, entryHigh, stopLoss, tp1, tp2, tp3, lastPrice, persisted } = canonical;
+  const pnl = canonical.pnlPercent;
+  const status = canonical.status;
 
   const BiasIcon = bias === "bullish" ? TrendingUp : bias === "bearish" ? TrendingDown : Minus;
   const biasColor = bias === "bullish" ? "text-success" : bias === "bearish" ? "text-danger" : "text-warning";

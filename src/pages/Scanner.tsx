@@ -16,6 +16,7 @@ import { useLiveTokenSearch, useInfiniteTrendingTokens, type LiveToken } from "@
 import { useInView } from "react-intersection-observer";
 import { useStrengthMeter } from "@/hooks/useStrengthMeter";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
+import { CoinImage } from "@/components/ui/CoinImage";
 import { SEO } from "@/components/MainSEO";
 import { Helmet } from "react-helmet-async";
 import { InArticleAd } from "@/components/ads";
@@ -114,13 +115,7 @@ function ScannerTokenRow({ token, strength, onClick }: { token: LiveToken; stren
     >
       {/* Token info */}
       <div className="flex items-center gap-2.5 min-w-0">
-        {token.logo ? (
-          <img src={token.logo} alt={token.name} className="w-7 h-7 rounded-full flex-shrink-0" loading="lazy" />
-        ) : (
-          <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-            <span className="text-[10px] font-bold text-primary">{token.symbol?.charAt(0)}</span>
-          </div>
-        )}
+        <CoinImage symbol={token.symbol} image={token.logo} size={28} className="flex-shrink-0" />
         <div className="min-w-0">
           <div className="flex items-center gap-1">
             <span className="font-semibold text-xs truncate max-w-[100px]">{token.name}</span>
@@ -201,16 +196,16 @@ export default function Scanner() {
     return () => clearInterval(t);
   }, []);
 
-  // Data hooks
-  const { data: searchResults, isLoading: isSearching } = useLiveTokenSearch(searchQuery, selectedChain === "all" ? "ethereum" : selectedChain);
-  const { 
-    data: trendingDataPages, 
-    isLoading: isTrendingLoading, 
+  // Data hooks — pass the chain straight through ("all" = every chain worldwide).
+  const { data: searchResults, isLoading: isSearching } = useLiveTokenSearch(searchQuery, selectedChain);
+  const {
+    data: trendingDataPages,
+    isLoading: isTrendingLoading,
     refetch: refreshTrending,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage
-  } = useInfiniteTrendingTokens(selectedChain === "all" ? "ethereum" : selectedChain, 50);
+  } = useInfiniteTrendingTokens(selectedChain, 50);
 
   const { ref: loadMoreRef, inView } = useInView();
 

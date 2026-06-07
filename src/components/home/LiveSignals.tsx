@@ -1,7 +1,7 @@
 import { TrendingUp, TrendingDown, Target, ShieldAlert, Zap, ArrowRight, Radio, Clock, BarChart3, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { usePricePrediction } from "@/hooks/usePricePrediction";
+import { useCanonicalSetup } from "@/hooks/useCanonicalSetup";
 import { useCryptoPrices, CryptoPrice } from "@/hooks/useCryptoPrices";
 import { CoinImage } from "@/components/ui/CoinImage";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -55,106 +55,40 @@ function fmtPrice(p: number) {
   return `$${p.toPrecision(4)}`;
 }
 
-// Signal derived from full prediction script output + live price
-function deriveSignal(livePrice: CryptoPrice | undefined, prediction: any) {
-  const entry   = livePrice?.price    || 0;
-  const change  = livePrice?.change24h ?? 0;
-  const high24h = livePrice?.high24h  || entry * 1.03;
-  const low24h  = livePrice?.low24h   || entry * 0.97;
+// Adapter: build the card's `sig` shape from the SHARED canonical setup so the
+// home "high-conviction" card shows the EXACT same entry/SL/TP/bias/confidence
+// as the prediction page's TradeSetupCard (single source of truth).
+function toSignal(canonical: ReturnType<typeof useCanonicalSetup>) {
+  const isBullish =
+    canonical.bias === "bullish" ||
+    (canonical.bias === "neutral" && canonical.probabilityBullish >= 50);
 
-  if (entry === 0) return {
-    isBullish: true, confidence: 65, entry: 0, tp: 0, tp2: 0, sl: 0,
-    riskReward: "2.0", riskLevel: "medium", rsi: null, macdSignal: null,
-    probBull: 50, probBear: 50, summary: null,
-  };
-
-  // Price position within today's range
-  const rangePosition = high24h > low24h
-    ? Math.min(1, Math.max(0, (entry - low24h) / (high24h - low24h)))
-    : 0.5;
-
-  // ── Direction: trust the prediction script bias when available ────────────
-  let isBullish: boolean;
-  let confidence: number;
-  let probBull: number;
-  let probBear: number;
-
-  if (prediction?.bias && prediction?.probabilityBullish != null) {
-    // Prediction script ran — use its output directly
-    isBullish  = prediction.bias === "bullish" || prediction.probabilityBullish > 50;
-    probBull   = Math.round(prediction.probabilityBullish);
-    probBear   = Math.round(prediction.probabilityBearish ?? (100 - probBull));
-    // Confidence = probability of the predicted direction
-    confidence = isBullish ? probBull : probBear;
-  } else {
-    // No prediction yet — derive from live data
-    const momentumScore = change > 3 ? 2 : change > 0.8 ? 1 : change < -3 ? -2 : change < -0.8 ? -1 : 0;
-    const rangeScore    = rangePosition > 0.80 ? -1 : rangePosition < 0.20 ? 1 : 0;
-    const totalScore    = momentumScore + rangeScore;
-    isBullish   = totalScore >= 0;
-    confidence  = Math.round(Math.min(88, 58 + Math.abs(change) * 3.5));
-    probBull    = isBullish ? confidence : 100 - confidence;
-    probBear    = 100 - probBull;
-  }
-
-  // ── TP / SL: validate prediction levels, fall back to support/resistance ──
-  const predTP1  = prediction?.tradingZones?.takeProfit1;
-  const predTP2  = prediction?.tradingZones?.takeProfit2;
-  const predSL   = prediction?.tradingZones?.stopLoss;
-  const supports = prediction?.supportLevels  || [];
-  const resists  = prediction?.resistanceLevels || [];
-
-  // Validation: must be on the correct side of live entry
-  const tp1Ok = predTP1 != null && (isBullish ? predTP1 > entry * 1.001 : predTP1 < entry * 0.999);
-  const tp2Ok = predTP2 != null && (isBullish ? predTP2 > entry * 1.001 : predTP2 < entry * 0.999);
-  const slOk  = predSL  != null && (isBullish ? predSL  < entry * 0.999 : predSL  > entry * 1.001);
-
-  let sl: number, tp: number, tp2: number;
-
-  if (isBullish) {
-    // SL: prediction → nearest support below entry → 24h low → derive
-    const supportBelow = supports.filter((s: number) => s < entry * 0.999).sort((a: number, b: number) => b - a)[0];
-    sl  = slOk  ? predSL  : (supportBelow || Math.min(low24h * 0.994, entry * 0.965));
-    if (sl >= entry) sl = entry * 0.964;
-
-    // TP1: prediction → nearest resistance above entry → 2.2:1 RR
-    const resistAbove = resists.filter((r: number) => r > entry * 1.001).sort((a: number, b: number) => a - b)[0];
-    tp  = tp1Ok ? predTP1 : (resistAbove || entry + (entry - sl) * 2.2);
-    if (tp <= entry) tp = entry * 1.045;
-
-    // TP2: prediction → second resistance → extend TP by 60% more
-    const resist2 = resists.filter((r: number) => r > tp * 1.001).sort((a: number, b: number) => a - b)[0];
-    tp2 = tp2Ok ? predTP2 : (resist2 || tp + (tp - entry) * 0.6);
-    if (tp2 <= tp) tp2 = tp * 1.03;
-
-  } else {
-    // SL: prediction → nearest resistance above entry → 24h high → derive
-    const resistAbove = resists.filter((r: number) => r > entry * 1.001).sort((a: number, b: number) => a - b)[0];
-    sl  = slOk  ? predSL  : (resistAbove || Math.max(high24h * 1.006, entry * 1.035));
-    if (sl <= entry) sl = entry * 1.035;
-
-    // TP1: prediction → nearest support below entry → 2.2:1 RR
-    const supportBelow = supports.filter((s: number) => s < entry * 0.999).sort((a: number, b: number) => b - a)[0];
-    tp  = tp1Ok ? predTP1 : (supportBelow || entry - (sl - entry) * 2.2);
-    if (tp >= entry) tp = entry * 0.955;
-
-    // TP2: prediction → second support → extend down by 60% more
-    const support2 = supports.filter((s: number) => s < tp * 0.999).sort((a: number, b: number) => b - a)[0];
-    tp2 = tp2Ok ? predTP2 : (support2 || tp - (entry - tp) * 0.6);
-    if (tp2 >= tp) tp2 = tp * 0.97;
-  }
+  // Entry = top of the setup's entry zone (= the setup's entry price).
+  const entry = canonical.entryHigh || canonical.lastPrice || 0;
+  const tp = canonical.tp1;
+  const tp2 = canonical.tp2;
+  const sl = canonical.stopLoss;
 
   const riskReward = Math.abs(entry - sl) > 0
     ? (Math.abs(tp - entry) / Math.abs(entry - sl)).toFixed(1)
     : "2.0";
 
-  // Pull technical data from prediction if available
-  const rsi        = prediction?.technicalIndicators?.rsi?.value ?? null;
-  const macdSignal = prediction?.technicalIndicators?.macd?.signal ?? null;
-  const riskLevel  = prediction?.riskLevel ?? "medium";
-  const summary    = prediction?.summary ?? null;
-
-  return { isBullish, confidence, entry, tp, tp2, sl, riskReward, riskLevel, rsi, macdSignal, probBull, probBear, summary };
+  const ti = canonical.prediction?.technicalIndicators;
+  return {
+    isBullish,
+    confidence: canonical.confidence,
+    entry,
+    tp,
+    tp2,
+    sl,
+    riskReward,
+    riskLevel: canonical.riskLevel,
+    rsi: typeof ti?.rsi === "number" ? ti.rsi : null,
+    macdSignal: ti?.macd?.trend ?? null,
+    probBull: canonical.probabilityBullish,
+    probBear: canonical.probabilityBearish,
+    summary: canonical.prediction?.summary ?? null,
+  };
 }
 
 const RISK_COLORS: Record<string, string> = {
@@ -169,11 +103,12 @@ function SignalCard({ coin, livePrice, idx }: {
   livePrice: CryptoPrice | undefined;
   idx: number;
 }) {
-  const { data: prediction, isLoading } = usePricePrediction(coin.id, coin.symbol, "daily");
+  const canonical = useCanonicalSetup(coin.id, coin.symbol, "daily");
+  const isLoading = canonical.isLoading;
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setTimeout(() => setMounted(true), idx * 80); }, [idx]);
 
-  const sig    = deriveSignal(livePrice, prediction);
+  const sig    = toSignal(canonical);
   const change = livePrice?.change24h ?? 0;
   const hasLivePrice = (livePrice?.price ?? 0) > 0;
 
