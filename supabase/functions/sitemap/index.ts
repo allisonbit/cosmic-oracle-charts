@@ -47,9 +47,8 @@ const staticRoutes = [
 ];
 
 const chains = [
-  "ethereum", "solana", "base", "arbitrum", "polygon", "optimism",
-  "avalanche", "bnb", "fantom", "zksync", "linea", "scroll", "mantle",
-  "bitcoin", "cardano", "polkadot", "cosmos", "near", "aptos", "sui", "tron",
+  "ethereum", "solana", "bnb", "avalanche", "polygon",
+  "arbitrum", "base", "optimism", "sui", "ton",
 ];
 
 // Expanded to 100+ coins for maximum coverage

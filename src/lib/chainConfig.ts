@@ -242,3 +242,110 @@ export const getChainsByCategory = () => {
     sidechain: CHAINS.filter(c => c.category === "sidechain"),
   };
 };
+
+// ── Per-chain editorial / SEO metadata ────────────────────────────────────────
+// Powers the on-page "About" content, meta descriptions and FAQ. Kept factual
+// and concise so every chain page ships unique, indexable copy.
+export interface ChainSEO {
+  tagline: string;
+  description: string;       // 2–3 sentence overview
+  highlights: string[];      // 3 quick selling points
+  useCases: string[];        // what the chain is used for
+  launchYear: number;
+  ecosystem: string;         // one-line ecosystem summary
+}
+
+export const CHAIN_SEO: Record<string, ChainSEO> = {
+  ethereum: {
+    tagline: "The world's programmable blockchain",
+    description:
+      "Ethereum is the largest smart-contract platform and the home of DeFi, NFTs and most of crypto's developer activity. Since The Merge it secures the network with proof-of-stake, and its roadmap scales through a thriving ecosystem of Layer-2 rollups.",
+    highlights: ["Largest DeFi & developer ecosystem", "Proof-of-stake since The Merge", "Settlement layer for most L2s"],
+    useCases: ["DeFi & lending", "NFTs & digital collectibles", "Stablecoins & payments", "DAOs & governance"],
+    launchYear: 2015,
+    ecosystem: "Home to Uniswap, Aave, Lido and thousands of dApps.",
+  },
+  solana: {
+    tagline: "High-speed Layer-1 for mainstream apps",
+    description:
+      "Solana is a high-throughput Layer-1 built for speed and ultra-low fees, combining Proof of History with proof-of-stake to process thousands of transactions per second. It hosts one of crypto's fastest-growing DeFi, NFT and memecoin ecosystems.",
+    highlights: ["Thousands of TPS, sub-cent fees", "Proof of History innovation", "Booming consumer & memecoin scene"],
+    useCases: ["High-frequency DeFi", "Memecoins & trading", "NFTs & gaming", "Payments & DePIN"],
+    launchYear: 2020,
+    ecosystem: "Powers Jupiter, Raydium, Jito and major memecoin launches.",
+  },
+  bnb: {
+    tagline: "Low-fee chain of the Binance ecosystem",
+    description:
+      "BNB Chain is the BNB-powered smart-contract network connected to the Binance ecosystem, known for low fees and high throughput. Running Proof of Staked Authority, it hosts one of the largest DeFi and retail user bases in crypto.",
+    highlights: ["Very low transaction fees", "Huge retail user base", "Deep DeFi & launchpad activity"],
+    useCases: ["DeFi & yield farming", "Token launches", "GameFi", "Retail payments"],
+    launchYear: 2020,
+    ecosystem: "Anchored by PancakeSwap, Venus and the Binance ecosystem.",
+  },
+  avalanche: {
+    tagline: "Fast finality and custom subnets",
+    description:
+      "Avalanche is a fast Layer-1 using its novel Avalanche consensus and a multi-chain 'subnet' architecture, enabling sub-second finality and custom app-chains. It targets DeFi, gaming and institutional use cases that need dedicated throughput.",
+    highlights: ["Sub-second finality", "Custom subnets / app-chains", "Institutional & gaming focus"],
+    useCases: ["DeFi", "Institutional app-chains", "Gaming subnets", "RWA tokenization"],
+    launchYear: 2020,
+    ecosystem: "Home to Trader Joe, GMX and a growing subnet network.",
+  },
+  polygon: {
+    tagline: "Ethereum scaling for the masses",
+    description:
+      "Polygon is a leading Ethereum scaling ecosystem offering low-cost, high-speed transactions. Widely adopted by enterprises and consumer apps, it is expanding into zk-powered Layer-2s under the Polygon 2.0 and POL roadmap.",
+    highlights: ["Low fees, high speed", "Major enterprise adoption", "zk-rollup roadmap (Polygon 2.0)"],
+    useCases: ["Consumer & enterprise dApps", "DeFi", "NFTs & gaming", "Payments"],
+    launchYear: 2017,
+    ecosystem: "Used by global brands plus QuickSwap, Aave and more.",
+  },
+  arbitrum: {
+    tagline: "The leading Ethereum Layer-2 by TVL",
+    description:
+      "Arbitrum is the leading Ethereum Layer-2 by total value locked, using optimistic rollups to deliver Ethereum-grade security with far lower fees. It hosts a deep DeFi and derivatives ecosystem governed by the ARB token.",
+    highlights: ["#1 L2 by TVL", "Ethereum security, lower fees", "Deep DeFi & perps ecosystem"],
+    useCases: ["DeFi & derivatives", "Perpetuals trading", "Yield strategies", "On-chain governance"],
+    launchYear: 2021,
+    ecosystem: "Home to GMX, Pendle, Radiant and Camelot.",
+  },
+  base: {
+    tagline: "Coinbase's L2 for the next billion users",
+    description:
+      "Base is Coinbase's Ethereum Layer-2 built on the OP Stack, offering cheap, fast transactions with seamless fiat on-ramps. It has rapidly become a hub for consumer apps, onchain social and memecoins.",
+    highlights: ["Backed by Coinbase", "Built on the OP Stack", "Fast-growing consumer & social scene"],
+    useCases: ["Onchain social", "Memecoins", "Consumer apps", "Payments"],
+    launchYear: 2023,
+    ecosystem: "Powers Aerodrome, friend.tech-style apps and Base memecoins.",
+  },
+  optimism: {
+    tagline: "The Superchain optimistic rollup",
+    description:
+      "Optimism is an Ethereum Layer-2 optimistic rollup and the foundation of the OP Stack 'Superchain' vision shared by chains like Base. The OP token powers retroactive public-goods funding and ecosystem governance.",
+    highlights: ["OP Stack & the Superchain", "Retroactive public goods funding", "Low-fee Ethereum scaling"],
+    useCases: ["DeFi", "Public-goods funding", "Superchain app-chains", "Governance"],
+    launchYear: 2021,
+    ecosystem: "Home to Velodrome, Synthetix and the OP Superchain.",
+  },
+  sui: {
+    tagline: "Object-centric Layer-1 for parallel speed",
+    description:
+      "Sui is a high-performance Layer-1 from Mysten Labs using the Move language and an object-centric data model for parallel execution. It targets very high throughput and low-latency consumer applications.",
+    highlights: ["Parallel transaction execution", "Move smart-contract language", "Low-latency consumer focus"],
+    useCases: ["DeFi", "Gaming", "NFTs", "Consumer apps"],
+    launchYear: 2023,
+    ecosystem: "Built around Cetus, NAVI and Scallop.",
+  },
+  ton: {
+    tagline: "The blockchain inside Telegram",
+    description:
+      "TON (The Open Network) is a high-throughput Layer-1 closely integrated with Telegram, putting crypto in front of hundreds of millions of messaging users. It is known for mini-apps, in-chat payments and viral memecoins.",
+    highlights: ["Native Telegram integration", "Massive built-in user reach", "Mini-apps & tap-to-earn games"],
+    useCases: ["Telegram mini-apps", "Payments", "Memecoins & tap-to-earn", "Social"],
+    launchYear: 2021,
+    ecosystem: "Home to Notcoin, Hamster Kombat and TON DeFi.",
+  },
+};
+
+export const getChainSEO = (id: string): ChainSEO | undefined => CHAIN_SEO[id];

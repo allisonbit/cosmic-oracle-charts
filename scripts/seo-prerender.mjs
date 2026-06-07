@@ -46,9 +46,9 @@ const COINS = [
 ];
 const YEARS = [2026, 2027, 2028, 2030];
 const CHAINS = [
-  ['bitcoin', 'Bitcoin'], ['ethereum', 'Ethereum'], ['solana', 'Solana'], ['bnb-smart-chain', 'BNB Smart Chain'],
-  ['polygon', 'Polygon'], ['avalanche', 'Avalanche'], ['arbitrum', 'Arbitrum'], ['optimism', 'Optimism'],
-  ['base', 'Base'], ['tron', 'Tron'], ['cardano', 'Cardano'], ['sui', 'Sui'],
+  ['ethereum', 'Ethereum'], ['solana', 'Solana'], ['bnb', 'BNB Chain'], ['avalanche', 'Avalanche'],
+  ['polygon', 'Polygon'], ['arbitrum', 'Arbitrum'], ['base', 'Base'], ['optimism', 'Optimism'],
+  ['sui', 'Sui'], ['ton', 'TON'],
 ];
 const MARKET_PAGES = [
   'best-crypto-to-buy-today', 'top-crypto-gainers-today', 'crypto-market-prediction-today',
