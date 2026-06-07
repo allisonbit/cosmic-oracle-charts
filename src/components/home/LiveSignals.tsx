@@ -103,7 +103,16 @@ function SignalCard({ coin, livePrice, idx }: {
   livePrice: CryptoPrice | undefined;
   idx: number;
 }) {
-  const canonical = useCanonicalSetup(coin.id, coin.symbol, "daily");
+  const canonical = useCanonicalSetup(coin.id, coin.symbol, "daily", {
+    live: livePrice ? {
+      price: livePrice.price,
+      change24h: livePrice.change24h,
+      high24h: livePrice.high24h,
+      low24h: livePrice.low24h,
+      volume24h: livePrice.volume24h,
+      marketCap: livePrice.marketCap,
+    } : undefined,
+  });
   const isLoading = canonical.isLoading;
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setTimeout(() => setMounted(true), idx * 80); }, [idx]);

@@ -22,6 +22,7 @@ import { GlobalTokenSearch } from "@/components/prediction/GlobalTokenSearch";
 import { PredictionLeaderboard } from "@/components/prediction/PredictionLeaderboard";
 import { GlobalToken } from "@/hooks/useGlobalTokenSearch";
 import { cn } from "@/lib/utils";
+import { computeLocalSignal } from "@/lib/localSignal";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 
@@ -94,14 +95,25 @@ export default function PredictionHub() {
       );
       
       const predData = cached?.prediction_data as any;
-      
-      const bias: 'bullish' | 'bearish' | 'neutral' = (cached?.bias as any) || 
-        (change24h > 2 ? 'bullish' : change24h < -2 ? 'bearish' : 'neutral');
-      const confidence = cached?.confidence || Math.min(85, Math.max(40, 50 + Math.abs(change24h) * 3));
+
+      // Per-coin local signal from live data — used when there's no cached AI
+      // prediction so each token gets a distinct bias/confidence (not a flat value).
+      const local = computeLocalSignal({
+        symbol: crypto.symbol,
+        price: priceData?.price || cached?.current_price || 0,
+        change24h,
+        high24h: priceData?.high24h,
+        low24h: priceData?.low24h,
+        volume24h: priceData?.volume24h,
+        marketCap: priceData?.marketCap,
+      }, 'daily');
+
+      const bias: 'bullish' | 'bearish' | 'neutral' = (cached?.bias as any) || local.bias;
+      const confidence = cached?.confidence || local.confidence;
       const signalStrength = predData?.technicalIndicators
         ? Math.floor((predData.technicalIndicators.rsi || 50) + (confidence * 0.3))
-        : Math.floor(confidence * 0.85);
-      
+        : Math.floor((local.rsi + confidence) / 2);
+
       return {
         id: crypto.id,
         name: crypto.name,
@@ -113,7 +125,7 @@ export default function PredictionHub() {
         confidence,
         signalStrength,
         hasCachedPrediction: !!cached,
-        riskLevel: predData?.riskLevel || (Math.abs(change24h) > 5 ? 'high' : Math.abs(change24h) > 2 ? 'medium' : 'low'),
+        riskLevel: predData?.riskLevel || local.riskLevel,
       };
     });
   }, [pricesData, cachedPredictions]);
