@@ -361,9 +361,12 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  build: { 
-    minify: true, 
-    sourcemap: true,
+  build: {
+    minify: true,
+    // No public source maps: they shipped ~24MB to the live site and exposed
+    // unminified source. No error-tracking service consumes them, so they were
+    // pure deploy bloat + a source-disclosure leak.
+    sourcemap: false,
     cssCodeSplit: true,
     // Let Vite/Rollup handle chunking automatically.
     // Our previous manualChunks split introduced a production-only TDZ error
