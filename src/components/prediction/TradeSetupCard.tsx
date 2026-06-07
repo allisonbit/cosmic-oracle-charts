@@ -31,13 +31,13 @@ interface TradeSetupCardProps {
 }
 
 const STATUS_META: Record<TradeSetup["status"], { label: string; cls: string; icon: typeof CheckCircle2 }> = {
-  active:      { label: "Active",       cls: "bg-primary/10 text-primary border-primary/20",  icon: Activity },
-  hit_tp1:     { label: "Hit TP1",      cls: "bg-success/10 text-success border-success/20",  icon: CheckCircle2 },
-  hit_tp2:     { label: "Hit TP2",      cls: "bg-success/10 text-success border-success/20",  icon: CheckCircle2 },
-  hit_tp3:     { label: "Hit TP3 ✓",    cls: "bg-success/15 text-success border-success/30",  icon: CheckCircle2 },
-  stopped:     { label: "Stopped Out",  cls: "bg-danger/10 text-danger border-danger/20",     icon: XCircle },
-  invalidated: { label: "Invalidated",  cls: "bg-muted text-muted-foreground border-border",  icon: XCircle },
-  expired:     { label: "Expired",      cls: "bg-muted text-muted-foreground border-border",  icon: Clock },
+  active:      { label: "Active · Locked",    cls: "bg-primary/10 text-primary border-primary/20",  icon: Activity },
+  hit_tp1:     { label: "WIN · TP1 ✓",        cls: "bg-success/10 text-success border-success/20",  icon: CheckCircle2 },
+  hit_tp2:     { label: "WIN · TP2 ✓",        cls: "bg-success/10 text-success border-success/20",  icon: CheckCircle2 },
+  hit_tp3:     { label: "WIN · TP3 ✓",        cls: "bg-success/15 text-success border-success/30",  icon: CheckCircle2 },
+  stopped:     { label: "LOSS · Stopped",     cls: "bg-danger/10 text-danger border-danger/20",     icon: XCircle },
+  invalidated: { label: "Replaced · Divergence", cls: "bg-warning/10 text-warning border-warning/20", icon: XCircle },
+  expired:     { label: "Expired",            cls: "bg-muted text-muted-foreground border-border",  icon: Clock },
 };
 
 export function TradeSetupCard({ coinId, symbol, name, timeframe, contractAddress, chain, image }: TradeSetupCardProps) {
@@ -77,8 +77,10 @@ export function TradeSetupCard({ coinId, symbol, name, timeframe, contractAddres
       </div>
       <p className="text-xs text-muted-foreground mb-4">
         {persisted
-          ? "A monitored setup — generated once and tracked to its outcome (target or stop)."
-          : "Live setup from the latest analysis. It will be tracked once monitoring is active."}
+          ? status === "active"
+            ? "🔒 Levels locked. Entry, stop and targets stay fixed until the trade hits its target (counts as a win) or its stop — then the scanner opens the next setup. A bias divergence can replace it early."
+            : "This setup has resolved — its result is recorded in the track record below. The scanner is opening the next setup for this coin."
+          : "Live setup from the latest analysis. It locks and is monitored to its outcome once tracking is active."}
       </p>
 
       {/* Bias + P&L row */}

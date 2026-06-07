@@ -11,6 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { usePricePrediction, getQuestionIntent, TOP_CRYPTOS, QUESTION_INTENTS } from "@/hooks/usePricePrediction";
+import { useCanonicalSetup } from "@/hooks/useCanonicalSetup";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function QuestionIntent() {
@@ -26,6 +27,8 @@ export default function QuestionIntent() {
     timeframe as any,
     true
   );
+  // The frozen, monitored setup — identical levels to the full prediction page.
+  const setup = useCanonicalSetup(cryptoId, cryptoSymbol, timeframe as any);
 
   if (!questionData) {
     return <Navigate to="/predictions" replace />;
@@ -238,7 +241,7 @@ export default function QuestionIntent() {
                       <span className="font-medium">Entry Zone</span>
                     </div>
                     <div className="font-mono text-sm">
-                      {formatPrice(prediction.tradingZones.entryZone.min)} - {formatPrice(prediction.tradingZones.entryZone.max)}
+                      {formatPrice(setup.entryLow)} - {formatPrice(setup.entryHigh)}
                     </div>
                   </div>
                   <div className="bg-muted/30 rounded-lg p-4">
@@ -247,7 +250,7 @@ export default function QuestionIntent() {
                       <span className="font-medium">Stop Loss</span>
                     </div>
                     <div className="font-mono text-sm text-red-400">
-                      {formatPrice(prediction.tradingZones.stopLoss)}
+                      {formatPrice(setup.stopLoss)}
                     </div>
                   </div>
                   <div className="bg-muted/30 rounded-lg p-4">
@@ -256,7 +259,7 @@ export default function QuestionIntent() {
                       <span className="font-medium">Take Profit</span>
                     </div>
                     <div className="font-mono text-sm text-green-400">
-                      {formatPrice(prediction.tradingZones.takeProfit1)}
+                      {formatPrice(setup.tp1)}
                     </div>
                   </div>
                 </div>

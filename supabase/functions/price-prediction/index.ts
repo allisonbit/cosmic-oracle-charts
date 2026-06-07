@@ -21,6 +21,9 @@ const predictionRequestSchema = z.object({
   marketCap: z.number().positive().max(1e15).optional(),
   high24h: z.number().positive().max(1e12).optional(),
   low24h: z.number().positive().max(1e12).optional(),
+  // When true, skip the cache and regenerate — used by setup-monitor to scan for
+  // the next setup the moment the current one resolves.
+  forceFresh: z.boolean().optional(),
 });
 
 interface MarketData {
@@ -118,15 +121,20 @@ async function cachePrediction(supabase: any, prediction: any, coinId: string, s
 }
 
 // ── Persist ONE active global setup per coin/timeframe ────────────────────────
-// Generate-once: if an active setup already exists we leave its levels alone (so
-// it can "play out") and only refresh the display price. A new setup is created
-// only when none is active (the monitor resolves old ones first).
+// The script:
+//   • Generate-once — while a setup is active its ENTRY/SL/TP stay FROZEN; we only
+//     refresh the live display price. It plays out until the monitor resolves it
+//     (TP = win, SL = loss, expiry).
+//   • Divergence override — if the fresh read flips to the OPPOSITE bias
+//     (bullish↔bearish), the thesis is invalidated: we close the old setup as
+//     'invalidated' and open a new one that follows the new script.
+//   • One at a time — a new setup is only created when none is active.
 async function upsertGlobalSetup(supabase: any, prediction: any, extra: { contractAddress?: string; chain?: string }) {
   try {
     const { coinId, symbol, timeframe } = prediction;
     const { data: existing } = await supabase
       .from('trade_setups')
-      .select('id')
+      .select('id, bias')
       .eq('coin_id', coinId)
       .eq('timeframe', timeframe)
       .eq('scope', 'global')
@@ -134,11 +142,27 @@ async function upsertGlobalSetup(supabase: any, prediction: any, extra: { contra
       .maybeSingle();
 
     if (existing) {
-      // Keep the setup intact; just refresh the live price for display.
+      const diverged =
+        (existing.bias === 'bullish' && prediction.bias === 'bearish') ||
+        (existing.bias === 'bearish' && prediction.bias === 'bullish');
+
+      if (!diverged) {
+        // Thesis intact → keep levels frozen; just refresh the live price.
+        await supabase.from('trade_setups')
+          .update({ last_price: prediction.currentPrice, updated_at: new Date().toISOString() })
+          .eq('id', existing.id);
+        return;
+      }
+
+      // Divergence → invalidate the old setup, then fall through to open a new one.
       await supabase.from('trade_setups')
-        .update({ last_price: prediction.currentPrice, updated_at: new Date().toISOString() })
+        .update({
+          status: 'invalidated',
+          last_price: prediction.currentPrice,
+          resolved_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
         .eq('id', existing.id);
-      return;
     }
 
     const tz = prediction.tradingZones || {};
@@ -566,8 +590,8 @@ serve(async (req) => {
 
     const supabase = getSupabaseClient();
 
-    // Check cache
-    if (supabase) {
+    // Check cache (skipped when forceFresh — e.g. monitor scanning for next setup)
+    if (supabase && !v.data.forceFresh) {
       const cached = await getCachedPrediction(supabase, coinId, timeframe);
       if (cached) {
         console.log(`Cache hit: ${symbol} (${timeframe})`);

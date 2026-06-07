@@ -61,7 +61,37 @@ async function livePrice(s: any): Promise<number | null> {
   return priceFromCoinGecko(s.coin_id);
 }
 
-/** Decide the new status given the levels and the live price. */
+// After a setup resolves, immediately scan for the NEXT one by forcing a fresh
+// prediction (bypassing cache). Fire-and-forget — failures are non-fatal.
+async function scanForNextSetup(s: any) {
+  try {
+    const url = Deno.env.get("SUPABASE_URL");
+    const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (!url || !key) return;
+    await fetch(`${url}/functions/v1/price-prediction`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+      body: JSON.stringify({
+        coinId: s.coin_id,
+        symbol: s.symbol,
+        timeframe: s.timeframe,
+        contractAddress: s.contract_address || undefined,
+        chain: s.chain || undefined,
+        forceFresh: true,
+      }),
+      signal: AbortSignal.timeout(20000),
+    });
+  } catch (_) { /* non-fatal */ }
+}
+
+/** Decide the new status given the levels and the live price.
+ *
+ * The script: ENTRY / SL / TP stay frozen until the trade reaches its target.
+ * The FIRST take-profit hit COUNTS AS A WIN and resolves the setup (terminal) so
+ * the slot frees and the next setup can be scanned. A stop or expiry is terminal
+ * too. We still record how far price ran (tp1/tp2/tp3) for an honest record, and
+ * we book P&L at the exact level reached (not the overshoot at detection time).
+ */
 function evaluate(s: any, price: number) {
   const bullish = s.bias !== "bearish"; // treat neutral as long-biased setup
   const entry = Number(s.entry_price) || price;
@@ -70,27 +100,36 @@ function evaluate(s: any, price: number) {
 
   let status = s.status as string;
   let hitTargets = Number(s.hit_targets) || 0;
+  let exitPrice = price; // level used to book the result
 
   if (bullish) {
-    if (sl && price <= sl) status = "stopped";
-    else if (tp3 && price >= tp3) { status = "hit_tp3"; hitTargets = 3; }
-    else if (tp2 && price >= tp2) { status = "hit_tp2"; hitTargets = Math.max(hitTargets, 2); }
-    else if (tp1 && price >= tp1) { status = "hit_tp1"; hitTargets = Math.max(hitTargets, 1); }
+    if (sl && price <= sl) { status = "stopped"; exitPrice = sl; }
+    else if (tp1 && price >= tp1) {
+      // First target reached → WIN. Note the furthest TP touched for the record.
+      if (tp3 && price >= tp3) { status = "hit_tp3"; hitTargets = 3; exitPrice = tp3; }
+      else if (tp2 && price >= tp2) { status = "hit_tp2"; hitTargets = 2; exitPrice = tp2; }
+      else { status = "hit_tp1"; hitTargets = 1; exitPrice = tp1; }
+    }
   } else {
-    if (sl && price >= sl) status = "stopped";
-    else if (tp3 && price <= tp3) { status = "hit_tp3"; hitTargets = 3; }
-    else if (tp2 && price <= tp2) { status = "hit_tp2"; hitTargets = Math.max(hitTargets, 2); }
-    else if (tp1 && price <= tp1) { status = "hit_tp1"; hitTargets = Math.max(hitTargets, 1); }
+    if (sl && price >= sl) { status = "stopped"; exitPrice = sl; }
+    else if (tp1 && price <= tp1) {
+      if (tp3 && price <= tp3) { status = "hit_tp3"; hitTargets = 3; exitPrice = tp3; }
+      else if (tp2 && price <= tp2) { status = "hit_tp2"; hitTargets = 2; exitPrice = tp2; }
+      else { status = "hit_tp1"; hitTargets = 1; exitPrice = tp1; }
+    }
   }
 
-  // Expiry: if the window passed without a decisive hit, close it out.
+  // Expiry: if the window passed without a decisive hit, close it out at last price.
   if (status === s.status && s.expires_at && new Date(s.expires_at).getTime() < Date.now()) {
     status = "expired";
+    exitPrice = price;
   }
 
-  const pnl = entry > 0 ? ((price - entry) / entry) * 100 * (bullish ? 1 : -1) : 0;
-  // tp3 / stopped / expired are terminal; tp1/tp2 keep monitoring for higher TPs.
-  const terminal = status === "hit_tp3" || status === "stopped" || status === "expired";
+  const pnl = entry > 0 ? ((exitPrice - entry) / entry) * 100 * (bullish ? 1 : -1) : 0;
+  // ANY take-profit hit is a win and terminal; stop and expiry are terminal too.
+  const terminal =
+    status === "hit_tp1" || status === "hit_tp2" || status === "hit_tp3" ||
+    status === "stopped" || status === "expired";
 
   return { status, hitTargets, pnl: Math.round(pnl * 100) / 100, terminal };
 }
@@ -105,12 +144,13 @@ serve(async (req) => {
   }
 
   try {
-    // Monitor active global setups (cap per run to stay within limits).
+    // Monitor only ACTIVE global setups — a TP/SL/expiry resolves them terminally,
+    // so there's exactly one open trade per coin/timeframe at a time (cap per run).
     const { data: setups, error } = await supabase
       .from("trade_setups")
       .select("*")
       .eq("scope", "global")
-      .in("status", ["active", "hit_tp1", "hit_tp2"])
+      .eq("status", "active")
       .order("updated_at", { ascending: true })
       .limit(60);
 
@@ -143,6 +183,11 @@ serve(async (req) => {
       if (ev.status !== s.status) updated++;
 
       await supabase.from("trade_setups").update(patch).eq("id", s.id);
+
+      // Win/loss booked → immediately scan for the next setup for this coin.
+      if (ev.terminal && !s.resolved_at) {
+        await scanForNextSetup(s);
+      }
     }
 
     return new Response(
