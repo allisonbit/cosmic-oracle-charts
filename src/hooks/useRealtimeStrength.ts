@@ -93,7 +93,10 @@ export function useRealtimeStrength(timeframe: string = '24h') {
           id: p.symbol?.toLowerCase() || p.id,
           symbol: p.symbol,
           name: p.name,
-          image: coinImages[p.symbol?.toLowerCase()] || `https://assets.coingecko.com/coins/images/1/large/bitcoin.png`,
+          // Prefer the REAL per-coin image the API returns; CoinImage falls back
+          // to symbol-based CDNs if it ever 404s. (The old coinImages lookup was
+          // keyed by CoinGecko id, not symbol, so every coin wrongly showed BTC.)
+          image: p.image || coinImages[p.symbol?.toLowerCase()] || undefined,
           current_price: p.price,
           price_change_percentage_24h: p.change24h,
           price_change_percentage_1h_in_currency: p.change24h / 24,
@@ -118,7 +121,7 @@ export function useRealtimeStrength(timeframe: string = '24h') {
           name: coin.name,
           symbol: coin.symbol?.toUpperCase(),
           type: 'asset' as const,
-          logo: coin.image || coinImages[coin.id] || `https://assets.coingecko.com/coins/images/1/large/bitcoin.png`,
+          logo: coin.image || coinImages[coin.id] || undefined,
           priceChange1h: coin.price_change_percentage_1h_in_currency || 0,
           priceChange24h: coin.price_change_percentage_24h || 0,
           priceChange7d: coin.price_change_percentage_7d_in_currency || 0,

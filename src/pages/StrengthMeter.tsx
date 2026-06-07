@@ -8,11 +8,22 @@ import { useRealtimeStrength } from "@/hooks/useRealtimeStrength";
 import type { StrengthData } from "@/hooks/useStrengthMeter";
 import { CoinImage } from "@/components/ui/CoinImage";
 import { InArticleAd } from "@/components/ads";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import {
   Zap, RefreshCw, Wifi, WifiOff, Search, X, ArrowUp, ArrowDown, Minus,
   ArrowUpDown, Share2, TrendingUp, Activity, HelpCircle, Sparkles, ArrowRight, Target,
+  Trophy, LayoutGrid, GitCompare, Grid3x3, SlidersHorizontal,
 } from "lucide-react";
+import {
+  StrengthComparisonGauge,
+  WeightingPlayground,
+  ExpandableStrengthCard,
+  SectorStrengthHeatmap,
+  DivergenceWatchlist,
+  DailyStrengthReport,
+  TokenStrengthSearch,
+} from "@/components/strength";
 
 // ── Config ────────────────────────────────────────────────────────────────────
 const TIMEFRAMES = [
@@ -20,17 +31,16 @@ const TIMEFRAMES = [
   { value: "24h", label: "24H" }, { value: "7d", label: "7D" },
 ];
 
-// Classify the major assets into sectors for the category filter.
 const CATEGORY_MAP: Record<string, string> = {
   BTC: "Layer 1", ETH: "Layer 1", SOL: "Layer 1", BNB: "Layer 1", XRP: "Layer 1", ADA: "Layer 1",
   AVAX: "Layer 1", TRX: "Layer 1", DOT: "Layer 1", NEAR: "Layer 1", APT: "Layer 1", SUI: "Layer 1",
   TON: "Layer 1", LTC: "Layer 1", ATOM: "Layer 1", HBAR: "Layer 1", ICP: "Layer 1", KAS: "Layer 1", XLM: "Layer 1",
   MATIC: "Layer 2", POL: "Layer 2", ARB: "Layer 2", OP: "Layer 2", STRK: "Layer 2", MNT: "Layer 2",
-  LINK: "DeFi", UNI: "DeFi", AAVE: "DeFi", MKR: "DeFi", LDO: "DeFi", CRV: "DeFi", PENDLE: "DeFi", ENA: "DeFi",
+  LINK: "DeFi", UNI: "DeFi", AAVE: "DeFi", MKR: "DeFi", LDO: "DeFi", CRV: "DeFi", PENDLE: "DeFi", ENA: "DeFi", ENS: "DeFi",
   DOGE: "Meme", SHIB: "Meme", PEPE: "Meme", WIF: "Meme", BONK: "Meme", FLOKI: "Meme",
   RENDER: "AI", FET: "AI", TAO: "AI", RNDR: "AI", AGIX: "AI",
   IMX: "Gaming", SAND: "Gaming", AXS: "Gaming", GALA: "Gaming",
-  ONDO: "RWA", ENS: "DeFi",
+  ONDO: "RWA",
   USDT: "Stablecoin", USDC: "Stablecoin", DAI: "Stablecoin",
 };
 const CATEGORY_ORDER = ["Layer 1", "Layer 2", "DeFi", "AI", "Meme", "Gaming", "RWA"];
@@ -67,7 +77,6 @@ function TrendIcon({ change }: { change: number }) {
   return <span className="inline-flex items-center gap-0.5 text-muted-foreground"><Minus className="w-3.5 h-3.5" /> Flat</span>;
 }
 
-// ── Circular strength gauge ─────────────────────────────────────────────────────
 function StrengthGauge({ score }: { score: number }) {
   const r = 52, c = 2 * Math.PI * r;
   const clamped = Math.max(0, Math.min(100, score));
@@ -77,8 +86,7 @@ function StrengthGauge({ score }: { score: number }) {
     <div className="relative w-[140px] h-[140px] shrink-0">
       <svg width="140" height="140" viewBox="0 0 140 140" className="-rotate-90">
         <circle cx="70" cy="70" r={r} fill="none" stroke="hsl(var(--muted))" strokeWidth="10" opacity="0.4" />
-        <circle cx="70" cy="70" r={r} fill="none" stroke={color} strokeWidth="10" strokeLinecap="round"
-          strokeDasharray={`${dash} ${c}`} className="transition-all duration-700" />
+        <circle cx="70" cy="70" r={r} fill="none" stroke={color} strokeWidth="10" strokeLinecap="round" strokeDasharray={`${dash} ${c}`} className="transition-all duration-700" />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="text-3xl font-bold font-mono" style={{ color }}>{Math.round(clamped)}</span>
@@ -88,8 +96,6 @@ function StrengthGauge({ score }: { score: number }) {
   );
 }
 
-const MONTH_YEAR = new Date().toLocaleString("en-US", { month: "long", year: "numeric" });
-
 export default function StrengthMeter() {
   const [params, setParams] = useSearchParams();
   const timeframe = params.get("tf") || "24h";
@@ -97,6 +103,7 @@ export default function StrengthMeter() {
   const category = params.get("cat") || "All";
   const minStrength = Number(params.get("min") || 0);
   const query = params.get("q") || "";
+  const [tool, setTool] = useState("leaderboard");
   const [sortCol, setSortCol] = useState<keyof StrengthData | "signal">("strengthScore");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -142,7 +149,6 @@ export default function StrengthMeter() {
     else { setSortCol(col); setSortDir("desc"); }
   };
 
-  // "x min ago" live counter
   const [, setTick] = useState(0);
   useEffect(() => { const t = setInterval(() => setTick((n) => n + 1), 30_000); return () => clearInterval(t); }, []);
   const minsAgo = Math.max(0, Math.floor((Date.now() - lastUpdate) / 60000));
@@ -162,7 +168,6 @@ export default function StrengthMeter() {
     { q: "Can I use the strength meter for day trading?", a: "Yes. Switch the timeframe to 1H or 4H for shorter-term readings and use the leaderboard to spot intraday momentum leaders before confirming entries on your own charts." },
     { q: "Which cryptocurrencies are included?", a: "Bitcoin, Ethereum, Solana, BNB, XRP, Cardano, Avalanche, Chainlink, Dogecoin and dozens more across Layer 1, Layer 2, DeFi, AI, Meme and Gaming categories — ranked live by strength." },
   ];
-
   const webAppLd = {
     "@context": "https://schema.org", "@type": "WebApplication", name: "Crypto Strength Meter", url: canonical,
     description: "Real-time cryptocurrency strength meter ranking Bitcoin, Ethereum and 100+ altcoins by momentum, volume and trend strength.",
@@ -180,6 +185,14 @@ export default function StrengthMeter() {
       <span className={cn("inline-flex items-center gap-1", className?.includes("text-right") && "flex-row-reverse")}>{label}{sortCol === col && <ArrowUpDown className="w-3 h-3 text-primary" />}</span>
     </th>
   );
+
+  const toolTabs = [
+    { value: "leaderboard", label: "Leaderboard", icon: Trophy },
+    { value: "cards", label: "Cards", icon: LayoutGrid },
+    { value: "compare", label: "Compare", icon: GitCompare },
+    { value: "sectors", label: "Sectors", icon: Grid3x3 },
+    { value: "weighting", label: "Weighting", icon: SlidersHorizontal },
+  ];
 
   return (
     <Layout>
@@ -218,42 +231,36 @@ export default function StrengthMeter() {
           </div>
         </section>
 
+        {/* Daily AI strength report */}
+        <DailyStrengthReport assets={assets} chains={chains} />
+
         {/* Controls */}
         <section className="rounded-2xl border border-border/50 bg-card/40 p-3 sm:p-4 space-y-3">
           <div className="flex flex-wrap items-center gap-3">
-            {/* Assets/Chains */}
             <div className="flex bg-muted/40 rounded-lg p-0.5">
               {(["assets", "chains"] as const).map((v) => (
-                <button key={v} onClick={() => setParam("view", v === "assets" ? null : v)}
-                  className={cn("px-3 py-1.5 rounded-md text-xs font-semibold capitalize transition-colors", view === v ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")}>{v}</button>
+                <button key={v} onClick={() => setParam("view", v === "assets" ? null : v)} className={cn("px-3 py-1.5 rounded-md text-xs font-semibold capitalize transition-colors", view === v ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")}>{v}</button>
               ))}
             </div>
-            {/* Timeframe */}
             <div className="flex bg-muted/40 rounded-lg p-0.5">
               {TIMEFRAMES.map((tf) => (
-                <button key={tf.value} onClick={() => setParam("tf", tf.value === "24h" ? null : tf.value)}
-                  className={cn("px-3 py-1.5 rounded-md text-xs font-semibold transition-colors", timeframe === tf.value ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")}>{tf.label}</button>
+                <button key={tf.value} onClick={() => setParam("tf", tf.value === "24h" ? null : tf.value)} className={cn("px-3 py-1.5 rounded-md text-xs font-semibold transition-colors", timeframe === tf.value ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")}>{tf.label}</button>
               ))}
             </div>
-            {/* Search */}
             <div className="relative flex-1 min-w-[180px] max-w-xs ml-auto">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-              <input value={query} onChange={(e) => setParam("q", e.target.value || null)} placeholder="Search crypto… (e.g. BTC, Ethereum)"
-                className="w-full h-9 pl-8 pr-8 rounded-lg bg-muted/40 border border-border text-xs focus:outline-none focus:border-primary" />
+              <input value={query} onChange={(e) => setParam("q", e.target.value || null)} placeholder="Search crypto… (e.g. BTC, Ethereum)" className="w-full h-9 pl-8 pr-8 rounded-lg bg-muted/40 border border-border text-xs focus:outline-none focus:border-primary" />
               {query && <button onClick={() => setParam("q", null)} className="absolute right-2.5 top-1/2 -translate-y-1/2"><X className="w-3.5 h-3.5 text-muted-foreground" /></button>}
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            {/* Category */}
             {view === "assets" && (
               <div className="flex items-center gap-1.5 flex-wrap">
                 {categories.map((c) => (
-                  <button key={c} onClick={() => setParam("cat", c)}
-                    className={cn("px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors border", category === c ? "bg-primary/10 text-primary border-primary/30" : "border-border text-muted-foreground hover:text-foreground")}>{c}</button>
+                  <button key={c} onClick={() => setParam("cat", c)} className={cn("px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors border", category === c ? "bg-primary/10 text-primary border-primary/30" : "border-border text-muted-foreground hover:text-foreground")}>{c}</button>
                 ))}
               </div>
             )}
-            {/* Min strength */}
             <div className="flex items-center gap-2 ml-auto">
               <span className="text-[11px] text-muted-foreground whitespace-nowrap">Min strength: <strong className="text-foreground">{minStrength}</strong></span>
               <input type="range" min={0} max={100} step={5} value={minStrength} onChange={(e) => setParam("min", e.target.value)} className="w-28 accent-primary" aria-label="Minimum strength" />
@@ -266,7 +273,7 @@ export default function StrengthMeter() {
           <section className="rounded-2xl border border-border/50 bg-card/40 p-4 sm:p-6 flex flex-col sm:flex-row items-center gap-6">
             <StrengthGauge score={selected.strengthScore} />
             <div className="flex-1 w-full min-w-0">
-              <div className="flex items-center gap-2.5 mb-1">
+              <div className="flex items-center gap-2.5 mb-1 flex-wrap">
                 <CoinImage symbol={selected.symbol} image={selected.logo} size={28} />
                 <h3 className="text-lg font-bold">{selected.name} <span className="text-muted-foreground font-mono text-sm">{selected.symbol}</span></h3>
                 <span className="text-xs font-semibold px-2 py-0.5 rounded-full border" style={{ color: scoreColor(selected.strengthScore), borderColor: scoreColor(selected.strengthScore) + "55" }}>{scoreLabel(selected.strengthScore)}</span>
@@ -289,70 +296,115 @@ export default function StrengthMeter() {
           </section>
         )}
 
-        {/* Leaderboard */}
-        <section>
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-semibold">Strength Leaderboard {category !== "All" && view === "assets" ? `· ${category}` : ""}</h2>
-            <span className="text-xs text-muted-foreground">{rows.length} {view}</span>
+        {/* Tool tabs */}
+        <Tabs value={tool} onValueChange={setTool} className="w-full">
+          <div className="overflow-x-auto scrollbar-hide -mx-1 px-1">
+            <TabsList className="inline-flex w-auto bg-muted/30 border border-border/40 p-1 h-auto rounded-xl">
+              {toolTabs.map((t) => (
+                <TabsTrigger key={t.value} value={t.value} className="flex items-center gap-1.5 text-xs sm:text-sm whitespace-nowrap rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm px-3 py-1.5">
+                  <t.icon className="h-3.5 w-3.5" />{t.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
           </div>
-          <div className="rounded-2xl border border-border/50 overflow-hidden bg-card/40">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm min-w-[760px]">
-                <thead className="bg-muted/30 border-b border-border/50">
-                  <tr>
-                    <th className="px-3 py-2.5 text-[11px] font-semibold text-muted-foreground text-left w-10">#</th>
-                    <th className="px-3 py-2.5 text-[11px] font-semibold text-muted-foreground text-left">Asset</th>
-                    <SortTh col="strengthScore" label="Strength" />
-                    <SortTh col="priceChange24h" label="24h" className="text-right" />
-                    <SortTh col="volumeChange" label="Vol Flow" className="text-right" />
-                    <SortTh col="relativeStrengthVsBTC" label="vs BTC" className="text-right" />
-                    <th className="px-3 py-2.5 text-[11px] font-semibold text-muted-foreground text-center">Trend</th>
-                    <th className="px-3 py-2.5 text-[11px] font-semibold text-muted-foreground text-right">Signal</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {isLoading ? (
-                    Array.from({ length: 12 }).map((_, i) => <tr key={i} className="border-b border-border/30"><td colSpan={8} className="px-3 py-3"><div className="h-4 bg-muted/40 rounded animate-pulse" /></td></tr>)
-                  ) : rows.length === 0 ? (
-                    <tr><td colSpan={8} className="text-center py-14 text-muted-foreground">No assets match these filters.</td></tr>
-                  ) : (
-                    rows.map((r, i) => {
-                      const sig = signalOf(r.strengthScore);
-                      const active = selected?.id === r.id;
-                      return (
-                        <tr key={r.id} onClick={() => setSelectedId(r.id)}
-                          className={cn("border-b border-border/30 cursor-pointer transition-colors hover:bg-muted/30", active && "bg-primary/5")}>
-                          <td className="px-3 py-2.5 text-muted-foreground font-mono text-xs">{i + 1}</td>
-                          <td className="px-3 py-2.5">
-                            <div className="flex items-center gap-2.5">
-                              <CoinImage symbol={r.symbol} image={r.logo} size={26} className="shrink-0" />
-                              <div className="min-w-0">
-                                <div className="font-semibold leading-tight">{r.symbol}</div>
-                                <div className="text-[10px] text-muted-foreground truncate max-w-[140px]">{r.name}</div>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-3 py-2.5">
-                            <div className="flex items-center gap-2">
-                              <div className="w-16 h-1.5 rounded-full bg-muted overflow-hidden hidden sm:block"><div className="h-full rounded-full transition-all" style={{ width: `${r.strengthScore}%`, background: scoreColor(r.strengthScore) }} /></div>
-                              <span className="font-bold font-mono text-sm" style={{ color: scoreColor(r.strengthScore) }}>{r.strengthScore}</span>
-                            </div>
-                          </td>
-                          <td className={cn("px-3 py-2.5 text-right font-mono", changeCls(r.priceChange24h))}>{pct(r.priceChange24h)}</td>
-                          <td className={cn("px-3 py-2.5 text-right font-mono", changeCls(r.volumeChange))}>{pct(r.volumeChange)}</td>
-                          <td className={cn("px-3 py-2.5 text-right font-mono", changeCls(r.relativeStrengthVsBTC))}>{pct(r.relativeStrengthVsBTC)}</td>
-                          <td className="px-3 py-2.5 text-center text-xs"><TrendIcon change={r.priceChange24h} /></td>
-                          <td className="px-3 py-2.5 text-right"><span className={cn("text-[10px] font-bold px-2 py-0.5 rounded border whitespace-nowrap", sig.cls)}>{sig.label}</span></td>
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
+
+          {/* Leaderboard */}
+          <TabsContent value="leaderboard" className="mt-4">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-semibold">Strength Leaderboard {category !== "All" && view === "assets" ? `· ${category}` : ""}</h2>
+              <span className="text-xs text-muted-foreground">{rows.length} {view}</span>
             </div>
-          </div>
-          <p className="text-xs text-muted-foreground mt-3">Tap any row to load its strength gauge. Scores update live from real market data — not financial advice.</p>
-        </section>
+            <div className="rounded-2xl border border-border/50 overflow-hidden bg-card/40">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm min-w-[760px]">
+                  <thead className="bg-muted/30 border-b border-border/50">
+                    <tr>
+                      <th className="px-3 py-2.5 text-[11px] font-semibold text-muted-foreground text-left w-10">#</th>
+                      <th className="px-3 py-2.5 text-[11px] font-semibold text-muted-foreground text-left">Asset</th>
+                      <SortTh col="strengthScore" label="Strength" />
+                      <SortTh col="priceChange24h" label="24h" className="text-right" />
+                      <SortTh col="volumeChange" label="Vol Flow" className="text-right" />
+                      <SortTh col="relativeStrengthVsBTC" label="vs BTC" className="text-right" />
+                      <th className="px-3 py-2.5 text-[11px] font-semibold text-muted-foreground text-center">Trend</th>
+                      <th className="px-3 py-2.5 text-[11px] font-semibold text-muted-foreground text-right">Signal</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {isLoading ? (
+                      Array.from({ length: 12 }).map((_, i) => <tr key={i} className="border-b border-border/30"><td colSpan={8} className="px-3 py-3"><div className="h-4 bg-muted/40 rounded animate-pulse" /></td></tr>)
+                    ) : rows.length === 0 ? (
+                      <tr><td colSpan={8} className="text-center py-14 text-muted-foreground">No assets match these filters.</td></tr>
+                    ) : (
+                      rows.map((r, i) => {
+                        const sig = signalOf(r.strengthScore);
+                        const active = selected?.id === r.id;
+                        return (
+                          <tr key={r.id} onClick={() => setSelectedId(r.id)} className={cn("border-b border-border/30 cursor-pointer transition-colors hover:bg-muted/30", active && "bg-primary/5")}>
+                            <td className="px-3 py-2.5 text-muted-foreground font-mono text-xs">{i + 1}</td>
+                            <td className="px-3 py-2.5">
+                              <div className="flex items-center gap-2.5">
+                                <CoinImage symbol={r.symbol} image={r.logo} size={26} className="shrink-0" />
+                                <div className="min-w-0"><div className="font-semibold leading-tight">{r.symbol}</div><div className="text-[10px] text-muted-foreground truncate max-w-[140px]">{r.name}</div></div>
+                              </div>
+                            </td>
+                            <td className="px-3 py-2.5">
+                              <div className="flex items-center gap-2">
+                                <div className="w-16 h-1.5 rounded-full bg-muted overflow-hidden hidden sm:block"><div className="h-full rounded-full transition-all" style={{ width: `${r.strengthScore}%`, background: scoreColor(r.strengthScore) }} /></div>
+                                <span className="font-bold font-mono text-sm" style={{ color: scoreColor(r.strengthScore) }}>{r.strengthScore}</span>
+                              </div>
+                            </td>
+                            <td className={cn("px-3 py-2.5 text-right font-mono", changeCls(r.priceChange24h))}>{pct(r.priceChange24h)}</td>
+                            <td className={cn("px-3 py-2.5 text-right font-mono", changeCls(r.volumeChange))}>{pct(r.volumeChange)}</td>
+                            <td className={cn("px-3 py-2.5 text-right font-mono", changeCls(r.relativeStrengthVsBTC))}>{pct(r.relativeStrengthVsBTC)}</td>
+                            <td className="px-3 py-2.5 text-center text-xs"><TrendIcon change={r.priceChange24h} /></td>
+                            <td className="px-3 py-2.5 text-right"><span className={cn("text-[10px] font-bold px-2 py-0.5 rounded border whitespace-nowrap", sig.cls)}>{sig.label}</span></td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground mt-3">Tap any row to load its strength gauge. Scores update live from real market data — not financial advice.</p>
+          </TabsContent>
+
+          {/* Cards (expandable) */}
+          <TabsContent value="cards" className="mt-4">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-semibold">Strength Cards</h2>
+              <span className="text-xs text-muted-foreground">Tap a card to expand its full breakdown</span>
+            </div>
+            {isLoading ? (
+              <div className="grid gap-3 sm:grid-cols-2">{Array.from({ length: 8 }).map((_, i) => <div key={i} className="h-24 rounded-xl bg-muted/30 animate-pulse" />)}</div>
+            ) : (
+              <div className="grid gap-3 sm:grid-cols-2">
+                {rows.slice(0, 20).map((item, i) => <ExpandableStrengthCard key={item.id} data={item} rank={i + 1} />)}
+              </div>
+            )}
+          </TabsContent>
+
+          {/* Compare */}
+          <TabsContent value="compare" className="mt-4">
+            <div className="grid lg:grid-cols-2 gap-6">
+              <StrengthComparisonGauge assets={assets} chains={chains} />
+              <TokenStrengthSearch allAssets={assets} />
+            </div>
+          </TabsContent>
+
+          {/* Sectors & divergence */}
+          <TabsContent value="sectors" className="mt-4">
+            <div className="grid lg:grid-cols-2 gap-6">
+              <SectorStrengthHeatmap assets={assets} />
+              <DivergenceWatchlist assets={assets} />
+            </div>
+          </TabsContent>
+
+          {/* Weighting playground */}
+          <TabsContent value="weighting" className="mt-4">
+            <WeightingPlayground assets={assets} />
+          </TabsContent>
+        </Tabs>
 
         <InArticleAd className="my-4" />
 
@@ -368,7 +420,6 @@ export default function StrengthMeter() {
               rotation (capital moving from weak to strong coins), confirm entries, and avoid buying into fading trends.
             </p>
           </section>
-
           <section>
             <h2 className="text-xl font-display font-bold">How Is the Strength Score Calculated?</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">Oracle Bull's Strength Score is a weighted composite of seven real market signals, normalized and combined into one 0–100 number:</p>
@@ -397,7 +448,6 @@ export default function StrengthMeter() {
               })}
             </div>
           </section>
-
           <section>
             <h2 className="text-xl font-display font-bold">Which Crypto Is Strongest Right Now?</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">
@@ -407,7 +457,6 @@ export default function StrengthMeter() {
               marks a distribution phase — trade it with caution.
             </p>
           </section>
-
           <section>
             <h2 className="text-xl font-display font-bold flex items-center gap-2"><HelpCircle className="w-5 h-5 text-primary" /> Frequently Asked Questions</h2>
             <div className="not-prose space-y-3 mt-2">
@@ -419,7 +468,6 @@ export default function StrengthMeter() {
               ))}
             </div>
           </section>
-
           <section className="not-prose">
             <h2 className="text-xl font-display font-bold mb-3 flex items-center gap-2"><Sparkles className="w-5 h-5 text-primary" /> More Free Crypto Analysis Tools</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
