@@ -132,3 +132,15 @@ verify_jwt = false
 
 [functions.check-alerts]
 verify_jwt = false
+
+[functions.news-aggregator]
+verify_jwt = false
+[functions.news-aggregator.rate_limit]
+requests = 10
+per = 3600
+
+[functions.news-feed]
+verify_jwt = false
+[functions.news-feed.rate_limit]
+requests = 600
+per = 3600

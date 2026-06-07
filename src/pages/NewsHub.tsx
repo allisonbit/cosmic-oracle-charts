@@ -1,101 +1,16 @@
 import { Layout } from "@/components/layout/Layout";
 import { Helmet } from "react-helmet-async";
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import {
-  Newspaper, Brain, TrendingUp, Clock, ExternalLink,
-  Zap, ArrowRight, RefreshCw, Tag, Loader2, Bookmark, Share2, Flame
+  Newspaper, Brain, TrendingUp, Clock, Search, ArrowRight, RefreshCw,
+  Loader2, Bookmark, Flame, X, ExternalLink, Sparkles, Activity, Zap, Radar,
 } from "lucide-react";
 import { InArticleAd } from "@/components/ads";
-
-// ── Types ────────────────────────────────────────────────────────────────────
-export interface NewsItem {
-  id: string;
-  guid: string;
-  published_on: number;
-  imageurl: string;
-  title: string;
-  url: string;
-  body: string;
-  tags: string;
-  categories: string;
-  source: string;
-  source_info: { name: string; img: string; lang: string };
-}
-
-// ── AI Sentiment generator ───────────────────────────────────────────────────
-export function generateAISentiment(article: NewsItem): { label: string; color: string; commentary: string } {
-  const title = ((article.title || "") + " " + (article.body || "")).toLowerCase();
-  const bullish = ["bull", "surge", "rally", "gain", "rise", "pump", "ath", "high", "break", "moon", "buy", "adoption", "launch", "approve", "etf", "growth"];
-  const bearish = ["bear", "crash", "drop", "fall", "plunge", "loss", "hack", "ban", "sec", "lawsuit", "fear", "dump", "sell", "warning", "decline", "low"];
-
-  const bScore = bullish.filter(w => title.includes(w)).length;
-  const beScore = bearish.filter(w => title.includes(w)).length;
-
-  if (bScore > beScore + 1) {
-    return {
-      label: "Bullish",
-      color: "text-success border-success/30 bg-success/10",
-      commentary: "Oracle AI flags this as a bullish catalyst. Potential for short-term price appreciation."
-    };
-  } else if (beScore > bScore + 1) {
-    return {
-      label: "Bearish",
-      color: "text-danger border-danger/30 bg-danger/10",
-      commentary: "Oracle AI detects bearish undertones. Watch for fear-driven sell-offs."
-    };
-  } else {
-    return {
-      label: "Neutral",
-      color: "text-warning border-warning/30 bg-warning/10",
-      commentary: "Oracle AI sees neutral impact. Monitor volume spikes for directional clues."
-    };
-  }
-}
-
-// ── Category Mapping ─────────────────────────────────────────────────────────
-const DISPLAY_CATEGORIES = ["All", "Bitcoin", "Ethereum", "Solana", "Base", "Memecoins", "AI", "DeFi", "NFTs", "Regulation", "Market News"];
-
-function mapCategoryToApi(cat: string) {
-  switch (cat) {
-    case "Bitcoin": return "BTC";
-    case "Ethereum": return "ETH";
-    case "Solana": return "SOL";
-    case "Base": return "Altcoin"; 
-    case "Memecoins": return "DOGE";
-    case "AI": return "Technology";
-    case "DeFi": return "DeFi";
-    case "NFTs": return "NFT";
-    case "Regulation": return "Regulation";
-    case "Market News": return "Market";
-    default: return "All";
-  }
-}
-
-// ── API hook ─────────────────────────────────────────────────────────────────
-function useNews(displayCategory: string) {
-  const apiCat = mapCategoryToApi(displayCategory);
-  return useQuery<{ Data: NewsItem[] }>({
-    queryKey: ["crypto-news", apiCat],
-    queryFn: async () => {
-      const url = apiCat === "All"
-        ? "https://min-api.cryptocompare.com/data/v2/news/?lang=EN&sortOrder=latest&limit=50"
-        : `https://min-api.cryptocompare.com/data/v2/news/?lang=EN&categories=${apiCat}&sortOrder=latest&limit=50`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error("Failed to fetch news");
-      return res.json();
-    },
-    staleTime: 2 * 60 * 1000,
-    refetchInterval: 5 * 60 * 1000,
-    refetchOnWindowFocus: true,
-  });
-}
-
-// ── Slug util ─────────────────────────────────────────────────────────────────
-export function articleToSlug(article: NewsItem): string {
-  return `${article.id}-${(article.title || "news").toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 60)}`;
-}
+import { SITE_URL } from "@/lib/siteConfig";
+import {
+  useNewsFeed, timeAgo, sentimentStyle, type NewsArticleData,
+} from "@/hooks/useNews";
 
 // ── Persistent bookmarks (localStorage) ───────────────────────────────────────
 const BOOKMARK_KEY = "oraclebull:news:bookmarks";
@@ -103,53 +18,44 @@ function readBookmarks(): string[] {
   if (typeof window === "undefined") return [];
   try { return JSON.parse(localStorage.getItem(BOOKMARK_KEY) || "[]"); } catch { return []; }
 }
-export function useBookmarks() {
+function useBookmarks() {
   const [ids, setIds] = useState<string[]>(() => readBookmarks());
   const toggle = useCallback((id: string) => {
-    setIds(prev => {
-      const next = prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id];
-      try { localStorage.setItem(BOOKMARK_KEY, JSON.stringify(next)); } catch (e) { /* ignore */ }
+    setIds((prev) => {
+      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+      try { localStorage.setItem(BOOKMARK_KEY, JSON.stringify(next)); } catch { /* ignore */ }
       return next;
     });
   }, []);
   return { ids, toggle, isBookmarked: (id: string) => ids.includes(id) };
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-function timeAgo(unix: number): string {
-  const diff = Math.floor(Date.now() / 1000) - unix;
-  if (diff < 60) return `${diff}s ago`;
-  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-  return `${Math.floor(diff / 86400)}d ago`;
-}
+// Popular coins for the internal-link rail (drives crawl depth into predictions).
+const POPULAR_COINS = [
+  ["bitcoin", "Bitcoin"], ["ethereum", "Ethereum"], ["solana", "Solana"], ["ripple", "XRP"],
+  ["dogecoin", "Dogecoin"], ["cardano", "Cardano"], ["chainlink", "Chainlink"], ["avalanche", "Avalanche"],
+];
 
-function getReadTime(body: string): number {
-  return Math.max(2, Math.ceil((body?.length || 0) / 100));
-}
-
-// ── Trending Section ──────────────────────────────────────────────────────────
-function TrendingSection({ articles }: { articles: NewsItem[] }) {
+// ── Trending strip ────────────────────────────────────────────────────────────
+function TrendingSection({ articles }: { articles: NewsArticleData[] }) {
   if (articles.length < 5) return null;
-  // Mock trending by picking specific items
-  const trending = articles.slice(1, 5);
-  
+  const trending = articles.slice(1, 6);
   return (
-    <div className="mb-8 overflow-hidden relative">
+    <div className="mb-8">
       <div className="flex items-center gap-2 mb-4">
         <Flame className="w-5 h-5 text-danger animate-pulse" />
         <h2 className="font-bold font-display text-lg">Trending Now</h2>
       </div>
       <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-none snap-x">
-        {trending.map(article => (
-          <Link key={article.id} to={`/news/${articleToSlug(article)}`} state={{ article }} className="min-w-[260px] w-[260px] shrink-0 snap-start group">
+        {trending.map((a) => (
+          <Link key={a.id} to={`/news/${a.slug}`} className="min-w-[260px] w-[260px] shrink-0 snap-start group">
             <div className="flex items-center gap-2 text-[10px] text-muted-foreground mb-2">
-              <span className="text-primary font-bold uppercase tracking-wider">{article.source_info?.name ?? article.source}</span>
+              <span className="text-primary font-bold uppercase tracking-wider">{a.sourceName}</span>
               <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
-              <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{timeAgo(article.published_on)}</span>
+              <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{timeAgo(a.publishedAt)}</span>
             </div>
             <h3 className="font-bold text-sm leading-snug line-clamp-2 group-hover:text-primary transition-colors">
-              {article.title}
+              {a.title}
             </h3>
           </Link>
         ))}
@@ -158,139 +64,119 @@ function TrendingSection({ articles }: { articles: NewsItem[] }) {
   );
 }
 
-// ── Featured Hero Card ────────────────────────────────────────────────────────
-function HeroCard({ article }: { article: NewsItem }) {
-  const sentiment = generateAISentiment(article);
-  const slug = articleToSlug(article);
-  const categories = (article.categories || "Crypto").split("|").slice(0, 2);
-
+// ── Featured hero card ────────────────────────────────────────────────────────
+function HeroCard({ article }: { article: NewsArticleData }) {
+  const s = sentimentStyle(article.sentiment);
   return (
-    <Link to={`/news/${slug}`} state={{ article }} className="group flex flex-col mb-12 pb-12 border-b border-border">
-      <div className="w-full aspect-video md:aspect-[21/9] rounded-2xl overflow-hidden mb-8 relative">
-        <img
-          src={article.imageurl}
-          alt={article.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          loading="lazy"
-          onError={(e) => { (e.target as HTMLImageElement).src = "/og-image.jpg"; }}
-        />
+    <Link to={`/news/${article.slug}`} className="group flex flex-col mb-12 pb-12 border-b border-border">
+      <div className="w-full aspect-video md:aspect-[21/9] rounded-2xl overflow-hidden mb-8 relative bg-muted">
+        {article.imageUrl && (
+          <img
+            src={article.imageUrl} alt={article.title} loading="eager"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-60" />
       </div>
       <div className="flex flex-col justify-center w-full">
         <div className="flex flex-wrap items-center gap-2 mb-4">
-          <span className="text-[10px] font-bold px-2.5 py-1 rounded-full border border-primary/50 bg-primary/20 text-primary shadow-[0_0_10px_rgba(var(--primary),0.5)] animate-pulse flex items-center gap-1">
-            <div className="w-1.5 h-1.5 rounded-full bg-primary animate-ping" />
-            BREAKING
+          <span className="text-[10px] font-bold px-2.5 py-1 rounded-full border border-primary/50 bg-primary/20 text-primary flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-ping" /> BREAKING
           </span>
-          {categories.map(cat => (
-            <span key={cat} className="text-[10px] font-bold px-2.5 py-1 rounded-full border border-border bg-background/80 text-muted-foreground uppercase tracking-wider">
-              {cat}
-            </span>
-          ))}
+          <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border uppercase tracking-wider ${s.className}`}>
+            AI: {s.label}
+          </span>
+          <span className="text-[10px] font-bold px-2.5 py-1 rounded-full border border-border bg-background/80 text-muted-foreground uppercase tracking-wider">
+            {article.category}
+          </span>
         </div>
         <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold font-display leading-tight mb-5 group-hover:text-primary transition-colors tracking-tight">
           {article.title}
         </h2>
         <p className="text-base sm:text-lg text-muted-foreground line-clamp-3 mb-6 leading-relaxed">
-          {article.body?.slice(0, 250)}...
+          {article.metaDescription}
         </p>
         <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-8">
-          <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" />{timeAgo(article.published_on)}</span>
-          <span className="flex items-center gap-1.5 border-l border-border pl-4">{getReadTime(article.body)} min read</span>
-          <span className="flex items-center gap-1.5 border-l border-border pl-4 text-foreground font-bold">{article.source_info?.name ?? article.source}</span>
+          <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" />{timeAgo(article.publishedAt)}</span>
+          <span className="flex items-center gap-1.5 border-l border-border pl-4">{article.readTime} read</span>
+          <span className="flex items-center gap-1.5 border-l border-border pl-4 text-foreground font-bold">{article.sourceName}</span>
         </div>
-        <div className="inline-flex items-center gap-2 text-primary font-bold transition-all self-start hover:underline text-lg">
+        <span className="inline-flex items-center gap-2 text-primary font-bold self-start hover:underline text-lg">
           Read Full Story <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-        </div>
+        </span>
       </div>
     </Link>
   );
 }
 
-// ── News Card ─────────────────────────────────────────────────────────────────
-function NewsCard({ article }: { article: NewsItem }) {
-  const sentiment = generateAISentiment(article);
-  const slug = articleToSlug(article);
-  const category = (article.categories || "Crypto").split("|")[0];
+// ── News card ─────────────────────────────────────────────────────────────────
+function NewsCard({ article }: { article: NewsArticleData }) {
+  const s = sentimentStyle(article.sentiment);
   const { isBookmarked, toggle } = useBookmarks();
   const saved = isBookmarked(article.id);
-
-  const handleBookmark = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    toggle(article.id);
-  };
-
   return (
-    <Link to={`/news/${slug}`} state={{ article }} className="py-8 flex flex-col sm:flex-row gap-8 group border-b border-border relative">
-      <button 
-        onClick={handleBookmark}
+    <Link to={`/news/${article.slug}`} className="py-8 flex flex-col sm:flex-row gap-8 group border-b border-border relative">
+      <button
+        onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggle(article.id); }}
         aria-label={saved ? "Remove bookmark" : "Save for later"}
-        title={saved ? "Saved" : "Save for later"}
         className={`absolute top-8 right-0 z-10 p-2 rounded-full bg-background/80 backdrop-blur-md border border-border transition-all hover:text-primary ${saved ? "text-primary opacity-100" : "opacity-0 group-hover:opacity-100"}`}
       >
         <Bookmark className={`w-4 h-4 ${saved ? "fill-primary" : ""}`} />
       </button>
-
       <div className="w-full sm:w-64 h-48 sm:h-40 rounded-2xl overflow-hidden shrink-0 bg-muted relative">
-        <img
-          src={article.imageurl}
-          alt={article.title}
-          loading="lazy"
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          onError={(e) => { (e.target as HTMLImageElement).src = "/og-image.jpg"; }}
-        />
+        {article.imageUrl && (
+          <img
+            src={article.imageUrl} alt={article.title} loading="lazy"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+          />
+        )}
       </div>
       <div className="flex-1 min-w-0 flex flex-col justify-between pr-8">
         <div>
           <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground mb-3">
-            <span className="text-primary font-bold uppercase tracking-wider">{category}</span>
+            <span className="text-primary font-bold uppercase tracking-wider">{article.category}</span>
             <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
-            <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" />{timeAgo(article.published_on)}</span>
+            <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" />{timeAgo(article.publishedAt)}</span>
             <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
-            <span>{getReadTime(article.body)} min read</span>
+            <span>{article.readTime} read</span>
             <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
-            <span className="text-foreground font-medium">{article.source_info?.name ?? article.source}</span>
+            <span className="text-foreground font-medium">{article.sourceName}</span>
           </div>
           <h3 className="font-bold font-display text-xl md:text-2xl leading-snug line-clamp-2 mb-3 group-hover:text-primary transition-colors tracking-tight">
             {article.title}
           </h3>
-          <p className="text-base text-muted-foreground line-clamp-2 mb-4">
-            {article.body?.slice(0, 180)}...
-          </p>
+          <p className="text-base text-muted-foreground line-clamp-2 mb-4">{article.metaDescription}</p>
         </div>
-        
-        {/* Minimal AI Insight Box */}
         <div className="flex items-center gap-3 mt-auto">
-          <div className={`shrink-0 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${sentiment.color.replace('bg-', 'bg-').replace('/10', '/20')}`}>
-            {sentiment.label}
+          <div className={`shrink-0 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${s.className}`}>
+            {s.label}
           </div>
-          <p className="text-xs text-foreground/80 leading-snug flex-1 truncate">
-            <span className="font-semibold text-primary">AI Insight: </span>
-            {sentiment.commentary}
-          </p>
+          {article.coins.slice(0, 3).map((c) => (
+            <span key={c.id} className="text-[10px] font-semibold text-muted-foreground hidden sm:inline">${c.symbol}</span>
+          ))}
+          <span className="text-xs text-primary font-semibold ml-auto inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            Read <ArrowRight className="w-3 h-3" />
+          </span>
         </div>
       </div>
     </Link>
   );
 }
 
-// ── Skeletons ─────────────────────────────────────────────────────────────────
-function NewsFeedSkeleton() {
+// ── Skeleton ──────────────────────────────────────────────────────────────────
+function FeedSkeleton() {
   return (
     <div className="divide-y divide-border">
       {[...Array(5)].map((_, i) => (
         <div key={i} className="py-8 flex flex-col sm:flex-row gap-8 animate-pulse">
           <div className="w-full sm:w-64 h-48 sm:h-40 rounded-2xl bg-muted shrink-0" />
           <div className="flex-1 space-y-3 py-1">
-            <div className="flex gap-2">
-              <div className="h-3 bg-muted rounded w-16" />
-              <div className="h-3 bg-muted rounded w-20" />
-            </div>
+            <div className="flex gap-2"><div className="h-3 bg-muted rounded w-16" /><div className="h-3 bg-muted rounded w-20" /></div>
             <div className="h-5 bg-muted rounded w-full" />
             <div className="h-5 bg-muted rounded w-3/4" />
             <div className="h-3 bg-muted rounded w-full mt-4" />
-            <div className="h-10 bg-muted rounded w-full mt-2" />
           </div>
         </div>
       ))}
@@ -298,219 +184,283 @@ function NewsFeedSkeleton() {
   );
 }
 
-// ── Main Page ─────────────────────────────────────────────────────────────────
+// ── Page ──────────────────────────────────────────────────────────────────────
 export default function NewsHub() {
   const [category, setCategory] = useState("All");
-  const { data, isLoading, refetch, isFetching } = useNews(category);
-  const articles = useMemo(() => data?.Data ?? [], [data?.Data]);
-
-  // Pagination + infinite scroll
-  const [visibleCount, setVisibleCount] = useState(15);
+  const [searchInput, setSearchInput] = useState("");
+  const [query, setQuery] = useState("");
+  const [visibleCount, setVisibleCount] = useState(12);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
-  // Reset pagination when category changes
-  const handleCategoryChange = (cat: string) => {
-    setCategory(cat);
-    setVisibleCount(15);
-  };
+  // Debounce the search box.
+  useEffect(() => {
+    const t = setTimeout(() => { setQuery(searchInput.trim()); setVisibleCount(12); }, 350);
+    return () => clearTimeout(t);
+  }, [searchInput]);
 
-  const handleLoadMore = () => {
-    setVisibleCount(prev => Math.min(prev + 10, articles.length));
-  };
+  const { data, isLoading, isFetching, refetch } = useNewsFeed({ category, q: query, limit: 60 });
+  const articles = useMemo(() => data?.articles ?? [], [data?.articles]);
+  const serverCategories = data?.categories ?? [];
+  const categories = useMemo(() => ["All", ...serverCategories], [serverCategories]);
+  const searching = query.length > 0;
+  const isDefaultView = category === "All" && !searching;
 
-  // IntersectionObserver-driven infinite scroll
+  const handleCategoryChange = (c: string) => { setCategory(c); setVisibleCount(12); };
+
+  // Infinite scroll.
   useEffect(() => {
     const el = sentinelRef.current;
     if (!el || visibleCount >= articles.length) return;
-    const io = new IntersectionObserver(entries => {
-      if (entries.some(e => e.isIntersecting)) {
-        setVisibleCount(prev => Math.min(prev + 10, articles.length));
-      }
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) setVisibleCount((p) => Math.min(p + 8, articles.length));
     }, { rootMargin: "600px 0px" });
     io.observe(el);
     return () => io.disconnect();
   }, [articles.length, visibleCount]);
 
-  // ItemList JSON-LD for Google Discover / SEO
   const itemListLd = useMemo(() => ({
     "@context": "https://schema.org",
     "@type": "ItemList",
-    "itemListElement": articles.slice(0, 20).map((a, i) => ({
-      "@type": "ListItem",
-      "position": i + 1,
-      "url": `https://oraclebull.com/news/${articleToSlug(a)}`,
-      "name": a.title,
+    itemListElement: articles.slice(0, 20).map((a, i) => ({
+      "@type": "ListItem", position: i + 1, url: `${SITE_URL}/news/${a.slug}`, name: a.title,
     })),
   }), [articles]);
+
+  const sentimentCounts = useMemo(() => {
+    const c = { bullish: 0, bearish: 0, neutral: 0 };
+    for (const a of articles.slice(0, 30)) c[a.sentiment as keyof typeof c] = (c[a.sentiment as keyof typeof c] || 0) + 1;
+    return c;
+  }, [articles]);
+
+  const feedStart = isDefaultView && visibleCount >= 12 ? 1 : 0; // hero takes slot 0
 
   return (
     <Layout>
       <Helmet>
-        <title>Crypto News & AI Market Analysis | Oracle Bull</title>
-        <meta name="description" content="Live cryptocurrency news with AI-powered sentiment analysis. Every story rated Bullish, Bearish or Neutral by Oracle AI - so you know how the market might react." />
-        <link rel="canonical" href="https://oraclebull.com/news" />
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebPage",
-          "name": "Crypto News & AI Market Analysis | Oracle Bull",
-          "description": "Live crypto news with AI sentiment ratings - Bullish, Bearish or Neutral - updated every 5 minutes.",
-          "url": "https://oraclebull.com/news",
-          "publisher": { "@type": "Organization", "name": "Oracle Bull", "url": "https://oraclebull.com" }
-        })}</script>
-        <script type="application/ld+json">{JSON.stringify(itemListLd)}</script>
-        <meta property="og:title" content="Crypto News & AI Market Analysis | Oracle Bull" />
-        <meta property="og:description" content="Live crypto news with AI Bullish / Bearish / Neutral sentiment ratings updated every 5 minutes." />
-        <meta property="og:url" content="https://oraclebull.com/news" />
+        <title>Crypto News Today – Live Headlines + AI Sentiment | Oracle Bull</title>
+        <meta name="description" content="Breaking cryptocurrency news from 50+ trusted sources, each rated Bullish, Bearish or Neutral by Oracle AI. Bitcoin, Ethereum, Solana, DeFi & regulation — updated every 30 minutes." />
+        <meta name="keywords" content="crypto news today, bitcoin news, ethereum news, crypto market news, latest cryptocurrency news, crypto headlines" />
+        <link rel="canonical" href={`${SITE_URL}/news`} />
+        <meta property="og:title" content="Crypto News Today – Live Headlines + AI Sentiment | Oracle Bull" />
+        <meta property="og:description" content="Breaking crypto news with AI Bullish / Bearish / Neutral ratings, updated every 30 minutes. Bitcoin, Ethereum, Solana, DeFi & regulation." />
+        <meta property="og:url" content={`${SITE_URL}/news`} />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org", "@type": "CollectionPage",
+          name: "Crypto News Today | Oracle Bull",
+          description: "Live crypto news with AI sentiment ratings, updated every 30 minutes.",
+          url: `${SITE_URL}/news`,
+          isPartOf: { "@type": "WebSite", name: "Oracle Bull", url: SITE_URL },
+          publisher: { "@type": "Organization", name: "Oracle Bull", url: SITE_URL },
+        })}</script>
+        <script type="application/ld+json">{JSON.stringify(itemListLd)}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org", "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
+            { "@type": "ListItem", position: 2, name: "News", item: `${SITE_URL}/news` },
+          ],
+        })}</script>
       </Helmet>
 
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
-
           {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+          <nav aria-label="Breadcrumb" className="text-xs text-muted-foreground mb-6 flex items-center gap-2">
+            <Link to="/" className="hover:text-primary transition-colors">Home</Link>
+            <span>/</span><span className="text-foreground">News</span>
+          </nav>
+
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-8">
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wider mb-3">
-                <Newspaper className="w-4 h-4" />
-                <span>LIVE MEDIA FEED</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" /> LIVE · UPDATED EVERY 30 MIN
               </div>
-              <h1 className="text-3xl md:text-5xl font-bold font-display glow-text tracking-tight">
-                Market News + AI Intel
-              </h1>
+              <h1 className="text-3xl md:text-5xl font-bold font-display tracking-tight">Crypto News Today</h1>
               <p className="text-muted-foreground mt-3 max-w-xl text-lg">
-                The fastest way to consume crypto news. Every story analyzed by Oracle AI for <span className="text-success font-semibold">Bullish</span> or <span className="text-danger font-semibold">Bearish</span> market impact.
+                Breaking headlines from 50+ trusted crypto publications — every story rated{" "}
+                <span className="text-success font-semibold">Bullish</span>,{" "}
+                <span className="text-danger font-semibold">Bearish</span> or{" "}
+                <span className="text-warning font-semibold">Neutral</span> by Oracle AI.
               </p>
+            </div>
+
+            {/* Search */}
+            <div className="relative w-full lg:w-80 shrink-0">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <input
+                type="search"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder="Search crypto news…"
+                aria-label="Search crypto news"
+                className="w-full bg-background border border-border rounded-xl pl-10 pr-9 py-3 text-sm focus:outline-none focus:border-primary transition-all"
+              />
+              {searchInput && (
+                <button onClick={() => setSearchInput("")} aria-label="Clear search" className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                  <X className="w-4 h-4" />
+                </button>
+              )}
             </div>
           </div>
 
-          {/* Category Filter */}
+          {/* Category filter */}
           <div className="flex items-center gap-2 overflow-x-auto pb-4 scrollbar-none mb-6 border-b border-border">
-            {DISPLAY_CATEGORIES.map(cat => (
+            {categories.map((c) => (
               <button
-                key={cat}
-                onClick={() => handleCategoryChange(cat)}
+                key={c}
+                onClick={() => handleCategoryChange(c)}
                 className={`px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all shrink-0 ${
-                  category === cat
-                    ? "bg-foreground text-background shadow-md"
+                  category === c ? "bg-foreground text-background shadow-md"
                     : "bg-background border border-border text-muted-foreground hover:text-foreground hover:bg-muted"
                 }`}
               >
-                {cat}
+                {c}
               </button>
             ))}
+            {isFetching && <Loader2 className="w-4 h-4 animate-spin text-muted-foreground ml-1 shrink-0" />}
           </div>
 
-          {/* Loading state */}
-          {isLoading ? (
-            <NewsFeedSkeleton />
-          ) : (
-            <>
-              {articles.length > 0 ? (
-                <>
-                  {category === "All" && <TrendingSection articles={articles} />}
-                  
-                  <div className="grid lg:grid-cols-[1fr_320px] gap-8">
-                    
-                    {/* Main Feed */}
-                    <div className="space-y-6">
-                      {category === "All" && visibleCount === 15 && <HeroCard article={articles[0]} />}
-                      
-                      <div className="space-y-4">
-                        {articles.slice(category === "All" ? 1 : 0, visibleCount).map((article, i) => (
-                          <div key={article.id}>
-                            <NewsCard article={article} />
-                            {(i + 1) % 6 === 0 && <InArticleAd className="my-8" />}
-                          </div>
-                        ))}
-                      </div>
+          {searching && (
+            <p className="text-sm text-muted-foreground mb-6">
+              {articles.length > 0
+                ? <>Showing {articles.length} result{articles.length !== 1 && "s"} for <span className="text-foreground font-semibold">“{query}”</span></>
+                : <>No results for <span className="text-foreground font-semibold">“{query}”</span></>}
+            </p>
+          )}
 
-                      {/* Infinite scroll sentinel + fallback Load More */}
-                      {visibleCount < articles.length && (
-                        <>
-                          <div ref={sentinelRef} aria-hidden className="h-1" />
-                          <div className="pt-8 pb-4 text-center">
-                            <span className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                              <Loader2 className="w-4 h-4 animate-spin" /> Loading more stories…
-                            </span>
+          {isLoading ? (
+            <FeedSkeleton />
+          ) : articles.length > 0 ? (
+            <>
+              {isDefaultView && <TrendingSection articles={articles} />}
+              <div className="grid lg:grid-cols-[1fr_320px] gap-8">
+                {/* Main feed */}
+                <div>
+                  {feedStart === 1 && <HeroCard article={articles[0]} />}
+                  <div>
+                    {articles.slice(feedStart, visibleCount).map((a, i) => (
+                      <div key={a.id}>
+                        <NewsCard article={a} />
+                        {(i + 1) % 6 === 0 && <InArticleAd className="my-8" />}
+                      </div>
+                    ))}
+                  </div>
+                  {visibleCount < articles.length && (
+                    <>
+                      <div ref={sentinelRef} aria-hidden className="h-1" />
+                      <div className="pt-8 pb-4 text-center">
+                        <button onClick={() => setVisibleCount((p) => Math.min(p + 8, articles.length))}
+                          className="inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline">
+                          <Loader2 className="w-4 h-4 animate-spin" /> Loading more stories…
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {/* Sidebar */}
+                <aside className="space-y-8 hidden lg:block">
+                  <div className="sticky top-24 space-y-8">
+                    {/* Sentiment */}
+                    <div>
+                      <h2 className="font-bold font-display text-lg mb-5 flex items-center gap-2">
+                        <Brain className="w-5 h-5 text-primary" /> News Sentiment
+                      </h2>
+                      {(() => {
+                        const total = sentimentCounts.bullish + sentimentCounts.bearish + sentimentCounts.neutral || 1;
+                        const rows = [
+                          { label: "Bullish", count: sentimentCounts.bullish, color: "bg-success", text: "text-success" },
+                          { label: "Bearish", count: sentimentCounts.bearish, color: "bg-danger", text: "text-danger" },
+                          { label: "Neutral", count: sentimentCounts.neutral, color: "bg-warning", text: "text-warning" },
+                        ];
+                        return (
+                          <div className="space-y-4">
+                            {rows.map((r) => (
+                              <div key={r.label}>
+                                <div className="flex justify-between text-sm mb-1.5">
+                                  <span className={`font-bold ${r.text}`}>{r.label}</span>
+                                  <span className="text-muted-foreground font-medium">{Math.round((r.count / total) * 100)}%</span>
+                                </div>
+                                <div className="h-2.5 bg-muted rounded-full overflow-hidden">
+                                  <div className={`h-full rounded-full ${r.color} transition-all duration-700`} style={{ width: `${(r.count / total) * 100}%` }} />
+                                </div>
+                              </div>
+                            ))}
+                            <p className="text-xs text-muted-foreground leading-relaxed pt-2">
+                              {sentimentCounts.bullish > sentimentCounts.bearish + 2
+                                ? "News flow is leaning bullish. Sentiment extremes can precede short-term rallies."
+                                : sentimentCounts.bearish > sentimentCounts.bullish + 2
+                                  ? "Bearish headlines dominate. Fear-driven dips often present accumulation zones."
+                                  : "Mixed signals across the latest headlines. Wait for a clear catalyst."}
+                            </p>
                           </div>
-                        </>
-                      )}
+                        );
+                      })()}
                     </div>
 
-                    {/* Sidebar */}
-                    <div className="space-y-6 hidden lg:block">
-                      <div className="sticky top-24">
-                        <h2 className="font-bold font-display text-lg mb-5 flex items-center gap-2">
-                          <Brain className="w-5 h-5 text-primary" /> Market Sentiment
-                        </h2>
-                        {(() => {
-                          const sentiments = articles.slice(0, 20).map(a => generateAISentiment(a).label);
-                          const bullCount = sentiments.filter(s => s === "Bullish").length;
-                          const bearCount = sentiments.filter(s => s === "Bearish").length;
-                          const neutCount = sentiments.filter(s => s === "Neutral").length;
-                          const total = bullCount + bearCount + neutCount;
-                          return (
-                            <div className="space-y-4">
-                              {[
-                                { label: "Bullish Signals", count: bullCount, color: "bg-success", textColor: "text-success" },
-                                { label: "Bearish Signals", count: bearCount, color: "bg-danger", textColor: "text-danger" },
-                                { label: "Neutral News", count: neutCount, color: "bg-warning", textColor: "text-warning" },
-                              ].map(({ label, count, color, textColor }) => (
-                                <div key={label}>
-                                  <div className="flex justify-between text-sm mb-1.5">
-                                    <span className={`font-bold ${textColor}`}>{label}</span>
-                                    <span className="text-muted-foreground font-medium">{Math.round((count/total)*100)}%</span>
-                                  </div>
-                                  <div className="h-2.5 bg-muted rounded-full overflow-hidden">
-                                    <div
-                                      className={`h-full rounded-full ${color} transition-all duration-700`}
-                                      style={{ width: `${total ? (count / total) * 100 : 0}%` }}
-                                    />
-                                  </div>
-                                </div>
-                              ))}
-                              <div className="mt-6 pt-4 border-t border-border">
-                                <p className="text-xs text-muted-foreground leading-relaxed">
-                                  Oracle AI analyzed the latest 20 headlines. {bullCount > bearCount + 2
-                                    ? "News flow is highly bullish. Sentiment extremes may precede short-term rallies."
-                                    : bearCount > bullCount + 2
-                                      ? "Bearish news dominates. Fear-driven dips often present accumulation opportunities."
-                                      : "Mixed signals detected. Wait for a strong catalyst before entering new positions."}
-                                </p>
-                              </div>
-                            </div>
-                          );
-                        })()}
+                    {/* Tools */}
+                    <div className="pt-6 border-t border-border">
+                      <h3 className="text-sm font-bold mb-3 text-muted-foreground uppercase tracking-wider">Trade the News</h3>
+                      <div className="space-y-1.5">
+                        <Link to="/predictions" className="flex items-center gap-2 text-sm text-foreground hover:text-primary transition-colors py-1"><TrendingUp className="w-4 h-4 text-primary" /> AI Price Predictions</Link>
+                        <Link to="/sentiment" className="flex items-center gap-2 text-sm text-foreground hover:text-primary transition-colors py-1"><Activity className="w-4 h-4 text-primary" /> Fear &amp; Greed Index</Link>
+                        <Link to="/strength-meter" className="flex items-center gap-2 text-sm text-foreground hover:text-primary transition-colors py-1"><Zap className="w-4 h-4 text-primary" /> Crypto Strength Meter</Link>
+                        <Link to="/scanner" className="flex items-center gap-2 text-sm text-foreground hover:text-primary transition-colors py-1"><Radar className="w-4 h-4 text-primary" /> Token Scanner</Link>
+                      </div>
+                    </div>
 
-                        <div className="mt-6 pt-6 border-t border-border">
-                          <h3 className="text-sm font-bold mb-3 text-muted-foreground">Quick Actions</h3>
-                          <div className="space-y-2">
-                            <Link to="/predictions" className="flex items-center gap-2 text-sm text-foreground hover:text-primary transition-colors py-1">
-                              <TrendingUp className="w-4 h-4 text-primary" /> AI Price Predictions
-                            </Link>
-                            <Link to="/sentiment" className="flex items-center gap-2 text-sm text-foreground hover:text-primary transition-colors py-1">
-                              <Brain className="w-4 h-4 text-primary" /> Fear & Greed Index
-                            </Link>
-                          </div>
-                        </div>
+                    {/* Coin predictions */}
+                    <div className="pt-6 border-t border-border">
+                      <h3 className="text-sm font-bold mb-3 text-muted-foreground uppercase tracking-wider">Popular Predictions</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {POPULAR_COINS.map(([id, name]) => (
+                          <Link key={id} to={`/price-prediction/${id}`} className="text-xs font-semibold px-3 py-1.5 rounded-full bg-background border border-border hover:border-primary/50 hover:text-primary transition-colors">
+                            {name}
+                          </Link>
+                        ))}
                       </div>
                     </div>
                   </div>
-                </>
-              ) : (
-                <div className="text-center py-32">
-                  <Newspaper className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
-                  <h3 className="text-xl font-bold mb-2">No stories found</h3>
-                  <p className="text-muted-foreground max-w-sm mx-auto mb-6">We couldn't find any recent news for this category. The market might be quiet right now.</p>
-                  <button onClick={() => refetch()} className="text-primary font-bold hover:underline inline-flex items-center gap-2 mx-auto">
-                    <RefreshCw className="w-4 h-4" /> Refresh Feed
-                  </button>
-                </div>
-              )}
+                </aside>
+              </div>
             </>
+          ) : (
+            <div className="text-center py-32">
+              <Newspaper className="w-16 h-16 text-muted-foreground/40 mx-auto mb-4" />
+              <h3 className="text-xl font-bold mb-2">{searching ? "No stories match your search" : "No stories yet"}</h3>
+              <p className="text-muted-foreground max-w-sm mx-auto mb-6">
+                {searching ? "Try a different keyword or browse a category above." : "The news engine refreshes every 30 minutes — check back shortly."}
+              </p>
+              <button onClick={() => refetch()} className="text-primary font-bold hover:underline inline-flex items-center gap-2 mx-auto">
+                <RefreshCw className="w-4 h-4" /> Refresh Feed
+              </button>
+            </div>
           )}
 
+          {/* SEO copy block */}
+          <section className="mt-16 pt-10 border-t border-border max-w-3xl">
+            <h2 className="text-2xl font-bold font-display mb-4 flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-primary" /> The fastest way to read crypto news
+            </h2>
+            <div className="space-y-4 text-muted-foreground leading-relaxed">
+              <p>
+                Oracle Bull aggregates breaking cryptocurrency news from 50+ trusted publications — including CoinDesk,
+                Cointelegraph, Decrypt and The Block — and runs every headline through our AI sentiment engine so you
+                instantly know whether a story is <span className="text-success font-semibold">bullish</span>,{" "}
+                <span className="text-danger font-semibold">bearish</span> or{" "}
+                <span className="text-warning font-semibold">neutral</span> for the market.
+              </p>
+              <p>
+                Every brief links back to the original publisher and to the coins it affects, so you can jump straight
+                from a headline to a live <Link to="/predictions" className="text-primary hover:underline">AI price prediction</Link>,
+                the <Link to="/sentiment" className="text-primary hover:underline">Fear &amp; Greed Index</Link>, or the{" "}
+                <Link to="/strength-meter" className="text-primary hover:underline">Crypto Strength Meter</Link>. The feed
+                refreshes automatically every 30 minutes, around the clock.
+              </p>
+            </div>
+          </section>
         </div>
       </div>
     </Layout>

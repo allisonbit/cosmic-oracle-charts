@@ -22,6 +22,7 @@ const staticRoutes = [
   { path: "/portfolio", priority: "0.7", changefreq: "daily" },
   { path: "/learn", priority: "0.8", changefreq: "daily" },
   { path: "/insights", priority: "0.8", changefreq: "hourly" },
+  { path: "/news", priority: "0.9", changefreq: "hourly" },
   { path: "/trade", priority: "0.8", changefreq: "hourly" },
   { path: "/scanner", priority: "0.7", changefreq: "daily" },
   { path: "/about", priority: "0.5", changefreq: "monthly" },
@@ -202,6 +203,10 @@ function generateSitemapIndex(articleCount: number): string {
     <lastmod>${now}</lastmod>
   </sitemap>
   <sitemap>
+    <loc>${supabaseUrl}/functions/v1/sitemap?type=news</loc>
+    <lastmod>${now}</lastmod>
+  </sitemap>
+  <sitemap>
     <loc>${supabaseUrl}/functions/v1/sitemap?type=learn</loc>
     <lastmod>${now}</lastmod>
   </sitemap>
@@ -276,10 +281,25 @@ function generateArticlesSitemap(articles: BlogArticleRow[]): string {
 
   for (const article of articles) {
     if (learnSlugs.has(article.slug) || seen.has(article.slug)) continue;
+    if (article.source === "news") continue; // news has its own sitemap (type=news)
     seen.add(article.slug);
     const lastmod = article.published_at ? article.published_at.split("T")[0] : today;
     const prefix = article.source === "ai-blog" ? "/learn" : "/insights";
     urls += url(`${SITE_URL}${prefix}/${article.slug}`, lastmod, "daily", "0.7");
+  }
+  return wrapUrlset(urls);
+}
+
+function generateNewsSitemap(articles: BlogArticleRow[]): string {
+  const today = new Date().toISOString().split("T")[0];
+  const seen = new Set<string>();
+  let urls = "";
+  for (const article of articles) {
+    if (article.source !== "news" || seen.has(article.slug)) continue;
+    seen.add(article.slug);
+    const lastmod = article.published_at ? article.published_at.split("T")[0] : today;
+    // Fresh news → high crawl priority + hourly changefreq for Google News-style discovery.
+    urls += url(`${SITE_URL}/news/${article.slug}`, lastmod, "hourly", "0.8");
   }
   return wrapUrlset(urls);
 }
@@ -326,6 +346,10 @@ function generateFullSitemap(articles: BlogArticleRow[]): string {
     if (learnSlugs.has(article.slug) || seen.has(article.slug)) continue;
     seen.add(article.slug);
     const lastmod = article.published_at ? article.published_at.split("T")[0] : today;
+    if (article.source === "news") {
+      urls += url(`${SITE_URL}/news/${article.slug}`, lastmod, "hourly", "0.8");
+      continue;
+    }
     const prefix = article.source === "ai-blog" ? "/learn" : "/insights";
     urls += url(`${SITE_URL}${prefix}/${article.slug}`, lastmod, "daily", "0.7");
   }
@@ -370,6 +394,9 @@ Deno.serve(async (req) => {
     } else if (type === "articles") {
       const allArticles = await fetchAllArticleSlugs();
       sitemap = generateArticlesSitemap(allArticles);
+    } else if (type === "news") {
+      const allArticles = await fetchAllArticleSlugs();
+      sitemap = generateNewsSitemap(allArticles);
     } else if (type === "learn") {
       sitemap = generateLearnSitemap();
     } else {

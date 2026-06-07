@@ -242,6 +242,28 @@ add('/insights', {
   intro: ['Daily AI-generated market analysis covering Bitcoin, Ethereum, Solana and the broader altcoin market — combining on-chain data, technical indicators and sentiment.'],
   links: toolLinks,
 });
+add('/news', {
+  title: `Crypto News Today – Live Headlines + AI Sentiment (${MONTH} ${YEAR}) | Oracle Bull`,
+  description: `Breaking cryptocurrency news from 50+ trusted sources, each rated Bullish, Bearish or Neutral by Oracle AI. Bitcoin, Ethereum, Solana, DeFi & regulation — updated every 30 minutes. ${MONTH} ${YEAR}.`,
+  keywords: 'crypto news today, bitcoin news, ethereum news, latest cryptocurrency news, crypto market news, crypto headlines',
+  h1: `Crypto News Today — Live Headlines & AI Sentiment`,
+  intro: [
+    `The fastest way to read crypto news. Oracle Bull aggregates breaking headlines from 50+ trusted publications — including CoinDesk, Cointelegraph, Decrypt and The Block — and runs every story through our AI sentiment engine, so you instantly know whether the news is bullish, bearish or neutral for the market.`,
+    `Every brief links back to the original publisher and to the coins it affects, and the feed refreshes automatically every 30 minutes, around the clock. Updated ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'How often is the crypto news updated?', a: 'The Oracle Bull news feed refreshes automatically every 30 minutes, pulling the latest stories from 50+ crypto publications around the clock.' },
+    { q: 'What does the AI sentiment rating mean?', a: 'Each story is scored Bullish, Bearish or Neutral based on its likely short-term market impact — a research signal to gauge how the market may react, not financial advice.' },
+    { q: 'Where does the news come from?', a: 'Headlines are aggregated from trusted crypto publishers such as CoinDesk, Cointelegraph, Decrypt and The Block. Every article links back to the original source.' },
+  ],
+  links: [
+    { href: '/predictions', label: 'AI Price Predictions' },
+    { href: '/sentiment', label: 'Fear & Greed Index' },
+    { href: '/strength-meter', label: 'Crypto Strength Meter' },
+    { href: '/scanner', label: 'Token Scanner' },
+    ...coinLinks.slice(0, 6),
+  ],
+});
 add('/airdrops', {
   title: `Crypto Airdrops ${YEAR} – Active & Upcoming Airdrop Guides`,
   description: 'Discover active and upcoming crypto airdrops with step-by-step eligibility guides. Track the biggest airdrop opportunities and how to qualify.',
