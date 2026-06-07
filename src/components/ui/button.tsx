@@ -9,22 +9,24 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
+        // Lift-on-hover (translateY) instead of scale → no text shimmer / row overflow
         default:
-          "bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-primary/50 hover:scale-105",
+          "bg-primary text-primary-foreground shadow-elevation-sm hover:shadow-elevation-md hover:-translate-y-0.5 active:translate-y-0",
         destructive:
-          "bg-destructive text-destructive-foreground shadow-lg shadow-destructive/25 hover:shadow-destructive/50 hover:scale-105",
+          "bg-destructive text-destructive-foreground shadow-elevation-sm hover:shadow-elevation-md hover:-translate-y-0.5 active:translate-y-0",
         outline:
-          "border border-primary/50 bg-transparent text-primary hover:bg-primary/10 hover:border-primary hover:shadow-lg hover:shadow-primary/20",
+          "border border-primary/50 bg-transparent text-primary hover:bg-primary/10 hover:border-primary hover:-translate-y-0.5 active:translate-y-0",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-lg shadow-secondary/25 hover:shadow-secondary/50 hover:scale-105",
+          "bg-secondary text-secondary-foreground shadow-elevation-sm hover:shadow-elevation-md hover:-translate-y-0.5 active:translate-y-0",
         ghost:
           "text-foreground hover:bg-muted hover:text-primary",
         link:
           "text-primary underline-offset-4 hover:underline",
         cosmic:
-          "relative overflow-hidden bg-gradient-to-r from-primary via-secondary to-primary bg-[length:200%_100%] text-primary-foreground animate-shimmer shadow-lg hover:scale-105",
+          "relative overflow-hidden bg-gradient-to-r from-primary via-secondary to-primary bg-[length:200%_100%] text-primary-foreground animate-shimmer shadow-elevation-md hover:-translate-y-0.5 active:translate-y-0",
+        // Brand-aligned outlined glow (was hardcoded cyan that didn't match --primary)
         glow:
-          "bg-transparent border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground shadow-[0_0_20px_hsl(190_100%_50%/0.5)] hover:shadow-[0_0_30px_hsl(190_100%_50%/0.8)] transition-all duration-300",
+          "bg-transparent border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground shadow-[0_0_20px_-4px_hsl(var(--primary)/0.5)] hover:shadow-[0_0_30px_-4px_hsl(var(--primary)/0.8)] transition-all duration-300",
       },
       size: {
         default: "h-11 px-6 py-2",

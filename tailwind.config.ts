@@ -18,10 +18,13 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Inter", "ui-sans-serif", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif"],
-        // font-display now maps to the same clean Inter stack (no special display fonts)
-        display: ["Inter", "ui-sans-serif", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif"],
-        body: ["Inter", "ui-sans-serif", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif"],
+        // Body / UI — Plus Jakarta Sans (humanist, highly legible at small sizes)
+        sans: ["Plus Jakarta Sans", "ui-sans-serif", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica Neue", "Arial", "sans-serif"],
+        // Display — Sora (geometric, crypto-native) for headlines, stats, logo
+        display: ["Sora", "ui-sans-serif", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica Neue", "Arial", "sans-serif"],
+        body: ["Plus Jakarta Sans", "ui-sans-serif", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica Neue", "Arial", "sans-serif"],
+        // Numerals / addresses / hashes — JetBrains Mono (tabular, even rhythm)
+        mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -79,6 +82,25 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // Data-viz palette — also backs legacy `chart-4` utilities used in stats chips
+        chart: {
+          1: "hsl(var(--chart-1))",
+          2: "hsl(var(--chart-2))",
+          3: "hsl(var(--chart-3))",
+          4: "hsl(var(--chart-4))",
+          5: "hsl(var(--chart-5))",
+        },
+      },
+      spacing: {
+        // Restores the `h-13`/`w-13` step (3.25rem) referenced by hero CTAs
+        13: "3.25rem",
+      },
+      boxShadow: {
+        // Layered elevation scale — keeps cards reading as distinct surfaces
+        "elevation-sm": "var(--shadow-sm)",
+        "elevation-md": "var(--shadow-md)",
+        "elevation-lg": "var(--shadow-lg)",
+        "elevation-xl": "var(--shadow-xl)",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -110,6 +132,11 @@ export default {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
         },
+        // Subtle hover lift used by cards / interactive surfaces
+        lift: {
+          "0%": { transform: "translateY(0)" },
+          "100%": { transform: "translateY(-3px)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -118,6 +145,7 @@ export default {
         "scale-in": "scale-in 0.3s ease-out",
         "slide-in-right": "slide-in-right 0.3s ease-out",
         shimmer: "shimmer 2s linear infinite",
+        lift: "lift 0.2s ease-out forwards",
       },
       backgroundImage: {
         "gradient-cosmic": "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%)",

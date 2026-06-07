@@ -2,94 +2,81 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Clean, modern font stack using Inter for everything */
-@font-face {
-  font-family: 'Inter';
-  font-weight: 400;
-  font-display: swap;
-  src: local('Inter'), url('@fontsource/inter/files/inter-latin-400-normal.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Inter';
-  font-weight: 500;
-  font-display: swap;
-  src: local('Inter'), url('@fontsource/inter/files/inter-latin-500-normal.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Inter';
-  font-weight: 600;
-  font-display: swap;
-  src: local('Inter'), url('@fontsource/inter/files/inter-latin-600-normal.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Inter';
-  font-weight: 700;
-  font-display: swap;
-  src: local('Inter'), url('@fontsource/inter/files/inter-latin-700-normal.woff2') format('woff2');
-}
+/* Brand type system loaded via Google Fonts CDN in index.html:
+   Sora (display) · Plus Jakarta Sans (body) · JetBrains Mono (numerals). */
 
 @layer base {
   :root {
-    /* Clean white/light theme */
-    --background: 0 0% 100%;
-    --foreground: 220 15% 15%;
+    /* ── Surfaces: warm near-white, deep-slate ink ───────────────────────── */
+    --background: 220 33% 99%;
+    --foreground: 222 30% 12%;
 
-    --card: 0 0% 99%;
-    --card-foreground: 220 15% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 30% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 15%;
+    --popover-foreground: 222 30% 12%;
 
-    /* Professional blue primary */
-    --primary: 220 80% 50%;
+    /* ── Brand: indigo primary, teal accent ──────────────────────────────── */
+    --primary: 231 64% 55%;
     --primary-foreground: 0 0% 100%;
 
-    /* Teal secondary */
-    --secondary: 200 60% 45%;
+    --secondary: 189 80% 41%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 10% 46%;
+    --muted: 220 20% 96%;
+    --muted-foreground: 220 12% 42%;
 
-    --accent: 200 60% 45%;
+    --accent: 189 80% 41%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 72% 51%;
+    --destructive: 356 68% 54%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Bullish green */
-    --success: 160 84% 32%;
+    /* Bullish green / bearish red / warning amber */
+    --success: 152 58% 40%;
     --success-foreground: 0 0% 100%;
 
-    /* Bearish red */
-    --danger: 0 72% 51%;
+    --danger: 356 68% 54%;
     --danger-foreground: 0 0% 100%;
 
-    /* Warning */
-    --warning: 38 92% 50%;
-    --warning-foreground: 220 15% 15%;
+    --warning: 36 94% 52%;
+    --warning-foreground: 222 30% 12%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 220 80% 50%;
+    --border: 220 20% 90%;
+    --input: 220 20% 90%;
+    --ring: 231 64% 55%;
 
     --radius: 0.75rem;
 
-    /* Subtle shadow effects instead of glows */
-    --glow-primary: 0 4px 14px hsl(220 80% 50% / 0.15), 0 1px 3px hsl(220 80% 50% / 0.1);
-    --glow-secondary: 0 4px 14px hsl(200 60% 45% / 0.15), 0 1px 3px hsl(200 60% 45% / 0.1);
-    --glow-success: 0 4px 14px hsl(160 84% 32% / 0.15);
-    --glow-danger: 0 4px 14px hsl(0 72% 51% / 0.15);
+    /* ── Data-viz palette (also backs legacy chart-4 utilities) ───────────── */
+    --chart-1: 231 64% 55%;   /* indigo */
+    --chart-2: 189 80% 41%;   /* teal */
+    --chart-3: 152 58% 40%;   /* green */
+    --chart-4: 270 60% 58%;   /* violet */
+    --chart-5: 36 94% 52%;    /* amber */
+
+    /* ── Layered elevation scale — distinct, soft, neutral shadows ────────── */
+    --shadow-sm: 0 1px 2px hsl(222 30% 12% / 0.05), 0 1px 3px hsl(222 30% 12% / 0.04);
+    --shadow-md: 0 2px 6px hsl(222 30% 12% / 0.06), 0 4px 12px hsl(222 30% 12% / 0.05);
+    --shadow-lg: 0 6px 16px hsl(222 30% 12% / 0.08), 0 12px 28px hsl(222 30% 12% / 0.06);
+    --shadow-xl: 0 12px 32px hsl(222 30% 12% / 0.10), 0 24px 48px hsl(222 30% 12% / 0.08);
+
+    /* Tinted accent shadows for primary CTAs (used by buttons/cards) */
+    --glow-primary: 0 6px 20px hsl(231 64% 55% / 0.22), 0 2px 6px hsl(231 64% 55% / 0.12);
+    --glow-secondary: 0 6px 20px hsl(189 80% 41% / 0.22), 0 2px 6px hsl(189 80% 41% / 0.12);
+    --glow-success: 0 6px 20px hsl(152 58% 40% / 0.20);
+    --glow-danger: 0 6px 20px hsl(356 68% 54% / 0.20);
 
     /* Sidebar */
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 220 15% 15%;
-    --sidebar-primary: 220 80% 50%;
+    --sidebar-background: 220 30% 98%;
+    --sidebar-foreground: 222 30% 12%;
+    --sidebar-primary: 231 64% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 200 60% 45%;
+    --sidebar-accent: 189 80% 41%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 220 80% 50%;
+    --sidebar-border: 220 20% 90%;
+    --sidebar-ring: 231 64% 55%;
   }
 }
 
@@ -118,7 +105,12 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight;
+    @apply font-display font-semibold tracking-tight;
+  }
+
+  /* Numerals, prices, and addresses read better in the mono face */
+  .tabular-nums, [class*="font-mono"] {
+    font-variant-numeric: tabular-nums;
   }
 
   /* Improve touch targets globally */
@@ -159,20 +151,32 @@
 }
 
 @layer components {
-  /* Card effect - clean light style */
+  /* Card surface — distinct, softly elevated, lifts on hover (pointer devices) */
   .holo-card {
     @apply relative overflow-hidden rounded-xl;
     background: hsl(var(--card));
     border: 1px solid hsl(var(--border));
-    box-shadow: 0 1px 3px hsl(220 15% 15% / 0.06), 0 1px 2px hsl(220 15% 15% / 0.04);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   }
 
-  .holo-card::before {
-    content: none;
+  @media (pointer: fine) {
+    .holo-card:hover {
+      box-shadow: var(--shadow-md);
+    }
   }
 
-  .holo-card::after {
-    content: none;
+  .holo-card::before { content: none; }
+  .holo-card::after { content: none; }
+
+  /* Frosted-glass surface for floating widgets/overlays.
+     (Was referenced across the app but previously undefined → rendered invisible.) */
+  .glass-panel {
+    background: hsl(var(--card) / 0.72);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border: 1px solid hsl(var(--border) / 0.6);
+    box-shadow: var(--shadow-lg);
   }
 
   /* Text emphasis (replaces glow) */
@@ -438,19 +442,12 @@ section {
   overflow-anchor: auto;
 }
 
-/* Reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* Focus visible for accessibility */
+/* Focus visible for accessibility — branded ring + soft halo */
 :focus-visible {
   outline: 2px solid hsl(var(--primary));
   outline-offset: 2px;
+  border-radius: calc(var(--radius) - 4px);
+  box-shadow: 0 0 0 4px hsl(var(--primary) / 0.15);
 }
 
 /* High contrast mode support */
@@ -872,16 +869,7 @@ html {
   transition-duration: 0.01ms !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  ::before,
-  ::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
+/* (Global prefers-reduced-motion handling lives in the canonical block above.) */
 
 /* Contain layout for complex components */
 .contain-layout {

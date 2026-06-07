@@ -36,9 +36,12 @@ body {
   }
 }
 
-/* Smoother hover transitions for all interactive elements */
+/* Smoother hover transitions for interactive elements.
+   Scoped to paint/transform props (not `all`) so layout properties never animate → no jank. */
 a, button, [role="button"] {
-  transition: all 0.15s ease-out;
+  transition: color 0.15s ease-out, background-color 0.15s ease-out,
+              border-color 0.15s ease-out, box-shadow 0.15s ease-out,
+              transform 0.15s ease-out, opacity 0.15s ease-out;
 }
 
 /* Improve card hover effects */
@@ -76,21 +79,22 @@ html {
   scrollbar-gutter: stable;
 }
 
-/* Custom scrollbar styling */
+/* Custom scrollbar — matches the canonical 6px treatment in index.css */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(var(--background));
+  background: hsl(var(--muted) / 0.3);
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted));
-  border-radius: 4px;
+  background: hsl(var(--primary) / 0.5);
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground));
+  background: hsl(var(--primary) / 0.7);
 }
