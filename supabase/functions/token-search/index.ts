@@ -75,7 +75,7 @@ serve(async (req) => {
     // "all" = every chain worldwide → don't filter DexScreener results by a single chain.
     const isAll = chain === 'all';
     
-    let tokens: any[] = [];
+    const tokens: any[] = [];
     const offset = (page - 1) * limit;
 
     // ─── MODE: Trending / Top ───

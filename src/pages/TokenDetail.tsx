@@ -167,6 +167,11 @@ export default function TokenDetail() {
   const isPositive = (token.change24h || 0) >= 0;
 
   const canonical = `${SITE_URL}/explorer/${chain}/${address}`;
+  // Only link to a /chain page when one actually exists (explorer covers more
+  // chains than the analytics pages; bsc maps to the bnb chain page).
+  const CHAIN_PAGE_IDS = new Set(["ethereum", "solana", "bnb", "avalanche", "polygon", "arbitrum", "base", "optimism", "sui", "ton"]);
+  const chainPageId = chain === "bsc" ? "bnb" : chain;
+  const hasChainPage = CHAIN_PAGE_IDS.has(chainPageId);
   const tokenFaqs = [
     {
       q: `How much is ${token.symbol} worth today?`,
@@ -339,7 +344,9 @@ export default function TokenDetail() {
             <Link to={`/price-prediction/${token.coingeckoId || token.symbol.toLowerCase()}`} className="text-xs px-3 py-1.5 rounded-lg bg-primary/5 border border-border hover:border-primary/40 hover:text-primary transition-colors">{token.symbol} Price Prediction</Link>
             <Link to="/explorer" className="text-xs px-3 py-1.5 rounded-lg bg-primary/5 border border-border hover:border-primary/40 hover:text-primary transition-colors">Token Explorer</Link>
             <Link to="/scanner" className="text-xs px-3 py-1.5 rounded-lg bg-primary/5 border border-border hover:border-primary/40 hover:text-primary transition-colors">Token Scanner</Link>
-            <Link to={`/chain/${chain}`} className="text-xs px-3 py-1.5 rounded-lg bg-primary/5 border border-border hover:border-primary/40 hover:text-primary transition-colors">{chainData.name} Analytics</Link>
+            {hasChainPage && (
+              <Link to={`/chain/${chainPageId}`} className="text-xs px-3 py-1.5 rounded-lg bg-primary/5 border border-border hover:border-primary/40 hover:text-primary transition-colors">{chainData.name} Analytics</Link>
+            )}
           </div>
         </section>
       </div>
