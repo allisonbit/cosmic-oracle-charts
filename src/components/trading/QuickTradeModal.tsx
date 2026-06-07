@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { ArrowDownUp, ArrowRight, Globe, Loader2, Zap, RefreshCw, AlertTriangle, Plus, Lock } from "lucide-react";
+import { ArrowDownUp, ArrowRight, Globe, Loader2, Zap, RefreshCw, AlertTriangle, Plus, Lock, ExternalLink } from "lucide-react";
 import { formatUnits } from "viem";
 import { useTrading } from "@/hooks/useTrading";
 import { useAppStore } from "@/store/useAppStore";
@@ -18,7 +18,25 @@ export function QuickTradeModal() {
   const target = useAppStore(state => state.tradeTarget);
   const closeTrade = useAppStore(state => state.closeTrade);
   const { authenticated, login, ensurePrivy } = useAuth();
-  const { loading, error, getSwapQuote, getSwapPrice, getBridgeQuote, supportedChains } = useTrading();
+  const { loading, error, getSwapQuote, getSwapPrice, getJupiterQuote, getBridgeQuote, supportedChains } = useTrading();
+
+  // ── Solana detection — route SPL mints through Jupiter, not 0x ──────────────
+  const isSolanaTarget =
+    target?.chain?.toLowerCase() === "solana" ||
+    (!!target?.contractAddress && !target.contractAddress.startsWith("0x") && target.contractAddress.length >= 32);
+  const [jupAmount, setJupAmount] = useState("0.1"); // SOL
+  const [jupQuote, setJupQuote] = useState<any>(null);
+
+  const handleJupiterQuote = useCallback(async () => {
+    if (!target?.contractAddress) return;
+    const lamports = BigInt(Math.floor(Number(jupAmount || "0") * 1e9)).toString();
+    const result = await getJupiterQuote(target.contractAddress, lamports, "buy");
+    if (result) setJupQuote(result);
+  }, [target, jupAmount, getJupiterQuote]);
+
+  const jupiterUrl = target?.contractAddress
+    ? `https://jup.ag/swap/SOL-${target.contractAddress}`
+    : "https://jup.ag";
 
   // When the trade modal opens, load Privy so auth state resolves.
   useEffect(() => { if (isOpen) ensurePrivy(); }, [isOpen, ensurePrivy]);
@@ -138,6 +156,55 @@ export function QuickTradeModal() {
           </DialogTitle>
         </DialogHeader>
 
+        {isSolanaTarget ? (
+          /* ── SOLANA (Jupiter) ─────────────────────────────────────────── */
+          <div className="space-y-3 mt-1">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 rounded-lg p-2">
+              <Zap className="w-3.5 h-3.5 text-secondary" />
+              Solana token — routed via Jupiter, the Solana DEX aggregator.
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs text-muted-foreground">You pay (SOL)</label>
+              <div className="flex gap-2">
+                <Input
+                  type="number" placeholder="0.1" value={jupAmount}
+                  onChange={e => { setJupAmount(e.target.value); setJupQuote(null); }}
+                  className="flex-1"
+                />
+                <Button variant="outline" size="sm" onClick={handleJupiterQuote} disabled={loading || !jupAmount}>
+                  {loading ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
+                  <span className="ml-1">Quote</span>
+                </Button>
+              </div>
+            </div>
+
+            {jupQuote?.outAmount && (
+              <div className="text-xs text-muted-foreground bg-muted/30 rounded-lg p-2 space-y-1">
+                <div className="flex justify-between">
+                  <span>You receive (est.)</span>
+                  <span className="font-mono text-foreground">
+                    {Number(jupQuote.outAmount).toLocaleString()} {target?.symbol} (base units)
+                  </span>
+                </div>
+                {jupQuote.priceImpactPct != null && (
+                  <div className="flex justify-between"><span>Price impact</span><span>{(Number(jupQuote.priceImpactPct) * 100).toFixed(2)}%</span></div>
+                )}
+              </div>
+            )}
+
+            {error && <div className="flex items-center gap-2 text-xs text-destructive bg-destructive/10 rounded-lg p-2"><AlertTriangle className="w-3 h-3" /><span>{error}</span></div>}
+
+            <Button asChild className="w-full gap-1.5" size="sm">
+              <a href={jupiterUrl} target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="w-4 h-4" /> Trade {target?.symbol} on Jupiter
+              </a>
+            </Button>
+            <p className="text-[10px] text-muted-foreground text-center">
+              Opens Jupiter with this token pre-selected. Always verify the contract address before trading.
+            </p>
+          </div>
+        ) : (
         <Tabs value={tab} onValueChange={setTab}>
           <TabsList className="w-full grid grid-cols-2">
             <TabsTrigger value="swap">Swap</TabsTrigger>
@@ -282,6 +349,7 @@ export function QuickTradeModal() {
             )}
           </TabsContent>
         </Tabs>
+        )}
       </DialogContent>
     </Dialog>
   );

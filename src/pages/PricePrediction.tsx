@@ -2,6 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { usePricePrediction, getCryptoBySlug, TOP_CRYPTOS } from "@/hooks/usePricePrediction";
+import { useResolvedCoin } from "@/hooks/useResolvedCoin";
 
 import { PredictionSEO } from "@/components/prediction/PredictionSEO";
 import { PredictionHero } from "@/components/prediction/PredictionHero";
@@ -13,35 +14,27 @@ import { EnhancedFAQ } from "@/components/prediction/EnhancedFAQ";
 import { MarketQuestionsLinks, RelatedToolsLinks, TimeframeCrossLinks, HighIntentCTA } from "@/components/prediction/HighIntentLinks";
 import { MarketDataPanel } from "@/components/prediction/MarketDataPanel";
 import { SignalChart } from "@/components/prediction/SignalChart";
+import { TradeSetupCard } from "@/components/prediction/TradeSetupCard";
+import { SetupTrackRecord } from "@/components/prediction/SetupTrackRecord";
+import { PredictionWriteUp } from "@/components/prediction/PredictionWriteUp";
+import { SetupSchema } from "@/components/prediction/SetupSchema";
 import { GlobalTokenSearch } from "@/components/prediction/GlobalTokenSearch";
 import { GlobalToken } from "@/hooks/useGlobalTokenSearch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { InArticleAd } from "@/components/ads";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RefreshCw, AlertTriangle, Radio, Clock, Activity, Globe, ChevronRight, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
-import { invokeFunction } from "@/integrations/supabase/functions";
-
-interface DynamicToken {
-  id: string;
-  symbol: string;
-  name: string;
-}
 
 export default function PricePrediction() {
   const { coinId, timeframe = 'daily' } = useParams<{ coinId: string; timeframe: string }>();
   const navigate = useNavigate();
   const predefinedCrypto = coinId ? getCryptoBySlug(coinId) : TOP_CRYPTOS[0];
-  const [dynamicToken, setDynamicToken] = useState<DynamicToken | null>(null);
-  const [isLoadingToken, setIsLoadingToken] = useState(false);
-  const [tokenError, setTokenError] = useState<string | null>(null);
-  const [retryCount, setRetryCount] = useState(0);
   const [liveTime, setLiveTime] = useState(new Date());
-  
+
   // Live clock
   useEffect(() => {
     const interval = setInterval(() => setLiveTime(new Date()), 1000);
@@ -49,68 +42,30 @@ export default function PricePrediction() {
   }, []);
 
   const handleTokenSelect = useCallback((token: GlobalToken) => {
-    const tokenSlug = token.id.toLowerCase().replace(/\s+/g, '-');
-    navigate(`/price-prediction/${tokenSlug}/daily`);
+    // Prefer the contract address as the slug for on-chain-only tokens so the
+    // resolver can re-find them; otherwise use the coin id.
+    const slug = (token.address || token.id || token.symbol).toString().toLowerCase().replace(/\s+/g, '-');
+    navigate(`/price-prediction/${slug}/daily`);
   }, [navigate]);
-  
-  const handleRetry = useCallback(() => {
-    setRetryCount(prev => prev + 1);
-    setTokenError(null);
-    setIsLoadingToken(true);
-  }, []);
-  
-  useEffect(() => {
-    if (!predefinedCrypto && coinId && coinId !== 'bitcoin') {
-      setIsLoadingToken(true);
-      setTokenError(null);
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
-      
-      const fetchTokenInfo = async () => {
-        try {
-          const { data, error } = await invokeFunction('crypto-prices');
-          if (!error && data?.prices) {
-            const match = data.prices.find((p: any) => 
-              p.id === coinId || p.symbol?.toLowerCase() === coinId.toLowerCase() || p.name?.toLowerCase() === coinId.toLowerCase()
-            );
-            
-            if (match) {
-              setDynamicToken({ 
-                id: match.id || coinId, 
-                symbol: match.symbol?.toUpperCase() || coinId.toUpperCase(), 
-                name: match.name || coinId 
-              });
-              setIsLoadingToken(false);
-              return;
-            }
-          }
-          
-          // Fallback if not found in edge function
-          const formattedName = coinId.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-          setDynamicToken({ id: coinId, symbol: coinId.toUpperCase().substring(0, 6), name: formattedName });
-        } catch (error) {
-          const formattedName = coinId.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-          setDynamicToken({ id: coinId, symbol: coinId.toUpperCase().substring(0, 6), name: formattedName });
-        }
-        clearTimeout(timeoutId);
-        setIsLoadingToken(false);
-      };
-      fetchTokenInfo();
-      return () => { controller.abort(); clearTimeout(timeoutId); };
-    } else {
-      setDynamicToken(null);
-    }
-  }, [coinId, predefinedCrypto, retryCount]);
-  
-  const crypto = predefinedCrypto || dynamicToken || { id: coinId || 'bitcoin', symbol: coinId?.toUpperCase() || 'BTC', name: coinId || 'Bitcoin' };
+
+  // Canonical resolution — accepts slug, symbol, EVM contract, or Solana mint.
+  // Predefined top coins resolve instantly (no network call).
+  const { data: resolved, isLoading: isLoadingToken } = useResolvedCoin(coinId, predefinedCrypto);
+
+  const crypto = resolved
+    ? { id: resolved.coinId, symbol: resolved.symbol, name: resolved.name }
+    : (predefinedCrypto || { id: coinId || 'bitcoin', symbol: coinId?.toUpperCase() || 'BTC', name: coinId || 'Bitcoin' });
+  const contractAddress = resolved?.contractAddress;
+  const chain = resolved?.chain;
   const validTimeframe = ['daily', 'weekly', 'monthly'].includes(timeframe) ? timeframe as 'daily' | 'weekly' | 'monthly' : 'daily';
   const { data, isLoading, error, dataUpdatedAt } = usePricePrediction(
     crypto?.id || 'bitcoin',
     crypto?.symbol || 'btc',
     validTimeframe,
-    !isLoadingToken
+    !isLoadingToken,
+    { contractAddress, chain }
   );
-  
+
   const timeframeLabel = validTimeframe === 'daily' ? 'Today' : validTimeframe === 'weekly' ? 'This Week' : 'This Month';
   const refreshRate = validTimeframe === 'daily' ? '5 min' : validTimeframe === 'weekly' ? '30 min' : '1 hr';
 
@@ -134,32 +89,23 @@ export default function PricePrediction() {
       </Layout>
     );
   }
-  
-  if (tokenError) {
-    return (
-      <Layout>
-        <div className="container mx-auto px-4 py-8 max-w-6xl">
-          <Card className="border-danger/20 bg-danger/5">
-            <CardContent className="p-8 text-center space-y-4">
-              <AlertTriangle className="h-10 w-10 text-danger mx-auto" />
-              <h2 className="text-lg font-semibold text-danger">{tokenError}</h2>
-              <p className="text-muted-foreground text-sm">Unable to load token information.</p>
-              <Button onClick={handleRetry} variant="outline" size="sm">
-                <RefreshCw className="h-3.5 w-3.5 mr-1.5" /> Try Again
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </Layout>
-    );
-  }
-  
+
   return (
     <Layout>
-      <PredictionSEO 
+      <PredictionSEO
         coinName={crypto.name} symbol={crypto.symbol} timeframe={validTimeframe}
         currentPrice={data?.currentPrice} bias={data?.bias} confidence={data?.confidence}
       />
+      {data && (
+        <SetupSchema
+          coinName={crypto.name} symbol={crypto.symbol} timeframe={validTimeframe}
+          bias={data.bias} confidence={data.confidence} currentPrice={data.currentPrice}
+          entryLow={(data.tradingZones?.entryZone as any)?.min}
+          entryHigh={(data.tradingZones?.entryZone as any)?.max}
+          stopLoss={data.tradingZones?.stopLoss} takeProfit1={data.tradingZones?.takeProfit1}
+          writeUp={data.writeUp}
+        />
+      )}
       
       <div className="container mx-auto px-4 py-6 max-w-7xl">
         
@@ -254,7 +200,25 @@ export default function PricePrediction() {
                   stopLoss={data.tradingZones?.stopLoss} takeProfit={data.tradingZones?.takeProfit1}
                   timeframe={validTimeframe}
                 />
-                
+
+                {/* Persisted, monitored trade setup + trade buttons */}
+                <TradeSetupCard
+                  coinId={crypto.id} symbol={crypto.symbol} name={crypto.name}
+                  timeframe={validTimeframe}
+                  contractAddress={contractAddress} chain={chain} image={resolved?.image}
+                  fallback={{
+                    bias: data.bias,
+                    confidence: data.confidence,
+                    currentPrice: data.currentPrice,
+                    entryLow: (data.tradingZones?.entryZone as any)?.min ?? data.currentPrice * 0.98,
+                    entryHigh: (data.tradingZones?.entryZone as any)?.max ?? data.currentPrice,
+                    stopLoss: data.tradingZones?.stopLoss ?? data.currentPrice * 0.95,
+                    takeProfit1: data.tradingZones?.takeProfit1 ?? data.currentPrice * 1.05,
+                    takeProfit2: data.tradingZones?.takeProfit2 ?? data.currentPrice * 1.10,
+                    takeProfit3: data.tradingZones?.takeProfit3 ?? data.currentPrice * 1.15,
+                  }}
+                />
+
                 {/* Signal Chart */}
                 <SignalChart
                   symbol={crypto.symbol} name={crypto.name} currentPrice={data.currentPrice}
@@ -268,9 +232,19 @@ export default function PricePrediction() {
                     takeProfit3: data.tradingZones.takeProfit3 || data.currentPrice * 1.15,
                   } : undefined}
                 />
+
+                {/* Honest setup track record */}
+                <SetupTrackRecord coinId={crypto.id} name={crypto.name} />
+
                 
                 {/* Market Data */}
                 <MarketDataPanel data={data} coinName={crypto.name} />
+
+                {/* Longform analyst write-up (SEO depth) */}
+                <PredictionWriteUp
+                  coinName={crypto.name} symbol={crypto.symbol}
+                  timeframe={validTimeframe} writeUp={data.writeUp}
+                />
                 
                 {/* Analysis Panels */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

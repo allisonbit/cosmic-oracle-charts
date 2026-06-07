@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { TrendingUp, TrendingDown, Minus, ChevronRight, Target, Shield, Activity } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { seededRng, utcDayKey } from "@/lib/seededRandom";
 
 interface PredictionCardProps {
   crypto: {
@@ -28,8 +29,11 @@ export function PredictionCard({ crypto }: PredictionCardProps) {
     return `$${(price ?? 0).toPrecision(4)}`;
   };
 
-  const indicatorAlignment = crypto.indicatorAlignment || Math.floor(30 + Math.random() * 18);
-  const signalStrength = crypto.signalStrength || Math.floor(crypto.confidence * 0.9 + Math.random() * 10);
+  // Seeded by coin+day so these display-only metrics stay stable across renders
+  // (was Math.random() → the strength bar twitched every render).
+  const rng = seededRng(`${crypto.id}|${crypto.symbol}|${utcDayKey()}`);
+  const indicatorAlignment = crypto.indicatorAlignment || Math.floor(30 + rng() * 18);
+  const signalStrength = crypto.signalStrength || Math.floor(crypto.confidence * 0.9 + rng() * 10);
 
   // Calculate mock trading zones based on price and bias
   const priceMultiplier = crypto.bias === 'bullish' ? 1 : crypto.bias === 'bearish' ? -1 : 0;

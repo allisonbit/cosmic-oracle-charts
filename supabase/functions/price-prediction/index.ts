@@ -13,6 +13,8 @@ const predictionRequestSchema = z.object({
   coinId: z.string().min(1).max(100),
   symbol: z.string().min(1).max(20),
   timeframe: z.enum(['daily', 'weekly', 'monthly']),
+  contractAddress: z.string().min(1).max(120).optional(),
+  chain: z.string().min(1).max(40).optional(),
   currentPrice: z.number().positive().max(1e12).optional(),
   priceChange24h: z.number().min(-100).max(10000).optional(),
   volume24h: z.number().nonnegative().max(1e15).optional(),
@@ -45,6 +47,35 @@ interface TechnicalIndicators {
   atr: number;
   obv: string;
   vwap: number;
+}
+
+// ── Deterministic seeded jitter ───────────────────────────────────────────────
+// A setup must be STABLE for a given coin/timeframe within a UTC day. Using
+// Math.random() made levels/confidence re-roll on every cache miss (the "setups
+// drop every second" bug). We seed a tiny PRNG by coin+timeframe+UTC-date so the
+// same inputs always yield the same small jitter all day, then it rolls over.
+function hashSeed(str: string): number {
+  let h = 2166136261 >>> 0;
+  for (let i = 0; i < str.length; i++) {
+    h = Math.imul(h ^ str.charCodeAt(i), 16777619);
+  }
+  return h >>> 0;
+}
+
+function mulberry32(seed: number): () => number {
+  let a = seed >>> 0;
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** Seeded RNG for a coin/timeframe, stable across a UTC day. */
+function seededRng(coinId: string, symbol: string, timeframe: string): () => number {
+  const day = new Date().toISOString().slice(0, 10); // YYYY-MM-DD (UTC)
+  return mulberry32(hashSeed(`${coinId}|${symbol}|${timeframe}|${day}`));
 }
 
 function getSupabaseClient() {
@@ -84,6 +115,62 @@ async function cachePrediction(supabase: any, prediction: any, coinId: string, s
       created_at: now.toISOString()
     }, { onConflict: 'coin_id,timeframe', ignoreDuplicates: false });
   } catch (e) { console.error("Cache save error:", e); }
+}
+
+// ── Persist ONE active global setup per coin/timeframe ────────────────────────
+// Generate-once: if an active setup already exists we leave its levels alone (so
+// it can "play out") and only refresh the display price. A new setup is created
+// only when none is active (the monitor resolves old ones first).
+async function upsertGlobalSetup(supabase: any, prediction: any, extra: { contractAddress?: string; chain?: string }) {
+  try {
+    const { coinId, symbol, timeframe } = prediction;
+    const { data: existing } = await supabase
+      .from('trade_setups')
+      .select('id')
+      .eq('coin_id', coinId)
+      .eq('timeframe', timeframe)
+      .eq('scope', 'global')
+      .eq('status', 'active')
+      .maybeSingle();
+
+    if (existing) {
+      // Keep the setup intact; just refresh the live price for display.
+      await supabase.from('trade_setups')
+        .update({ last_price: prediction.currentPrice, updated_at: new Date().toISOString() })
+        .eq('id', existing.id);
+      return;
+    }
+
+    const tz = prediction.tradingZones || {};
+    const ttlDays = timeframe === 'daily' ? 2 : timeframe === 'weekly' ? 10 : 35;
+    await supabase.from('trade_setups').insert({
+      scope: 'global',
+      coin_id: coinId,
+      symbol: symbol.toUpperCase(),
+      name: prediction.name || symbol.toUpperCase(),
+      contract_address: extra.contractAddress || null,
+      chain: extra.chain || null,
+      timeframe,
+      bias: prediction.bias,
+      confidence: prediction.confidence,
+      entry_price: prediction.currentPrice,
+      entry_low: tz.entryZone?.min ?? prediction.currentPrice,
+      entry_high: tz.entryZone?.max ?? prediction.currentPrice,
+      stop_loss: tz.stopLoss ?? 0,
+      take_profit_1: tz.takeProfit1 ?? 0,
+      take_profit_2: tz.takeProfit2 ?? 0,
+      take_profit_3: tz.takeProfit3 ?? 0,
+      status: 'active',
+      last_price: prediction.currentPrice,
+      peak_price: prediction.currentPrice,
+      write_up: prediction.writeUp || prediction.summary || null,
+      seo_slug: `${coinId}-${timeframe}`,
+      expires_at: new Date(Date.now() + ttlDays * 86400_000).toISOString(),
+    });
+  } catch (e) {
+    // Non-fatal: the page works even if the setups table isn't deployed yet.
+    console.error("Setup upsert error:", e);
+  }
 }
 
 // ─── Market Data Fetching ───────────────────────────────────────────────────
@@ -140,13 +227,58 @@ async function fetchFromDexScreener(symbol: string): Promise<MarketData | null> 
   } catch { return null; }
 }
 
+async function fetchFromDexScreenerAddress(address: string, chain?: string): Promise<MarketData | null> {
+  try {
+    const r = await fetch(
+      `https://api.dexscreener.com/latest/dex/tokens/${address}`,
+      { signal: AbortSignal.timeout(8000) }
+    );
+    if (!r.ok) return null;
+    const d = await r.json();
+    const pairs = d?.pairs || [];
+    if (pairs.length === 0) return null;
+    // Prefer a pair on the requested chain, else the most-liquid pair.
+    const onChain = chain ? pairs.filter((p: any) => p.chainId === chain) : [];
+    const pool = (onChain.length > 0 ? onChain : pairs)
+      .sort((a: any, b: any) => (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0));
+    const pair = pool[0];
+    const price = parseFloat(pair.priceUsd || '0');
+    if (!price) return null;
+    const h24 = pair.priceChange?.h24 || 0;
+    return {
+      price,
+      change24h: h24,
+      high24h: price * (1 + Math.abs(h24) / 100),
+      low24h: price * (1 - Math.abs(h24) / 100),
+      volume24h: pair.volume?.h24 || 0,
+      marketCap: pair.fdv || pair.marketCap || 0,
+      ath: 0, atl: 0,
+      change7d: pair.priceChange?.h6 ? pair.priceChange.h6 * 2 : 0,
+      change30d: 0,
+    };
+  } catch { return null; }
+}
+
 async function fetchMarketData(coinId: string, symbol: string, reqData: any): Promise<MarketData> {
-  // Try CoinGecko first
-  let data = await fetchFromCoinGecko(coinId);
-  
-  // Fallback to DexScreener
+  const contractAddress: string | undefined = reqData.contractAddress;
+  const chain: string | undefined = reqData.chain;
+  const looksLikeAddress = /^0x[a-fA-F0-9]{40}$/.test(coinId) || (contractAddress && contractAddress.length > 20);
+
+  // For on-chain tokens (contract/mint), go straight to DexScreener by address —
+  // CoinGecko can't resolve a raw address. Majors keep CoinGecko-first below.
+  let data: MarketData | null = null;
+  if (contractAddress) {
+    data = await fetchFromDexScreenerAddress(contractAddress, chain);
+  }
+
+  // Try CoinGecko (works for known ids)
+  if (!data && !looksLikeAddress) {
+    data = await fetchFromCoinGecko(coinId);
+  }
+
+  // Fallback to DexScreener by symbol
   if (!data) {
-    console.log(`CoinGecko failed for ${coinId}, trying DexScreener...`);
+    console.log(`No data for ${coinId} via primary source, trying DexScreener search...`);
     data = await fetchFromDexScreener(symbol);
   }
   
@@ -180,13 +312,14 @@ async function fetchMarketData(coinId: string, symbol: string, reqData: any): Pr
 
 // ─── Technical Analysis ─────────────────────────────────────────────────────
 
-function generateTechnicals(md: MarketData): TechnicalIndicators {
+function generateTechnicals(md: MarketData, rng: () => number): TechnicalIndicators {
   const { price, change24h, high24h, low24h, change7d, change30d } = md;
-  
+
   // RSI: Use multi-timeframe change data for more accuracy
   const avgChange = (change24h + (change7d / 7) + (change30d / 30)) / 3;
   let rsi = 50 + avgChange * 3;
-  rsi = Math.max(5, Math.min(95, rsi + (Math.random() - 0.5) * 8));
+  // Seeded jitter (stable within the day) instead of Math.random()
+  rsi = Math.max(5, Math.min(95, rsi + (rng() - 0.5) * 8));
   const rsiSignal: 'oversold' | 'neutral' | 'overbought' = rsi < 30 ? 'oversold' : rsi > 70 ? 'overbought' : 'neutral';
   
   // MACD: Based on short vs long term momentum
@@ -314,7 +447,7 @@ Technicals:
 - ATR: $${technicals.atr} | OBV: ${technicals.obv}
 
 Return ONLY valid JSON:
-{"summary":"2-3 sentence analysis with specific price levels","keyFactors":["factor1","factor2","factor3","factor4"],"bullTriggers":["trigger1","trigger2","trigger3"],"bearTriggers":["trigger1","trigger2","trigger3"]}`;
+{"summary":"2-3 sentence analysis with specific price levels","writeUp":"3-4 well-written paragraphs (plain text, separated by \\n\\n): (1) the setup thesis and momentum, (2) the key levels — entry, the support/resistance that matter, and what confirms the move, (3) the invalidation/risk — what would prove this wrong, and (4) a balanced takeaway. Reference real numbers. No hype, no financial-advice language.","keyFactors":["factor1","factor2","factor3","factor4"],"bullTriggers":["trigger1","trigger2","trigger3"],"bearTriggers":["trigger1","trigger2","trigger3"]}`;
 
   try {
     const r = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -327,7 +460,7 @@ Return ONLY valid JSON:
           { role: "user", content: prompt }
         ],
         temperature: 0.2,
-        max_tokens: 600,
+        max_tokens: 1100,
       }),
     });
 
@@ -349,8 +482,10 @@ Return ONLY valid JSON:
     const match = content.match(/\{[\s\S]*\}/);
     if (match) {
       const parsed = JSON.parse(match[0]);
+      const fb = fallbackAnalysis(symbol, timeframe, technicals);
       return {
-        summary: parsed.summary || fallbackAnalysis(symbol, timeframe, technicals).summary,
+        summary: parsed.summary || fb.summary,
+        writeUp: typeof parsed.writeUp === 'string' && parsed.writeUp.length > 80 ? parsed.writeUp : fb.writeUp,
         keyFactors: Array.isArray(parsed.keyFactors) ? parsed.keyFactors : [],
         bullTriggers: Array.isArray(parsed.bullTriggers) ? parsed.bullTriggers : [],
         bearTriggers: Array.isArray(parsed.bearTriggers) ? parsed.bearTriggers : [],
@@ -366,12 +501,22 @@ Return ONLY valid JSON:
 function fallbackAnalysis(symbol: string, timeframe: string, t: TechnicalIndicators) {
   const tfText = timeframe === 'daily' ? 'today' : timeframe === 'weekly' ? 'this week' : 'this month';
   const trend = t.movingAverages.trend;
-  return {
-    summary: `${symbol.toUpperCase()} shows ${trend} momentum ${tfText} with RSI at ${t.rsi}. ${
+  const SYM = symbol.toUpperCase();
+  const summary = `${SYM} shows ${trend} momentum ${tfText} with RSI at ${t.rsi}. ${
       t.rsiSignal === 'oversold' ? 'Oversold conditions suggest potential bounce opportunity.' :
       t.rsiSignal === 'overbought' ? 'Overbought conditions warrant caution for new entries.' :
       'Technical indicators suggest a consolidation phase.'
-    } MACD confirms ${t.macd.trend} short-term bias with Stochastic at ${t.stochastic.k} (${t.stochastic.signal}).`,
+    } MACD confirms ${t.macd.trend} short-term bias with Stochastic at ${t.stochastic.k} (${t.stochastic.signal}).`;
+  // Deterministic, data-driven write-up used when the AI gateway is unavailable.
+  const writeUp = [
+    `${SYM} is trading with a ${trend} structure ${tfText}. The relative strength index sits at ${t.rsi}, placing momentum in ${t.rsiSignal} territory, while MACD reads ${t.macd.trend} and on-balance volume points to ${t.obv}. Together these paint a ${trend === 'bullish' ? 'constructive' : trend === 'bearish' ? 'cautious' : 'range-bound'} near-term picture.`,
+    `The levels that matter: price is ${trend === 'bullish' ? 'holding above' : trend === 'bearish' ? 'pinned below' : 'oscillating around'} its key moving averages, and the Stochastic at K=${t.stochastic.k} (${t.stochastic.signal}) suggests ${t.stochastic.signal === 'oversold' ? 'downside may be exhausting' : t.stochastic.signal === 'overbought' ? 'upside may be stretched' : 'no extreme is in play'}. A decisive move needs volume confirmation — current volume is ${t.volumeAnalysis.trend} at ${t.volumeAnalysis.strength}% relative strength.`,
+    `What would invalidate this view: a clean break of the opposing level on rising volume. For longs that means losing nearby support; for shorts it means reclaiming resistance. Position sizing and a defined stop matter more than the call itself, especially given crypto's volatility.`,
+    `Net takeaway: treat this as a ${trend} lean, not a certainty. Let price confirm at the levels above before acting, and manage risk to your own plan — this is analysis, not financial advice.`,
+  ].join("\n\n");
+  return {
+    summary,
+    writeUp,
     keyFactors: [
       `RSI at ${t.rsi} indicates ${t.rsiSignal} conditions`,
       `MACD histogram ${t.macd.histogram > 0 ? 'positive' : 'negative'} — ${t.macd.trend} momentum`,
@@ -435,8 +580,9 @@ serve(async (req) => {
     const md = await fetchMarketData(coinId, symbol, v.data);
     console.log(`${symbol}: $${md.price} | 24h: ${md.change24h.toFixed(2)}% | Vol: $${(md.volume24h/1e6).toFixed(1)}M`);
 
-    // Generate analysis
-    const technicals = generateTechnicals(md);
+    // Generate analysis (seeded RNG → stable setup for the whole UTC day)
+    const rng = seededRng(coinId, symbol, timeframe);
+    const technicals = generateTechnicals(md, rng);
     const levels = calculateLevels(md.price, md.high24h, md.low24h);
 
     // Bias scoring (more nuanced with more indicators)
@@ -457,7 +603,7 @@ serve(async (req) => {
 
     const bias: 'bullish' | 'bearish' | 'neutral' =
       score >= 4 ? 'bullish' : score <= -4 ? 'bearish' : 'neutral';
-    const confidence = Math.min(92, 45 + Math.abs(score) * 4 + Math.round(Math.random() * 8));
+    const confidence = Math.min(92, 45 + Math.abs(score) * 4 + Math.round(rng() * 8));
     const probBull = bias === 'bullish' ? confidence : bias === 'bearish' ? 100 - confidence : 50;
 
     // Price targets
@@ -512,6 +658,7 @@ serve(async (req) => {
       riskLevel,
       volatilityIndex: Math.round(volatility * 10) / 10,
       summary: ai.summary,
+      writeUp: ai.writeUp,
       keyFactors: ai.keyFactors,
       bullScenario: {
         target: priceTargets.aggressive.high,
@@ -537,6 +684,8 @@ serve(async (req) => {
 
     if (supabase) {
       cachePrediction(supabase, prediction, coinId, symbol, timeframe).catch(console.error);
+      // Persist/refresh the global trade setup so it can be monitored to outcome.
+      upsertGlobalSetup(supabase, prediction, { contractAddress: v.data.contractAddress, chain: v.data.chain }).catch(console.error);
     }
 
     return new Response(JSON.stringify(prediction),

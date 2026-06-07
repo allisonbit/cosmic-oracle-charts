@@ -43,6 +43,7 @@ export interface PredictionData {
   riskLevel: 'low' | 'medium' | 'high' | 'extreme';
   volatilityIndex: number;
   summary: string;
+  writeUp?: string;
   keyFactors: string[];
   bullScenario: { target: number; probability: number; triggers: string[] };
   bearScenario: { target: number; probability: number; triggers: string[] };
@@ -62,13 +63,16 @@ export function usePricePrediction(
   coinId: string,
   symbol: string,
   timeframe: 'daily' | 'weekly' | 'monthly',
-  enabled = true
+  enabled = true,
+  opts?: { contractAddress?: string; chain?: string }
 ) {
+  const contractAddress = opts?.contractAddress;
+  const chain = opts?.chain;
   return useQuery<PredictionData>({
-    queryKey: ['price-prediction', coinId, timeframe],
+    queryKey: ['price-prediction', coinId, timeframe, contractAddress ?? null],
     queryFn: async () => {
       const { data, error } = await invokeFunction('price-prediction', {
-        body: { coinId, symbol, timeframe }
+        body: { coinId, symbol, timeframe, contractAddress, chain }
       });
       
       if (error) {
@@ -96,7 +100,9 @@ export function usePricePrediction(
     refetchInterval: timeframe === 'daily' ? 5 * 60_000 : timeframe === 'weekly' ? 15 * 60_000 : 30 * 60_000,
     gcTime: 60 * 60_000,
     refetchIntervalInBackground: true,
-    refetchOnWindowFocus: true,
+    // A setup must stay put while the user reads it. Window-focus refetches made
+    // the levels re-roll on every tab switch — disabled so setups hold steady.
+    refetchOnWindowFocus: false,
     refetchOnReconnect: true,
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 15000),

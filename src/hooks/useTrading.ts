@@ -139,6 +139,30 @@ export function useTrading() {
     }
   }, []);
 
+  // Jupiter (Solana) quote — makes "trade for all" true for SPL mints.
+  // `amount` is in lamports (SOL side) for a buy, or token base units for a sell.
+  const getJupiterQuote = useCallback(async (
+    mint: string, amount: string, side: "buy" | "sell" = "buy", slippageBps = 100,
+  ): Promise<any | null> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await tradingFetch({
+        action: "quote-jup", mint, amount, side, slippageBps: String(slippageBps),
+      });
+      if (data.error) {
+        setError(data.error || "Jupiter quote unavailable");
+        return null;
+      }
+      return data;
+    } catch (e: any) {
+      setError(e.message || "Jupiter quote error");
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   const getBridgeQuote = useCallback(async (
     fromChainId: number, toChainId: number,
     fromTokenAddress: string, toTokenAddress: string,
@@ -170,6 +194,7 @@ export function useTrading() {
     error,
     getSwapQuote,
     getSwapPrice,
+    getJupiterQuote,
     getBridgeQuote,
     supportedChains: SUPPORTED_CHAINS,
   };

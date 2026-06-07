@@ -6,6 +6,7 @@ import { useCryptoPrices, CryptoPrice } from "@/hooks/useCryptoPrices";
 import { CoinImage } from "@/components/ui/CoinImage";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMemo, useState, useEffect } from "react";
+import { seededRng } from "@/lib/seededRandom";
 
 const TARGET_COINS = [
   { id: "bitcoin",       symbol: "BTC", name: "Bitcoin",   color: "#f7931a" },
@@ -20,14 +21,16 @@ const TARGET_COINS = [
 function MiniSparkline({ change24h, color }: { change24h: number; color: string }) {
   const isUp = change24h >= 0;
   const points = useMemo(() => {
+    // Seeded by trend+magnitude so the sparkline is stable, not re-randomized each render
+    const rng = seededRng(`${color}|${isUp}|${change24h.toFixed(2)}`);
     let y = isUp ? 32 : 8;
     return Array.from({ length: 20 }, (_, i) => {
       const trend = isUp ? -0.8 : 0.8;
-      const noise = (Math.random() - 0.5) * 7;
+      const noise = (rng() - 0.5) * 7;
       y = Math.max(2, Math.min(38, y + trend + noise));
       return `${(i / 19) * 100},${y}`;
     }).join(" L ");
-  }, [isUp]);
+  }, [isUp, change24h, color]);
 
   return (
     <svg viewBox="0 0 100 40" className="w-full h-8 overflow-visible">

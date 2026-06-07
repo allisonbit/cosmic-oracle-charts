@@ -76,6 +76,9 @@ verify_jwt = false
 requests = 100
 per = 3600
 
+[functions.setup-monitor]
+verify_jwt = false
+
 [functions.prediction-prewarm]
 verify_jwt = false
 

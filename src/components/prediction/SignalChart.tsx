@@ -1,12 +1,13 @@
 import { useMemo, useState } from "react";
-import { 
-  Area, AreaChart, XAxis, YAxis, ResponsiveContainer, 
-  ReferenceLine, ReferenceArea 
+import {
+  Area, AreaChart, XAxis, YAxis, ResponsiveContainer,
+  ReferenceLine, ReferenceArea
 } from "recharts";
 import { TrendingUp, TrendingDown, Target, Shield, Activity, RefreshCw, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { seededRng, utcDayKey } from "@/lib/seededRandom";
 
 interface TradingZone {
   entryLow: number;
@@ -29,25 +30,28 @@ interface SignalChartProps {
 export function SignalChart({ symbol, name, currentPrice, bias, confidence, tradingZones }: SignalChartProps) {
   const [timeframe, setTimeframe] = useState<'1h' | '4h' | '1d' | '1w'>('1d');
 
-  // Generate realistic price data with trends
+  // Generate realistic price data with trends.
+  // Seeded by symbol+bias+timeframe+UTC-day so the candles stay STABLE across
+  // re-renders (was Math.random() → chart twitched on every render).
   const chartData = useMemo(() => {
+    const rng = seededRng(`${symbol}|${bias}|${timeframe}|${utcDayKey()}`);
     const points = timeframe === '1h' ? 60 : timeframe === '4h' ? 48 : timeframe === '1d' ? 30 : 52;
     const data = [];
     const volatility = currentPrice * 0.02; // 2% volatility
     const trend = bias === 'bullish' ? 0.001 : bias === 'bearish' ? -0.001 : 0;
-    
+
     let price = currentPrice * (1 - (points * trend * 0.5)); // Start price
-    
+
     for (let i = 0; i < points; i++) {
-      const noise = (Math.random() - 0.5) * volatility;
+      const noise = (rng() - 0.5) * volatility;
       const trendEffect = trend * price;
       price = price + noise + trendEffect;
-      
+
       const open = price;
-      const close = price + (Math.random() - 0.5) * volatility * 0.5;
-      const high = Math.max(open, close) + Math.random() * volatility * 0.3;
-      const low = Math.min(open, close) - Math.random() * volatility * 0.3;
-      
+      const close = price + (rng() - 0.5) * volatility * 0.5;
+      const high = Math.max(open, close) + rng() * volatility * 0.3;
+      const low = Math.min(open, close) - rng() * volatility * 0.3;
+
       data.push({
         time: i,
         open,
@@ -55,14 +59,14 @@ export function SignalChart({ symbol, name, currentPrice, bias, confidence, trad
         low,
         close,
         price: close,
-        volume: 1000000 + Math.random() * 5000000,
+        volume: 1000000 + rng() * 5000000,
       });
-      
+
       price = close;
     }
-    
+
     return data;
-  }, [currentPrice, bias, timeframe]);
+  }, [currentPrice, bias, timeframe, symbol]);
 
   // Calculate trading zones if not provided
   const generatedZones = useMemo(() => {
