@@ -4,6 +4,7 @@ import { Search, ExternalLink, Copy, TrendingUp, TrendingDown, Coins, Tag, Check
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { CoinImage } from "@/components/ui/CoinImage";
 
 interface EcosystemToken {
   symbol: string;
@@ -117,9 +118,7 @@ export function EcosystemTokenSearch({ chain, ecosystemTokens = [] }: EcosystemT
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <span className="font-display text-sm text-primary">{token.symbol.slice(0, 2)}</span>
-                  </div>
+                  <CoinImage symbol={token.symbol} image={(token as any).logo} size={40} className="flex-shrink-0" />
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="font-display text-foreground">{token.symbol}</span>

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Bell, Plus, Check, Clock, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { DataBadge } from "@/components/ui/DataBadge";
 
 interface Alert {
   id: string;
@@ -66,6 +67,7 @@ export function CustomAlertsPanel() {
         <h3 className="font-display text-sm sm:text-base font-bold flex items-center gap-2">
           <Bell className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
           CUSTOM ALERTS
+          <DataBadge variant="estimated" label="DEMO" />
         </h3>
         <button className="flex items-center gap-1 px-2 py-1 bg-primary text-primary-foreground rounded-lg text-xs font-medium hover:bg-primary/90 transition-colors">
           <Plus className="w-3 h-3" />
@@ -117,6 +119,9 @@ export function CustomAlertsPanel() {
             </button>
           ))}
         </div>
+        <p className="text-[10px] text-muted-foreground mt-3">
+          Example alerts shown for demonstration. Sign in to create and save alerts that trigger on live market data.
+        </p>
       </div>
     </div>
   );

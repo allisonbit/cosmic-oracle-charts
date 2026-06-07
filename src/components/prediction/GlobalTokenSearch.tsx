@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useGlobalTokenSearch, GlobalToken } from "@/hooks/useGlobalTokenSearch";
 import { cn } from "@/lib/utils";
+import { CoinImage } from "@/components/ui/CoinImage";
 
 interface GlobalTokenSearchProps {
   onSelect: (token: GlobalToken) => void;
@@ -105,9 +106,7 @@ export function GlobalTokenSearch({ onSelect, onSearchResults, placeholder }: Gl
               className="w-full p-3 text-left hover:bg-muted/50 transition-colors flex items-center justify-between border-b border-border/20 last:border-0"
             >
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
-                  {token.symbol.slice(0, 2)}
-                </div>
+                <CoinImage symbol={token.symbol} image={(token as any).image || (token as any).logo} size={32} />
                 <div>
                   <div className="font-medium text-sm">{token.name}</div>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">

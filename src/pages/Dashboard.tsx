@@ -29,7 +29,7 @@ import { RecentTradesPanel } from "@/components/dashboard/RecentTradesPanel";
 import { Link, useNavigate } from "react-router-dom";
 import { SidebarAd, InArticleAd } from "@/components/ads";
 import { CoinDetailModal } from "@/components/dashboard/CoinDetailModal";
-import { DashboardSchema, DashboardSEOContent, HowToReadDashboard, WhatMakesUsDifferent, RelatedMarketInsights, DashboardHowItWorks } from "@/components/seo/index";
+import { DashboardSchema, DashboardSEOContent, HowToReadDashboard, WhatMakesUsDifferent, RelatedMarketInsights, DashboardHowItWorks, DashboardItemListSchema } from "@/components/seo/index";
 
 import { SortableCryptoTable } from "@/components/dashboard/SortableCryptoTable";
 import { DashboardTopCryptos } from "@/components/dashboard/DashboardTopCryptos";
@@ -37,6 +37,8 @@ import { DashboardHeatMap } from "@/components/dashboard/DashboardHeatMap";
 import { DashboardStatsRow } from "@/components/dashboard/DashboardStatsRow";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { LiveSignals } from "@/components/home/LiveSignals";
+import { LiveAlphaFeed } from "@/components/dashboard/LiveAlphaFeed";
+import { MarketPulseSummary } from "@/components/dashboard/MarketPulseSummary";
 import { WidgetErrorBoundary } from "@/components/system/RouteErrorBoundary";
 
 const Dashboard = () => {
@@ -66,6 +68,7 @@ const Dashboard = () => {
   return (
     <Layout>
       <DashboardSchema marketCap={global ? `$${(global.totalMarketCap / 1e12).toFixed(2)}T` : undefined} fearGreedIndex={fearGreedIndex ?? 50} />
+      <DashboardItemListSchema coins={allCoins} />
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8">
         {/* Header */}
         <DashboardHeader lastUpdate={lastUpdate} />
@@ -86,6 +89,11 @@ const Dashboard = () => {
 
             {/* Stats Row */}
             <WidgetErrorBoundary><DashboardStatsRow global={global} /></WidgetErrorBoundary>
+
+            {/* ── Live Alpha Feed — the headline real-time market pulse ───────── */}
+            <div className="mt-4 sm:mt-6 mb-4 sm:mb-6">
+              <WidgetErrorBoundary><LiveAlphaFeed /></WidgetErrorBoundary>
+            </div>
 
             {/* ── Fear & Greed — Prominent Full-Width Card ───────────────────── */}
             {fearGreedIndex !== null && (
@@ -206,26 +214,7 @@ const Dashboard = () => {
             {/* Custom Alerts */}
             <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
               <WidgetErrorBoundary><CustomAlertsPanel /></WidgetErrorBoundary>
-              <div className="holo-card p-4 sm:p-6">
-                <h3 className="font-display text-sm sm:text-base font-bold mb-4 flex items-center gap-2">
-                  <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-                  ADVANCED ANALYTICS
-                </h3>
-                <p className="text-xs sm:text-sm text-muted-foreground mb-4">
-                  Access professional-grade market analysis tools including order book depth, funding rates, 
-                  correlation matrices, and liquidation heatmaps to make informed trading decisions.
-                </p>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-muted/30 p-3 rounded-lg text-center">
-                    <div className="text-lg sm:text-xl font-bold text-primary">8+</div>
-                    <div className="text-[10px] sm:text-xs text-muted-foreground">Analytics Tools</div>
-                  </div>
-                  <div className="bg-muted/30 p-3 rounded-lg text-center">
-                    <div className="text-lg sm:text-xl font-bold text-success">24/7</div>
-                    <div className="text-[10px] sm:text-xs text-muted-foreground">Live Updates</div>
-                  </div>
-                </div>
-              </div>
+              <WidgetErrorBoundary><MarketPulseSummary /></WidgetErrorBoundary>
             </div>
 
             {/* Strength Meter & Crypto Factory Widgets */}

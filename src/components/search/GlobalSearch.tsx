@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Search, TrendingUp, Zap, Layers, BarChart3, Wallet, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTokenSearch, SearchToken } from "@/hooks/useTokenSearch";
+import { CoinImage } from "@/components/ui/CoinImage";
 
 interface SearchResult {
   type: 'token' | 'tool' | 'chain' | 'feature';
@@ -117,13 +118,7 @@ export function GlobalSearch() {
           price: token.price ? `$${(token.price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 6 })}` : undefined,
           change24h: token.change24h,
           url: `/price-prediction/${token.coingeckoId || token.symbol.toLowerCase()}/daily`,
-          icon: token.logo ? (
-            <img src={token.logo} alt={token.symbol} className="w-6 h-6 rounded-full" />
-          ) : (
-            <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary">
-              {token.symbol.charAt(0)}
-            </div>
-          ),
+          icon: <CoinImage symbol={token.symbol} image={token.logo} size={24} />,
         });
       });
     }

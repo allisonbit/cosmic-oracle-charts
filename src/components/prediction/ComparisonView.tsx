@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { BarChart3, Brain, TrendingUp, TrendingDown, Activity, GitCompare, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { CoinImage } from "@/components/ui/CoinImage";
 
 interface ComparisonToken {
   symbol: string;
@@ -139,9 +140,7 @@ export function ComparisonView({ tokens }: ComparisonViewProps) {
               <tr key={`${t.symbol}-${idx}`} className="border-t border-border/30 hover:bg-primary/5 transition-colors">
                 <td className="p-2 sm:p-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary">
-                      {t.symbol.slice(0, 2)}
-                    </div>
+                    <CoinImage symbol={t.symbol} image={(t as any).image} size={28} />
                     <div>
                       <div className="font-medium text-xs">{t.symbol}</div>
                       <div className="text-[10px] text-muted-foreground">{formatPrice(t.price)}</div>

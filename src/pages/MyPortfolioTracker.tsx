@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+import { CoinImage } from "@/components/ui/CoinImage";
 import { toast } from "sonner";
 import { SEO } from "@/components/MainSEO";
 import { PieChart, Pie, Cell, ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, BarChart, Bar } from "recharts";
@@ -336,9 +337,7 @@ function TrackerContent() {
                     <div className="flex items-center justify-between gap-3 flex-wrap">
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="relative">
-                          <div className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold shrink-0" style={{ background: COLORS[idx % COLORS.length] + '20', color: COLORS[idx % COLORS.length] }}>
-                            {h.symbol.slice(0, 2)}
-                          </div>
+                          <CoinImage symbol={h.symbol} image={(h as any).image} size={40} className="shrink-0" />
                           <span className="absolute -bottom-1 -right-1 text-[8px] bg-muted rounded-full px-1 font-mono">#{idx + 1}</span>
                         </div>
                         <div className="min-w-0">

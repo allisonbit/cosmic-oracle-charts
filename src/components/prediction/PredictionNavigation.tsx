@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Calendar, CalendarDays, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { CoinImage } from "@/components/ui/CoinImage";
 
 interface CoinListProps {
   currentCoin?: string;
@@ -46,9 +47,7 @@ export function CoinList({ currentCoin, currentTimeframe }: CoinListProps) {
             }`}
           >
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center text-xs font-bold">
-                {coin.symbol.slice(0, 2).toUpperCase()}
-              </div>
+              <CoinImage symbol={coin.symbol} size={32} />
               <div>
                 <span className="font-medium text-sm">{coin.name}</span>
                 <p className="text-xs text-muted-foreground">{coin.symbol.toUpperCase()}</p>
@@ -132,9 +131,7 @@ export function RelatedPredictions({ currentCoin, timeframe }: RelatedPrediction
             to={`/price-prediction/${coin.id}/${timeframe}`}
             className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"
           >
-            <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center text-xs font-bold">
-              {coin.symbol.slice(0, 2).toUpperCase()}
-            </div>
+            <CoinImage symbol={coin.symbol} size={32} />
             <div>
               <span className="font-medium text-sm">{coin.name}</span>
               <p className="text-xs text-muted-foreground">{coin.symbol.toUpperCase()} prediction</p>

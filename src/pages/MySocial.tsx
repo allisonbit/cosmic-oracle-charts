@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+import { CoinImage } from "@/components/ui/CoinImage";
 import { toast } from "sonner";
 
 interface Prediction {
@@ -279,7 +280,7 @@ function PredictionCard({ prediction: p, isOwn }: { prediction: Prediction; isOw
       <CardContent className="pt-4 pb-4">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-full bg-muted flex items-center justify-center text-[10px] font-bold">{p.symbol.slice(0, 2)}</div>
+            <CoinImage symbol={p.symbol} size={28} />
             <span className="font-semibold text-foreground text-sm">{p.symbol}</span>
             <Badge className={cn("text-[10px]", isBullish ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" : "bg-red-500/10 text-red-500 border-red-500/20")} variant="outline">
               {isBullish ? <TrendingUp className="w-3 h-3 mr-1" /> : <TrendingDown className="w-3 h-3 mr-1" />}

@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+import { CoinImage } from "@/components/ui/CoinImage";
 import { toast } from "sonner";
 import { SEO } from "@/components/MainSEO";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from "recharts";
@@ -244,9 +245,7 @@ function ScannerContent() {
                                 <td className="p-3 text-xs text-muted-foreground">{i + 1}</td>
                                 <td className="p-3">
                                   <div className="flex items-center gap-2">
-                                    <div className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-bold" style={{ background: COLORS[i % COLORS.length] + '20', color: COLORS[i % COLORS.length] }}>
-                                      {token.symbol.slice(0, 2)}
-                                    </div>
+                                    <CoinImage symbol={token.symbol} image={(token as any).logo || (token as any).image} size={28} />
                                     <div>
                                       <p className="font-medium">{token.symbol}</p>
                                       <p className="text-[10px] text-muted-foreground">{token.name}</p>

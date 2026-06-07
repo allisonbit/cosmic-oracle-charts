@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { invokeFunction } from "@/integrations/supabase/functions";
+import { CoinImage } from "@/components/ui/CoinImage";
 
 interface Trade {
   id: number;
@@ -68,12 +69,14 @@ export function RecentTradesPanel() {
               "w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0",
               trade.side === "buy" ? "bg-success/20" : "bg-danger/20"
             )}>
-              {trade.side === "buy" 
+              {trade.side === "buy"
                 ? <ArrowUpRight className="w-3.5 h-3.5 text-success" />
                 : <ArrowDownRight className="w-3.5 h-3.5 text-danger" />
               }
             </div>
-            
+
+            <CoinImage symbol={trade.symbol} size={20} className="flex-shrink-0" />
+
             <span className="font-display font-bold text-primary w-12 sm:w-14">{trade.symbol}</span>
             
             <span className={cn(

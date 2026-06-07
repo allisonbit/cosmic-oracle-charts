@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { SearchToken } from "@/hooks/useTokenSearch";
 import { ExplorerChain } from "@/lib/explorerChains";
 import { useTokenDiscovery, DiscoveryToken } from "@/hooks/useTokenDiscovery";
+import { CoinImage } from "@/components/ui/CoinImage";
 
 interface TrendingTokensPanelProps {
   chain: ExplorerChain;
@@ -76,13 +77,7 @@ export function TrendingTokensPanel({ chain, onTokenSelect }: TrendingTokensPane
     >
       <div className="flex items-center gap-3">
       <span className="text-xs text-muted-foreground w-5">#{index + 1}</span>
-        {token.logo ? (
-          <img src={token.logo} alt={token.symbol} className="w-8 h-8 rounded-full bg-muted" onError={(e) => (e.currentTarget.style.display = 'none')} />
-        ) : (
-          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-            <span className="font-display font-bold text-primary text-xs">{token.symbol[0]}</span>
-          </div>
-        )}
+        <CoinImage symbol={token.symbol} image={token.logo} size={32} />
         <div className="text-left">
           <div className="font-medium text-sm">{token.symbol}</div>
           <div className="text-xs text-muted-foreground truncate max-w-[100px]">{token.name}</div>

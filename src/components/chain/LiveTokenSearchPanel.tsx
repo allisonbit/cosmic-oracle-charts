@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { CoinImage } from "@/components/ui/CoinImage";
 import { useLiveTokenSearch, useTrendingTokens, LiveToken } from "@/hooks/useLiveTokenSearch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -176,13 +177,7 @@ export function LiveTokenSearchPanel({ chain }: LiveTokenSearchPanelProps) {
                   <div className="flex items-center gap-3">
                     {/* Token Icon */}
                     <div className="relative">
-                      {token.logo ? (
-                        <img src={token.logo} alt={token.symbol} className="w-10 h-10 rounded-full" />
-                      ) : (
-                        <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                          <span className="font-display text-sm text-primary">{token.symbol.slice(0, 2)}</span>
-                        </div>
-                      )}
+                      <CoinImage symbol={token.symbol} image={token.logo} size={40} />
                       {token.verified && (
                         <CheckCircle className="absolute -bottom-0.5 -right-0.5 h-4 w-4 text-success bg-background rounded-full" />
                       )}

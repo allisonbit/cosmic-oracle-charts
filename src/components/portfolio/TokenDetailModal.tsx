@@ -9,6 +9,7 @@ import {
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { AreaChart, Area, ResponsiveContainer } from "recharts";
+import { CoinImage } from "@/components/ui/CoinImage";
 
 interface TokenHolding {
   symbol: string;
@@ -124,11 +125,7 @@ export function TokenDetailModal({ token, isOpen, onClose }: TokenDetailModalPro
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
-              <span className="font-display font-bold text-primary text-lg">
-                {token.symbol[0]}
-              </span>
-            </div>
+            <CoinImage symbol={token.symbol} image={(token as any).image} size={48} />
             <div>
               <div className="font-display font-bold text-xl">{token.symbol}</div>
               <div className="text-sm text-muted-foreground font-normal">{token.name}</div>

@@ -1,44 +1,24 @@
-import { useState } from "react";
-import { cn } from "@/lib/utils";
-import { getTokenImageUrl } from "@/lib/tokenImages";
+import { CoinImage } from "@/components/ui/CoinImage";
+
+// ── TokenIcon — thin wrapper that delegates to the canonical CoinImage ─────────
+// Historically this used a 70-coin hardcoded map (src/lib/tokenImages.ts) that
+// fell back to a *generic Bitcoin logo* for any unknown coin — wrong logos.
+// It now delegates to CoinImage, which resolves real logos across thousands of
+// coins (image prop → cryptocurrency-icons CDN → LiveCoinWatch → static map →
+// letter avatar) and never shows the wrong coin. Signature kept identical so the
+// existing callers don't change.
 
 interface TokenIconProps {
-  coinId: string;
+  coinId: string;        // kept for API compatibility (no longer needed for lookup)
   symbol: string;
   size?: "sm" | "md" | "lg";
   className?: string;
+  /** Optional API-provided image URL — preferred when available. */
+  image?: string;
 }
 
-const sizeMap = {
-  sm: "w-6 h-6 text-[9px]",
-  md: "w-7 h-7 text-[10px]",
-  lg: "w-10 h-10 text-sm",
-};
+const sizePx = { sm: 24, md: 28, lg: 40 } as const;
 
-export function TokenIcon({ coinId, symbol, size = "md", className }: TokenIconProps) {
-  const [imgError, setImgError] = useState(false);
-  const imageUrl = getTokenImageUrl(coinId);
-  const sizeClass = sizeMap[size];
-
-  if (imgError) {
-    return (
-      <div className={cn(
-        "rounded-full flex items-center justify-center font-bold bg-muted text-muted-foreground shrink-0",
-        sizeClass,
-        className
-      )}>
-        {symbol.slice(0, 2).toUpperCase()}
-      </div>
-    );
-  }
-
-  return (
-    <img
-      src={imageUrl}
-      alt={`${symbol} logo`}
-      className={cn("rounded-full shrink-0 object-cover", sizeClass, className)}
-      onError={() => setImgError(true)}
-      loading="lazy"
-    />
-  );
+export function TokenIcon({ symbol, size = "md", className, image }: TokenIconProps) {
+  return <CoinImage symbol={symbol} image={image} size={sizePx[size]} className={className} />;
 }

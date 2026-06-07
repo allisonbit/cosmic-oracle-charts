@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { SearchToken } from "@/hooks/useTokenSearch";
 import { ExplorerChain } from "@/lib/explorerChains";
 import { TradeButtons } from "@/components/trading/TradeButtons";
+import { CoinImage } from "@/components/ui/CoinImage";
 
 interface TopTokensTableProps {
   chain: ExplorerChain;
@@ -155,13 +156,7 @@ export function TopTokensTable({ chain, onTokenSelect }: TopTokensTableProps) {
                 <td className="py-3 px-2 text-muted-foreground">{token.rank}</td>
                 <td className="py-3 px-2">
                   <div className="flex items-center gap-2">
-                    {token.image ? (
-                      <img src={token.image} alt={token.symbol} width={28} height={28} className="rounded-full" loading="lazy" />
-                    ) : (
-                      <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                        <span className="font-display font-bold text-primary text-xs">{token.symbol[0]}</span>
-                      </div>
-                    )}
+                    <CoinImage symbol={token.symbol} image={token.image} size={28} />
                     <div className="min-w-0">
                       <div className="font-medium truncate">{token.symbol}</div>
                       <div className="text-xs text-muted-foreground truncate max-w-[100px]">{token.name}</div>

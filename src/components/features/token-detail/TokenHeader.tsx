@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Copy, ExternalLink, TrendingUp, TrendingDown } from "lucide-react";
 import { formatPrice, formatChange } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
+import { CoinImage } from "@/components/ui/CoinImage";
 
 interface TokenHeaderProps {
   token: any;
@@ -21,14 +22,7 @@ export function TokenHeader({ token, chainData, address, isPositive, derivedMetr
         <Button variant="ghost" size="sm" onClick={() => navigate('/explorer')} className="shrink-0">
           <ArrowLeft className="w-4 h-4 mr-1" /> Back
         </Button>
-        {token.logo ? (
-          <img src={token.logo} alt={token.symbol} className="w-14 h-14 rounded-full bg-muted ring-2 ring-primary/20"
-            onError={e => { e.currentTarget.style.display = 'none'; }} />
-        ) : (
-          <div className="w-14 h-14 rounded-full bg-primary/15 flex items-center justify-center ring-2 ring-primary/20">
-            <span className="text-xl font-bold text-primary">{token.symbol[0]}</span>
-          </div>
-        )}
+        <CoinImage symbol={token.symbol} image={token.logo} size={56} className="ring-2 ring-primary/20" />
         <div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-xl md:text-2xl font-bold text-foreground">{token.name}</h1>

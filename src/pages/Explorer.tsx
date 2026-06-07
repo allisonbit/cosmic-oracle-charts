@@ -5,6 +5,7 @@ import { Search, X, Loader2, ExternalLink, Copy, TrendingUp, TrendingDown, Flame
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { CoinImage } from "@/components/ui/CoinImage";
 import { useTokenSearch, SearchToken } from "@/hooks/useTokenSearch";
 import { useLiveTokenSearch, useInfiniteTrendingTokens, LiveToken } from "@/hooks/useLiveTokenSearch";
 import { useInView } from "react-intersection-observer";
@@ -548,18 +549,7 @@ const ExplorerPage = () => {
                       {/* Token */}
                       <td className="px-2 py-2.5">
                         <div className="flex items-center gap-2.5">
-                          {token.logo ? (
-                            <img
-                              src={token.logo}
-                              alt={token.symbol}
-                              className="w-7 h-7 rounded-full bg-muted shrink-0"
-                              onError={e => { e.currentTarget.style.display = 'none'; }}
-                            />
-                          ) : (
-                            <div className="w-7 h-7 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
-                              <span className="text-[10px] font-bold text-primary">{token.symbol[0]}</span>
-                            </div>
-                          )}
+                          <CoinImage symbol={token.symbol} image={token.logo} size={28} className="shrink-0" />
                           <div className="min-w-0">
                             <div className="flex items-center gap-1">
                               <span className="font-semibold text-foreground">{token.symbol}</span>

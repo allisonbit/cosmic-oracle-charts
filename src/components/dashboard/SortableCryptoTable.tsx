@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ChevronUp, ChevronDown, ArrowUpDown, Activity, Flame, TrendingUp, TrendingDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatDashboardNumber } from "./utils";
+import { CoinImage } from "@/components/ui/CoinImage";
 
 type SortKey = 'rank' | 'price' | 'change24h' | 'volume' | 'marketCap';
 type SortDir = 'asc' | 'desc';
@@ -87,9 +88,7 @@ export function SortableCryptoTable({ coins }: { coins: any[] }) {
                 <td className="py-2.5 sm:py-3 px-1.5 sm:px-3 text-muted-foreground text-xs sm:text-sm">{coin.rank}</td>
                 <td className="py-2.5 sm:py-3 px-1.5 sm:px-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                      <span className="text-[10px] font-bold text-primary">{coin.symbol[0]}</span>
-                    </div>
+                    <CoinImage symbol={coin.symbol} image={coin.image} size={24} className="flex-shrink-0" />
                     <div className="min-w-0">
                       <span className="font-display font-bold text-xs sm:text-sm text-primary">{coin.symbol}</span>
                       <span className="text-muted-foreground text-[10px] sm:text-xs ml-1.5 hidden sm:inline">{coin.name}</span>

@@ -1,4 +1,5 @@
 export { DashboardSchema, DashboardSEOContent, HowToReadDashboard, WhatMakesUsDifferent, RelatedMarketInsights, MarketCapExplanation, FearGreedExplanation, MomentumExplanation, VolumeExplanation, DominanceExplanation } from './DashboardSchema';
+export { DashboardItemListSchema } from './DashboardItemListSchema';
 export { SentimentSchema, SentimentSEOContent } from './SentimentSchema';
 export { ExplorerSchema, ExplorerSEOContent } from './ExplorerSchema';
 export { PortfolioSchema, PortfolioSEOContent } from './PortfolioSchema';

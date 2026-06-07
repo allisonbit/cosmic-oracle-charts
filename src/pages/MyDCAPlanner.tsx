@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { SEO } from "@/components/MainSEO";
 import { cn } from "@/lib/utils";
+import { CoinImage } from "@/components/ui/CoinImage";
 import { toast } from "sonner";
 import {
   Repeat, Plus, X, Save, DollarSign, TrendingUp, Calendar,
@@ -311,9 +312,7 @@ export default function MyDCAPlanner() {
                     <CardContent className="p-4 space-y-3">
                       <div className="flex items-center justify-between gap-4 flex-wrap cursor-pointer" onClick={() => setExpandedPlan(isExpanded ? null : plan.id)}>
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center">
-                            <span className="text-sm font-bold text-primary">{plan.symbol.slice(0, 2)}</span>
-                          </div>
+                          <CoinImage symbol={plan.symbol} size={40} />
                           <div>
                             <div className="flex items-center gap-2 flex-wrap">
                               <span className="font-bold">{plan.symbol}</span>

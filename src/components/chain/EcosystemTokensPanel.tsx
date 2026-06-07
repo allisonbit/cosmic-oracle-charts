@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { CoinImage } from "@/components/ui/CoinImage";
 
 export interface EcosystemToken {
   symbol: string;
@@ -164,9 +165,7 @@ export function EcosystemTokensPanel({ chain, ecosystemTokens = [] }: EcosystemT
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                      <span className="font-display text-sm text-primary">{token.symbol.slice(0, 2)}</span>
-                    </div>
+                    <CoinImage symbol={token.symbol} image={(token as any).logo} size={40} />
                     <div>
                       <div className="flex items-center gap-1.5">
                         <span className="font-display text-foreground">{token.symbol}</span>

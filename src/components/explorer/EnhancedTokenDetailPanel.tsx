@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TradeButtons } from "@/components/trading/TradeButtons";
+import { CoinImage } from "@/components/ui/CoinImage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -145,13 +146,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
       <div className="holo-card p-6">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-6">
           <div className="flex items-center gap-4">
-            {token.logo ? (
-              <img src={token.logo} alt={token.symbol} className="w-16 h-16 rounded-full bg-muted" onError={(e) => (e.currentTarget.style.display = 'none')} />
-            ) : (
-              <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
-                <span className="font-display font-bold text-primary text-2xl">{token.symbol[0]}</span>
-              </div>
-            )}
+            <CoinImage symbol={token.symbol} image={token.logo} size={64} />
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h2 className="font-display text-2xl lg:text-3xl font-bold">{token.name}</h2>

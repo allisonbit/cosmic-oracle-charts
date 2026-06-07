@@ -5,6 +5,7 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "rec
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { invokeFunction } from "@/integrations/supabase/functions";
+import { CoinImage } from "@/components/ui/CoinImage";
 
 interface CoinData {
   symbol: string;
@@ -100,9 +101,7 @@ export function CoinDetailModal({ coin, open, onOpenChange }: CoinDetailModalPro
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-background/95 backdrop-blur-xl border-primary/20">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-              <span className="font-display font-bold text-primary">{coin.symbol[0]}</span>
-            </div>
+            <CoinImage symbol={coin.symbol} image={(coin as any).image} size={40} />
             <div>
               <span className="font-display text-xl">{coin.symbol}</span>
               <span className="text-muted-foreground ml-2 text-sm">{coin.name}</span>
