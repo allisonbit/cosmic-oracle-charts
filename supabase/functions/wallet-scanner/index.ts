@@ -45,6 +45,7 @@ interface TokenHolding {
   recommendation: "hold" | "accumulate" | "take_profit" | "exit";
   insight: string;
   contractAddress: string;
+  chain: string;
 }
 
 // Network configurations for Alchemy
@@ -152,7 +153,8 @@ serve(async (req) => {
           riskLevel: 'medium',
           recommendation: nativeChange24h > 10 ? 'take_profit' : nativeChange24h > 0 ? 'hold' : 'accumulate',
           insight: `SOL is ${nativeChange24h >= 0 ? 'up' : 'down'} ${Math.abs(nativeChange24h).toFixed(2)}% in 24h. ${nativeChange24h > 5 ? 'Strong momentum, consider taking partial profits.' : nativeChange24h < -5 ? 'Dip opportunity for accumulation.' : 'Stable performance, hold position.'}`,
-          contractAddress: 'native'
+          contractAddress: 'native',
+          chain: 'solana'
         });
       }
 
@@ -202,7 +204,8 @@ serve(async (req) => {
             riskLevel: 'high',
             recommendation: 'hold',
             insight: 'SPL token detected. Research this token before making decisions.',
-            contractAddress: mint
+            contractAddress: mint,
+            chain: 'solana'
           });
         }
       }
@@ -259,7 +262,8 @@ serve(async (req) => {
                 riskLevel: 'low',
                 recommendation: nChange > 10 ? 'take_profit' : nChange > 0 ? 'hold' : 'accumulate',
                 insight: `${nativeName} on ${network}. ${nChange >= 0 ? 'Positive' : 'Negative'} momentum with ${Math.abs(nChange).toFixed(2)}% 24h change.`,
-                contractAddress: 'native'
+                contractAddress: 'native',
+                chain: network
               });
             }
           }
@@ -374,7 +378,8 @@ serve(async (req) => {
                     riskLevel,
                     recommendation,
                     insight: generateTokenInsight(metadata.symbol, tokenChange, riskLevel, pumpPotential),
-                    contractAddress: token.contractAddress
+                    contractAddress: token.contractAddress,
+                    chain: network
                   });
                 }
               }
@@ -424,6 +429,23 @@ serve(async (req) => {
     // Generate overall insight
     const overallInsight = generateOverallInsight(holdings, totalValue, riskScore, diversificationScore);
 
+    // Value distribution per chain (multi-chain coverage at a glance)
+    const chainBreakdown: Record<string, { value: number; count: number }> = {};
+    for (const h of holdings) {
+      const c = h.chain || 'unknown';
+      if (!chainBreakdown[c]) chainBreakdown[c] = { value: 0, count: 0 };
+      chainBreakdown[c].value += h.value;
+      chainBreakdown[c].count += 1;
+    }
+
+    // Value distribution per risk level + per recommendation
+    const riskBreakdown: Record<string, number> = { low: 0, medium: 0, high: 0, extreme: 0 };
+    const recommendationCounts: Record<string, number> = { hold: 0, accumulate: 0, take_profit: 0, exit: 0 };
+    for (const h of holdings) {
+      riskBreakdown[h.riskLevel] = (riskBreakdown[h.riskLevel] || 0) + h.value;
+      recommendationCounts[h.recommendation] = (recommendationCounts[h.recommendation] || 0) + 1;
+    }
+
     const result = {
       address,
       totalValue,
@@ -432,7 +454,12 @@ serve(async (req) => {
       diversificationScore,
       overallInsight,
       topPicks: topPicks.length > 0 ? topPicks : holdings.slice(0, 2).map(h => h.symbol),
-      warnings
+      warnings,
+      chainBreakdown,
+      riskBreakdown,
+      recommendationCounts,
+      chainsScanned: isSolana ? ['solana'] : ['ethereum', 'polygon', 'arbitrum', 'base'],
+      scannedAt: new Date().toISOString(),
     };
 
     console.log(`Wallet scan complete. Total value: $${totalValue.toFixed(2)}, Holdings: ${holdings.length}`);
