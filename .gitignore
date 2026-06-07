@@ -24,3 +24,18 @@ dist-ssr
 *.sw?
 .env
 shots/
+
+# Hardhat / solc build output
+/artifacts
+/cache
+
+# Debug cruft (build dumps, one-off codemods)
+_tmp_*
+build_err*.txt
+build_output*.txt
+build_stderr.txt
+build_stdout.txt
+build_result_fixed.log
+fix-*.cjs
+catch-errors.cjs
+fetch_vite.cjs
