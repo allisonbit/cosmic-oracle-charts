@@ -1,9 +1,11 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Helmet } from "react-helmet-async";
 import { invokeFunction } from "@/integrations/supabase/functions";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/MainSEO";
+import { SITE_URL } from "@/lib/siteConfig";
 import { useTokenByAddress, useLiveTokenSearch } from "@/hooks/useLiveTokenSearch";
 import { useAIForecast } from "@/hooks/useAIForecast";
 import { getChainById, ALL_CHAINS } from "@/lib/explorerChains";
@@ -164,12 +166,47 @@ export default function TokenDetail() {
 
   const isPositive = (token.change24h || 0) >= 0;
 
+  const canonical = `${SITE_URL}/explorer/${chain}/${address}`;
+  const tokenFaqs = [
+    {
+      q: `How much is ${token.symbol} worth today?`,
+      a: `${token.name} (${token.symbol}) is currently trading at ${formatPrice(token.price)}, ${isPositive ? "up" : "down"} ${Math.abs(token.change24h || 0).toFixed(2)}% over the last 24 hours, with ${formatCompact(token.volume24h)} in 24h trading volume on ${chainData.name}.`,
+    },
+    {
+      q: `What blockchain is ${token.symbol} on?`,
+      a: `${token.symbol} trades on ${chainData.name}${token.contractAddress ? ` with contract address ${address}` : ""}. You can view it on the ${chainData.name} explorer, DexScreener and CoinGecko using the links on this page.`,
+    },
+    {
+      q: `Is ${token.symbol} a good investment?`,
+      a: `${token.name} carries the usual crypto risks. This page shows its live price, liquidity, volume, buy/sell pressure and an AI analysis to help you research — but none of it is financial advice. Always do your own research before trading.`,
+    },
+    {
+      q: `Where can I trade ${token.symbol}?`,
+      a: `${token.symbol} can be traded on decentralized exchanges${token.coingeckoId ? " and is listed on major centralized exchanges" : ""}. Use the DexScreener link for live pairs, or our AI prediction page for ${token.symbol} price targets.`,
+    },
+  ];
+  const financialProductLd = {
+    "@context": "https://schema.org", "@type": "FinancialProduct",
+    name: `${token.name} (${token.symbol})`,
+    description: `Live ${token.symbol} price, market cap, volume, liquidity, transactions and AI analysis on ${chainData.name}.`,
+    url: canonical, category: "Cryptocurrency",
+    provider: { "@type": "Organization", name: "Oracle Bull", url: SITE_URL },
+  };
+  const tokenFaqLd = {
+    "@context": "https://schema.org", "@type": "FAQPage",
+    mainEntity: tokenFaqs.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+  };
+
   return (
     <Layout>
       <SEO
         title={`${token.symbol} Price, Chart & Analysis — ${token.name} on ${chainData.name}`}
         description={`Live ${token.symbol} price ${formatPrice(token.price)}, 24h change ${formatChange(token.change24h)}, volume ${formatCompact(token.volume24h)}. Full analysis for ${token.name} on ${chainData.name}.`}
       />
+      <Helmet>
+        <script type="application/ld+json">{JSON.stringify(financialProductLd)}</script>
+        <script type="application/ld+json">{JSON.stringify(tokenFaqLd)}</script>
+      </Helmet>
 
       <div className="container mx-auto px-4 py-4 md:py-6 space-y-5">
         {/* Breadcrumb */}
@@ -271,6 +308,40 @@ export default function TokenDetail() {
             <TokenSecurityTab token={token} derivedMetrics={derivedMetrics} />
           </TabsContent>
         </Tabs>
+
+        {/* ═══ SEO CONTENT ═══ */}
+        <section className="border-t border-border/40 pt-6 mt-2 space-y-6">
+          <div>
+            <h2 className="text-lg font-display font-bold mb-2">About {token.name} ({token.symbol})</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-3xl">
+              {token.name} ({token.symbol}) is a cryptocurrency trading on {chainData.name}. The live {token.symbol} price is{" "}
+              <span className="text-foreground font-medium">{formatPrice(token.price)}</span>, {isPositive ? "up" : "down"}{" "}
+              {Math.abs(token.change24h || 0).toFixed(2)}% in the last 24 hours, with {formatCompact(token.volume24h)} in trading
+              volume{token.liquidity ? ` and ${formatCompact(token.liquidity)} in liquidity` : ""}. Use the chart, AI analysis,
+              holders and security tabs above for a full breakdown of {token.symbol}. This page is for research and information
+              only — not financial advice.
+            </p>
+          </div>
+
+          <div>
+            <h2 className="text-lg font-display font-bold mb-3">{token.symbol} — Frequently Asked Questions</h2>
+            <div className="space-y-3 max-w-3xl">
+              {tokenFaqs.map((f, i) => (
+                <div key={i} className="border-b border-border/30 pb-3 last:border-0">
+                  <h3 className="text-sm font-semibold text-foreground mb-1">{f.q}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{f.a}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <Link to={`/price-prediction/${token.coingeckoId || token.symbol.toLowerCase()}`} className="text-xs px-3 py-1.5 rounded-lg bg-primary/5 border border-border hover:border-primary/40 hover:text-primary transition-colors">{token.symbol} Price Prediction</Link>
+            <Link to="/explorer" className="text-xs px-3 py-1.5 rounded-lg bg-primary/5 border border-border hover:border-primary/40 hover:text-primary transition-colors">Token Explorer</Link>
+            <Link to="/scanner" className="text-xs px-3 py-1.5 rounded-lg bg-primary/5 border border-border hover:border-primary/40 hover:text-primary transition-colors">Token Scanner</Link>
+            <Link to={`/chain/${chain}`} className="text-xs px-3 py-1.5 rounded-lg bg-primary/5 border border-border hover:border-primary/40 hover:text-primary transition-colors">{chainData.name} Analytics</Link>
+          </div>
+        </section>
       </div>
     </Layout>
   );
