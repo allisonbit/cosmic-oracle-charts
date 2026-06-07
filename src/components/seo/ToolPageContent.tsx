@@ -146,7 +146,7 @@ export function SentimentDataMeaning() {
         </Link>
         <Link to="/learn" className="p-3 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors flex items-center gap-2">
           <BookOpen className="w-4 h-4 text-primary" />
-          <span className="text-sm">Learn More</span>
+          <span className="text-sm">Explore Crypto Learning Hub</span>
           <ChevronRight className="w-4 h-4 ml-auto" />
         </Link>
       </div>
