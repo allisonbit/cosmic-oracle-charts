@@ -10,7 +10,7 @@ import { QuickAccessBar } from "@/components/home/QuickAccessBar";
 import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BannerAd, InArticleAd, NativeBannerAd, SmallBannerAd, LargeBannerAd, MediumRectangleAd, SmartlinkAd } from "@/components/ads";
+import { BannerAd, InArticleAd } from "@/components/ads";
 import { SEO, StructuredData } from "@/components/MainSEO";
 import { HomepageSchema } from "@/components/home/HomepageSchema";
 
@@ -107,14 +107,6 @@ const Index = () => {
       <main id="main-content">
         {/* 1. Hero - first impression, trust badges, live prices */}
         <HeroSection />
-
-        <div className="container mx-auto px-4 mt-8 flex flex-col md:flex-row gap-4 items-center justify-center flex-wrap">
-          <NativeBannerAd key="ad-home" />
-          <LargeBannerAd key="large-ad-home" />
-          <MediumRectangleAd key="medium-ad-home" />
-          <SmallBannerAd key="small-ad-home" />
-          <SmartlinkAd key="smartlink-home" />
-        </div>
 
         {/* 2. Live Signals - high conviction trade setups (Moved to be 2nd thing users see) */}
         <Suspense fallback={<SectionFallback />}>

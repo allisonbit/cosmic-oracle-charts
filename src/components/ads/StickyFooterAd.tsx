@@ -36,7 +36,8 @@ export const StickyFooterAd = memo(function StickyFooterAd({
     return () => clearTimeout(timer);
   }, [showDelay, isDismissed]);
 
-  if (!isVisible || isDismissed) return null;
+  // No real ad slot → don't show an empty dismissible bar. Auto Ads still run.
+  if (!isVisible || isDismissed || !slot) return null;
 
   return (
     <div

@@ -61,12 +61,17 @@ const AdPlaceholder = memo(function AdPlaceholder({
 });
 
 export const LazyAd = memo(function LazyAd({ size, className, slot }: LazyAdProps) {
+  // Without a real AdSense slot there is nothing to show — render nothing rather
+  // than a gray "Advertisement Space" placeholder box that clutters the page and
+  // looks unprofessional. AdSense Auto Ads (loaded in index.html) still place ads
+  // automatically. Pass a `slot` to render a manual unit.
+  if (!slot) return null;
   return (
     <Suspense fallback={<AdPlaceholder size={size} className={className} />}>
-      <AdPlacement 
-        size={size} 
-        className={className} 
-        slot={slot} 
+      <AdPlacement
+        size={size}
+        className={className}
+        slot={slot}
         lazyLoad={true}
       />
     </Suspense>
