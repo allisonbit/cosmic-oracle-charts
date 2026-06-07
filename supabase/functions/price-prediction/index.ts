@@ -625,10 +625,13 @@ serve(async (req) => {
     else if (technicals.stochastic.signal === 'overbought') score -= 1;
     if (technicals.obv === 'accumulation') score += 1; else score -= 1;
 
+    // Decisive bias (±2 band) so the read leans long/short far more often than it
+    // sits neutral — the UI must actually predict, not show a flat 50/50.
     const bias: 'bullish' | 'bearish' | 'neutral' =
-      score >= 4 ? 'bullish' : score <= -4 ? 'bearish' : 'neutral';
-    const confidence = Math.min(92, 45 + Math.abs(score) * 4 + Math.round(rng() * 8));
-    const probBull = bias === 'bullish' ? confidence : bias === 'bearish' ? 100 - confidence : 50;
+      score >= 2 ? 'bullish' : score <= -2 ? 'bearish' : 'neutral';
+    const confidence = Math.max(38, Math.min(95, 50 + Math.abs(score) * 5 + Math.round((rng() - 0.5) * 6)));
+    // CONTINUOUS directional probability from the full score — never a dead 50.
+    const probBull = Math.max(6, Math.min(94, Math.round(50 + score * 5 + (rng() - 0.5) * 4)));
 
     // Price targets
     const tfMult = timeframe === 'daily' ? 0.03 : timeframe === 'weekly' ? 0.08 : 0.15;
@@ -639,21 +642,28 @@ serve(async (req) => {
       aggressive: { low: round(p * (1 - tfMult * 1.5)), high: round(p * (1 + tfMult * 1.5)) },
     };
 
-    // Trading zones from real volatility
+    // Trading zones from real volatility — DIRECTION-AWARE so a bearish setup has
+    // its targets below price and its stop above (the monitor evaluates longs and
+    // shorts differently; mismatched levels would resolve instantly).
     const actualVol = (md.high24h - md.low24h) / p;
     const volMult = Math.max(actualVol, 0.01);
     const tfScale = timeframe === 'daily' ? 1 : timeframe === 'weekly' ? 2.5 : 5;
-    
+
     const entryBuffer = volMult * 0.5 * tfScale;
     const slBuffer = volMult * 0.75 * tfScale;
     const tpBase = volMult * tfScale;
-    
+    const dir = bias === 'bearish' ? -1 : 1; // neutral treated as long-biased
+
     const tradingZones = {
-      entryZone: { min: round(p * (1 - entryBuffer)), max: round(p) },
-      stopLoss: round(Math.min(md.low24h * 0.99, p * (1 - slBuffer))),
-      takeProfit1: round(p * (1 + tpBase)),
-      takeProfit2: round(p * (1 + tpBase * 2)),
-      takeProfit3: round(p * (1 + tpBase * 3)),
+      entryZone: dir > 0
+        ? { min: round(p * (1 - entryBuffer)), max: round(p) }
+        : { min: round(p), max: round(p * (1 + entryBuffer)) },
+      stopLoss: dir > 0
+        ? round(Math.min(md.low24h * 0.99, p * (1 - slBuffer)))
+        : round(Math.max(md.high24h * 1.01, p * (1 + slBuffer))),
+      takeProfit1: round(p * (1 + tpBase * dir)),
+      takeProfit2: round(p * (1 + tpBase * 2 * dir)),
+      takeProfit3: round(p * (1 + tpBase * 3 * dir)),
     };
 
     // Risk

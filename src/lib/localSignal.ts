@@ -87,12 +87,17 @@ export function computeLocalSignal(
   if (change24h > 0) score += 1; else score -= 1;
   if (change7d > 0) score += 1; else score -= 1;
 
+  // Decisive bias — a ±2 band means the read leans long/short far more often than
+  // it sits on the fence, so the UI actually predicts instead of showing neutral.
   const bias: "bullish" | "bearish" | "neutral" =
-    score >= 4 ? "bullish" : score <= -4 ? "bearish" : "neutral";
+    score >= 2 ? "bullish" : score <= -2 ? "bearish" : "neutral";
 
-  const confidence = Math.min(92, 45 + Math.abs(score) * 4 + Math.round(rng() * 8));
-  const probabilityBullish =
-    bias === "bullish" ? confidence : bias === "bearish" ? 100 - confidence : Math.round(50 + score * 2);
+  // Confidence scales with conviction (|score|), never a flat value.
+  const confidence = Math.max(38, Math.min(95, 50 + Math.abs(score) * 5 + Math.round((rng() - 0.5) * 6)));
+
+  // CONTINUOUS directional probability from the full score — never a dead 50/50.
+  // score spans roughly ±8 → probability spans ~10–90%, distinct per coin.
+  const probabilityBullish = Math.max(6, Math.min(94, Math.round(50 + score * 5 + (rng() - 0.5) * 4)));
 
   // ── Risk from volatility ──
   const actualVol = price > 0 ? (high24h - low24h) / price : vol;

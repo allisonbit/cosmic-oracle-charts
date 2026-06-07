@@ -58,9 +58,10 @@ export function useCanonicalSetup(
   const zones = prediction?.tradingZones;
   const cp = prediction?.currentPrice ?? opts?.live?.price ?? 0;
 
-  // Per-coin local signal from live data — the fallback that makes each card
-  // distinct when there's no persisted setup and the AI prediction hasn't loaded.
-  const local = (!setup && !prediction && (opts?.live?.price ?? 0) > 0)
+  // Per-coin local signal from live data. Computed whenever a live price is
+  // available (not only when the AI is absent) so we can use its directional lean
+  // when the AI read is neutral/flat — which is what made every card show 50/50.
+  const local = (!setup && (opts?.live?.price ?? 0) > 0)
     ? computeLocalSignal(
         {
           symbol,
@@ -76,7 +77,16 @@ export function useCanonicalSetup(
       )
     : null;
 
-  // Precedence: persisted setup → AI prediction zones → local signal → price-derived.
+  // Is the AI prediction actually taking a side? A neutral bias collapses to a
+  // dead 50/50, so we treat that as "no directional read" and defer to the local
+  // momentum signal instead of rendering a flat 50.
+  const predDirectional =
+    !!prediction &&
+    prediction.bias && prediction.bias !== "neutral" &&
+    typeof prediction.probabilityBullish === "number" &&
+    prediction.probabilityBullish !== 50;
+
+  // Precedence for levels: persisted setup → AI prediction zones → local → price.
   const entryLow = setup?.entry_low ?? (zones?.entryZone as any)?.min ?? local?.entryLow ?? (cp ? cp * 0.98 : 0);
   const entryHigh = setup?.entry_high ?? (zones?.entryZone as any)?.max ?? local?.entryHigh ?? cp;
   const stopLoss = setup?.stop_loss ?? zones?.stopLoss ?? local?.stopLoss ?? (cp ? cp * 0.95 : 0);
@@ -84,9 +94,29 @@ export function useCanonicalSetup(
   const tp2 = setup?.take_profit_2 ?? zones?.takeProfit2 ?? local?.tp2 ?? (cp ? cp * 1.1 : 0);
   const tp3 = setup?.take_profit_3 ?? zones?.takeProfit3 ?? local?.tp3 ?? (cp ? cp * 1.15 : 0);
 
-  const bias = (setup?.bias ?? prediction?.bias ?? local?.bias ?? "neutral") as CanonicalSetup["bias"];
-  const confidence = setup?.confidence ?? prediction?.confidence ?? local?.confidence ?? 50;
-  const probabilityBullish = prediction?.probabilityBullish ?? local?.probabilityBullish ?? (bias === "bullish" ? confidence : 100 - confidence);
+  // Direction / conviction: persisted setup wins; else a directional AI read; else
+  // the local momentum signal; else whatever the AI gave.
+  const bias = (
+    setup?.bias ??
+    (predDirectional ? prediction.bias : undefined) ??
+    local?.bias ??
+    prediction?.bias ??
+    "neutral"
+  ) as CanonicalSetup["bias"];
+
+  const confidence =
+    setup?.confidence ??
+    (predDirectional ? prediction.confidence : undefined) ??
+    local?.confidence ??
+    prediction?.confidence ??
+    50;
+
+  const probabilityBullish =
+    setup
+      ? (setup.bias === "bullish" ? confidence : setup.bias === "bearish" ? 100 - confidence : (local?.probabilityBullish ?? 50))
+      : predDirectional
+        ? prediction.probabilityBullish
+        : (local?.probabilityBullish ?? prediction?.probabilityBullish ?? 50);
 
   return {
     bias,
