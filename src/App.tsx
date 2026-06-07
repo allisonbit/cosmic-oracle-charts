@@ -8,6 +8,7 @@ import React from 'react';
 import { Loader2 } from "lucide-react";
 import { SEO, StructuredData } from "@/components/MainSEO";
 import { AuthProvider } from "@/hooks/useAuth";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { AdSenseManager, StickyFooterAd } from "@/components/ads";
 import { usePageTracking } from "@/hooks/usePageTracking";
 import { useSearchEnginePing } from "@/hooks/useSearchEnginePing";
@@ -176,6 +177,7 @@ const ChunkLoadRecovery = memo(function ChunkLoadRecovery() {
 
 const App = () => (
     <QueryClientProvider client={queryClient}>
+    <ThemeProvider>
     <AuthProvider>
       <TooltipProvider delayDuration={300}>
         <Toaster />
@@ -267,6 +269,7 @@ const App = () => (
         </AppErrorBoundary>
       </TooltipProvider>
     </AuthProvider>
+    </ThemeProvider>
     </QueryClientProvider>
 );
 

@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import oracleLogo from "@/assets/oracle-bull-logo.jpg";
 import { GlobalSearch } from "@/components/search/GlobalSearch";
 import { UserMenu } from "@/components/auth/UserMenu";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 // Primary nav — the 6 most important destinations
 const PRIMARY_NAV = [
@@ -179,10 +180,12 @@ export function Navbar() {
               </div>
 
               <UserMenu className="ml-2" />
+              <ThemeToggle className="ml-1" />
             </div>
 
-            {/* Mobile: User Menu + Hamburger */}
+            {/* Mobile: Theme toggle + User Menu + Hamburger */}
             <div className="lg:hidden flex items-center gap-2">
+              <ThemeToggle />
               <UserMenu />
               <button
                 type="button"

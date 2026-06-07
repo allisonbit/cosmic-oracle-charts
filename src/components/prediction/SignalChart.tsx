@@ -187,15 +187,15 @@ export function SignalChart({ symbol, name, currentPrice, bias, confidence, trad
             
             <XAxis 
               dataKey="time" 
-              tick={{ fontSize: 10, fill: '#64748b' }}
-              axisLine={{ stroke: '#e2e8f0' }}
-              tickLine={{ stroke: '#e2e8f0' }}
+              tick={{ fontSize: 10, fill: '#7b8499' }}
+              axisLine={{ stroke: 'rgba(127,138,153,0.3)' }}
+              tickLine={{ stroke: 'rgba(127,138,153,0.3)' }}
             />
             <YAxis 
               domain={[priceRange.min, priceRange.max]}
-              tick={{ fontSize: 10, fill: '#64748b' }}
-              axisLine={{ stroke: '#e2e8f0' }}
-              tickLine={{ stroke: '#e2e8f0' }}
+              tick={{ fontSize: 10, fill: '#7b8499' }}
+              axisLine={{ stroke: 'rgba(127,138,153,0.3)' }}
+              tickLine={{ stroke: 'rgba(127,138,153,0.3)' }}
               tickFormatter={(v) => formatPrice(v)}
               width={65}
             />
