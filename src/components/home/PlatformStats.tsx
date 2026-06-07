@@ -1,74 +1,88 @@
-import { TrendingUp, TrendingDown, Activity, Globe, Users, BarChart3 } from "lucide-react";
+import { Globe, Activity, BarChart3, Coins, Layers } from "lucide-react";
 import { useMarketData } from "@/hooks/useMarketData";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 
-export function QuickStats() {
+// Single, honest platform-stats strip.
+// Every number here is either live from the market API or a static fact we can
+// stand behind (8 supported chains). No fabricated vanity metrics.
+export function PlatformStats() {
   const { data, isLoading } = useMarketData();
+  const global = data?.global;
 
   const stats = [
     {
-      label: "Total Market Cap",
-      value: data?.global?.totalMarketCap 
-        ? `$${(data.global.totalMarketCap / 1e12).toFixed(2)}T`
-        : null,
-      change: data?.global?.marketCapChange24h ?? null,
+      label: "Global Market Cap",
+      value: global ? `$${(global.totalMarketCap / 1e12).toFixed(2)}T` : null,
+      change: global?.marketCapChange24h ?? null,
       icon: Globe,
       link: "/dashboard",
       color: "text-primary",
-      bgColor: "bg-primary/10",
+      bg: "bg-primary/10",
     },
     {
       label: "24h Trading Volume",
-      value: data?.global?.totalVolume24h
-        ? `$${(data.global.totalVolume24h / 1e9).toFixed(0)}B`
-        : null,
+      value: global ? `$${(global.totalVolume24h / 1e9).toFixed(0)}B` : null,
+      change: null,
       icon: Activity,
       link: "/dashboard",
       color: "text-secondary",
-      bgColor: "bg-secondary/10",
+      bg: "bg-secondary/10",
     },
     {
       label: "BTC Dominance",
-      value: data?.global?.btcDominance
-        ? `${(data.global.btcDominance ?? 0).toFixed(1)}%`
-        : null,
+      value: global ? `${(global.btcDominance ?? 0).toFixed(1)}%` : null,
+      change: null,
       icon: BarChart3,
       link: "/price-prediction/bitcoin/daily",
       color: "text-warning",
-      bgColor: "bg-warning/10",
+      bg: "bg-warning/10",
     },
     {
-      label: "Active Cryptocurrencies",
-      value: data?.global?.activeCryptocurrencies?.toLocaleString() || null,
-      icon: Users,
+      label: "Coins Tracked",
+      value: global?.activeCryptocurrencies
+        ? `${global.activeCryptocurrencies.toLocaleString()}+`
+        : null,
+      change: null,
+      icon: Coins,
       link: "/explorer",
       color: "text-success",
-      bgColor: "bg-success/10",
+      bg: "bg-success/10",
+    },
+    {
+      // Static but true: the platform covers 8 major chains (see FAQ / chain pages).
+      label: "Blockchains",
+      value: "8",
+      change: null,
+      icon: Layers,
+      link: "/chain/ethereum",
+      color: "text-chart-4",
+      bg: "bg-chart-4/10",
     },
   ];
 
   return (
-    <section className="py-6 md:py-8 border-b border-border/30">
+    <section className="py-6 md:py-8 border-y border-border/30" aria-label="Live market statistics">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
           {stats.map((stat, index) => {
             const Icon = stat.icon;
+            const showSkeleton = isLoading || stat.value === null;
             return (
               <Link
                 key={stat.label}
                 to={stat.link}
                 className="group holo-card p-4 md:p-5 animate-fade-in hover:border-primary/30 hover:shadow-md transition-all"
-                style={{ animationDelay: `${index * 0.08}s` }}
+                style={{ animationDelay: `${index * 0.06}s` }}
               >
                 <div className="flex items-center gap-2 mb-2">
-                  <div className={cn("w-7 h-7 rounded-lg flex items-center justify-center", stat.bgColor)}>
+                  <div className={cn("w-7 h-7 rounded-lg flex items-center justify-center", stat.bg)}>
                     <Icon className={cn("w-3.5 h-3.5", stat.color)} />
                   </div>
                   <span className="text-muted-foreground text-[10px] md:text-xs">{stat.label}</span>
                 </div>
                 <div className="text-xl md:text-2xl font-display font-bold text-foreground">
-                  {isLoading || stat.value === null ? (
+                  {showSkeleton ? (
                     <div className="h-7 w-24 bg-muted animate-pulse rounded" />
                   ) : (
                     stat.value
@@ -81,13 +95,9 @@ export function QuickStats() {
                       stat.change >= 0 ? "text-success" : "text-danger"
                     )}
                   >
-                    {stat.change >= 0 ? (
-                      <TrendingUp className="w-3 h-3" />
-                    ) : (
-                      <TrendingDown className="w-3 h-3" />
-                    )}
                     {stat.change >= 0 ? "+" : ""}
-                    {(stat.change ?? 0).toFixed(1)}% <span className="text-muted-foreground ml-1">24h</span>
+                    {(stat.change ?? 0).toFixed(1)}%
+                    <span className="text-muted-foreground ml-1">24h</span>
                   </div>
                 )}
               </Link>

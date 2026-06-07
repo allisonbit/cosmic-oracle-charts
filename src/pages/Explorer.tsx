@@ -1,6 +1,6 @@
 import { Layout } from "@/components/layout/Layout";
 import { useState, useMemo, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Search, X, Loader2, ExternalLink, Copy, TrendingUp, TrendingDown, Flame, Zap, BarChart3, Star, ArrowUpDown, Filter, Clock, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -212,6 +212,14 @@ const ExplorerPage = () => {
   const [copiedAddr, setCopiedAddr] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  // Seed the search box from ?q= so the WebSite SearchAction (Google sitelinks
+  // search box → /explorer?q=...) actually resolves to a populated search.
+  useEffect(() => {
+    const q = searchParams.get("q");
+    if (q) setSearchQuery(q);
+  }, [searchParams]);
 
   const chainData = getChainById(selectedChain) || ALL_CHAINS[0];
 

@@ -26,7 +26,7 @@ export function NewsletterCTASection() {
 
           <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
             Access AI-powered predictions, whale alerts, real-time dashboards, and multi-chain analytics — all completely free.
-            Join 100,000+ traders who have already made the switch.
+            No account, no credit card, no catch.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

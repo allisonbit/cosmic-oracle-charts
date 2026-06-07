@@ -3,94 +3,13 @@ import { SITE_URL } from "@/lib/siteConfig";
 
 const baseUrl = SITE_URL;
 
-// Organization schema for site-wide authority
-export function OrganizationSchema() {
-  useEffect(() => {
-    document.querySelectorAll('script[data-schema="organization"]').forEach(el => el.remove());
-    
-    const schema = {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "@id": `${baseUrl}/#organization`,
-      "name": "Oracle Bull",
-      "alternateName": "OracleBull",
-      "url": baseUrl,
-      "logo": {
-        "@type": "ImageObject",
-        "url": `${baseUrl}/oracle-bull-logo.jpg`,
-        "width": 512,
-        "height": 512
-      },
-      "sameAs": [
-        "https://twitter.com/oracle_bulls"
-      ],
-      "description": "AI-powered cryptocurrency analytics platform providing real-time price forecasts, whale tracking, sentiment analysis, and market intelligence for Bitcoin, Ethereum, and 1000+ tokens.",
-      "foundingDate": "2024",
-      "knowsAbout": [
-        "Cryptocurrency Trading",
-        "Bitcoin Price Prediction",
-        "Ethereum Analysis",
-        "Blockchain Analytics",
-        "Market Sentiment Analysis",
-        "Whale Tracking",
-        "DeFi Analytics"
-      ],
-      "areaServed": "Worldwide"
-    };
-
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.setAttribute("data-schema", "organization");
-    script.textContent = JSON.stringify(schema);
-    document.head.appendChild(script);
-
-    return () => {
-      document.querySelectorAll('script[data-schema="organization"]').forEach(el => el.remove());
-    };
-  }, []);
-
-  return null;
-}
-
-// WebSite schema with SearchAction for sitelinks search box
-export function WebSiteSchema() {
-  useEffect(() => {
-    document.querySelectorAll('script[data-schema="website"]').forEach(el => el.remove());
-    
-    const schema = {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "@id": `${baseUrl}/#website`,
-      "name": "Oracle Bull",
-      "url": baseUrl,
-      "description": "Free AI-powered crypto forecasting platform with real-time analytics",
-      "publisher": {
-        "@id": `${baseUrl}/#organization`
-      },
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": {
-          "@type": "EntryPoint",
-          "urlTemplate": `${baseUrl}/predictions?search={search_term_string}`
-        },
-        "query-input": "required name=search_term_string"
-      },
-      "inLanguage": "en-US"
-    };
-
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.setAttribute("data-schema", "website");
-    script.textContent = JSON.stringify(schema);
-    document.head.appendChild(script);
-
-    return () => {
-      document.querySelectorAll('script[data-schema="website"]').forEach(el => el.remove());
-    };
-  }, []);
-
-  return null;
-}
+// NOTE: Organization, WebSite and SoftwareApplication are emitted ONCE as static
+// JSON-LD in index.html (the site-identity graph). They are intentionally NOT
+// React components here anymore — re-emitting them per-route caused duplicate
+// Organization/WebSite/SoftwareApplication entities across the site.
+//
+// The reusable, page-specific schema helpers below remain available for any page
+// that needs them (breadcrumbs, how-to guides, per-coin product schema).
 
 // BreadcrumbList schema generator
 interface BreadcrumbItem {
@@ -101,9 +20,9 @@ interface BreadcrumbItem {
 export function BreadcrumbSchema({ items }: { items: BreadcrumbItem[] }) {
   useEffect(() => {
     if (items.length === 0) return;
-    
+
     document.querySelectorAll('script[data-schema="breadcrumb"]').forEach(el => el.remove());
-    
+
     const schema = {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
@@ -129,54 +48,6 @@ export function BreadcrumbSchema({ items }: { items: BreadcrumbItem[] }) {
   return null;
 }
 
-// SoftwareApplication schema for the platform
-export function SoftwareApplicationSchema() {
-  useEffect(() => {
-    document.querySelectorAll('script[data-schema="software"]').forEach(el => el.remove());
-    
-    const schema = {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "Oracle Bull Crypto Analytics",
-      "applicationCategory": "FinanceApplication",
-      "operatingSystem": "Web Browser",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "ratingCount": "1250",
-        "bestRating": "5",
-        "worstRating": "1"
-      },
-      "featureList": [
-        "AI Price Predictions",
-        "Real-time Price Charts",
-        "Whale Activity Tracking",
-        "Market Sentiment Analysis",
-        "Multi-Chain Analytics",
-        "Token Discovery Engine",
-        "Portfolio Tracking"
-      ]
-    };
-
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.setAttribute("data-schema", "software");
-    script.textContent = JSON.stringify(schema);
-    document.head.appendChild(script);
-
-    return () => {
-      document.querySelectorAll('script[data-schema="software"]').forEach(el => el.remove());
-    };
-  }, []);
-
-  return null;
-}
-
 // HowTo schema for tutorial/educational content
 interface HowToStep {
   name: string;
@@ -184,20 +55,20 @@ interface HowToStep {
   url?: string;
 }
 
-export function HowToSchema({ 
-  name, 
-  description, 
+export function HowToSchema({
+  name,
+  description,
   steps,
   totalTime = "PT5M"
-}: { 
-  name: string; 
-  description: string; 
+}: {
+  name: string;
+  description: string;
   steps: HowToStep[];
   totalTime?: string;
 }) {
   useEffect(() => {
     document.querySelectorAll('script[data-schema="howto"]').forEach(el => el.remove());
-    
+
     const schema = {
       "@context": "https://schema.org",
       "@type": "HowTo",
@@ -228,22 +99,22 @@ export function HowToSchema({
 }
 
 // Product schema for cryptocurrency analysis products
-export function CryptoProductSchema({ 
-  name, 
-  symbol, 
+export function CryptoProductSchema({
+  name,
+  symbol,
   description,
   price,
-  priceChange 
-}: { 
-  name: string; 
-  symbol: string; 
+  priceChange
+}: {
+  name: string;
+  symbol: string;
   description: string;
   price?: number;
   priceChange?: number;
 }) {
   useEffect(() => {
     document.querySelectorAll('script[data-schema="product"]').forEach(el => el.remove());
-    
+
     const schema = {
       "@context": "https://schema.org",
       "@type": "FinancialProduct",
@@ -276,15 +147,4 @@ export function CryptoProductSchema({
   }, [name, symbol, description, price, priceChange]);
 
   return null;
-}
-
-// Combined global schemas that should be on every page
-export function GlobalSchemas() {
-  return (
-    <>
-      <OrganizationSchema />
-      <WebSiteSchema />
-      <SoftwareApplicationSchema />
-    </>
-  );
 }

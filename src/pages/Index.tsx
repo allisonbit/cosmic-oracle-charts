@@ -4,31 +4,25 @@ import { useAuth } from "@/hooks/useAuth";
 import { Navbar } from "@/components/layout/Navbar";
 import { CryptoTicker } from "@/components/layout/CryptoTicker";
 import { HeroSection } from "@/components/home/HeroSection";
-
-
 import { QuickAccessBar } from "@/components/home/QuickAccessBar";
 import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BannerAd, InArticleAd } from "@/components/ads";
-import { SEO, StructuredData } from "@/components/MainSEO";
-import { HomepageSchema } from "@/components/home/HomepageSchema";
+import { SEO } from "@/components/MainSEO";
 
-// Lazy load below-fold components for better LCP
-const QuickStats = lazy(() => import("@/components/home/QuickStats").then(m => ({ default: m.QuickStats })));
-const SocialProofBar = lazy(() => import("@/components/home/SocialProofBar").then(m => ({ default: m.SocialProofBar })));
-const SEOContentBlock = lazy(() => import("@/components/home/SEOContentBlock").then(m => ({ default: m.SEOContentBlock })));
-const HowItWorks = lazy(() => import("@/components/home/HowItWorks").then(m => ({ default: m.HowItWorks })));
-const ChainLinks = lazy(() => import("@/components/home/ChainLinks").then(m => ({ default: m.ChainLinks })));
-const TopMovers = lazy(() => import("@/components/home/TopMovers").then(m => ({ default: m.TopMovers })));
-const FeaturesSection = lazy(() => import("@/components/home/FeaturesSection").then(m => ({ default: m.FeaturesSection })));
-const CTASection = lazy(() => import("@/components/home/CTASection").then(m => ({ default: m.CTASection })));
-const MarketOverview = lazy(() => import("@/components/home/MarketOverview").then(m => ({ default: m.MarketOverview })));
-const TrendingSearches = lazy(() => import("@/components/home/TrendingSearches").then(m => ({ default: m.TrendingSearches })));
-const HomepageFAQ = lazy(() => import("@/components/home/HomepageFAQ").then(m => ({ default: m.HomepageFAQ })));
-const MarketCategoriesHub = lazy(() => import("@/components/home/MarketCategoriesHub").then(m => ({ default: m.MarketCategoriesHub })));
+// Above-the-fold, live-data-first sections (eager-ish, but still split).
+const MarketSnapshot = lazy(() => import("@/components/home/MarketSnapshot").then(m => ({ default: m.MarketSnapshot })));
+const PlatformStats = lazy(() => import("@/components/home/PlatformStats").then(m => ({ default: m.PlatformStats })));
 const LiveSignals = lazy(() => import("@/components/home/LiveSignals").then(m => ({ default: m.LiveSignals })));
-const TestimonialsSection = lazy(() => import("@/components/home/TestimonialsSection").then(m => ({ default: m.TestimonialsSection })));
+
+// Below-the-fold sections.
+const HowItWorks = lazy(() => import("@/components/home/HowItWorks").then(m => ({ default: m.HowItWorks })));
+const FeaturesSection = lazy(() => import("@/components/home/FeaturesSection").then(m => ({ default: m.FeaturesSection })));
+const SEOContentBlock = lazy(() => import("@/components/home/SEOContentBlock").then(m => ({ default: m.SEOContentBlock })));
+const ChainLinks = lazy(() => import("@/components/home/ChainLinks").then(m => ({ default: m.ChainLinks })));
+const MarketCategoriesHub = lazy(() => import("@/components/home/MarketCategoriesHub").then(m => ({ default: m.MarketCategoriesHub })));
+const HomepageFAQ = lazy(() => import("@/components/home/HomepageFAQ").then(m => ({ default: m.HomepageFAQ })));
 const NewsletterCTASection = lazy(() => import("@/components/home/NewsletterCTASection").then(m => ({ default: m.NewsletterCTASection })));
 
 const SectionFallback = () => (
@@ -69,7 +63,7 @@ const ViewportSection = ({ children, fallback }: { children: React.ReactNode; fa
 };
 
 const Index = () => {
-  const { user, loading, ready, authenticated } = useAuth();
+  const { loading, ready, authenticated } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -93,9 +87,7 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <SEO />
-      <StructuredData />
-      <HomepageSchema />
-      
+
       <header>
         <Navbar />
         <div className="mt-14 md:mt-16" aria-label="Live cryptocurrency prices">
@@ -103,109 +95,82 @@ const Index = () => {
           <CryptoTicker />
         </div>
       </header>
-      
+
       <main id="main-content">
-        {/* 1. Hero - first impression, trust badges, live prices */}
+        {/* 1. Hero — H1, prominent search, live price chips */}
         <HeroSection />
 
-        {/* 2. Live Signals - high conviction trade setups (Moved to be 2nd thing users see) */}
+        {/* 2. Market Snapshot — CoinGecko-style live data above the fold */}
+        <Suspense fallback={<SectionFallback />}>
+          <MarketSnapshot />
+        </Suspense>
+
+        {/* 3. Honest platform stats — single live strip */}
+        <Suspense fallback={<SectionFallback />}>
+          <PlatformStats />
+        </Suspense>
+
+        {/* 4. Live AI Signals — high-conviction trade setups */}
         <Suspense fallback={<SectionFallback />}>
           <LiveSignals />
         </Suspense>
 
-        {/* 3. Quick Stats - live market data bar */}
-        <Suspense fallback={<SectionFallback />}>
-          <QuickStats />
-        </Suspense>
-
-
-
-        {/* 3. Social Proof - animated platform metrics */}
-        <Suspense fallback={<SectionFallback />}>
-          <SocialProofBar />
-        </Suspense>
-        
-        {/* 4. How It Works - 3-step onboarding */}
-        <Suspense fallback={<SectionFallback />}>
-          <HowItWorks />
-        </Suspense>
-        
-        {/* 5. SEO content block with trust elements */}
-        <Suspense fallback={<SectionFallback />}>
-          <SEOContentBlock />
-        </Suspense>
-        
-        {/* 6. Chain analytics cards */}
-        <Suspense fallback={<SectionFallback />}>
-          <ChainLinks />
-        </Suspense>
-        
-        {/* Ad placement - below fold */}
+        {/* Ad placement — below fold */}
         <BannerAd className="mt-4" />
-        
-        {/* 8. TopMovers - deferred chart loading */}
+
+        {/* 5. How It Works — 3-step onboarding */}
         <ViewportSection fallback={<SectionFallback />}>
           <Suspense fallback={<SectionFallback />}>
-            <TopMovers />
+            <HowItWorks />
           </Suspense>
         </ViewportSection>
 
-        {/* 9. Platform features grid */}
-        <Suspense fallback={<SectionFallback />}>
-          <FeaturesSection />
-        </Suspense>
-        
+        {/* 6a. Platform features grid */}
+        <ViewportSection fallback={<SectionFallback />}>
+          <Suspense fallback={<SectionFallback />}>
+            <FeaturesSection />
+          </Suspense>
+        </ViewportSection>
+
+        {/* 6b. Why traders use us + why-free explainer */}
+        <ViewportSection fallback={<SectionFallback />}>
+          <Suspense fallback={<SectionFallback />}>
+            <SEOContentBlock />
+          </Suspense>
+        </ViewportSection>
+
         {/* In-article ad */}
         <InArticleAd />
-        
-        {/* 9b. Testimonials - social proof */}
-        <ViewportSection fallback={<SectionFallback />}>
-          <Suspense fallback={<SectionFallback />}>
-            <TestimonialsSection />
-          </Suspense>
-        </ViewportSection>
-        
-        {/* 10. Trending Searches + Platform Stats */}
-        <ViewportSection fallback={<SectionFallback />}>
-          <Suspense fallback={<SectionFallback />}>
-            <TrendingSearches />
-          </Suspense>
-        </ViewportSection>
-        
-        {/* 11. Interactive CTA tabs */}
-        <Suspense fallback={<SectionFallback />}>
-          <CTASection />
-        </Suspense>
 
-        {/* 12. Market Overview - deferred chart loading */}
+        {/* 7. Explore chains — internal linking */}
         <ViewportSection fallback={<SectionFallback />}>
           <Suspense fallback={<SectionFallback />}>
-            <MarketOverview />
+            <ChainLinks />
           </Suspense>
         </ViewportSection>
 
-        {/* 13. FAQ - SEO rich snippets */}
-        <ViewportSection fallback={<SectionFallback />}>
-          <Suspense fallback={<SectionFallback />}>
-            <HomepageFAQ />
-          </Suspense>
-        </ViewportSection>
-        
-        {/* 14. SEO Internal Linking Hub */}
+        {/* 8. Market categories hub — internal linking */}
         <ViewportSection fallback={<SectionFallback />}>
           <Suspense fallback={<SectionFallback />}>
             <MarketCategoriesHub />
           </Suspense>
         </ViewportSection>
-        
-        {/* 15. Final Conversion CTA */}
+
+        {/* 9. FAQ — SEO rich snippets (aligned with prerender) */}
+        <ViewportSection fallback={<SectionFallback />}>
+          <Suspense fallback={<SectionFallback />}>
+            <HomepageFAQ />
+          </Suspense>
+        </ViewportSection>
+
+        {/* 10. Final conversion CTA */}
         <ViewportSection fallback={<SectionFallback />}>
           <Suspense fallback={<SectionFallback />}>
             <NewsletterCTASection />
           </Suspense>
         </ViewportSection>
       </main>
-      
+
       <Footer />
       <MobileBottomNav />
       {/* Bottom padding for mobile nav */}

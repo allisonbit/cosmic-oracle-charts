@@ -10,24 +10,28 @@ import {
 
 const faqs = [
   {
+    question: "Is Oracle Bull free to use?",
+    answer: "Yes. Oracle Bull is 100% free with no signup required — including AI predictions, whale tracking, sentiment analysis and blockchain dashboards. The platform is sustained through non-intrusive advertising partnerships. There are no premium tiers, paywalls, or hidden fees.",
+  },
+  {
+    question: "How accurate are the crypto predictions?",
+    answer: "Predictions are probabilistic AI forecasts built from live market data, technical indicators and sentiment. Each forecast includes a confidence score and the key factors behind it. They are research tools, not financial advice or guarantees — always do your own research.",
+  },
+  {
+    question: "Which cryptocurrencies are covered?",
+    answer: "Bitcoin, Ethereum, Solana, XRP, BNB and 1,000+ tokens, with dedicated AI prediction pages for the top coins. We provide real-time pricing, whale tracking and on-chain analytics across all supported assets.",
+  },
+  {
     question: "What is Oracle Bull and how does it work?",
-    answer: "Oracle Bull is a free AI-powered cryptocurrency analytics platform that provides real-time price predictions, whale tracking, sentiment analysis, and on-chain intelligence across 18,000+ tokens and 8 blockchains. Our AI models analyze 50+ technical indicators, market sentiment, and on-chain data to generate forecasts with confidence scores.",
-  },
-  {
-    question: "Is Oracle Bull really free? What's the catch?",
-    answer: "Yes, Oracle Bull is 100% free with no signup required. All tools including AI predictions, the live dashboard, wallet scanner, and educational content are fully accessible. The platform is sustained through non-intrusive advertising partnerships. There are no premium tiers, paywalls, or hidden fees.",
-  },
-  {
-    question: "How accurate are the AI price predictions?",
-    answer: "Our AI prediction models maintain an average accuracy of approximately 85% based on 30-day rolling evaluations. Each prediction includes a confidence score (e.g., 82% confidence) and key factor analysis showing which indicators influenced the forecast. We publish our prediction leaderboard with historical accuracy data for full transparency.",
+    answer: "Oracle Bull is a free AI-powered cryptocurrency analytics platform that provides real-time price predictions, whale tracking, sentiment analysis, and on-chain intelligence across 1,000+ tokens and 8 blockchains. Our AI models analyze technical indicators, market sentiment, and on-chain data to generate forecasts with confidence scores.",
   },
   {
     question: "What cryptocurrencies and blockchains do you support?",
-    answer: "Oracle Bull tracks 18,000+ cryptocurrencies across 8 major blockchains: Ethereum, Solana, Bitcoin, BNB Chain, Arbitrum, Base, Polygon, and Avalanche. We provide real-time pricing, AI predictions, whale tracking, and on-chain analytics for all supported tokens.",
+    answer: "Oracle Bull tracks 1,000+ cryptocurrencies across 8 major blockchains: Ethereum, Solana, Bitcoin, BNB Chain, Arbitrum, Base, Polygon, and Avalanche. We provide real-time pricing, AI predictions, whale tracking, and on-chain analytics for all supported tokens.",
   },
   {
     question: "How does the whale tracking feature work?",
-    answer: "Our whale tracker monitors large wallet movements across supported blockchains in real-time. When wallets holding significant amounts of tokens make transfers, accumulate, or distribute, we detect these movements and alert users. This helps identify smart money flows before they impact market prices.",
+    answer: "Our whale tracker monitors large wallet movements across supported blockchains in real-time. When wallets holding significant amounts of tokens make transfers, accumulate, or distribute, we detect these movements and surface them. This helps identify smart money flows before they impact market prices.",
   },
   {
     question: "Can I track my own cryptocurrency portfolio?",
@@ -35,7 +39,7 @@ const faqs = [
   },
   {
     question: "How often is the market data updated?",
-    answer: "Price data is updated in real-time via live feeds from major exchanges. AI predictions are refreshed every hour. Market sentiment and social data are updated every 5 minutes. On-chain metrics including TVL, gas prices, and transaction volumes update every 15 seconds.",
+    answer: "Price data updates in real-time via live feeds. AI predictions refresh regularly throughout the day. Market sentiment and social data update frequently, and on-chain metrics including TVL, gas prices, and transaction volumes update continuously.",
   },
   {
     question: "Is Oracle Bull financial advice?",

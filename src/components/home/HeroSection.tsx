@@ -1,50 +1,12 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Shield, Users, TrendingUp, TrendingDown, CheckCircle, Activity, Zap, ChevronRight, Radio, BarChart3 } from "lucide-react";
 import { Link } from "react-router-dom";
 import cosmicOracle from "@/assets/oracle-bull-logo.jpg";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 import { CoinImage } from "@/components/ui/CoinImage";
+import { GlobalSearch } from "@/components/search/GlobalSearch";
 import { cn } from "@/lib/utils";
-
-// Animated counter hook
-function useCountUp(target: number, duration = 2000) {
-  const [count, setCount] = useState(0);
-  const [started, setStarted] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !started) {
-          setStarted(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [started]);
-
-  useEffect(() => {
-    if (!started) return;
-    let start = 0;
-    const increment = target / (duration / 16);
-    const timer = setInterval(() => {
-      start += increment;
-      if (start >= target) {
-        setCount(target);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(start));
-      }
-    }, 16);
-    return () => clearInterval(timer);
-  }, [started, target, duration]);
-
-  return { count, ref };
-}
 
 // Format price nicely
 function fmt(price: number): string {
@@ -78,11 +40,6 @@ export function HeroSection() {
     return () => { if (document.head.contains(link)) document.head.removeChild(link); };
   }, []);
 
-  const { count: tokensCount, ref: tokensRef } = useCountUp(18420, 2500);
-  const { count: chainsCount, ref: chainsRef } = useCountUp(30, 1500);
-  const { count: predsCount, ref: predsRef } = useCountUp(500, 2000);
-  const { count: accuracyCount, ref: accuracyRef } = useCountUp(85, 2000);
-
   const topMover = topCoins.length > 0
     ? topCoins.reduce((a, b) => Math.abs(a.change24h) > Math.abs(b.change24h) ? a : b)
     : null;
@@ -91,7 +48,7 @@ export function HeroSection() {
 
   return (
     <section
-      className="relative flex items-center justify-center overflow-hidden pt-8 pb-10 md:pt-16 md:pb-14 min-h-[85vh] md:min-h-[88vh]"
+      className="relative flex items-center justify-center overflow-hidden pt-8 pb-10 md:pt-14 md:pb-12"
       aria-labelledby="hero-heading"
     >
       {/* Background layers */}
@@ -105,7 +62,7 @@ export function HeroSection() {
         <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-10 lg:gap-6 items-center">
 
           {/* ═══ LEFT: TEXT + CTA ═══ */}
-          <article className="text-center lg:text-left space-y-7 animate-fade-in flex flex-col items-center lg:items-start">
+          <article className="text-center lg:text-left space-y-6 animate-fade-in flex flex-col items-center lg:items-start">
 
             {/* Live Market Status Bar */}
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2">
@@ -148,22 +105,24 @@ export function HeroSection() {
               </div>
             )}
 
-            {/* Headline */}
-            <h1 id="hero-heading" className="text-[clamp(2.4rem,5.5vw,4.5rem)] font-display font-extrabold leading-[1.05] tracking-tight text-foreground">
-              Institutional{" "}
-              <span className="text-gradient-cosmic">Intelligence,</span>
+            {/* Headline — matches the prerendered/indexed H1 for crawler/user parity */}
+            <h1 id="hero-heading" className="text-[clamp(2.2rem,5vw,4rem)] font-display font-extrabold leading-[1.07] tracking-tight text-foreground">
+              Free AI Crypto{" "}
+              <span className="text-gradient-cosmic">Price Predictions</span>
               <br className="hidden sm:block" />
-              Now Open to{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground/90 to-foreground/40">
-                Everyone.
-              </span>
+              {" "}& Market Intelligence
             </h1>
 
             <p className="text-[clamp(0.95rem,2vw,1.2rem)] text-muted-foreground max-w-xl leading-relaxed">
-              Real-time price predictions, on-chain intelligence, whale tracking and sentiment analysis across{" "}
-              <strong className="text-foreground">18,000+ assets</strong>. The same tools hedge funds pay for —{" "}
-              <span className="text-primary font-semibold">completely free</span>.
+              Real-time price predictions, on-chain intelligence, whale tracking and sentiment analysis for{" "}
+              <strong className="text-foreground">Bitcoin, Ethereum, Solana and 1,000+ tokens</strong> across 8 blockchains —{" "}
+              <span className="text-primary font-semibold">completely free, no signup</span>.
             </p>
+
+            {/* Prominent search — CoinGecko-style primary discovery anchor */}
+            <div className="w-full max-w-xl">
+              <GlobalSearch />
+            </div>
 
             {/* CTA Buttons */}
             <nav className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto" aria-label="Primary actions">
@@ -179,21 +138,15 @@ export function HeroSection() {
                   AI Predictions
                 </Link>
               </Button>
-              <Button asChild variant="ghost" size="lg" className="h-13 px-5 text-sm font-semibold rounded-xl hover:bg-muted transition-all hover:scale-[1.02] active:scale-[0.98]">
-                <Link to="/explorer">
-                  <BarChart3 className="w-4 h-4 mr-2" />
-                  Explore Markets
-                </Link>
-              </Button>
             </nav>
 
-            {/* Trust Badges */}
+            {/* Trust Badges — only honest, verifiable claims */}
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-1">
               {[
                 { icon: Shield, label: "No signup needed" },
-                { icon: Users, label: "100K+ monthly users" },
-                { icon: TrendingUp, label: "18,000+ tokens tracked" },
                 { icon: CheckCircle, label: "Free forever" },
+                { icon: Users, label: "1,000+ tokens tracked" },
+                { icon: BarChart3, label: "8 blockchains" },
               ].map(({ icon: Icon, label }) => (
                 <div key={label} className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Icon className="w-3.5 h-3.5 text-primary" />
@@ -229,7 +182,7 @@ export function HeroSection() {
                 <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" aria-hidden="true" />
               </div>
 
-              {/* Floating widget 1 — Live BTC price */}
+              {/* Floating widget 1 — Live BTC price (real data) */}
               {btc && (
                 <Link
                   to="/price-prediction/bitcoin/daily"
@@ -248,7 +201,7 @@ export function HeroSection() {
                 </Link>
               )}
 
-              {/* Floating widget 2 — Top mover signal */}
+              {/* Floating widget 2 — Top mover signal (real data) */}
               {topMover && (
                 <Link
                   to={`/price-prediction/${topMover.symbol.toLowerCase()}/daily`}
@@ -257,7 +210,7 @@ export function HeroSection() {
                 >
                   <div className="flex items-center gap-1.5 mb-1">
                     <Zap className="w-3 h-3 text-primary" />
-                    <span className="text-[10px] text-muted-foreground font-medium">Top Mover</span>
+                    <span className="text-[10px] text-muted-foreground font-medium">Top Mover 24h</span>
                   </div>
                   <div className="text-sm font-bold text-foreground">{topMover.symbol}</div>
                   <div className={cn("text-[11px] font-bold flex items-center gap-0.5 mt-0.5", topMover.change24h >= 0 ? "text-success" : "text-danger")}>
@@ -265,48 +218,6 @@ export function HeroSection() {
                   </div>
                 </Link>
               )}
-
-              {/* Floating widget 3 — AI Model accuracy */}
-              <div
-                className="absolute top-2 right-0 sm:-right-4 z-20 glass-panel p-3 rounded-xl border border-border/50 shadow-xl animate-fade-in"
-                style={{ animationDelay: "0.6s" }}
-              >
-                <div className="flex items-center gap-1.5 mb-1">
-                  <Activity className="w-3 h-3 text-secondary" />
-                  <span className="text-[10px] text-muted-foreground font-medium">AI Accuracy</span>
-                </div>
-                <div className="text-base font-bold text-foreground" ref={accuracyRef}>
-                  {accuracyCount}.4%
-                </div>
-                <div className="text-[10px] text-success mt-0.5">7-day avg</div>
-              </div>
-            </div>
-
-            {/* Stats bar — 4 live metrics */}
-            <div
-              className="w-full max-w-sm grid grid-cols-4 gap-0 mt-6 glass-panel rounded-2xl border border-border/40 overflow-hidden animate-fade-in"
-              style={{ animationDelay: "0.8s" }}
-            >
-              {([
-                { label: "Assets", value: `${tokensCount.toLocaleString()}+`, link: "/explorer", ref: tokensRef },
-                { label: "Chains", value: `${chainsCount}+`, link: "/chain/ethereum", ref: chainsRef },
-                { label: "Predictions", value: `${predsCount}+`, link: "/predictions", ref: predsRef },
-                { label: "Accuracy", value: `${accuracyCount}%`, link: "/predictions", ref: null },
-              ] as const).map((s, i) => (
-                <Link
-                  key={s.label}
-                  to={s.link}
-                  className={cn(
-                    "flex flex-col items-center justify-center py-3 px-1 text-center hover:bg-primary/5 transition-colors",
-                    i < 3 && "border-r border-border/30"
-                  )}
-                >
-                  <div className="text-sm md:text-base font-display font-bold text-foreground" ref={s.ref as React.RefObject<HTMLDivElement> | null}>
-                    {s.value}
-                  </div>
-                  <div className="text-[9px] font-medium text-muted-foreground uppercase tracking-wide mt-0.5">{s.label}</div>
-                </Link>
-              ))}
             </div>
           </figure>
         </div>

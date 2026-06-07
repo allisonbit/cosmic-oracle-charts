@@ -15,7 +15,6 @@ import { AppErrorBoundary } from "@/components/system/AppErrorBoundary";
 import { RouteErrorBoundary } from "@/components/system/RouteErrorBoundary";
 
 import { ScrollToTop } from "@/components/system/ScrollToTop";
-import { GlobalSchemas } from "@/components/seo/RichSchemas";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 // AdminRoute is lazy so its supabase `.from()` dependency (the heavy
 // @supabase/supabase-js client) stays out of the initial bundle.
@@ -189,7 +188,6 @@ const App = () => (
             <AdSenseManager />
             <SEO />
             <StructuredData />
-            <GlobalSchemas />
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route path="/" element={B(<Index />)} />

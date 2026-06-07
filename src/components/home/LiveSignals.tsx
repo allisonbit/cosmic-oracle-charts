@@ -419,7 +419,7 @@ export function LiveSignals() {
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary/10 border border-primary/20 text-primary text-sm font-semibold hover:bg-primary/20 transition-all hover:scale-[1.02]"
           >
             <Zap className="w-4 h-4" />
-            See AI Predictions for 18,000+ Tokens
+            See AI Predictions for 1,000+ Tokens
             <ChevronRight className="w-4 h-4" />
           </Link>
         </div>

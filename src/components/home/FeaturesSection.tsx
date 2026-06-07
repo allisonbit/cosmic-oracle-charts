@@ -57,7 +57,7 @@ export function FeaturesSection() {
               AI-Powered Price Predictions
             </h3>
             <p className="text-muted-foreground text-base leading-relaxed max-w-md z-10">
-              Our neural networks analyze 50+ technical indicators, on-chain flows, and social sentiment to forecast price movements with an 85% historical confidence score.
+              Our AI models analyze technical indicators, on-chain flows, and social sentiment to forecast price movements, with a transparent confidence score on every prediction.
             </p>
             
             {/* Mock UI snippet inside card */}

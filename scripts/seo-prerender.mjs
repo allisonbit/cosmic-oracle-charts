@@ -147,7 +147,7 @@ add('/', {
   faq: [
     { q: 'Is Oracle Bull free to use?', a: 'Yes. Oracle Bull is 100% free with no signup required — including AI predictions, whale tracking, sentiment analysis and blockchain dashboards.' },
     { q: 'How accurate are the crypto predictions?', a: 'Predictions are probabilistic AI forecasts built from live market data, technical indicators and sentiment. They are research tools, not financial advice — always do your own research.' },
-    { q: 'Which cryptocurrencies are covered?', a: 'Bitcoin, Ethereum, Solana, XRP, BNB and 1,000+ tokens across 30+ blockchains, with dedicated prediction pages for the top coins.' },
+    { q: 'Which cryptocurrencies are covered?', a: 'Bitcoin, Ethereum, Solana, XRP, BNB and 1,000+ tokens across 8 blockchains, with dedicated prediction pages for the top coins.' },
   ],
   links: [...coinLinks, ...toolLinks],
 });

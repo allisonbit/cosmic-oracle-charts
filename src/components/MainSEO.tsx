@@ -447,100 +447,20 @@ export function StructuredData() {
   const currentPath = location.pathname;
   
   useEffect(() => {
-    // Remove existing structured data
-    document.querySelectorAll('script[type="application/ld+json"]').forEach(el => el.remove());
+    // Only remove the route-dynamic schema WE created — never touch the static
+    // site-identity schema baked into index.html or the prerendered page schema.
+    document.querySelectorAll('script[data-schema="route-dynamic"]').forEach(el => el.remove());
 
     const schemas: object[] = [];
 
-    // Organization Schema (always present)
-    schemas.push({
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "@id": `${defaultMeta.baseUrl}/#organization`,
-      "name": "Oracle Bull",
-      "url": defaultMeta.baseUrl,
-      "logo": {
-        "@type": "ImageObject",
-        "url": defaultMeta.image,
-        "width": 512,
-        "height": 512
-      },
-      "image": defaultMeta.image,
-      "sameAs": [
-        "https://x.com/oracle_bulls",
-        "https://t.me/oracle_bulls"
-      ],
-      "description": defaultMeta.description,
-      "foundingDate": "2024",
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "contactType": "customer support",
-        "url": "https://t.me/oracle_bulls",
-        "availableLanguage": "English"
-      }
-    });
+    // NOTE: Organization, WebSite and SoftwareApplication are emitted ONCE as
+    // static JSON-LD in index.html (site-identity graph). We deliberately do NOT
+    // re-emit them here to avoid duplicate-entity signals.
 
-    // WebSite Schema with SearchAction
-    schemas.push({
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "@id": `${defaultMeta.baseUrl}/#website`,
-      "name": "Oracle Bull",
-      "url": defaultMeta.baseUrl,
-      "description": defaultMeta.description,
-      "publisher": {
-        "@id": `${defaultMeta.baseUrl}/#organization`
-      },
-      "inLanguage": "en-US",
-      "potentialAction": [
-        {
-          "@type": "SearchAction",
-          "target": {
-            "@type": "EntryPoint",
-            "urlTemplate": `${defaultMeta.baseUrl}/explorer?q={search_term_string}`
-          },
-          "query-input": "required name=search_term_string"
-        }
-      ]
-    });
-
-    // SoftwareApplication Schema
-    schemas.push({
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "Oracle Bull Crypto Analytics",
-      "applicationCategory": "FinanceApplication",
-      "operatingSystem": "Web Browser",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "description": "Free AI-powered cryptocurrency forecasting and blockchain analytics platform",
-      "featureList": [
-        "Real-time crypto prices",
-        "AI price predictions",
-        "Whale tracking",
-        "Sentiment analysis",
-        "Multi-chain analytics",
-        "Token explorer",
-        "Wallet scanner",
-        "Crypto strength meter",
-        "Market events calendar"
-      ],
-      "screenshot": defaultMeta.image,
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "ratingCount": "1250",
-        "bestRating": "5",
-        "worstRating": "1"
-      }
-    });
-
-    // Page-specific WebPage schema
+    // Page-specific WebPage schema. Skip "/" — the prerenderer bakes the
+    // homepage WebPage + FAQ into static HTML, so re-emitting here would dupe it.
     const pageInfo = pageSEO[currentPath];
-    if (pageInfo) {
+    if (pageInfo && currentPath !== "/") {
       schemas.push({
         "@context": "https://schema.org",
         "@type": "WebPage",
@@ -926,16 +846,17 @@ export function StructuredData() {
       });
     }
 
-    // Add all schemas to head
+    // Add all schemas to head, tagged so cleanup only removes our own tags.
     schemas.forEach((schema) => {
       const script = document.createElement("script");
       script.type = "application/ld+json";
+      script.setAttribute("data-schema", "route-dynamic");
       script.text = JSON.stringify(schema);
       document.head.appendChild(script);
     });
 
     return () => {
-      document.querySelectorAll('script[type="application/ld+json"]').forEach(el => el.remove());
+      document.querySelectorAll('script[data-schema="route-dynamic"]').forEach(el => el.remove());
     };
   }, [currentPath]);
 
