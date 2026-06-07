@@ -101,6 +101,20 @@ export default {
         "elevation-md": "var(--shadow-md)",
         "elevation-lg": "var(--shadow-lg)",
         "elevation-xl": "var(--shadow-xl)",
+        // Accent glows for key actions / focus on the dark canvas
+        "glow-primary": "var(--glow-primary)",
+        "glow-secondary": "var(--glow-secondary)",
+        "glow-success": "var(--glow-success)",
+        "glow-danger": "var(--glow-danger)",
+      },
+      transitionTimingFunction: {
+        out: "var(--ease-out)",
+        spring: "var(--ease-spring)",
+      },
+      transitionDuration: {
+        fast: "120ms",
+        DEFAULT: "200ms",
+        slow: "360ms",
       },
       borderRadius: {
         lg: "var(--radius)",

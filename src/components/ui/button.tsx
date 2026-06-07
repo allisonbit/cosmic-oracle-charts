@@ -5,26 +5,26 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-semibold transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        // Lift-on-hover (translateY) instead of scale → no text shimmer / row overflow
+        // Primary: brand fill + accent glow on hover (terminal-luxury). Lift, not scale.
         default:
-          "bg-primary text-primary-foreground shadow-elevation-sm hover:shadow-elevation-md hover:-translate-y-0.5 active:translate-y-0",
+          "bg-primary text-primary-foreground shadow-elevation-sm hover:shadow-glow-primary hover:-translate-y-0.5 active:translate-y-0",
         destructive:
-          "bg-destructive text-destructive-foreground shadow-elevation-sm hover:shadow-elevation-md hover:-translate-y-0.5 active:translate-y-0",
+          "bg-destructive text-destructive-foreground shadow-elevation-sm hover:shadow-glow-danger hover:-translate-y-0.5 active:translate-y-0",
         outline:
-          "border border-primary/50 bg-transparent text-primary hover:bg-primary/10 hover:border-primary hover:-translate-y-0.5 active:translate-y-0",
+          "border border-border bg-card/40 text-foreground hover:bg-primary/10 hover:border-primary/60 hover:text-primary hover:-translate-y-0.5 active:translate-y-0",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-elevation-sm hover:shadow-elevation-md hover:-translate-y-0.5 active:translate-y-0",
+          "bg-secondary text-secondary-foreground shadow-elevation-sm hover:shadow-glow-secondary hover:-translate-y-0.5 active:translate-y-0",
         ghost:
-          "text-foreground hover:bg-muted hover:text-primary",
+          "text-muted-foreground hover:bg-muted hover:text-foreground",
         link:
           "text-primary underline-offset-4 hover:underline",
         cosmic:
-          "relative overflow-hidden bg-gradient-to-r from-primary via-secondary to-primary bg-[length:200%_100%] text-primary-foreground animate-shimmer shadow-elevation-md hover:-translate-y-0.5 active:translate-y-0",
-        // Brand-aligned outlined glow (was hardcoded cyan that didn't match --primary)
+          "relative overflow-hidden bg-gradient-to-r from-primary via-secondary to-primary bg-[length:200%_100%] text-primary-foreground animate-shimmer shadow-glow-primary hover:-translate-y-0.5 active:translate-y-0",
+        // Outlined glow that matches the brand accent
         glow:
           "bg-transparent border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground shadow-[0_0_20px_-4px_hsl(var(--primary)/0.5)] hover:shadow-[0_0_30px_-4px_hsl(var(--primary)/0.8)] transition-all duration-300",
       },
