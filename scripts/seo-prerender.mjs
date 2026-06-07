@@ -184,6 +184,28 @@ add('/strength-meter', {
   ],
   links: toolLinks,
 });
+add('/crypto-strength-meter', {
+  title: `Crypto Strength Meter — Real-Time Market Momentum Rankings (${MONTH} ${YEAR}) | Oracle Bull`,
+  description: `See which cryptocurrencies are gaining or losing strength right now. Free real-time strength meter ranking Bitcoin, Ethereum, Solana & 100+ altcoins by momentum, volume and trend strength. Updated ${MONTH} ${YEAR}.`,
+  keywords: 'crypto strength meter, cryptocurrency strength indicator, real-time crypto momentum, which crypto is strongest right now, altcoin strength ranking, bitcoin strength today',
+  h1: 'Crypto Strength Meter',
+  intro: [
+    'A crypto strength meter is a real-time ranking tool that measures the momentum, volume and trend health of a cryptocurrency at any moment. Oracle Bull combines price momentum, volume flow, volatility, dominance, relative performance vs BTC/ETH, sentiment and trend consistency into a single 0–100 strength score for Bitcoin, Ethereum, Solana and 100+ altcoins.',
+    'A score above 60 means an asset is gaining strength; below 40 means it is weakening. Rankings update live so you can spot rotation, confirm entries and avoid fading trends.',
+  ],
+  faq: [
+    { q: 'Which crypto is strongest right now?', a: 'The leaderboard updates live and ranks every asset by a 0–100 strength score built from momentum, volume flow and relative performance versus Bitcoin. The top of the table is the strongest at any given moment.' },
+    { q: 'How is the crypto strength score calculated?', a: 'It is a weighted composite: price momentum (25%), relative performance vs BTC/ETH (20%), volume flow (15%), volatility (10%), dominance change (10%), sentiment (10%) and trend consistency (10%), normalized into a single 0–100 number.' },
+    { q: 'Is a high strength score a buy signal?', a: 'A high score shows strong momentum and outperformance, which many traders use as confirmation — but it is not a guarantee. Always combine it with your own analysis and risk management.' },
+  ],
+  links: [
+    { href: '/sentiment', label: 'Fear & Greed Index' },
+    { href: '/scanner', label: 'Token Scanner' },
+    { href: '/predictions', label: 'AI Price Predictions' },
+    { href: '/explorer', label: 'Token Explorer' },
+    { href: '/dashboard', label: 'Crypto Dashboard' },
+  ],
+});
 add('/sentiment', {
   title: `Crypto Fear & Greed Index + Whale Tracker (Live ${MONTH} ${YEAR})`,
   description: 'Real-time crypto sentiment: Fear & Greed Index, whale transaction alerts, social buzz and trending topics. Make data-driven trading decisions.',

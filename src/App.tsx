@@ -205,6 +205,7 @@ const App = () => (
                 <Route path="/chain/:chainId" element={B(<Chain />)} />
                 <Route path="/strength" element={B(<StrengthMeter />)} />
                 <Route path="/strength-meter" element={B(<StrengthMeter />)} />
+                <Route path="/crypto-strength-meter" element={B(<StrengthMeter />)} />
                 <Route path="/factory" element={B(<CryptoFactory />)} />
                 <Route path="/factory/events" element={B(<FactoryEvents />)} />
                 <Route path="/factory/onchain" element={B(<FactoryOnchain />)} />
