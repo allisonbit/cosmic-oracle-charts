@@ -128,7 +128,7 @@ const LEARN_SLUGS = [
 // High-intent coins × question patterns → unique answer pages. These target the
 // exact "will X go up today / should I buy X" long-tail searches. Coins are
 // drawn from the prerendered coin set so every /q page links to a real page.
-const Q_COINS = COINS.slice(0, 60).map(([slug, name]) => [slug, name]);
+const Q_COINS = COINS.slice(0, 75).map(([slug, name]) => [slug, name]);
 // Each pattern: [slugTemplate, kind] — kind drives the answer copy.
 const Q_PATTERNS = [
   ['{coin}-price-prediction-today', 'today'],
@@ -554,8 +554,14 @@ for (const slug of [...MARKET_PAGES, ...CHAIN_MARKET_PAGES]) {
   });
 }
 
-// Compare pages
-for (const pair of COMPARE_PAIRS) {
+// Compare pages — curated list + full top-20 matrix (every unique pair)
+const TOP20_COMPARE = (() => {
+  const top = ['bitcoin', 'ethereum', 'ripple', 'bnb', 'solana', 'dogecoin', 'cardano', 'tron', 'avalanche', 'chainlink', 'shiba-inu', 'polkadot', 'litecoin', 'bitcoin-cash', 'near', 'uniswap', 'aptos', 'sui', 'pepe', 'polygon'];
+  const pairs = [];
+  for (let i = 0; i < top.length; i++) for (let j = i + 1; j < top.length; j++) pairs.push(`${top[i]}-vs-${top[j]}`);
+  return pairs;
+})();
+for (const pair of [...new Set([...COMPARE_PAIRS, ...TOP20_COMPARE])]) {
   const [a, b] = pair.split('-vs-');
   const an = titleCase(a), bn = titleCase(b);
   add(`/compare/${pair}`, {
