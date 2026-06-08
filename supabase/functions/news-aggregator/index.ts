@@ -36,17 +36,59 @@ const MAX_ARTICLES = 40;
 const MAX_AI_ARTICLES = 10;
 
 // ── Source feeds ──────────────────────────────────────────────────────────────
-// CryptoCompare already aggregates the major crypto press and exposes each
-// article's real source + url, so a handful of category calls gives broad,
-// reliably-backlinked coverage. (Add RSS feeds here later if desired.)
-const FEEDS = [
-  "https://min-api.cryptocompare.com/data/v2/news/?lang=EN&sortOrder=latest",
-  "https://min-api.cryptocompare.com/data/v2/news/?lang=EN&categories=BTC&sortOrder=latest",
-  "https://min-api.cryptocompare.com/data/v2/news/?lang=EN&categories=ETH&sortOrder=latest",
-  "https://min-api.cryptocompare.com/data/v2/news/?lang=EN&categories=Altcoin&sortOrder=latest",
-  "https://min-api.cryptocompare.com/data/v2/news/?lang=EN&categories=Trading&sortOrder=latest",
-  "https://min-api.cryptocompare.com/data/v2/news/?lang=EN&categories=Regulation&sortOrder=latest",
+// Free RSS feeds from major crypto publications, converted to JSON via the
+// public rss2json service (no API key required). Each entry carries its real
+// source URL so we always link back to the original publisher.
+const RSS_FEEDS: { source: string; img: string; rss: string }[] = [
+  { source: "CoinDesk",       img: "https://www.google.com/s2/favicons?sz=64&domain=coindesk.com",       rss: "https://www.coindesk.com/arc/outboundfeeds/rss/" },
+  { source: "Cointelegraph",  img: "https://www.google.com/s2/favicons?sz=64&domain=cointelegraph.com",  rss: "https://cointelegraph.com/rss" },
+  { source: "Decrypt",        img: "https://www.google.com/s2/favicons?sz=64&domain=decrypt.co",         rss: "https://decrypt.co/feed" },
+  { source: "CryptoSlate",    img: "https://www.google.com/s2/favicons?sz=64&domain=cryptoslate.com",    rss: "https://cryptoslate.com/feed/" },
+  { source: "Bitcoin Magazine", img: "https://www.google.com/s2/favicons?sz=64&domain=bitcoinmagazine.com", rss: "https://bitcoinmagazine.com/.rss/full/" },
+  { source: "NewsBTC",        img: "https://www.google.com/s2/favicons?sz=64&domain=newsbtc.com",        rss: "https://www.newsbtc.com/feed/" },
+  { source: "The Defiant",    img: "https://www.google.com/s2/favicons?sz=64&domain=thedefiant.io",      rss: "https://thedefiant.io/api/feed" },
+  { source: "Bitcoinist",     img: "https://www.google.com/s2/favicons?sz=64&domain=bitcoinist.com",     rss: "https://bitcoinist.com/feed/" },
 ];
+
+function hashId(s: string): string {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) { h = ((h << 5) - h + s.charCodeAt(i)) | 0; }
+  return Math.abs(h).toString(36);
+}
+
+function stripHtml(s: string): string {
+  return (s || "").replace(/<[^>]+>/g, "").replace(/&[a-z]+;/gi, " ").replace(/\s+/g, " ").trim();
+}
+
+async function fetchFeed(f: { source: string; img: string; rss: string }): Promise<RawNews[]> {
+  try {
+    const url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(f.rss)}&count=20`;
+    const res = await fetch(url, { signal: AbortSignal.timeout(12000) });
+    if (!res.ok) return [];
+    const j = await res.json();
+    const items = Array.isArray(j?.items) ? j.items : [];
+    return items.map((it: Record<string, unknown>) => {
+      const link = String(it.link || it.guid || "");
+      const title = String(it.title || "").trim();
+      const desc = stripHtml(String(it.description || it.content || ""));
+      const pubStr = String(it.pubDate || "");
+      const ts = pubStr ? Math.floor(new Date(pubStr).getTime() / 1000) : Math.floor(Date.now() / 1000);
+      return {
+        id: hashId(link || title),
+        published_on: isFinite(ts) ? ts : Math.floor(Date.now() / 1000),
+        imageurl: String((it as { thumbnail?: string; enclosure?: { link?: string } }).thumbnail || (it as { enclosure?: { link?: string } }).enclosure?.link || ""),
+        title,
+        url: link,
+        body: desc.slice(0, 600),
+        categories: String((it as { categories?: unknown }).categories || ""),
+        source: f.source,
+        source_info: { name: f.source, img: f.img },
+      } as RawNews;
+    }).filter((r: RawNews) => r.title && r.url);
+  } catch {
+    return [];
+  }
+}
 
 interface RawNews {
   id: string;
