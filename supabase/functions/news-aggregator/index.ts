@@ -62,7 +62,7 @@ function stripHtml(s: string): string {
 
 async function fetchFeed(f: { source: string; img: string; rss: string }): Promise<RawNews[]> {
   try {
-    const url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(f.rss)}&count=20`;
+    const url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(f.rss)}`;
     const res = await fetch(url, { signal: AbortSignal.timeout(12000) });
     if (!res.ok) return [];
     const j = await res.json();
