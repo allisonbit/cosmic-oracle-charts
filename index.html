@@ -277,7 +277,23 @@
         </footer>
       </div>
     </noscript>
-    
+
+    <!-- Branded boot overlay: hides the static prerendered SEO HTML behind a
+         clean spinner until React mounts, so users never see a flash of the
+         plain pre-rendered page before the real app. The SEO HTML stays in the
+         DOM (inside #root) for crawlers; this overlay only covers it visually
+         for the brief pre-mount instant, then fades out. -->
+    <style>
+      #app-loading-overlay{position:fixed;inset:0;z-index:2147483600;display:flex;align-items:center;justify-content:center;background:#ffffff;transition:opacity .25s ease}
+      html[data-app-mounted="1"] #app-loading-overlay{opacity:0;pointer-events:none;visibility:hidden}
+      #app-loading-overlay .ob-spin{width:42px;height:42px;border-radius:9999px;border:3px solid rgba(37,99,235,.18);border-top-color:#2563eb;animation:obspin .7s linear infinite}
+      @keyframes obspin{to{transform:rotate(360deg)}}
+      @media (prefers-reduced-motion: reduce){#app-loading-overlay .ob-spin{animation-duration:1.6s}}
+    </style>
+    <noscript><style>#app-loading-overlay{display:none!important}</style></noscript>
+    <div id="app-loading-overlay" aria-hidden="true"><div class="ob-spin"></div></div>
+    <script>(function(){try{if(localStorage.getItem('oraclebull-theme')==='dark'){var o=document.getElementById('app-loading-overlay');if(o)o.style.background='#06080f';}}catch(e){}setTimeout(function(){var o=document.getElementById('app-loading-overlay');if(o&&document.documentElement.dataset.appMounted!=='1'){o.style.opacity='0';o.style.pointerEvents='none';o.style.visibility='hidden';}},10000);})();</script>
+
     <div id="root">
       <div id="boot-fallback" role="status" aria-live="polite" style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center;background:#ffffff;color:#1e293b;">
         <div style="max-width:520px;">
@@ -302,6 +318,7 @@
           },
           showError: function (reason) {
             document.documentElement.dataset.appMounted = '0';
+            try { var _ov = document.getElementById('app-loading-overlay'); if (_ov) _ov.style.display = 'none'; } catch (e) {}
             setHtml(
               '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center;background:#ffffff;color:#1e293b;">' +
                 '<div style="max-width:560px;">' +
