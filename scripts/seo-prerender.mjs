@@ -124,6 +124,17 @@ const LEARN_SLUGS = [
   'what-are-stablecoins-and-how-do-they-work',
 ];
 
+// Curated insights articles (kept in sync with src/data/insightsArticles.ts).
+const INSIGHT_SLUGS = [
+  'how-to-read-the-crypto-fear-and-greed-index', 'what-whale-movements-tell-you-about-crypto',
+  'how-spot-bitcoin-etfs-changed-crypto-market-structure', 'stablecoin-flows-as-a-crypto-market-signal',
+  'crypto-market-cycles-and-the-four-year-theory', 'funding-rates-and-open-interest-explained',
+  'tokenomics-supply-unlocks-and-emissions', 'bitcoin-dominance-and-what-it-signals-for-altcoins',
+  'narrative-rotation-how-capital-moves-in-crypto', 'the-mechanics-behind-memecoin-mania',
+  'restaking-and-the-yield-narrative-explained', 'real-world-assets-bringing-tradfi-on-chain',
+  'how-to-spot-a-crypto-rug-pull-before-you-buy', 'dollar-cost-averaging-vs-lump-sum-in-volatile-markets',
+];
+
 // ── Question-intent (/q/) programmatic pages ─────────────────────────────────
 // High-intent coins × question patterns → unique answer pages. These target the
 // exact "will X go up today / should I buy X" long-tail searches. Coins are
@@ -770,7 +781,7 @@ try {
     }
   }
   // Sitemap = prerendered routes + real client-rendered content routes (learn articles)
-  const sitemapPaths = [...allPaths, ...LEARN_SLUGS.map((s) => `/learn/${s}`)];
+  const sitemapPaths = [...allPaths, ...LEARN_SLUGS.map((s) => `/learn/${s}`), ...INSIGHT_SLUGS.map((s) => `/insights/${s}`)];
   fs.writeFileSync(path.join(distDir, 'sitemap.xml'), generateSitemap([...new Set(sitemapPaths)]), 'utf8');
   console.log(`[seo-prerender] ✅ Prerendered ${ok}/${allPaths.length} routes + sitemap (${new Set(sitemapPaths).size} URLs).`);
 } catch (err) {
