@@ -288,10 +288,11 @@ serve(async (req) => {
 
     // 1. Pull + dedupe the latest stories across all feeds.
     const byId = new Map<string, RawNews>();
-    const feedResults = await Promise.allSettled(FEEDS.map((u) => fetch(u).then((r) => r.json())));
+    const feedResults = await Promise.allSettled(RSS_FEEDS.map((f) => fetchFeed(f)));
     for (const r of feedResults) {
       if (r.status !== "fulfilled") continue;
-      for (const item of (r.value?.Data || []) as RawNews[]) {
+      const items = Array.isArray(r.value) ? r.value : [];
+      for (const item of items) {
         if (item?.id && item?.title && item?.url && !byId.has(item.id)) byId.set(item.id, item);
       }
     }
