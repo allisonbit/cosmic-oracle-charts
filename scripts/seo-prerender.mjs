@@ -310,12 +310,28 @@ add('/news', {
   ],
 });
 add('/airdrops', {
-  title: `Crypto Airdrops ${YEAR} – Active & Upcoming Airdrop Guides`,
-  description: 'Discover active and upcoming crypto airdrops with step-by-step eligibility guides. Track the biggest airdrop opportunities and how to qualify.',
-  keywords: 'crypto airdrops, upcoming airdrops, airdrop guide, how to qualify for airdrops',
-  h1: `Crypto Airdrops (${MONTH} ${YEAR})`,
-  intro: ['Track active and upcoming crypto airdrops with clear, step-by-step eligibility guides so you know exactly how to qualify and claim.'],
-  links: toolLinks,
+  title: `Crypto Airdrops 2026–2027 — All Active, Upcoming & Confirmed Airdrops | Oracle Bull`,
+  description: `Track every crypto airdrop in 2026 and 2027. Active tasks, snapshot dates, eligibility, estimated values and step-by-step guides for Base, Ethereum, Solana, zkSync and more. Updated ${MONTH} ${YEAR}.`,
+  keywords: 'crypto airdrops 2026, crypto airdrops 2027, best crypto airdrops 2026, base airdrop 2026, ethereum airdrop 2026, solana airdrop 2026, zksync airdrop, how to qualify for crypto airdrops, confirmed crypto airdrops 2026',
+  h1: 'Crypto Airdrops 2026 — 2027',
+  intro: [
+    `2026–2027 is one of the biggest windows for crypto airdrops since 2020. Hundreds of well-funded protocols launched without a token between 2022 and 2025 and are now approaching their token launches — across Ethereum Layer-2s (Linea, zkSync, Scroll), new Layer-1s (Monad, Berachain, MegaETH), the Base ecosystem and Hyperliquid.`,
+    `This page tracks the highest-conviction airdrops with their status, estimated value range and the exact tasks to qualify, plus a complete guide on how airdrops work, how to farm them safely, how values are estimated and the tax basics. Updated ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'What crypto airdrops are happening in 2026?', a: 'Major confirmed and expected airdrops in 2026–2027 span Ethereum Layer-2 rollups (Linea, zkSync, Scroll), new Layer-1s (Monad, Berachain, MegaETH), the Base ecosystem and Hyperliquid — each tracked with status, estimated value and qualifying tasks.' },
+    { q: 'How do I qualify for a crypto airdrop?', a: 'Use a protocol before its snapshot date with genuine, varied activity — bridging, swapping, lending and holding over time. Most projects filter Sybil farmers who repeat identical minimum actions, so organic usage performs best.' },
+    { q: 'What are Base blockchain airdrops?', a: "Base is Coinbase's Ethereum Layer-2. Base uses ETH for gas and has no token, but the hundreds of protocols built on Base can launch tokens and reward early users — making early Base activity a common airdrop strategy." },
+    { q: 'Are crypto airdrops taxable?', a: 'In most jurisdictions airdropped tokens are treated as ordinary income at fair-market value when received, with capital gains on later disposal. Treatment varies by country — consult a qualified tax professional. Not tax advice.' },
+  ],
+  links: [
+    { href: '/airdrops/linea', label: 'Linea Airdrop Guide' },
+    { href: '/airdrops/monad', label: 'Monad Airdrop Guide' },
+    { href: '/airdrops/berachain', label: 'Berachain Airdrop Guide' },
+    { href: '/airdrops/base', label: 'Base Airdrop Guide' },
+    { href: '/crypto-factory', label: 'Crypto Factory' },
+    { href: '/crypto-strength-meter', label: 'Strength Meter' },
+  ],
 });
 const polymarketDef = {
   title: `Polymarket Signals — Live Odds, Implied Probability & Risk Analysis (${MONTH} ${YEAR}) | Oracle Bull`,
