@@ -60,32 +60,69 @@ function stripHtml(s: string): string {
   return (s || "").replace(/<[^>]+>/g, "").replace(/&[a-z]+;/gi, " ").replace(/\s+/g, " ").trim();
 }
 
+function pickTag(block: string, tag: string): string {
+  const re = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, "i");
+  const m = block.match(re);
+  if (!m) return "";
+  let v = m[1].trim();
+  const cdata = v.match(/^<!\[CDATA\[([\s\S]*?)\]\]>$/);
+  if (cdata) v = cdata[1];
+  return v.trim();
+}
+
+function parseRss(xml: string): { title: string; link: string; pubDate: string; description: string; image: string }[] {
+  const items: { title: string; link: string; pubDate: string; description: string; image: string }[] = [];
+  const blocks = xml.match(/<item[\s\S]*?<\/item>/gi) || xml.match(/<entry[\s\S]*?<\/entry>/gi) || [];
+  for (const b of blocks) {
+    const title = pickTag(b, "title");
+    let link = pickTag(b, "link");
+    if (!link) {
+      const m = b.match(/<link[^>]*href="([^"]+)"/i);
+      if (m) link = m[1];
+    }
+    const pubDate = pickTag(b, "pubDate") || pickTag(b, "published") || pickTag(b, "updated");
+    const description = pickTag(b, "description") || pickTag(b, "summary") || pickTag(b, "content:encoded") || pickTag(b, "content");
+    let image = "";
+    const enc = b.match(/<enclosure[^>]*url="([^"]+)"/i);
+    if (enc) image = enc[1];
+    if (!image) {
+      const mt = b.match(/<media:(?:content|thumbnail)[^>]*url="([^"]+)"/i);
+      if (mt) image = mt[1];
+    }
+    if (!image) {
+      const img = description.match(/<img[^>]+src="([^"]+)"/i);
+      if (img) image = img[1];
+    }
+    if (title && link) items.push({ title, link, pubDate, description, image });
+  }
+  return items;
+}
+
 async function fetchFeed(f: { source: string; img: string; rss: string }): Promise<RawNews[]> {
   try {
-    const url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(f.rss)}`;
-    const res = await fetch(url, { signal: AbortSignal.timeout(12000) });
-    if (!res.ok) return [];
-    const j = await res.json();
-    const items = Array.isArray(j?.items) ? j.items : [];
-    return items.map((it: Record<string, unknown>) => {
-      const link = String(it.link || it.guid || "");
-      const title = String(it.title || "").trim();
-      const desc = stripHtml(String(it.description || it.content || ""));
-      const pubStr = String(it.pubDate || "");
-      const ts = pubStr ? Math.floor(new Date(pubStr).getTime() / 1000) : Math.floor(Date.now() / 1000);
+    const res = await fetch(f.rss, {
+      headers: { "User-Agent": "Mozilla/5.0 OracleBullNewsBot/1.0", Accept: "application/rss+xml, application/xml, text/xml, */*" },
+      signal: AbortSignal.timeout(12000),
+    });
+    if (!res.ok) { console.log(`feed ${f.source} HTTP ${res.status}`); return []; }
+    const xml = await res.text();
+    const items = parseRss(xml);
+    console.log(`feed ${f.source}: ${items.length} items`);
+    return items.map((it) => {
+      const ts = it.pubDate ? Math.floor(new Date(it.pubDate).getTime() / 1000) : Math.floor(Date.now() / 1000);
       return {
-        id: hashId(link || title),
+        id: hashId(it.link || it.title),
         published_on: isFinite(ts) ? ts : Math.floor(Date.now() / 1000),
-        imageurl: String((it as { thumbnail?: string; enclosure?: { link?: string } }).thumbnail || (it as { enclosure?: { link?: string } }).enclosure?.link || ""),
-        title,
-        url: link,
-        body: desc.slice(0, 600),
-        categories: String((it as { categories?: unknown }).categories || ""),
+        imageurl: it.image,
+        title: stripHtml(it.title).slice(0, 240),
+        url: it.link,
+        body: stripHtml(it.description).slice(0, 600),
         source: f.source,
         source_info: { name: f.source, img: f.img },
       } as RawNews;
-    }).filter((r: RawNews) => r.title && r.url);
-  } catch {
+    }).filter((r) => r.title && r.url);
+  } catch (e) {
+    console.log(`feed ${f.source} err: ${e instanceof Error ? e.message : e}`);
     return [];
   }
 }
