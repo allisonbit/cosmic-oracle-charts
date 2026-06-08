@@ -1,9 +1,14 @@
 import { Layout } from "@/components/layout/Layout";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
+import { useState, useMemo } from "react";
 import { SITE_URL } from "@/lib/siteConfig";
 import { AIRDROPS_DATA, type AirdropProject } from "@/components/airdrops/AirdropList";
-import { ArrowRight, ExternalLink, ShieldCheck, Clock } from "lucide-react";
+import { useAirdropCandidates } from "@/hooks/useAirdrops";
+import { ArrowRight, ExternalLink, ShieldCheck, Clock, Loader2, Database } from "lucide-react";
+
+const fmtTvl = (n: number) => n >= 1e9 ? `$${(n / 1e9).toFixed(2)}B` : n >= 1e6 ? `$${(n / 1e6).toFixed(1)}M` : `$${(n / 1e3).toFixed(0)}K`;
+const POTENTIAL_CLS: Record<string, string> = { High: "text-success", Notable: "text-warning", Emerging: "text-muted-foreground" };
 
 const UPDATED = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 
@@ -33,6 +38,15 @@ const LARGEST = [
 ];
 
 export default function Airdrops() {
+  const { data: candData, isLoading: candLoading } = useAirdropCandidates();
+  const [candChain, setCandChain] = useState("All");
+  const candChains = useMemo(() => ["All", ...(candData?.chains ?? [])], [candData?.chains]);
+  const candidates = useMemo(() => {
+    let list = candData?.candidates ?? [];
+    if (candChain !== "All") list = list.filter((c) => c.chains.includes(candChain));
+    return list.slice(0, 60);
+  }, [candData?.candidates, candChain]);
+
   const canonical = `${SITE_URL}/airdrops`;
   const itemListLd = {
     "@context": "https://schema.org", "@type": "ItemList", name: "Top Crypto Airdrops 2026",
@@ -139,6 +153,57 @@ export default function Airdrops() {
               <p className="not-prose"><Link to={`/airdrops/${a.id}`} className="text-primary font-medium hover:underline inline-flex items-center gap-1">Read the full {a.name} airdrop guide <ArrowRight className="w-3.5 h-3.5" /></Link></p>
             </section>
           ))}
+
+          {/* Live airdrop candidates — tokenless protocols by TVL (DefiLlama) */}
+          <h2>Live Airdrop Candidates — Tokenless Protocols by TVL</h2>
+          <p>
+            Beyond the guides above, the most reliable way to find <em>future</em> airdrops is to track protocols that have
+            real usage but <strong>no token yet</strong>. The list below is generated live from <strong>DefiLlama</strong>:
+            DeFi protocols with meaningful TVL (and, where available, VC funding) that have not launched a token — the classic
+            airdrop-farming setup. "Potential" is a transparent tier from TVL and funding, not a predicted payout.
+          </p>
+          {candData?.candidates && candData.candidates.length > 0 && (
+            <div className="not-prose flex items-center gap-1.5 flex-wrap my-3">
+              {candChains.slice(0, 14).map((c) => (
+                <button key={c} onClick={() => setCandChain(c)} className={`px-2.5 py-1 rounded-full text-[11px] font-medium border transition-colors ${candChain === c ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground hover:text-foreground"}`}>{c}</button>
+              ))}
+            </div>
+          )}
+          {candLoading ? (
+            <p className="not-prose text-sm text-muted-foreground flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Loading live candidates from DefiLlama…</p>
+          ) : candidates.length > 0 ? (
+            <div className="not-prose overflow-x-auto my-4">
+              <table className="w-full text-sm border border-border/50 rounded-lg">
+                <thead className="bg-muted/30 text-xs">
+                  <tr>
+                    <th className="text-left p-2.5 font-semibold">Protocol</th>
+                    <th className="text-left p-2.5 font-semibold">Category</th>
+                    <th className="text-left p-2.5 font-semibold hidden sm:table-cell">Chains</th>
+                    <th className="text-right p-2.5 font-semibold">TVL</th>
+                    <th className="text-left p-2.5 font-semibold hidden md:table-cell">Funding</th>
+                    <th className="text-left p-2.5 font-semibold">Potential</th>
+                    <th className="text-left p-2.5 font-semibold"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {candidates.map((c) => (
+                    <tr key={c.slug} className="border-t border-border/40">
+                      <td className="p-2.5 font-medium text-foreground"><span className="inline-flex items-center gap-2">{c.logo && <img src={c.logo} alt="" className="w-4 h-4 rounded-full" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />}{c.name}</span></td>
+                      <td className="p-2.5 text-muted-foreground">{c.category}</td>
+                      <td className="p-2.5 text-muted-foreground hidden sm:table-cell">{c.chains.slice(0, 3).join(", ")}</td>
+                      <td className="p-2.5 text-right font-mono">{fmtTvl(c.tvl)}</td>
+                      <td className="p-2.5 text-muted-foreground text-xs hidden md:table-cell">{c.funding ? `$${c.funding.amountM}M${c.funding.round ? ` · ${c.funding.round}` : ""}` : "—"}</td>
+                      <td className={`p-2.5 font-semibold ${POTENTIAL_CLS[c.potential] || ""}`}>{c.potential}</td>
+                      <td className="p-2.5"><a href={c.defillama} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline inline-flex items-center gap-0.5 whitespace-nowrap text-xs">Open <ExternalLink className="w-3 h-3" /></a></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="not-prose text-sm text-muted-foreground flex items-center gap-2"><Database className="w-4 h-4" /> Live candidate data is loading or temporarily unavailable. The curated guides above are always available.</p>
+          )}
+          <p className="not-prose text-[11px] text-muted-foreground/70 mb-2">Source: DefiLlama. A protocol having no token and high TVL does not guarantee an airdrop — many never launch a token. Always verify on official channels.</p>
 
           {/* Educational long-form */}
           <h2>What Is a Crypto Airdrop?</h2>

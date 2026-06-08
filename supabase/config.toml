@@ -150,3 +150,9 @@ verify_jwt = false
 [functions.polymarket.rate_limit]
 requests = 600
 per = 3600
+
+[functions.airdrops]
+verify_jwt = false
+[functions.airdrops.rate_limit]
+requests = 600
+per = 3600
