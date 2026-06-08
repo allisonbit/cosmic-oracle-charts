@@ -126,18 +126,9 @@ const LEARN_SLUGS = [
 
 // ── Question-intent (/q/) programmatic pages ─────────────────────────────────
 // High-intent coins × question patterns → unique answer pages. These target the
-// exact "will X go up today / should I buy X" long-tail searches.
-const Q_COINS = [
-  ['bitcoin', 'Bitcoin'], ['ethereum', 'Ethereum'], ['solana', 'Solana'], ['ripple', 'XRP'],
-  ['bnb', 'BNB'], ['dogecoin', 'Dogecoin'], ['cardano', 'Cardano'], ['avalanche', 'Avalanche'],
-  ['polkadot', 'Polkadot'], ['chainlink', 'Chainlink'], ['shiba-inu', 'Shiba Inu'], ['litecoin', 'Litecoin'],
-  ['tron', 'TRON'], ['sui', 'Sui'], ['aptos', 'Aptos'], ['near', 'NEAR'], ['pepe', 'Pepe'],
-  ['arbitrum', 'Arbitrum'], ['optimism', 'Optimism'], ['polygon', 'Polygon'], ['toncoin', 'Toncoin'],
-  ['render', 'Render'], ['injective', 'Injective'], ['fetch-ai', 'Fetch.ai'], ['bittensor', 'Bittensor'],
-  ['kaspa', 'Kaspa'], ['stellar', 'Stellar'], ['hedera', 'Hedera'], ['uniswap', 'Uniswap'], ['cosmos', 'Cosmos'],
-  ['bonk', 'Bonk'], ['worldcoin', 'Worldcoin'], ['sei-network', 'Sei'], ['celestia', 'Celestia'],
-  ['ondo-finance', 'Ondo'], ['pyth-network', 'Pyth'], ['jupiter', 'Jupiter'], ['dogwifcoin', 'dogwifhat'],
-];
+// exact "will X go up today / should I buy X" long-tail searches. Coins are
+// drawn from the prerendered coin set so every /q page links to a real page.
+const Q_COINS = COINS.slice(0, 60).map(([slug, name]) => [slug, name]);
 // Each pattern: [slugTemplate, kind] — kind drives the answer copy.
 const Q_PATTERNS = [
   ['{coin}-price-prediction-today', 'today'],
@@ -152,6 +143,8 @@ const Q_PATTERNS = [
   ['{coin}-buy-or-sell', 'buy'],
   ['will-{coin}-reach-new-highs', 'highs'],
   ['{coin}-price-target', 'today'],
+  ['is-{coin}-worth-buying', 'buy'],
+  ['{coin}-price-prediction-2026', 'month'],
 ];
 
 const titleCase = (s) => s.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
@@ -542,8 +535,11 @@ for (const [slug, name] of CHAINS) {
   });
 }
 
-// Market pages
-for (const slug of MARKET_PAGES) {
+// Market pages (+ chain-specific ecosystem pages)
+const CHAIN_MARKET_PAGES = CHAINS.flatMap(([cslug]) => [
+  `best-${cslug}-tokens`, `top-${cslug}-gainers-today`, `best-${cslug}-defi-tokens`, `best-${cslug}-meme-coins`,
+]);
+for (const slug of [...MARKET_PAGES, ...CHAIN_MARKET_PAGES]) {
   const readable = titleCase(slug);
   add(`/market/${slug}`, {
     title: `${readable} – AI Picks & Live Analysis (${MONTH} ${YEAR})`,
@@ -640,7 +636,7 @@ for (const [coinSlug, coinName] of Q_COINS) {
 }
 
 // How-to-buy coin pages
-for (const [slug, name, sym] of COINS.slice(0, 24)) {
+for (const [slug, name, sym] of COINS) {
   add(`/how-to-buy/${slug}`, {
     title: `How to Buy ${name} (${sym}) – Step-by-Step Guide (${YEAR})`,
     description: `Learn how to buy ${name} (${sym}) safely in ${YEAR}. A beginner-friendly, step-by-step guide covering exchanges, wallets, fees and security.`,
