@@ -51,8 +51,10 @@ export type Database = {
         Row: {
           article_id: string
           category: string
+          coins: Json | null
           content: string
           created_at: string
+          external_url: string | null
           faqs: Json | null
           id: string
           image_url: string | null
@@ -63,8 +65,11 @@ export type Database = {
           published_at: string
           read_time: string | null
           secondary_keywords: Json | null
+          sentiment: string | null
           slug: string
           source: string
+          source_icon: string | null
+          source_name: string | null
           takeaways: Json | null
           title: string
           word_count: number | null
@@ -72,8 +77,10 @@ export type Database = {
         Insert: {
           article_id: string
           category: string
+          coins?: Json | null
           content: string
           created_at?: string
+          external_url?: string | null
           faqs?: Json | null
           id?: string
           image_url?: string | null
@@ -84,8 +91,11 @@ export type Database = {
           published_at?: string
           read_time?: string | null
           secondary_keywords?: Json | null
+          sentiment?: string | null
           slug: string
           source?: string
+          source_icon?: string | null
+          source_name?: string | null
           takeaways?: Json | null
           title: string
           word_count?: number | null
@@ -93,8 +103,10 @@ export type Database = {
         Update: {
           article_id?: string
           category?: string
+          coins?: Json | null
           content?: string
           created_at?: string
+          external_url?: string | null
           faqs?: Json | null
           id?: string
           image_url?: string | null
@@ -105,8 +117,11 @@ export type Database = {
           published_at?: string
           read_time?: string | null
           secondary_keywords?: Json | null
+          sentiment?: string | null
           slug?: string
           source?: string
+          source_icon?: string | null
+          source_name?: string | null
           takeaways?: Json | null
           title?: string
           word_count?: number | null
