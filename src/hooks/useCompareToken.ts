@@ -118,3 +118,42 @@ export function tokenToSlug(t: { coingeckoId?: string; chain?: string; contractA
   if (t.contractAddress) return `${t.chain || "ethereum"}_${t.contractAddress}`;
   return t.symbol.toLowerCase();
 }
+
+// ── Full CoinGecko catalog (~17,000 coins) for instant local autocomplete ─────
+export interface CoinListItem { id: string; symbol: string; name: string; }
+
+export function useCoinList() {
+  return useQuery<CoinListItem[]>({
+    queryKey: ["coin-list-all"],
+    queryFn: async () => {
+      const res = await fetch("https://api.coingecko.com/api/v3/coins/list");
+      if (!res.ok) throw new Error("Failed to load coin list");
+      const json = (await res.json()) as CoinListItem[];
+      return Array.isArray(json) ? json : [];
+    },
+    staleTime: 1000 * 60 * 60 * 24, // 24h — the full list rarely changes
+    gcTime: 1000 * 60 * 60 * 24,
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
+}
+
+// Rank matches across the full catalog: exact symbol → symbol prefix →
+// name prefix → substring. Filtering ~17k items per keystroke is sub-millisecond.
+export function searchCoinList(list: CoinListItem[], q: string, limit = 20): CoinListItem[] {
+  const query = q.trim().toLowerCase();
+  if (query.length < 1 || !list.length) return [];
+  const exactSym: CoinListItem[] = [];
+  const symStarts: CoinListItem[] = [];
+  const nameStarts: CoinListItem[] = [];
+  const includes: CoinListItem[] = [];
+  for (const c of list) {
+    const sym = (c.symbol || "").toLowerCase();
+    const name = (c.name || "").toLowerCase();
+    if (sym === query) exactSym.push(c);
+    else if (sym.startsWith(query)) symStarts.push(c);
+    else if (name.startsWith(query)) nameStarts.push(c);
+    else if (name.includes(query) || sym.includes(query)) includes.push(c);
+  }
+  return [...exactSym, ...symStarts, ...nameStarts, ...includes].slice(0, limit);
+}

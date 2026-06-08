@@ -1,11 +1,11 @@
 import { Layout } from "@/components/layout/Layout";
 import { Helmet } from "react-helmet-async";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { GitCompare, TrendingUp, Zap, ArrowRight, Search, X, Loader2, Globe, Sparkles } from "lucide-react";
 import { CoinImage } from "@/components/ui/CoinImage";
 import { useLiveTokenSearch, type LiveToken } from "@/hooks/useLiveTokenSearch";
-import { tokenToSlug } from "@/hooks/useCompareToken";
+import { tokenToSlug, useCoinList, searchCoinList } from "@/hooks/useCompareToken";
 import { SITE_URL } from "@/lib/siteConfig";
 import { cn } from "@/lib/utils";
 
@@ -44,11 +44,29 @@ const TRENDING_BATTLES = [
 
 function TokenPicker({ label, selected, onSelect }: { label: string; selected: Picked | null; onSelect: (t: Picked | null) => void }) {
   const [q, setQ] = useState("");
-  const { data, isLoading } = useLiveTokenSearch(q, "all");
-  const results = (data?.tokens || []).slice(0, 12);
+  const { data: live, isLoading } = useLiveTokenSearch(q, "all");
+  const { data: coinList = [] } = useCoinList();
 
-  const pick = (t: LiveToken | Picked) => {
-    onSelect({ symbol: t.symbol, name: t.name, logo: (t as any).logo, chain: (t as any).chain, contractAddress: (t as any).contractAddress, coingeckoId: (t as any).coingeckoId });
+  // Merge live DEX/contract results (have logos, chain, price) with instant
+  // matches from the full ~17,000-coin CoinGecko catalog.
+  const results = useMemo<Picked[]>(() => {
+    if (q.trim().length < 2) return [];
+    const liveTokens = (live?.tokens || []).slice(0, 12);
+    const seen = new Set(liveTokens.map((t) => t.symbol?.toLowerCase()));
+    const merged: Picked[] = liveTokens.map((t: LiveToken) => ({
+      symbol: t.symbol, name: t.name, logo: t.logo, chain: t.chain, contractAddress: t.contractAddress, coingeckoId: (t as any).coingeckoId,
+    }));
+    for (const c of searchCoinList(coinList, q, 25)) {
+      if (seen.has(c.symbol.toLowerCase())) continue;
+      seen.add(c.symbol.toLowerCase());
+      merged.push({ symbol: c.symbol.toUpperCase(), name: c.name, coingeckoId: c.id });
+      if (merged.length >= 24) break;
+    }
+    return merged;
+  }, [q, live, coinList]);
+
+  const pick = (t: Picked) => {
+    onSelect({ symbol: t.symbol, name: t.name, logo: t.logo, chain: t.chain, contractAddress: t.contractAddress, coingeckoId: t.coingeckoId });
     setQ("");
   };
 
@@ -69,14 +87,14 @@ function TokenPicker({ label, selected, onSelect }: { label: string; selected: P
         <>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <input type="text" placeholder="Search name, symbol or paste contract…" value={q} onChange={(e) => setQ(e.target.value)}
+            <input type="text" placeholder="Search 17,000+ tokens or paste contract…" value={q} onChange={(e) => setQ(e.target.value)}
               className="w-full bg-background/50 border border-border rounded-lg pl-9 pr-9 py-2.5 text-sm focus:outline-none focus:border-primary" />
             {isLoading && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-primary" />}
           </div>
           <div className="h-52 overflow-y-auto rounded-lg border border-border bg-background/50">
             {q.length >= 2 ? (
               results.length > 0 ? results.map((t, i) => (
-                <button key={`${t.symbol}-${t.chain}-${i}`} onClick={() => pick(t)} className="w-full flex items-center gap-2.5 px-3 py-2.5 text-left hover:bg-muted transition-colors border-b border-border/40 last:border-0">
+                <button key={`${t.symbol}-${t.coingeckoId || t.chain}-${i}`} onClick={() => pick(t)} className="w-full flex items-center gap-2.5 px-3 py-2.5 text-left hover:bg-muted transition-colors border-b border-border/40 last:border-0">
                   <CoinImage symbol={t.symbol} image={t.logo} size={26} />
                   <div className="min-w-0 flex-1"><div className="text-sm font-semibold truncate">{t.symbol} <span className="text-muted-foreground font-normal text-xs">{t.name}</span></div></div>
                   {t.chain && <span className="text-[10px] text-muted-foreground capitalize shrink-0">{t.chain}</span>}
@@ -115,7 +133,7 @@ export default function CompareHub() {
     <Layout>
       <Helmet>
         <title>Compare Any Two Cryptocurrencies Side by Side | Oracle Bull</title>
-        <meta name="description" content="Compare any two cryptocurrencies in the world side-by-side. Search by name, symbol or contract address across every chain — live price, market cap, volume, momentum & an AI verdict on which is the better buy." />
+        <meta name="description" content="Compare any of 17,000+ cryptocurrencies side-by-side. Search by name, symbol or contract address across every chain — live price, market cap, volume, momentum & an AI verdict on which is the better buy." />
         <link rel="canonical" href={`${SITE_URL}/compare`} />
         <meta property="og:title" content="Compare Any Two Cryptocurrencies | Oracle Bull" />
         <meta property="og:description" content="Search any token by name, symbol or contract and compare it head-to-head with live data and an AI verdict." />
@@ -137,7 +155,7 @@ export default function CompareHub() {
             </div>
             <h1 className="text-4xl md:text-5xl font-bold font-display mb-4 glow-text">Compare Any Two Cryptocurrencies</h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Search <span className="text-foreground font-medium">any token in the world</span> by name, symbol or contract address — then get a live side-by-side breakdown and an AI verdict on which wins.
+              Search <span className="text-foreground font-medium">17,000+ tokens</span> by name, symbol or contract address — then get a live side-by-side breakdown and an AI verdict on which wins.
             </p>
             <div className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground"><Globe className="w-3.5 h-3.5" /> Powered by DexScreener · CoinGecko · on-chain</div>
           </div>
