@@ -1,59 +1,30 @@
 import { Layout } from "@/components/layout/Layout";
 import { Helmet } from "react-helmet-async";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { GitCompare, TrendingUp, Zap, ArrowRight, Search } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
+import { GitCompare, TrendingUp, Zap, ArrowRight, Search, X, Loader2, Globe, Sparkles } from "lucide-react";
+import { CoinImage } from "@/components/ui/CoinImage";
+import { useLiveTokenSearch, type LiveToken } from "@/hooks/useLiveTokenSearch";
+import { tokenToSlug } from "@/hooks/useCompareToken";
+import { SITE_URL } from "@/lib/siteConfig";
+import { cn } from "@/lib/utils";
 
-// Master coin list matching sitemap generation
-const COIN_LIST = [
-  { id: "bitcoin", name: "Bitcoin", ticker: "BTC" },
-  { id: "ethereum", name: "Ethereum", ticker: "ETH" },
-  { id: "solana", name: "Solana", ticker: "SOL" },
-  { id: "binancecoin", name: "BNB", ticker: "BNB" },
-  { id: "ripple", name: "XRP", ticker: "XRP" },
-  { id: "toncoin", name: "Toncoin", ticker: "TON" },
-  { id: "cardano", name: "Cardano", ticker: "ADA" },
-  { id: "dogecoin", name: "Dogecoin", ticker: "DOGE" },
-  { id: "polkadot", name: "Polkadot", ticker: "DOT" },
-  { id: "chainlink", name: "Chainlink", ticker: "LINK" },
-  { id: "avalanche-2", name: "Avalanche", ticker: "AVAX" },
-  { id: "matic-network", name: "Polygon", ticker: "MATIC" },
-  { id: "shiba-inu", name: "Shiba Inu", ticker: "SHIB" },
-  { id: "litecoin", name: "Litecoin", ticker: "LTC" },
-  { id: "uniswap", name: "Uniswap", ticker: "UNI" },
-  { id: "cosmos", name: "Cosmos", ticker: "ATOM" },
-  { id: "near", name: "NEAR", ticker: "NEAR" },
-  { id: "arbitrum", name: "Arbitrum", ticker: "ARB" },
-  { id: "optimism", name: "Optimism", ticker: "OP" },
-  { id: "aptos", name: "Aptos", ticker: "APT" },
-  { id: "sui", name: "Sui", ticker: "SUI" },
-  { id: "tron", name: "TRON", ticker: "TRX" },
-  { id: "stellar", name: "Stellar", ticker: "XLM" },
-  { id: "pepe", name: "Pepe", ticker: "PEPE" },
-  { id: "floki", name: "Floki", ticker: "FLOKI" },
-  { id: "bonk", name: "Bonk", ticker: "BONK" },
-  { id: "render-token", name: "Render", ticker: "RENDER" },
-  { id: "fetch-ai", name: "Fetch.ai", ticker: "FET" },
-  { id: "injective-protocol", name: "Injective", ticker: "INJ" },
-  { id: "bittensor", name: "Bittensor", ticker: "TAO" },
-  { id: "sei-network", name: "Sei", ticker: "SEI" },
-  { id: "the-graph", name: "The Graph", ticker: "GRT" },
-  { id: "aave", name: "Aave", ticker: "AAVE" },
-  { id: "maker", name: "Maker", ticker: "MKR" },
-  { id: "dogwifcoin", name: "dogwifhat", ticker: "WIF" },
-  { id: "mantle", name: "Mantle", ticker: "MNT" },
-  { id: "immutable-x", name: "Immutable X", ticker: "IMX" },
-  { id: "axie-infinity", name: "Axie Infinity", ticker: "AXS" },
-  { id: "sandbox", name: "The Sandbox", ticker: "SAND" },
-  { id: "decentraland", name: "Decentraland", ticker: "MANA" },
-  { id: "hedera", name: "Hedera", ticker: "HBAR" },
-  { id: "kaspa", name: "Kaspa", ticker: "KAS" },
-  { id: "raydium", name: "Raydium", ticker: "RAY" },
-  { id: "pendle", name: "Pendle", ticker: "PENDLE" },
-  { id: "curve-dao-token", name: "Curve", ticker: "CRV" },
-  { id: "1inch", name: "1inch", ticker: "1INCH" },
-  { id: "sushi", name: "SushiSwap", ticker: "SUSHI" },
-  { id: "yearn-finance", name: "Yearn Finance", ticker: "YFI" },
+// Picked token (subset we need for slug + display)
+interface Picked {
+  symbol: string; name: string; logo?: string; chain?: string; contractAddress?: string; coingeckoId?: string;
+}
+
+const POPULAR: Picked[] = [
+  { coingeckoId: "bitcoin", symbol: "BTC", name: "Bitcoin" },
+  { coingeckoId: "ethereum", symbol: "ETH", name: "Ethereum" },
+  { coingeckoId: "solana", symbol: "SOL", name: "Solana" },
+  { coingeckoId: "binancecoin", symbol: "BNB", name: "BNB" },
+  { coingeckoId: "ripple", symbol: "XRP", name: "XRP" },
+  { coingeckoId: "dogecoin", symbol: "DOGE", name: "Dogecoin" },
+  { coingeckoId: "cardano", symbol: "ADA", name: "Cardano" },
+  { coingeckoId: "avalanche-2", symbol: "AVAX", name: "Avalanche" },
+  { coingeckoId: "chainlink", symbol: "LINK", name: "Chainlink" },
+  { coingeckoId: "the-open-network", symbol: "TON", name: "Toncoin" },
 ];
 
 const TRENDING_BATTLES = [
@@ -71,165 +42,150 @@ const TRENDING_BATTLES = [
   { a: "ripple", b: "stellar", label: "XRP vs XLM" },
 ];
 
+function TokenPicker({ label, selected, onSelect }: { label: string; selected: Picked | null; onSelect: (t: Picked | null) => void }) {
+  const [q, setQ] = useState("");
+  const { data, isLoading } = useLiveTokenSearch(q, "all");
+  const results = (data?.tokens || []).slice(0, 12);
+
+  const pick = (t: LiveToken | Picked) => {
+    onSelect({ symbol: t.symbol, name: t.name, logo: (t as any).logo, chain: (t as any).chain, contractAddress: (t as any).contractAddress, coingeckoId: (t as any).coingeckoId });
+    setQ("");
+  };
+
+  return (
+    <div className="space-y-2">
+      <label className="text-xs text-muted-foreground font-bold uppercase tracking-wider">{label}</label>
+
+      {selected ? (
+        <div className="flex items-center gap-3 p-3 rounded-xl border border-primary/30 bg-primary/5">
+          <CoinImage symbol={selected.symbol} image={selected.logo} size={36} />
+          <div className="min-w-0 flex-1">
+            <div className="font-bold truncate">{selected.name}</div>
+            <div className="text-xs text-muted-foreground font-mono">{selected.symbol}{selected.chain ? ` · ${selected.chain}` : ""}</div>
+          </div>
+          <button onClick={() => onSelect(null)} className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground"><X className="w-4 h-4" /></button>
+        </div>
+      ) : (
+        <>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <input type="text" placeholder="Search name, symbol or paste contract…" value={q} onChange={(e) => setQ(e.target.value)}
+              className="w-full bg-background/50 border border-border rounded-lg pl-9 pr-9 py-2.5 text-sm focus:outline-none focus:border-primary" />
+            {isLoading && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-primary" />}
+          </div>
+          <div className="h-52 overflow-y-auto rounded-lg border border-border bg-background/50">
+            {q.length >= 2 ? (
+              results.length > 0 ? results.map((t, i) => (
+                <button key={`${t.symbol}-${t.chain}-${i}`} onClick={() => pick(t)} className="w-full flex items-center gap-2.5 px-3 py-2.5 text-left hover:bg-muted transition-colors border-b border-border/40 last:border-0">
+                  <CoinImage symbol={t.symbol} image={t.logo} size={26} />
+                  <div className="min-w-0 flex-1"><div className="text-sm font-semibold truncate">{t.symbol} <span className="text-muted-foreground font-normal text-xs">{t.name}</span></div></div>
+                  {t.chain && <span className="text-[10px] text-muted-foreground capitalize shrink-0">{t.chain}</span>}
+                </button>
+              )) : !isLoading && <div className="p-4 text-center text-xs text-muted-foreground">No tokens found for “{q}”.</div>
+            ) : (
+              <div className="p-2">
+                <div className="text-[10px] text-muted-foreground uppercase tracking-wider px-1 pb-1">Popular</div>
+                {POPULAR.map((c) => (
+                  <button key={c.coingeckoId} onClick={() => pick(c)} className="w-full flex items-center gap-2.5 px-2 py-2 text-left hover:bg-muted rounded-md transition-colors">
+                    <CoinImage symbol={c.symbol} size={24} />
+                    <span className="text-sm font-medium">{c.name}</span><span className="text-xs text-muted-foreground font-mono ml-auto">{c.symbol}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 export default function CompareHub() {
   const navigate = useNavigate();
-  const [coinA, setCoinA] = useState("bitcoin");
-  const [coinB, setCoinB] = useState("ethereum");
-  const [searchA, setSearchA] = useState("");
-  const [searchB, setSearchB] = useState("");
+  const [coinA, setCoinA] = useState<Picked | null>(POPULAR[0]);
+  const [coinB, setCoinB] = useState<Picked | null>(POPULAR[1]);
 
-  const filteredA = COIN_LIST.filter(c =>
-    c.name.toLowerCase().includes(searchA.toLowerCase()) ||
-    c.ticker.toLowerCase().includes(searchA.toLowerCase())
-  );
-  const filteredB = COIN_LIST.filter(c =>
-    c.name.toLowerCase().includes(searchB.toLowerCase()) ||
-    c.ticker.toLowerCase().includes(searchB.toLowerCase())
-  );
-
+  const canCompare = coinA && coinB && tokenToSlug(coinA) !== tokenToSlug(coinB);
   const handleCompare = () => {
-    navigate(`/compare/${coinA}-vs-${coinB}`);
+    if (!coinA || !coinB) return;
+    navigate(`/compare/${tokenToSlug(coinA)}-vs-${tokenToSlug(coinB)}`);
   };
 
   return (
     <Layout>
       <Helmet>
-        <title>Crypto Coin Comparison Tool | Oracle Bull</title>
-        <meta name="description" content="Compare any two cryptocurrencies side-by-side. AI-powered analysis of Bitcoin vs Ethereum, Solana vs Avalanche, and 1,700+ coin pairs with live data." />
-        <link rel="canonical" href="https://oraclebull.com/compare" />
+        <title>Compare Any Two Cryptocurrencies Side by Side | Oracle Bull</title>
+        <meta name="description" content="Compare any two cryptocurrencies in the world side-by-side. Search by name, symbol or contract address across every chain — live price, market cap, volume, momentum & an AI verdict on which is the better buy." />
+        <link rel="canonical" href={`${SITE_URL}/compare`} />
+        <meta property="og:title" content="Compare Any Two Cryptocurrencies | Oracle Bull" />
+        <meta property="og:description" content="Search any token by name, symbol or contract and compare it head-to-head with live data and an AI verdict." />
+        <meta property="og:url" content={`${SITE_URL}/compare`} />
         <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebPage",
-          "name": "Crypto Coin Comparison Tool | Oracle Bull",
-          "description": "AI-powered side-by-side comparison of any two cryptocurrencies with live price data, market cap, and AI verdict.",
-          "url": "https://oraclebull.com/compare"
+          "@context": "https://schema.org", "@type": "WebApplication", name: "Crypto Comparison Tool", url: `${SITE_URL}/compare`,
+          description: "Compare any two cryptocurrencies side-by-side with live data and an AI verdict.",
+          applicationCategory: "FinanceApplication", operatingSystem: "Any",
+          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
         })}</script>
       </Helmet>
 
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-5xl mx-auto">
-
           {/* Hero */}
-          <div className="text-center mb-12">
+          <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wider mb-4">
-              <GitCompare className="w-4 h-4" />
-              <span>AI COIN COMPARISON ENGINE</span>
+              <GitCompare className="w-4 h-4" /><span>COMPARE ANY TOKEN · ANY CHAIN</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold font-display mb-4 glow-text">
-              Which Coin Wins?
-            </h1>
+            <h1 className="text-4xl md:text-5xl font-bold font-display mb-4 glow-text">Compare Any Two Cryptocurrencies</h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Stop debating. Our AI analyses live price data, market cap, momentum, and on-chain signals to deliver a definitive verdict on any two coins.
+              Search <span className="text-foreground font-medium">any token in the world</span> by name, symbol or contract address — then get a live side-by-side breakdown and an AI verdict on which wins.
             </p>
+            <div className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground"><Globe className="w-3.5 h-3.5" /> Powered by DexScreener · CoinGecko · on-chain</div>
           </div>
 
-          {/* Comparison Selector */}
+          {/* Picker */}
           <div className="holo-card p-6 md:p-8 mb-10">
-            <div className="grid md:grid-cols-[1fr_auto_1fr] gap-4 items-center">
-
-              {/* Coin A Selector */}
-              <div className="space-y-2">
-                <label className="text-xs text-muted-foreground font-bold uppercase tracking-wider">First Coin</label>
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <input
-                    type="text"
-                    placeholder="Search coin..."
-                    value={searchA}
-                    onChange={e => setSearchA(e.target.value)}
-                    className="w-full bg-background/50 border border-border rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:border-primary"
-                  />
-                </div>
-                <div className="h-40 overflow-y-auto rounded-lg border border-border bg-background/50 divide-y divide-border/50">
-                  {filteredA.map(coin => (
-                    <button
-                      key={coin.id}
-                      onClick={() => { setCoinA(coin.id); setSearchA(""); }}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-muted transition-colors text-sm ${coinA === coin.id ? 'bg-primary/10 text-primary font-semibold' : 'text-foreground'}`}
-                    >
-                      <span className="text-xs text-muted-foreground w-12 font-mono">{coin.ticker}</span>
-                      {coin.name}
-                    </button>
-                  ))}
-                </div>
-                <div className="text-center font-bold text-primary text-lg">
-                  {COIN_LIST.find(c => c.id === coinA)?.name}
-                </div>
+            <div className="grid md:grid-cols-[1fr_auto_1fr] gap-5 items-start">
+              <TokenPicker label="First Token" selected={coinA} onSelect={setCoinA} />
+              <div className="hidden md:flex flex-col items-center justify-center pt-8">
+                <div className="w-12 h-12 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center"><span className="font-black text-primary text-sm">VS</span></div>
               </div>
-
-              {/* VS divider */}
-              <div className="flex flex-col items-center gap-2 py-4">
-                <div className="w-12 h-12 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center">
-                  <span className="font-black text-primary text-sm">VS</span>
-                </div>
-              </div>
-
-              {/* Coin B Selector */}
-              <div className="space-y-2">
-                <label className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Second Coin</label>
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <input
-                    type="text"
-                    placeholder="Search coin..."
-                    value={searchB}
-                    onChange={e => setSearchB(e.target.value)}
-                    className="w-full bg-background/50 border border-border rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:border-primary"
-                  />
-                </div>
-                <div className="h-40 overflow-y-auto rounded-lg border border-border bg-background/50 divide-y divide-border/50">
-                  {filteredB.map(coin => (
-                    <button
-                      key={coin.id}
-                      onClick={() => { setCoinB(coin.id); setSearchB(""); }}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-muted transition-colors text-sm ${coinB === coin.id ? 'bg-primary/10 text-primary font-semibold' : 'text-foreground'}`}
-                    >
-                      <span className="text-xs text-muted-foreground w-12 font-mono">{coin.ticker}</span>
-                      {coin.name}
-                    </button>
-                  ))}
-                </div>
-                <div className="text-center font-bold text-primary text-lg">
-                  {COIN_LIST.find(c => c.id === coinB)?.name}
-                </div>
-              </div>
+              <TokenPicker label="Second Token" selected={coinB} onSelect={setCoinB} />
             </div>
-
             <div className="mt-6 flex justify-center">
-              <button
-                onClick={handleCompare}
-                disabled={coinA === coinB}
-                className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3 rounded-xl font-bold text-lg hover:bg-primary/90 transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-              >
-                <Zap className="w-5 h-5" />
-                Compare with AI
-                <ArrowRight className="w-5 h-5" />
+              <button onClick={handleCompare} disabled={!canCompare}
+                className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3 rounded-xl font-bold text-lg hover:bg-primary/90 transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100">
+                <Zap className="w-5 h-5" /> Compare <ArrowRight className="w-5 h-5" />
               </button>
             </div>
           </div>
 
-          {/* Trending Battles */}
-          <div>
-            <h2 className="text-xl font-bold font-display mb-4 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-primary" />
-              Trending Battles
-            </h2>
+          {/* Trending battles */}
+          <div className="mb-12">
+            <h2 className="text-xl font-bold font-display mb-4 flex items-center gap-2"><TrendingUp className="w-5 h-5 text-primary" /> Trending Battles</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-              {TRENDING_BATTLES.map(battle => (
-                <button
-                  key={`${battle.a}-${battle.b}`}
-                  onClick={() => navigate(`/compare/${battle.a}-vs-${battle.b}`)}
-                  className="holo-card px-4 py-3 text-sm font-semibold text-center hover:border-primary/50 hover:text-primary transition-all hover:scale-105 group"
-                >
-                  <span className="flex items-center justify-center gap-2">
-                    {battle.label}
-                    <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </span>
+              {TRENDING_BATTLES.map((b) => (
+                <button key={`${b.a}-${b.b}`} onClick={() => navigate(`/compare/${b.a}-vs-${b.b}`)}
+                  className="holo-card px-4 py-3 text-sm font-semibold text-center hover:border-primary/50 hover:text-primary transition-all hover:scale-105 group">
+                  <span className="flex items-center justify-center gap-2">{b.label}<ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" /></span>
                 </button>
               ))}
             </div>
           </div>
 
+          {/* SEO content */}
+          <section className="prose prose-neutral dark:prose-invert max-w-none">
+            <h2 className="flex items-center gap-2"><Sparkles className="w-5 h-5 text-primary" /> Compare any cryptocurrency, on any chain</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Most comparison tools only cover a handful of major coins. Oracle Bull lets you compare <strong>any token in the world</strong> —
+              type a name or symbol, or paste a contract address from Ethereum, Solana, BNB Chain, Base, Arbitrum, Polygon and beyond. We pull
+              live data from DexScreener, CoinGecko and on-chain sources, then put the two tokens head-to-head across price, market cap, 24-hour
+              and weekly momentum, trading volume and liquidity — and finish with an AI verdict on which looks stronger right now.
+            </p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Pick two tokens above to start, jump into a trending battle, or open the <Link to="/explorer" className="text-primary">Token Explorer</Link> and
+              <Link to="/strength-meter" className="text-primary"> Strength Meter</Link> for deeper analysis. Comparisons are for research only and are not financial advice.
+            </p>
+          </section>
         </div>
       </div>
     </Layout>
