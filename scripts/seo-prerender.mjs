@@ -43,6 +43,29 @@ const COINS = [
   ['render', 'Render', 'RNDR'], ['injective', 'Injective', 'INJ'], ['ton', 'Toncoin', 'TON'],
   ['stellar', 'Stellar', 'XLM'], ['hedera', 'Hedera', 'HBAR'], ['filecoin', 'Filecoin', 'FIL'],
   ['bitcoin-cash', 'Bitcoin Cash', 'BCH'], ['aave', 'Aave', 'AAVE'],
+  // ── Expanded coverage ──
+  ['kaspa', 'Kaspa', 'KAS'], ['monero', 'Monero', 'XMR'], ['ethereum-classic', 'Ethereum Classic', 'ETC'],
+  ['vechain', 'VeChain', 'VET'], ['algorand', 'Algorand', 'ALGO'], ['internet-computer', 'Internet Computer', 'ICP'],
+  ['fantom', 'Fantom', 'FTM'], ['the-graph', 'The Graph', 'GRT'], ['fetch-ai', 'Fetch.ai', 'FET'],
+  ['bittensor', 'Bittensor', 'TAO'], ['sei-network', 'Sei', 'SEI'], ['immutable-x', 'Immutable', 'IMX'],
+  ['maker', 'Maker', 'MKR'], ['lido-dao', 'Lido DAO', 'LDO'], ['thorchain', 'THORChain', 'RUNE'],
+  ['mantle', 'Mantle', 'MNT'], ['bonk', 'Bonk', 'BONK'], ['floki', 'Floki', 'FLOKI'],
+  ['dogwifcoin', 'dogwifhat', 'WIF'], ['jupiter', 'Jupiter', 'JUP'], ['worldcoin', 'Worldcoin', 'WLD'],
+  ['ondo-finance', 'Ondo', 'ONDO'], ['ethena', 'Ethena', 'ENA'], ['pendle', 'Pendle', 'PENDLE'],
+  ['starknet', 'Starknet', 'STRK'], ['celestia', 'Celestia', 'TIA'], ['pyth-network', 'Pyth Network', 'PYTH'],
+  ['jito', 'Jito', 'JTO'], ['raydium', 'Raydium', 'RAY'], ['gala', 'Gala', 'GALA'],
+  ['the-sandbox', 'The Sandbox', 'SAND'], ['decentraland', 'Decentraland', 'MANA'], ['axie-infinity', 'Axie Infinity', 'AXS'],
+  ['chiliz', 'Chiliz', 'CHZ'], ['curve-dao-token', 'Curve', 'CRV'], ['synthetix', 'Synthetix', 'SNX'],
+  ['1inch', '1inch', '1INCH'], ['compound', 'Compound', 'COMP'], ['dydx', 'dYdX', 'DYDX'],
+  ['gmx', 'GMX', 'GMX'], ['flow', 'Flow', 'FLOW'], ['tezos', 'Tezos', 'XTZ'],
+  ['eos', 'EOS', 'EOS'], ['iota', 'IOTA', 'IOTA'], ['neo', 'NEO', 'NEO'],
+  ['quant-network', 'Quant', 'QNT'], ['kava', 'Kava', 'KAVA'], ['zcash', 'Zcash', 'ZEC'],
+  ['dash', 'Dash', 'DASH'], ['helium', 'Helium', 'HNT'], ['arweave', 'Arweave', 'AR'],
+  ['ens', 'Ethereum Name Service', 'ENS'], ['blur', 'Blur', 'BLUR'], ['jasmycoin', 'JasmyCoin', 'JASMY'],
+  ['gmt', 'STEPN', 'GMT'], ['mina-protocol', 'Mina', 'MINA'], ['conflux-token', 'Conflux', 'CFX'],
+  ['akash-network', 'Akash', 'AKT'], ['ordinals', 'ORDI', 'ORDI'], ['ribbon-finance', 'Ribbon', 'RBN'],
+  ['rocket-pool', 'Rocket Pool', 'RPL'], ['frax', 'Frax', 'FRAX'], ['gnosis', 'Gnosis', 'GNO'],
+  ['enjincoin', 'Enjin', 'ENJ'], ['theta-token', 'Theta', 'THETA'], ['nervos-network', 'Nervos', 'CKB'],
 ];
 const YEARS = [2026, 2027, 2028, 2030];
 const CHAINS = [
@@ -58,11 +81,29 @@ const MARKET_PAGES = [
   'undervalued-crypto-to-buy', 'crypto-with-most-potential', 'best-altcoins-to-buy',
   'top-meme-coins', 'best-defi-tokens', 'top-ai-crypto-tokens', 'altcoin-season-index',
   'crypto-bull-run-indicator',
+  // ── Expanded long-tail market intent ──
+  'top-crypto-gainers-this-week', 'biggest-crypto-losers-this-week', 'crypto-to-buy-before-bull-run',
+  'best-crypto-under-1-dollar', 'best-crypto-under-1-cent', 'best-long-term-crypto',
+  'best-crypto-for-beginners', 'best-staking-crypto', 'highest-apy-crypto',
+  'best-layer-2-crypto', 'best-layer-1-crypto', 'best-gaming-crypto', 'best-metaverse-crypto',
+  'best-privacy-coins', 'best-rwa-crypto', 'best-depin-crypto', 'best-crypto-for-passive-income',
+  'most-undervalued-crypto', 'crypto-to-hold-long-term', 'top-100-crypto',
+  'which-crypto-to-buy-right-now', 'crypto-market-cap-today', 'will-crypto-crash-today',
+  'crypto-market-outlook', 'crypto-bull-run-prediction', 'best-crypto-to-day-trade',
+  'best-low-cap-crypto-gems', 'next-100x-crypto', 'best-crypto-presale', 'trending-crypto-today',
+  'best-solana-meme-coins', 'best-base-tokens', 'best-new-crypto-coins',
 ];
 const COMPARE_PAIRS = [
   'bitcoin-vs-ethereum', 'bitcoin-vs-solana', 'ethereum-vs-solana', 'cardano-vs-solana',
   'dogecoin-vs-shiba-inu', 'bitcoin-vs-bnb', 'ethereum-vs-cardano', 'solana-vs-avalanche',
   'xrp-vs-stellar', 'polygon-vs-arbitrum', 'near-vs-aptos', 'chainlink-vs-uniswap',
+  // ── Expanded comparisons ──
+  'bitcoin-vs-xrp', 'ethereum-vs-bnb', 'solana-vs-cardano', 'xrp-vs-cardano',
+  'avalanche-vs-polygon', 'arbitrum-vs-optimism', 'sui-vs-aptos', 'pepe-vs-shiba-inu',
+  'dogecoin-vs-pepe', 'litecoin-vs-bitcoin-cash', 'cosmos-vs-polkadot', 'fetch-ai-vs-bittensor',
+  'render-vs-fetch-ai', 'injective-vs-sei-network', 'aave-vs-maker', 'uniswap-vs-curve-dao-token',
+  'ethena-vs-ondo-finance', 'starknet-vs-zksync', 'ton-vs-solana', 'kaspa-vs-bitcoin',
+  'tron-vs-ethereum', 'monero-vs-zcash', 'hedera-vs-stellar', 'algorand-vs-cardano',
 ];
 const LEARN_SLUGS = [
   'what-is-crypto-market-sentiment', 'how-ai-is-used-in-crypto-market-analysis',
@@ -81,6 +122,36 @@ const LEARN_SLUGS = [
   'proof-of-work-vs-proof-of-stake', 'what-is-a-blockchain-explained-simply',
   'crypto-portfolio-diversification-strategy', 'how-to-identify-crypto-scams',
   'what-are-stablecoins-and-how-do-they-work',
+];
+
+// ── Question-intent (/q/) programmatic pages ─────────────────────────────────
+// High-intent coins × question patterns → unique answer pages. These target the
+// exact "will X go up today / should I buy X" long-tail searches.
+const Q_COINS = [
+  ['bitcoin', 'Bitcoin'], ['ethereum', 'Ethereum'], ['solana', 'Solana'], ['ripple', 'XRP'],
+  ['bnb', 'BNB'], ['dogecoin', 'Dogecoin'], ['cardano', 'Cardano'], ['avalanche', 'Avalanche'],
+  ['polkadot', 'Polkadot'], ['chainlink', 'Chainlink'], ['shiba-inu', 'Shiba Inu'], ['litecoin', 'Litecoin'],
+  ['tron', 'TRON'], ['sui', 'Sui'], ['aptos', 'Aptos'], ['near', 'NEAR'], ['pepe', 'Pepe'],
+  ['arbitrum', 'Arbitrum'], ['optimism', 'Optimism'], ['polygon', 'Polygon'], ['toncoin', 'Toncoin'],
+  ['render', 'Render'], ['injective', 'Injective'], ['fetch-ai', 'Fetch.ai'], ['bittensor', 'Bittensor'],
+  ['kaspa', 'Kaspa'], ['stellar', 'Stellar'], ['hedera', 'Hedera'], ['uniswap', 'Uniswap'], ['cosmos', 'Cosmos'],
+  ['bonk', 'Bonk'], ['worldcoin', 'Worldcoin'], ['sei-network', 'Sei'], ['celestia', 'Celestia'],
+  ['ondo-finance', 'Ondo'], ['pyth-network', 'Pyth'], ['jupiter', 'Jupiter'], ['dogwifcoin', 'dogwifhat'],
+];
+// Each pattern: [slugTemplate, kind] — kind drives the answer copy.
+const Q_PATTERNS = [
+  ['{coin}-price-prediction-today', 'today'],
+  ['will-{coin}-go-up-today', 'updown'],
+  ['should-i-buy-{coin}-today', 'buy'],
+  ['is-{coin}-a-good-investment', 'invest'],
+  ['{coin}-price-prediction-this-week', 'week'],
+  ['{coin}-price-prediction-this-month', 'month'],
+  ['will-{coin}-go-up', 'updown'],
+  ['{coin}-forecast-today', 'today'],
+  ['is-{coin}-bullish-today', 'updown'],
+  ['{coin}-buy-or-sell', 'buy'],
+  ['will-{coin}-reach-new-highs', 'highs'],
+  ['{coin}-price-target', 'today'],
 ];
 
 const titleCase = (s) => s.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
@@ -435,7 +506,7 @@ for (const [slug, name, sym] of COINS) {
     links: [...related, { href: '/predictions', label: 'All Predictions' }, { href: `/how-to-buy/${slug}`, label: `How to Buy ${name}` }],
   });
   // Year predictions for a subset
-  if (['bitcoin', 'ethereum', 'solana', 'ripple', 'dogecoin', 'cardano'].includes(slug)) {
+  if (['bitcoin', 'ethereum', 'solana', 'ripple', 'dogecoin', 'cardano', 'bnb', 'avalanche', 'chainlink', 'polkadot', 'shiba-inu', 'pepe', 'sui', 'arbitrum', 'near', 'litecoin', 'polygon', 'tron'].includes(slug)) {
     for (const yr of YEARS) {
       add(`/price-prediction/${slug}/${yr}`, {
         title: `${name} (${sym}) Price Prediction ${yr} – Long-Term AI Forecast`,
@@ -504,8 +575,72 @@ for (const pair of COMPARE_PAIRS) {
   });
 }
 
+// Question-intent (/q/) pages — unique answer copy per question type
+function qAnswer(name, kind) {
+  const base = `Oracle Bull's AI analyzes live ${name} market data — price action, momentum, trading volume and sentiment — to answer this in real time, updated for ${MONTH} ${YEAR}.`;
+  switch (kind) {
+    case 'updown':
+      return [
+        `${base} The model weighs ${name}'s current 24-hour momentum, volume trend and relative strength versus Bitcoin to estimate the probability of an up or down move. See the live probability score and chart below.`,
+        `Short-term direction can flip quickly on news and liquidity. Use the support and resistance levels on this page as your guide, and never trade on a single signal. This is research, not financial advice.`,
+      ];
+    case 'buy':
+      return [
+        `${base} Whether ${name} is a buy right now depends on your timeframe and risk tolerance — our AI breaks the decision into daily, weekly and monthly outlooks with entry zones and a live risk score.`,
+        `A higher AI confidence reading with rising volume is the cleaner setup; a falling score on thin volume argues for patience. Check the live ${name} analysis above before acting. Not financial advice.`,
+      ];
+    case 'invest':
+      return [
+        `${base} For a longer horizon, ${name}'s investment case rests on adoption, liquidity, tokenomics and where it sits in the current market cycle — alongside the live momentum read on this page.`,
+        `We present bull, base and bear scenarios rather than a single number, because crypto is volatile and outcomes are uncertain. Use the forecast as one input in your own research. Not financial advice.`,
+      ];
+    case 'week':
+      return [
+        `${base} For the week ahead, the AI projects a ${name} range from current momentum, weekly volatility and the key support/resistance levels shown on the chart.`,
+        `Weekly forecasts are scenario ranges, not guarantees — treat the upper and lower bounds as zones to watch. Updated continuously. Not financial advice.`,
+      ];
+    case 'month':
+      return [
+        `${base} The monthly ${name} outlook blends trend, market structure and macro context into bull, base and bear scenarios for the weeks ahead.`,
+        `Longer windows carry more uncertainty; use the scenario ranges and the live chart together. Not financial advice.`,
+      ];
+    case 'highs':
+      return [
+        `${base} Whether ${name} reaches a new all-time high depends on cycle position, momentum and how far price sits below its previous peak — all tracked live on this page.`,
+        `Reaching new highs is a probabilistic scenario, not a certainty. We map the path and the levels that would need to break. Not financial advice.`,
+      ];
+    default:
+      return [
+        `${base} The live ${name} forecast below includes daily, weekly and monthly outlooks with support, resistance and price targets, plus a confidence score that updates as the market moves.`,
+        `Use the chart and AI analysis together to gauge ${name}'s likely path. This page is research and information only — not financial advice.`,
+      ];
+  }
+}
+for (const [coinSlug, coinName] of Q_COINS) {
+  for (const [tmpl, kind] of Q_PATTERNS) {
+    const slug = tmpl.replace('{coin}', coinSlug);
+    const readable = titleCase(slug);
+    add(`/q/${slug}`, {
+      title: `${readable} – AI Answer & Live Analysis (${MONTH} ${YEAR})`,
+      description: `${readable}? Get the AI-powered answer with live ${coinName} market data, technical analysis, momentum and price targets. Updated ${MONTH} ${YEAR}. Not financial advice.`,
+      keywords: `${slug.replace(/-/g, ' ')}, ${coinName} prediction, will ${coinName} go up, should i buy ${coinName}, ${coinName} forecast`,
+      h1: readable,
+      intro: qAnswer(coinName, kind),
+      faq: [
+        { q: `${readable}?`, a: `Our AI answers "${readable}" using real-time ${coinName} momentum, volume and sentiment, refreshed continuously. See the live analysis above for the current read. Not financial advice.` },
+        { q: `Is ${coinName} a good investment right now?`, a: `${coinName}'s outlook depends on your timeframe and risk tolerance. We provide a live risk score plus daily, weekly and monthly AI forecasts to help you decide. Always do your own research.` },
+      ],
+      links: [
+        { href: `/price-prediction/${coinSlug}`, label: `${coinName} Price Prediction` },
+        { href: '/predictions', label: 'All AI Predictions' },
+        { href: '/sentiment', label: 'Fear & Greed Index' },
+      ],
+    });
+  }
+}
+
 // How-to-buy coin pages
-for (const [slug, name, sym] of COINS.slice(0, 12)) {
+for (const [slug, name, sym] of COINS.slice(0, 24)) {
   add(`/how-to-buy/${slug}`, {
     title: `How to Buy ${name} (${sym}) – Step-by-Step Guide (${YEAR})`,
     description: `Learn how to buy ${name} (${sym}) safely in ${YEAR}. A beginner-friendly, step-by-step guide covering exchanges, wallets, fees and security.`,
