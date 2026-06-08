@@ -228,6 +228,7 @@ const App = () => (
                 <Route path="/airdrops/:id" element={B(<AirdropDetail />)} />
 
                 <Route path="/tools" element={B(<ToolsHub />)} />
+                <Route path="/polymarket" element={B(<ToolsHub />)} />
                 <Route path="/tools/profit-calculator" element={B(<ProfitCalculator />)} />
                 <Route path="/tools/dca-calculator" element={B(<DCACalculator />)} />
                 <Route path="/tools/impermanent-loss-calculator" element={B(<ILCalculator />)} />

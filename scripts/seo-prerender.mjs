@@ -317,18 +317,29 @@ add('/airdrops', {
   intro: ['Track active and upcoming crypto airdrops with clear, step-by-step eligibility guides so you know exactly how to qualify and claim.'],
   links: toolLinks,
 });
-add('/tools', {
-  title: 'Free Crypto Calculators & Trading Tools | Oracle Bull',
-  description: 'Free crypto tools: profit calculator, DCA calculator, impermanent loss calculator and more. Plan trades and manage risk.',
-  keywords: 'crypto calculator, profit calculator crypto, dca calculator, impermanent loss calculator',
-  h1: 'Free Crypto Calculators & Tools',
-  intro: ['A suite of free calculators to plan trades and manage risk: profit/ROI, dollar-cost averaging and impermanent loss.'],
-  links: [
-    { href: '/tools/profit-calculator', label: 'Profit Calculator' },
-    { href: '/tools/dca-calculator', label: 'DCA Calculator' },
-    { href: '/tools/impermanent-loss-calculator', label: 'Impermanent Loss Calculator' },
+const polymarketDef = {
+  title: `Polymarket Signals — Live Odds, Implied Probability & Risk Analysis (${MONTH} ${YEAR}) | Oracle Bull`,
+  description: `Analyze any Polymarket prediction market in real time. See implied probabilities, the favored outcome, a risk rating and 24h momentum for politics, crypto, sports, economy & more. Search any market free. ${MONTH} ${YEAR}.`,
+  keywords: 'polymarket signals, polymarket odds, polymarket implied probability, prediction market analysis, polymarket risk, what to choose polymarket, polymarket bitcoin, polymarket election odds',
+  h1: 'Polymarket Signals',
+  intro: [
+    `Analyze any Polymarket prediction market in real time. For every market we read the live prices — which are the market's implied probabilities — and surface the favored outcome, a clarity score, a risk rating (blending decisiveness, liquidity and spread) and 24-hour momentum.`,
+    `Search any market by keyword or browse by theme — politics, crypto, sports, economy, geopolitics, tech and culture. Informational analysis of public prediction-market data only, not betting advice. Updated ${MONTH} ${YEAR}.`,
   ],
-});
+  faq: [
+    { q: 'What is a Polymarket implied probability?', a: `Polymarket prices each outcome between $0 and $1, and that price is the market's implied probability. A "Yes" share at $0.72 means a roughly 72% implied chance. Our analyzer converts every market's live prices into clear percentages.` },
+    { q: 'How is the risk level calculated?', a: 'The risk rating blends how decisive the market is (a near 50/50 toss-up is riskier than an 85% favorite), liquidity depth, and the bid/ask spread. It is an informational read of uncertainty, not betting advice.' },
+    { q: 'Can I search any Polymarket market?', a: 'Yes — search any market on Polymarket by keyword (politics, crypto, sports, economy and more) or browse by theme. Every result is analyzed live for implied odds and risk.' },
+  ],
+  links: [
+    { href: '/crypto-strength-meter', label: 'Crypto Strength Meter' },
+    { href: '/sentiment', label: 'Fear & Greed Index' },
+    { href: '/crypto-factory', label: 'Crypto Factory' },
+    { href: '/compare', label: 'Compare Tokens' },
+  ],
+};
+add('/tools', polymarketDef);
+add('/polymarket', polymarketDef);
 add('/compare', {
   title: 'Compare Cryptocurrencies Side by Side | Oracle Bull',
   description: 'Compare any two cryptocurrencies side by side: price, market cap, performance, fundamentals and AI verdict. Make informed decisions.',

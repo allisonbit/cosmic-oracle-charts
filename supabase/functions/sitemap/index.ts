@@ -27,6 +27,7 @@ const staticRoutes = [
   { path: "/news", priority: "0.9", changefreq: "hourly" },
   { path: "/trade", priority: "0.8", changefreq: "hourly" },
   { path: "/scanner", priority: "0.7", changefreq: "daily" },
+  { path: "/polymarket", priority: "0.9", changefreq: "hourly" },
   { path: "/about", priority: "0.5", changefreq: "monthly" },
   { path: "/contact", priority: "0.5", changefreq: "monthly" },
   { path: "/sitemap", priority: "0.4", changefreq: "weekly" },

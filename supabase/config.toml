@@ -144,3 +144,9 @@ verify_jwt = false
 [functions.news-feed.rate_limit]
 requests = 600
 per = 3600
+
+[functions.polymarket]
+verify_jwt = false
+[functions.polymarket.rate_limit]
+requests = 600
+per = 3600
