@@ -248,6 +248,29 @@ add('/factory', {
     { href: '/factory/news', label: 'Crypto News' },
   ],
 });
+add('/crypto-factory', {
+  title: `Crypto Factory — Real-Time Market Intelligence, On-Chain Flows & Narratives (${MONTH} ${YEAR}) | Oracle Bull`,
+  description: `Live crypto intelligence hub tracking events, narratives, whale flows, news and sentiment from 50+ sources — all auto-updating. The fastest way to know what's moving the market right now. ${MONTH} ${YEAR}.`,
+  keywords: 'crypto market intelligence hub, real-time crypto news aggregator, crypto factory, live crypto events feed, crypto whale alert tracker, crypto narrative tracker, on-chain flow tracker',
+  h1: 'Crypto Factory',
+  intro: [
+    `Crypto Factory is Oracle Bull's real-time market intelligence hub — one place that replaces refreshing a dozen news sites, whale-alert bots and social feeds. It aggregates events, narratives, on-chain whale flows and news, scores every item for impact, and tags the assets it affects so you see what matters in seconds.`,
+    `The feed auto-updates continuously. Track which narratives are driving capital, watch large on-chain flows as they confirm, and never miss a market-moving event. Updated ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'What is the Crypto Factory?', a: `Crypto Factory is Oracle Bull's real-time market intelligence hub that aggregates crypto news, on-chain whale flows, market narratives and key events into one auto-updating command center, scored by impact.` },
+    { q: 'How often does Crypto Factory update?', a: 'The feed auto-refreshes every 60 seconds, and whale/on-chain flow cards reflect large transactions as they confirm on-chain.' },
+    { q: 'What is a crypto market narrative?', a: 'A narrative is the dominant theme driving capital right now — AI tokens, Bitcoin ETF, RWA, memecoins. Crypto Factory ranks active narratives by momentum so you can see where money is rotating.' },
+    { q: 'What are on-chain flows in crypto?', a: 'On-chain flows are movements of crypto between wallets. Large exchange inflows often precede selling, outflows suggest accumulation, and big wallet-to-wallet transfers can signal positioning before price reacts.' },
+  ],
+  links: [
+    { href: '/crypto-strength-meter', label: 'Crypto Strength Meter' },
+    { href: '/sentiment', label: 'Fear & Greed Index' },
+    { href: '/compare', label: 'Compare Tokens' },
+    { href: '/scanner', label: 'Token Scanner' },
+    { href: '/dashboard', label: 'Dashboard' },
+  ],
+});
 add('/learn', {
   title: `Learn Crypto Free – Guides & Trading Education (${MONTH} ${YEAR})`,
   description: 'Free crypto education: Bitcoin guides, DeFi tutorials, technical analysis lessons and trading strategies for all levels.',

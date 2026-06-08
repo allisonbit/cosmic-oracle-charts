@@ -16,6 +16,7 @@ const staticRoutes = [
   { path: "/strength-meter", priority: "0.8", changefreq: "hourly" },
   { path: "/crypto-strength-meter", priority: "0.9", changefreq: "hourly" },
   { path: "/factory", priority: "0.8", changefreq: "hourly" },
+  { path: "/crypto-factory", priority: "0.9", changefreq: "hourly" },
   { path: "/factory/events", priority: "0.7", changefreq: "daily" },
   { path: "/factory/onchain", priority: "0.7", changefreq: "daily" },
   { path: "/factory/narratives", priority: "0.7", changefreq: "daily" },
