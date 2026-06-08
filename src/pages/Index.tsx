@@ -12,6 +12,8 @@ import { BannerAd, InArticleAd } from "@/components/ads";
 import { SEO } from "@/components/MainSEO";
 
 // Above-the-fold, live-data-first sections (eager-ish, but still split).
+const HomeNews = lazy(() => import("@/components/home/HomeNews").then(m => ({ default: m.HomeNews })));
+const HomePolymarket = lazy(() => import("@/components/home/HomePolymarket").then(m => ({ default: m.HomePolymarket })));
 const MarketSnapshot = lazy(() => import("@/components/home/MarketSnapshot").then(m => ({ default: m.MarketSnapshot })));
 const PlatformStats = lazy(() => import("@/components/home/PlatformStats").then(m => ({ default: m.PlatformStats })));
 const LiveSignals = lazy(() => import("@/components/home/LiveSignals").then(m => ({ default: m.LiveSignals })));
@@ -100,19 +102,29 @@ const Index = () => {
         {/* 1. Hero — H1, prominent search, live price chips */}
         <HeroSection />
 
-        {/* 2. Market Snapshot — CoinGecko-style live data above the fold */}
+        {/* 2. Latest crypto news — attractive, dynamic lead */}
         <Suspense fallback={<SectionFallback />}>
-          <MarketSnapshot />
+          <HomeNews />
         </Suspense>
 
-        {/* 3. Honest platform stats — single live strip */}
+        {/* 3. Prediction markets — what the crowd is betting on (hook) */}
         <Suspense fallback={<SectionFallback />}>
-          <PlatformStats />
+          <HomePolymarket />
         </Suspense>
 
         {/* 4. Live AI Signals — high-conviction trade setups */}
         <Suspense fallback={<SectionFallback />}>
           <LiveSignals />
+        </Suspense>
+
+        {/* 5. Crypto market at a glance — live snapshot */}
+        <Suspense fallback={<SectionFallback />}>
+          <MarketSnapshot />
+        </Suspense>
+
+        {/* 6. Honest platform stats — single live strip */}
+        <Suspense fallback={<SectionFallback />}>
+          <PlatformStats />
         </Suspense>
 
         {/* Ad placement — below fold */}
