@@ -70,7 +70,7 @@ export default function NewsArticle() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const contentHtml = useMemo(() => (article ? renderMarkdown(article.content) : ""), [article?.content]);
+  const contentHtml = useMemo(() => (article?.content ? renderMarkdown(article.content) : ""), [article?.content]);
 
   const handleShare = async () => {
     const url = `${SITE_URL}/news/${article?.slug}`;

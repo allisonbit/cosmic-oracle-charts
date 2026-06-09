@@ -200,8 +200,7 @@ export default function NewsHub() {
 
   const { data, isLoading, isFetching, refetch } = useNewsFeed({ category, q: query, limit: 60 });
   const articles = useMemo(() => data?.articles ?? [], [data?.articles]);
-  const serverCategories = data?.categories ?? [];
-  const categories = useMemo(() => ["All", ...serverCategories], [serverCategories]);
+  const categories = useMemo(() => ["All", ...(data?.categories ?? [])], [data?.categories]);
   const searching = query.length > 0;
   const isDefaultView = category === "All" && !searching;
 

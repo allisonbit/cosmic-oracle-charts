@@ -59,7 +59,7 @@ export function CorrelationMatrix() {
                     key={asset2}
                     className={cn(
                       "text-center p-1.5 sm:p-2 rounded text-[10px] sm:text-xs font-mono font-semibold",
-                      getCorrelationColor(correlations[asset1][asset2])
+                      getCorrelationColor(getVal(asset1, asset2))
                     )}
                   >
                     {getVal(asset1, asset2).toFixed(2)}

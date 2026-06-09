@@ -46,6 +46,13 @@ export function useFundingRates(options: UseFundingRatesOptions = {}) {
         throw new Error('Failed to fetch funding rates');
       }
 
+      // Guard against a 200 that isn't JSON (CDN/error page, SPA fallback) so we
+      // surface a clean error instead of a confusing JSON SyntaxError.
+      const contentType = response.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        throw new Error('Funding rates endpoint returned a non-JSON response');
+      }
+
       const fundingData = await response.json();
       
       if (fundingData.error) {
