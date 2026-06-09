@@ -4,6 +4,7 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 import Sitemap from "vite-plugin-sitemap";
 import { VitePWA } from "vite-plugin-pwa";
+import insightSlugs from "./scripts/insight-slugs.json";
 
 // All static routes for sitemap generation
 const staticRoutes = [
@@ -28,6 +29,8 @@ const staticRoutes = [
   "/explorer",
   "/learn",
   "/insights",
+  "/crypto-strength-meter",
+  "/crypto-factory",
   "/contact",
   "/sitemap",
   "/about",
@@ -276,6 +279,31 @@ const marketQuestionRoutes = [
 
 const coinMarketRoutes: string[] = [];
 
+// Insight article routes — sourced from DB-exported slugs
+const insightRoutes: string[] = (insightSlugs as string[]).map(
+  (slug) => `/insights/${slug}`,
+);
+
+// Token detail explorer routes for top assets across major chains
+const explorerTokenRoutes: string[] = [
+  // Ethereum
+  "/explorer/ethereum/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48", // USDC
+  "/explorer/ethereum/0xdac17f958d2ee523a2206206994597c13d831ec7", // USDT
+  "/explorer/ethereum/0x2260fac5e5542a773aa44fbcfedf7c193bc2c599", // WBTC
+  "/explorer/ethereum/0x514910771af9ca656af840dff83e8264ecf986ca", // LINK
+  "/explorer/ethereum/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984", // UNI
+  // Base
+  "/explorer/base/0x833589fcd6edb6e08f4c7c32d4f71b54bda02913", // USDC
+  // Arbitrum
+  "/explorer/arbitrum/0xaf88d065e77c8cc2239327c5edb3a432268e5831", // USDC
+  // Polygon
+  "/explorer/polygon/0x2791bca1f2de4661ed88a30c99a7a9449aa84174", // USDC
+  // BNB
+  "/explorer/bnb/0x55d398326f99059ff775485246999027b3197955", // USDT
+  // Solana
+  "/explorer/solana/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", // USDC
+];
+
 // All routes combined — includes 1,700+ comparison pairs + how-to-buy guides for pSEO
 const allRoutes = [
   ...staticRoutes,
@@ -287,6 +315,8 @@ const allRoutes = [
   ...marketQuestionRoutes,
   ...coinMarketRoutes,
   ...educationalRoutes,
+  ...insightRoutes,
+  ...explorerTokenRoutes,
 ];
 
 // https://vitejs.dev/config/
