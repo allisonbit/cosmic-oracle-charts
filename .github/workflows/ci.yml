@@ -1,0 +1,54 @@
+name: CI
+
+# Runs on every push to main and on pull requests. Verifies the site still
+# typechecks, lints, builds (incl. the SEO prerender), and that every route
+# type renders without fatal runtime errors (scripts/scan-all.mjs).
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Rapid Lovable auto-commits can stack runs on the same ref — keep only the latest.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Typecheck · Lint · Build · Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      # The prerender (scripts/seo-prerender.mjs) is pure-Node and needs no
+      # browser; it bakes per-route meta + content into dist/.
+      - name: Build (Vite + SEO prerender)
+        run: npm run build
+
+      # Ensure a Chrome is available for the Puppeteer route scan. No-op if
+      # `npm ci`'s puppeteer postinstall already cached it.
+      - name: Install Chrome for Puppeteer
+        run: npx puppeteer browsers install chrome
+
+      # Visits one concrete URL per route type and fails if any page throws a
+      # fatal console/page error (the class of bug that crashed /dashboard).
+      - name: Scan all routes for runtime errors
+        run: npm run scan

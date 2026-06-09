@@ -9,6 +9,9 @@
     "build:prerender": "cross-env NODE_OPTIONS=--max-old-space-size=4096 vite build && node scripts/prerender.mjs",
     "build:dev": "cross-env NODE_OPTIONS=--max-old-space-size=4096 vite build --mode development",
     "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "scan": "node scripts/scan-all.mjs",
+    "smoke": "node scripts/smoke-test.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
