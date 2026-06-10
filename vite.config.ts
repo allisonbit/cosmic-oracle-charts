@@ -31,6 +31,7 @@ const staticRoutes = [
   "/insights",
   "/crypto-strength-meter",
   "/crypto-factory",
+  "/liquidations/bitcoin-heatmap",
   "/contact",
   "/sitemap",
   "/about",
