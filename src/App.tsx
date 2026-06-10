@@ -87,6 +87,7 @@ const HowToBuyHub = lazy(() => import("./pages/HowToBuyHub"));
 const HowToBuyCoin = lazy(() => import("./pages/HowToBuyCoin"));
 const NewsHub = lazy(() => import("./pages/NewsHub"));
 const NewsArticle = lazy(() => import("./pages/NewsArticle"));
+const BitcoinLiquidationHeatmap = lazy(() => import("./pages/BitcoinLiquidationHeatmap"));
 // Loading fallback component
 const PageLoader = memo(function PageLoader() {
   return (
@@ -238,6 +239,7 @@ const App = () => (
                 <Route path="/how-to-buy/:coin" element={B(<HowToBuyCoin />)} />
                 <Route path="/news" element={B(<NewsHub />)} />
                 <Route path="/news/:slug" element={B(<NewsArticle />)} />
+                <Route path="/liquidations/bitcoin-heatmap" element={B(<BitcoinLiquidationHeatmap />)} />
                 {/* Legal & About pages */}
                 <Route path="/about" element={B(<About />)} />
                 <Route path="/privacy-policy" element={B(<PrivacyPolicy />)} />
