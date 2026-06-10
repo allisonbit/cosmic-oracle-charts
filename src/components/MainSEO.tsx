@@ -42,8 +42,8 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
     keywords: "crypto strength meter, strongest cryptocurrency today, bitcoin strength index, crypto momentum ranking, best performing crypto, crypto relative strength"
   },
   "/strength": {
-    title: `Crypto Strength Meter – Which Coin Is Strongest Right Now? (${currentMonth} ${currentYear})`,
-    description: `See which crypto is the strongest right now. Real-time strength rankings for Bitcoin, Ethereum, Solana & 100+ assets based on momentum, volume & sentiment. Free tool. Updated ${currentMonth} ${currentYear}.`,
+    title: `Compare Crypto Strength – Real-Time Asset Rankings (${currentMonth} ${currentYear})`,
+    description: `Compare cryptocurrency strength in real time. Rankings for Bitcoin, Ethereum, Solana & 100+ assets by momentum, volume & sentiment scores. Free tool. Updated ${currentMonth} ${currentYear}.`,
     keywords: "crypto strength meter, strongest cryptocurrency today, bitcoin strength index, crypto momentum ranking, best performing crypto"
   },
   "/factory": {
