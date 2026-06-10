@@ -42,8 +42,8 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
     keywords: "crypto strength meter, strongest cryptocurrency today, bitcoin strength index, crypto momentum ranking, best performing crypto, crypto relative strength"
   },
   "/strength": {
-    title: `Crypto Strength Meter – Which Coin Is Strongest Right Now? (${currentMonth} ${currentYear})`,
-    description: `See which crypto is the strongest right now. Real-time strength rankings for Bitcoin, Ethereum, Solana & 100+ assets based on momentum, volume & sentiment. Free tool. Updated ${currentMonth} ${currentYear}.`,
+    title: `Compare Crypto Strength – Real-Time Asset Rankings (${currentMonth} ${currentYear})`,
+    description: `Compare cryptocurrency strength in real time. Rankings for Bitcoin, Ethereum, Solana & 100+ assets by momentum, volume & sentiment scores. Free tool. Updated ${currentMonth} ${currentYear}.`,
     keywords: "crypto strength meter, strongest cryptocurrency today, bitcoin strength index, crypto momentum ranking, best performing crypto"
   },
   "/factory": {
@@ -123,8 +123,8 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
     keywords: "crypto price prediction, bitcoin forecast today, ethereum prediction, altcoin predictions, AI crypto forecast, crypto prediction today, will bitcoin go up"
   },
   "/price-prediction": {
-    title: `AI Crypto Price Predictions – BTC, ETH & Altcoin Forecasts (${currentMonth} ${currentYear})`,
-    description: "Browse AI-powered price predictions for Bitcoin, Ethereum, Solana & 100+ tokens. Daily, weekly & monthly forecasts with confidence scores and bull/bear targets.",
+    title: `AI Crypto Forecasts – BTC, ETH & Altcoin Price Targets (${currentMonth} ${currentYear})`,
+    description: "Get AI-powered price forecasts for Bitcoin, Ethereum, Solana & 100+ tokens. Daily, weekly & monthly targets with entry zones, stop-loss and take-profit levels.",
     keywords: "crypto price prediction, bitcoin forecast today, ethereum prediction, altcoin predictions, AI crypto forecast, crypto prediction today, will bitcoin go up"
   },
   "/about": {
