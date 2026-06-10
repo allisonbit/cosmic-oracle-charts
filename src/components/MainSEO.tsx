@@ -123,8 +123,8 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
     keywords: "crypto price prediction, bitcoin forecast today, ethereum prediction, altcoin predictions, AI crypto forecast, crypto prediction today, will bitcoin go up"
   },
   "/price-prediction": {
-    title: `AI Crypto Price Predictions – BTC, ETH & Altcoin Forecasts (${currentMonth} ${currentYear})`,
-    description: "Browse AI-powered price predictions for Bitcoin, Ethereum, Solana & 100+ tokens. Daily, weekly & monthly forecasts with confidence scores and bull/bear targets.",
+    title: `AI Crypto Forecasts – BTC, ETH & Altcoin Price Targets (${currentMonth} ${currentYear})`,
+    description: "Get AI-powered price forecasts for Bitcoin, Ethereum, Solana & 100+ tokens. Daily, weekly & monthly targets with entry zones, stop-loss and take-profit levels.",
     keywords: "crypto price prediction, bitcoin forecast today, ethereum prediction, altcoin predictions, AI crypto forecast, crypto prediction today, will bitcoin go up"
   },
   "/about": {
