@@ -87,6 +87,7 @@ const HowToBuyHub = lazy(() => import("./pages/HowToBuyHub"));
 const HowToBuyCoin = lazy(() => import("./pages/HowToBuyCoin"));
 const NewsHub = lazy(() => import("./pages/NewsHub"));
 const NewsArticle = lazy(() => import("./pages/NewsArticle"));
+const BitcoinLiquidationHeatmap = lazy(() => import("./pages/BitcoinLiquidationHeatmap"));
 // Loading fallback component
 const PageLoader = memo(function PageLoader() {
   return (
