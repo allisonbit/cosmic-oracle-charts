@@ -28,7 +28,7 @@ const defaultMeta = {
 const pageSEO: Record<string, { title: string; description: string; keywords: string }> = {
   "/": {
     title: `Free AI Crypto Predictions | Oracle Bull`,
-    description: `Get free AI-powered crypto price predictions for Bitcoin, Ethereum & 1000+ tokens. Real-time charts, whale alerts, sentiment analysis. Updated ${currentMonth} ${currentYear}. No signup needed.`,
+    description: `Free AI crypto price predictions for Bitcoin, Ethereum & 1000+ tokens. Real-time charts, whale alerts & sentiment analysis. No signup needed.`,
     keywords: "crypto prediction today, AI crypto forecast, bitcoin price prediction, free crypto signals, crypto analysis tool, best crypto prediction site, will crypto go up today, best crypto to buy today"
   },
   "/dashboard": {
@@ -37,7 +37,7 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
     keywords: "crypto dashboard live, real time crypto prices, crypto market today, top crypto gainers today, crypto market cap live, crypto prices now, bitcoin price live, altcoin dashboard"
   },
   "/strength-meter": {
-    title: `Crypto Strength Meter – Which Coin Is Strongest Right Now? (${currentMonth} ${currentYear})`,
+    title: `Crypto Strength Meter – Live Asset Rankings`,
     description: `See which crypto is the strongest right now. Real-time strength rankings for Bitcoin, Ethereum, Solana & 100+ assets based on momentum, volume & sentiment. Free tool. Updated ${currentMonth} ${currentYear}.`,
     keywords: "crypto strength meter, strongest cryptocurrency today, bitcoin strength index, crypto momentum ranking, best performing crypto, crypto relative strength"
   },
@@ -47,7 +47,7 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
     keywords: "crypto strength meter, strongest cryptocurrency today, bitcoin strength index, crypto momentum ranking, best performing crypto"
   },
   "/factory": {
-    title: `Crypto Factory – Market Events, Whale Alerts & On-Chain Intel (${currentMonth} ${currentYear})`,
+    title: `Crypto Factory – Events & On-Chain Intel`,
     description: "Track every market-moving event: token launches, protocol upgrades, whale movements & trending narratives. Like Forex Factory but for crypto. Updated in real-time.",
     keywords: "crypto events calendar, crypto factory, upcoming token launches, whale alerts crypto, crypto market events, protocol upgrades, crypto news today"
   },
@@ -118,12 +118,12 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
     keywords: "contact oracle bull, oracle bull support, oracle bull telegram, crypto community"
   },
   "/predictions": {
-    title: `AI Crypto Price Predictions – BTC, ETH & Altcoin Forecasts (${currentMonth} ${currentYear})`,
+    title: `AI Crypto Predictions – Browse All Forecasts`,
     description: "Browse AI-powered price predictions for Bitcoin, Ethereum, Solana & 100+ tokens. Daily, weekly & monthly forecasts with confidence scores and bull/bear targets.",
     keywords: "crypto price prediction, bitcoin forecast today, ethereum prediction, altcoin predictions, AI crypto forecast, crypto prediction today, will bitcoin go up"
   },
   "/price-prediction": {
-    title: `AI Crypto Forecasts – BTC, ETH & Altcoin Price Targets (${currentMonth} ${currentYear})`,
+    title: `AI Crypto Forecasts – Price Targets & Zones`,
     description: "Get AI-powered price forecasts for Bitcoin, Ethereum, Solana & 100+ tokens. Daily, weekly & monthly targets with entry zones, stop-loss and take-profit levels.",
     keywords: "crypto price prediction, bitcoin forecast today, ethereum prediction, altcoin predictions, AI crypto forecast, crypto prediction today, will bitcoin go up"
   },
