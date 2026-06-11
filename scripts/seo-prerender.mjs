@@ -63,6 +63,29 @@ function mdToIntro(md, maxParas = 2) {
   return out;
 }
 
+// Load the hand-written /insights corpus from TypeScript at build time. It only
+// type-imports InsightPost, so esbuild bundles it to a self-contained ESM that we
+// import via a data: URL — no temp files, no app refactor. Falls back to an empty
+// list (the build never fails over this).
+let INSIGHTS = [];
+try {
+  const esbuild = await import('esbuild');
+  const res = esbuild.buildSync({
+    entryPoints: [path.join(__dirname, '..', 'src', 'data', 'insightsArticles.ts')],
+    bundle: true,
+    format: 'esm',
+    platform: 'node',
+    write: false,
+    logLevel: 'silent',
+  });
+  const code = res.outputFiles[0].text;
+  const mod = await import('data:text/javascript;base64,' + Buffer.from(code).toString('base64'));
+  INSIGHTS = Array.isArray(mod.INSIGHTS_ARTICLES) ? mod.INSIGHTS_ARTICLES : [];
+  console.log(`[seo-prerender] loaded ${INSIGHTS.length} insights articles from TS`);
+} catch (e) {
+  console.warn('[seo-prerender] insights load failed, keeping fallback:', e.message);
+}
+
 // ── Reference data ────────────────────────────────────────────────────────────
 const COINS = [
   ['bitcoin', 'Bitcoin', 'BTC'], ['ethereum', 'Ethereum', 'ETH'], ['solana', 'Solana', 'SOL'],
@@ -725,6 +748,35 @@ for (const art of EDU_ARTICLES) {
   LEARN_ARTICLE_SLUGS.push(art.slug);
 }
 
+// Insight article pages — same treatment as /learn: bake real title/intro/FAQ so
+// /insights/<slug> is indexable instead of an empty SPA shell.
+const INSIGHT_ARTICLE_SLUGS = [];
+const seenInsight = new Set();
+for (const art of INSIGHTS) {
+  if (!art || !art.slug || seenInsight.has(art.slug)) continue;
+  seenInsight.add(art.slug);
+  const intro = mdToIntro(art.content);
+  const takeaways = Array.isArray(art.takeaways) ? art.takeaways : [];
+  add(`/insights/${art.slug}`, {
+    title: art.metaTitle || art.title,
+    description: art.metaDescription || (intro[0] || '').slice(0, 160),
+    keywords: [art.primaryKeyword, ...(art.secondaryKeywords || [])].filter(Boolean).join(', '),
+    h1: art.title,
+    intro: [
+      ...(intro.length ? intro : [art.metaDescription].filter(Boolean)),
+      ...(takeaways.length ? ['Key takeaways: ' + takeaways.join(' ')] : []),
+    ],
+    faq: (art.faqs || []).map((f) => ({ q: f.question, a: f.answer })),
+    article: { headline: art.title, about: 'Cryptocurrency' },
+    links: [
+      { href: '/insights', label: 'More Market Analysis' },
+      { href: '/predictions', label: 'AI Price Predictions' },
+      { href: '/sentiment', label: 'Fear & Greed Index' },
+    ],
+  });
+  INSIGHT_ARTICLE_SLUGS.push(art.slug);
+}
+
 // ── HTML builders ─────────────────────────────────────────────────────────────
 function renderContent(def, routePath) {
   const paras = (def.intro || []).map((p) => `<p style="margin:0 0 14px;line-height:1.6;">${esc(p)}</p>`).join('');
@@ -838,11 +890,12 @@ try {
       console.warn(`[seo-prerender] failed ${routePath}: ${e.message}`);
     }
   }
-  // Sitemap = prerendered routes + real client-rendered content routes (learn articles)
-  // Sitemap = everything we actually prerendered (allPaths now includes the
-  // /learn articles) + the client-rendered insight routes. We no longer emit
-  // the stale hardcoded LEARN_SLUGS, which listed slugs that had no content.
-  const sitemapPaths = [...allPaths, ...INSIGHT_SLUGS.map((s) => `/insights/${s}`)];
+  // Sitemap = everything we actually prerendered. allPaths now includes the
+  // /learn AND /insights article pages, so we no longer emit the stale hardcoded
+  // LEARN_SLUGS, and only fall back to INSIGHT_SLUGS if the TS corpus failed to load.
+  const sitemapPaths = INSIGHT_ARTICLE_SLUGS.length
+    ? [...allPaths]
+    : [...allPaths, ...INSIGHT_SLUGS.map((s) => `/insights/${s}`)];
   fs.writeFileSync(path.join(distDir, 'sitemap.xml'), generateSitemap([...new Set(sitemapPaths)]), 'utf8');
   console.log(`[seo-prerender] ✅ Prerendered ${ok}/${allPaths.length} routes + sitemap (${new Set(sitemapPaths).size} URLs).`);
 } catch (err) {
