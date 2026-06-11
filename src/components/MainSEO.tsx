@@ -28,7 +28,7 @@ const defaultMeta = {
 const pageSEO: Record<string, { title: string; description: string; keywords: string }> = {
   "/": {
     title: `Free AI Crypto Predictions | Oracle Bull`,
-    description: `Get free AI-powered crypto price predictions for Bitcoin, Ethereum & 1000+ tokens. Real-time charts, whale alerts, sentiment analysis. Updated ${currentMonth} ${currentYear}. No signup needed.`,
+    description: `Free AI crypto price predictions for Bitcoin, Ethereum & 1000+ tokens. Real-time charts, whale alerts & sentiment analysis. No signup needed.`,
     keywords: "crypto prediction today, AI crypto forecast, bitcoin price prediction, free crypto signals, crypto analysis tool, best crypto prediction site, will crypto go up today, best crypto to buy today"
   },
   "/dashboard": {
