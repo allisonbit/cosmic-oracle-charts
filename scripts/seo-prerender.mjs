@@ -407,7 +407,9 @@ add('/learn', {
   keywords: 'learn crypto free, crypto education, bitcoin guide for beginners, how to trade crypto',
   h1: 'Learn Crypto — Free Guides & Education',
   intro: ['Free, beginner-friendly crypto education covering Bitcoin, DeFi, technical analysis, on-chain data, risk management and trading strategy.'],
-  links: LEARN_SLUGS.slice(0, 12).map((s) => ({ href: `/learn/${s}`, label: titleCase(s) })),
+  links: [...new Map(EDU_ARTICLES.map((a) => [a.slug, a])).values()]
+    .slice(0, 12)
+    .map((a) => ({ href: `/learn/${a.slug}`, label: a.title })),
 });
 add('/insights', {
   title: `Crypto Market Analysis Today – AI-Powered Daily Insights (${MONTH} ${YEAR})`,
