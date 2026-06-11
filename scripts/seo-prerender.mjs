@@ -31,6 +31,38 @@ const esc = (s) => String(s)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
   .replace(/"/g, '&quot;');
 
+// Read the /learn article corpus (plain JSON, safe to import at build time).
+let EDU_ARTICLES = [];
+try {
+  EDU_ARTICLES = JSON.parse(
+    fs.readFileSync(path.join(__dirname, '..', 'public', 'data', 'educational-articles.json'), 'utf8'),
+  );
+} catch (e) {
+  console.warn('[seo-prerender] could not read educational-articles.json:', e.message);
+}
+
+// Turn an article's Markdown body into 1–2 clean plain-text intro paragraphs
+// (skip headings and list blocks; strip inline markdown) so the prerendered
+// HTML carries real, readable content for crawlers.
+function mdToIntro(md, maxParas = 2) {
+  const out = [];
+  for (const block of String(md || '').split(/\n\s*\n/)) {
+    let t = block.trim();
+    if (!t || /^#{1,6}\s/.test(t) || /^[-*]\s/.test(t) || /^\d+\.\s/.test(t)) continue;
+    t = t
+      .replace(/\*\*(.+?)\*\*/g, '$1')
+      .replace(/\*(.+?)\*/g, '$1')
+      .replace(/\[(.+?)\]\((.+?)\)/g, '$1')
+      .replace(/`(.+?)`/g, '$1')
+      .replace(/\s+/g, ' ')
+      .trim();
+    if (t.length < 40) continue;
+    out.push(t);
+    if (out.length >= maxParas) break;
+  }
+  return out;
+}
+
 // ── Reference data ────────────────────────────────────────────────────────────
 const COINS = [
   ['bitcoin', 'Bitcoin', 'BTC'], ['ethereum', 'Ethereum', 'ETH'], ['solana', 'Solana', 'SOL'],
@@ -667,6 +699,32 @@ for (const [slug, name, sym] of COINS) {
   });
 }
 
+// Learn article pages — bake real title/intro/FAQ so /learn/<slug> ships with
+// actual content instead of an empty SPA shell (these were sitemap'd but not
+// prerendered, so crawlers saw only the homepage fallback). Driven by the
+// educational-articles.json corpus so the sitemap matches what truly exists.
+const LEARN_ARTICLE_SLUGS = [];
+const seenLearn = new Set();
+for (const art of EDU_ARTICLES) {
+  if (!art || !art.slug || seenLearn.has(art.slug)) continue;
+  seenLearn.add(art.slug);
+  const intro = mdToIntro(art.content);
+  add(`/learn/${art.slug}`, {
+    title: art.metaTitle || art.title,
+    description: art.metaDescription || (intro[0] || '').slice(0, 160),
+    keywords: [art.primaryKeyword, ...(art.secondaryKeywords || [])].filter(Boolean).join(', '),
+    h1: art.title,
+    intro: intro.length ? intro : [art.metaDescription].filter(Boolean),
+    faq: (art.faqs || []).map((f) => ({ q: f.question, a: f.answer })),
+    article: { headline: art.title, about: 'Cryptocurrency' },
+    links: [
+      ...(art.relatedLinks || []).slice(0, 4).map((l) => ({ href: l.url, label: l.text })),
+      { href: '/learn', label: 'More Crypto Guides' },
+    ],
+  });
+  LEARN_ARTICLE_SLUGS.push(art.slug);
+}
+
 // ── HTML builders ─────────────────────────────────────────────────────────────
 function renderContent(def, routePath) {
   const paras = (def.intro || []).map((p) => `<p style="margin:0 0 14px;line-height:1.6;">${esc(p)}</p>`).join('');
@@ -781,7 +839,10 @@ try {
     }
   }
   // Sitemap = prerendered routes + real client-rendered content routes (learn articles)
-  const sitemapPaths = [...allPaths, ...LEARN_SLUGS.map((s) => `/learn/${s}`), ...INSIGHT_SLUGS.map((s) => `/insights/${s}`)];
+  // Sitemap = everything we actually prerendered (allPaths now includes the
+  // /learn articles) + the client-rendered insight routes. We no longer emit
+  // the stale hardcoded LEARN_SLUGS, which listed slugs that had no content.
+  const sitemapPaths = [...allPaths, ...INSIGHT_SLUGS.map((s) => `/insights/${s}`)];
   fs.writeFileSync(path.join(distDir, 'sitemap.xml'), generateSitemap([...new Set(sitemapPaths)]), 'utf8');
   console.log(`[seo-prerender] ✅ Prerendered ${ok}/${allPaths.length} routes + sitemap (${new Set(sitemapPaths).size} URLs).`);
 } catch (err) {
