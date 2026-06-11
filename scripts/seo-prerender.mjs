@@ -389,6 +389,11 @@ add('/dashboard', {
   intro: [
     'A real-time command center for the crypto market: live prices, top gainers and losers, market-cap dominance, sector performance, a correlation matrix and live trade flow — all in one view.',
     'Track momentum across the entire market and spot rotation between sectors and assets as it happens.',
+    `Instead of juggling a dozen tabs, the dashboard pulls the signals that matter — what is moving, where capital is rotating and how assets correlate — into one continuously-updating screen for ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'What does the Oracle Bull crypto dashboard show?', a: 'Live prices for Bitcoin, Ethereum, Solana and 1,000+ altcoins, plus top gainers and losers, market-cap dominance, sector performance, a correlation matrix and real-time trade flow — all in a single view.' },
+    { q: 'Is the crypto dashboard free and real-time?', a: 'Yes. The dashboard is 100% free with no signup, and every panel updates in real time as the market moves.' },
   ],
   links: toolLinks,
 });
@@ -400,6 +405,12 @@ add('/predictions', {
   intro: [
     'Explore AI-powered price forecasts for the top cryptocurrencies. Each prediction page includes daily, weekly and monthly outlooks, support and resistance levels, entry zones, and bull/bear targets with confidence scores.',
     'Pick a coin below to see its full AI forecast and live technical analysis.',
+    `Every forecast is rebuilt continuously from live price action, momentum, volume flow, volatility and market sentiment — so the outlook you see reflects current conditions, not a stale snapshot. Coverage spans Bitcoin, Ethereum, Solana and 90+ major altcoins for ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'How accurate are AI crypto price predictions?', a: 'These are probabilistic forecasts built from live market data, technical structure and sentiment — not guarantees. They are best used as one research input alongside your own analysis and risk management, never as financial advice.' },
+    { q: 'Which cryptocurrencies have prediction pages?', a: 'Bitcoin, Ethereum, Solana, XRP, BNB and 90+ major altcoins each have dedicated pages with daily, weekly, monthly and long-term (2026–2030) forecasts.' },
+    { q: 'How often are the predictions updated?', a: 'Continuously. Each prediction page refreshes its live chart and AI read as the market moves, so the daily, weekly and monthly outlooks always reflect current conditions.' },
   ],
   links: COINS.slice(0, 16).map(([s, n]) => ({ href: `/price-prediction/${s}`, label: `${n} Price Prediction` })),
 });
@@ -411,6 +422,12 @@ add('/strength-meter', {
   intro: [
     'Find the strongest cryptocurrencies right now. The Strength Meter ranks coins and chains in real time using a weighted model of price momentum, volume flow, volatility, dominance change, relative performance vs BTC/ETH, sentiment and trend consistency.',
     'Use it to spot leaders and laggards before the broader market reacts.',
+    `Each asset gets a single 0–100 strength score: above 60 signals an asset gaining strength, below 40 signals weakening. Rankings update live so you can catch sector rotation early and confirm entries with momentum rather than fading a trend. ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'Which crypto is strongest right now?', a: 'The leaderboard updates live and ranks every asset by a 0–100 strength score built from momentum, volume flow and relative performance versus Bitcoin. The asset at the top of the table is the strongest at that moment.' },
+    { q: 'How is the crypto strength score calculated?', a: 'It is a weighted composite of price momentum, relative performance vs BTC/ETH, volume flow, volatility, dominance change, sentiment and trend consistency, normalized into a single 0–100 number.' },
+    { q: 'Is a high strength score a buy signal?', a: 'A high score shows strong momentum and outperformance, which many traders use as confirmation — but it is not a guarantee. Always combine it with your own analysis and risk management. Not financial advice.' },
   ],
   links: toolLinks,
 });
@@ -451,6 +468,12 @@ add('/sentiment', {
   intro: [
     'Gauge market psychology in real time with the crypto Fear & Greed Index, live whale transaction alerts, social sentiment and trending narratives.',
     'Sentiment extremes often mark turning points — track them here as they develop.',
+    `Extreme fear can flag capitulation and potential bottoms, while extreme greed often precedes pullbacks. Pairing the index with live whale flows and social buzz gives you a fuller read on where the market\'s emotion sits right now, ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'What is the crypto Fear & Greed Index today?', a: 'The Fear & Greed Index distills market emotion into a single 0–100 score from volatility, momentum, volume, social sentiment and dominance. Low readings signal fear (often near bottoms); high readings signal greed (often near local tops). The live value is shown at the top of this page.' },
+    { q: 'How do whale alerts help my trading?', a: 'Large on-chain transfers can foreshadow volatility — heavy exchange inflows often precede selling, while outflows suggest accumulation. Tracking whale moves alongside sentiment helps you anticipate shifts before price reacts.' },
+    { q: 'Is extreme fear a good time to buy?', a: 'Historically, extreme fear has often coincided with local bottoms and extreme greed with tops — but sentiment is one input, not a timing guarantee. Always combine it with your own analysis. Not financial advice.' },
   ],
   links: toolLinks,
 });
@@ -461,15 +484,55 @@ add('/scanner', {
   h1: 'Crypto Token Scanner',
   intro: [
     'Scan thousands of tokens across every major chain to surface trending coins, new listings and potential hidden gems — with liquidity, volume and risk metrics for each.',
+    `The scanner filters by chain, liquidity, volume and momentum so you can move from thousands of tokens to a short, researchable shortlist in seconds. Every result links to deeper on-chain analysis. Updated continuously, ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'What does the crypto token scanner do?', a: 'It scans thousands of tokens across every major blockchain in real time and ranks them by liquidity, trading volume, momentum and risk — surfacing new listings, trending coins and potential hidden gems you can then research in depth.' },
+    { q: 'How do I find new crypto tokens early?', a: 'Filter the scanner by recent listings and rising volume on your chosen chain, then check each candidate\'s liquidity depth and risk score before doing your own research. Early tokens are high-risk — never invest more than you can afford to lose.' },
+    { q: 'Is the token scanner free?', a: 'Yes. The Oracle Bull token scanner is completely free with no signup required.' },
   ],
   links: toolLinks,
+});
+// Bitcoin liquidation heatmap — was a valid SPA route (/liquidations/bitcoin-heatmap)
+// with strong meta but NOT prerendered, so crawlers got a blank shell. Bake the
+// real H1/intro/FAQ (mirrored from the React page) so it is fully indexable for
+// the high-volume "bitcoin liquidation heatmap" search intent.
+add('/liquidations/bitcoin-heatmap', {
+  title: 'Bitcoin Liquidation Heatmap | Live BTC Liquidity Levels | Oracle Bull',
+  description: 'Free real-time Bitcoin liquidation heatmap. Track BTC long and short liquidation clusters, leverage zones, and price levels where cascading liquidations are likely to trigger reversals.',
+  keywords: 'bitcoin liquidation heatmap, btc liquidation map, bitcoin liquidations, btc leverage heatmap, bitcoin liquidity heatmap, crypto liquidation levels, btc long short liquidations',
+  h1: 'Bitcoin Liquidation Heatmap',
+  intro: [
+    'Real-time map of Bitcoin liquidity clusters and leverage-driven price levels. Identify where cascading long and short liquidations are most likely to drive BTC price reversals and breakouts.',
+    'The heatmap aggregates open interest, funding rates and price data from major BTC futures venues to estimate where leveraged positions will be forcibly closed. When Bitcoin approaches a dense cluster, cascading liquidations frequently accelerate the move — making these zones high-probability reversal or breakout areas.',
+  ],
+  faq: [
+    { q: 'What is a Bitcoin liquidation heatmap?', a: 'A Bitcoin liquidation heatmap visualizes the price levels where leveraged long and short positions are likely to be force-closed. Clusters of liquidations act as magnets for price because large traders often push toward these zones to trigger cascading liquidations and harvest liquidity.' },
+    { q: 'How do I read a Bitcoin liquidation heatmap?', a: 'Brighter or larger clusters indicate higher concentrations of leveraged positions at that price. Long-heavy zones below price are downside liquidity targets; short-heavy zones above price are upside liquidity targets. A balanced level signals consolidation.' },
+    { q: 'Why does Bitcoin price move toward liquidation clusters?', a: 'When leveraged traders are stopped out, their forced market orders create one-sided pressure that accelerates price. Sophisticated participants often anticipate these zones, making liquidation maps a useful tool for spotting potential reversal points and high-volatility breakouts.' },
+    { q: 'Is the Bitcoin liquidation heatmap real-time?', a: 'Yes. The heatmap pulls live open interest, price and funding data from major futures exchanges and refreshes every 20 seconds so you can monitor leverage build-up around Bitcoin in real time.' },
+  ],
+  links: [
+    { href: '/dashboard', label: 'Crypto Dashboard' },
+    { href: '/price-prediction/bitcoin', label: 'Bitcoin Price Prediction' },
+    { href: '/sentiment', label: 'Fear & Greed Index' },
+    { href: '/crypto-factory', label: 'Crypto Factory' },
+    { href: '/scanner', label: 'Token Scanner' },
+  ],
 });
 add('/explorer', {
   title: `Crypto Token Explorer – Search Any Coin by Name or Contract (${MONTH} ${YEAR})`,
   description: 'Search 10,000+ tokens by name, symbol or contract address. Price charts, holder analysis, liquidity depth & DeFi metrics across 30+ blockchains. Free.',
   keywords: 'crypto token explorer, search cryptocurrency, token contract lookup, defi token scanner',
   h1: 'Crypto Token Explorer',
-  intro: ['Search any cryptocurrency by name, symbol or contract address and get instant price charts, holder analysis, liquidity depth and DeFi metrics across 30+ blockchains.'],
+  intro: [
+    'Search any cryptocurrency by name, symbol or contract address and get instant price charts, holder analysis, liquidity depth and DeFi metrics across 30+ blockchains.',
+    `Paste a contract address to vet a token in seconds — holder distribution, liquidity, volume and risk signals in one place — or search by name to pull up any of 10,000+ assets. Free, no signup, ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'How do I look up a crypto token by contract address?', a: 'Paste the token\'s contract address into the explorer search. It resolves the token across 30+ chains and returns its price chart, holder analysis, liquidity depth and DeFi metrics instantly.' },
+    { q: 'Can I check if a token is safe before buying?', a: 'The explorer surfaces holder concentration, liquidity depth and volume — common red flags for risky tokens. Use them as a first screen, but always do your own due diligence before investing.' },
+  ],
   links: toolLinks,
 });
 add('/factory', {
@@ -477,7 +540,14 @@ add('/factory', {
   description: 'Track every market-moving event: token launches, protocol upgrades, whale movements & trending narratives. Like Forex Factory but for crypto.',
   keywords: 'crypto events calendar, crypto factory, upcoming token launches, whale alerts crypto',
   h1: 'Crypto Factory — Market Events & On-Chain Intel',
-  intro: ['A real-time feed of everything that moves the market: token launches, protocol upgrades, airdrops, whale movements and trending narratives — the crypto equivalent of Forex Factory.'],
+  intro: [
+    'A real-time feed of everything that moves the market: token launches, protocol upgrades, airdrops, whale movements and trending narratives — the crypto equivalent of Forex Factory.',
+    `Each item is scored for impact and tagged to the assets it affects, so instead of refreshing a dozen sources you see what matters — and why — in one continuously-updating feed. ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'What is the Crypto Factory?', a: 'Crypto Factory is a real-time market intelligence feed that aggregates token launches, protocol upgrades, airdrops, whale movements and trending narratives into one place, each scored for market impact — the crypto equivalent of Forex Factory.' },
+    { q: 'How is it different from a crypto news feed?', a: 'A news feed lists headlines; Crypto Factory adds structure — it scores each event for impact, tags the coins affected, and surfaces on-chain whale flows and active narratives alongside the news so you see what is actually moving capital.' },
+  ],
   links: [
     { href: '/factory/events', label: 'Events Calendar' },
     { href: '/factory/onchain', label: 'On-Chain Intel' },
@@ -513,7 +583,14 @@ add('/learn', {
   description: 'Free crypto education: Bitcoin guides, DeFi tutorials, technical analysis lessons and trading strategies for all levels.',
   keywords: 'learn crypto free, crypto education, bitcoin guide for beginners, how to trade crypto',
   h1: 'Learn Crypto — Free Guides & Education',
-  intro: ['Free, beginner-friendly crypto education covering Bitcoin, DeFi, technical analysis, on-chain data, risk management and trading strategy.'],
+  intro: [
+    'Free, beginner-friendly crypto education covering Bitcoin, DeFi, technical analysis, on-chain data, risk management and trading strategy.',
+    `Each guide is written in plain language and builds from the fundamentals up — start with what a blockchain is, then progress to reading charts, understanding tokenomics and managing risk. No jargon, no paywall, ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'Where should a beginner start learning crypto?', a: 'Start with the fundamentals — what a blockchain is, how wallets work and how to buy your first coin safely — then move on to reading charts, tokenomics and risk management. The guides below are ordered to build that foundation step by step.' },
+    { q: 'Is Oracle Bull\'s crypto education free?', a: 'Yes. Every guide is completely free with no signup or paywall.' },
+  ],
   links: [...new Map(EDU_ARTICLES.map((a) => [a.slug, a])).values()]
     .slice(0, 12)
     .map((a) => ({ href: `/learn/${a.slug}`, label: a.title })),
@@ -523,7 +600,14 @@ add('/insights', {
   description: 'Daily AI market analysis for Bitcoin, Ethereum, Solana & altcoins. On-chain data, technical indicators & expert research. Updated daily, always free.',
   keywords: 'crypto analysis today, daily crypto insights, bitcoin market analysis, crypto research',
   h1: `Crypto Market Analysis & Insights (${MONTH} ${YEAR})`,
-  intro: ['Daily AI-generated market analysis covering Bitcoin, Ethereum, Solana and the broader altcoin market — combining on-chain data, technical indicators and sentiment.'],
+  intro: [
+    'Daily AI-generated market analysis covering Bitcoin, Ethereum, Solana and the broader altcoin market — combining on-chain data, technical indicators and sentiment.',
+    `Each piece goes beyond price to explain the why — what on-chain flows, positioning and macro context suggest about where the market may head next. Research, not financial advice, refreshed for ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'How often is the crypto market analysis updated?', a: 'New AI-generated analysis is published daily, covering Bitcoin, Ethereum, Solana and the broader altcoin market using live on-chain data, technical indicators and sentiment.' },
+    { q: 'Is this crypto analysis financial advice?', a: 'No. The insights are research and education built from data and AI modeling. They are one input for your own decisions — always do your own research and manage risk.' },
+  ],
   links: toolLinks,
 });
 add('/news', {
@@ -648,7 +732,14 @@ add('/compare', {
   description: 'Compare any two cryptocurrencies side by side: price, market cap, performance, fundamentals and AI verdict. Make informed decisions.',
   keywords: 'compare crypto, crypto comparison, bitcoin vs ethereum, which crypto is better',
   h1: 'Compare Cryptocurrencies',
-  intro: ['Put any two coins head-to-head: price, market cap, volume, performance, fundamentals and an AI verdict on which is stronger right now.'],
+  intro: [
+    'Put any two coins head-to-head: price, market cap, volume, performance, fundamentals and an AI verdict on which is stronger right now.',
+    `Each comparison goes past the price chart to weigh what each asset actually is — its category, launch era, consensus and the catalysts that drive it — so "which is better" gets a reasoned answer, not just a number. Pick a matchup below for ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'How do I compare two cryptocurrencies?', a: 'Choose a matchup below (or any two coins) to see them side by side: price, market cap, volume, recent performance and fundamentals, plus an AI verdict on which looks stronger right now.' },
+    { q: 'Is "X vs Y" a good way to pick a crypto?', a: 'Head-to-head comparison helps you weigh trade-offs — category, tokenomics, momentum and adoption — but no single comparison is a buy signal. Use it as research alongside your own analysis and risk tolerance.' },
+  ],
   links: COMPARE_PAIRS.map((p) => ({ href: `/compare/${p}`, label: titleCase(p) })),
 });
 add('/how-to-buy', {
@@ -656,34 +747,78 @@ add('/how-to-buy', {
   description: 'Step-by-step guides on how to buy Bitcoin, Ethereum, Solana and more — safely, for beginners.',
   keywords: 'how to buy crypto, how to buy bitcoin, buy ethereum, crypto for beginners',
   h1: 'How to Buy Cryptocurrency',
-  intro: ['Clear, beginner-friendly, step-by-step guides on how to buy the most popular cryptocurrencies safely.'],
+  intro: [
+    'Clear, beginner-friendly, step-by-step guides on how to buy the most popular cryptocurrencies safely.',
+    `Every guide walks the same safe path — choose a reputable exchange, secure your account, fund it, place your order and move coins to self-custody — tailored to each asset. Start with a coin below. ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'What do I need to buy cryptocurrency?', a: 'A reputable exchange account (verified with ID), a funding method such as a bank transfer or card, and ideally a self-custody wallet for storing your coins long-term. Each guide below walks you through it for a specific coin.' },
+    { q: 'What is the safest way to buy crypto as a beginner?', a: 'Use a well-known regulated exchange, enable two-factor authentication, start small, and move larger holdings to a hardware or self-custody wallet. Never share your seed phrase. Not financial advice.' },
+  ],
   links: COINS.slice(0, 8).map(([s, n]) => ({ href: `/how-to-buy/${s}`, label: `How to Buy ${n}` })),
 });
 // Factory subpages
 const factorySub = {
-  '/factory/events': ['Crypto Events Calendar', 'Token launches, protocol upgrades, airdrops, governance votes and market-moving announcements — the crypto calendar traders rely on.'],
-  '/factory/onchain': ['On-Chain Intelligence', 'Real-time whale movements, large transfers, smart-money accumulation and exchange in/outflows.'],
-  '/factory/narratives': ['Crypto Market Narratives', 'Track trending sectors — AI tokens, DeFi, RWA, meme coins, Layer 2s — and spot rotation early.'],
-  '/factory/news': ['Crypto News Today', 'Breaking crypto news from 50+ sources with real-time sentiment scoring.'],
+  '/factory/events': ['Crypto Events Calendar', 'Token launches, protocol upgrades, airdrops, governance votes and market-moving announcements — the crypto calendar traders rely on.',
+    'Each event is dated and tagged to the assets it affects, so you can plan around catalysts instead of being surprised by them.',
+    [
+      { q: 'What is a crypto events calendar?', a: 'A crypto events calendar tracks scheduled, market-moving events — token launches, mainnet and protocol upgrades, token unlocks, airdrops and governance votes — so traders can anticipate volatility and plan around catalysts.' },
+      { q: 'Why do crypto events move prices?', a: 'Events like token unlocks, upgrades and launches change supply, utility or sentiment, often triggering volatility before and after the date. Knowing the schedule helps you manage risk around it.' },
+    ]],
+  '/factory/onchain': ['On-Chain Intelligence', 'Real-time whale movements, large transfers, smart-money accumulation and exchange in/outflows.',
+    'On-chain flows reveal what large holders are actually doing — often before it shows up in price — so you can read positioning rather than guess at it.',
+    [
+      { q: 'What is on-chain intelligence in crypto?', a: 'On-chain intelligence reads activity recorded directly on the blockchain — whale transfers, exchange inflows and outflows, and smart-money accumulation — to reveal how large holders are positioning before price reacts.' },
+      { q: 'What do exchange inflows and outflows mean?', a: 'Large inflows to exchanges often precede selling (coins moved on to sell), while outflows suggest accumulation and self-custody. Sustained one-sided flow can foreshadow a move.' },
+    ]],
+  '/factory/narratives': ['Crypto Market Narratives', 'Track trending sectors — AI tokens, DeFi, RWA, meme coins, Layer 2s — and spot rotation early.',
+    'Capital rotates between narratives in cycles; spotting which theme is gaining momentum early is often where the biggest moves come from.',
+    [
+      { q: 'What is a crypto narrative?', a: 'A crypto narrative is the dominant theme attracting capital at a given time — for example AI tokens, real-world assets (RWA), memecoins or Layer-2s. Narratives drive sector-wide rallies as money rotates in.' },
+      { q: 'How do I spot narrative rotation?', a: 'Watch which sectors are outperforming on rising volume while others fade. This narrative tracker ranks active themes by momentum so you can see where capital is rotating before it is obvious.' },
+    ]],
+  '/factory/news': ['Crypto News Today', 'Breaking crypto news from 50+ sources with real-time sentiment scoring.',
+    'Every headline is scored bullish, bearish or neutral and tagged to the coins it affects, so you get signal — not just a wall of stories.',
+    [
+      { q: 'How often does the crypto news update?', a: 'The feed aggregates breaking stories from 50+ trusted crypto publications and refreshes continuously, each scored for bullish, bearish or neutral market impact.' },
+      { q: 'What does the AI sentiment score mean?', a: 'Each story is rated bullish, bearish or neutral based on its likely short-term market impact — a quick research signal, not financial advice.' },
+    ]],
 };
-for (const [p, [h1, blurb]] of Object.entries(factorySub)) {
+for (const [p, [h1, blurb, extraPara, faq]] of Object.entries(factorySub)) {
   add(p, {
     title: `${h1} (${MONTH} ${YEAR}) | Oracle Bull`,
     description: blurb, keywords: `${h1.toLowerCase()}, crypto ${p.split('/').pop()}`,
-    h1, intro: [blurb], links: [{ href: '/factory', label: 'Crypto Factory' }, ...toolLinks.slice(0, 4)],
+    h1, intro: [blurb, ...(extraPara ? [extraPara] : [])], faq: faq || [],
+    links: [{ href: '/factory', label: 'Crypto Factory' }, ...toolLinks.slice(0, 4)],
   });
 }
 // Tools subpages
 const toolPages = {
-  '/tools/profit-calculator': ['Crypto Profit Calculator', 'Calculate exact trading profit and ROI, accounting for exchange fees on both entry and exit.'],
-  '/tools/dca-calculator': ['Crypto DCA Calculator', 'Model a dollar-cost-averaging strategy and project returns across a schedule.'],
-  '/tools/impermanent-loss-calculator': ['Impermanent Loss Calculator', 'Calculate impermanent loss for AMM liquidity pools before you provide liquidity.'],
+  '/tools/profit-calculator': ['Crypto Profit Calculator', 'Calculate exact trading profit and ROI, accounting for exchange fees on both entry and exit.',
+    'Enter your buy price, sell price, position size and fees to see net profit or loss, ROI percentage and break-even price — so you know the real number after costs, not a rough guess.',
+    [
+      { q: 'How do I calculate crypto profit?', a: 'Profit = (sell price − buy price) × amount, minus trading fees on both entry and exit. Enter those values and the calculator returns your exact net profit, ROI percentage and break-even price.' },
+      { q: 'Does the calculator include exchange fees?', a: 'Yes. It applies fees to both your entry and exit, so the profit and ROI it shows reflect what you actually keep after costs.' },
+    ]],
+  '/tools/dca-calculator': ['Crypto DCA Calculator', 'Model a dollar-cost-averaging strategy and project returns across a schedule.',
+    'See how investing a fixed amount on a regular schedule would have performed — your average entry, total invested and current value — so you can compare DCA against a lump-sum approach.',
+    [
+      { q: 'What is dollar-cost averaging (DCA) in crypto?', a: 'DCA means investing a fixed amount at regular intervals regardless of price. It smooths out volatility by spreading your entry over time, lowering the risk of buying everything at a local top.' },
+      { q: 'Is DCA better than buying all at once?', a: 'DCA reduces timing risk and is easier psychologically in volatile markets; lump-sum can outperform when prices trend up. This calculator lets you model both and compare outcomes for your own schedule.' },
+    ]],
+  '/tools/impermanent-loss-calculator': ['Impermanent Loss Calculator', 'Calculate impermanent loss for AMM liquidity pools before you provide liquidity.',
+    'Enter the two pool assets and their price change to see your impermanent loss versus simply holding — essential before committing capital to a liquidity pool.',
+    [
+      { q: 'What is impermanent loss?', a: 'Impermanent loss is the difference in value between providing liquidity to an AMM pool and simply holding the two assets, caused by their prices diverging. It becomes permanent only if you withdraw while prices are diverged.' },
+      { q: 'How do I avoid impermanent loss?', a: 'Use pools of correlated or pegged assets (like two stablecoins), factor in trading-fee and reward income that can offset it, and model the scenario here before depositing. Not financial advice.' },
+    ]],
 };
-for (const [p, [h1, blurb]] of Object.entries(toolPages)) {
+for (const [p, [h1, blurb, extraPara, faq]] of Object.entries(toolPages)) {
   add(p, {
     title: `${h1} – Free Tool | Oracle Bull`,
     description: blurb, keywords: `${h1.toLowerCase()}, crypto calculator, free crypto tool`,
-    h1, intro: [blurb], links: [{ href: '/tools', label: 'All Tools' }, ...toolLinks.slice(0, 4)],
+    h1, intro: [blurb, ...(extraPara ? [extraPara] : [])], faq: faq || [],
+    links: [{ href: '/tools', label: 'All Tools' }, ...toolLinks.slice(0, 4)],
   });
 }
 // Legal / about
@@ -839,6 +974,12 @@ for (const [slug, name] of CHAINS) {
     intro: [
       `Real-time ${name} blockchain analytics in one dashboard: native price, TVL, whale movements, token discovery, DeFi metrics and AI predictions.`,
       `Monitor ${name} network activity and capital flows as they happen.`,
+      `Whether you are tracking ${name} DeFi activity, hunting new tokens in its ecosystem or watching large on-chain transfers, everything updates live in one place — no need to stitch together explorers and dashboards. ${MONTH} ${YEAR}.`,
+    ],
+    faq: [
+      { q: `What can I track on the ${name} analytics dashboard?`, a: `Live ${name} price and TVL, whale movements and large transfers, new and trending tokens in the ${name} ecosystem, DeFi metrics and AI-driven predictions — all updating in real time.` },
+      { q: `How do I find new tokens on ${name}?`, a: `Use the token discovery and scanner tools to surface new and trending ${name} tokens ranked by liquidity, volume and momentum, then check each one's risk metrics before researching further.` },
+      { q: `Is the ${name} dashboard free?`, a: `Yes. The ${name} analytics dashboard is completely free with no signup required.` },
     ],
     links: CHAINS.filter((c) => c[0] !== slug).slice(0, 6).map(([s, n]) => ({ href: `/chain/${s}`, label: `${n} Analytics` })),
   });
@@ -857,7 +998,12 @@ for (const slug of [...MARKET_PAGES, ...CHAIN_MARKET_PAGES]) {
     h1: `${readable} (${MONTH} ${YEAR})`,
     intro: [
       `${readable} — an AI-curated answer updated for ${MONTH} ${YEAR}, based on real-time momentum, trading volume, market sentiment and technical signals across the crypto market.`,
+      `The list below is ranked by live data, not opinion, and refreshes as conditions change — so it reflects what the market is actually doing right now rather than a stale pick.`,
       `Use the live rankings and analysis on this page to inform your research. Nothing here is financial advice.`,
+    ],
+    faq: [
+      { q: `How is "${readable}" decided?`, a: `The ranking is generated from live market data — price momentum, trading volume, sentiment and technical signals — and updated for ${MONTH} ${YEAR}. It is an AI-curated research shortlist, not a recommendation.` },
+      { q: 'Is this financial advice?', a: 'No. This page is research and information only. Crypto is volatile and high-risk — always do your own research and never invest more than you can afford to lose.' },
     ],
     links: [...coinLinks.slice(0, 6), { href: '/predictions', label: 'All Predictions' }],
   });
