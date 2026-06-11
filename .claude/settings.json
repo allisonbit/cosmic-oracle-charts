@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run typecheck)",
+      "Bash(npm run lint)",
+      "Bash(npm run build)",
+      "Bash(npm run build:dev)",
+      "Bash(npm run scan)",
+      "Bash(npm run smoke)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(npx eslint .)",
+      "Bash(git status*)",
+      "Bash(git log*)",
+      "Bash(git diff*)",
+      "Bash(git fetch*)",
+      "Bash(git add*)",
+      "Bash(git rebase origin/main)",
+      "Bash(curl -s https://oraclebull.com/*)",
+      "Bash(curl -sI https://oraclebull.com/*)",
+      "WebFetch(domain:oraclebull.com)"
+    ]
+  }
+}
