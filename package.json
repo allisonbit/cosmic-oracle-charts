@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit",
     "scan": "node scripts/scan-all.mjs",
     "smoke": "node scripts/smoke-test.mjs",
+    "seo-audit": "node scripts/seo-audit.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
