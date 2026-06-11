@@ -15,6 +15,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { COIN_FACTS, SECTOR_LABELS, sectorDriver } from './coin-facts.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const distDir = path.join(__dirname, '..', 'dist');
@@ -86,6 +87,30 @@ try {
   console.warn('[seo-prerender] insights load failed, keeping fallback:', e.message);
 }
 
+// Extract airdrop projects from AirdropList.tsx. The data is a const array literal
+// inside a React component, so rather than bundle/execute JSX we lightweight-parse
+// the top-level scalar fields straight from source (re-read every build → no drift).
+// WHY: /airdrops links to /airdrops/{id} detail pages that were NOT prerendered,
+// so crawlers hitting those internal links got a blank SPA shell. This bakes real
+// content for each one (matches the /price-prediction/.../daily fix pattern).
+let AIRDROPS = [];
+try {
+  const adSrc = fs.readFileSync(path.join(__dirname, '..', 'src', 'components', 'airdrops', 'AirdropList.tsx'), 'utf8');
+  const arrStart = adSrc.indexOf('[', adSrc.indexOf('AIRDROPS_DATA'));
+  const chunks = adSrc.slice(arrStart).split(/\n  \{\n/).slice(1);
+  AIRDROPS = chunks.map((c) => {
+    const f = (k) => (c.match(new RegExp(`\\b${k}:\\s*"([^"]*)"`)) || [])[1] || null;
+    return {
+      id: f('id'), name: f('name'), ticker: f('ticker'), category: f('category'),
+      estValue: f('estValue'), funding: f('funding'), status: f('status'),
+      difficulty: f('difficulty'), description: f('description'),
+    };
+  }).filter((r) => r.id && r.name);
+  console.log(`[seo-prerender] parsed ${AIRDROPS.length} airdrop projects from TSX`);
+} catch (e) {
+  console.warn('[seo-prerender] airdrop parse failed, skipping airdrop detail pages:', e.message);
+}
+
 // ── Reference data ────────────────────────────────────────────────────────────
 const COINS = [
   ['bitcoin', 'Bitcoin', 'BTC'], ['ethereum', 'Ethereum', 'ETH'], ['solana', 'Solana', 'SOL'],
@@ -142,6 +167,55 @@ const COIN_ALIASES = {
   'immutable': 'immutable-x',
 };
 const COIN_BY_SLUG = Object.fromEntries(COINS.map((c) => [c[0], c]));
+
+// ── Per-coin factual content helpers ───────────────────────────────────────────
+// Turn the evergreen COIN_FACTS dataset into UNIQUE, accurate prose per coin so
+// the prediction/how-to-buy/q/compare pages stop being name-swapped boilerplate
+// (was ~58% 5-gram similarity → Google Helpful-Content demotion risk). Each
+// helper degrades gracefully to generic copy when a coin has no facts entry.
+const SECTOR_BY_SLUG = Object.fromEntries(
+  Object.entries(COIN_FACTS).map(([slug, f]) => [slug, f.sector]),
+);
+// Map a coin slug to up-to-N peer coins in the SAME sector (for richer, more
+// relevant internal links + comparison context). Only returns coins that are in
+// the prerendered COINS set, so every link lands on a real page.
+function sectorPeers(slug, limit = 4) {
+  const sector = SECTOR_BY_SLUG[slug];
+  if (!sector) return [];
+  return COINS
+    .filter(([s]) => s !== slug && SECTOR_BY_SLUG[s] === sector && COIN_BY_SLUG[s])
+    .slice(0, limit)
+    .map(([s, n]) => [s, n]);
+}
+// A factual "what is X" sentence + a sector/era sentence. Returns [] if no facts.
+function coinFactSentences(slug, name, sym) {
+  const f = COIN_FACTS[slug];
+  if (!f) return [];
+  const out = [f.blurb];
+  const sectorLabel = SECTOR_LABELS[f.sector] || f.cat;
+  const peers = sectorPeers(slug, 3).map(([, n]) => n);
+  let context = `As a ${sectorLabel}`;
+  if (f.year) context += ` launched in ${f.year}`;
+  if (f.consensus) context += `, ${sym} relies on ${f.consensus}`;
+  context += '.';
+  if (peers.length) {
+    context += ` It is frequently compared with peers such as ${peers.join(', ')}.`;
+  }
+  out.push(context);
+  return out;
+}
+// One factual FAQ Q/A about what the coin is (distinct per coin via the blurb).
+function coinFactFaq(slug, name, sym) {
+  const f = COIN_FACTS[slug];
+  if (!f) return null;
+  const sectorLabel = SECTOR_LABELS[f.sector] || f.cat;
+  let a = f.blurb;
+  if (f.year) a += ` It launched in ${f.year}`;
+  if (f.consensus) a += (f.year ? ' and ' : ' It ') + `uses ${f.consensus}`;
+  a += '.';
+  return { q: `What is ${name} (${sym}) and how does it work?`, a };
+}
+
 const YEARS = [2026, 2027, 2028, 2030];
 // Timeframe pages: [urlSegment, displayLabel, horizonWord, keywordPhrase]
 const TIMEFRAMES = [
@@ -179,7 +253,7 @@ const COMPARE_PAIRS = [
   'dogecoin-vs-shiba-inu', 'bitcoin-vs-bnb', 'ethereum-vs-cardano', 'solana-vs-avalanche',
   'xrp-vs-stellar', 'polygon-vs-arbitrum', 'near-vs-aptos', 'chainlink-vs-uniswap',
   // ── Expanded comparisons ──
-  'bitcoin-vs-xrp', 'ethereum-vs-bnb', 'solana-vs-cardano', 'xrp-vs-cardano',
+  'bitcoin-vs-xrp', 'ethereum-vs-bnb', 'xrp-vs-cardano',
   'avalanche-vs-polygon', 'arbitrum-vs-optimism', 'sui-vs-aptos', 'pepe-vs-shiba-inu',
   'dogecoin-vs-pepe', 'litecoin-vs-bitcoin-cash', 'cosmos-vs-polkadot', 'fetch-ai-vs-bittensor',
   'render-vs-fetch-ai', 'injective-vs-sei-network', 'aave-vs-maker', 'uniswap-vs-curve-dao-token',
@@ -315,6 +389,11 @@ add('/dashboard', {
   intro: [
     'A real-time command center for the crypto market: live prices, top gainers and losers, market-cap dominance, sector performance, a correlation matrix and live trade flow — all in one view.',
     'Track momentum across the entire market and spot rotation between sectors and assets as it happens.',
+    `Instead of juggling a dozen tabs, the dashboard pulls the signals that matter — what is moving, where capital is rotating and how assets correlate — into one continuously-updating screen for ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'What does the Oracle Bull crypto dashboard show?', a: 'Live prices for Bitcoin, Ethereum, Solana and 1,000+ altcoins, plus top gainers and losers, market-cap dominance, sector performance, a correlation matrix and real-time trade flow — all in a single view.' },
+    { q: 'Is the crypto dashboard free and real-time?', a: 'Yes. The dashboard is 100% free with no signup, and every panel updates in real time as the market moves.' },
   ],
   links: toolLinks,
 });
@@ -326,6 +405,12 @@ add('/predictions', {
   intro: [
     'Explore AI-powered price forecasts for the top cryptocurrencies. Each prediction page includes daily, weekly and monthly outlooks, support and resistance levels, entry zones, and bull/bear targets with confidence scores.',
     'Pick a coin below to see its full AI forecast and live technical analysis.',
+    `Every forecast is rebuilt continuously from live price action, momentum, volume flow, volatility and market sentiment — so the outlook you see reflects current conditions, not a stale snapshot. Coverage spans Bitcoin, Ethereum, Solana and 90+ major altcoins for ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'How accurate are AI crypto price predictions?', a: 'These are probabilistic forecasts built from live market data, technical structure and sentiment — not guarantees. They are best used as one research input alongside your own analysis and risk management, never as financial advice.' },
+    { q: 'Which cryptocurrencies have prediction pages?', a: 'Bitcoin, Ethereum, Solana, XRP, BNB and 90+ major altcoins each have dedicated pages with daily, weekly, monthly and long-term (2026–2030) forecasts.' },
+    { q: 'How often are the predictions updated?', a: 'Continuously. Each prediction page refreshes its live chart and AI read as the market moves, so the daily, weekly and monthly outlooks always reflect current conditions.' },
   ],
   links: COINS.slice(0, 16).map(([s, n]) => ({ href: `/price-prediction/${s}`, label: `${n} Price Prediction` })),
 });
@@ -337,8 +422,21 @@ add('/strength-meter', {
   intro: [
     'Find the strongest cryptocurrencies right now. The Strength Meter ranks coins and chains in real time using a weighted model of price momentum, volume flow, volatility, dominance change, relative performance vs BTC/ETH, sentiment and trend consistency.',
     'Use it to spot leaders and laggards before the broader market reacts.',
+    `Each asset gets a single 0–100 strength score: above 60 signals an asset gaining strength, below 40 signals weakening. Rankings update live so you can catch sector rotation early and confirm entries with momentum rather than fading a trend. ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'Which crypto is strongest right now?', a: 'The leaderboard updates live and ranks every asset by a 0–100 strength score built from momentum, volume flow and relative performance versus Bitcoin. The asset at the top of the table is the strongest at that moment.' },
+    { q: 'How is the crypto strength score calculated?', a: 'It is a weighted composite of price momentum, relative performance vs BTC/ETH, volume flow, volatility, dominance change, sentiment and trend consistency, normalized into a single 0–100 number.' },
+    { q: 'Is a high strength score a buy signal?', a: 'A high score shows strong momentum and outperformance, which many traders use as confirmation — but it is not a guarantee. Always combine it with your own analysis and risk management. Not financial advice.' },
   ],
   links: toolLinks,
+});
+// /strength is a valid SPA route (renders the same StrengthMeter page) and is
+// linked internally, but was not prerendered. Serve real content with its
+// canonical pointing at /strength-meter to consolidate ranking signals.
+add('/strength', {
+  ...routes['/strength-meter'],
+  canonicalPath: '/strength-meter',
 });
 add('/crypto-strength-meter', {
   title: `Crypto Strength Meter — Real-Time Market Momentum Rankings (${MONTH} ${YEAR}) | Oracle Bull`,
@@ -370,6 +468,12 @@ add('/sentiment', {
   intro: [
     'Gauge market psychology in real time with the crypto Fear & Greed Index, live whale transaction alerts, social sentiment and trending narratives.',
     'Sentiment extremes often mark turning points — track them here as they develop.',
+    `Extreme fear can flag capitulation and potential bottoms, while extreme greed often precedes pullbacks. Pairing the index with live whale flows and social buzz gives you a fuller read on where the market\'s emotion sits right now, ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'What is the crypto Fear & Greed Index today?', a: 'The Fear & Greed Index distills market emotion into a single 0–100 score from volatility, momentum, volume, social sentiment and dominance. Low readings signal fear (often near bottoms); high readings signal greed (often near local tops). The live value is shown at the top of this page.' },
+    { q: 'How do whale alerts help my trading?', a: 'Large on-chain transfers can foreshadow volatility — heavy exchange inflows often precede selling, while outflows suggest accumulation. Tracking whale moves alongside sentiment helps you anticipate shifts before price reacts.' },
+    { q: 'Is extreme fear a good time to buy?', a: 'Historically, extreme fear has often coincided with local bottoms and extreme greed with tops — but sentiment is one input, not a timing guarantee. Always combine it with your own analysis. Not financial advice.' },
   ],
   links: toolLinks,
 });
@@ -380,15 +484,55 @@ add('/scanner', {
   h1: 'Crypto Token Scanner',
   intro: [
     'Scan thousands of tokens across every major chain to surface trending coins, new listings and potential hidden gems — with liquidity, volume and risk metrics for each.',
+    `The scanner filters by chain, liquidity, volume and momentum so you can move from thousands of tokens to a short, researchable shortlist in seconds. Every result links to deeper on-chain analysis. Updated continuously, ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'What does the crypto token scanner do?', a: 'It scans thousands of tokens across every major blockchain in real time and ranks them by liquidity, trading volume, momentum and risk — surfacing new listings, trending coins and potential hidden gems you can then research in depth.' },
+    { q: 'How do I find new crypto tokens early?', a: 'Filter the scanner by recent listings and rising volume on your chosen chain, then check each candidate\'s liquidity depth and risk score before doing your own research. Early tokens are high-risk — never invest more than you can afford to lose.' },
+    { q: 'Is the token scanner free?', a: 'Yes. The Oracle Bull token scanner is completely free with no signup required.' },
   ],
   links: toolLinks,
+});
+// Bitcoin liquidation heatmap — was a valid SPA route (/liquidations/bitcoin-heatmap)
+// with strong meta but NOT prerendered, so crawlers got a blank shell. Bake the
+// real H1/intro/FAQ (mirrored from the React page) so it is fully indexable for
+// the high-volume "bitcoin liquidation heatmap" search intent.
+add('/liquidations/bitcoin-heatmap', {
+  title: 'Bitcoin Liquidation Heatmap | Live BTC Liquidity Levels | Oracle Bull',
+  description: 'Free real-time Bitcoin liquidation heatmap. Track BTC long and short liquidation clusters, leverage zones, and price levels where cascading liquidations are likely to trigger reversals.',
+  keywords: 'bitcoin liquidation heatmap, btc liquidation map, bitcoin liquidations, btc leverage heatmap, bitcoin liquidity heatmap, crypto liquidation levels, btc long short liquidations',
+  h1: 'Bitcoin Liquidation Heatmap',
+  intro: [
+    'Real-time map of Bitcoin liquidity clusters and leverage-driven price levels. Identify where cascading long and short liquidations are most likely to drive BTC price reversals and breakouts.',
+    'The heatmap aggregates open interest, funding rates and price data from major BTC futures venues to estimate where leveraged positions will be forcibly closed. When Bitcoin approaches a dense cluster, cascading liquidations frequently accelerate the move — making these zones high-probability reversal or breakout areas.',
+  ],
+  faq: [
+    { q: 'What is a Bitcoin liquidation heatmap?', a: 'A Bitcoin liquidation heatmap visualizes the price levels where leveraged long and short positions are likely to be force-closed. Clusters of liquidations act as magnets for price because large traders often push toward these zones to trigger cascading liquidations and harvest liquidity.' },
+    { q: 'How do I read a Bitcoin liquidation heatmap?', a: 'Brighter or larger clusters indicate higher concentrations of leveraged positions at that price. Long-heavy zones below price are downside liquidity targets; short-heavy zones above price are upside liquidity targets. A balanced level signals consolidation.' },
+    { q: 'Why does Bitcoin price move toward liquidation clusters?', a: 'When leveraged traders are stopped out, their forced market orders create one-sided pressure that accelerates price. Sophisticated participants often anticipate these zones, making liquidation maps a useful tool for spotting potential reversal points and high-volatility breakouts.' },
+    { q: 'Is the Bitcoin liquidation heatmap real-time?', a: 'Yes. The heatmap pulls live open interest, price and funding data from major futures exchanges and refreshes every 20 seconds so you can monitor leverage build-up around Bitcoin in real time.' },
+  ],
+  links: [
+    { href: '/dashboard', label: 'Crypto Dashboard' },
+    { href: '/price-prediction/bitcoin', label: 'Bitcoin Price Prediction' },
+    { href: '/sentiment', label: 'Fear & Greed Index' },
+    { href: '/crypto-factory', label: 'Crypto Factory' },
+    { href: '/scanner', label: 'Token Scanner' },
+  ],
 });
 add('/explorer', {
   title: `Crypto Token Explorer – Search Any Coin by Name or Contract (${MONTH} ${YEAR})`,
   description: 'Search 10,000+ tokens by name, symbol or contract address. Price charts, holder analysis, liquidity depth & DeFi metrics across 30+ blockchains. Free.',
   keywords: 'crypto token explorer, search cryptocurrency, token contract lookup, defi token scanner',
   h1: 'Crypto Token Explorer',
-  intro: ['Search any cryptocurrency by name, symbol or contract address and get instant price charts, holder analysis, liquidity depth and DeFi metrics across 30+ blockchains.'],
+  intro: [
+    'Search any cryptocurrency by name, symbol or contract address and get instant price charts, holder analysis, liquidity depth and DeFi metrics across 30+ blockchains.',
+    `Paste a contract address to vet a token in seconds — holder distribution, liquidity, volume and risk signals in one place — or search by name to pull up any of 10,000+ assets. Free, no signup, ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'How do I look up a crypto token by contract address?', a: 'Paste the token\'s contract address into the explorer search. It resolves the token across 30+ chains and returns its price chart, holder analysis, liquidity depth and DeFi metrics instantly.' },
+    { q: 'Can I check if a token is safe before buying?', a: 'The explorer surfaces holder concentration, liquidity depth and volume — common red flags for risky tokens. Use them as a first screen, but always do your own due diligence before investing.' },
+  ],
   links: toolLinks,
 });
 add('/factory', {
@@ -396,7 +540,14 @@ add('/factory', {
   description: 'Track every market-moving event: token launches, protocol upgrades, whale movements & trending narratives. Like Forex Factory but for crypto.',
   keywords: 'crypto events calendar, crypto factory, upcoming token launches, whale alerts crypto',
   h1: 'Crypto Factory — Market Events & On-Chain Intel',
-  intro: ['A real-time feed of everything that moves the market: token launches, protocol upgrades, airdrops, whale movements and trending narratives — the crypto equivalent of Forex Factory.'],
+  intro: [
+    'A real-time feed of everything that moves the market: token launches, protocol upgrades, airdrops, whale movements and trending narratives — the crypto equivalent of Forex Factory.',
+    `Each item is scored for impact and tagged to the assets it affects, so instead of refreshing a dozen sources you see what matters — and why — in one continuously-updating feed. ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'What is the Crypto Factory?', a: 'Crypto Factory is a real-time market intelligence feed that aggregates token launches, protocol upgrades, airdrops, whale movements and trending narratives into one place, each scored for market impact — the crypto equivalent of Forex Factory.' },
+    { q: 'How is it different from a crypto news feed?', a: 'A news feed lists headlines; Crypto Factory adds structure — it scores each event for impact, tags the coins affected, and surfaces on-chain whale flows and active narratives alongside the news so you see what is actually moving capital.' },
+  ],
   links: [
     { href: '/factory/events', label: 'Events Calendar' },
     { href: '/factory/onchain', label: 'On-Chain Intel' },
@@ -432,7 +583,14 @@ add('/learn', {
   description: 'Free crypto education: Bitcoin guides, DeFi tutorials, technical analysis lessons and trading strategies for all levels.',
   keywords: 'learn crypto free, crypto education, bitcoin guide for beginners, how to trade crypto',
   h1: 'Learn Crypto — Free Guides & Education',
-  intro: ['Free, beginner-friendly crypto education covering Bitcoin, DeFi, technical analysis, on-chain data, risk management and trading strategy.'],
+  intro: [
+    'Free, beginner-friendly crypto education covering Bitcoin, DeFi, technical analysis, on-chain data, risk management and trading strategy.',
+    `Each guide is written in plain language and builds from the fundamentals up — start with what a blockchain is, then progress to reading charts, understanding tokenomics and managing risk. No jargon, no paywall, ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'Where should a beginner start learning crypto?', a: 'Start with the fundamentals — what a blockchain is, how wallets work and how to buy your first coin safely — then move on to reading charts, tokenomics and risk management. The guides below are ordered to build that foundation step by step.' },
+    { q: 'Is Oracle Bull\'s crypto education free?', a: 'Yes. Every guide is completely free with no signup or paywall.' },
+  ],
   links: [...new Map(EDU_ARTICLES.map((a) => [a.slug, a])).values()]
     .slice(0, 12)
     .map((a) => ({ href: `/learn/${a.slug}`, label: a.title })),
@@ -442,7 +600,14 @@ add('/insights', {
   description: 'Daily AI market analysis for Bitcoin, Ethereum, Solana & altcoins. On-chain data, technical indicators & expert research. Updated daily, always free.',
   keywords: 'crypto analysis today, daily crypto insights, bitcoin market analysis, crypto research',
   h1: `Crypto Market Analysis & Insights (${MONTH} ${YEAR})`,
-  intro: ['Daily AI-generated market analysis covering Bitcoin, Ethereum, Solana and the broader altcoin market — combining on-chain data, technical indicators and sentiment.'],
+  intro: [
+    'Daily AI-generated market analysis covering Bitcoin, Ethereum, Solana and the broader altcoin market — combining on-chain data, technical indicators and sentiment.',
+    `Each piece goes beyond price to explain the why — what on-chain flows, positioning and macro context suggest about where the market may head next. Research, not financial advice, refreshed for ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'How often is the crypto market analysis updated?', a: 'New AI-generated analysis is published daily, covering Bitcoin, Ethereum, Solana and the broader altcoin market using live on-chain data, technical indicators and sentiment.' },
+    { q: 'Is this crypto analysis financial advice?', a: 'No. The insights are research and education built from data and AI modeling. They are one input for your own decisions — always do your own research and manage risk.' },
+  ],
   links: toolLinks,
 });
 add('/news', {
@@ -483,14 +648,41 @@ add('/airdrops', {
     { q: 'Are crypto airdrops taxable?', a: 'In most jurisdictions airdropped tokens are treated as ordinary income at fair-market value when received, with capital gains on later disposal. Treatment varies by country — consult a qualified tax professional. Not tax advice.' },
   ],
   links: [
-    { href: '/airdrops/linea', label: 'Linea Airdrop Guide' },
-    { href: '/airdrops/monad', label: 'Monad Airdrop Guide' },
-    { href: '/airdrops/berachain', label: 'Berachain Airdrop Guide' },
-    { href: '/airdrops/base', label: 'Base Airdrop Guide' },
+    ...AIRDROPS.slice(0, 6).map((a) => ({ href: `/airdrops/${a.id}`, label: `${a.name} Airdrop Guide` })),
     { href: '/crypto-factory', label: 'Crypto Factory' },
     { href: '/crypto-strength-meter', label: 'Strength Meter' },
   ],
 });
+// Airdrop detail pages — one per project in AIRDROPS_DATA. These were linked from
+// /airdrops but never prerendered (blank shell for crawlers). Each ships real
+// title/intro/FAQ from the project's own data, so the internal links resolve and
+// the long-tail "<project> airdrop guide / how to qualify" intent is indexable.
+for (const ad of AIRDROPS) {
+  const statusBit = ad.status ? `${ad.status}. ` : '';
+  const valueBit = ad.estValue ? `Estimated value: ${ad.estValue}. ` : '';
+  add(`/airdrops/${ad.id}`, {
+    title: `${ad.name} (${ad.ticker || ''}) Airdrop Guide ${YEAR} – How to Qualify | Oracle Bull`.replace(' ()', ''),
+    description: `How to qualify for the ${ad.name} airdrop in ${YEAR}. ${statusBit}${valueBit}Eligibility, tasks, snapshot timing and a step-by-step farming guide. Not financial advice.`.slice(0, 160),
+    keywords: `${ad.name.toLowerCase()} airdrop, how to qualify ${ad.name.toLowerCase()} airdrop, ${ad.name.toLowerCase()} airdrop guide ${YEAR}, ${(ad.ticker || '').toLowerCase()} token`,
+    h1: `${ad.name} Airdrop Guide`,
+    intro: [
+      ad.description || `${ad.name} is a ${ad.category || 'crypto'} project with a potential token airdrop.`,
+      `This guide covers how to position for a potential ${ad.name}${ad.ticker ? ` (${ad.ticker})` : ''} airdrop: current status${ad.status ? ` (${ad.status})` : ''}, the tasks that tend to matter, snapshot timing and the risks to weigh. ${valueBit}Updated ${MONTH} ${YEAR}.`,
+      `Airdrop allocations are never guaranteed and eligibility rules can change without notice. Farm genuinely, manage risk, and treat estimated values as speculative. This is research, not financial advice.`,
+    ],
+    faq: [
+      { q: `How do I qualify for the ${ad.name} airdrop?`, a: `Use ${ad.name} genuinely and consistently ahead of any snapshot — varied, organic on-chain activity tends to outperform repeated minimum actions, which projects often filter as Sybil behavior. ${ad.status ? `Current status: ${ad.status}.` : ''}` },
+      { q: `Is the ${ad.name} airdrop confirmed?`, a: `${ad.name}'s status is currently "${ad.status || 'unconfirmed'}." Airdrops are speculative until officially announced — never risk more than you can afford on an unconfirmed allocation. Not financial advice.` },
+      ...(ad.estValue ? [{ q: `What is the ${ad.name} airdrop worth?`, a: `Community and AI estimates put the potential ${ad.name} airdrop value around ${ad.estValue}, but this is a speculative range, not a promise. Actual allocations depend on eligibility, timing and the final tokenomics.` }] : []),
+    ],
+    article: { headline: `${ad.name} Airdrop Guide ${YEAR}`, about: ad.name },
+    links: [
+      { href: '/airdrops', label: 'All Crypto Airdrops' },
+      ...AIRDROPS.filter((o) => o.id !== ad.id).slice(0, 4).map((o) => ({ href: `/airdrops/${o.id}`, label: `${o.name} Airdrop` })),
+      { href: '/crypto-factory', label: 'Crypto Factory' },
+    ],
+  });
+}
 const polymarketDef = {
   title: `Polymarket Signals — Live Odds, Implied Probability & Risk Analysis (${MONTH} ${YEAR}) | Oracle Bull`,
   description: `Analyze any Polymarket prediction market in real time. See implied probabilities, the favored outcome, a risk rating and 24h momentum for politics, crypto, sports, economy & more. Search any market free. ${MONTH} ${YEAR}.`,
@@ -512,14 +704,42 @@ const polymarketDef = {
     { href: '/compare', label: 'Compare Tokens' },
   ],
 };
-add('/tools', polymarketDef);
+add('/tools', {
+  title: `Free Crypto Tools – Calculators, Scanners & Prediction-Market Analysis (${MONTH} ${YEAR}) | Oracle Bull`,
+  description: `Free crypto tools in one place: profit & DCA calculators, impermanent-loss calculator, token scanner, strength meter and live Polymarket prediction-market analysis. No signup. Updated ${MONTH} ${YEAR}.`,
+  keywords: 'free crypto tools, crypto calculator, crypto profit calculator, dca calculator, impermanent loss calculator, prediction market analysis',
+  h1: 'Free Crypto Tools',
+  intro: [
+    `Oracle Bull's free crypto toolkit in one place — no signup required. Calculate trading profit and ROI, model a dollar-cost-averaging plan, estimate impermanent loss before providing liquidity, scan tokens for risk, and analyze any Polymarket prediction market in real time.`,
+    `Every tool runs on live data and is built for fast, practical research. Updated ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'Are Oracle Bull tools free?', a: 'Yes. Every Oracle Bull tool — profit, DCA and impermanent-loss calculators, the token scanner, strength meter and prediction-market analyzer — is 100% free with no signup required.' },
+    { q: 'What can I calculate with the crypto profit calculator?', a: 'Enter your entry and exit prices, position size and exchange fees to see exact profit, loss and ROI on a trade, including the impact of fees on both sides.' },
+  ],
+  links: [
+    { href: '/tools/profit-calculator', label: 'Profit Calculator' },
+    { href: '/tools/dca-calculator', label: 'DCA Calculator' },
+    { href: '/tools/impermanent-loss-calculator', label: 'Impermanent Loss Calculator' },
+    { href: '/scanner', label: 'Token Scanner' },
+    { href: '/crypto-strength-meter', label: 'Crypto Strength Meter' },
+    { href: '/polymarket', label: 'Polymarket Signals' },
+  ],
+});
 add('/polymarket', polymarketDef);
 add('/compare', {
   title: 'Compare Cryptocurrencies Side by Side | Oracle Bull',
   description: 'Compare any two cryptocurrencies side by side: price, market cap, performance, fundamentals and AI verdict. Make informed decisions.',
   keywords: 'compare crypto, crypto comparison, bitcoin vs ethereum, which crypto is better',
   h1: 'Compare Cryptocurrencies',
-  intro: ['Put any two coins head-to-head: price, market cap, volume, performance, fundamentals and an AI verdict on which is stronger right now.'],
+  intro: [
+    'Put any two coins head-to-head: price, market cap, volume, performance, fundamentals and an AI verdict on which is stronger right now.',
+    `Each comparison goes past the price chart to weigh what each asset actually is — its category, launch era, consensus and the catalysts that drive it — so "which is better" gets a reasoned answer, not just a number. Pick a matchup below for ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'How do I compare two cryptocurrencies?', a: 'Choose a matchup below (or any two coins) to see them side by side: price, market cap, volume, recent performance and fundamentals, plus an AI verdict on which looks stronger right now.' },
+    { q: 'Is "X vs Y" a good way to pick a crypto?', a: 'Head-to-head comparison helps you weigh trade-offs — category, tokenomics, momentum and adoption — but no single comparison is a buy signal. Use it as research alongside your own analysis and risk tolerance.' },
+  ],
   links: COMPARE_PAIRS.map((p) => ({ href: `/compare/${p}`, label: titleCase(p) })),
 });
 add('/how-to-buy', {
@@ -527,34 +747,78 @@ add('/how-to-buy', {
   description: 'Step-by-step guides on how to buy Bitcoin, Ethereum, Solana and more — safely, for beginners.',
   keywords: 'how to buy crypto, how to buy bitcoin, buy ethereum, crypto for beginners',
   h1: 'How to Buy Cryptocurrency',
-  intro: ['Clear, beginner-friendly, step-by-step guides on how to buy the most popular cryptocurrencies safely.'],
+  intro: [
+    'Clear, beginner-friendly, step-by-step guides on how to buy the most popular cryptocurrencies safely.',
+    `Every guide walks the same safe path — choose a reputable exchange, secure your account, fund it, place your order and move coins to self-custody — tailored to each asset. Start with a coin below. ${MONTH} ${YEAR}.`,
+  ],
+  faq: [
+    { q: 'What do I need to buy cryptocurrency?', a: 'A reputable exchange account (verified with ID), a funding method such as a bank transfer or card, and ideally a self-custody wallet for storing your coins long-term. Each guide below walks you through it for a specific coin.' },
+    { q: 'What is the safest way to buy crypto as a beginner?', a: 'Use a well-known regulated exchange, enable two-factor authentication, start small, and move larger holdings to a hardware or self-custody wallet. Never share your seed phrase. Not financial advice.' },
+  ],
   links: COINS.slice(0, 8).map(([s, n]) => ({ href: `/how-to-buy/${s}`, label: `How to Buy ${n}` })),
 });
 // Factory subpages
 const factorySub = {
-  '/factory/events': ['Crypto Events Calendar', 'Token launches, protocol upgrades, airdrops, governance votes and market-moving announcements — the crypto calendar traders rely on.'],
-  '/factory/onchain': ['On-Chain Intelligence', 'Real-time whale movements, large transfers, smart-money accumulation and exchange in/outflows.'],
-  '/factory/narratives': ['Crypto Market Narratives', 'Track trending sectors — AI tokens, DeFi, RWA, meme coins, Layer 2s — and spot rotation early.'],
-  '/factory/news': ['Crypto News Today', 'Breaking crypto news from 50+ sources with real-time sentiment scoring.'],
+  '/factory/events': ['Crypto Events Calendar', 'Token launches, protocol upgrades, airdrops, governance votes and market-moving announcements — the crypto calendar traders rely on.',
+    'Each event is dated and tagged to the assets it affects, so you can plan around catalysts instead of being surprised by them.',
+    [
+      { q: 'What is a crypto events calendar?', a: 'A crypto events calendar tracks scheduled, market-moving events — token launches, mainnet and protocol upgrades, token unlocks, airdrops and governance votes — so traders can anticipate volatility and plan around catalysts.' },
+      { q: 'Why do crypto events move prices?', a: 'Events like token unlocks, upgrades and launches change supply, utility or sentiment, often triggering volatility before and after the date. Knowing the schedule helps you manage risk around it.' },
+    ]],
+  '/factory/onchain': ['On-Chain Intelligence', 'Real-time whale movements, large transfers, smart-money accumulation and exchange in/outflows.',
+    'On-chain flows reveal what large holders are actually doing — often before it shows up in price — so you can read positioning rather than guess at it.',
+    [
+      { q: 'What is on-chain intelligence in crypto?', a: 'On-chain intelligence reads activity recorded directly on the blockchain — whale transfers, exchange inflows and outflows, and smart-money accumulation — to reveal how large holders are positioning before price reacts.' },
+      { q: 'What do exchange inflows and outflows mean?', a: 'Large inflows to exchanges often precede selling (coins moved on to sell), while outflows suggest accumulation and self-custody. Sustained one-sided flow can foreshadow a move.' },
+    ]],
+  '/factory/narratives': ['Crypto Market Narratives', 'Track trending sectors — AI tokens, DeFi, RWA, meme coins, Layer 2s — and spot rotation early.',
+    'Capital rotates between narratives in cycles; spotting which theme is gaining momentum early is often where the biggest moves come from.',
+    [
+      { q: 'What is a crypto narrative?', a: 'A crypto narrative is the dominant theme attracting capital at a given time — for example AI tokens, real-world assets (RWA), memecoins or Layer-2s. Narratives drive sector-wide rallies as money rotates in.' },
+      { q: 'How do I spot narrative rotation?', a: 'Watch which sectors are outperforming on rising volume while others fade. This narrative tracker ranks active themes by momentum so you can see where capital is rotating before it is obvious.' },
+    ]],
+  '/factory/news': ['Crypto News Today', 'Breaking crypto news from 50+ sources with real-time sentiment scoring.',
+    'Every headline is scored bullish, bearish or neutral and tagged to the coins it affects, so you get signal — not just a wall of stories.',
+    [
+      { q: 'How often does the crypto news update?', a: 'The feed aggregates breaking stories from 50+ trusted crypto publications and refreshes continuously, each scored for bullish, bearish or neutral market impact.' },
+      { q: 'What does the AI sentiment score mean?', a: 'Each story is rated bullish, bearish or neutral based on its likely short-term market impact — a quick research signal, not financial advice.' },
+    ]],
 };
-for (const [p, [h1, blurb]] of Object.entries(factorySub)) {
+for (const [p, [h1, blurb, extraPara, faq]] of Object.entries(factorySub)) {
   add(p, {
     title: `${h1} (${MONTH} ${YEAR}) | Oracle Bull`,
     description: blurb, keywords: `${h1.toLowerCase()}, crypto ${p.split('/').pop()}`,
-    h1, intro: [blurb], links: [{ href: '/factory', label: 'Crypto Factory' }, ...toolLinks.slice(0, 4)],
+    h1, intro: [blurb, ...(extraPara ? [extraPara] : [])], faq: faq || [],
+    links: [{ href: '/factory', label: 'Crypto Factory' }, ...toolLinks.slice(0, 4)],
   });
 }
 // Tools subpages
 const toolPages = {
-  '/tools/profit-calculator': ['Crypto Profit Calculator', 'Calculate exact trading profit and ROI, accounting for exchange fees on both entry and exit.'],
-  '/tools/dca-calculator': ['Crypto DCA Calculator', 'Model a dollar-cost-averaging strategy and project returns across a schedule.'],
-  '/tools/impermanent-loss-calculator': ['Impermanent Loss Calculator', 'Calculate impermanent loss for AMM liquidity pools before you provide liquidity.'],
+  '/tools/profit-calculator': ['Crypto Profit Calculator', 'Calculate exact trading profit and ROI, accounting for exchange fees on both entry and exit.',
+    'Enter your buy price, sell price, position size and fees to see net profit or loss, ROI percentage and break-even price — so you know the real number after costs, not a rough guess.',
+    [
+      { q: 'How do I calculate crypto profit?', a: 'Profit = (sell price − buy price) × amount, minus trading fees on both entry and exit. Enter those values and the calculator returns your exact net profit, ROI percentage and break-even price.' },
+      { q: 'Does the calculator include exchange fees?', a: 'Yes. It applies fees to both your entry and exit, so the profit and ROI it shows reflect what you actually keep after costs.' },
+    ]],
+  '/tools/dca-calculator': ['Crypto DCA Calculator', 'Model a dollar-cost-averaging strategy and project returns across a schedule.',
+    'See how investing a fixed amount on a regular schedule would have performed — your average entry, total invested and current value — so you can compare DCA against a lump-sum approach.',
+    [
+      { q: 'What is dollar-cost averaging (DCA) in crypto?', a: 'DCA means investing a fixed amount at regular intervals regardless of price. It smooths out volatility by spreading your entry over time, lowering the risk of buying everything at a local top.' },
+      { q: 'Is DCA better than buying all at once?', a: 'DCA reduces timing risk and is easier psychologically in volatile markets; lump-sum can outperform when prices trend up. This calculator lets you model both and compare outcomes for your own schedule.' },
+    ]],
+  '/tools/impermanent-loss-calculator': ['Impermanent Loss Calculator', 'Calculate impermanent loss for AMM liquidity pools before you provide liquidity.',
+    'Enter the two pool assets and their price change to see your impermanent loss versus simply holding — essential before committing capital to a liquidity pool.',
+    [
+      { q: 'What is impermanent loss?', a: 'Impermanent loss is the difference in value between providing liquidity to an AMM pool and simply holding the two assets, caused by their prices diverging. It becomes permanent only if you withdraw while prices are diverged.' },
+      { q: 'How do I avoid impermanent loss?', a: 'Use pools of correlated or pegged assets (like two stablecoins), factor in trading-fee and reward income that can offset it, and model the scenario here before depositing. Not financial advice.' },
+    ]],
 };
-for (const [p, [h1, blurb]] of Object.entries(toolPages)) {
+for (const [p, [h1, blurb, extraPara, faq]] of Object.entries(toolPages)) {
   add(p, {
     title: `${h1} – Free Tool | Oracle Bull`,
     description: blurb, keywords: `${h1.toLowerCase()}, crypto calculator, free crypto tool`,
-    h1, intro: [blurb], links: [{ href: '/tools', label: 'All Tools' }, ...toolLinks.slice(0, 4)],
+    h1, intro: [blurb, ...(extraPara ? [extraPara] : [])], faq: faq || [],
+    links: [{ href: '/tools', label: 'All Tools' }, ...toolLinks.slice(0, 4)],
   });
 }
 // Legal / about
@@ -574,17 +838,26 @@ for (const [p, [h1, blurb]] of Object.entries(simplePages)) {
 
 // Price prediction coin pages
 for (const [slug, name, sym] of COINS) {
-  const related = COINS.filter((c) => c[0] !== slug).slice(0, 6).map(([s, n]) => ({ href: `/price-prediction/${s}`, label: `${n} Prediction` }));
+  const facts = coinFactSentences(slug, name, sym);
+  const factFaq = coinFactFaq(slug, name, sym);
+  const driver = sectorDriver(slug);
+  // Sector peers first (most relevant), then fill to 6 with general top coins.
+  const peerLinks = sectorPeers(slug, 4).map(([s, n]) => ({ href: `/price-prediction/${s}`, label: `${n} Prediction` }));
+  const fillLinks = COINS.filter((c) => c[0] !== slug && !peerLinks.some((l) => l.href === `/price-prediction/${c[0]}`)).slice(0, 6 - peerLinks.length).map(([s, n]) => ({ href: `/price-prediction/${s}`, label: `${n} Prediction` }));
+  const related = [...peerLinks, ...fillLinks];
   add(`/price-prediction/${slug}`, {
     title: `${name} (${sym}) Price Prediction ${MONTH} ${YEAR} – AI Forecast & Targets`,
     description: `${name} price prediction for ${MONTH} ${YEAR}. AI-powered ${name} (${sym}) forecast with entry zones, support/resistance levels, bull/bear targets & confidence scores. Updated live.`,
     keywords: `${slug} price prediction, ${name} forecast, will ${slug} go up, ${slug} price target, should i buy ${slug}`,
     h1: `${name} (${sym}) Price Prediction — ${MONTH} ${YEAR}`,
     intro: [
+      ...facts,
       `Looking for the latest ${name} price prediction? Oracle Bull's AI analyzes live ${name} (${sym}) market data — price action, momentum, volume, volatility and sentiment — to produce daily, weekly and monthly forecasts with support/resistance levels and bull/bear targets.`,
+      ...(driver ? [`Beyond the chart, ${name}'s longer-term value is driven by ${driver}.`] : []),
       `This page updates continuously. Use the live chart and AI analysis to gauge whether ${name} is likely to go up or down, and where the key entry and exit zones are.`,
     ],
     faq: [
+      ...(factFaq ? [factFaq] : []),
       { q: `What is the ${name} price prediction for ${MONTH} ${YEAR}?`, a: `Our AI model forecasts ${name} (${sym}) using real-time market data, technical analysis and sentiment. See the live chart above for exact support, resistance and target levels for ${MONTH} ${YEAR}.` },
       { q: `Will ${name} go up?`, a: `The model analyzes ${name}'s current momentum, volume and sentiment to estimate the probability of an up or down move across daily, weekly and monthly timeframes.` },
       { q: `Is ${name} a good investment right now?`, a: `${name}'s investment potential depends on your timeframe and risk tolerance. We provide a real-time risk score plus daily, weekly and monthly AI forecasts to help you decide. This is not financial advice.` },
@@ -604,12 +877,16 @@ for (const [slug, name, sym] of COINS) {
       h1: `${name} (${sym}) Price Prediction — ${label}`,
       intro: [
         `Will ${name} go up ${label.toLowerCase()}? Oracle Bull's AI builds a ${horizon} ${name} (${sym}) forecast from live price action, momentum, volume flow, volatility and market sentiment — refreshed continuously throughout ${MONTH} ${YEAR}.`,
+        ...(facts.length ? [facts[0]] : []),
+        ...(driver ? [`Over a ${horizon} horizon, ${name}'s price is shaped less by hype and more by ${driver} — the AI weighs these alongside the live technical setup.`] : []),
         `This ${label.toLowerCase()} outlook highlights the key support and resistance zones, the probability of an up or down move, and the bull/bear targets that matter most over a ${horizon} horizon. Use the live chart above alongside the AI read.`,
       ],
       faq: [
         { q: `What is the ${name} price prediction ${label.toLowerCase()}?`, a: `Our AI model forecasts ${name} (${sym}) over a ${horizon} horizon using real-time market data, technical structure and sentiment. The live chart shows exact support, resistance and ${kw} target levels.` },
         { q: `Will ${name} go up ${label.toLowerCase()}?`, a: `The model estimates the probability of an up or down ${name} move ${label.toLowerCase()} from current momentum, volume and sentiment. See the probability read on this page — it updates live.` },
         { q: `Is now a good time to buy ${name}?`, a: `Timing depends on your risk tolerance and the ${horizon} setup. We pair this ${label.toLowerCase()} forecast with a live risk score and entry/exit zones to help you decide. This is research, not financial advice.` },
+        ...(driver ? [{ q: `What affects the ${name} price ${label.toLowerCase()}?`, a: `${name} (${sym}) is most influenced by ${driver}, together with overall crypto market direction and Bitcoin's trend. The AI tracks these factors live.` }] : []),
+        ...(factFaq ? [factFaq] : []),
       ],
       article: { headline: `${name} Price Prediction ${label} – AI Forecast ${MONTH} ${YEAR}`, about: name },
       links: [
@@ -619,8 +896,12 @@ for (const [slug, name, sym] of COINS) {
       ],
     });
   }
-  // Year predictions for a subset
-  if (['bitcoin', 'ethereum', 'solana', 'ripple', 'dogecoin', 'cardano', 'bnb', 'avalanche', 'chainlink', 'polkadot', 'shiba-inu', 'pepe', 'sui', 'arbitrum', 'near', 'litecoin', 'polygon', 'tron'].includes(slug)) {
+  // Year predictions — every coin now gets long-term 2026/2027/2028/2030 pages.
+  // "{coin} price prediction 2030" is high-volume long-tail intent, and the
+  // per-coin facts + sector-driver copy keeps each page genuinely unique (not a
+  // thin dupe). The SPA's /price-prediction/:coinId/<year> routes are coin-generic
+  // so every slug renders correctly.
+  {
     for (const yr of YEARS) {
       add(`/price-prediction/${slug}/${yr}`, {
         title: `${name} (${sym}) Price Prediction ${yr} – Long-Term AI Forecast`,
@@ -629,13 +910,21 @@ for (const [slug, name, sym] of COINS) {
         h1: `${name} (${sym}) Price Prediction ${yr}`,
         intro: [
           `What could ${name} be worth in ${yr}? This long-term ${name} (${sym}) forecast combines historical market cycles, adoption trends and AI scenario modeling to map out bull, base and bear cases for ${yr}.`,
+          ...(facts.length ? [facts[0]] : []),
+          ...(driver ? [`By ${yr}, ${name}'s trajectory will hinge on ${driver} rather than short-term price swings.`] : []),
           `Long-term crypto forecasts are inherently uncertain — treat these as scenario ranges for research, not guarantees.`,
         ],
         faq: [
           { q: `What will ${name} be worth in ${yr}?`, a: `Our ${yr} ${name} forecast presents bull, base and bear scenarios derived from market cycles, adoption trends and AI modeling. See the scenario ranges on this page.` },
           { q: `Will ${name} reach a new all-time high by ${yr}?`, a: `The ${yr} outlook weighs ${name}'s historical cycle behavior and momentum to estimate the likelihood of new highs. It is a probabilistic scenario, not financial advice.` },
+          ...(factFaq ? [factFaq] : []),
         ],
-        links: [{ href: `/price-prediction/${slug}`, label: `${name} Prediction` }, { href: '/predictions', label: 'All Predictions' }],
+        article: { headline: `${name} Price Prediction ${yr} – Long-Term AI Forecast`, about: name },
+        links: [
+          { href: `/price-prediction/${slug}`, label: `${name} Prediction` },
+          ...YEARS.filter((y) => y !== yr).map((y) => ({ href: `/price-prediction/${slug}/${y}`, label: `${name} ${y} Forecast` })),
+          { href: '/predictions', label: 'All Predictions' },
+        ],
       });
     }
   }
@@ -685,6 +974,12 @@ for (const [slug, name] of CHAINS) {
     intro: [
       `Real-time ${name} blockchain analytics in one dashboard: native price, TVL, whale movements, token discovery, DeFi metrics and AI predictions.`,
       `Monitor ${name} network activity and capital flows as they happen.`,
+      `Whether you are tracking ${name} DeFi activity, hunting new tokens in its ecosystem or watching large on-chain transfers, everything updates live in one place — no need to stitch together explorers and dashboards. ${MONTH} ${YEAR}.`,
+    ],
+    faq: [
+      { q: `What can I track on the ${name} analytics dashboard?`, a: `Live ${name} price and TVL, whale movements and large transfers, new and trending tokens in the ${name} ecosystem, DeFi metrics and AI-driven predictions — all updating in real time.` },
+      { q: `How do I find new tokens on ${name}?`, a: `Use the token discovery and scanner tools to surface new and trending ${name} tokens ranked by liquidity, volume and momentum, then check each one's risk metrics before researching further.` },
+      { q: `Is the ${name} dashboard free?`, a: `Yes. The ${name} analytics dashboard is completely free with no signup required.` },
     ],
     links: CHAINS.filter((c) => c[0] !== slug).slice(0, 6).map(([s, n]) => ({ href: `/chain/${s}`, label: `${n} Analytics` })),
   });
@@ -703,7 +998,12 @@ for (const slug of [...MARKET_PAGES, ...CHAIN_MARKET_PAGES]) {
     h1: `${readable} (${MONTH} ${YEAR})`,
     intro: [
       `${readable} — an AI-curated answer updated for ${MONTH} ${YEAR}, based on real-time momentum, trading volume, market sentiment and technical signals across the crypto market.`,
+      `The list below is ranked by live data, not opinion, and refreshes as conditions change — so it reflects what the market is actually doing right now rather than a stale pick.`,
       `Use the live rankings and analysis on this page to inform your research. Nothing here is financial advice.`,
+    ],
+    faq: [
+      { q: `How is "${readable}" decided?`, a: `The ranking is generated from live market data — price momentum, trading volume, sentiment and technical signals — and updated for ${MONTH} ${YEAR}. It is an AI-curated research shortlist, not a recommendation.` },
+      { q: 'Is this financial advice?', a: 'No. This page is research and information only. Crypto is volatile and high-risk — always do your own research and never invest more than you can afford to lose.' },
     ],
     links: [...coinLinks.slice(0, 6), { href: '/predictions', label: 'All Predictions' }],
   });
@@ -716,19 +1016,68 @@ const TOP20_COMPARE = (() => {
   for (let i = 0; i < top.length; i++) for (let j = i + 1; j < top.length; j++) pairs.push(`${top[i]}-vs-${top[j]}`);
   return pairs;
 })();
-for (const pair of [...new Set([...COMPARE_PAIRS, ...TOP20_COMPARE])]) {
+// Intra-sector compare pairs — "X vs Y" where both coins are in the SAME sector
+// is high-intent ("which is better, aave or compound?") and the facts layer makes
+// each page genuinely informative. Capped per sector to avoid a combinatorial
+// explosion of low-demand pairs. Reuses the /compare/:coins SPA route.
+const SECTOR_COMPARE = (() => {
+  const bySector = {};
+  for (const [slug] of COINS) {
+    const f = COIN_FACTS[slug];
+    if (!f) continue;
+    (bySector[f.sector] ||= []).push(slug);
+  }
+  const pairs = [];
+  for (const slugs of Object.values(bySector)) {
+    // Limit each sector to its first 6 coins → max 15 pairs/sector.
+    const pool = slugs.slice(0, 6);
+    for (let i = 0; i < pool.length; i++) for (let j = i + 1; j < pool.length; j++) pairs.push(`${pool[i]}-vs-${pool[j]}`);
+  }
+  return pairs;
+})();
+// Dedup across orderings (a-vs-b vs b-vs-a) and against curated/top20 sets.
+const allComparePairs = (() => {
+  const seen = new Set();
+  const out = [];
+  for (const pair of [...COMPARE_PAIRS, ...TOP20_COMPARE, ...SECTOR_COMPARE]) {
+    const [a, b] = pair.split('-vs-');
+    if (!a || !b || a === b) continue;
+    const key = [a, b].sort().join('|');
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(pair);
+  }
+  return out;
+})();
+for (const pair of allComparePairs) {
   const [a, b] = pair.split('-vs-');
   const an = titleCase(a), bn = titleCase(b);
+  const fa = COIN_FACTS[a], fb = COIN_FACTS[b];
+  // Build a factual contrast sentence when we know both assets.
+  const contrast = (fa && fb)
+    ? `${an} is a ${SECTOR_LABELS[fa.sector] || fa.cat}${fa.year ? ` (launched ${fa.year})` : ''}, while ${bn} is a ${SECTOR_LABELS[fb.sector] || fb.cat}${fb.year ? ` (launched ${fb.year})` : ''}.`
+    : null;
+  const sameSector = fa && fb && fa.sector === fb.sector;
   add(`/compare/${pair}`, {
     title: `${an} vs ${bn} – Which Is Better? (${MONTH} ${YEAR})`,
     description: `${an} vs ${bn} compared side by side: price, market cap, performance, fundamentals and an AI verdict on which is the stronger buy in ${MONTH} ${YEAR}.`,
     keywords: `${a} vs ${b}, ${an} vs ${bn}, ${a} or ${b}, which is better ${a} ${b}`,
     h1: `${an} vs ${bn}`,
     intro: [
+      ...(contrast ? [contrast] : []),
       `${an} vs ${bn}: a side-by-side comparison of price, market cap, trading volume, recent performance and fundamentals, plus an AI verdict on which looks stronger right now (${MONTH} ${YEAR}).`,
+      ...(sameSector ? [`Because both are in the same category, this comparison focuses on momentum, adoption and tokenomics to separate them.`] : []),
     ],
-    faq: [{ q: `Is ${an} or ${bn} a better investment?`, a: `It depends on your goals and risk tolerance. This page compares ${an} and ${bn} across price, market cap, momentum and fundamentals, with an AI verdict — but it is research, not financial advice.` }],
-    links: [{ href: `/price-prediction/${a}`, label: `${an} Prediction` }, { href: `/price-prediction/${b}`, label: `${bn} Prediction` }, { href: '/compare', label: 'Compare More' }],
+    faq: [
+      { q: `Is ${an} or ${bn} a better investment?`, a: `It depends on your goals and risk tolerance. This page compares ${an} and ${bn} across price, market cap, momentum and fundamentals, with an AI verdict — but it is research, not financial advice.` },
+      ...(fa ? [{ q: `What is ${an}?`, a: fa.blurb }] : []),
+      ...(fb ? [{ q: `What is ${bn}?`, a: fb.blurb }] : []),
+    ],
+    links: [
+      ...(COIN_BY_SLUG[a] ? [{ href: `/price-prediction/${a}`, label: `${an} Prediction` }] : []),
+      ...(COIN_BY_SLUG[b] ? [{ href: `/price-prediction/${b}`, label: `${bn} Prediction` }] : []),
+      { href: '/compare', label: 'Compare More' },
+    ],
   });
 }
 
@@ -774,6 +1123,9 @@ function qAnswer(name, kind) {
   }
 }
 for (const [coinSlug, coinName] of Q_COINS) {
+  const coinSym = (COIN_BY_SLUG[coinSlug] || [])[2] || coinName;
+  const qFacts = coinFactSentences(coinSlug, coinName, coinSym);
+  const qFactFaq = coinFactFaq(coinSlug, coinName, coinSym);
   for (const [tmpl, kind] of Q_PATTERNS) {
     const slug = tmpl.replace('{coin}', coinSlug);
     const readable = titleCase(slug);
@@ -782,10 +1134,11 @@ for (const [coinSlug, coinName] of Q_COINS) {
       description: `${readable}? Get the AI-powered answer with live ${coinName} market data, technical analysis, momentum and price targets. Updated ${MONTH} ${YEAR}. Not financial advice.`,
       keywords: `${slug.replace(/-/g, ' ')}, ${coinName} prediction, will ${coinName} go up, should i buy ${coinName}, ${coinName} forecast`,
       h1: readable,
-      intro: qAnswer(coinName, kind),
+      intro: [...qAnswer(coinName, kind), ...(qFacts.length ? [qFacts[0]] : [])],
       faq: [
         { q: `${readable}?`, a: `Our AI answers "${readable}" using real-time ${coinName} momentum, volume and sentiment, refreshed continuously. See the live analysis above for the current read. Not financial advice.` },
         { q: `Is ${coinName} a good investment right now?`, a: `${coinName}'s outlook depends on your timeframe and risk tolerance. We provide a live risk score plus daily, weekly and monthly AI forecasts to help you decide. Always do your own research.` },
+        ...(qFactFaq ? [qFactFaq] : []),
       ],
       links: [
         { href: `/price-prediction/${coinSlug}`, label: `${coinName} Price Prediction` },
@@ -798,15 +1151,20 @@ for (const [coinSlug, coinName] of Q_COINS) {
 
 // How-to-buy coin pages
 for (const [slug, name, sym] of COINS) {
+  const facts = coinFactSentences(slug, name, sym);
   add(`/how-to-buy/${slug}`, {
     title: `How to Buy ${name} (${sym}) – Step-by-Step Guide (${YEAR})`,
     description: `Learn how to buy ${name} (${sym}) safely in ${YEAR}. A beginner-friendly, step-by-step guide covering exchanges, wallets, fees and security.`,
     keywords: `how to buy ${slug}, buy ${name}, ${slug} for beginners, where to buy ${slug}`,
     h1: `How to Buy ${name} (${sym})`,
     intro: [
+      ...(facts.length ? [facts[0]] : []),
       `A beginner-friendly, step-by-step guide to buying ${name} (${sym}) safely: choosing a reputable exchange, creating and securing an account, funding it, placing your order, and moving ${name} to a self-custody wallet.`,
     ],
-    faq: [{ q: `What is the safest way to buy ${name}?`, a: `Use a reputable, regulated exchange, enable two-factor authentication, and consider moving your ${name} (${sym}) to a hardware or self-custody wallet for long-term storage.` }],
+    faq: [
+      { q: `What is the safest way to buy ${name}?`, a: `Use a reputable, regulated exchange, enable two-factor authentication, and consider moving your ${name} (${sym}) to a hardware or self-custody wallet for long-term storage.` },
+      ...(coinFactFaq(slug, name, sym) ? [coinFactFaq(slug, name, sym)] : []),
+    ],
     links: [{ href: `/price-prediction/${slug}`, label: `${name} Prediction` }, { href: '/how-to-buy', label: 'More Buying Guides' }],
   });
 }
@@ -940,7 +1298,9 @@ function applyRoute(template, routePath, def) {
   html = html.replace(/<div id="boot-fallback"[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/, renderContent(def, routePath));
   // Replace the generic, identical-on-every-page <noscript> SEO block with a
   // per-route version so each page is unique (avoids duplicate-content signal).
-  const perRouteNoscript = `<noscript><div style="max-width:880px;margin:0 auto;padding:24px;font-family:system-ui,-apple-system,sans-serif;color:#1e293b;"><h1>${esc(def.h1)}</h1><p>${esc((def.intro && def.intro[0]) || def.description)}</p><p><a href="/">Oracle Bull</a> — free AI crypto analytics.</p></div></noscript>`;
+  // Uses <h2> (not <h1>) because the prerendered #seo-prerender block above
+  // already provides the single page <h1>; this keeps exactly one h1 per page.
+  const perRouteNoscript = `<noscript><div style="max-width:880px;margin:0 auto;padding:24px;font-family:system-ui,-apple-system,sans-serif;color:#1e293b;"><h2>${esc(def.h1)}</h2><p>${esc((def.intro && def.intro[0]) || def.description)}</p><p><a href="/">Oracle Bull</a> — free AI crypto analytics.</p></div></noscript>`;
   html = html.replace(/<noscript>[\s\S]*?<\/noscript>/, perRouteNoscript);
   return html;
 }
@@ -962,6 +1322,31 @@ function generateSitemap(paths) {
   }).join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
 }
+
+// ── Internal-link sanitization ─────────────────────────────────────────────────
+// Article corpora (educational-articles.json, insightsArticles.ts) contain
+// relatedLinks that occasionally point to sibling articles that were never
+// written, producing crawl-time 404s (e.g. /learn/what-is-ethereum-staking-…).
+// Prune any link whose href lives in a PRERENDERED namespace but has no matching
+// route. SPA-only routes (/strength, /factory/*, dynamic detail pages) are left
+// untouched so we never strip a valid app link. Add-only: drops dead links,
+// removes no features.
+const PRERENDERED_NS = ['/learn/', '/insights/', '/price-prediction/', '/compare/', '/q/', '/market/', '/chain/', '/how-to-buy/'];
+const knownRoutes = new Set(Object.keys(routes).map((r) => r.replace(/\/$/, '') || '/'));
+let prunedLinks = 0;
+for (const def of Object.values(routes)) {
+  if (!def.links || !def.links.length) continue;
+  const before = def.links.length;
+  def.links = def.links.filter((l) => {
+    const href = (l.href || '').split('#')[0].split('?')[0].replace(/\/$/, '') || '/';
+    if (!href.startsWith('/')) return true; // external — leave it
+    const inNs = PRERENDERED_NS.some((ns) => (href + '/').startsWith(ns) || href === ns.replace(/\/$/, ''));
+    if (!inNs) return true; // not a prerendered-namespace link → leave it (SPA route)
+    return knownRoutes.has(href);
+  });
+  prunedLinks += before - def.links.length;
+}
+if (prunedLinks) console.log(`[seo-prerender] pruned ${prunedLinks} dead internal links (missing prerendered targets).`);
 
 // ── Run ───────────────────────────────────────────────────────────────────────
 try {
