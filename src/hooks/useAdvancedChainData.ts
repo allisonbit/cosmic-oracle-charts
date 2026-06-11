@@ -146,7 +146,7 @@ export function useAdvancedChainData(chainId: string, enabled = true) {
     enabled: enabled && !!chainId,
     staleTime: 15000,
     refetchInterval: 15000,
-    refetchIntervalInBackground: true,
+    refetchIntervalInBackground: false,
     retry: 2,
     placeholderData: (previousData) => previousData,
   });

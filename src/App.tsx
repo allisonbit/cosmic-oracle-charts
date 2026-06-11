@@ -107,10 +107,17 @@ const queryClient = new QueryClient({
       refetchOnReconnect: true, // Refetch when network reconnects
       refetchOnMount: true, // Always get fresh data on mount
       refetchInterval: false, // Individual hooks control their own intervals
-      refetchIntervalInBackground: true, // Keep fetching when tab not focused - 24/7 updates
+      // Hidden/backgrounded tabs no longer poll. At 100k+ visitors/month this is
+      // the single biggest reduction in Supabase edge-function invocations and
+      // CoinGecko upstream load — abandoned tabs stop firing forever. Visible tabs
+      // still refresh on focus (refetchOnWindowFocus) so users see fresh data.
+      refetchIntervalInBackground: false,
       retry: 3,
       retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
-      staleTime: 15000, // 15 seconds stale time for fresher data
+      // 60s default stale window cuts redundant refetches on mount/navigation
+      // without any perceptible staleness for a free analytics site. Truly-live
+      // hooks (prices, alpha feed) set their own lower staleTime/refetchInterval.
+      staleTime: 60000,
       gcTime: 1000 * 60 * 15, // 15 minutes cache
       networkMode: 'offlineFirst',
     },

@@ -173,7 +173,7 @@ export function useStrengthMeter(timeframe: string = '24h') {
     staleTime: 20000,
     refetchInterval: 20000, // Refresh every 20 seconds 24/7
     gcTime: 1000 * 60 * 10,
-    refetchIntervalInBackground: true, // Keep updating in background
+    refetchIntervalInBackground: false, // Keep updating in background
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
     retry: 3,

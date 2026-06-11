@@ -69,7 +69,7 @@ function buildMetaTags(params: {
   imageUrl?: string;
 }): string {
   const img = params.imageUrl ||
-    "https://storage.googleapis.com/gpt-engineer-file-uploads/uDg0k7BDXGRxsHZqK6gSbdN9o0l1/social-images/social-1765566965381-WhatsApp Image 2025-12-12 at 10.50.30_d13b6f53.jpg";
+    "https://oraclebull.com/og-image.jpg";
   return `
     <title>${params.title}</title>
     <meta name="title" content="${params.title}" />

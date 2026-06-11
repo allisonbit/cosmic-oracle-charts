@@ -34,6 +34,9 @@ export function useRealtimePricesWS(chainIds: string[]) {
 
   const fetchPrices = useCallback(async () => {
     if (!mountedRef.current || chainIds.length === 0) return;
+    // Skip polling while the tab is hidden — saves Supabase edge invocations on
+    // abandoned/background tabs at scale. We refresh immediately on re-focus below.
+    if (typeof document !== "undefined" && document.visibilityState === "hidden") return;
 
     try {
       // Use deduplicated fetch to prevent duplicate requests
@@ -71,11 +74,18 @@ export function useRealtimePricesWS(chainIds: string[]) {
     // Set up polling every 8 seconds for 24/7 real-time updates
     intervalRef.current = setInterval(fetchPrices, 8000);
 
+    // Refresh as soon as the user returns to the tab (covers the hidden-skip above)
+    const onVisible = () => {
+      if (document.visibilityState === "visible") fetchPrices();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+
     return () => {
       mountedRef.current = false;
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
+      document.removeEventListener("visibilitychange", onVisible);
     };
   }, [fetchPrices]);
 
@@ -93,6 +103,8 @@ export function useWhaleAlertsWS(chainId: string, enableNotifications = false) {
 
   const fetchAlerts = useCallback(async () => {
     if (!mountedRef.current || !chainId) return;
+    // Skip polling while the tab is hidden (resumes on re-focus below).
+    if (typeof document !== "undefined" && document.visibilityState === "hidden") return;
 
     try {
       // Use deduplicated fetch
@@ -147,11 +159,18 @@ export function useWhaleAlertsWS(chainId: string, enableNotifications = false) {
     // Poll every 15 seconds for whale alerts - 24/7 updates
     intervalRef.current = setInterval(fetchAlerts, 15000);
 
+    // Refresh on tab re-focus (covers the hidden-skip above)
+    const onVisible = () => {
+      if (document.visibilityState === "visible") fetchAlerts();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+
     return () => {
       mountedRef.current = false;
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
+      document.removeEventListener("visibilitychange", onVisible);
     };
   }, [fetchAlerts]);
 

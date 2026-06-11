@@ -19,7 +19,7 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const distDir = path.join(__dirname, '..', 'dist');
 const BASE_URL = 'https://oraclebull.com';
-const OG_IMAGE = 'https://storage.googleapis.com/gpt-engineer-file-uploads/uDg0k7BDXGRxsHZqK6gSbdN9o0l1/social-images/social-1765566965381-WhatsApp Image 2025-12-12 at 10.50.30_d13b6f53.jpg';
+const OG_IMAGE = 'https://oraclebull.com/og-image.jpg';
 
 const now = new Date();
 const MONTH = now.toLocaleString('en-US', { month: 'long' });
@@ -121,8 +121,34 @@ const COINS = [
   ['akash-network', 'Akash', 'AKT'], ['ordinals', 'ORDI', 'ORDI'], ['ribbon-finance', 'Ribbon', 'RBN'],
   ['rocket-pool', 'Rocket Pool', 'RPL'], ['frax', 'Frax', 'FRAX'], ['gnosis', 'Gnosis', 'GNO'],
   ['enjincoin', 'Enjin', 'ENJ'], ['theta-token', 'Theta', 'THETA'], ['nervos-network', 'Nervos', 'CKB'],
+  ['singularitynet', 'SingularityNET', 'AGIX'], ['ocean-protocol', 'Ocean Protocol', 'OCEAN'],
 ];
+
+// ── Coin slug aliases ──────────────────────────────────────────────────────────
+// The app's internal links (Footer, MarketCategoriesHub) and the vite sitemap use
+// CoinGecko IDs (e.g. "binancecoin", "avalanche-2") while the prerendered pages use
+// friendly slugs (e.g. "bnb", "avalanche"). Without prerendered alias pages, those
+// internal links land on a blank SPA shell for crawlers. We prerender each alias
+// (base + timeframes) but point its <link rel=canonical> at the primary page, so
+// crawlers get real content AND we avoid any duplicate-content signal.
+const COIN_ALIASES = {
+  'binancecoin': 'bnb',
+  'avalanche-2': 'avalanche',
+  'matic-network': 'polygon',
+  'render-token': 'render',
+  'injective-protocol': 'injective',
+  'toncoin': 'ton',
+  'xrp': 'ripple',
+  'immutable': 'immutable-x',
+};
+const COIN_BY_SLUG = Object.fromEntries(COINS.map((c) => [c[0], c]));
 const YEARS = [2026, 2027, 2028, 2030];
+// Timeframe pages: [urlSegment, displayLabel, horizonWord, keywordPhrase]
+const TIMEFRAMES = [
+  ['daily', 'Today', 'short-term', 'today'],
+  ['weekly', 'This Week', 'weekly', 'this week'],
+  ['monthly', 'This Month', 'monthly', 'this month'],
+];
 const CHAINS = [
   ['ethereum', 'Ethereum'], ['solana', 'Solana'], ['bnb', 'BNB Chain'], ['avalanche', 'Avalanche'],
   ['polygon', 'Polygon'], ['arbitrum', 'Arbitrum'], ['base', 'Base'], ['optimism', 'Optimism'],
@@ -566,6 +592,33 @@ for (const [slug, name, sym] of COINS) {
     article: { headline: `${name} Price Prediction – AI Forecast ${MONTH} ${YEAR}`, about: name },
     links: [...related, { href: '/predictions', label: 'All Predictions' }, { href: `/how-to-buy/${slug}`, label: `How to Buy ${name}` }],
   });
+  // Timeframe pages — daily / weekly / monthly. These target high-volume
+  // "today / this week / this month" intent and are the exact URLs the Footer
+  // and category hubs link to (/price-prediction/{slug}/daily). Each has its own
+  // distinct intro/FAQ copy so they are genuinely unique pages, not thin dupes.
+  for (const [tf, label, horizon, kw] of TIMEFRAMES) {
+    add(`/price-prediction/${slug}/${tf}`, {
+      title: `${name} (${sym}) Price Prediction ${label} – AI Forecast (${MONTH} ${YEAR})`,
+      description: `${name} price prediction ${label.toLowerCase()}. AI-powered ${name} (${sym}) ${horizon} forecast with entry zones, support/resistance, ${kw} targets and confidence scores. Updated live ${MONTH} ${YEAR}.`,
+      keywords: `${slug} price prediction ${label.toLowerCase()}, ${name} ${kw} forecast, will ${slug} go up ${label.toLowerCase()}, ${slug} ${horizon} target`,
+      h1: `${name} (${sym}) Price Prediction — ${label}`,
+      intro: [
+        `Will ${name} go up ${label.toLowerCase()}? Oracle Bull's AI builds a ${horizon} ${name} (${sym}) forecast from live price action, momentum, volume flow, volatility and market sentiment — refreshed continuously throughout ${MONTH} ${YEAR}.`,
+        `This ${label.toLowerCase()} outlook highlights the key support and resistance zones, the probability of an up or down move, and the bull/bear targets that matter most over a ${horizon} horizon. Use the live chart above alongside the AI read.`,
+      ],
+      faq: [
+        { q: `What is the ${name} price prediction ${label.toLowerCase()}?`, a: `Our AI model forecasts ${name} (${sym}) over a ${horizon} horizon using real-time market data, technical structure and sentiment. The live chart shows exact support, resistance and ${kw} target levels.` },
+        { q: `Will ${name} go up ${label.toLowerCase()}?`, a: `The model estimates the probability of an up or down ${name} move ${label.toLowerCase()} from current momentum, volume and sentiment. See the probability read on this page — it updates live.` },
+        { q: `Is now a good time to buy ${name}?`, a: `Timing depends on your risk tolerance and the ${horizon} setup. We pair this ${label.toLowerCase()} forecast with a live risk score and entry/exit zones to help you decide. This is research, not financial advice.` },
+      ],
+      article: { headline: `${name} Price Prediction ${label} – AI Forecast ${MONTH} ${YEAR}`, about: name },
+      links: [
+        { href: `/price-prediction/${slug}`, label: `${name} Full Prediction` },
+        ...TIMEFRAMES.filter((t) => t[0] !== tf).map((t) => ({ href: `/price-prediction/${slug}/${t[0]}`, label: `${name} ${t[1]} Forecast` })),
+        { href: '/predictions', label: 'All Predictions' },
+      ],
+    });
+  }
   // Year predictions for a subset
   if (['bitcoin', 'ethereum', 'solana', 'ripple', 'dogecoin', 'cardano', 'bnb', 'avalanche', 'chainlink', 'polkadot', 'shiba-inu', 'pepe', 'sui', 'arbitrum', 'near', 'litecoin', 'polygon', 'tron'].includes(slug)) {
     for (const yr of YEARS) {
@@ -585,6 +638,40 @@ for (const [slug, name, sym] of COINS) {
         links: [{ href: `/price-prediction/${slug}`, label: `${name} Prediction` }, { href: '/predictions', label: 'All Predictions' }],
       });
     }
+  }
+}
+
+// ── Alias coin pages ────────────────────────────────────────────────────────
+// Generate real prerendered HTML for the CoinGecko-ID alias slugs that internal
+// links/sitemaps use, each canonical-pointing at the primary friendly-slug page.
+// This closes the "internal link → blank SPA shell" gap for crawlers without
+// creating duplicate-content (the canonical consolidates ranking signals).
+for (const [aliasSlug, primarySlug] of Object.entries(COIN_ALIASES)) {
+  const coin = COIN_BY_SLUG[primarySlug];
+  if (!coin) continue;
+  const [, name, sym] = coin;
+  const primaryDef = routes[`/price-prediction/${primarySlug}`];
+  if (primaryDef) {
+    add(`/price-prediction/${aliasSlug}`, {
+      ...primaryDef,
+      canonicalPath: `/price-prediction/${primarySlug}`,
+      links: [
+        { href: `/price-prediction/${primarySlug}`, label: `${name} (${sym}) Full Prediction` },
+        ...(primaryDef.links || []),
+      ],
+    });
+  }
+  for (const [tf, label] of TIMEFRAMES) {
+    const tfDef = routes[`/price-prediction/${primarySlug}/${tf}`];
+    if (!tfDef) continue;
+    add(`/price-prediction/${aliasSlug}/${tf}`, {
+      ...tfDef,
+      canonicalPath: `/price-prediction/${primarySlug}/${tf}`,
+      links: [
+        { href: `/price-prediction/${primarySlug}/${tf}`, label: `${name} ${label} Forecast` },
+        ...(tfDef.links || []),
+      ],
+    });
   }
 }
 
@@ -822,7 +909,9 @@ function buildJsonLd(def, routePath) {
 }
 
 function applyRoute(template, routePath, def) {
-  const canonical = `${BASE_URL}${routePath === '/' ? '/' : routePath}`;
+  // `def.canonicalPath` lets alias/duplicate routes point their canonical at the
+  // primary page (avoids duplicate-content signals while still serving real HTML).
+  const canonical = `${BASE_URL}${def.canonicalPath || (routePath === '/' ? '/' : routePath)}`;
   let html = template;
   // <title>
   html = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(def.title)}</title>`);
@@ -892,12 +981,19 @@ try {
       console.warn(`[seo-prerender] failed ${routePath}: ${e.message}`);
     }
   }
-  // Sitemap = everything we actually prerendered. allPaths now includes the
-  // /learn AND /insights article pages, so we no longer emit the stale hardcoded
-  // LEARN_SLUGS, and only fall back to INSIGHT_SLUGS if the TS corpus failed to load.
+  // Sitemap = everything we actually prerendered, EXCEPT alias pages whose
+  // canonical points elsewhere (listing a non-canonical URL in the sitemap is a
+  // best-practice violation — Google should only see the primary URL there).
+  // allPaths now includes the /learn AND /insights article pages, so we no longer
+  // emit the stale hardcoded LEARN_SLUGS, and only fall back to INSIGHT_SLUGS if
+  // the TS corpus failed to load.
+  const selfCanonicalPaths = allPaths.filter((p) => {
+    const def = routes[p];
+    return !def.canonicalPath || def.canonicalPath === p;
+  });
   const sitemapPaths = INSIGHT_ARTICLE_SLUGS.length
-    ? [...allPaths]
-    : [...allPaths, ...INSIGHT_SLUGS.map((s) => `/insights/${s}`)];
+    ? [...selfCanonicalPaths]
+    : [...selfCanonicalPaths, ...INSIGHT_SLUGS.map((s) => `/insights/${s}`)];
   fs.writeFileSync(path.join(distDir, 'sitemap.xml'), generateSitemap([...new Set(sitemapPaths)]), 'utf8');
   console.log(`[seo-prerender] ✅ Prerendered ${ok}/${allPaths.length} routes + sitemap (${new Set(sitemapPaths).size} URLs).`);
 } catch (err) {

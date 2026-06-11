@@ -37,7 +37,7 @@ export function useLiquidationData() {
     refetchInterval: 20000, // Refresh every 20 seconds 24/7
     staleTime: 15000,
     gcTime: 1000 * 60 * 10,
-    refetchIntervalInBackground: true, // Keep updating in background
+    refetchIntervalInBackground: false, // Keep updating in background
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
     retry: 3,

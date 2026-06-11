@@ -145,7 +145,7 @@ export function useChainForecast(chainId: string, chainData: ChainDataResponse |
     enabled: enabled && !!chainId,
     staleTime: 60000,
     refetchInterval: 60000,
-    refetchIntervalInBackground: true,
+    refetchIntervalInBackground: false,
     retry: 2,
     retryDelay: 1000,
     placeholderData: (previousData) => previousData || generateFallbackForecast(chainId, 0),

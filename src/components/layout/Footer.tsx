@@ -230,6 +230,64 @@ export function Footer() {
           </div>
         </div>
 
+        {/* ═══ COIN COMPARISONS (internal linking to /compare hub) ═══ */}
+        <div className="mt-6 pt-6 border-t border-border/20">
+          <h4 className="font-display font-bold text-foreground text-sm mb-4 uppercase tracking-wider">
+            Popular Comparisons
+          </h4>
+          <div className="flex flex-wrap gap-x-4 gap-y-1.5">
+            {[
+              { path: "/compare/bitcoin-vs-ethereum", label: "Bitcoin vs Ethereum" },
+              { path: "/compare/ethereum-vs-solana", label: "Ethereum vs Solana" },
+              { path: "/compare/bitcoin-vs-solana", label: "Bitcoin vs Solana" },
+              { path: "/compare/cardano-vs-solana", label: "Cardano vs Solana" },
+              { path: "/compare/dogecoin-vs-shiba-inu", label: "Dogecoin vs Shiba Inu" },
+              { path: "/compare/xrp-vs-stellar", label: "XRP vs Stellar" },
+              { path: "/compare/polygon-vs-arbitrum", label: "Polygon vs Arbitrum" },
+              { path: "/compare/near-vs-aptos", label: "NEAR vs Aptos" },
+              { path: "/compare/pepe-vs-shiba-inu", label: "Pepe vs Shiba Inu" },
+              { path: "/compare/render-vs-fetch-ai", label: "Render vs Fetch.ai" },
+              { path: "/compare", label: "Compare All Coins →" },
+            ].map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className="text-[11px] text-muted-foreground hover:text-primary transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* ═══ HOW TO BUY GUIDES (internal linking to /how-to-buy hub) ═══ */}
+        <div className="mt-6 pt-6 border-t border-border/20">
+          <h4 className="font-display font-bold text-foreground text-sm mb-4 uppercase tracking-wider">
+            How to Buy Crypto
+          </h4>
+          <div className="flex flex-wrap gap-x-4 gap-y-1.5">
+            {[
+              { path: "/how-to-buy/bitcoin", label: "How to Buy Bitcoin" },
+              { path: "/how-to-buy/ethereum", label: "How to Buy Ethereum" },
+              { path: "/how-to-buy/solana", label: "How to Buy Solana" },
+              { path: "/how-to-buy/ripple", label: "How to Buy XRP" },
+              { path: "/how-to-buy/cardano", label: "How to Buy Cardano" },
+              { path: "/how-to-buy/dogecoin", label: "How to Buy Dogecoin" },
+              { path: "/how-to-buy/shiba-inu", label: "How to Buy Shiba Inu" },
+              { path: "/how-to-buy/pepe", label: "How to Buy Pepe" },
+              { path: "/how-to-buy", label: "All Buying Guides →" },
+            ].map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className="text-[11px] text-muted-foreground hover:text-primary transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+
         {/* Social Links & Bottom */}
         <div className="mt-8 pt-6 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">

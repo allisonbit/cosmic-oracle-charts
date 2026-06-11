@@ -47,7 +47,7 @@ export function useAIBlog() {
     staleTime: 300000, // 5 minutes
     refetchInterval: 600000, // 10 minutes - auto refresh
     gcTime: 1000 * 60 * 30, // 30 min cache
-    refetchIntervalInBackground: true, // Keep updating in background
+    refetchIntervalInBackground: false, // Keep updating in background
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
     retry: 3,

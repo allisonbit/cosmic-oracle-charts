@@ -99,7 +99,7 @@ export function usePricePrediction(
     staleTime: timeframe === 'daily' ? 3 * 60_000 : timeframe === 'weekly' ? 15 * 60_000 : 30 * 60_000,
     refetchInterval: timeframe === 'daily' ? 5 * 60_000 : timeframe === 'weekly' ? 15 * 60_000 : 30 * 60_000,
     gcTime: 60 * 60_000,
-    refetchIntervalInBackground: true,
+    refetchIntervalInBackground: false,
     // A setup must stay put while the user reads it. Window-focus refetches made
     // the levels re-roll on every tab switch — disabled so setups hold steady.
     refetchOnWindowFocus: false,

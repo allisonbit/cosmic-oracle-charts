@@ -88,7 +88,7 @@ export function useSentimentData() {
     queryFn: fetchSentimentData,
     refetchInterval: 60000, // Refresh every 60 seconds
     staleTime: 45000,
-    refetchIntervalInBackground: true,
+    refetchIntervalInBackground: false,
     refetchOnWindowFocus: true,
     retry: 2,
   });

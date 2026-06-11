@@ -58,7 +58,7 @@ export function useAIForecast(coinData: any, analysisType: "coin_forecast" | "ma
     staleTime: 90000,
     refetchInterval: 120000,
     gcTime: 1000 * 60 * 15,
-    refetchIntervalInBackground: true,
+    refetchIntervalInBackground: false,
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
     retry: 1,

@@ -52,7 +52,7 @@ export function useCryptoPrices() {
     refetchInterval: 15000, // 15 seconds - live updates 24/7
     staleTime: 10000,
     gcTime: 1000 * 60 * 10, // 10 min cache
-    refetchIntervalInBackground: true, // Keep updating in background
+    refetchIntervalInBackground: false, // Keep updating in background
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
     retry: 3,

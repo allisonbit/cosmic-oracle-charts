@@ -48,7 +48,7 @@ export function useOracleToken() {
     staleTime: 10000,
     refetchInterval: 15000, // Auto-refresh every 15 seconds 24/7
     gcTime: 1000 * 60 * 10,
-    refetchIntervalInBackground: true, // Keep updating in background
+    refetchIntervalInBackground: false, // Keep updating in background
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
     retry: 3,

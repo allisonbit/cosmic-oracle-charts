@@ -65,7 +65,7 @@ export function useAlphaFeed() {
       return (data?.trades ?? []) as LiveTrade[];
     },
     refetchInterval: 5000,
-    refetchIntervalInBackground: true,
+    refetchIntervalInBackground: false,
     staleTime: 4000,
   });
 

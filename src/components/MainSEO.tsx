@@ -14,12 +14,36 @@ interface SEOProps {
 const currentMonth = new Date().toLocaleString('en-US', { month: 'long' });
 const currentYear = new Date().getFullYear();
 
+// Map CoinGecko-ID alias slugs → the primary friendly slug used by the prerendered
+// prediction pages. Keep in sync with COIN_ALIASES in scripts/seo-prerender.mjs.
+const PREDICTION_SLUG_ALIASES: Record<string, string> = {
+  "binancecoin": "bnb",
+  "avalanche-2": "avalanche",
+  "matic-network": "polygon",
+  "render-token": "render",
+  "injective-protocol": "injective",
+  "toncoin": "ton",
+  "xrp": "ripple",
+  "immutable": "immutable-x",
+};
+
+// For /price-prediction/{slug}[/tf] paths whose slug is an alias, return the
+// canonical path pointing at the primary slug. All other paths return unchanged.
+function resolveCanonicalPath(path: string): string {
+  if (!path.startsWith("/price-prediction/")) return path;
+  const rest = path.slice("/price-prediction/".length);
+  const [slug, ...tail] = rest.split("/");
+  const primary = PREDICTION_SLUG_ALIASES[slug];
+  if (!primary) return path;
+  return `/price-prediction/${[primary, ...tail].join("/")}`;
+}
+
 const defaultMeta = {
   siteName: SITE_NAME,
   title: `Free AI Crypto Predictions | Oracle Bull`,
   description: "Get free AI-powered crypto price predictions for Bitcoin, Ethereum & 1000+ tokens. Real-time charts, whale alerts, sentiment analysis. No signup needed.",
   keywords: "crypto prediction today, AI crypto forecast, bitcoin price prediction, free crypto signals, crypto analysis tool, best crypto prediction site",
-  image: "https://storage.googleapis.com/gpt-engineer-file-uploads/uDg0k7BDXGRxsHZqK6gSbdN9o0l1/social-images/social-1765566965381-WhatsApp Image 2025-12-12 at 10.50.30_d13b6f53.jpg",
+  image: "https://oraclebull.com/og-image.jpg",
   twitterHandle: TWITTER_HANDLE,
   baseUrl: SITE_URL
 };
@@ -327,7 +351,12 @@ export function SEO({ title, description, keywords, image, type = "website", can
   const finalDescription = description || pageMeta.description;
   const finalKeywords = keywords || pageMeta.keywords;
   const finalImage = image || defaultMeta.image;
-  const canonicalUrl = `${defaultMeta.baseUrl}${canonicalPath || currentPath}`;
+  // Alias coin slugs (CoinGecko IDs used by some internal links) must canonicalize
+  // to the primary friendly-slug prediction page so JS-rendering crawlers (Googlebot)
+  // see the SAME canonical the prerenderer baked in — otherwise the runtime would
+  // reset it to a self-referential URL and reintroduce duplicate content.
+  const canonicalTarget = canonicalPath || resolveCanonicalPath(currentPath);
+  const canonicalUrl = `${defaultMeta.baseUrl}${canonicalTarget}`;
 
   useEffect(() => {
     document.title = finalTitle;

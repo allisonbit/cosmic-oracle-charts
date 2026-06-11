@@ -60,7 +60,7 @@ export function useTokenDiscovery(chain: string = 'ethereum', enabled = true) {
     staleTime: 20000,
     refetchInterval: 25000, // Refresh every 25 seconds 24/7
     gcTime: 1000 * 60 * 10,
-    refetchIntervalInBackground: true, // Keep updating in background
+    refetchIntervalInBackground: false, // Keep updating in background
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
     retry: 3,
