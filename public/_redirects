@@ -1,5 +1,62 @@
-# Netlify SPA routing — redirect all routes to index.html
-# This ensures every URL (e.g. /price-prediction/bitcoin) works on direct load
-# Required for React Router to handle client-side routing correctly
+# Oracle Bull — routing for a prerendered (SSG) + SPA hybrid.
+#
+# WHY THIS FILE MATTERS FOR SEO:
+# The static host serves exact file paths (e.g. /dashboard/index.html) but does
+# NOT, on its own, map a clean URL like /dashboard to /dashboard/index.html.
+# Previously the only rule was "/*  /index.html  200", so EVERY clean URL fell
+# through to the homepage shell — and the homepage's <link rel="canonical" href="/">
+# told Google that all ~2469 pages were duplicates of the homepage. Result: only
+# the homepage could index; every prediction/market/compare/learn page was dropped.
+#
+# The rules below rewrite each clean URL to its prerendered index.html (status 200
+# = serve in place, NOT a redirect) BEFORE the SPA fallback. Section patterns use
+# :splat so they cover any depth (coin, timeframe, year, q-page) and auto-include
+# future coins without edits. Auth/app routes (/my/*, /trade, /admin) match none of
+# these and correctly fall through to the SPA shell for client-side routing.
+#
+# Order matters: most specific first, "/*  /index.html" MUST stay last.
 
+# ── Dynamic content sections (any depth via :splat) ────────────────────────────
+/airdrops/*          /airdrops/:splat/index.html          200
+/chain/*             /chain/:splat/index.html             200
+/compare/*           /compare/:splat/index.html           200
+/factory/*           /factory/:splat/index.html           200
+/how-to-buy/*        /how-to-buy/:splat/index.html        200
+/insights/*          /insights/:splat/index.html          200
+/learn/*             /learn/:splat/index.html             200
+/liquidations/*      /liquidations/:splat/index.html      200
+/market/*            /market/:splat/index.html            200
+/price-prediction/*  /price-prediction/:splat/index.html  200
+/q/*                 /q/:splat/index.html                 200
+/tools/*             /tools/:splat/index.html             200
+
+# ── Single hub / leaf pages (clean URL -> its prerendered index.html) ──────────
+/about                  /about/index.html                  200
+/advertise              /advertise/index.html              200
+/airdrops               /airdrops/index.html               200
+/compare                /compare/index.html                200
+/contact                /contact/index.html                200
+/crypto-factory         /crypto-factory/index.html         200
+/crypto-strength-meter  /crypto-strength-meter/index.html  200
+/dashboard              /dashboard/index.html              200
+/editorial-policy       /editorial-policy/index.html       200
+/explorer               /explorer/index.html               200
+/factory                /factory/index.html                200
+/how-to-buy             /how-to-buy/index.html             200
+/insights               /insights/index.html               200
+/learn                  /learn/index.html                  200
+/news                   /news/index.html                   200
+/polymarket             /polymarket/index.html             200
+/predictions            /predictions/index.html            200
+/privacy-policy         /privacy-policy/index.html         200
+/risk-disclaimer        /risk-disclaimer/index.html        200
+/scanner                /scanner/index.html                200
+/sentiment              /sentiment/index.html              200
+/sitemap                /sitemap/index.html                200
+/strength               /strength/index.html               200
+/strength-meter         /strength-meter/index.html         200
+/terms                  /terms/index.html                  200
+/tools                  /tools/index.html                  200
+
+# ── SPA fallback for everything else (/, /my/*, /trade, unknown) ───────────────
 /*  /index.html  200
