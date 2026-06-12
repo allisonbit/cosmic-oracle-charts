@@ -92,6 +92,53 @@ export function useRealtimePricesWS(chainIds: string[]) {
   return { prices, isConnected, lastUpdate };
 }
 
+// Maps the on-chain whale-tracker response (real Alchemy exchange-flow transfers
+// when an ALCHEMY_API_KEY is set in Supabase; an honest seeded fallback otherwise)
+// onto the WhaleAlert shape the radar components render — so they show real data
+// with no component changes. whale-tracker omits explorerUrl, so we build it here.
+interface WhaleTrackerTx {
+  id: string;
+  type: "buy" | "sell" | "transfer";
+  asset: string;
+  amount: number;
+  value: number;
+  from: string;
+  to: string;
+  hash: string;
+  timestamp: number;
+  chain: string;
+  impact: "low" | "medium" | "high";
+}
+
+const WHALE_EXPLORER_TX: Record<string, string> = {
+  ethereum: "https://etherscan.io/tx/",
+  polygon: "https://polygonscan.com/tx/",
+  arbitrum: "https://arbiscan.io/tx/",
+  optimism: "https://optimistic.etherscan.io/tx/",
+  base: "https://basescan.org/tx/",
+  bnb: "https://bscscan.com/tx/",
+  avalanche: "https://snowtrace.io/tx/",
+  solana: "https://solscan.io/tx/",
+};
+
+function toWhaleAlert(tx: WhaleTrackerTx, chainId: string): WhaleAlert {
+  const base = WHALE_EXPLORER_TX[chainId] || WHALE_EXPLORER_TX.ethereum;
+  return {
+    id: tx.id,
+    type: tx.type,
+    token: tx.asset,
+    amount: tx.amount,
+    value: tx.value,
+    timestamp: tx.timestamp,
+    txHash: tx.hash || "",
+    fromWallet: tx.from || "Unknown",
+    toWallet: tx.to,
+    explorerUrl: tx.hash ? `${base}${tx.hash}` : base.replace(/\/tx\/$/, ""),
+    chainId,
+    impact: tx.impact,
+  };
+}
+
 // Whale alerts hook - notifications disabled, just fetch data silently
 export function useWhaleAlertsWS(chainId: string, enableNotifications = false) {
   const [alerts, setAlerts] = useState<WhaleAlert[]>([]);
@@ -107,12 +154,14 @@ export function useWhaleAlertsWS(chainId: string, enableNotifications = false) {
     if (typeof document !== "undefined" && document.visibilityState === "hidden") return;
 
     try {
-      // Use deduplicated fetch
+      // Pull from the REAL on-chain whale-tracker (Alchemy exchange-flow data when
+      // an ALCHEMY_API_KEY is configured in Supabase; an honest seeded fallback
+      // otherwise) and adapt it to the WhaleAlert shape these components expect.
       const data = await debouncedFetch(
-        `whale-alerts-${chainId}`,
+        `whale-tracker-${chainId}`,
         async () => {
-          const { data, error } = await invokeFunction("whale-alerts", {
-            body: { chainId },
+          const { data, error } = await invokeFunction("whale-tracker", {
+            body: { chain: chainId },
           });
           if (error) throw error;
           return data;
@@ -120,8 +169,10 @@ export function useWhaleAlertsWS(chainId: string, enableNotifications = false) {
         3000 // 3 second dedupe window
       );
 
-      if (data?.alerts && mountedRef.current) {
-        const alertsData = data.alerts as WhaleAlert[];
+      if (data?.transactions && mountedRef.current) {
+        const alertsData = (data.transactions as WhaleTrackerTx[]).map((tx) =>
+          toWhaleAlert(tx, chainId)
+        );
         
         // Only set new alert if notifications are enabled
         if (enableNotifications) {
