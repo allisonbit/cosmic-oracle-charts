@@ -1,0 +1,20 @@
+# Cloudflare deploy config — used by `npx wrangler deploy` in Cloudflare's build.
+# Publishes the prerendered static site in ./dist as Worker Static Assets.
+#
+# WHY: the project uses Vite 5, and wrangler's automatic Vite integration wants
+# Vite 6. We don't need that integration at all — the site is already built into
+# ./dist. Declaring [assets] tells wrangler to just upload those files, skipping
+# the Vite auto-config (which is what made the deploy fail).
+#
+# - html_handling "auto-trailing-slash": a request for /dashboard is served from
+#   /dashboard/index.html. THIS is the core SEO fix — every clean URL now resolves
+#   to its own prerendered page instead of falling back to the homepage.
+# - not_found_handling "single-page-application": paths with no prerendered file
+#   (e.g. /my/*, /trade) fall back to index.html so React Router handles them.
+name = "cosmic-oracle-charts"
+compatibility_date = "2025-06-01"
+
+[assets]
+directory = "./dist"
+html_handling = "auto-trailing-slash"
+not_found_handling = "single-page-application"
