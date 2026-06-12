@@ -6,9 +6,11 @@
 # ./dist. Declaring [assets] tells wrangler to just upload those files, skipping
 # the Vite auto-config (which is what made the deploy fail).
 #
-# - html_handling "auto-trailing-slash": a request for /dashboard is served from
-#   /dashboard/index.html. THIS is the core SEO fix — every clean URL now resolves
-#   to its own prerendered page instead of falling back to the homepage.
+# - html_handling "drop-trailing-slash": a request for /dashboard is served 200
+#   directly from /dashboard/index.html (and /dashboard/ redirects to /dashboard).
+#   THIS is the core SEO fix — every clean no-slash URL (matching our sitemap and
+#   canonical tags) resolves to its own prerendered page with a direct 200, instead
+#   of falling back to the homepage or bouncing through a trailing-slash redirect.
 # - not_found_handling "single-page-application": paths with no prerendered file
 #   (e.g. /my/*, /trade) fall back to index.html so React Router handles them.
 name = "cosmic-oracle-charts"
@@ -16,5 +18,5 @@ compatibility_date = "2025-06-01"
 
 [assets]
 directory = "./dist"
-html_handling = "auto-trailing-slash"
+html_handling = "drop-trailing-slash"
 not_found_handling = "single-page-application"
