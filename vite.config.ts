@@ -5,6 +5,7 @@ import { componentTagger } from "lovable-tagger";
 import Sitemap from "vite-plugin-sitemap";
 import { VitePWA } from "vite-plugin-pwa";
 import insightSlugs from "./scripts/insight-slugs.json";
+import airdropSlugs from "./scripts/airdrop-slugs.json";
 
 // All static routes for sitemap generation
 const staticRoutes = [
@@ -285,6 +286,11 @@ const insightRoutes: string[] = (insightSlugs as string[]).map(
   (slug) => `/insights/${slug}`,
 );
 
+// Airdrop detail routes — sourced from snapshot of the airdrops edge function
+const airdropRoutes: string[] = (airdropSlugs as string[]).map(
+  (slug) => `/airdrops/${slug}`,
+);
+
 // Token detail explorer routes for top assets across major chains
 const explorerTokenRoutes: string[] = [
   // Ethereum
@@ -318,6 +324,7 @@ const allRoutes = [
   ...educationalRoutes,
   ...insightRoutes,
   ...explorerTokenRoutes,
+  ...airdropRoutes,
 ];
 
 // https://vitejs.dev/config/
