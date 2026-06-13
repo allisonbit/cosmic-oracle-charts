@@ -62,12 +62,12 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
   },
   "/strength-meter": {
     title: `Crypto Strength Meter – Live Asset Rankings`,
-    description: `See which crypto is the strongest right now. Real-time strength rankings for Bitcoin, Ethereum, Solana & 100+ assets based on momentum, volume & sentiment. Free tool. Updated ${currentMonth} ${currentYear}.`,
+    description: `See which crypto is strongest right now. Real-time rankings for BTC, ETH, SOL & 100+ assets by momentum, volume & sentiment. Free tool.`,
     keywords: "crypto strength meter, strongest cryptocurrency today, bitcoin strength index, crypto momentum ranking, best performing crypto, crypto relative strength"
   },
   "/strength": {
-    title: `Compare Crypto Strength – Real-Time Asset Rankings (${currentMonth} ${currentYear})`,
-    description: `Compare cryptocurrency strength in real time. Rankings for Bitcoin, Ethereum, Solana & 100+ assets by momentum, volume & sentiment scores. Free tool. Updated ${currentMonth} ${currentYear}.`,
+    title: `Compare Crypto Strength – Live Asset Rankings`,
+    description: `Compare crypto strength in real time. Rankings for BTC, ETH, SOL & 100+ assets by momentum, volume & sentiment scores. Free tool, no signup.`,
     keywords: "crypto strength meter, strongest cryptocurrency today, bitcoin strength index, crypto momentum ranking, best performing crypto"
   },
   "/factory": {
@@ -76,29 +76,29 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
     keywords: "crypto events calendar, crypto factory, upcoming token launches, whale alerts crypto, crypto market events, protocol upgrades, crypto news today"
   },
   "/factory/events": {
-    title: `Crypto Events Calendar – Token Launches, Airdrops & Protocol Upgrades (${currentMonth} ${currentYear})`,
-    description: `Track every upcoming crypto event: token launches, protocol upgrades, airdrops, governance votes, and market-moving announcements. The crypto calendar traders rely on. Updated ${currentMonth} ${currentYear}.`,
+    title: `Crypto Events Calendar – Launches & Upgrades`,
+    description: `Track upcoming crypto events: token launches, protocol upgrades, airdrops, governance votes & market-moving announcements. Updated live.`,
     keywords: "crypto events calendar, upcoming token launches, crypto airdrops, protocol upgrades, crypto governance, market events crypto"
   },
   "/factory/onchain": {
-    title: `On-Chain Intelligence – Whale Movements & Smart Money Flows (${currentMonth} ${currentYear})`,
+    title: `On-Chain Intel – Whale Moves & Smart Money`,
     description: `Real-time on-chain analytics: whale wallet movements, large transfers, smart money accumulation, DeFi flows, and exchange inflows/outflows. Know what whales are doing before the market reacts.`,
     keywords: "on-chain analytics, whale movements crypto, smart money flow, large crypto transactions, whale tracker live, on-chain data"
   },
   "/factory/narratives": {
-    title: `Crypto Market Narratives – Trending Sectors & Rotation Signals (${currentMonth} ${currentYear})`,
+    title: `Crypto Narratives – Trending Sectors & Rotation`,
     description: `Track trending crypto narratives in real-time: AI tokens, DeFi 2.0, RWA, meme coins, Layer 2s. Identify sector rotation before it happens. Updated ${currentMonth} ${currentYear}.`,
     keywords: "crypto narratives, trending crypto sectors, AI tokens, DeFi narrative, RWA crypto, sector rotation crypto, narrative trading"
   },
   "/factory/news": {
-    title: `Crypto News Today – Breaking News with Sentiment Analysis (${currentMonth} ${currentYear})`,
+    title: `Crypto News Today – Sentiment-Tagged Headlines`,
     description: `Breaking crypto news from 50+ sources with real-time sentiment scoring. Filter by bullish/bearish impact, coin, or chain. Stay ahead of the market with AI-tagged news alerts.`,
     keywords: "crypto news today, breaking crypto news, bitcoin news, crypto news live, cryptocurrency headlines, crypto market news"
   },
 
   "/trade": {
-    title: `Trade Crypto – Buy, Sell, Swap & Bridge Any Token (${currentMonth} ${currentYear})`,
-    description: "Trade any cryptocurrency directly. Buy, sell, swap & bridge tokens across 12+ blockchains including Ethereum, Base, Polygon, Arbitrum & more. Zero platform fees. Connect your wallet and trade instantly.",
+    title: `Trade Crypto – Buy, Sell, Swap & Bridge Tokens`,
+    description: "Trade any token directly. Swap & bridge across 12+ chains including Ethereum, Base, Polygon & Arbitrum. Zero platform fees. Connect wallet to start.",
     keywords: "trade crypto, buy crypto, sell crypto, swap tokens, crypto bridge, dex trading, decentralized exchange, buy bitcoin, buy ethereum, buy solana"
   },
   "/scanner": {

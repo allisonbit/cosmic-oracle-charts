@@ -412,8 +412,8 @@ export default function Scanner() {
                   ))}
                 </div>
                 <div className="flex items-center gap-1 md:ml-auto bg-background/50 rounded-lg p-0.5 border border-border/40">
-                  <Button size="sm" variant="ghost" className={cn("h-6 px-2 text-xs", view === "table" && "bg-primary/20 text-primary")} onClick={() => setView("table")}><List className="w-3.5 h-3.5" /></Button>
-                  <Button size="sm" variant="ghost" className={cn("h-6 px-2 text-xs", view === "cards" && "bg-primary/20 text-primary")} onClick={() => setView("cards")}><LayoutGrid className="w-3.5 h-3.5" /></Button>
+                  <Button aria-label="Switch to table view" aria-pressed={view === "table"} size="sm" variant="ghost" className={cn("h-6 px-2 text-xs", view === "table" && "bg-primary/20 text-primary")} onClick={() => setView("table")}><List className="w-3.5 h-3.5" /></Button>
+                  <Button aria-label="Switch to card view" aria-pressed={view === "cards"} size="sm" variant="ghost" className={cn("h-6 px-2 text-xs", view === "cards" && "bg-primary/20 text-primary")} onClick={() => setView("cards")}><LayoutGrid className="w-3.5 h-3.5" /></Button>
                 </div>
               </div>
             </CardContent>
