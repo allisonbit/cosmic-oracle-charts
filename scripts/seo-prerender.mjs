@@ -87,16 +87,19 @@ try {
   console.warn('[seo-prerender] insights load failed, keeping fallback:', e.message);
 }
 
-// Extract airdrop projects from AirdropList.tsx. The data is a const array literal
-// inside a React component, so rather than bundle/execute JSX we lightweight-parse
-// the top-level scalar fields straight from source (re-read every build → no drift).
+// Extract airdrop projects from airdropData.ts. The data is a const array literal,
+// so rather than bundle/execute TS we lightweight-parse the top-level scalar fields
+// straight from source (re-read every build → no drift).
 // WHY: /airdrops links to /airdrops/{id} detail pages that were NOT prerendered,
 // so crawlers hitting those internal links got a blank SPA shell. This bakes real
 // content for each one (matches the /price-prediction/.../daily fix pattern).
+// NOTE: the data was split out of AirdropList.tsx into airdropData.ts (commit a2b65bf);
+// anchor on `= [` so the `AirdropProject[]` type annotation can't be mistaken for the
+// array start (that regression silently dropped all 8 detail pages to blank shells).
 let AIRDROPS = [];
 try {
-  const adSrc = fs.readFileSync(path.join(__dirname, '..', 'src', 'components', 'airdrops', 'AirdropList.tsx'), 'utf8');
-  const arrStart = adSrc.indexOf('[', adSrc.indexOf('AIRDROPS_DATA'));
+  const adSrc = fs.readFileSync(path.join(__dirname, '..', 'src', 'components', 'airdrops', 'airdropData.ts'), 'utf8');
+  const arrStart = adSrc.indexOf('= [', adSrc.indexOf('AIRDROPS_DATA')) + 2;
   const chunks = adSrc.slice(arrStart).split(/\n  \{\n/).slice(1);
   AIRDROPS = chunks.map((c) => {
     const f = (k) => (c.match(new RegExp(`\\b${k}:\\s*"([^"]*)"`)) || [])[1] || null;
@@ -260,24 +263,12 @@ const COMPARE_PAIRS = [
   'ethena-vs-ondo-finance', 'starknet-vs-zksync', 'ton-vs-solana', 'kaspa-vs-bitcoin',
   'tron-vs-ethereum', 'monero-vs-zcash', 'hedera-vs-stellar', 'algorand-vs-cardano',
 ];
-const LEARN_SLUGS = [
-  'what-is-crypto-market-sentiment', 'how-ai-is-used-in-crypto-market-analysis',
-  'bitcoin-market-cycles-explained', 'risk-management-in-volatile-crypto-markets',
-  'how-to-analyze-altcoins-using-market-data', 'technical-analysis-vs-sentiment-analysis',
-  'on-chain-data-explained-for-beginners', 'how-market-psychology-affects-crypto-prices',
-  'how-whales-influence-market-trends', 'understanding-liquidity-in-crypto-markets',
-  'what-is-bitcoin-halving-and-why-does-it-matter', 'how-to-read-crypto-candlestick-charts',
-  'what-is-defi-decentralized-finance-explained', 'what-is-a-crypto-wallet-and-how-to-use-it',
-  'how-to-spot-a-crypto-bull-market', 'how-to-spot-a-crypto-bear-market',
-  'what-is-ethereum-staking-explained', 'what-are-layer-2-blockchains',
-  'what-is-tokenomics-explained', 'how-to-read-a-crypto-whitepaper',
-  'what-is-market-capitalization-in-crypto', 'dollar-cost-averaging-dca-strategy-for-crypto',
-  'how-to-use-stop-loss-orders-in-crypto-trading', 'crypto-tax-basics-what-you-need-to-know',
-  'what-is-a-crypto-airdrop-and-how-to-get-one', 'how-to-buy-bitcoin-for-beginners',
-  'proof-of-work-vs-proof-of-stake', 'what-is-a-blockchain-explained-simply',
-  'crypto-portfolio-diversification-strategy', 'how-to-identify-crypto-scams',
-  'what-are-stablecoins-and-how-do-they-work',
-];
+// NOTE: /learn pages are emitted from the EDU_ARTICLES corpus (public/data/
+// educational-articles.json) below — see LEARN_ARTICLE_SLUGS. A hardcoded
+// LEARN_SLUGS list used to live here but was dead code: many of its slugs had no
+// matching article, so anything that cross-linked to them produced crawl-time
+// dead links. Don't reintroduce a hand-maintained learn-slug list — the corpus
+// is the single source of truth.
 
 // Curated insights articles (kept in sync with src/data/insightsArticles.ts).
 const INSIGHT_SLUGS = [
@@ -1369,9 +1360,9 @@ try {
   // Sitemap = everything we actually prerendered, EXCEPT alias pages whose
   // canonical points elsewhere (listing a non-canonical URL in the sitemap is a
   // best-practice violation — Google should only see the primary URL there).
-  // allPaths now includes the /learn AND /insights article pages, so we no longer
-  // emit the stale hardcoded LEARN_SLUGS, and only fall back to INSIGHT_SLUGS if
-  // the TS corpus failed to load.
+  // allPaths now includes the /learn AND /insights article pages (emitted from
+  // their corpora), so we only fall back to INSIGHT_SLUGS if the TS corpus failed
+  // to load.
   const selfCanonicalPaths = allPaths.filter((p) => {
     const def = routes[p];
     return !def.canonicalPath || def.canonicalPath === p;

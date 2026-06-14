@@ -347,7 +347,7 @@
       },
       {
         "text": "Risk Management Guide",
-        "url": "/insights/risk-management-in-volatile-crypto-markets"
+        "url": "/learn/risk-management-in-volatile-crypto-markets"
       }
     ]
   },
@@ -435,7 +435,7 @@
       },
       {
         "text": "Risk Management",
-        "url": "/insights/risk-management-in-volatile-crypto-markets"
+        "url": "/learn/risk-management-in-volatile-crypto-markets"
       }
     ]
   },
@@ -1001,8 +1001,8 @@
     ],
     "relatedLinks": [
       {
-        "text": "What Are Stablecoins?",
-        "url": "/learn/what-are-stablecoins-and-how-do-they-work"
+        "text": "Stablecoin Flows as a Market Signal",
+        "url": "/insights/stablecoin-flows-as-a-crypto-market-signal"
       },
       {
         "text": "Impermanent Loss Calculator",
@@ -1050,8 +1050,8 @@
         "url": "/how-to-buy/bitcoin"
       },
       {
-        "text": "How to Identify Crypto Scams",
-        "url": "/learn/how-to-identify-crypto-scams"
+        "text": "How to Spot a Crypto Rug Pull",
+        "url": "/insights/how-to-spot-a-crypto-rug-pull-before-you-buy"
       },
       {
         "text": "Wallet Scanner",
@@ -1091,16 +1091,16 @@
     ],
     "relatedLinks": [
       {
-        "text": "What Is Ethereum Staking?",
-        "url": "/learn/what-is-ethereum-staking-explained"
+        "text": "On-Chain Data Explained",
+        "url": "/learn/on-chain-data-explained-for-beginners"
       },
       {
         "text": "Ethereum Price Prediction",
         "url": "/price-prediction/ethereum"
       },
       {
-        "text": "What Is a Blockchain?",
-        "url": "/learn/what-is-a-blockchain-explained-simply"
+        "text": "What Are Layer-2 Blockchains?",
+        "url": "/learn/what-are-layer-2-blockchains"
       }
     ]
   },
@@ -1145,8 +1145,8 @@
         "url": "/market/best-layer-2-crypto"
       },
       {
-        "text": "What Is Ethereum Staking?",
-        "url": "/learn/what-is-ethereum-staking-explained"
+        "text": "Proof of Work vs Proof of Stake",
+        "url": "/learn/proof-of-work-vs-proof-of-stake"
       }
     ]
   }
