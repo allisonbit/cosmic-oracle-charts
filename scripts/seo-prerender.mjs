@@ -1040,30 +1040,111 @@ const allComparePairs = (() => {
   }
   return out;
 })();
+// Build a UNIQUE, factual head-to-head body for a compare pair from COIN_FACTS.
+// The prose varies by the two coins' real attributes (sector, age, consensus,
+// use-case, market drivers) so each of the ~320 /compare pages reads differently
+// instead of being a name-swapped template. Returns { intro:[], faq:[] }.
+function comparePair(a, b, an, bn) {
+  const fa = COIN_FACTS[a], fb = COIN_FACTS[b];
+  const intro = [];
+  const faq = [];
+  // Deterministic phrasing picker: hash the pair to a stable index so same-sector
+  // pages (e.g. all L2-vs-L2) don't share one identical templated sentence. Same
+  // input → same output (prerender must be reproducible), but different pairs vary.
+  const h = [...(a + b)].reduce((acc, c) => (acc * 31 + c.charCodeAt(0)) >>> 0, 7);
+  const pick = (arr) => arr[h % arr.length];
+
+  if (fa && fb) {
+    const la = SECTOR_LABELS[fa.sector] || fa.cat;
+    const lb = SECTOR_LABELS[fb.sector] || fb.cat;
+    const sameSector = fa.sector === fb.sector;
+
+    // 1) What each is — distinct categories or same-category framing (varied).
+    intro.push(
+      sameSector
+        ? pick([
+            `${an} and ${bn} are both ${la}s, which makes this a direct head-to-head: they compete for the same users, liquidity and developer attention, so the edge comes down to execution, adoption and tokenomics rather than category.`,
+            `Both ${an} and ${bn} sit in the ${la} category, so this is less about what they do and more about who does it better — the deciding factors are real usage, ecosystem depth, token supply dynamics and momentum.`,
+            `${an} versus ${bn} is a same-category matchup: both are ${la}s chasing the same opportunity. With the use case held constant, traction, fees, security and tokenomics are what actually separate them.`,
+          ])
+        : `${an} is a ${la}${fa.year ? `, launched in ${fa.year}` : ''}, while ${bn} is a ${lb}${fb.year ? `, launched in ${fb.year}` : ''}. They serve different jobs, so "which is better" depends on whether you want exposure to ${la === lb ? 'that niche' : `the ${la} thesis or the ${lb} thesis`}.`
+    );
+
+    // 2) Technical / consensus contrast when we know both.
+    if (fa.consensus && fb.consensus) {
+      intro.push(
+        fa.consensus === fb.consensus
+          ? `Under the hood both secure their network with ${fa.consensus}, so neither has a fundamental consensus advantage — differentiation comes from throughput, fees, ecosystem size and where real on-chain activity is actually happening.`
+          : `Technically they differ at the base layer: ${an} uses ${fa.consensus} while ${bn} uses ${fb.consensus}. That shapes their trade-offs around security, decentralisation, energy use and transaction throughput — and it is a key reason long-term holders pick one camp over the other.`
+      );
+    }
+
+    // 3) Age / maturity angle when launch years differ enough to matter.
+    if (fa.year && fb.year && Math.abs(fa.year - fb.year) >= 2) {
+      const [older, younger, oy, yy] = fa.year < fb.year ? [an, bn, fa.year, fb.year] : [bn, an, fb.year, fa.year];
+      intro.push(
+        `${older} is the more battle-tested of the two (live since ${oy}), which usually means deeper liquidity and a longer security track record, while ${younger} (${yy}) is younger — typically higher risk but with more room to grow if it executes. Match that risk profile to your own time horizon.`
+      );
+    }
+
+    // 4) What moves each — sector drivers (only add the second if it's different).
+    const da = sectorDriver(a), db = sectorDriver(b);
+    if (da && db) {
+      intro.push(
+        da === db
+          ? pick([
+              `Both tend to move on the same forces — ${da} — plus overall Bitcoin direction, so in practice they often rise and fall together and the question is which captures more of the upside.`,
+              `Because they share a category, ${an} and ${bn} react to the same catalysts — ${da} — so relative performance, not direction, is usually the real decision.`,
+              `Expect ${an} and ${bn} to be driven by the same things: ${da}. They tend to trend together, so watch which one is gaining share rather than which way the sector moves.`,
+            ])
+          : `${an} is driven mainly by ${da}, whereas ${bn} responds more to ${db}. Knowing which catalyst you are betting on matters more than the headline price.`
+      );
+    }
+
+    // FAQ — keep the existing two "what is" entries plus a decision-oriented one.
+    faq.push(
+      { q: `Is ${an} or ${bn} a better investment?`, a: `Neither is universally "better" — it depends on your goals, risk tolerance and time horizon. This page compares ${an} and ${bn} across price, market cap, momentum and fundamentals with an AI verdict, but it is research, not financial advice. Many investors hold both for diversification.` },
+      { q: `What is the main difference between ${an} and ${bn}?`, a: sameSector
+          ? `${an} and ${bn} are both ${la}s competing in the same category; the difference is in their adoption, performance, tokenomics and momentum rather than their core purpose.`
+          : `${an} is a ${la} and ${bn} is a ${lb} — they are built for different use cases, which is the single biggest factor when choosing between them.` },
+      { q: `What is ${an}?`, a: fa.blurb },
+      { q: `What is ${bn}?`, a: fb.blurb },
+      { q: `Can I hold both ${an} and ${bn}?`, a: `Yes. ${sameSector ? `Even though they overlap, ` : `Because they target different niches, `}many investors hold both to spread risk across ${sameSector ? 'competing projects in the same sector' : 'different parts of the crypto market'}. Always size positions to your own risk tolerance.` },
+    );
+  } else {
+    // Fallback when facts are missing for one/both assets — keep it honest.
+    intro.push(`${an} vs ${bn}: a side-by-side comparison of price, market cap, trading volume, recent performance and fundamentals, plus an AI verdict on which looks stronger right now (${MONTH} ${YEAR}).`);
+    faq.push(
+      { q: `Is ${an} or ${bn} a better investment?`, a: `It depends on your goals and risk tolerance. This page compares ${an} and ${bn} across price, market cap, momentum and fundamentals, with an AI verdict — but it is research, not financial advice.` },
+      ...(fa ? [{ q: `What is ${an}?`, a: fa.blurb }] : []),
+      ...(fb ? [{ q: `What is ${bn}?`, a: fb.blurb }] : []),
+    );
+  }
+
+  // Always close the intro with the on-page-data sentence so the H1 context is clear.
+  intro.push(`Below, compare ${an} and ${bn} side by side on live price, market cap, trading volume and recent performance, with Oracle Bull's AI verdict on which looks stronger in ${MONTH} ${YEAR}.`);
+  return { intro, faq };
+}
+
+// Resolve a coin's display name: prefer the canonical name from COINS (so `xrp`
+// renders "XRP", `bnb` → "BNB"), then a small acronym override map, then titleCase.
+const COMPARE_NAME_OVERRIDE = {
+  xrp: 'XRP', bnb: 'BNB', zksync: 'zkSync Era', 'curve-dao-token': 'Curve DAO',
+  'fetch-ai': 'Fetch.ai', 'sei-network': 'Sei', 'maker': 'Maker', 'ton': 'Toncoin',
+};
+const coinName = (slug) => COMPARE_NAME_OVERRIDE[slug] || (COIN_BY_SLUG[slug] && COIN_BY_SLUG[slug][1]) || titleCase(slug);
+
 for (const pair of allComparePairs) {
   const [a, b] = pair.split('-vs-');
-  const an = titleCase(a), bn = titleCase(b);
-  const fa = COIN_FACTS[a], fb = COIN_FACTS[b];
-  // Build a factual contrast sentence when we know both assets.
-  const contrast = (fa && fb)
-    ? `${an} is a ${SECTOR_LABELS[fa.sector] || fa.cat}${fa.year ? ` (launched ${fa.year})` : ''}, while ${bn} is a ${SECTOR_LABELS[fb.sector] || fb.cat}${fb.year ? ` (launched ${fb.year})` : ''}.`
-    : null;
-  const sameSector = fa && fb && fa.sector === fb.sector;
+  const an = coinName(a), bn = coinName(b);
+  const { intro, faq } = comparePair(a, b, an, bn);
   add(`/compare/${pair}`, {
     title: `${an} vs ${bn} – Which Is Better? (${MONTH} ${YEAR})`,
     description: `${an} vs ${bn} compared side by side: price, market cap, performance, fundamentals and an AI verdict on which is the stronger buy in ${MONTH} ${YEAR}.`,
     keywords: `${a} vs ${b}, ${an} vs ${bn}, ${a} or ${b}, which is better ${a} ${b}`,
     h1: `${an} vs ${bn}`,
-    intro: [
-      ...(contrast ? [contrast] : []),
-      `${an} vs ${bn}: a side-by-side comparison of price, market cap, trading volume, recent performance and fundamentals, plus an AI verdict on which looks stronger right now (${MONTH} ${YEAR}).`,
-      ...(sameSector ? [`Because both are in the same category, this comparison focuses on momentum, adoption and tokenomics to separate them.`] : []),
-    ],
-    faq: [
-      { q: `Is ${an} or ${bn} a better investment?`, a: `It depends on your goals and risk tolerance. This page compares ${an} and ${bn} across price, market cap, momentum and fundamentals, with an AI verdict — but it is research, not financial advice.` },
-      ...(fa ? [{ q: `What is ${an}?`, a: fa.blurb }] : []),
-      ...(fb ? [{ q: `What is ${bn}?`, a: fb.blurb }] : []),
-    ],
+    intro,
+    faq,
     links: [
       ...(COIN_BY_SLUG[a] ? [{ href: `/price-prediction/${a}`, label: `${an} Prediction` }] : []),
       ...(COIN_BY_SLUG[b] ? [{ href: `/price-prediction/${b}`, label: `${bn} Prediction` }] : []),
