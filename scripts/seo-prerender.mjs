@@ -286,6 +286,9 @@ const INSIGHT_SLUGS = [
 // exact "will X go up today / should I buy X" long-tail searches. Coins are
 // drawn from the prerendered coin set so every /q page links to a real page.
 const Q_COINS = COINS.slice(0, 75).map(([slug, name]) => [slug, name]);
+// Slugs that actually get /q/ pages — used to avoid linking to /q pages that
+// don't exist (COINS has 98 entries but only the first 75 get question pages).
+const Q_COIN_SLUGS = new Set(Q_COINS.map(([s]) => s));
 // Each pattern: [slugTemplate, kind] — kind drives the answer copy.
 const Q_PATTERNS = [
   ['{coin}-price-prediction-today', 'today'],
@@ -1221,23 +1224,43 @@ for (const [coinSlug, coinName] of Q_COINS) {
   }
 }
 
-// How-to-buy coin pages
+// How-to-buy coin pages. The title promises a "Step-by-Step Guide", so the
+// prerendered body must actually contain the steps (it previously had none — just
+// two generic sentences). Bake real numbered steps + a fuller FAQ so these
+// high-intent pages have unique, useful content and deliver on the H1.
 for (const [slug, name, sym] of COINS) {
   const facts = coinFactSentences(slug, name, sym);
+  const f = COIN_FACTS[slug];
+  const sectorLine = f ? `${name} is a ${SECTOR_LABELS[f.sector] || f.cat}${f.year ? `, live since ${f.year}` : ''}, so it is listed on most major exchanges and is straightforward for beginners to buy.` : null;
   add(`/how-to-buy/${slug}`, {
     title: `How to Buy ${name} (${sym}) – Step-by-Step Guide (${YEAR})`,
     description: `Learn how to buy ${name} (${sym}) safely in ${YEAR}. A beginner-friendly, step-by-step guide covering exchanges, wallets, fees and security.`,
-    keywords: `how to buy ${slug}, buy ${name}, ${slug} for beginners, where to buy ${slug}`,
+    keywords: `how to buy ${slug}, buy ${name}, ${slug} for beginners, where to buy ${slug}, best exchange for ${slug}`,
     h1: `How to Buy ${name} (${sym})`,
     intro: [
       ...(facts.length ? [facts[0]] : []),
-      `A beginner-friendly, step-by-step guide to buying ${name} (${sym}) safely: choosing a reputable exchange, creating and securing an account, funding it, placing your order, and moving ${name} to a self-custody wallet.`,
+      ...(sectorLine ? [sectorLine] : []),
+      `Here is how to buy ${name} (${sym}) safely in ${YEAR}, step by step:`,
+      `1. Choose a reputable, regulated exchange that lists ${sym}. Compare trading fees, withdrawal fees, supported payment methods and whether the exchange operates in your country before signing up.`,
+      `2. Create your account and complete identity verification (KYC). Turn on two-factor authentication (2FA) with an authenticator app immediately — this is the single most important step for protecting your funds.`,
+      `3. Fund your account. Most exchanges accept bank transfer, debit/credit card or a stablecoin deposit. Bank transfer is usually the cheapest; card is the fastest but carries higher fees.`,
+      `4. Buy ${sym}. Search for ${name}, choose a market order (instant, at the current price) or a limit order (executes only at a price you set), enter the amount, and confirm. You can buy a fraction of a ${sym} — you do not need to buy a whole one.`,
+      `5. Secure your ${name}. For long-term holding, withdraw to a self-custody wallet (a hardware wallet is safest) so you control the private keys, rather than leaving ${sym} on the exchange.`,
+      `Always invest only what you can afford to lose, and treat ${name}'s price as volatile — this guide is educational, not financial advice.`,
     ],
     faq: [
       { q: `What is the safest way to buy ${name}?`, a: `Use a reputable, regulated exchange, enable two-factor authentication, and consider moving your ${name} (${sym}) to a hardware or self-custody wallet for long-term storage.` },
+      { q: `What is the minimum amount of ${name} I can buy?`, a: `On most exchanges you can buy a small fractional amount of ${name} — often from around $1–$10 worth of ${sym}. You never need to buy a whole ${sym}.` },
+      { q: `How much does it cost to buy ${name}?`, a: `Beyond the price of ${sym} itself, you pay a trading fee (typically 0.1%–1.5% depending on the exchange and payment method) and sometimes a deposit or withdrawal fee. Bank transfers are usually cheaper than card purchases.` },
+      { q: `Do I need a wallet to buy ${name}?`, a: `Not to buy it — the exchange holds ${sym} for you initially. But for security and true ownership, moving ${name} to your own wallet (especially a hardware wallet for larger amounts) is strongly recommended.` },
+      { q: `Is buying ${name} taxable?`, a: `Buying ${sym} with fiat is usually not a taxable event itself, but selling, swapping or spending it generally is, in most jurisdictions. Keep records of your purchases and consult a local tax professional — this is not tax advice.` },
       ...(coinFactFaq(slug, name, sym) ? [coinFactFaq(slug, name, sym)] : []),
     ],
-    links: [{ href: `/price-prediction/${slug}`, label: `${name} Prediction` }, { href: '/how-to-buy', label: 'More Buying Guides' }],
+    links: [
+      { href: `/price-prediction/${slug}`, label: `${name} Prediction` },
+      ...(Q_COIN_SLUGS.has(slug) ? [{ href: `/q/should-i-buy-${slug}-today`, label: `Should I Buy ${name} Today?` }] : []),
+      { href: '/how-to-buy', label: 'More Buying Guides' },
+    ],
   });
 }
 
