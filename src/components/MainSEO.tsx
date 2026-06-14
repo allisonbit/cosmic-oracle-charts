@@ -9,6 +9,10 @@ interface SEOProps {
   image?: string;
   type?: string;
   canonicalPath?: string;
+  /** Force noindex,nofollow regardless of path — used by the 404/NotFound route
+      so soft-404s (the SPA serves the homepage shell for unknown URLs) aren't
+      indexed once Googlebot renders the JS and lands on the catch-all route. */
+  noindex?: boolean;
 }
 
 const currentMonth = new Date().toLocaleString('en-US', { month: 'long' });
@@ -263,7 +267,7 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
   },
 };
 
-export function SEO({ title, description, keywords, image, type = "website", canonicalPath }: SEOProps) {
+export function SEO({ title, description, keywords, image, type = "website", canonicalPath, noindex = false }: SEOProps) {
   const location = useLocation();
   const currentPath = location.pathname;
   
@@ -376,8 +380,9 @@ export function SEO({ title, description, keywords, image, type = "website", can
     setMeta("description", finalDescription);
     setMeta("keywords", finalKeywords);
     setMeta("author", "Oracle Bull");
-    // Private/authenticated routes should NOT be indexed
-    const isPrivatePage = currentPath.startsWith("/my") || currentPath.startsWith("/admin");
+    // Private/authenticated routes (and explicit noindex, e.g. the 404 route)
+    // should NOT be indexed.
+    const isPrivatePage = noindex || currentPath.startsWith("/my") || currentPath.startsWith("/admin");
     const robotsContent = isPrivatePage
       ? "noindex, nofollow"
       : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
@@ -465,7 +470,7 @@ export function SEO({ title, description, keywords, image, type = "website", can
     // Speakable / voice search optimization
     setMeta("speakable", finalDescription.slice(0, 150));
 
-  }, [finalTitle, finalDescription, finalKeywords, finalImage, canonicalUrl, type, currentPath]);
+  }, [finalTitle, finalDescription, finalKeywords, finalImage, canonicalUrl, type, currentPath, noindex]);
 
   return null;
 }

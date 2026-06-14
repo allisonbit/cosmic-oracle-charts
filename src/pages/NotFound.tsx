@@ -2,6 +2,7 @@ import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
 import { Home, Search, TrendingUp, BarChart3, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SEO } from "@/components/MainSEO";
 
 const NotFound = () => {
   const location = useLocation();
@@ -12,6 +13,9 @@ const NotFound = () => {
 
   return (
     <div className="min-h-screen cosmic-bg flex items-center justify-center p-4">
+      {/* Soft-404 hygiene: the Workers SPA fallback serves the homepage shell for
+          unknown URLs, so mark this route noindex once Googlebot renders the JS. */}
+      <SEO title="Page Not Found (404)" description="The page you're looking for doesn't exist." noindex />
       <div className="text-center max-w-lg">
         {/* Cosmic 404 */}
         <div className="relative mb-8">
