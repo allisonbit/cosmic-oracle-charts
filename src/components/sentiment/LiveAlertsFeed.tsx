@@ -74,7 +74,7 @@ export function LiveAlertsFeed({ whaleData, coins }: LiveAlertsFeedProps) {
         description: `${coin.symbol} trading volume surged to $${(coin.volume / 1e9).toFixed(1)}B with ${coin.change24h >= 0 ? '+' : ''}${(coin.change24h ?? 0).toFixed(1)}% price movement`,
         value: coin.volume,
         change: coin.change24h,
-        timestamp: Date.now() - Math.random() * 1800000,
+        timestamp: Date.now(),
         narrative: coin.change24h > 0 ? '#Breakout' : '#Breakdown',
         source: 'Market Data'
       });
@@ -90,7 +90,7 @@ export function LiveAlertsFeed({ whaleData, coins }: LiveAlertsFeedProps) {
         description: `${coin.symbol} moved ${coin.change24h >= 0 ? '+' : ''}${(coin.change24h ?? 0).toFixed(1)}% in 24 hours`,
         value: coin.price,
         change: coin.change24h,
-        timestamp: Date.now() - Math.random() * 3600000,
+        timestamp: Date.now(),
         narrative: coin.change24h > 10 ? '#Pump' : coin.change24h < -10 ? '#Dump' : coin.change24h > 0 ? '#Bullish' : '#Bearish',
         source: 'Price Action'
       });

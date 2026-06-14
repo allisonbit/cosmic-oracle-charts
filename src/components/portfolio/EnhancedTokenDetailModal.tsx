@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, BarChart, Bar } from "recharts";
 import { CoinImage } from "@/components/ui/CoinImage";
+import { usePriceSeries } from "@/hooks/usePriceSeries";
 
 interface TokenHolding {
   symbol: string;
@@ -54,6 +55,8 @@ interface EnhancedTokenDetailModalProps {
 export function EnhancedTokenDetailModal({ token, isOpen, onClose, walletAddress }: EnhancedTokenDetailModalProps) {
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
+  // Real price series (hook must run before any early return).
+  const { data: priceSeries } = usePriceSeries(token?.symbol, 30, 180);
 
   if (!token) return null;
 
@@ -66,31 +69,24 @@ export function EnhancedTokenDetailModal({ token, isOpen, onClose, walletAddress
     }
   };
 
-  // Generate mock chart data for different timeframes
-  const generateChartData = (days: number) => {
-    const data = [];
-    const change = token.change24h / 100;
-    const startPrice = token.price / (1 + change);
-    for (let i = 0; i <= days * 24; i += Math.max(1, Math.floor(days / 2))) {
-      const progress = i / (days * 24);
-      const noise = (Math.random() - 0.5) * 0.05 * startPrice;
-      data.push({
-        time: `${Math.floor(i / 24)}d`,
-        value: startPrice + (token.price - startPrice) * progress + noise,
-        volume: Math.random() * 1000000 + 500000
-      });
-    }
-    return data;
-  };
+  // Build chart data from the REAL price series (last N points per timeframe).
+  // No synthetic random-walk.
+  const seriesPts = (priceSeries ?? []).map((p) => ({
+    time: new Date(p.time).toLocaleDateString([], { month: "short", day: "numeric" }),
+    value: p.price,
+    volume: p.volume,
+  }));
+  const lastN = (n: number) => seriesPts.slice(-n);
+  const chartData24h = lastN(24);
+  const chartData7d = lastN(42);
+  const chartData30d = seriesPts;
 
-  const chartData24h = generateChartData(1);
-  const chartData7d = generateChartData(7);
-  const chartData30d = generateChartData(30);
-
-  // Mock volume distribution
+  // Buy/sell distribution needs a DEX trade feed; without it, derive a neutral
+  // split biased by the real 24h direction (deterministic, not random).
+  const buyBias = 50 + Math.max(-15, Math.min(15, token.change24h));
   const volumeData = [
-    { name: 'Buy', value: 55 + Math.random() * 20, fill: 'hsl(var(--success))' },
-    { name: 'Sell', value: 45 - Math.random() * 20, fill: 'hsl(var(--danger))' },
+    { name: 'Buy', value: buyBias, fill: 'hsl(var(--success))' },
+    { name: 'Sell', value: 100 - buyBias, fill: 'hsl(var(--danger))' },
   ];
 
   // Mock holder distribution
@@ -190,13 +186,22 @@ export function EnhancedTokenDetailModal({ token, isOpen, onClose, walletAddress
   const riskDetails = getRiskDetails(token.riskLevel);
   const RecIcon = recommendation.icon;
 
-  // Mock additional data
-  const marketCap = token.marketCap || token.value * (1000 + Math.random() * 10000);
-  const volume24h = token.volume24h || marketCap * (0.05 + Math.random() * 0.15);
-  const liquidity = token.liquidity || volume24h * (0.3 + Math.random() * 0.5);
-  const holders = token.holders || Math.floor(500 + Math.random() * 50000);
-  const priceChange7d = token.priceChange7d || token.change24h * (1.5 + Math.random());
-  const priceChange30d = token.priceChange30d || token.change24h * (2 + Math.random() * 2);
+  // Prefer real values from the token, then derive from the real price series.
+  // No random fallbacks: unknowable fields stay 0 (rendered as "—" downstream).
+  const seriesPrices = (priceSeries ?? []).map((p) => p.price);
+  const realMarketCap = priceSeries && priceSeries.length ? priceSeries[priceSeries.length - 1].marketCap : 0;
+  const realVol24h = priceSeries ? priceSeries.slice(-24).reduce((a, p) => a + p.volume, 0) : 0;
+  const pctChangeOver = (n: number) => {
+    if (seriesPrices.length <= n) return 0;
+    const past = seriesPrices[seriesPrices.length - 1 - n];
+    return past ? ((seriesPrices[seriesPrices.length - 1] - past) / past) * 100 : 0;
+  };
+  const marketCap = token.marketCap || realMarketCap || 0;
+  const volume24h = token.volume24h || realVol24h || 0;
+  const liquidity = token.liquidity || 0; // needs a DEX liquidity feed
+  const holders = token.holders || 0; // needs an on-chain holders feed
+  const priceChange7d = token.priceChange7d ?? pctChangeOver(42);
+  const priceChange30d = token.priceChange30d ?? pctChangeOver(seriesPrices.length - 1);
 
   const formatLargeNumber = (num: number) => {
     if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
@@ -490,13 +495,19 @@ export function EnhancedTokenDetailModal({ token, isOpen, onClose, walletAddress
               <div className="space-y-4">
                 <h4 className="font-display font-bold text-sm">Token Info</h4>
                 <div className="space-y-2">
-                  {[
-                    { label: 'Holders', value: (holders ?? 0).toLocaleString(), icon: Users },
-                    { label: 'Liquidity', value: formatLargeNumber(liquidity), icon: Lock },
-                    { label: 'ATH', value: `$${(token.price * 1.8).toFixed(6)}`, icon: TrendingUp },
-                    { label: 'ATL', value: `$${(token.price * 0.2).toFixed(6)}`, icon: TrendingDown },
-                    { label: 'From ATH', value: `-${(Math.random() * 50 + 20).toFixed(1)}%`, icon: ArrowDownRight },
-                  ].map(item => (
+                  {(() => {
+                    // Range high/low from the REAL 30d series (labeled as range, not all-time).
+                    const rangeHigh = seriesPrices.length ? Math.max(...seriesPrices) : null;
+                    const rangeLow = seriesPrices.length ? Math.min(...seriesPrices) : null;
+                    const fromHigh = rangeHigh ? ((rangeHigh - token.price) / rangeHigh) * 100 : null;
+                    return [
+                      { label: 'Holders', value: holders ? holders.toLocaleString() : '—', icon: Users },
+                      { label: 'Liquidity', value: liquidity ? formatLargeNumber(liquidity) : '—', icon: Lock },
+                      { label: '30d High', value: rangeHigh !== null ? `$${rangeHigh.toLocaleString(undefined, { maximumFractionDigits: 6 })}` : '—', icon: TrendingUp },
+                      { label: '30d Low', value: rangeLow !== null ? `$${rangeLow.toLocaleString(undefined, { maximumFractionDigits: 6 })}` : '—', icon: TrendingDown },
+                      { label: 'From High', value: fromHigh !== null ? `-${fromHigh.toFixed(1)}%` : '—', icon: ArrowDownRight },
+                    ];
+                  })().map(item => (
                     <div key={item.label} className="flex items-center justify-between p-2 bg-muted/30 rounded hover:bg-muted/50 transition-colors cursor-pointer">
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <item.icon className="w-3 h-3" />

@@ -78,7 +78,11 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
     return (n >= 0 ? "+" : "") + (n ?? 0).toFixed(decimals) + "%";
   };
 
-  if (isLoading || !financialData) {
+  // Guard the nested sub-objects, not just the top-level object: the derived
+  // metrics below dereference financialData.futuresData / .stablecoinMetrics
+  // unconditionally, so a partial API response (missing sub-object) would throw
+  // and error out the whole chain page. Fall back to the skeleton instead.
+  if (isLoading || !financialData || !financialData.futuresData || !financialData.stablecoinMetrics) {
     return (
       <div className="holo-card p-6 animate-pulse">
         <div className="h-6 w-48 bg-muted rounded mb-6" />

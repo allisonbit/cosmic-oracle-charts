@@ -24,14 +24,14 @@ export function EcosystemTokenSearch({ chain, ecosystemTokens = [] }: EcosystemT
   const [searchQuery, setSearchQuery] = useState("");
   const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
 
-  // Generate mock prices for tokens
+  // Use real token values; show 0 when a field is absent (no fabricated prices).
   const tokensWithPrices = useMemo(() => {
     return ecosystemTokens.map(token => ({
       ...token,
-      price: token.price || Math.random() * (token.symbol === chain.symbol ? 500 : 50),
-      change24h: token.change24h || (Math.random() - 0.5) * 20,
+      price: token.price || 0,
+      change24h: token.change24h || 0,
     }));
-  }, [ecosystemTokens, chain.symbol]);
+  }, [ecosystemTokens]);
 
   // Filter tokens by search query (name, symbol, or address)
   const filteredTokens = useMemo(() => {

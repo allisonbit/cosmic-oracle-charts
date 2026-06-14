@@ -121,17 +121,19 @@ export function NetworkInfoPanel({ chain, overview, isLoading }: NetworkInfoPane
         { label: "Uptime", value: "99.9%" },
       ]
     },
-    { 
-      label: "Network Load", 
-      value: `${Math.min(95, Math.random() * 40 + 30).toFixed(0)}%`, 
-      description: "Current utilization of the network's capacity",
+    {
+      label: "Network Load",
+      // Deterministic load proxy from the REAL tps vs an approximate capacity
+      // ceiling per chain. Pending-tx / mempool need a node feed → shown as "—".
+      value: overview?.tps ? `${Math.min(95, Math.round((overview.tps / (chain.id === "solana" ? 3000 : chain.id === "polygon" ? 700 : 40)) * 100))}%` : "—",
+      description: "Approximate utilization from live throughput (tps vs typical capacity)",
       icon: Gauge,
       color: "warning",
       details: [
-        { label: "Current Load", value: `${Math.min(95, Math.random() * 40 + 30).toFixed(0)}%` },
-        { label: "Pending Txs", value: formatNumber(Math.floor(Math.random() * 10000)) },
-        { label: "Mempool Size", value: `${(Math.random() * 5).toFixed(2)} MB` },
-        { label: "Congestion", value: "Normal" },
+        { label: "Live TPS", value: overview?.tps ? overview.tps.toLocaleString() : "—" },
+        { label: "Transactions (24h)", value: overview?.transactions24h ? overview.transactions24h.toLocaleString() : "—" },
+        { label: "Mempool Size", value: "—" },
+        { label: "Congestion", value: overview?.tps ? (overview.tps > (chain.id === "solana" ? 2500 : 35) ? "Elevated" : "Normal") : "—" },
       ]
     },
     { 

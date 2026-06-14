@@ -92,12 +92,14 @@ export function EnhancedSignalsPanel({ coins, onCoinClick }: EnhancedSignalsPane
       title,
       description,
       strength: Math.min(100, Math.abs(change) * 8),
-      confidence: 60 + Math.random() * 30,
+      // Deterministic from the real move magnitude (no random): bigger moves =
+      // higher conviction and wider support/resistance bands.
+      confidence: Math.min(95, 50 + Math.abs(change) * 5),
       timeframe: Math.abs(change) > 5 ? '1-4 hours' : '24-48 hours',
       action,
       targets: {
-        support: coin.price * (1 - 0.05 - Math.random() * 0.05),
-        resistance: coin.price * (1 + 0.05 + Math.random() * 0.05),
+        support: coin.price * (1 - 0.05 - Math.min(0.05, Math.abs(change) / 200)),
+        resistance: coin.price * (1 + 0.05 + Math.min(0.05, Math.abs(change) / 200)),
         target: coin.price * (1 + (change > 0 ? 0.15 : -0.15))
       },
       triggers

@@ -68,28 +68,43 @@ Return ONLY a JSON array of signal objects. No markdown, no explanation.`;
       }
     }
 
-    // Fallback: algorithmic signals
-    const signals = coinList.map((sym: string) => {
-      const id = ids[coinList.indexOf(sym)];
-      const data = priceData[id];
-      const price = data?.usd || 100 + Math.random() * 50000;
-      const change = data?.usd_24h_change || (Math.random() - 0.5) * 10;
-      const isBullish = change > 0;
-      return {
-        coin: sym,
-        symbol: sym.toUpperCase(),
-        type: isBullish ? "buy" : change < -3 ? "sell" : "hold",
-        strength: Math.floor(40 + Math.random() * 50),
-        reason: isBullish
-          ? `${sym} showing bullish momentum with ${change.toFixed(1)}% gain in 24h`
-          : `${sym} under pressure with ${change.toFixed(1)}% drop — watch key support`,
-        entry: parseFloat(price.toFixed(2)),
-        target: parseFloat((price * (isBullish ? 1.06 : 0.94)).toFixed(2)),
-        stopLoss: parseFloat((price * (isBullish ? 0.97 : 1.03)).toFixed(2)),
-        confidence: Math.floor(45 + Math.random() * 35),
-        timeframe: ["1h", "4h", "1d"][Math.floor(Math.random() * 3)],
-      };
-    });
+    // Fallback: DETERMINISTIC algorithmic signals derived purely from the real
+    // 24h price move. No random numbers — strength/confidence/timeframe are
+    // reproducible functions of actual market momentum. Coins with no real price
+    // are skipped entirely (we never fabricate a price or a change).
+    const clamp = (n: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, n));
+    const signals = coinList
+      .map((sym: string) => {
+        const id = ids[coinList.indexOf(sym)];
+        const data = priceData[id];
+        const price = typeof data?.usd === "number" ? data.usd : null;
+        const change = typeof data?.usd_24h_change === "number" ? data.usd_24h_change : null;
+        if (price === null || change === null) return null; // no real data → no signal
+
+        const mag = Math.abs(change);
+        const isBullish = change > 0;
+        // Strength = conviction from move magnitude; confidence scales with it too.
+        const strength = Math.round(clamp(mag * 7, 5, 100));
+        const confidence = Math.round(clamp(40 + mag * 4, 20, 90));
+        // Bigger moves → shorter momentum timeframe; quiet markets → longer.
+        const timeframe = mag > 5 ? "1h" : mag > 2 ? "4h" : "1d";
+        return {
+          coin: sym,
+          symbol: sym.toUpperCase(),
+          type: isBullish ? "buy" : change < -3 ? "sell" : "hold",
+          strength,
+          reason: isBullish
+            ? `${sym} showing bullish momentum with ${change.toFixed(1)}% gain in 24h`
+            : `${sym} under pressure with ${change.toFixed(1)}% drop — watch key support`,
+          entry: parseFloat(price.toFixed(2)),
+          target: parseFloat((price * (isBullish ? 1.06 : 0.94)).toFixed(2)),
+          stopLoss: parseFloat((price * (isBullish ? 0.97 : 1.03)).toFixed(2)),
+          confidence,
+          timeframe,
+          source: "algorithmic-momentum",
+        };
+      })
+      .filter(Boolean);
 
     return new Response(JSON.stringify({ signals }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

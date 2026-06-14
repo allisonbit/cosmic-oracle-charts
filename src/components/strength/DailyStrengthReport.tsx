@@ -20,10 +20,12 @@ export function DailyStrengthReport({ assets, chains }: DailyStrengthReportProps
     // Find biggest movers (positive)
     const biggestGainer = [...assets].sort((a, b) => b.priceChange24h - a.priceChange24h)[0];
     
-    // Find rising strength (week over week simulation)
-    const risingStrength = assets
-      .map(a => ({ ...a, weeklyChange: (Math.random() - 0.3) * 20 }))
-      .sort((a, b) => b.weeklyChange - a.weeklyChange)[0];
+    // Rising strength = the asset with the highest real strength score whose
+    // price is also up (deterministic from real data, no simulated weekly change).
+    const risingStrength = [...assets]
+      .filter(a => a.priceChange24h > 0)
+      .sort((a, b) => b.strengthScore - a.strengthScore)[0]
+      || [...assets].sort((a, b) => b.strengthScore - a.strengthScore)[0];
     
     // Market sentiment
     const avgStrength = assets.reduce((acc, a) => acc + a.strengthScore, 0) / assets.length;
@@ -47,7 +49,8 @@ export function DailyStrengthReport({ assets, chains }: DailyStrengthReportProps
       topAsset,
       topChain,
       biggestGainer,
-      risingStrength: { ...risingStrength, weeklyChange: Math.round(risingStrength.weeklyChange) },
+      // Use the real 24h price change as the momentum metric (no simulated weekly value).
+      risingStrength: { ...risingStrength, weeklyChange: Math.round(risingStrength?.priceChange24h ?? 0) },
       avgStrength: Math.round(avgStrength),
       bullishCount,
       bearishCount,
@@ -88,8 +91,8 @@ export function DailyStrengthReport({ assets, chains }: DailyStrengthReportProps
             <strong>{report.topAsset.symbol}</strong> ({report.topAsset.strengthScore}) maintains dominant strength, 
             driven by exceptional price momentum ({Math.round(50 + report.topAsset.priceChange24h * 2)}%). 
             {report.risingStrength.weeklyChange > 5 && (
-              <> However, watch <strong>{report.risingStrength.symbol}</strong>, which shows the highest 
-              week-over-week strength growth (+{report.risingStrength.weeklyChange} points), 
+              <> However, watch <strong>{report.risingStrength.symbol}</strong>, a high-strength asset
+              up +{report.risingStrength.weeklyChange}% in 24h,
               indicating rising capital rotation.</>
             )}
           </p>
@@ -132,8 +135,8 @@ export function DailyStrengthReport({ assets, chains }: DailyStrengthReportProps
             <div className="flex items-center gap-3 p-2 rounded-lg bg-primary/10">
               <Zap className="w-4 h-4 text-primary shrink-0" />
               <p className="text-sm">
-                <strong className="text-primary">{report.risingStrength.symbol}</strong> showing 
-                momentum acceleration (+{report.risingStrength.weeklyChange} strength points this week)
+                <strong className="text-primary">{report.risingStrength.symbol}</strong> showing
+                momentum acceleration (+{report.risingStrength.weeklyChange}% in 24h)
               </p>
             </div>
           )}

@@ -50,9 +50,6 @@ export function EnhancedWhaleTracker({ whaleAlerts }: EnhancedWhaleTrackerProps)
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const generateMockTxHash = () => `0x${Math.random().toString(16).slice(2, 10)}...${Math.random().toString(16).slice(2, 6)}`;
-  const generateMockWallet = () => `0x${Math.random().toString(16).slice(2, 8)}...${Math.random().toString(16).slice(2, 6)}`;
-
   const getWhaleInsight = (alert: WhaleAlert) => {
     if (alert.type === "accumulation") {
       return {
@@ -134,20 +131,16 @@ export function EnhancedWhaleTracker({ whaleAlerts }: EnhancedWhaleTrackerProps)
         </h2>
         <div className="space-y-3">
           {filteredAlerts.map((alert, i) => {
-            const mockTxHash = generateMockTxHash();
-            const mockFromWallet = generateMockWallet();
-            const mockToWallet = generateMockWallet();
             const insight = getWhaleInsight(alert);
-            
+
             return (
-              <button 
+              <button
                 key={`${alert.symbol}-${i}`}
                 onClick={() => setSelectedAlert({
                   ...alert,
-                  txHash: mockTxHash,
-                  fromWallet: mockFromWallet,
-                  toWallet: mockToWallet,
-                  usdValue: parseFloat(alert.amount.replace('B', '')) * 1e9
+                  // Use only the REAL tx hash / wallet fields from the alert (when
+                  // the data source provides them) — no fabricated hashes.
+                  usdValue: alert.usdValue ?? parseFloat(alert.amount.replace('B', '')) * 1e9
                 })}
                 className={cn(
                   "w-full p-4 rounded-lg border flex items-center justify-between animate-fade-in text-left transition-all group",

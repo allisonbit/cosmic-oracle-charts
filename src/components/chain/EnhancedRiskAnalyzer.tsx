@@ -120,10 +120,13 @@ function calculateRisk(token: DiscoveryToken): AnalyzedToken {
     marketCap: token.marketCap,
     volume24h: token.volume24h,
     coingeckoId: token.coingeckoId,
-    contractRisk: Math.floor(Math.random() * 40) + 10,
-    rugPullRisk: Math.floor(Math.random() * 30),
-    honeypotRisk: Math.random() > 0.9,
-    ownershipRenounced: Math.random() > 0.5,
+    // Heuristic risk estimates derived from REAL liquidity / market-cap / risk
+    // signals — deterministic, not random. (A precise contract audit would need a
+    // real token-security feed such as GoPlus; this is an honest proxy until then.)
+    contractRisk: Math.round(Math.max(5, Math.min(95, riskScore * 0.6 + (liquidity < 5 ? 20 : 0) + (token.marketCap < 1e7 ? 15 : 0)))),
+    rugPullRisk: Math.round(Math.max(0, Math.min(95, (liquidity < 5 ? 40 : liquidity < 15 ? 20 : 5) + (token.marketCap < 1e7 ? 30 : token.marketCap < 1e8 ? 10 : 0)))),
+    honeypotRisk: liquidity < 5 && token.marketCap < 1e7,
+    ownershipRenounced: token.marketCap > 1e9,
   };
 }
 

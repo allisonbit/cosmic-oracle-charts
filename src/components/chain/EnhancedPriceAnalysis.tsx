@@ -4,6 +4,8 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Area, Area
 import { cn } from "@/lib/utils";
 import { TrendingUp, TrendingDown, Zap, Target, Activity, DollarSign, BarChart3, Percent, Clock, Eye, ArrowUpRight, ArrowDownRight, Minus, X, ChevronRight, Layers, Shield, Wallet } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { usePriceSeries } from "@/hooks/usePriceSeries";
+import { sma, ema, rsi, macd, bollinger } from "@/lib/indicators";
 
 interface EnhancedPriceAnalysisProps {
   chain: ChainConfig;
@@ -25,102 +27,135 @@ export function EnhancedPriceAnalysis({ chain, priceData }: EnhancedPriceAnalysi
   const [mode, setMode] = useState<ChartMode>("standard");
   const [selectedMetric, setSelectedMetric] = useState<MetricDetail | null>(null);
 
-  // Generate comprehensive price data
+  // Real price series (CoinGecko, via the sparkline edge function) — replaces the
+  // previous synthetic random-walk so the chart and every indicator reflect actual
+  // market data.
+  const { data: series } = usePriceSeries(chain.symbol);
+
+  // Build the chart + technical indicators from the REAL series. No Math.random.
   const chartData = useMemo(() => {
-    const basePrice = priceData?.price || 100;
-    const volatility = 0.025;
-    const points = 72; // 72 hours of data
-    const data = [];
-    let currentPrice = basePrice * 0.92;
+    if (!series || series.length === 0) return [] as any[];
+    const prices = series.map((p) => p.price);
+    const n = prices.length;
+    const sma20 = sma(prices, 20);
+    const ema50 = ema(prices, 50);
+    const rsi14 = rsi(prices, 14);
+    const { macdLine } = macd(prices);
+    const { upper, lower } = bollinger(prices, 20, 2);
+    const overallMin = Math.min(...prices);
+    const overallMax = Math.max(...prices);
+
     let cumulativeVolume = 0;
+    const hist: any[] = series.map((pt, i) => {
+      const d = new Date(pt.time);
+      cumulativeVolume += pt.volume || 0;
+      const prev = i > 0 ? prices[i - 1] : prices[i];
+      const close = pt.price;
+      const open = prev;
+      const ret = i > 0 && prev ? Math.abs((close - prev) / prev) * 100 : 0;
+      return {
+        time: d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        date: d.toLocaleDateString([], { month: "short", day: "numeric" }),
+        price: close,
+        aiProjection: null as number | null,
+        volatility: ret,
+        volume: pt.volume || 0,
+        cumulativeVolume,
+        support: overallMin,
+        resistance: overallMax,
+        sma20: sma20[i] ?? close,
+        ema50: ema50[i] ?? close,
+        momentum: rsi14[i] ?? 50, // real RSI (neutral 50 only during warmup)
+        macd: macdLine[i] ?? 0, // real MACD line
+        high: Math.max(open, close),
+        low: Math.min(open, close),
+        open,
+        close,
+        bollingerUpper: upper[i] ?? close,
+        bollingerLower: lower[i] ?? close,
+        isFuture: false,
+      };
+    });
 
-    for (let i = 0; i < points; i++) {
-      const randomChange = (Math.random() - 0.5) * volatility * currentPrice;
-      const trend = (basePrice - currentPrice) * 0.04;
-      currentPrice += randomChange + trend;
+    // Forward projection: extrapolate the recent average REAL return. Deterministic
+    // and clearly a model (not a guarantee) — crucially not random noise.
+    const lastPrice = prices[n - 1];
+    const lookback = Math.min(24, n - 1);
+    let avgRet = 0;
+    for (let i = n - lookback; i < n; i++) avgRet += (prices[i] - prices[i - 1]) / prices[i - 1];
+    avgRet = lookback > 0 ? avgRet / lookback : 0;
+    if (hist.length) hist[hist.length - 1].aiProjection = lastPrice;
 
-      const hour = new Date(Date.now() - (points - i) * 3600000);
-      const volatilityLevel = Math.abs(randomChange) / currentPrice * 100;
-      const volume = 1000000 + Math.random() * 5000000;
-      cumulativeVolume += volume;
-
-      // Calculate RSI-like momentum
-      const momentum = 50 + (randomChange > 0 ? 1 : -1) * Math.random() * 30;
-      
-      // Calculate MACD-like indicator
-      const macd = (currentPrice - basePrice) / basePrice * 100;
-
-      data.push({
-        time: hour.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-        date: hour.toLocaleDateString([], { month: "short", day: "numeric" }),
-        price: currentPrice,
-        aiProjection: i > points - 24 ? currentPrice * (1 + (Math.random() * 0.04 - 0.01)) : null,
-        volatility: volatilityLevel,
-        volume: volume,
-        cumulativeVolume: cumulativeVolume,
-        support: basePrice * 0.90,
-        resistance: basePrice * 1.10,
-        sma20: basePrice * (0.98 + Math.random() * 0.04),
-        ema50: basePrice * (0.97 + Math.random() * 0.06),
-        momentum,
-        macd,
-        high: currentPrice * (1 + Math.random() * 0.02),
-        low: currentPrice * (1 - Math.random() * 0.02),
-        open: currentPrice * (1 + (Math.random() - 0.5) * 0.01),
-        close: currentPrice,
-        bollingerUpper: basePrice * 1.05,
-        bollingerLower: basePrice * 0.95,
-      });
-    }
-
-    // Add future AI projections
-    for (let i = 0; i < 24; i++) {
-      const trend = priceData?.change24h && priceData.change24h > 0 ? 1.003 : 0.997;
-      const lastPrice = data[data.length - 1].aiProjection || currentPrice;
-      const projectedPrice = lastPrice * Math.pow(trend, i + 1) * (1 + (Math.random() - 0.5) * 0.015);
-      
-      const hour = new Date(Date.now() + (i + 1) * 3600000);
-      data.push({
-        time: hour.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-        date: hour.toLocaleDateString([], { month: "short", day: "numeric" }),
+    const lastTime = new Date(series[n - 1].time).getTime();
+    const future: any[] = [];
+    let proj = lastPrice;
+    for (let i = 1; i <= 24; i++) {
+      proj = proj * (1 + avgRet);
+      const d = new Date(lastTime + i * 3600000);
+      future.push({
+        time: d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        date: d.toLocaleDateString([], { month: "short", day: "numeric" }),
         price: null,
-        aiProjection: projectedPrice,
+        aiProjection: proj,
         volatility: 0,
         volume: 0,
-        support: basePrice * 0.90,
-        resistance: basePrice * 1.10,
+        support: overallMin,
+        resistance: overallMax,
         isFuture: true,
-        projectionLow: projectedPrice * 0.97,
-        projectionHigh: projectedPrice * 1.03,
+        projectionLow: proj * 0.97,
+        projectionHigh: proj * 1.03,
       });
     }
+    return [...hist, ...future];
+  }, [series]);
 
-    return data;
-  }, [priceData]);
-
-  // Calculate key metrics
+  // Key metrics from the REAL series where available (24h high/low, volume,
+  // RSI/MACD, market cap). No random fallbacks.
   const metrics = useMemo(() => {
     if (!priceData) return null;
     const price = priceData.price;
     const change = priceData.change24h;
-    
+    const prices = series?.map((p) => p.price) ?? [];
+    const vols = series?.map((p) => p.volume) ?? [];
+    const window24 = prices.slice(-24);
+    const high24h = window24.length ? Math.max(...window24) : price;
+    const low24h = window24.length ? Math.min(...window24) : price;
+    const lastCap = series && series.length ? series[series.length - 1].marketCap : 0;
+
+    const rsiArr = rsi(prices, 14);
+    const lastRsi = ([...rsiArr].reverse().find((v) => v !== null) ?? (50 + change * 2)) as number;
+    const { macdLine } = macd(prices);
+    const lastMacd = ([...macdLine].reverse().find((v) => v !== null) ?? change * 0.5) as number;
+
+    const volume24h = vols.slice(-24).reduce((a, b) => a + b, 0);
+    let volumeChange = 0;
+    if (vols.length >= 4) {
+      const half = Math.floor(vols.length / 2);
+      const recent = vols.slice(half).reduce((a, b) => a + b, 0);
+      const prior = vols.slice(0, half).reduce((a, b) => a + b, 0);
+      volumeChange = prior > 0 ? ((recent - prior) / prior) * 100 : 0;
+    }
+
     return {
       currentPrice: price,
       change24h: change,
-      high24h: price * 1.05,
-      low24h: price * 0.95,
-      volume24h: Math.random() * 50000000000,
-      marketCap: price * (chain.id === "bitcoin" ? 19500000 : chain.id === "ethereum" ? 120000000 : 1000000000),
-      support: price * 0.92,
-      resistance: price * 1.08,
-      rsi: 50 + change * 2,
-      macd: change * 0.5,
+      high24h,
+      low24h,
+      volume24h,
+      marketCap: lastCap || price * (chain.id === "bitcoin" ? 19500000 : chain.id === "ethereum" ? 120000000 : 1000000000),
+      support: low24h,
+      resistance: high24h,
+      rsi: lastRsi,
+      macd: lastMacd,
       volatility: Math.abs(change) * 1.5,
-      avgTrueRange: price * 0.03,
-      volumeChange: (Math.random() - 0.3) * 50,
-      dominance: chain.id === "bitcoin" ? 52.3 : chain.id === "ethereum" ? 17.8 : Math.random() * 5,
+      avgTrueRange: Math.max(0, high24h - low24h),
+      volumeChange,
+      // Real market dominance needs a global-market feed (CoinGecko /global).
+      // BTC/ETH use approximate constants; others 0 until that feed is wired —
+      // no longer randomized.
+      dominance: chain.id === "bitcoin" ? 52.3 : chain.id === "ethereum" ? 17.8 : 0,
     };
-  }, [priceData, chain]);
+  }, [priceData, chain, series]);
 
   const modes = [
     { id: "standard", label: "Price", icon: TrendingUp, description: "Standard price chart with moving averages" },
@@ -179,7 +214,7 @@ export function EnhancedPriceAnalysis({ chain, priceData }: EnhancedPriceAnalysi
           value: `$${(metrics.marketCap / 1e12).toFixed(3)}T`,
           description: "Total value of all circulating tokens at current price. Market cap indicates overall network value.",
           insights: [
-            `Rank #${chain.id === "bitcoin" ? 1 : chain.id === "ethereum" ? 2 : Math.floor(Math.random() * 20 + 3)} by market cap`,
+            chain.id === "bitcoin" ? "Ranked #1 by market cap" : chain.id === "ethereum" ? "Ranked #2 by market cap" : `Market cap: $${(metrics.marketCap / 1e9).toFixed(2)}B`,
             `Dominance: ${(metrics.dominance ?? 0).toFixed(2)}% of total crypto market`,
             `Fully diluted valuation: $${(metrics.marketCap * 1.15 / 1e12).toFixed(3)}T`,
             `Market cap change 24h: ${metrics.change24h >= 0 ? "+" : ""}${(metrics.change24h ?? 0).toFixed(2)}%`,
@@ -215,8 +250,8 @@ export function EnhancedPriceAnalysis({ chain, priceData }: EnhancedPriceAnalysi
           insights: [
             `Strong support at $${(metrics.support ?? 0).toLocaleString()} - ${((metrics.currentPrice - metrics.support) / metrics.support * 100).toFixed(1)}% below current price`,
             `Key resistance at $${(metrics.resistance ?? 0).toLocaleString()} - ${((metrics.resistance - metrics.currentPrice) / metrics.currentPrice * 100).toFixed(1)}% above current price`,
-            `Support tested ${Math.floor(Math.random() * 5 + 2)} times in past 30 days`,
-            `Breakout probability: ${Math.floor(Math.random() * 30 + 35)}% (next 48h)`,
+            `Price sits ${(((metrics.currentPrice - metrics.support) / metrics.support) * 100).toFixed(1)}% above 24h support`,
+            `Range position: ${(((metrics.currentPrice - metrics.low24h) / Math.max(metrics.high24h - metrics.low24h, 1e-9)) * 100).toFixed(0)}% within the 24h range`,
           ],
           relatedMetrics: [
             { label: "Support 2", value: `$${(metrics.support * 0.95).toLocaleString()}` },

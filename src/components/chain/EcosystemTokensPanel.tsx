@@ -33,20 +33,21 @@ export function EcosystemTokensPanel({ chain, ecosystemTokens = [] }: EcosystemT
   const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
   const [selectedToken, setSelectedToken] = useState<EcosystemToken | null>(null);
 
-  // Generate enriched token data
+  // Use the REAL values from the data source; show 0 / false when a field is
+  // genuinely absent rather than fabricating a number.
   const tokensWithData = useMemo(() => {
     return ecosystemTokens.map(token => ({
       ...token,
-      price: token.price || Math.random() * (token.symbol === chain.symbol ? 500 : 50),
-      change24h: token.change24h || (Math.random() - 0.5) * 20,
-      volume24h: token.volume24h || Math.random() * 100000000,
-      marketCap: token.marketCap || Math.random() * 5000000000,
-      holders: token.holders || Math.floor(Math.random() * 100000),
-      liquidity: token.liquidity || Math.random() * 50000000,
-      isVerified: token.isVerified ?? Math.random() > 0.3,
-      isTrending: token.isTrending ?? Math.random() > 0.7,
+      price: token.price || 0,
+      change24h: token.change24h || 0,
+      volume24h: token.volume24h || 0,
+      marketCap: token.marketCap || 0,
+      holders: token.holders || 0,
+      liquidity: token.liquidity || 0,
+      isVerified: token.isVerified ?? false,
+      isTrending: token.isTrending ?? false,
     }));
-  }, [ecosystemTokens, chain.symbol]);
+  }, [ecosystemTokens]);
 
   // Filter tokens by search query
   const filteredTokens = useMemo(() => {

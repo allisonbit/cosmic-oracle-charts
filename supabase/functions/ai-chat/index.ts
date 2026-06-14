@@ -1,9 +1,31 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+// Restrict CORS to our own origins (defense-in-depth against other sites
+// embedding this paid-LLM endpoint in their visitors' browsers). Override the
+// allowlist with the ALLOWED_ORIGINS env var (comma-separated) if the prod
+// domain differs. Note: CORS is browser-enforced only — the real cost controls
+// are the per-call input caps below + the config.toml rate_limit.
+const ALLOWED_ORIGINS = (Deno.env.get("ALLOWED_ORIGINS") ||
+  "https://oraclebull.com,https://www.oraclebull.com")
+  .split(",").map((s) => s.trim()).filter(Boolean);
+
+function corsHeadersFor(req: Request) {
+  const origin = req.headers.get("Origin") || "";
+  const allowed =
+    ALLOWED_ORIGINS.includes(origin) ||
+    /^https:\/\/([a-z0-9-]+\.)?(pages\.dev|lovable\.app|lovableproject\.com)$/.test(origin) ||
+    /^http:\/\/localhost(:\d+)?$/.test(origin);
+  return {
+    "Access-Control-Allow-Origin": allowed ? origin : ALLOWED_ORIGINS[0],
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Vary": "Origin",
+  };
+}
+
+// Per-call input caps so a single request cannot balloon LLM token cost.
+const MAX_MESSAGE_CHARS = 2000;
+const MAX_HISTORY_MESSAGES = 10;
+const MAX_HISTORY_CHARS = 8000;
 
 // Fetch live market data for context
 async function fetchMarketContext(message: string): Promise<string> {
@@ -68,12 +90,38 @@ async function fetchMarketContext(message: string): Promise<string> {
 }
 
 serve(async (req) => {
+  const corsHeaders = corsHeadersFor(req);
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { message, history } = await req.json();
+    const body = await req.json().catch(() => ({}));
+    const rawMessage = typeof body?.message === "string" ? body.message : "";
+    const message = rawMessage.slice(0, MAX_MESSAGE_CHARS).trim();
+
+    if (!message) {
+      return new Response(JSON.stringify({ error: "A non-empty 'message' string is required." }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Sanitize + bound the conversation history so callers can't inflate token
+    // usage with a huge history array. Keep only valid {role, content} entries,
+    // the last N messages, and cap total characters.
+    let history: { role: string; content: string }[] = [];
+    if (Array.isArray(body?.history)) {
+      let used = 0;
+      history = body.history
+        .filter((m: any) => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string")
+        .slice(-MAX_HISTORY_MESSAGES)
+        .map((m: any) => ({ role: m.role, content: String(m.content).slice(0, MAX_MESSAGE_CHARS) }))
+        .filter((m: { content: string }) => {
+          used += m.content.length;
+          return used <= MAX_HISTORY_CHARS;
+        });
+    }
 
     // Fetch live market data based on user's question
     const marketContext = await fetchMarketContext(message);

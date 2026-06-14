@@ -18,6 +18,7 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart a
 import { toast } from "sonner";
 import { SearchToken } from "@/hooks/useTokenSearch";
 import { ExplorerChain } from "@/lib/explorerChains";
+import { usePriceSeries } from "@/hooks/usePriceSeries";
 
 interface EnhancedTokenDetailPanelProps {
   token: SearchToken;
@@ -73,36 +74,47 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
 
   const getExplorerUrl = (address: string) => `${chain.explorer}/token/${address}`;
 
-  // Generate mock data for demonstration
-  const chartData = Array.from({ length: 24 }, (_, i) => ({
-    time: `${i}h`,
-    price: token.price * (0.97 + Math.random() * 0.06),
-    volume: Math.random() * 1000000,
-  }));
-  chartData[chartData.length - 1].price = token.price;
+  // Real price series (CoinGecko via sparkline). Chart + volumes come from this;
+  // fields with no real source render "—" rather than being fabricated.
+  const { data: series } = usePriceSeries(token.symbol, 1, 24);
+  const hasSeries = !!series && series.length > 0;
+  const chartData = hasSeries
+    ? series!.map((p, i) => ({
+        time: new Date(p.time).toLocaleTimeString([], { hour: "2-digit" }),
+        price: p.price,
+        volume: p.volume,
+      }))
+    : [];
 
-  const volumeData = Array.from({ length: 7 }, (_, i) => ({
-    day: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][i],
-    volume: Math.random() * 5000000 + 1000000,
-    buys: Math.random() * 3000000,
-    sells: Math.random() * 2000000,
-  }));
+  // Weekly volume bars from the last 7 daily aggregates of the real series
+  // (buys/sells split is not available without a DEX trade feed → omitted below).
+  const volumeData = hasSeries
+    ? (() => {
+        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        const last7 = series!.slice(-7);
+        return last7.map((p, i) => ({ day: days[i % 7], volume: p.volume }));
+      })()
+    : [];
 
-  const mockStats = {
-    marketCap: token.price * 1000000000,
-    fdv: token.price * 1500000000,
-    volume24h: Math.random() * 100000000 + 1000000,
-    volumeChange: (Math.random() - 0.5) * 100,
-    liquidity: Math.random() * 50000000 + 1000000,
-    holders: Math.floor(Math.random() * 100000) + 1000,
-    transactions24h: Math.floor(Math.random() * 50000) + 1000,
-    buys24h: Math.floor(Math.random() * 25000) + 500,
-    sells24h: Math.floor(Math.random() * 25000) + 500,
-    ath: token.price * (1 + Math.random() * 2),
-    atl: token.price * Math.random() * 0.3,
-    athDate: '2024-03-15',
-    atlDate: '2023-11-20',
+  const realPrices = hasSeries ? series!.map((p) => p.price) : [];
+  const realVol24h = hasSeries ? series!.slice(-24).reduce((a, p) => a + p.volume, 0) : null;
+  const realCap = hasSeries ? series![series!.length - 1].marketCap || null : null;
+  const realStats = {
+    marketCap: realCap,
+    fdv: null as number | null, // needs total-supply data
+    volume24h: realVol24h,
+    volumeChange: null as number | null,
+    liquidity: null as number | null, // needs a DEX liquidity feed
+    holders: null as number | null, // needs an on-chain holders feed
+    transactions24h: null as number | null,
+    buys24h: null as number | null,
+    sells24h: null as number | null,
+    ath: realPrices.length ? Math.max(...realPrices) : null, // ATH within window
+    atl: realPrices.length ? Math.min(...realPrices) : null, // ATL within window
+    athDate: null as string | null,
+    atlDate: null as string | null,
   };
+  const mockStats = realStats;
 
   const socialLinks = [
     { name: 'Website', icon: Globe, url: '#', color: 'text-primary' },
@@ -289,8 +301,8 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
                     <span className="text-sm">All-Time High</span>
                   </div>
                   <div className="text-right">
-                    <div className="font-bold text-success">{formatPrice(mockStats.ath)}</div>
-                    <div className="text-xs text-muted-foreground">{mockStats.athDate}</div>
+                    <div className="font-bold text-success">{mockStats.ath !== null ? formatPrice(mockStats.ath) : "—"}</div>
+                    <div className="text-xs text-muted-foreground">{mockStats.athDate ?? "in range"}</div>
                   </div>
                 </button>
                 <button onClick={() => setDetailModal({ type: 'atl', data: mockStats })} className="w-full flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
@@ -299,14 +311,14 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
                     <span className="text-sm">All-Time Low</span>
                   </div>
                   <div className="text-right">
-                    <div className="font-bold text-danger">{formatPrice(mockStats.atl)}</div>
-                    <div className="text-xs text-muted-foreground">{mockStats.atlDate}</div>
+                    <div className="font-bold text-danger">{mockStats.atl !== null ? formatPrice(mockStats.atl) : "—"}</div>
+                    <div className="text-xs text-muted-foreground">{mockStats.atlDate ?? "in range"}</div>
                   </div>
                 </button>
                 <div className="p-3 rounded-lg bg-muted/30">
-                  <div className="text-xs text-muted-foreground mb-2">Price from ATH</div>
-                  <Progress value={((mockStats.ath - token.price) / mockStats.ath) * 100} className="h-2" />
-                  <div className="text-xs text-danger mt-1">-{(((mockStats.ath - token.price) / mockStats.ath) * 100).toFixed(2)}%</div>
+                  <div className="text-xs text-muted-foreground mb-2">Price from range high</div>
+                  <Progress value={mockStats.ath ? ((mockStats.ath - token.price) / mockStats.ath) * 100 : 0} className="h-2" />
+                  <div className="text-xs text-danger mt-1">{mockStats.ath ? `-${(((mockStats.ath - token.price) / mockStats.ath) * 100).toFixed(2)}%` : "—"}</div>
                 </div>
               </div>
             </div>
@@ -316,16 +328,15 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
           <div className="holo-card p-6">
             <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-primary" />
-              7-DAY VOLUME (BUYS VS SELLS)
+              RECENT VOLUME
             </h3>
             <div className="h-48">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={volumeData}>
                   <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" fontSize={10} />
                   <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} tickFormatter={(v) => formatNumber(v)} />
-                  <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px" }} formatter={(value: number) => [formatNumber(value), ""]} />
-                  <Bar dataKey="buys" fill="hsl(var(--success))" name="Buys" />
-                  <Bar dataKey="sells" fill="hsl(var(--danger))" name="Sells" />
+                  <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px" }} formatter={(value: number) => [formatNumber(value), "Volume"]} />
+                  <Bar dataKey="volume" fill="hsl(var(--primary))" name="Volume" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -346,25 +357,31 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
                     <ArrowUpRight className="w-4 h-4 text-success" />
                     <span className="text-sm">Buy Transactions</span>
                   </div>
-                  <span className="font-bold text-success">{(mockStats.buys24h ?? 0).toLocaleString()}</span>
+                  <span className="font-bold text-success">{mockStats.buys24h !== null ? mockStats.buys24h.toLocaleString() : "—"}</span>
                 </button>
                 <button onClick={() => setDetailModal({ type: 'sells', data: mockStats })} className="w-full flex items-center justify-between p-3 rounded-lg bg-danger/10 hover:bg-danger/20 transition-colors">
                   <div className="flex items-center gap-2">
                     <ArrowDownRight className="w-4 h-4 text-danger" />
                     <span className="text-sm">Sell Transactions</span>
                   </div>
-                  <span className="font-bold text-danger">{(mockStats.sells24h ?? 0).toLocaleString()}</span>
+                  <span className="font-bold text-danger">{mockStats.sells24h !== null ? mockStats.sells24h.toLocaleString() : "—"}</span>
                 </button>
                 <div className="p-3 rounded-lg bg-muted/30">
                   <div className="text-xs text-muted-foreground mb-2">Buy/Sell Ratio</div>
-                  <div className="flex gap-1 h-3 rounded-full overflow-hidden">
-                    <div className="bg-success" style={{ width: `${(mockStats.buys24h / mockStats.transactions24h) * 100}%` }} />
-                    <div className="bg-danger" style={{ width: `${(mockStats.sells24h / mockStats.transactions24h) * 100}%` }} />
-                  </div>
-                  <div className="flex justify-between text-xs mt-1">
-                    <span className="text-success">{((mockStats.buys24h / mockStats.transactions24h) * 100).toFixed(1)}%</span>
-                    <span className="text-danger">{((mockStats.sells24h / mockStats.transactions24h) * 100).toFixed(1)}%</span>
-                  </div>
+                  {mockStats.buys24h !== null && mockStats.sells24h !== null && mockStats.transactions24h ? (
+                    <>
+                      <div className="flex gap-1 h-3 rounded-full overflow-hidden">
+                        <div className="bg-success" style={{ width: `${(mockStats.buys24h / mockStats.transactions24h) * 100}%` }} />
+                        <div className="bg-danger" style={{ width: `${(mockStats.sells24h / mockStats.transactions24h) * 100}%` }} />
+                      </div>
+                      <div className="flex justify-between text-xs mt-1">
+                        <span className="text-success">{((mockStats.buys24h / mockStats.transactions24h) * 100).toFixed(1)}%</span>
+                        <span className="text-danger">{((mockStats.sells24h / mockStats.transactions24h) * 100).toFixed(1)}%</span>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-xs text-muted-foreground">Per-trade buy/sell data unavailable</div>
+                  )}
                 </div>
               </div>
             </div>

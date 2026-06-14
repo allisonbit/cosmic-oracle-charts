@@ -15,6 +15,7 @@ import { SearchToken } from "@/hooks/useTokenSearch";
 import { ExplorerChain, getChainById } from "@/lib/explorerChains";
 import { TradeButtons } from "@/components/trading/TradeButtons";
 import { CoinImage } from "@/components/ui/CoinImage";
+import { usePriceSeries } from "@/hooks/usePriceSeries";
 
 interface TokenDetailPanelProps {
   token: SearchToken;
@@ -83,12 +84,12 @@ export function TokenDetailPanel({ token, chain, forecast, aiLoading }: TokenDet
     return `${chain.explorer}/token/${address}`;
   };
 
-  // Generate mock chart data
-  const chartData = Array.from({ length: 24 }, (_, i) => ({
-    time: `${i}h`,
-    price: token.price * (0.97 + Math.random() * 0.06),
+  // Real 24h price series (CoinGecko via sparkline) — no fabricated price walk.
+  const { data: series } = usePriceSeries(token.symbol, 1, 24);
+  const chartData = (series ?? []).map((p) => ({
+    time: new Date(p.time).toLocaleTimeString([], { hour: "2-digit" }),
+    price: p.price,
   }));
-  chartData[chartData.length - 1].price = token.price;
 
   const holdersData = generateMockHolders();
   const liquidityData = generateMockLiquidity();

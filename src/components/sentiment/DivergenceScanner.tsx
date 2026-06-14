@@ -23,8 +23,13 @@ export function DivergenceScanner({ coins }: DivergenceScannerProps) {
   const navigate = useNavigate();
 
   const divergences: DivergenceSignal[] = coins.slice(0, 15).map(coin => {
-    const sentimentScore = 30 + Math.random() * 60;
-    const sentimentChange = (Math.random() - 0.5) * 30;
+    // Volume-flow proxy from REAL data (volume relative to market cap), kept
+    // independent of raw price direction so divergences stay meaningful. NOTE:
+    // this is a flow proxy, not social sentiment — wire the `sentiment-data` feed
+    // for true social-sentiment divergence.
+    const volRatio = coin.marketCap > 0 ? (coin.volume / coin.marketCap) * 100 : 0;
+    const sentimentScore = Math.max(0, Math.min(100, 40 + volRatio * 2));
+    const sentimentChange = volRatio - 10;
     const priceTrend = coin.change24h;
     const sentimentTrend = sentimentChange;
     let divergenceType: 'bullish' | 'bearish' = 'bullish';
@@ -44,7 +49,7 @@ export function DivergenceScanner({ coins }: DivergenceScannerProps) {
       strength = Math.min(100, (sentimentScore - 50) + Math.abs(priceTrend));
       description = `Extreme oversold with strong sentiment.`;
     } else {
-      strength = Math.random() * 40;
+      strength = Math.min(40, Math.abs(priceTrend - sentimentTrend));
       divergenceType = priceTrend < sentimentTrend ? 'bullish' : 'bearish';
       description = `Minor ${divergenceType} divergence detected.`;
     }

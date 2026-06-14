@@ -3,6 +3,7 @@ import { ChainConfig } from "@/lib/chainConfig";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Area, AreaChart, ReferenceLine } from "recharts";
 import { cn } from "@/lib/utils";
 import { TrendingUp, Zap, Target } from "lucide-react";
+import { usePriceSeries } from "@/hooks/usePriceSeries";
 
 interface AdvancedPriceChartProps {
   chain: ChainConfig;
@@ -13,57 +14,60 @@ type ChartMode = "standard" | "ai-projection" | "volatility";
 
 export function AdvancedPriceChart({ chain, priceData }: AdvancedPriceChartProps) {
   const [mode, setMode] = useState<ChartMode>("standard");
+  const { data: series } = usePriceSeries(chain.symbol, 2, 48);
 
-  // Generate realistic-looking price data
+  // Real price series → real chart, real volatility, real support/resistance.
+  // No Math.random.
   const chartData = useMemo(() => {
-    const basePrice = priceData?.price || 100;
-    const volatility = 0.02;
-    const points = 48; // 48 hours of data
-    const data = [];
-    let currentPrice = basePrice * 0.95;
+    if (!series || series.length === 0) return [] as any[];
+    const prices = series.map((p) => p.price);
+    const support = Math.min(...prices);
+    const resistance = Math.max(...prices);
 
-    for (let i = 0; i < points; i++) {
-      const randomChange = (Math.random() - 0.5) * volatility * currentPrice;
-      const trend = (basePrice - currentPrice) * 0.05;
-      currentPrice += randomChange + trend;
+    const hist: any[] = series.map((pt, i) => {
+      const d = new Date(pt.time);
+      const prev = i > 0 ? prices[i - 1] : prices[i];
+      const vol = i > 0 && prev ? Math.abs((pt.price - prev) / prev) * 100 : 0;
+      return {
+        time: d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        price: pt.price,
+        aiProjection: null as number | null,
+        volatility: vol,
+        support,
+        resistance,
+        breakoutZone: vol > 1.5,
+        dangerZone: vol > 2,
+        isFuture: false,
+      };
+    });
 
-      const hour = new Date(Date.now() - (points - i) * 3600000);
-      
-      // Add volatility zones
-      const volatilityLevel = Math.abs(randomChange) / currentPrice * 100;
-      
-      data.push({
-        time: hour.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-        price: currentPrice,
-        aiProjection: i > points - 12 ? currentPrice * (1 + (Math.random() * 0.03)) : null,
-        volatility: volatilityLevel,
-        support: basePrice * 0.92,
-        resistance: basePrice * 1.08,
-        breakoutZone: volatilityLevel > 1.5,
-        dangerZone: volatilityLevel > 2,
-      });
-    }
+    // Deterministic forward projection from the recent average REAL return.
+    const n = prices.length;
+    const lastPrice = prices[n - 1];
+    const lookback = Math.min(12, n - 1);
+    let avgRet = 0;
+    for (let i = n - lookback; i < n; i++) avgRet += (prices[i] - prices[i - 1]) / prices[i - 1];
+    avgRet = lookback > 0 ? avgRet / lookback : 0;
+    if (hist.length) hist[hist.length - 1].aiProjection = lastPrice;
 
-    // Add future projections for AI mode
-    for (let i = 0; i < 12; i++) {
-      const trend = priceData?.change24h && priceData.change24h > 0 ? 1.002 : 0.998;
-      const lastPrice = data[data.length - 1].aiProjection || currentPrice;
-      const projectedPrice = lastPrice * Math.pow(trend, i + 1) * (1 + (Math.random() - 0.5) * 0.01);
-      
-      const hour = new Date(Date.now() + (i + 1) * 3600000);
-      data.push({
-        time: hour.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    const lastTime = new Date(series[n - 1].time).getTime();
+    let proj = lastPrice;
+    const future: any[] = [];
+    for (let i = 1; i <= 12; i++) {
+      proj = proj * (1 + avgRet);
+      const d = new Date(lastTime + i * 3600000);
+      future.push({
+        time: d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
         price: null,
-        aiProjection: projectedPrice,
+        aiProjection: proj,
         volatility: 0,
-        support: basePrice * 0.92,
-        resistance: basePrice * 1.08,
+        support,
+        resistance,
         isFuture: true,
       });
     }
-
-    return data;
-  }, [priceData]);
+    return [...hist, ...future];
+  }, [series]);
 
   const modes = [
     { id: "standard", label: "Standard", icon: TrendingUp },
