@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Brand type system loaded via Google Fonts CDN in index.html:
-   Sora (display) · Plus Jakarta Sans (body) · JetBrains Mono (numerals). */
+/* Brand type system self-hosted via @fontsource-variable (imported in main.tsx):
+   Sora Variable (display) · Plus Jakarta Sans Variable (body) · JetBrains Mono Variable (numerals). */
 
 @layer base {
   :root {

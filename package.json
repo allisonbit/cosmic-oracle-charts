@@ -16,6 +16,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource-variable/jetbrains-mono": "^5.2.8",
+    "@fontsource-variable/plus-jakarta-sans": "^5.2.8",
+    "@fontsource-variable/sora": "^5.2.8",
     "@fontsource/inter": "^5.2.8",
     "@hookform/resolvers": "^3.10.0",
     "@lovable.dev/cloud-auth-js": "^1.0.0",

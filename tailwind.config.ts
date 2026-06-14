@@ -19,12 +19,12 @@ export default {
     extend: {
       fontFamily: {
         // Body / UI — Plus Jakarta Sans (humanist, highly legible at small sizes)
-        sans: ["Plus Jakarta Sans", "ui-sans-serif", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica Neue", "Arial", "sans-serif"],
+        sans: ["Plus Jakarta Sans Variable", "Plus Jakarta Sans", "ui-sans-serif", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica Neue", "Arial", "sans-serif"],
         // Display — Sora (geometric, crypto-native) for headlines, stats, logo
-        display: ["Sora", "ui-sans-serif", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica Neue", "Arial", "sans-serif"],
-        body: ["Plus Jakarta Sans", "ui-sans-serif", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica Neue", "Arial", "sans-serif"],
+        display: ["Sora Variable", "Sora", "ui-sans-serif", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica Neue", "Arial", "sans-serif"],
+        body: ["Plus Jakarta Sans Variable", "Plus Jakarta Sans", "ui-sans-serif", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica Neue", "Arial", "sans-serif"],
         // Numerals / addresses / hashes — JetBrains Mono (tabular, even rhythm)
-        mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
+        mono: ["JetBrains Mono Variable", "JetBrains Mono", "ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",
