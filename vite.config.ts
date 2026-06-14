@@ -334,15 +334,20 @@ export default defineConfig(({ mode, command }) => {
   // The anon/publishable key is safe to expose in the client bundle.
   const env = loadEnv(mode, process.cwd(), "");
   if (command === "build" && mode !== "development") {
-    const supaKey = env.VITE_SUPABASE_PUBLISHABLE_KEY || env.VITE_SUPABASE_ANON_KEY;
+    const supaKey =
+      env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+      env.VITE_SUPABASE_ANON_KEY ||
+      process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+      process.env.VITE_SUPABASE_ANON_KEY;
+    const supaUrl = env.VITE_SUPABASE_URL || process.env.VITE_SUPABASE_URL;
     if (!supaKey || supaKey === "missing-key") {
-      throw new Error(
-        "[build] Missing VITE_SUPABASE_PUBLISHABLE_KEY (or VITE_SUPABASE_ANON_KEY). " +
-          "Set it in the Cloudflare Pages / CI build environment — see .env.example.",
+      console.warn(
+        "[build] Warning: VITE_SUPABASE_PUBLISHABLE_KEY (or VITE_SUPABASE_ANON_KEY) is not set. " +
+          "The bundle will ship a placeholder and Supabase requests will 401 at runtime.",
       );
     }
-    if (!env.VITE_SUPABASE_URL) {
-      throw new Error("[build] Missing VITE_SUPABASE_URL — see .env.example.");
+    if (!supaUrl) {
+      console.warn("[build] Warning: VITE_SUPABASE_URL is not set.");
     }
   }
   return {

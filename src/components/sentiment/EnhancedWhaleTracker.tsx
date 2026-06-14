@@ -174,15 +174,21 @@ export function EnhancedWhaleTracker({ whaleAlerts }: EnhancedWhaleTrackerProps)
                     <p className="text-sm text-muted-foreground">
                       Large {alert.type === "accumulation" ? "buy" : "sell"} detected • {insight.title}
                     </p>
-                    <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Wallet className="w-3 h-3" /> {mockFromWallet}
-                      </span>
-                      <span>→</span>
-                      <span className="flex items-center gap-1">
-                        <Wallet className="w-3 h-3" /> {mockToWallet}
-                      </span>
-                    </div>
+                    {(alert.fromWallet || alert.toWallet) && (
+                      <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
+                        {alert.fromWallet && (
+                          <span className="flex items-center gap-1">
+                            <Wallet className="w-3 h-3" /> {alert.fromWallet}
+                          </span>
+                        )}
+                        {alert.fromWallet && alert.toWallet && <span>→</span>}
+                        {alert.toWallet && (
+                          <span className="flex items-center gap-1">
+                            <Wallet className="w-3 h-3" /> {alert.toWallet}
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="text-right flex items-center gap-3">
