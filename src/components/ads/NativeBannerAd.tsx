@@ -5,14 +5,15 @@ interface NativeBannerAdProps {
   className?: string;
 }
 
+// Singleton pattern — inject once, never cleanup on navigation
+let nativeBannerInitialized = false;
+
 export function NativeBannerAd({ className }: NativeBannerAdProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const initialized = useRef(false);
 
   useEffect(() => {
-    // Prevent multiple initializations in React strict mode
-    if (initialized.current) return;
-    initialized.current = true;
+    if (nativeBannerInitialized || !containerRef.current) return;
+    nativeBannerInitialized = true;
 
     // Create the script element
     const script = document.createElement("script");
@@ -20,20 +21,11 @@ export function NativeBannerAd({ className }: NativeBannerAdProps) {
     script.setAttribute("data-cfasync", "false");
     script.src = "https://pl29658578.effectivecpmnetwork.com/112d36e242e4511b336ebcf2ab32171f/invoke.js";
 
-    // Append the script to the document body or container
-    if (containerRef.current) {
-      // It's usually safer to append the ad script directly to the head or body, 
-      // but if it uses document.write it might need to be adjacent.
-      // Ezoic / EffectiveCPM often uses targeted IDs.
-      document.body.appendChild(script);
-    }
+    // Append the script to document body (EffectiveCPM targets by container ID)
+    document.body.appendChild(script);
 
-    return () => {
-      // Optional cleanup if necessary, but usually ad scripts are better left alone
-      if (script.parentNode) {
-        script.parentNode.removeChild(script);
-      }
-    };
+    // No cleanup — singleton pattern: the ad stays alive for the entire session
+    // to prevent orphaned global state from the ad network SDK.
   }, []);
 
   return (

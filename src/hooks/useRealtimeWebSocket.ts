@@ -71,8 +71,9 @@ export function useRealtimePricesWS(chainIds: string[]) {
     // Initial fetch
     fetchPrices();
 
-    // Set up polling every 8 seconds for 24/7 real-time updates
-    intervalRef.current = setInterval(fetchPrices, 8000);
+    // Set up polling every 20 seconds for real-time updates (scaled from 8s to
+    // reduce Supabase edge-function load at 100K+ monthly visitors).
+    intervalRef.current = setInterval(fetchPrices, 20000);
 
     // Refresh as soon as the user returns to the tab (covers the hidden-skip above)
     const onVisible = () => {

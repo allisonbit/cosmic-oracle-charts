@@ -150,11 +150,11 @@ const topCryptoIds = [
   'cronos', 'kava', 'band-protocol', 'ocean-protocol', 'numeraire',
   'reserve-rights-token', 'orbs', 'superfarm', 'api3', 'dydx',
   'loopring', 'zksync', 'scroll', 'linea', 'base',
-  'bitcoin-cash', 'bitcoin-sv', 'litecoin', 'dash', 'zcash',
+  'bitcoin-cash', 'bitcoin-sv', 'dash', 'zcash',
   'ravencoin', 'digibyte', 'horizen', 'komodo', 'pivx',
   'eos', 'tezos', 'nano', 'waves', 'qtum',
   'icon', 'ontology', 'nuls', 'elastos', 'ark',
-  'neo', 'algorand', 'vechain', 'iota', 'nem',
+  'neo', 'algorand', 'iota', 'nem',
   'xdc-network', 'quant-network', 'fantom', 'celo', 'klaytn',
 ];
 
@@ -420,7 +420,13 @@ export default defineConfig(({ mode, command }) => {
             src: "oracle-bot-mascot.jpg",
             sizes: "512x512",
             type: "image/jpeg",
-            purpose: "any maskable"
+            purpose: "any"
+          },
+          {
+            src: "oracle-bot-mascot.jpg",
+            sizes: "512x512",
+            type: "image/jpeg",
+            purpose: "maskable"
           }
         ]
       }
