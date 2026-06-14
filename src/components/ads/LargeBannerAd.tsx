@@ -5,24 +5,26 @@ interface LargeBannerAdProps {
   className?: string;
 }
 
-// Track global initialization to prevent duplicate script injections across
-// route changes (singleton pattern — the ad network script is injected once
-// into the container and never removed/re-added on navigation).
-let largeBannerInitialized = false;
+// 728x90 leaderboard (Adsterra HighPerformanceFormat). NOTE: this network reads a
+// GLOBAL `var atOptions` when invoke.js runs, so rendering two HPF ads on the same
+// page makes the second overwrite the first's config. Rule: at most ONE HPF ad
+// (Large/Medium/Small) per page. NativeBannerAd is container-id based and is safe
+// to pair with this one.
+const HPF_KEY = "42c0ffb054b17a9a444907f2efaf44e8";
 
 export function LargeBannerAd({ className }: LargeBannerAdProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const injected = useRef(false);
 
   useEffect(() => {
-    if (largeBannerInitialized || !containerRef.current) return;
-    largeBannerInitialized = true;
+    if (injected.current || !containerRef.current) return;
+    injected.current = true;
 
-    // Set atOptions immediately before loading this ad's invoke script
-    // to avoid collision with other HighPerformanceFormat ads.
+    const container = containerRef.current;
     const configScript = document.createElement("script");
     configScript.textContent = `
       var atOptions = {
-        'key' : '42c0ffb054b17a9a444907f2efaf44e8',
+        'key' : '${HPF_KEY}',
         'format' : 'iframe',
         'height' : 90,
         'width' : 728,
@@ -31,19 +33,22 @@ export function LargeBannerAd({ className }: LargeBannerAdProps) {
     `;
 
     const invokeScript = document.createElement("script");
-    invokeScript.src = "https://www.highperformanceformat.com/42c0ffb054b17a9a444907f2efaf44e8/invoke.js";
+    invokeScript.src = `https://www.highperformanceformat.com/${HPF_KEY}/invoke.js`;
     invokeScript.async = true;
 
-    const currentContainer = containerRef.current;
-    currentContainer.appendChild(configScript);
-    currentContainer.appendChild(invokeScript);
+    container.appendChild(configScript);
+    container.appendChild(invokeScript);
 
-    // No cleanup — singleton pattern: the ad stays alive for the entire session
-    // to prevent orphaned global state from the ad network SDK.
+    return () => {
+      // Clear on navigation so the next page view re-requests a fresh ad rather
+      // than leaving a blank, never-refilled slot for the rest of the session.
+      container.innerHTML = "";
+      injected.current = false;
+    };
   }, []);
 
   return (
-    <div 
+    <div
       className={cn("hidden md:flex items-center justify-center min-h-[90px] w-[728px] max-w-full mx-auto my-4 overflow-hidden", className)}
       ref={containerRef}
     />

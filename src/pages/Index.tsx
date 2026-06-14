@@ -8,7 +8,7 @@ import { QuickAccessBar } from "@/components/home/QuickAccessBar";
 import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BannerAd, InArticleAd } from "@/components/ads";
+import { BannerAd, InArticleAd, NativeBannerAd, MediumRectangleAd } from "@/components/ads";
 import { SEO } from "@/components/MainSEO";
 
 // Above-the-fold, live-data-first sections (eager-ish, but still split).
@@ -127,8 +127,13 @@ const Index = () => {
           <PlatformStats />
         </Suspense>
 
-        {/* Ad placement — below fold */}
+        {/* Ad placement — below fold. BannerAd is the (dormant) AdSense unit;
+            NativeBannerAd is the live Adsterra revenue unit. Container-id based,
+            so it's collision-free alongside the in-article HPF rectangle below. */}
         <BannerAd className="mt-4" />
+        <div className="container mx-auto px-4 max-w-5xl">
+          <NativeBannerAd />
+        </div>
 
         {/* 5. How It Works — 3-step onboarding */}
         <ViewportSection fallback={<SectionFallback />}>
@@ -151,8 +156,12 @@ const Index = () => {
           </Suspense>
         </ViewportSection>
 
-        {/* In-article ad */}
+        {/* In-article ad — dormant AdSense unit + live Adsterra 300x250 rectangle
+            (the single HPF unit on this page; pairs safely with the native banner). */}
         <InArticleAd />
+        <div className="flex justify-center my-6">
+          <MediumRectangleAd />
+        </div>
 
         {/* 7. Explore chains — internal linking */}
         <ViewportSection fallback={<SectionFallback />}>

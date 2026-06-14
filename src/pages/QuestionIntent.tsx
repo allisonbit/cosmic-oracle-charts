@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { NativeBannerAd } from "@/components/ads";
 import { usePricePrediction, getQuestionIntent, TOP_CRYPTOS, QUESTION_INTENTS } from "@/hooks/usePricePrediction";
 import { useCanonicalSetup } from "@/hooks/useCanonicalSetup";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -342,6 +343,11 @@ export default function QuestionIntent() {
               Always conduct your own research before making investment decisions.
             </p>
           </section>
+
+          {/* Live Adsterra native banner after the answer content */}
+          <div className="mt-10">
+            <NativeBannerAd />
+          </div>
         </div>
       </main>
 

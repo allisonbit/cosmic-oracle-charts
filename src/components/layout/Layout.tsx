@@ -5,6 +5,7 @@ import { Footer } from "./Footer";
 import { MobileBottomNav } from "./MobileBottomNav";
 import { BreadcrumbNav } from "./BreadcrumbNav";
 import { CookieBanner } from "../legal/CookieBanner";
+import { NativeBannerAd } from "@/components/ads";
 import { Loader2 } from "lucide-react";
 
 interface LayoutProps {
@@ -40,6 +41,12 @@ export function Layout({ children, showTicker = true }: LayoutProps) {
         <Suspense fallback={<LoadingFallback />}>
           {children}
         </Suspense>
+        {/* Content-first ad: a single native banner AFTER the page content (not a
+            top-of-page stack). Container-id based, so it never collides with any
+            in-page HighPerformanceFormat unit. Covers all pages that use Layout. */}
+        <div className="container mx-auto px-4 max-w-5xl">
+          <NativeBannerAd />
+        </div>
       </main>
       
       <Footer />

@@ -5,22 +5,24 @@ interface SmallBannerAdProps {
   className?: string;
 }
 
-// Singleton pattern — inject once, never cleanup on navigation
-let smallBannerInitialized = false;
+// 320x50 mobile banner (Adsterra HighPerformanceFormat). Reads the GLOBAL
+// `atOptions` var — keep to at most ONE HPF ad (Large/Medium/Small) per page.
+// Mobile-only (md:hidden). See LargeBannerAd for the collision note.
+const HPF_KEY = "77bf78d1aee783820db24b5061eaa4e3";
 
 export function SmallBannerAd({ className }: SmallBannerAdProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const injected = useRef(false);
 
   useEffect(() => {
-    if (smallBannerInitialized || !containerRef.current) return;
-    smallBannerInitialized = true;
+    if (injected.current || !containerRef.current) return;
+    injected.current = true;
 
-    // Set atOptions immediately before loading this ad's invoke script
-    // to avoid collision with other HighPerformanceFormat ads.
+    const container = containerRef.current;
     const configScript = document.createElement("script");
     configScript.textContent = `
       var atOptions = {
-        'key' : '77bf78d1aee783820db24b5061eaa4e3',
+        'key' : '${HPF_KEY}',
         'format' : 'iframe',
         'height' : 50,
         'width' : 320,
@@ -29,16 +31,20 @@ export function SmallBannerAd({ className }: SmallBannerAdProps) {
     `;
 
     const invokeScript = document.createElement("script");
-    invokeScript.src = "https://www.highperformanceformat.com/77bf78d1aee783820db24b5061eaa4e3/invoke.js";
+    invokeScript.src = `https://www.highperformanceformat.com/${HPF_KEY}/invoke.js`;
     invokeScript.async = true;
 
-    const currentContainer = containerRef.current;
-    currentContainer.appendChild(configScript);
-    currentContainer.appendChild(invokeScript);
+    container.appendChild(configScript);
+    container.appendChild(invokeScript);
+
+    return () => {
+      container.innerHTML = "";
+      injected.current = false;
+    };
   }, []);
 
   return (
-    <div 
+    <div
       className={cn("flex md:hidden items-center justify-center min-h-[50px] w-[320px] mx-auto my-4 overflow-hidden", className)}
       ref={containerRef}
     />

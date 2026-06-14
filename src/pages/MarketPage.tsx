@@ -6,6 +6,7 @@ import { Helmet } from "react-helmet-async";
 import { TrendingUp, Star, Shield, Zap, BarChart3, ChevronRight, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { NativeBannerAd } from "@/components/ads";
 
 // Market page config — one entry per /market/:slug route
 const MARKET_CONFIGS: Record<string, {
@@ -580,6 +581,11 @@ export default function MarketPage() {
               </div>
             </section>
           )}
+
+          {/* Live Adsterra native banner after the market content */}
+          <div className="mt-10">
+            <NativeBannerAd />
+          </div>
         </div>
       </main>
 

@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { SEO } from "@/components/MainSEO";
 import { Helmet } from "react-helmet-async";
-import { BannerAd, InArticleAd } from "@/components/ads";
+import { BannerAd, InArticleAd, NativeBannerAd } from "@/components/ads";
 import { PredictionHubSEOContent, PredictionsHowItWorks, PredictionsDataMeaning } from "@/components/seo/index";
 import { GlobalTokenSearch } from "@/components/prediction/GlobalTokenSearch";
 import { PredictionLeaderboard } from "@/components/prediction/PredictionLeaderboard";
@@ -479,6 +479,10 @@ export default function PredictionHub() {
         </section>
 
         <InArticleAd className="mb-8" />
+        {/* Live Adsterra native banner (container-id based, collision-free) */}
+        <div className="container mx-auto px-4 max-w-5xl mb-8">
+          <NativeBannerAd />
+        </div>
 
         {/* === SEO CONTENT === */}
         <PredictionsHowItWorks />

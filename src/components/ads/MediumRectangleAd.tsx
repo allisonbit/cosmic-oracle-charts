@@ -5,22 +5,23 @@ interface MediumRectangleAdProps {
   className?: string;
 }
 
-// Singleton pattern — inject once, never cleanup on navigation
-let mediumRectangleInitialized = false;
+// 300x250 rectangle (Adsterra HighPerformanceFormat). Reads the GLOBAL `atOptions`
+// var — keep to at most ONE HPF ad (Large/Medium/Small) per page. See LargeBannerAd.
+const HPF_KEY = "c6b1e8444b3a7f06380d0d84798b4b5c";
 
 export function MediumRectangleAd({ className }: MediumRectangleAdProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const injected = useRef(false);
 
   useEffect(() => {
-    if (mediumRectangleInitialized || !containerRef.current) return;
-    mediumRectangleInitialized = true;
+    if (injected.current || !containerRef.current) return;
+    injected.current = true;
 
-    // Set atOptions immediately before loading this ad's invoke script
-    // to avoid collision with other HighPerformanceFormat ads.
+    const container = containerRef.current;
     const configScript = document.createElement("script");
     configScript.textContent = `
       var atOptions = {
-        'key' : 'c6b1e8444b3a7f06380d0d84798b4b5c',
+        'key' : '${HPF_KEY}',
         'format' : 'iframe',
         'height' : 250,
         'width' : 300,
@@ -29,16 +30,20 @@ export function MediumRectangleAd({ className }: MediumRectangleAdProps) {
     `;
 
     const invokeScript = document.createElement("script");
-    invokeScript.src = "https://www.highperformanceformat.com/c6b1e8444b3a7f06380d0d84798b4b5c/invoke.js";
+    invokeScript.src = `https://www.highperformanceformat.com/${HPF_KEY}/invoke.js`;
     invokeScript.async = true;
 
-    const currentContainer = containerRef.current;
-    currentContainer.appendChild(configScript);
-    currentContainer.appendChild(invokeScript);
+    container.appendChild(configScript);
+    container.appendChild(invokeScript);
+
+    return () => {
+      container.innerHTML = "";
+      injected.current = false;
+    };
   }, []);
 
   return (
-    <div 
+    <div
       className={cn("flex items-center justify-center min-h-[250px] w-[300px] max-w-full mx-auto my-4 overflow-hidden", className)}
       ref={containerRef}
     />
