@@ -628,11 +628,21 @@ async function publishArticle(supabase: any, article: any): Promise<string> {
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
+  // This function runs on the SERVICE_ROLE key and writes AI-generated articles
+  // to the DB + spends paid LLM credits. It must only be callable by cron/webhooks.
+  // verify_jwt=false (config.toml) means Supabase does NOT gate it, so we MUST
+  // enforce the shared-secret guard here. (Previously defined but never called.)
+  if (!verifyApiKey(req)) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   const startTime = Date.now();
   const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
-  // Auth handled by verify_jwt=false in config.toml + cron/webhook access
-  // Additional layer: log caller info for audit
+  // Caller is authenticated via WEBHOOK_API_KEY (cron/webhook). Log for audit.
   console.log("Request from:", req.headers.get("x-forwarded-for") || "internal");
 
   // Allow forcing a specific cycle type via body

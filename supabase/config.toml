@@ -129,9 +129,25 @@ verify_jwt = false
 
 [functions.ai-chat]
 verify_jwt = false
+# Backstop against runaway paid-LLM spend. This is a GLOBAL cap (not per-user);
+# per-user/IP limiting requires the Privy-JWT verification work. Per-call token
+# cost is also bounded in the function (message + history char caps).
+[functions.ai-chat.rate_limit]
+requests = 600
+per = 3600
+
+[functions.trading]
+verify_jwt = false
+# Proxies a PAID 0x API key — cap total throughput so it can't be exhausted.
+[functions.trading.rate_limit]
+requests = 600
+per = 3600
 
 [functions.check-alerts]
 verify_jwt = false
+[functions.check-alerts.rate_limit]
+requests = 60
+per = 3600
 
 [functions.news-aggregator]
 verify_jwt = false

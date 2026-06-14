@@ -58,11 +58,11 @@ export function PortfolioChart({ totalValue, holdings }: PortfolioChartProps) {
     for (let i = numPoints - 1; i >= 0; i--) {
       const date = new Date(now.getTime() - (i * intervalMs));
       const progress = (numPoints - i) / numPoints;
-      
-      // Add some randomness for realistic chart
-      const noise = (Math.random() - 0.5) * 0.02 * startValue;
-      const value = startValue + (totalValue - startValue) * progress + noise;
-      
+
+      // Deterministic interpolation between the real start value and the real
+      // current total (no random noise — the line no longer twitches per render).
+      const value = startValue + (totalValue - startValue) * progress;
+
       points.push({
         time: formatTime(date),
         value: Math.max(0, value),

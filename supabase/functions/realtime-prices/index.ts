@@ -109,12 +109,10 @@ function getFallbackPrices(chains: string[]): Record<string, any> {
   const result: Record<string, any> = {};
   for (const chain of chains) {
     if (fallback[chain]) {
-      // Add slight randomness for live feel
-      result[chain] = {
-        ...fallback[chain],
-        price: fallback[chain].price * (1 + (Math.random() - 0.5) * 0.002),
-        change24h: fallback[chain].change24h + (Math.random() - 0.5) * 0.2,
-      };
+      // Last-resort static fallback used only when the live price source is
+      // unavailable. Do NOT add random jitter to fake "live" movement — return
+      // stable values and flag them as a fallback so the client can label them.
+      result[chain] = { ...fallback[chain], isFallback: true };
     }
   }
   return result;

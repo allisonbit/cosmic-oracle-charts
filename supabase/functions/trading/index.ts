@@ -1,7 +1,36 @@
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+// Restrict CORS to our own origins (defense-in-depth: this function proxies a
+// PAID 0x API key). Override with the ALLOWED_ORIGINS env var if the prod domain
+// differs. CORS is browser-enforced only — the config.toml rate_limit is the
+// real abuse backstop.
+const ALLOWED_ORIGINS = (Deno.env.get("ALLOWED_ORIGINS") ||
+  "https://oraclebull.com,https://www.oraclebull.com")
+  .split(",").map((s) => s.trim()).filter(Boolean);
+
+function corsHeadersFor(req: Request) {
+  const origin = req.headers.get("Origin") || "";
+  const allowed =
+    ALLOWED_ORIGINS.includes(origin) ||
+    /^https:\/\/([a-z0-9-]+\.)?(pages\.dev|lovable\.app|lovableproject\.com)$/.test(origin) ||
+    /^http:\/\/localhost(:\d+)?$/.test(origin);
+  return {
+    "Access-Control-Allow-Origin": allowed ? origin : ALLOWED_ORIGINS[0],
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Vary": "Origin",
+  };
+}
+
+// A 0x/Jupiter chain id is a small positive integer. Reject anything else so the
+// upstream paid API only ever sees well-formed params.
+function isValidChainId(v: string): boolean {
+  return /^\d{1,7}$/.test(v);
+}
+// Token addresses / amounts are bounded strings (EVM 0x addr, SPL mint, or symbol).
+function isBoundedToken(v: string): boolean {
+  return v.length > 0 && v.length <= 64 && /^[A-Za-z0-9.:_-]+$/.test(v);
+}
+function isBoundedAmount(v: string): boolean {
+  return /^\d{1,40}$/.test(v);
+}
 
 const OX_API_KEY = Deno.env.get("OX_API_KEY") || "";
 const OX_BASE = "https://api.0x.org";
@@ -11,6 +40,7 @@ const JUPITER_API = "https://quote-api.jup.ag/v6";
 const SOL_MINT = "So11111111111111111111111111111111111111112";
 
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersFor(req);
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
@@ -40,6 +70,13 @@ Deno.serve(async (req) => {
         });
       }
 
+      if (!isValidChainId(chainId) || !isBoundedToken(sellToken) || !isBoundedToken(buyToken) ||
+          !isBoundedAmount(sellAmount) || (taker && !isBoundedToken(taker))) {
+        return new Response(JSON.stringify({ error: "Invalid quote parameters" }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
       const params = new URLSearchParams({
         chainId,
         sellToken,
@@ -65,6 +102,13 @@ Deno.serve(async (req) => {
       const sellToken = url.searchParams.get("sellToken") || "";
       const buyToken = url.searchParams.get("buyToken") || "";
       const sellAmount = url.searchParams.get("sellAmount") || "";
+
+      if (!isValidChainId(chainId) || !isBoundedToken(sellToken) || !isBoundedToken(buyToken) ||
+          !isBoundedAmount(sellAmount)) {
+        return new Response(JSON.stringify({ error: "Invalid price parameters" }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
 
       const params = new URLSearchParams({ chainId, sellToken, buyToken, sellAmount });
 

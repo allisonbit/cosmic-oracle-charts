@@ -40,8 +40,16 @@ jobs:
 
       # The prerender (scripts/seo-prerender.mjs) is pure-Node and needs no
       # browser; it bakes per-route meta + content into dist/.
+      # NOTE: the build now asserts the public Supabase env is present (so a
+      # misconfigured build can't silently ship a dead "missing-key" bundle).
+      # Set these as repo Actions secrets — they are the PUBLIC url + anon key,
+      # the same values configured in the Cloudflare Pages build env.
       - name: Build (Vite + SEO prerender)
         run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+          VITE_PRIVY_APP_ID: ${{ secrets.VITE_PRIVY_APP_ID }}
 
       # Ensure a Chrome is available for the Puppeteer route scan. No-op if
       # `npm ci`'s puppeteer postinstall already cached it.

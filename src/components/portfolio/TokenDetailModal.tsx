@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { AreaChart, Area, ResponsiveContainer } from "recharts";
 import { CoinImage } from "@/components/ui/CoinImage";
+import { usePriceSeries } from "@/hooks/usePriceSeries";
 
 interface TokenHolding {
   symbol: string;
@@ -33,6 +34,7 @@ interface TokenDetailModalProps {
 
 export function TokenDetailModal({ token, isOpen, onClose }: TokenDetailModalProps) {
   const [copied, setCopied] = useState(false);
+  const { data: series } = usePriceSeries(token?.symbol, 1, 24);
 
   if (!token) return null;
 
@@ -45,16 +47,8 @@ export function TokenDetailModal({ token, isOpen, onClose }: TokenDetailModalPro
     }
   };
 
-  // Generate mock price chart data
-  const chartData = Array.from({ length: 24 }, (_, i) => {
-    const change = token.change24h / 100;
-    const startPrice = token.price / (1 + change);
-    const progress = i / 23;
-    const noise = (Math.random() - 0.5) * 0.02 * startPrice;
-    return {
-      value: startPrice + (token.price - startPrice) * progress + noise
-    };
-  });
+  // Real 24h price series (no synthetic walk).
+  const chartData = (series ?? []).map((p) => ({ value: p.price }));
 
   const getRecommendationDetails = (rec: string) => {
     switch (rec) {

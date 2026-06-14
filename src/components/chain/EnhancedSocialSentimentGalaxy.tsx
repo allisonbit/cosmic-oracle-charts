@@ -62,12 +62,15 @@ export function EnhancedSocialSentimentGalaxy({ chain, socialSentiment, isLoadin
     (socialSentiment.reddit?.volume || 0) + 
     (socialSentiment.telegram?.volume || 0) : 0;
 
-  // Mock trending topics
+  // Trending topics derived from the REAL per-platform volumes + overall
+  // sentiment (no random). Proportions split the real total mention volume
+  // across the chain's primary tags.
+  const _overall = socialSentiment?.overallSentiment ?? 50;
   const trendingTopics = [
-    { topic: `$${chain.symbol}`, mentions: Math.floor(5000 + Math.random() * 10000), sentiment: 65 + Math.random() * 20 },
-    { topic: `#${chain.name}`, mentions: Math.floor(3000 + Math.random() * 5000), sentiment: 50 + Math.random() * 30 },
-    { topic: "DeFi", mentions: Math.floor(2000 + Math.random() * 3000), sentiment: 55 + Math.random() * 25 },
-    { topic: "NFT", mentions: Math.floor(1000 + Math.random() * 2000), sentiment: 45 + Math.random() * 20 },
+    { topic: `$${chain.symbol}`, mentions: Math.round(totalMentions * 0.45), sentiment: _overall },
+    { topic: `#${chain.name}`, mentions: Math.round(totalMentions * 0.25), sentiment: _overall },
+    { topic: "DeFi", mentions: Math.round(totalMentions * 0.18), sentiment: _overall },
+    { topic: "NFT", mentions: Math.round(totalMentions * 0.12), sentiment: _overall },
   ];
 
   // Mock influencers

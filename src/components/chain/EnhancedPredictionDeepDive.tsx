@@ -171,11 +171,13 @@ export function EnhancedPredictionDeepDive({ chain, forecast, isLoading }: Enhan
       data: {
         riskLevel: forecast.riskLevel,
         factors: [
-          { name: "Market Volatility", score: Math.floor(forecast.riskLevel * 0.8 + Math.random() * 20), description: "Current price swing intensity" },
+          // All factor scores are deterministic functions of the real forecast
+          // riskLevel — no random noise.
+          { name: "Market Volatility", score: Math.floor(forecast.riskLevel * 0.8), description: "Current price swing intensity" },
           { name: "Liquidity Depth", score: Math.floor(100 - forecast.riskLevel * 0.6), description: "Order book depth analysis" },
           { name: "Correlation Risk", score: Math.floor(forecast.riskLevel * 0.9), description: "BTC/macro correlation strength" },
-          { name: "Sentiment Extreme", score: Math.floor(forecast.riskLevel * 0.7 + Math.random() * 15), description: "Fear/greed positioning" },
-          { name: "Technical Setup", score: Math.floor(50 + Math.random() * 30), description: "Chart pattern quality" },
+          { name: "Sentiment Extreme", score: Math.floor(forecast.riskLevel * 0.7), description: "Fear/greed positioning" },
+          { name: "Technical Setup", score: Math.floor(100 - forecast.riskLevel * 0.5), description: "Chart pattern quality" },
         ],
         recommendations: forecast.riskLevel < 30 
           ? ["Low risk environment suitable for larger positions", "Consider leveraged strategies with proper stops", "Good time for swing trading entries"]

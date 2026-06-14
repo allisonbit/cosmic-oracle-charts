@@ -68,8 +68,9 @@ export function TokenSentimentSearch() {
           const change = t.priceChange24h || t.change24h || 0;
           const vol = t.volume24h || t.volume?.h24 || 0;
           const liq = t.liquidity?.usd || t.liquidity || 0;
-          const buys = t.txns?.h24?.buys || Math.floor(Math.random() * 500 + 100);
-          const sells = t.txns?.h24?.sells || Math.floor(Math.random() * 500 + 100);
+          // Real DexScreener txn counts; 0 when absent → neutral buyRatio below.
+          const buys = t.txns?.h24?.buys || 0;
+          const sells = t.txns?.h24?.sells || 0;
           const txns = buys + sells;
 
           // Calculate sentiment from real DexScreener metrics

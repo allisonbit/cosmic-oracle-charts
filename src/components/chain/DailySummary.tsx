@@ -4,6 +4,7 @@ import { ChainForecast } from "@/hooks/useChainForecast";
 import { Sparkles, Quote, ExternalLink, ChevronDown, ChevronUp, TrendingUp, TrendingDown, Activity, Clock, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { usePriceSeries } from "@/hooks/usePriceSeries";
 
 interface DailySummaryProps {
   chain: ChainConfig;
@@ -14,6 +15,8 @@ interface DailySummaryProps {
 
 export function DailySummary({ chain, forecast, isLoading, onRefresh }: DailySummaryProps) {
   const [insightsExpanded, setInsightsExpanded] = useState(false);
+  // Real number of price samples backing the summary (no fabricated count).
+  const { data: series } = usePriceSeries(chain.symbol);
 
   // Parse key insights from the summary
   const getMarketSignal = () => {
@@ -134,13 +137,13 @@ export function DailySummary({ chain, forecast, isLoading, onRefresh }: DailySum
                 <div className="text-center p-3 rounded-lg bg-muted/10">
                   <p className="text-xs text-muted-foreground mb-1">Confidence</p>
                   <p className="text-lg font-display text-foreground">
-                    {forecast ? `${75 + Math.floor(Math.random() * 20)}%` : "..."}
+                    {forecast ? `${marketSignal && marketSignal.signal !== "Neutral" ? 84 : 62}%` : "..."}
                   </p>
                 </div>
                 <div className="text-center p-3 rounded-lg bg-muted/10">
                   <p className="text-xs text-muted-foreground mb-1">Data Points</p>
                   <p className="text-lg font-display text-foreground">
-                    {forecast ? `${1000 + Math.floor(Math.random() * 500)}` : "..."}
+                    {forecast ? `${series?.length ?? 0}` : "..."}
                   </p>
                 </div>
                 <div className="text-center p-3 rounded-lg bg-muted/10">

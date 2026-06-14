@@ -19,8 +19,6 @@ interface AlertDetailModalProps {
 export function AlertDetailModal({ alert, open, onOpenChange }: AlertDetailModalProps) {
   const analysis = useMemo(() => {
     if (!alert) return null;
-    const now = new Date();
-    const triggerTime = new Date(now.getTime() - Math.random() * 3600000); // Random time in last hour
 
     const details = {
       pump: {
@@ -40,7 +38,7 @@ export function AlertDetailModal({ alert, open, onOpenChange }: AlertDetailModal
           "Watch for resistance levels that may cause reversal",
           "Monitor volume for sustainability"
         ],
-        timing: "This move started approximately " + Math.floor(Math.random() * 60 + 15) + " minutes ago",
+        timing: "Triggered by the latest 24h move",
         strength: Math.min(95, 60 + Math.abs(alert.change) * 3)
       },
       breakout: {
@@ -60,7 +58,7 @@ export function AlertDetailModal({ alert, open, onOpenChange }: AlertDetailModal
           "Watch for confirmation with sustained volume",
           "Identify next resistance targets"
         ],
-        timing: "Breakout confirmed approximately " + Math.floor(Math.random() * 45 + 10) + " minutes ago",
+        timing: "Confirmed by the latest 24h move",
         strength: Math.min(85, 50 + Math.abs(alert.change) * 4)
       },
       dump: {
@@ -80,7 +78,7 @@ export function AlertDetailModal({ alert, open, onOpenChange }: AlertDetailModal
           "Look for support levels where price may stabilize",
           "Consider DCA if long-term bullish"
         ],
-        timing: "Decline started approximately " + Math.floor(Math.random() * 30 + 5) + " minutes ago",
+        timing: "Triggered by the latest 24h move",
         strength: Math.min(90, 55 + Math.abs(alert.change) * 3)
       },
       warning: {
@@ -100,7 +98,7 @@ export function AlertDetailModal({ alert, open, onOpenChange }: AlertDetailModal
           "Set price alerts for key levels",
           "Review your position sizing"
         ],
-        timing: "Correction started approximately " + Math.floor(Math.random() * 90 + 20) + " minutes ago",
+        timing: "Triggered by the latest 24h move",
         strength: Math.min(75, 40 + Math.abs(alert.change) * 4)
       }
     };

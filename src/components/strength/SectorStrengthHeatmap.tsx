@@ -41,15 +41,18 @@ export function SectorStrengthHeatmap({ assets }: SectorStrengthHeatmapProps) {
       );
 
       if (matchingAssets.length === 0) {
-        // Generate mock data based on overall market
-        const avgScore = assets.length > 0 
-          ? assets.reduce((acc, a) => acc + a.strengthScore, 0) / assets.length 
+        // No assets loaded for this sector yet — fall back to the real overall
+        // market average (deterministic), not a fabricated per-sector number.
+        const avgScore = assets.length > 0
+          ? assets.reduce((acc, a) => acc + a.strengthScore, 0) / assets.length
           : 50;
-        const variance = (Math.random() - 0.5) * 20;
+        const avgChange = assets.length > 0
+          ? assets.reduce((acc, a) => acc + a.priceChange24h, 0) / assets.length
+          : 0;
         return {
           ...sector,
-          avgStrength: Math.round(avgScore + variance),
-          change: (Math.random() - 0.5) * 15,
+          avgStrength: Math.round(avgScore),
+          change: avgChange,
           topAsset: null,
           assetCount: 0,
         };

@@ -7,6 +7,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
+import { usePriceSeries } from "@/hooks/usePriceSeries";
+import { rsi, macd } from "@/lib/indicators";
 
 interface EnhancedDailySummaryProps {
   chain: ChainConfig;
@@ -26,16 +28,27 @@ export function EnhancedDailySummary({ chain, forecast, isLoading, onRefresh }: 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalData, setModalData] = useState<SummaryModalData | null>(null);
 
+  // Real price series → real support/resistance, RSI and MACD below.
+  const { data: series } = usePriceSeries(chain.symbol);
+  const prices = (series ?? []).map((p) => p.price);
+  const realSupport = prices.length ? Math.min(...prices) : null;
+  const realResistance = prices.length ? Math.max(...prices) : null;
+  const rsiArr = rsi(prices, 14);
+  const realRsi = ([...rsiArr].reverse().find((v) => v !== null) ?? null) as number | null;
+  const { histogram } = macd(prices);
+  const lastHist = ([...histogram].reverse().find((v) => v !== null) ?? null) as number | null;
+
   const getMarketSignal = () => {
     if (!forecast?.dailySummary) return null;
     const summary = forecast.dailySummary.toLowerCase();
+    // Deterministic score from the forecast direction (no random).
     if (summary.includes('bullish') || summary.includes('upward') || summary.includes('positive')) {
-      return { signal: 'Bullish', color: 'text-success', bgColor: 'bg-success/20', icon: TrendingUp, score: 75 + Math.random() * 20 };
+      return { signal: 'Bullish', color: 'text-success', bgColor: 'bg-success/20', icon: TrendingUp, score: 80 };
     }
     if (summary.includes('bearish') || summary.includes('downward') || summary.includes('negative')) {
-      return { signal: 'Bearish', color: 'text-danger', bgColor: 'bg-danger/20', icon: TrendingDown, score: 20 + Math.random() * 25 };
+      return { signal: 'Bearish', color: 'text-danger', bgColor: 'bg-danger/20', icon: TrendingDown, score: 22 };
     }
-    return { signal: 'Neutral', color: 'text-warning', bgColor: 'bg-warning/20', icon: Activity, score: 45 + Math.random() * 15 };
+    return { signal: 'Neutral', color: 'text-warning', bgColor: 'bg-warning/20', icon: Activity, score: 50 };
   };
 
   const marketSignal = getMarketSignal();
@@ -45,20 +58,25 @@ export function EnhancedDailySummary({ chain, forecast, isLoading, onRefresh }: 
     setModalOpen(true);
   };
 
-  // Mock key metrics
+  // Key metrics derived from REAL data (no random). dataPoints is the real number
+  // of price samples backing the indicators; confidence/volatility derive from the
+  // forecast signal and the real series spread.
+  const seriesVolatility = realSupport && realResistance && realSupport > 0
+    ? ((realResistance - realSupport) / realSupport) * 100
+    : 0;
   const keyMetrics = {
-    confidence: Math.floor(75 + Math.random() * 20),
-    dataPoints: Math.floor(1000 + Math.random() * 500),
+    confidence: Math.round(marketSignal ? 60 + Math.abs(marketSignal.score - 50) * 0.6 : 60),
+    dataPoints: prices.length,
     sentiment: marketSignal?.score || 50,
-    volatility: Math.floor(20 + Math.random() * 40),
+    volatility: Math.round(seriesVolatility),
   };
 
-  // Mock signals
+  // Signals from the real price series + real indicators.
   const tradingSignals = [
-    { signal: "Support Level", value: `$${(Math.random() * 1000 + 2000).toFixed(0)}`, type: "support", strength: 75 },
-    { signal: "Resistance Level", value: `$${(Math.random() * 1000 + 3000).toFixed(0)}`, type: "resistance", strength: 82 },
-    { signal: "RSI", value: Math.floor(30 + Math.random() * 40).toString(), type: "indicator", strength: 65 },
-    { signal: "MACD", value: "Bullish Cross", type: "indicator", strength: 78 },
+    { signal: "Support Level", value: realSupport !== null ? `$${realSupport.toLocaleString(undefined, { maximumFractionDigits: 2 })}` : "—", type: "support", strength: 75 },
+    { signal: "Resistance Level", value: realResistance !== null ? `$${realResistance.toLocaleString(undefined, { maximumFractionDigits: 2 })}` : "—", type: "resistance", strength: 82 },
+    { signal: "RSI", value: realRsi !== null ? Math.round(realRsi).toString() : "—", type: "indicator", strength: 65 },
+    { signal: "MACD", value: lastHist === null ? "—" : lastHist >= 0 ? "Bullish" : "Bearish", type: "indicator", strength: 78 },
   ];
 
   // Mock news headlines

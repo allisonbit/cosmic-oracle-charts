@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
@@ -321,7 +321,24 @@ const allRoutes = [
 ];
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
+export default defineConfig(({ mode, command }) => {
+  // Fail the production build loudly instead of silently shipping the
+  // "missing-key" Supabase fallback (which 401s every request on the live site).
+  // The anon/publishable key is safe to expose in the client bundle.
+  const env = loadEnv(mode, process.cwd(), "");
+  if (command === "build" && mode !== "development") {
+    const supaKey = env.VITE_SUPABASE_PUBLISHABLE_KEY || env.VITE_SUPABASE_ANON_KEY;
+    if (!supaKey || supaKey === "missing-key") {
+      throw new Error(
+        "[build] Missing VITE_SUPABASE_PUBLISHABLE_KEY (or VITE_SUPABASE_ANON_KEY). " +
+          "Set it in the Cloudflare Pages / CI build environment — see .env.example.",
+      );
+    }
+    if (!env.VITE_SUPABASE_URL) {
+      throw new Error("[build] Missing VITE_SUPABASE_URL — see .env.example.");
+    }
+  }
+  return {
   server: {
     host: "::",
     port: 8080,
@@ -356,7 +373,10 @@ export default defineConfig(({ mode }) => ({
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/api\.coingecko\.com\/.*/i,
-            handler: 'CacheFirst',
+            // StaleWhileRevalidate (not CacheFirst): serve cached data instantly
+            // but refresh in the background, so users don't get stuck on up-to-5-min
+            // stale crypto prices the way CacheFirst would within its TTL window.
+            handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'coingecko-api-cache',
               expiration: {
@@ -410,4 +430,5 @@ export default defineConfig(({ mode }) => ({
     // Our previous manualChunks split introduced a production-only TDZ error
     // ("Cannot access 'S' before initialization"), resulting in a black screen after deploy.
   },
-}));
+  };
+});
