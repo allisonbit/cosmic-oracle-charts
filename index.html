@@ -16,8 +16,7 @@
     <link rel="preconnect" href="https://api.coingecko.com" crossorigin />
     <link rel="dns-prefetch" href="https://api.coingecko.com" />
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-    <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
-    
+
     <!-- Prefetch API endpoints to warm connection -->
     <link rel="preconnect" href="https://qynszkirmcrldqmiplwh.supabase.co/functions/v1" crossorigin />
     <link rel="dns-prefetch" href="https://qynszkirmcrldqmiplwh.supabase.co/functions/v1" />
@@ -83,11 +82,12 @@
     <meta name="twitter:site" content="@oracle_bulls" />
     <meta name="twitter:creator" content="@oracle_bulls" />
     
-    <!-- Google AdSense - Account verification & script (must be in head for Auto Ads) -->
-    <meta name="google-adsense-account" content="ca-pub-1336344158133611">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1336344158133611"
-     crossorigin="anonymous"></script>
-    
+    <!-- Google AdSense script intentionally removed: the account was rejected, so the
+         ~195KB adsbygoogle loader ran on every page and filled zero ads — pure overhead
+         that hurt load time / Core Web Vitals. Live ad revenue runs through Adsterra.
+         To re-enable after a future AdSense approval, re-add the google-adsense-account
+         meta tag + the async adsbygoogle loader script here (client ca-pub-1336344158133611). -->
+
     <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="180x180" href="https://oraclebull.com/oracle-bot-mascot.jpg" />
     <link rel="icon" type="image/jpeg" href="/oracle-bot-mascot.jpg" />
