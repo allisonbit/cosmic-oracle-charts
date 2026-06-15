@@ -5,7 +5,7 @@ import { Footer } from "./Footer";
 import { MobileBottomNav } from "./MobileBottomNav";
 import { BreadcrumbNav } from "./BreadcrumbNav";
 import { CookieBanner } from "../legal/CookieBanner";
-import { NativeBannerAd } from "@/components/ads";
+import { NativeBannerAd, SmartlinkAd } from "@/components/ads";
 import { Loader2 } from "lucide-react";
 
 interface LayoutProps {
@@ -38,14 +38,20 @@ export function Layout({ children, showTicker = true }: LayoutProps) {
       
       <main id="main-content" className={`flex-1 ${showTicker ? "" : "mt-14 md:mt-16"} pb-36 md:pb-28 scroll-smooth-touch`}>
         <BreadcrumbNav />
+        {/* Smartlink (sponsored) near the top — appears on all Layout pages. */}
+        <div className="container mx-auto px-4 flex justify-center my-3">
+          <SmartlinkAd />
+        </div>
         <Suspense fallback={<LoadingFallback />}>
           {children}
         </Suspense>
         {/* Content-first ad: a single native banner AFTER the page content (not a
             top-of-page stack). Container-id based, so it never collides with any
             in-page HighPerformanceFormat unit. Covers all pages that use Layout. */}
-        <div className="container mx-auto px-4 max-w-5xl">
+        <div className="container mx-auto px-4 max-w-5xl flex flex-col items-center gap-3 mt-6">
           <NativeBannerAd />
+          {/* Smartlink (sponsored) at the bottom too, per owner request. */}
+          <SmartlinkAd />
         </div>
       </main>
       

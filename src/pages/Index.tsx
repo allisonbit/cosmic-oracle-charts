@@ -8,7 +8,7 @@ import { QuickAccessBar } from "@/components/home/QuickAccessBar";
 import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BannerAd, InArticleAd, NativeBannerAd, MediumRectangleAd } from "@/components/ads";
+import { BannerAd, InArticleAd, NativeBannerAd, MediumRectangleAd, SmartlinkAd } from "@/components/ads";
 import { SEO } from "@/components/MainSEO";
 
 // Above-the-fold, live-data-first sections (eager-ish, but still split).
@@ -102,6 +102,11 @@ const Index = () => {
         {/* 1. Hero — H1, prominent search, live price chips */}
         <HeroSection />
 
+        {/* Smartlink (sponsored) near the top of the homepage, per owner request. */}
+        <div className="container mx-auto px-4 flex justify-center my-4">
+          <SmartlinkAd />
+        </div>
+
         {/* 2. Latest crypto news — attractive, dynamic lead */}
         <Suspense fallback={<SectionFallback />}>
           <HomeNews />
@@ -190,6 +195,10 @@ const Index = () => {
             <NewsletterCTASection />
           </Suspense>
         </ViewportSection>
+        {/* Smartlink (sponsored) at the bottom of the homepage, per owner request. */}
+        <div className="container mx-auto px-4 flex justify-center my-6">
+          <SmartlinkAd />
+        </div>
       </main>
 
       <Footer />

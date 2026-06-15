@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { SEO } from "@/components/MainSEO";
 import { Helmet } from "react-helmet-async";
-import { BannerAd, InArticleAd, NativeBannerAd } from "@/components/ads";
+import { BannerAd, InArticleAd, NativeBannerAd, SmartlinkAd } from "@/components/ads";
 import { PredictionHubSEOContent, PredictionsHowItWorks, PredictionsDataMeaning } from "@/components/seo/index";
 import { GlobalTokenSearch } from "@/components/prediction/GlobalTokenSearch";
 import { PredictionLeaderboard } from "@/components/prediction/PredictionLeaderboard";
@@ -182,6 +182,11 @@ export default function PredictionHub() {
       <header><Navbar /></header>
 
       <main className="flex-1 container mx-auto px-4 py-20 md:py-28 max-w-7xl">
+
+        {/* Smartlink (sponsored) near the top, per owner request. */}
+        <div className="flex justify-center mb-5">
+          <SmartlinkAd />
+        </div>
 
         {/* === LIVE MONITORING BAR === */}
         <div className="flex flex-wrap items-center gap-3 mb-6 px-4 py-2.5 rounded-lg border border-border bg-card text-xs">
@@ -507,6 +512,11 @@ export default function PredictionHub() {
             </p>
           </div>
         </section>
+
+        {/* Smartlink (sponsored) at the bottom too, per owner request. */}
+        <div className="flex justify-center mt-8">
+          <SmartlinkAd />
+        </div>
       </main>
 
       <Footer />

@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { NativeBannerAd } from "@/components/ads";
+import { NativeBannerAd, SmartlinkAd } from "@/components/ads";
 import { usePricePrediction, getQuestionIntent, TOP_CRYPTOS, QUESTION_INTENTS } from "@/hooks/usePricePrediction";
 import { useCanonicalSetup } from "@/hooks/useCanonicalSetup";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -132,6 +132,11 @@ export default function QuestionIntent() {
             <ChevronRight className="w-4 h-4" />
             <span className="text-foreground">{timeframe}</span>
           </nav>
+
+          {/* Smartlink (sponsored) near the top, per owner request. */}
+          <div className="flex justify-center mb-6">
+            <SmartlinkAd />
+          </div>
 
           {/* Hero Section */}
           <section className="text-center mb-12">
@@ -344,9 +349,10 @@ export default function QuestionIntent() {
             </p>
           </section>
 
-          {/* Live Adsterra native banner after the answer content */}
-          <div className="mt-10">
+          {/* Live Adsterra native banner + smartlink after the answer content */}
+          <div className="mt-10 flex flex-col items-center gap-3">
             <NativeBannerAd />
+            <SmartlinkAd />
           </div>
         </div>
       </main>
