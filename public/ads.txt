@@ -6,12 +6,12 @@
 google.com, pub-1336344158133611, DIRECT, f08c47fec0942fa0
 
 # ===== ADSTERRA (HighPerformanceFormat + EffectiveCPM) =====
-# The restored banner/native units (NativeBannerAd, Large/Medium/Small BannerAd)
-# are Adsterra DIRECT tags and serve without an ads.txt line. Adding your real
-# Adsterra publisher ID below improves fill/verification. Find it in the Adsterra
-# dashboard (Profile → Publisher ID) and uncomment. Do NOT leave a placeholder ID
-# active — an invalid numeric ID can flag the whole file as misconfigured.
-# adsterra.com, YOUR_ADSTERRA_PUBLISHER_ID, DIRECT
+# Authorizes the Adsterra network that serves the restored banner/native units
+# (NativeBannerAd, Large/Medium/Small BannerAd). Publisher ID 5829703.
+# NOTE: Adsterra's dashboard may provide a 4th TAG-ID field (e.g.
+# "adsterra.com, 5829703, DIRECT, <tag-id>"). This 3-field DIRECT line is valid
+# per the IAB spec; if your dashboard shows a TAG-ID, append it for completeness.
+adsterra.com, 5829703, DIRECT
 
 # ===== BITMEDIA.IO (Crypto Ad Network) =====
 # Disabled until a real publisher ID is added. An ads.txt line containing the
