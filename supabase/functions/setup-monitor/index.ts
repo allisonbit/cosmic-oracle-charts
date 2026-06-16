@@ -137,6 +137,19 @@ function evaluate(s: any, price: number) {
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
+  // Shared-secret guard: this function runs on the service role key and mutates
+  // every active trade setup. It must only be callable by cron/webhooks.
+  const apiKey = req.headers.get("x-api-key") ||
+    req.headers.get("authorization")?.replace("Bearer ", "");
+  const validKey = Deno.env.get("WEBHOOK_API_KEY") ||
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if (!validKey || apiKey !== validKey) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   const supabase = getSupabase();
   if (!supabase) {
     return new Response(JSON.stringify({ error: "No service credentials" }),

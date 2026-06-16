@@ -12,6 +12,19 @@ serve(async (req) => {
   }
 
   try {
+    // Shared-secret guard: this function runs on the service role key and
+    // mutates every user's price alerts. Must only be callable by cron/webhooks.
+    const apiKey = req.headers.get("x-api-key") ||
+      req.headers.get("authorization")?.replace("Bearer ", "");
+    const validKey = Deno.env.get("WEBHOOK_API_KEY") ||
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (!validKey || apiKey !== validKey) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, serviceKey);
