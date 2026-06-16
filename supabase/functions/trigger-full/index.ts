@@ -5,14 +5,30 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-api-key",
 };
 
+function verifyApiKey(req: Request): boolean {
+  const apiKey = req.headers.get("x-api-key") || req.headers.get("authorization")?.replace("Bearer ", "");
+  const validKey = Deno.env.get("WEBHOOK_API_KEY"); // fail closed; no service_role bearer
+  if (!validKey || !apiKey) return false;
+  return apiKey === validKey;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+
+  // SECURITY (audit P0): orchestrator that fans out to the content/restructure
+  // agents (LLM spend + DB writes). Require the webhook secret before doing anything.
+  if (!verifyApiKey(req)) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
 
   const startTime = Date.now();
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
   const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
 
-  // Forward the auth header
+  // Forward the (validated) webhook secret downstream
   const apiKey = req.headers.get("x-api-key") || req.headers.get("authorization")?.replace("Bearer ", "") || "";
 
   try {

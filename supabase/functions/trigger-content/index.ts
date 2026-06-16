@@ -8,7 +8,10 @@ const corsHeaders = {
 
 function verifyApiKey(req: Request): boolean {
   const apiKey = req.headers.get("x-api-key") || req.headers.get("authorization")?.replace("Bearer ", "");
-  const validKey = Deno.env.get("WEBHOOK_API_KEY") || Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  // SECURITY: never accept the Supabase service_role key as an inbound bearer — a
+  // leak of that header would mean full RLS-bypass DB compromise. Require a dedicated
+  // WEBHOOK_API_KEY secret (fail closed if it isn't configured).
+  const validKey = Deno.env.get("WEBHOOK_API_KEY");
   if (!validKey || !apiKey) return false;
   return apiKey === validKey;
 }

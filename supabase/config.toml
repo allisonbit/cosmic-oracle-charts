@@ -126,6 +126,23 @@ verify_jwt = false
 
 [functions.ai-chat]
 verify_jwt = false
+[functions.ai-chat.rate_limit]
+requests = 60
+per = 3600
+
+# Anonymous LLM proxy — cap to stop AI-bill cost amplification (audit P0)
+[functions.ai-trading-signals]
+verify_jwt = false
+[functions.ai-trading-signals.rate_limit]
+requests = 60
+per = 3600
+
+# Search-engine submission relay — app-level WEBHOOK_API_KEY auth enforced in code
+[functions.indexnow]
+verify_jwt = false
+[functions.indexnow.rate_limit]
+requests = 30
+per = 3600
 
 [functions.check-alerts]
 verify_jwt = false

@@ -140,10 +140,10 @@ function verifyApiKey(req: Request): boolean {
     req.headers.get("apikey"),
   ].filter(Boolean);
 
-  const validKeys = [
-    Deno.env.get("WEBHOOK_API_KEY"),
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY"),
-  ].filter(Boolean);
+  // SECURITY: do NOT accept the service_role key as an inbound bearer (leak = full
+  // DB compromise). Only the dedicated WEBHOOK_API_KEY secret authorizes this agent.
+  const validKeys = [Deno.env.get("WEBHOOK_API_KEY")].filter(Boolean);
+  if (validKeys.length === 0) return false; // fail closed
 
   return candidates.some(c => validKeys.includes(c!));
 }
@@ -628,11 +628,18 @@ async function publishArticle(supabase: any, article: any): Promise<string> {
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
+  // SECURITY (audit P0): this function spends LLM credits and writes published
+  // content with the service_role key. It must be cron/webhook-only — require auth.
+  if (!verifyApiKey(req)) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   const startTime = Date.now();
   const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
-  // Auth handled by verify_jwt=false in config.toml + cron/webhook access
-  // Additional layer: log caller info for audit
   console.log("Request from:", req.headers.get("x-forwarded-for") || "internal");
 
   // Allow forcing a specific cycle type via body

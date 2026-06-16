@@ -67,13 +67,42 @@ async function fetchMarketContext(message: string): Promise<string> {
   }
 }
 
+const MAX_MESSAGE_CHARS = 4000;
+const MAX_HISTORY_TURNS = 12;
+const MAX_HISTORY_CHARS = 2000;
+
+// Only allow user/assistant turns of bounded length. Forged { role: "system" }
+// turns (jailbreak) and oversized history (token-bomb to drain the AI bill) are dropped.
+function sanitizeHistory(raw: unknown): Array<{ role: "user" | "assistant"; content: string }> {
+  if (!Array.isArray(raw)) return [];
+  const out: Array<{ role: "user" | "assistant"; content: string }> = [];
+  for (const turn of raw.slice(-MAX_HISTORY_TURNS)) {
+    if (!turn || typeof turn !== "object") continue;
+    const role = (turn as any).role;
+    const content = (turn as any).content;
+    if ((role === "user" || role === "assistant") && typeof content === "string" && content.length > 0) {
+      out.push({ role, content: content.slice(0, MAX_HISTORY_CHARS) });
+    }
+  }
+  return out;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { message, history } = await req.json();
+    const body = await req.json().catch(() => ({}));
+    const rawMessage = typeof body?.message === "string" ? body.message.trim() : "";
+    if (!rawMessage) {
+      return new Response(JSON.stringify({ reply: "Please ask me a question about the markets! 📈" }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const message = rawMessage.slice(0, MAX_MESSAGE_CHARS);
+    const history = sanitizeHistory(body?.history);
 
     // Fetch live market data based on user's question
     const marketContext = await fetchMarketContext(message);

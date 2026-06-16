@@ -9,8 +9,15 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { coins } = await req.json();
-    const coinList = Array.isArray(coins) ? coins.slice(0, 10) : ["BTC", "ETH", "SOL"];
+    const body = await req.json().catch(() => ({}));
+    // Whitelist symbol shape (letters/digits, <=12 chars) before it reaches the
+    // LLM prompt — blocks prompt-injection via the coin strings and caps fan-out.
+    const coinList = (Array.isArray(body?.coins) ? body.coins : [])
+      .filter((c: unknown): c is string => typeof c === "string")
+      .map((c: string) => c.trim().toUpperCase())
+      .filter((c: string) => /^[A-Z0-9]{1,12}$/.test(c))
+      .slice(0, 10);
+    if (coinList.length === 0) coinList.push("BTC", "ETH", "SOL");
 
     // Fetch current prices from CoinGecko
     const ids = coinList.map((c: string) => {
