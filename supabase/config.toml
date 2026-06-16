@@ -78,6 +78,9 @@ per = 3600
 
 [functions.setup-monitor]
 verify_jwt = false
+[functions.setup-monitor.rate_limit]
+requests = 10
+per = 3600
 
 [functions.prediction-prewarm]
 verify_jwt = false
