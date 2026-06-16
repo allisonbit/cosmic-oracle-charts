@@ -3,9 +3,9 @@ import { HelmetProvider } from "react-helmet-async";
 import App from "./App.tsx";
 
 // Self-hosted variable fonts (eliminates render-blocking Google Fonts CDN request)
-import "@fontsource-variable/plus-jakarta-sans";
-import "@fontsource-variable/sora";
-import "@fontsource-variable/jetbrains-mono";
+import "@fontsource-variable/plus-jakarta-sans/index.css";
+import "@fontsource-variable/sora/index.css";
+import "@fontsource-variable/jetbrains-mono/index.css";
 
 // Structured error tracking (disabled until VITE_SENTRY_DSN is set)
 import { initSentry } from "./lib/sentry";
