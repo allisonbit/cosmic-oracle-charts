@@ -379,6 +379,60 @@ export type Database = {
         }
         Relationships: []
       }
+      prediction_outcomes: {
+        Row: {
+          actual_price: number
+          bias: string
+          coin_id: string
+          confidence: number
+          created_at: string
+          entry_price: number
+          hit: boolean
+          id: string
+          predicted_at: string
+          prediction_id: string
+          resolved_at: string
+          symbol: string
+          target_high: number | null
+          target_low: number | null
+          timeframe: string
+        }
+        Insert: {
+          actual_price: number
+          bias: string
+          coin_id: string
+          confidence?: number
+          created_at?: string
+          entry_price: number
+          hit: boolean
+          id?: string
+          predicted_at: string
+          prediction_id: string
+          resolved_at?: string
+          symbol: string
+          target_high?: number | null
+          target_low?: number | null
+          timeframe: string
+        }
+        Update: {
+          actual_price?: number
+          bias?: string
+          coin_id?: string
+          confidence?: number
+          created_at?: string
+          entry_price?: number
+          hit?: boolean
+          id?: string
+          predicted_at?: string
+          prediction_id?: string
+          resolved_at?: string
+          symbol?: string
+          target_high?: number | null
+          target_low?: number | null
+          timeframe?: string
+        }
+        Relationships: []
+      }
       predictions_cache: {
         Row: {
           bias: string | null

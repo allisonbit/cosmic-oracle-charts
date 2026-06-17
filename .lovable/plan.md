@@ -103,7 +103,15 @@ supabase/functions/accuracy-feed/index.ts
   `robots.txt`). Each page ships full SEO content: H1, intro, stat grid,
   multiple H2 sections, FAQ block, JSON-LD (`FAQPage` + `BreadcrumbList`),
   canonical, og tags, and contextual internal links.
-- [ ] Step 2 — Accuracy leaderboard.
+- [x] **Step 2 done.** Public Accuracy Leaderboard at `/accuracy`:
+    - New `prediction_outcomes` table (RLS: public read, service-role write).
+    - `resolve-predictions` edge function grades expired predictions against
+      live CoinGecko prices using the bullish/bearish/neutral target bands.
+    - pg_cron job runs the resolver hourly (`7 * * * *`).
+    - `/accuracy` page: KPI strip + sortable per-coin leaderboard + "How We
+      Score" methodology + `Dataset` JSON-LD.
+    - `accuracy-feed` edge function + `/accuracy.json` rewrite for partners.
+    - `/accuracy` added to `sitemap.xml`.
 - [ ] Step 3 — Embed widgets.
 - [ ] Step 4 — Weekly report cron.
 
