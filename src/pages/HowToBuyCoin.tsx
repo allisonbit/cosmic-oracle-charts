@@ -8,6 +8,7 @@ import {
   BookOpen, Zap, BarChart3, Activity, Star, Clock
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { coingeckoFetch } from "@/lib/coingecko";
 
 // ─── Metadata ────────────────────────────────────────────────────────────────
 const COIN_META: Record<string, {
@@ -84,9 +85,20 @@ function useLivePrice(id: string) {
   return useQuery<CoinPrice>({
     queryKey: ["htb-price", id],
     queryFn: async () => {
-      const res = await fetch(`https://api.coingecko.com/api/v3/coins/${id}?localization=false&tickers=false&market_data=true&community_data=true&developer_data=false&sparkline=false`);
-      if (!res.ok) throw new Error("Failed to fetch");
-      return res.json();
+      const data = await coingeckoFetch<CoinPrice>({
+        path: `coins/${id}`,
+        params: {
+          localization: false,
+          tickers: false,
+          market_data: true,
+          community_data: true,
+          developer_data: false,
+          sparkline: false,
+        },
+        ttlMs: 60_000,
+      });
+      if (!data) throw new Error("Failed to fetch");
+      return data;
     },
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
