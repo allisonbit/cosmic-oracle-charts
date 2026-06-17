@@ -22,6 +22,37 @@ import { InArticleAd } from "@/components/ads";
 import { Link } from "react-router-dom";
 import { LearnSEOContent } from "@/components/seo/index";
 import { useEducationalArticles } from "@/hooks/useEducationalArticles";
+import { FAQSchema, HowToSchema } from "@/components/seo/FAQHowToSchema";
+
+const LEARN_FAQS = [
+  {
+    question: "Where should a complete beginner start with Oracle Bull's Learn hub?",
+    answer: "Start with the Market Structure and Bitcoin Analysis guides — they explain how crypto markets work, who the major participants are, and how to read price action. From there, move into On-Chain Analytics and Risk Management before exploring DeFi, derivatives or specific token research.",
+  },
+  {
+    question: "Are the Learn guides written by humans or AI?",
+    answer: "Learn guides are AI-generated using live market data and reviewed for accuracy, then continuously refreshed as the market evolves. Every guide cites the methodology used so readers can verify the reasoning themselves.",
+  },
+  {
+    question: "Do I need a wallet or any paid plan to read Learn content?",
+    answer: "No. The entire Learn library is free, requires no signup and works without connecting a wallet. The platform is ad-supported.",
+  },
+  {
+    question: "How is Learn different from Insights?",
+    answer: "Learn is evergreen education — fundamentals, frameworks and how-to guides that stay useful for years. Insights is daily market commentary tied to today's price action and headlines.",
+  },
+  {
+    question: "Can I use Learn content as financial advice?",
+    answer: "No. Learn content is educational only and is not personalised investment, legal or tax advice. Always do your own research and consult a licensed professional before making any financial decision.",
+  },
+];
+
+const LEARN_HOWTO_STEPS = [
+  { name: "Pick a topic from the category list", text: "Browse the category chips (Market Structure, DeFi, On-Chain Analytics, Risk Management and more) and pick the area closest to what you want to learn.", url: "https://oraclebull.com/learn" },
+  { name: "Read the foundational guide first", text: "Open the top-ranked article in that category — these are written as introductions, so you don't need any prior knowledge to follow along.", url: "https://oraclebull.com/learn" },
+  { name: "Apply what you learn to a real coin", text: "Take the concept (e.g. a moving-average crossover, a funding-rate flip) and check it live on a token's prediction page at oraclebull.com/predictions to see how it plays out in real markets.", url: "https://oraclebull.com/predictions" },
+  { name: "Track your progress with a watchlist", text: "Optionally connect a wallet to save coins to your watchlist, set free alerts and journal your trades — no email or KYC required.", url: "https://oraclebull.com/my/watchlist" },
+];
 
 const categoryIcons: Record<string, typeof BookOpen> = {
   'Market Structure': BarChart3,
@@ -178,6 +209,14 @@ export default function Learn() {
       <SEO
         title="Crypto Insights - Daily AI-Powered Analysis | Oracle Bull"
         description="Get 20 fresh AI-generated cryptocurrency articles daily. Expert analysis on market structure, DeFi, Bitcoin, Ethereum, altcoins, trading strategies, and more."
+      />
+      <FAQSchema items={LEARN_FAQS} url="https://oraclebull.com/learn" />
+      <HowToSchema
+        name="How to learn crypto with Oracle Bull"
+        description="A four-step learning path through Oracle Bull's free educational hub — from market fundamentals to applying concepts on live coins."
+        steps={LEARN_HOWTO_STEPS}
+        url="https://oraclebull.com/learn"
+        totalTime="PT30M"
       />
 
       <div className="min-h-screen pt-16 sm:pt-20 pb-24 sm:pb-12">
@@ -459,6 +498,35 @@ export default function Learn() {
           <InArticleAd className="mt-12 mb-4" />
 
           <LearnSEOContent />
+
+          {/* ─── HowTo: visible copy matches the HowTo JSON-LD above ─── */}
+          <section className="mt-12 max-w-3xl mx-auto" aria-labelledby="learn-howto">
+            <h2 id="learn-howto" className="text-2xl font-bold mb-6 text-center">
+              How to learn crypto with Oracle Bull
+            </h2>
+            <ol className="space-y-3 list-decimal list-inside text-muted-foreground">
+              {LEARN_HOWTO_STEPS.map((s) => (
+                <li key={s.name}>
+                  <span className="font-semibold text-foreground">{s.name}.</span> {s.text}
+                </li>
+              ))}
+            </ol>
+          </section>
+
+          {/* ─── FAQ: visible copy matches the FAQPage JSON-LD above ─── */}
+          <section className="mt-12 max-w-3xl mx-auto" aria-labelledby="learn-faq">
+            <h2 id="learn-faq" className="text-2xl font-bold mb-6 text-center">
+              Learn — Frequently Asked Questions
+            </h2>
+            <div className="space-y-4">
+              {LEARN_FAQS.map((f) => (
+                <article key={f.question} className="rounded-xl border border-border/50 bg-card p-5">
+                  <h3 className="font-semibold text-base mb-2">{f.question}</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">{f.answer}</p>
+                </article>
+              ))}
+            </div>
+          </section>
 
           <div className="text-center mt-8 text-xs text-muted-foreground">
             Showing {paginatedPosts.length} of {filteredPosts.length} articles

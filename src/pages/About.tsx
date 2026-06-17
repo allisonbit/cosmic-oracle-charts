@@ -6,6 +6,42 @@ import {
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/MainSEO";
+import { FAQSchema, HowToSchema } from "@/components/seo/FAQHowToSchema";
+
+const ABOUT_FAQS = [
+  {
+    question: "Is Oracle Bull really free to use?",
+    answer:
+      "Yes. Every tool on Oracle Bull — AI price predictions, sentiment analysis, whale tracking, the strength meter, the token explorer and educational content — is 100% free and works without an account. The platform is ad-supported, so there are no premium tiers or paywalled features.",
+  },
+  {
+    question: "How accurate are Oracle Bull's AI price predictions?",
+    answer:
+      "Forecast accuracy varies by token, timeframe and market conditions. We publish a public Accuracy Leaderboard at oraclebull.com/accuracy that resolves every expired prediction against live CoinGecko prices and shows per-coin hit rates, so users can judge performance themselves. Predictions are research signals, not financial advice.",
+  },
+  {
+    question: "Does Oracle Bull provide financial or investment advice?",
+    answer:
+      "No. Oracle Bull is a market intelligence and analytics platform. All content, predictions and signals are for informational and educational purposes only and should not be treated as financial, investment, legal or tax advice. Always do your own research and consult a licensed professional before making investment decisions.",
+  },
+  {
+    question: "Which cryptocurrencies and blockchains does Oracle Bull cover?",
+    answer:
+      "We cover 1,000+ tokens across Bitcoin, Ethereum, Solana, BNB Chain, Base, Arbitrum, Optimism, Polygon and Avalanche, with real-time price data, on-chain metrics, whale movements and AI forecasts on multiple horizons (daily, weekly, monthly and yearly).",
+  },
+  {
+    question: "Do I need to connect a wallet or sign up?",
+    answer:
+      "No signup is required to use Oracle Bull's tools. Wallet connection is optional and only unlocks personal features such as watchlists, alerts, the portfolio tracker and the wallet scanner — none of which require email, password or KYC.",
+  },
+];
+
+const ABOUT_HOWTO_STEPS = [
+  { name: "Open the Market Dashboard", text: "Visit oraclebull.com/dashboard to see live prices, the global market cap, the Fear & Greed index and the top movers in one view.", url: "https://oraclebull.com/dashboard" },
+  { name: "Check the AI prediction for a coin", text: "Search for a token or open oraclebull.com/predictions to read the AI bias, confidence, entry zone, stop loss and take-profit targets across daily, weekly and monthly horizons.", url: "https://oraclebull.com/predictions" },
+  { name: "Confirm with sentiment and whale flows", text: "Cross-check the signal with oraclebull.com/sentiment for social sentiment and the whale tracker for 24-hour exchange netflows before making a decision.", url: "https://oraclebull.com/sentiment" },
+  { name: "Review the Accuracy Leaderboard", text: "Open oraclebull.com/accuracy to see how Oracle Bull's recent predictions for that coin have actually resolved against live prices.", url: "https://oraclebull.com/accuracy" },
+];
 
 const About = () => {
   return (
@@ -13,6 +49,13 @@ const About = () => {
       <SEO 
         title="About OracleBull | AI-Powered Market Intelligence Platform"
         description="Learn about OracleBull, the leading market intelligence and analytics platform providing AI-driven crypto and forex market analysis, sentiment tracking, and educational insights."
+      />
+      <FAQSchema items={ABOUT_FAQS} url="https://oraclebull.com/about" />
+      <HowToSchema
+        name="How to research a crypto with Oracle Bull"
+        description="A four-step workflow that combines AI price predictions, market sentiment, whale flows and the public Accuracy Leaderboard before making any trading decision."
+        steps={ABOUT_HOWTO_STEPS}
+        url="https://oraclebull.com/about"
       />
       
       <div className="container mx-auto px-4 py-12">
@@ -220,6 +263,35 @@ const About = () => {
             <Button asChild variant="outline" size="lg">
               <Link to="/learn">Learn</Link>
             </Button>
+          </div>
+        </section>
+
+        {/* ─── HowTo: visible copy that matches the HowTo JSON-LD above ─── */}
+        <section className="mt-20 max-w-3xl mx-auto" aria-labelledby="howto-heading">
+          <h2 id="howto-heading" className="text-2xl md:text-3xl font-display font-bold mb-6 text-center">
+            How to research a crypto with Oracle Bull
+          </h2>
+          <ol className="space-y-4 list-decimal list-inside text-muted-foreground">
+            {ABOUT_HOWTO_STEPS.map((s) => (
+              <li key={s.name}>
+                <span className="font-semibold text-foreground">{s.name}.</span> {s.text}
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        {/* ─── FAQ: visible copy that matches the FAQPage JSON-LD above ─── */}
+        <section className="mt-16 max-w-3xl mx-auto" aria-labelledby="faq-heading">
+          <h2 id="faq-heading" className="text-2xl md:text-3xl font-display font-bold mb-6 text-center">
+            Frequently Asked Questions
+          </h2>
+          <div className="space-y-4">
+            {ABOUT_FAQS.map((f) => (
+              <article key={f.question} className="holo-card p-6">
+                <h3 className="font-semibold text-lg mb-2">{f.question}</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">{f.answer}</p>
+              </article>
+            ))}
           </div>
         </section>
       </div>

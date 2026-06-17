@@ -1,6 +1,30 @@
 import { useState, useMemo, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { FAQSchema } from "@/components/seo/FAQHowToSchema";
+
+const INSIGHTS_FAQS = [
+  {
+    question: "What are Oracle Bull's daily crypto market insights?",
+    answer: "Daily AI-written market analysis covering Bitcoin, Ethereum, Solana and major altcoins. Each insight summarises overnight price action, on-chain flows, sentiment shifts and the macro backdrop, with key levels and catalysts to watch over the next 24-48 hours.",
+  },
+  {
+    question: "How often is the Insights feed updated?",
+    answer: "New AI-generated insights are published every day, with breaking-market pieces added intraday whenever a major move, liquidation cascade or macro headline materially changes the outlook.",
+  },
+  {
+    question: "Are Insights articles financial advice?",
+    answer: "No. Insights are research and educational content only. They are not personalised investment advice, and Oracle Bull is not a licensed broker or financial adviser. Always do your own research before acting on any analysis.",
+  },
+  {
+    question: "How do Insights differ from the Learn section?",
+    answer: "Insights are time-sensitive market commentary tied to today's price action. Learn is an evergreen knowledge base — deep-dive guides on market structure, DeFi, on-chain analytics, risk management and trading concepts that stay relevant over time.",
+  },
+  {
+    question: "Can I read Insights without signing up?",
+    answer: "Yes. Every Insights article is fully readable for free with no account, no email and no wallet connection required.",
+  },
+];
 import { Layout } from "@/components/layout/Layout";
 import { useInsights } from "@/hooks/useInsights";
 import { Card, CardContent } from "@/components/ui/card";
@@ -154,6 +178,7 @@ export default function Insights() {
         <meta property="og:url" content="https://oraclebull.com/insights" />
         <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
       </Helmet>
+      <FAQSchema items={INSIGHTS_FAQS} url="https://oraclebull.com/insights" />
 
       <div className="min-h-screen pt-16 sm:pt-20 pb-24 sm:pb-12">
         <div className="container mx-auto px-3 sm:px-4 max-w-7xl">
@@ -461,6 +486,21 @@ export default function Insights() {
           <InArticleAd className="mt-8" />
           <EducationalArticlesPanel />
           <InsightsSEOContent />
+
+          {/* ─── FAQ: visible copy that matches the FAQPage JSON-LD above ─── */}
+          <section className="mt-12 max-w-3xl mx-auto" aria-labelledby="insights-faq">
+            <h2 id="insights-faq" className="text-2xl font-bold mb-6 text-center">
+              Insights — Frequently Asked Questions
+            </h2>
+            <div className="space-y-4">
+              {INSIGHTS_FAQS.map((f) => (
+                <article key={f.question} className="rounded-xl border border-border/50 bg-card p-5">
+                  <h3 className="font-semibold text-base mb-2">{f.question}</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">{f.answer}</p>
+                </article>
+              ))}
+            </div>
+          </section>
 
           <div className="text-center mt-8 text-xs text-muted-foreground">
             Showing {paginatedArticles.length} of {filteredArticles.length} articles
