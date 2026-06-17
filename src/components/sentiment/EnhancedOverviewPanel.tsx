@@ -202,7 +202,9 @@ export function EnhancedOverviewPanel({
                   "w-2 rounded-full transition-all",
                   i < Math.floor(socialSentiment / 10) ? "bg-success" : "bg-muted"
                 )}
-                style={{ height: `${8 + Math.random() * 16}px` }}
+                // Deterministic bar height derived from index + sentiment so the
+                // visualization is stable across renders (no Math.random twitch).
+                style={{ height: `${8 + ((i * 7 + Math.round(socialSentiment)) % 17)}px` }}
               />
             ))}
           </div>
