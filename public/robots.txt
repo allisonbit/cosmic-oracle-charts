@@ -23,6 +23,7 @@ Allow: /*.woff2
 
 # Sitemap locations
 Sitemap: https://oraclebull.com/sitemap.xml
+Sitemap: https://oraclebull.com/sitemap-programmatic.xml
 Sitemap: https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/sitemap?type=index
 Sitemap: https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/sitemap?type=news
 Sitemap-HTML: https://oraclebull.com/sitemap
