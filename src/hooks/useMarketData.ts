@@ -63,6 +63,8 @@ const FALLBACK_DATA: MarketDataResponse = {
   timestamp: Date.now(),
 };
 
+let warnedOnce = false;
+
 export function useMarketData() {
   return useQuery({
     queryKey: ["crypto-market"],
@@ -71,13 +73,19 @@ export function useMarketData() {
         const { data, error } = await invokeFunction("crypto-market");
         
         if (error) {
-          console.warn("Market data unavailable, using fallback:", error.message);
+          if (!warnedOnce) {
+            warnedOnce = true;
+            console.warn("Market data unavailable, using fallback:", error.message);
+          }
           return { ...FALLBACK_DATA, timestamp: Date.now() };
         }
         
         return data as MarketDataResponse;
       } catch (err) {
-        console.warn("Market data exception, using fallback");
+        if (!warnedOnce) {
+          warnedOnce = true;
+          console.warn("Market data exception, using fallback");
+        }
         return { ...FALLBACK_DATA, timestamp: Date.now() };
       }
     },
