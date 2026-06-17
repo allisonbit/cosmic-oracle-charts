@@ -37,6 +37,14 @@ Walk through `.lovable/plan.md` phases 2 → 4 in order:
 
 Rule per file: wire to real API → on failure show `—` and a skeleton, never random.
 
+### Phase 3 status (shipped)
+
+- `MySignals.tsx` — removed `Math.random()` fallback signals. On edge-fn failure we now show the empty state + error toast, never invented prices.
+- `MyCopyTrading.tsx` — replaced random `streak` with real trailing run of consecutive correct resolved predictions per trader.
+- `EnhancedOverviewPanel.tsx` — social-score sparkline bars are now deterministic (`(i*7 + score) % 17`) instead of `Math.random()` so they don't twitch on re-render.
+
+Remaining `Math.random()` call sites are decorative SVG flair (sentiment galaxy star positions, whale radar pulse durations, Monte Carlo DCA simulator, related-article shuffle in `LearnArticle`). These are intentional and not user-data — left as-is.
+
 ## Out of scope (won't touch)
 
 - Custom Vite chunking (caused TDZ outage — memory rule).

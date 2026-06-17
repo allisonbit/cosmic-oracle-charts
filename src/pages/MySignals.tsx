@@ -50,22 +50,8 @@ function SignalsContent() {
       setLastGenerated(new Date());
       toast.success(`Generated ${data?.signals?.length || 0} signals`);
     } catch (e: any) {
-      toast.error(e.message || "Failed to generate signals");
-      const fallback: Signal[] = (watchlist.length > 0 ? watchlist : ["BTC", "ETH", "SOL", "BNB", "XRP"]).map(sym => {
-        const isBullish = Math.random() > 0.4;
-        const price = sym === 'BTC' ? 97000 : sym === 'ETH' ? 3400 : sym === 'SOL' ? 190 : sym === 'BNB' ? 680 : 2.3;
-        return {
-          coin: sym, symbol: sym,
-          type: isBullish ? "buy" : Math.random() > 0.5 ? "sell" : "hold",
-          strength: Math.floor(40 + Math.random() * 60),
-          reason: isBullish ? "Momentum breakout above key resistance with rising volume and bullish RSI divergence" : "Bearish divergence on RSI with declining volume and rejection at resistance",
-          entry: price, target: price * (isBullish ? 1.08 : 0.92), stopLoss: price * (isBullish ? 0.96 : 1.04),
-          confidence: Math.floor(50 + Math.random() * 40),
-          timeframe: ["1h", "4h", "1d"][Math.floor(Math.random() * 3)],
-        };
-      });
-      setSignals(fallback);
-      setLastGenerated(new Date());
+      toast.error(e?.message || "Signals temporarily unavailable. Please try again.");
+      setSignals([]);
     } finally {
       setLoading(false);
     }

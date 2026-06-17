@@ -87,6 +87,19 @@ export default function MyCopyTrading() {
       setPredictions(enrichedPreds);
 
       const traderMap = new Map<string, { total: number; correct: number; returns: number[]; coins: Map<string, number>; lastActive: string }>();
+      // Track per-user resolved prediction sequence (oldest -> newest) so we can compute
+      // a real "current correct streak" instead of a Math.random placeholder.
+      const traderResolvedSeq = new Map<string, boolean[]>();
+      const sortedAsc = [...(predsData || [])].sort(
+        (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      );
+      sortedAsc.forEach(p => {
+        if (p.is_resolved) {
+          const arr = traderResolvedSeq.get(p.user_id) || [];
+          arr.push(!!p.was_correct);
+          traderResolvedSeq.set(p.user_id, arr);
+        }
+      });
       (predsData || []).forEach(p => {
         const stats = traderMap.get(p.user_id) || { total: 0, correct: 0, returns: [], coins: new Map(), lastActive: p.created_at };
         stats.total++;
@@ -102,6 +115,12 @@ export default function MyCopyTrading() {
       const traders: TopTrader[] = Array.from(traderMap.entries()).map(([uid, stats]) => {
         const prof = profileMap.get(uid);
         const bestCoin = stats.coins.size > 0 ? [...stats.coins.entries()].sort((a, b) => b[1] - a[1])[0][0] : '';
+        // Current streak = trailing run of correct resolved predictions.
+        const seq = traderResolvedSeq.get(uid) || [];
+        let streak = 0;
+        for (let i = seq.length - 1; i >= 0; i--) {
+          if (seq[i]) streak++; else break;
+        }
         return {
           id: uid,
           display_name: prof?.display_name || 'Anonymous Trader',
@@ -110,7 +129,7 @@ export default function MyCopyTrading() {
           correct_predictions: stats.correct,
           win_rate: stats.total > 0 ? (stats.correct / stats.total) * 100 : 0,
           avg_return: stats.returns.length > 0 ? stats.returns.reduce((a, b) => a + b, 0) / stats.returns.length : 0,
-          streak: Math.floor(Math.random() * 8),
+          streak,
           is_following: followSet.has(uid),
           best_coin: bestCoin,
           last_active: stats.lastActive,
