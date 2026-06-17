@@ -1,38 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
-
-// Alchemy network endpoints
-const ALCHEMY_NETWORKS: Record<string, string> = {
-  ethereum: "eth-mainnet",
-  polygon: "polygon-mainnet",
-  arbitrum: "arb-mainnet",
-  base: "base-mainnet",
-  optimism: "opt-mainnet",
-};
-
-// Rotate through all available API keys for load balancing
-let keyIndex = 0;
-function getAlchemyKey(): string {
-  const keys = [
-    Deno.env.get("ALCHEMY_API_KEY_1"),
-    Deno.env.get("ALCHEMY_API_KEY_2"),
-    Deno.env.get("ALCHEMY_API_KEY_3"),
-    Deno.env.get("ALCHEMY_API_KEY_4"),
-    Deno.env.get("ALCHEMY_API_KEY_5"),
-  ].filter(Boolean) as string[];
-  
-  if (keys.length === 0) {
-    throw new Error("No Alchemy API keys configured");
-  }
-  
-  const key = keys[keyIndex % keys.length];
-  keyIndex++;
-  return key;
-}
+import { corsHeaders } from "../_shared/cors.ts";
+import { ALCHEMY_NETWORKS, getAlchemyKey } from "../_shared/alchemy.ts";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
