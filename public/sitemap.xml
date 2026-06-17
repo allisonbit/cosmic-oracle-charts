@@ -27,7 +27,6 @@
   <url><loc>https://oraclebull.com/factory/news</loc><changefreq>always</changefreq><priority>0.88</priority></url>
   <url><loc>https://oraclebull.com/explorer</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
   <url><loc>https://oraclebull.com/scanner</loc><changefreq>weekly</changefreq><priority>0.85</priority></url>
-  <url><loc>https://oraclebull.com/trade</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://oraclebull.com/learn</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
   <url><loc>https://oraclebull.com/insights</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
   <url><loc>https://oraclebull.com/contact</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
@@ -38,19 +37,6 @@
   <url><loc>https://oraclebull.com/risk-disclaimer</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
 
   <!-- ═══ TIER 2: MY HUB PAGES (Personal Tools) ═══ -->
-  <url><loc>https://oraclebull.com/my</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/my/watchlist</loc><changefreq>daily</changefreq><priority>0.65</priority></url>
-  <url><loc>https://oraclebull.com/my/portfolio</loc><changefreq>daily</changefreq><priority>0.65</priority></url>
-  <url><loc>https://oraclebull.com/my/alerts</loc><changefreq>daily</changefreq><priority>0.65</priority></url>
-  <url><loc>https://oraclebull.com/my/settings</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://oraclebull.com/my/scanner</loc><changefreq>weekly</changefreq><priority>0.65</priority></url>
-  <url><loc>https://oraclebull.com/my/signals</loc><changefreq>daily</changefreq><priority>0.65</priority></url>
-  <url><loc>https://oraclebull.com/my/tracker</loc><changefreq>daily</changefreq><priority>0.65</priority></url>
-  <url><loc>https://oraclebull.com/my/social</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
-  <url><loc>https://oraclebull.com/my/journal</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
-  <url><loc>https://oraclebull.com/my/news</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
-  <url><loc>https://oraclebull.com/my/dca</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://oraclebull.com/my/copy</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
 
   <!-- ═══ TIER 3: BLOCKCHAIN ANALYTICS — 12 CHAINS ═══ -->
   <url><loc>https://oraclebull.com/chain/ethereum</loc><changefreq>always</changefreq><priority>0.92</priority></url>

@@ -71,9 +71,10 @@ Deno.serve(async (req) => {
       "/price-prediction/arbitrum", "/price-prediction/optimism",
       "/chain/ethereum", "/chain/solana", "/chain/base", "/chain/arbitrum",
       "/chain/polygon", "/chain/optimism", "/chain/avalanche", "/chain/bnb",
-      "/my", "/my/portfolio", "/my/scanner", "/my/watchlist", "/my/alerts",
-      "/my/signals", "/my/journal", "/my/news", "/my/dca", "/my/copy", "/my/social",
-      "/my/tracker",
+      // /my/* and /trade are intentionally excluded — they are disallowed in
+      // robots.txt and pinging them just burns IndexNow quota on URLs Google
+      // and Bing won't crawl.
+      "/accuracy",
     ].map(p => `${SITE_URL}${p}`);
 
     const allUrls = [...corePages, ...articleUrls];
