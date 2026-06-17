@@ -6,6 +6,7 @@ import { Helmet } from "react-helmet-async";
 import { TrendingUp, TrendingDown, Calendar, Target, Shield, Zap, AlertTriangle, ChevronRight, BarChart3, Globe } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getCryptoBySlug, TOP_CRYPTOS } from "@/hooks/usePricePrediction";
+import { coingeckoFetch } from "@/lib/coingecko";
 
 const VALID_YEARS = ["2025", "2026", "2027", "2028", "2030"];
 
