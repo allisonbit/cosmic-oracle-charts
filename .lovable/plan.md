@@ -1,52 +1,49 @@
-## Goal
-Eliminate every `Math.random()`-driven number across the site and wire each panel to a real data source. Where no free real-time API exists, hide the panel rather than show simulated values (matches your "no hardcoded fake data" core rule).
+# Blue Pro Plan
 
-## Audit summary
-50+ components currently fabricate data with `Math.random()`. Grouped by what they pretend to show:
+Three phases. I ship phase 1, you confirm, I ship phase 2, and so on. No big-bang rewrites.
 
-| Group | Files | Real source available? |
-|---|---|---|
-| Price sparklines / charts | `CryptoChart`, `PortfolioChart`, `AdvancedPriceChart`, `SignalChart`, `EnhancedPriceAnalysis` | Yes — CoinGecko `/coins/{id}/market_chart` |
-| Sector performance / dominance / regime | `SectorPerformancePanel`, `EnhancedDominanceChart`, `MarketRegimeIndicator`, `EnhancedMarketMomentum`, `CorrelationMatrix` | Yes — CoinGecko categories + global |
-| Volume / trending / movers | `TopMovers`, `TrendingSearches`, `VolumeLeaders`, `TopTokensTable`, `EcosystemTokensPanel` | Yes — CoinGecko search/trending |
-| Whale & on-chain flow | `EnhancedWhaleTracker`, `WhaleActivityRadar`, `EnhancedSmartMoneyFlow`, `EnhancedDailySummary` | Partial — Alchemy (already wired for some) |
-| Sentiment / signals / alerts | `EnhancedSignalsPanel`, `EnhancedOverviewPanel`, `LiveAlertsFeed`, `DivergenceScanner`, `SocialSentimentGalaxy`, `TokenSentimentSearch` | Partial — existing `sentiment-data` edge fn; gaps must hide |
-| Token detail (holders/trading/security) | `TokenHoldersTab`, `TokenTradingTab`, `EnhancedTokenDetailPanel`, `CoinDetailModal`, `TokenDetailModal` | Holders: Alchemy `getOwnersForToken`; trades: DexScreener `/latest/dex/tokens` |
-| Recent trades / options / network info | `RecentTradesPanel`, `OptionsFlowPanel`, `NetworkInfoPanel`, `MarketStatsBar` | Trades: Binance `/api/v3/trades`; Options: **no free source → remove**; Network: chain RPC |
-| Misc UI demo | `MyCopyTrading`, `MySignals`, `MyNewsFeed`, `LearnArticle`, `CTASection`, `AlertDetailModal`, `EcosystemTokenSearch`, `EnhancedTrendingAlerts` | Mix — wire to existing hooks or hide demo numbers |
+## Phase 1 — Bug sweep (ship first)
 
-## Phased delivery (each phase is a separate message)
+Goal: zero red errors on `/`, `/dashboard`, `/tools`, `/explorer`, `/sentiment`.
 
-**Phase 1 — Dashboard core (this turn)**
-- `RecentTradesPanel` → Binance `/api/v3/trades` via new `live-trades` edge fn (BTC/ETH/SOL/top symbols rotation)
-- `SectorPerformancePanel` → CoinGecko `/coins/categories`
-- `CryptoChart` 24h sparkline → CoinGecko `market_chart` (cached 60s)
-- `VolumeLeaders` already uses real `useMarketData` — verify no random
-- Fix order-book HTML-not-JSON error in console (broken edge fn URL)
+1. Drive Playwright across the 5 hot routes, capture console + network failures, screenshot each.
+2. Fix the known offenders from the current console:
+   - `useMarketData` "Failed to fetch" fallback warning → add timeout + 1 retry + silent fallback so it stops spamming.
+   - `orderbook` edge fn returning HTML (noted in `.lovable/plan.md`) → repair endpoint URL / CORS.
+3. Fix anything else the sweep surfaces (broken edge fn, 404 asset, hydration warning).
 
-**Phase 2 — Token detail & explorer**
-- `MarketStatsBar` → real chain stats via DefiLlama `/chains` + DexScreener counts
-- `TokenHoldersTab` → Alchemy `alchemy_getOwnersForToken`
-- `TokenTradingTab` recent trades → DexScreener `latest/dex/tokens/{address}`
-- `EnhancedTokenDetailPanel`, `CoinDetailModal`, `TokenDetailModal` → CoinGecko `/coins/{id}`
-- `TopTokensTable` → already has `useMarketData`, strip random
+Done when all 5 routes load with a clean console.
 
-**Phase 3 — Sentiment & signals**
-- Audit `EnhancedSignalsPanel`, `EnhancedOverviewPanel`, `LiveAlertsFeed`, `DivergenceScanner`, `SocialSentimentGalaxy`, `TokenSentimentSearch`, `EnhancedWhaleTracker` — replace random with `sentiment-data`/`whale-tracker` edge fn output; hide cards where source is empty.
+## Phase 2 — Performance pass on hot routes
 
-**Phase 4 — Chain analytics & misc**
-- `WhaleActivityRadar`, `EnhancedSmartMoneyFlow`, `EnhancedDailySummary`, `NetworkInfoPanel`, `AdvancedPriceChart`, `EnhancedPriceAnalysis`, `EnhancedPredictionDeepDive`, `EnhancedRiskAnalyzer`, `EnhancedSocialSentimentGalaxy`, `EcosystemTokensPanel`, `EcosystemTokenSearch`
-- `MyCopyTrading`, `MySignals`, `MyNewsFeed`, `EnhancedTrendingAlerts`, `AlertDetailModal`, `LearnArticle`, `CTASection`, `TrendingSearches`, `TopMovers`, `PortfolioChart`, `CorrelationMatrix`, `EnhancedDominanceChart`, `EnhancedMarketMomentum`, `MarketRegimeIndicator`, `OptionsFlowPanel`, `SignalChart`, `PredictionCard`, `SectorStrengthHeatmap`, `DailyStrengthReport`
+Goal: measurable LCP/INP win on `/` and `/dashboard`, no behaviour change.
 
-## Items being removed (no free real source)
-- `OptionsFlowPanel` — institutional options flow requires Deribit Pro / Laevitas (paid). Will hide.
-- `CorrelationMatrix` random base → compute from real 30d CoinGecko prices (keep, real).
-- `MyCopyTrading` follower stats → keep only DB-backed `user_follows` data, strip vanity numbers.
+1. Run Lighthouse via Playwright on `/` and `/dashboard`, save the JSON.
+2. Target only what the trace flags. Likely candidates:
+   - Add `<link rel="preconnect">` for the 2-3 actually-used API origins.
+   - Convert any large non-hero image in `public/` to WebP/AVIF (script-only, no code churn).
+   - Defer any third-party script that blocks LCP (AdSense already deferred; double-check ticker/analytics).
+3. Re-run Lighthouse, paste before/after scores.
 
-## Technical notes
-- All new edge functions: short cache via `predictions_cache` table pattern (or in-memory map keyed by minute) to avoid hammering free APIs.
-- Multiple Alchemy keys already rotated via `ALCHEMY_API_KEY_1..5`.
-- Loading states stay `animate-pulse` skeletons; on hard failure (rare) show "—" not random.
+No `manualChunks`, no blanket `React.memo`, no React-Query swap — these are explicitly forbidden by project memory.
 
-## Deliverable for this turn
-Phase 1 only — Dashboard panels + order-book fix. Phases 2-4 follow on your go-ahead.
+## Phase 3 — Kill remaining `Math.random()` data
+
+Walk through `.lovable/plan.md` phases 2 → 4 in order:
+
+- **2:** `MarketStatsBar`, `TokenHoldersTab`, `TokenTradingTab`, token detail panels, `TopTokensTable`.
+- **3:** Sentiment + signals panels (use existing `sentiment-data` / `whale-tracker` edge fns; hide cards with no source).
+- **4:** Chain analytics, misc demo numbers, `MyCopyTrading` / `MySignals` / `MyNewsFeed`.
+
+Rule per file: wire to real API → on failure show `—` and a skeleton, never random.
+
+## Out of scope (won't touch)
+
+- Custom Vite chunking (caused TDZ outage — memory rule).
+- Dark mode / non-Inter fonts (memory rule).
+- Removing AdSense, adding paid tiers, re-adding Telegram (memory rules).
+- `OptionsFlowPanel` — no free data source, will be hidden per existing plan.
+
+## Deliverable for the first reply
+
+Phase 1 only: bug sweep + the two known fixes, with Playwright screenshots showing clean console. Then I stop and wait for your go-ahead on Phase 2.
