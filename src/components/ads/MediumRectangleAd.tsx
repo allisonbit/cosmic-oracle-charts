@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface MediumRectangleAdProps {
@@ -11,14 +11,28 @@ const HPF_KEY = "c6b1e8444b3a7f06380d0d84798b4b5c";
 
 export function MediumRectangleAd({ className }: MediumRectangleAdProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
   const injected = useRef(false);
+  const [scale, setScale] = useState(1);
 
   useEffect(() => {
-    if (injected.current || !containerRef.current) return;
+    if (!containerRef.current) return;
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const w = entry.contentRect.width;
+        setScale(Math.min(1, w / 300));
+      }
+    });
+    ro.observe(containerRef.current);
+    return () => ro.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (injected.current || !innerRef.current) return;
     injected.current = true;
     if (typeof window !== "undefined") (window as any).__hpfMounted = true;
 
-    const container = containerRef.current;
+    const container = innerRef.current;
     const configScript = document.createElement("script");
     configScript.textContent = `
       var atOptions = {
@@ -46,8 +60,19 @@ export function MediumRectangleAd({ className }: MediumRectangleAdProps) {
 
   return (
     <div
-      className={cn("flex items-center justify-center min-h-[250px] w-[300px] max-w-full mx-auto my-4 overflow-hidden", className)}
+      className={cn("w-full max-w-[300px] mx-auto my-4 overflow-hidden", className)}
       ref={containerRef}
-    />
+      style={{ height: 250 * scale }}
+    >
+      <div
+        ref={innerRef}
+        style={{
+          width: 300,
+          height: 250,
+          transform: `scale(${scale})`,
+          transformOrigin: "top center",
+        }}
+      />
+    </div>
   );
 }
