@@ -406,7 +406,13 @@
           allow_google_signals: true,
           allow_ad_personalization_signals: true,
           link_attribution: true,
-          anonymize_ip: false
+          anonymize_ip: false,
+          // First-party transport: route hits through our own supabase.co
+          // subdomain to bypass ad-blockers that block google-analytics.com.
+          // gtag will POST to `${transport_url}/g/collect`, which our
+          // ga-collect edge function forwards to GA4 server-side.
+          transport_url: 'https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/ga-collect',
+          first_party_collection: true
         });
         
         // Track core web vitals
