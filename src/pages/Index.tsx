@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState, useEffect, useRef } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Navbar } from "@/components/layout/Navbar";
@@ -10,6 +10,7 @@ import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BannerAd, InArticleAd, NativeBannerAd, MediumRectangleAd, SmartlinkAd } from "@/components/ads";
 import { SEO } from "@/components/MainSEO";
+import { ViewportSection } from "@/components/system/ViewportSection";
 
 // Above-the-fold, live-data-first sections (eager-ish, but still split).
 const HomeNews = lazy(() => import("@/components/home/HomeNews").then(m => ({ default: m.HomeNews })));
@@ -32,37 +33,6 @@ const SectionFallback = () => (
     <Skeleton className="h-48 w-full rounded-xl" />
   </div>
 );
-
-// Detect if visitor is likely a bot/crawler — render everything immediately for SEO
-const isBot = typeof navigator !== "undefined" &&
-  /Googlebot|bingbot|Baiduspider|yandex|DuckDuckBot|Slurp|ia_archiver|AhrefsBot|facebookexternalhit|Twitterbot|LinkedInBot|GPTBot|ClaudeBot|ChatGPT/i.test(navigator.userAgent);
-
-// Viewport-triggered lazy section — crawlers see content immediately
-const ViewportSection = ({ children, fallback }: { children: React.ReactNode; fallback: React.ReactNode }) => {
-  const [isVisible, setIsVisible] = useState(isBot); // bots see everything immediately
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (isVisible) return; // already visible (bot or triggered)
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: '200px' }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [isVisible]);
-
-  return (
-    <div ref={ref}>
-      {isVisible ? children : fallback}
-    </div>
-  );
-};
 
 const Index = () => {
   const { loading, ready, authenticated } = useAuth();
