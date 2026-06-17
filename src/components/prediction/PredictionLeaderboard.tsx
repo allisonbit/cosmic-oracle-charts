@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { TokenIcon } from "@/components/ui/token-icon";
+import { coingeckoFetch } from "@/lib/coingecko";
 
 interface CachedPrediction {
   id: string;
@@ -64,11 +65,12 @@ export function PredictionLeaderboard() {
         if (uniqueCoinIds.length > 0) {
           try {
             const ids = uniqueCoinIds.slice(0, 50).join(',');
-            const priceRes = await fetch(
-              `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd`
-            );
-            if (priceRes.ok) {
-              const priceData = await priceRes.json();
+            const priceData = await coingeckoFetch<Record<string, { usd: number }>>({
+              path: "simple/price",
+              params: { ids, vs_currencies: "usd" },
+              ttlMs: 60_000,
+            });
+            if (priceData) {
               for (const [coinId, val] of Object.entries(priceData)) {
                 realPrices[coinId] = (val as any).usd;
               }
