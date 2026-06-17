@@ -31,11 +31,21 @@ export async function invokeFunction<T = any>(
       ...(options?.headers || {}),
     };
 
-    const res = await fetch(`${SUPABASE_URL}/functions/v1/${name}`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify(options?.body ?? {}),
-    });
+    // 8 s hard timeout — prevents hung edge-function calls from holding
+    // React Query in a perpetual loading state and starving the UI.
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    let res: Response;
+    try {
+      res = await fetch(`${SUPABASE_URL}/functions/v1/${name}`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(options?.body ?? {}),
+        signal: controller.signal,
+      });
+    } finally {
+      clearTimeout(timeout);
+    }
 
     if (!res.ok) {
       let message = `Edge function "${name}" returned ${res.status}`;
@@ -51,9 +61,15 @@ export async function invokeFunction<T = any>(
     const data = (await res.json().catch(() => null)) as T | null;
     return { data, error: null };
   } catch (err) {
+    const message =
+      err instanceof DOMException && err.name === "AbortError"
+        ? `Edge function "${name}" timed out`
+        : err instanceof Error
+        ? err.message
+        : "Network error";
     return {
       data: null,
-      error: { message: err instanceof Error ? err.message : "Network error" },
+      error: { message },
     };
   }
 }
