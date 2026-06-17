@@ -358,7 +358,7 @@ export default defineConfig(({ mode, command }) => {
   plugins: [
     react(),
     mode === "development" && componentTagger(),
-    Sitemap({
+    mode !== "development" && Sitemap({
       hostname: "https://oraclebull.com",
       dynamicRoutes: allRoutes,
       generateRobotsTxt: false, // We have a custom robots.txt
