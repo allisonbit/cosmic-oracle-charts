@@ -27,7 +27,7 @@ const QuickTradeModal = lazy(() => import("@/components/trading/QuickTradeModal"
 
 // Eager load critical pages
 import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 // Lazy load non-critical pages for better initial load
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -103,20 +103,19 @@ const PageLoader = memo(function PageLoader() {
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: true, // Refetch on window focus for fresh data
-      refetchOnReconnect: true, // Refetch when network reconnects
-      refetchOnMount: true, // Always get fresh data on mount
-      // Global 24/7 live mode: every query auto-refetches every 30s, even when
-      // the tab is backgrounded. Individual hooks can override with their own
-      // (lower) refetchInterval for truly real-time data (prices, signals).
-      refetchInterval: 30000,
-      refetchIntervalInBackground: true,
+      // Quiet defaults — polling, background refresh, and focus-refetch are
+      // OPT-IN per hook now. Static/slow-moving data (articles, legal, FAQ,
+      // sitemap) no longer fires network calls on every focus/30s tick.
+      // Real-time hooks (prices, signals, whales, order book, funding, strength)
+      // set their own refetchInterval explicitly.
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: true,
+      refetchOnMount: true,
+      refetchIntervalInBackground: false,
       retry: 3,
       retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
-      // Short stale window keeps the whole UI feeling live; truly-live hooks
-      // (prices, alpha feed) set their own lower staleTime/refetchInterval.
-      staleTime: 15000,
-      gcTime: 1000 * 60 * 15, // 15 minutes cache
+      staleTime: 60_000, // 1 min — UI still feels live thanks to per-hook overrides
+      gcTime: 1000 * 60 * 15,
       networkMode: 'offlineFirst',
     },
     mutations: {
