@@ -10,6 +10,14 @@ import {
 
 const faqs = [
   {
+    question: "How does Oracle Bull's AI prediction model work?",
+    answer: "Oracle Bull runs a multi-horizon forecasting engine powered by Gemini 2.5 Flash. For every token, the model generates three distinct timeframes — a short-term outlook (1–4 hours), a mid-term trajectory (24–48 hours), and a long-term trend direction (3–7 days). The AI does not guess prices in isolation. It ingests over 50 real-time technical indicators (RSI, MACD, Bollinger Bands, Ichimoku, volume profiles), cross-references them with live sentiment scores extracted from Twitter, Reddit and Telegram, and weights the output by current whale-flow direction — whether smart money is accumulating or distributing. Each forecast arrives with a confidence score, a risk level, and a plain-English rationale so you know why the model leans bullish or bearish. Results are cached in a high-speed predictions_cache table, which is why pages load in under a second even when the underlying AI analysis is fresh.",
+  },
+  {
+    question: "What blockchains does Oracle Bull track and why does multi-chain data improve predictions?",
+    answer: "We monitor eight major networks in real time: Ethereum, Solana, Bitcoin, BNB Chain, Arbitrum, Base, Polygon and Avalanche. The dashboard compares them side-by-side on transactions per second, average fees, finality time, total value locked and active-user counts. This matters because capital does not sit still on one chain — it rotates from Layer 1s to Layer 2s, from Ethereum to Solana, or from Base back to Arbitrum depending on fee spikes and yield opportunities. By watching cross-chain bridge flows and chain-health scores alongside whale wallet migrations, Oracle Bull can detect rotation before it shows up in a single-token chart. A bullish signal on Ethereum becomes stronger when it is confirmed by simultaneous inflows into Arbitrum and Base, and weaker if Solana is seeing net outflows at the same time.",
+  },
+  {
     question: "Is Oracle Bull free to use?",
     answer: "Yes. Oracle Bull is 100% free with no signup required — including AI predictions, whale tracking, sentiment analysis and blockchain dashboards. The platform is sustained through non-intrusive advertising partnerships. There are no premium tiers, paywalls, or hidden fees.",
   },
