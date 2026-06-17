@@ -95,4 +95,16 @@ supabase/functions/accuracy-feed/index.ts
 3. Embeddable widgets (1.1) — needs the accuracy page to be credible.
 4. Weekly report generator (1.2) — last; depends on cron + data being warm.
 
+## Progress
+
+- [x] **Step 1 done.** Built `src/lib/programmaticSlugs.ts` + 3 page templates
+  (`PredictTarget`, `VsCompare`, `Convert`), wired routes in `App.tsx`, and
+  generated `public/sitemap-programmatic.xml` with **850 URLs** (linked from
+  `robots.txt`). Each page ships full SEO content: H1, intro, stat grid,
+  multiple H2 sections, FAQ block, JSON-LD (`FAQPage` + `BreadcrumbList`),
+  canonical, og tags, and contextual internal links.
+- [ ] Step 2 — Accuracy leaderboard.
+- [ ] Step 3 — Embed widgets.
+- [ ] Step 4 — Weekly report cron.
+
 Approve and I'll start with step 1.
