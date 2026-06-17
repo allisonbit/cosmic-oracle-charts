@@ -28,9 +28,12 @@ const MarketCategoriesHub = lazy(() => import("@/components/home/MarketCategorie
 const HomepageFAQ = lazy(() => import("@/components/home/HomepageFAQ").then(m => ({ default: m.HomepageFAQ })));
 const NewsletterCTASection = lazy(() => import("@/components/home/NewsletterCTASection").then(m => ({ default: m.NewsletterCTASection })));
 
+// Skeleton height tuned to the average rendered section (~500px) so the
+// home page doesn't shift when ViewportSection swaps the fallback for the
+// real lazy-loaded section. Keeps CLS well under the 0.1 "Good" threshold.
 const SectionFallback = () => (
   <div className="container mx-auto px-4 py-8">
-    <Skeleton className="h-48 w-full rounded-xl" />
+    <Skeleton className="h-[480px] w-full rounded-xl" />
   </div>
 );
 
