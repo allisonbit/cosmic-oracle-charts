@@ -19,6 +19,7 @@ export function LargeBannerAd({ className }: LargeBannerAdProps) {
   useEffect(() => {
     if (injected.current || !containerRef.current) return;
     injected.current = true;
+    if (typeof window !== "undefined") (window as any).__hpfMounted = true;
 
     const container = containerRef.current;
     const configScript = document.createElement("script");
@@ -44,6 +45,7 @@ export function LargeBannerAd({ className }: LargeBannerAdProps) {
       // than leaving a blank, never-refilled slot for the rest of the session.
       container.innerHTML = "";
       injected.current = false;
+      if (typeof window !== "undefined") (window as any).__hpfMounted = false;
     };
   }, []);
 
