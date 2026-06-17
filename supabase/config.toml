@@ -188,3 +188,9 @@ verify_jwt = false
 [functions.resolve-predictions.rate_limit]
 requests = 60
 per = 3600
+
+[functions.accuracy-feed]
+verify_jwt = false
+[functions.accuracy-feed.rate_limit]
+requests = 600
+per = 3600
