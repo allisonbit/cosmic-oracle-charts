@@ -1,14 +1,11 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { corsHeaders, preflight, jsonResponse } from "../_shared/cors.ts";
+import { getOrSet } from "../_shared/cache.ts";
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
-
-let cachedData: any = null;
-let cacheTimestamp = 0;
-const CACHE_DURATION = 30000; // 30s
+// 30s TTL keeps CoinGecko upstream calls bounded even with global 5s client polling.
+const CACHE_KEY = "crypto-prices:markets";
+const CACHE_TTL = 30_000;
 
 // Fallback — includes CoinGecko image CDN URLs for all coins
 const fallbackPrices = [
@@ -52,68 +49,47 @@ const coinMapping: Record<string, { symbol: string; name: string }> = {
 
 const COIN_IDS = Object.keys(coinMapping).join(',');
 
-serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
+async function fetchFromCoinGecko() {
+  const response = await fetch(
+    `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${COIN_IDS}&order=market_cap_desc&per_page=20&page=1&sparkline=false&price_change_percentage=24h`,
+    { headers: { Accept: "application/json" } },
+  );
+  if (!response.ok) throw new Error(`CoinGecko ${response.status}`);
 
-  try {
-    if (cachedData && Date.now() - cacheTimestamp < CACHE_DURATION) {
-      return new Response(JSON.stringify(cachedData), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    console.log('Fetching crypto prices + images from CoinGecko /coins/markets ...');
-
-    // Use /coins/markets — returns images, high24h, low24h, sparkline, everything
-    const response = await fetch(
-      `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${COIN_IDS}&order=market_cap_desc&per_page=20&page=1&sparkline=false&price_change_percentage=24h`,
-      { headers: { 'Accept': 'application/json' } }
-    );
-
-    if (!response.ok) {
-      console.warn('CoinGecko API error:', response.status, '— using fallback');
-      const fallback = { prices: fallbackPrices, timestamp: Date.now(), source: 'fallback' };
-      return new Response(JSON.stringify(fallback), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    const markets: any[] = await response.json();
-
-    const prices = markets.map((coin: any) => {
+  const markets: any[] = await response.json();
+  const prices = markets
+    .map((coin: any) => {
       const meta = coinMapping[coin.id];
       if (!meta) return null;
       return {
-        symbol:    meta.symbol,
-        name:      meta.name,
-        price:     coin.current_price     || 0,
+        symbol: meta.symbol,
+        name: meta.name,
+        price: coin.current_price || 0,
         change24h: coin.price_change_percentage_24h || 0,
-        volume24h: coin.total_volume      || 0,
-        marketCap: coin.market_cap        || 0,
-        high24h:   coin.high_24h          || 0,
-        low24h:    coin.low_24h           || 0,
-        // Real image from CoinGecko CDN
-        image:     coin.image             || '',
-        rank:      coin.market_cap_rank   || 0,
+        volume24h: coin.total_volume || 0,
+        marketCap: coin.market_cap || 0,
+        high24h: coin.high_24h || 0,
+        low24h: coin.low_24h || 0,
+        image: coin.image || "",
+        rank: coin.market_cap_rank || 0,
       };
-    }).filter(Boolean);
+    })
+    .filter(Boolean);
 
-    const result = { prices, timestamp: Date.now(), source: 'coingecko' };
-    cachedData = result;
-    cacheTimestamp = Date.now();
+  return { prices, timestamp: Date.now(), source: "coingecko" as const };
+}
 
-    return new Response(JSON.stringify(result), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+serve(async (req) => {
+  const pre = preflight(req);
+  if (pre) return pre;
 
+  try {
+    // Concurrent requests during a cache miss now share one upstream fetch.
+    const result = await getOrSet(CACHE_KEY, { ttlMs: CACHE_TTL }, fetchFromCoinGecko);
+    return jsonResponse(result);
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
-    console.error('Error:', message);
-    const fallback = { prices: fallbackPrices, timestamp: Date.now(), source: 'fallback' };
-    return new Response(JSON.stringify(fallback), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.warn("crypto-prices upstream error, serving fallback:", message);
+    return jsonResponse({ prices: fallbackPrices, timestamp: Date.now(), source: "fallback" });
   }
 });
