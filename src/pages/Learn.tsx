@@ -499,6 +499,35 @@ export default function Learn() {
 
           <LearnSEOContent />
 
+          {/* ─── HowTo: visible copy matches the HowTo JSON-LD above ─── */}
+          <section className="mt-12 max-w-3xl mx-auto" aria-labelledby="learn-howto">
+            <h2 id="learn-howto" className="text-2xl font-bold mb-6 text-center">
+              How to learn crypto with Oracle Bull
+            </h2>
+            <ol className="space-y-3 list-decimal list-inside text-muted-foreground">
+              {LEARN_HOWTO_STEPS.map((s) => (
+                <li key={s.name}>
+                  <span className="font-semibold text-foreground">{s.name}.</span> {s.text}
+                </li>
+              ))}
+            </ol>
+          </section>
+
+          {/* ─── FAQ: visible copy matches the FAQPage JSON-LD above ─── */}
+          <section className="mt-12 max-w-3xl mx-auto" aria-labelledby="learn-faq">
+            <h2 id="learn-faq" className="text-2xl font-bold mb-6 text-center">
+              Learn — Frequently Asked Questions
+            </h2>
+            <div className="space-y-4">
+              {LEARN_FAQS.map((f) => (
+                <article key={f.question} className="rounded-xl border border-border/50 bg-card p-5">
+                  <h3 className="font-semibold text-base mb-2">{f.question}</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">{f.answer}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+
           <div className="text-center mt-8 text-xs text-muted-foreground">
             Showing {paginatedPosts.length} of {filteredPosts.length} articles
             {data?.totalArticles ? <span> · {data.totalArticles} total published</span> : null}
