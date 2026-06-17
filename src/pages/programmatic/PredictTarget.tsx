@@ -31,7 +31,7 @@ export default function PredictTarget() {
     queryKey: ["predict-target-price", coinDef.cgId],
     queryFn: () =>
       coingeckoFetch<PriceData>({
-        endpoint: `/coins/${coinDef.cgId}`,
+        path: `coins/${coinDef.cgId}`,
         params: { localization: "false", tickers: "false", community_data: "false", developer_data: "false" },
       }),
     staleTime: 5 * 60_000,
