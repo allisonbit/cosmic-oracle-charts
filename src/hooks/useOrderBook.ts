@@ -38,6 +38,9 @@ export function useOrderBook(options: UseOrderBookOptions = {}) {
   const [error, setError] = useState<string | null>(null);
 
   const fetchOrderBook = useCallback(async () => {
+    // Skip polling while the tab is hidden — saves edge-function invocations on
+    // backgrounded/abandoned tabs. We refresh on visibility return below.
+    if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return;
     try {
       const { data: orderBookData, error: fetchError } = await invokeFunction('orderbook', {
         body: { pair, exchange: exchange.toLowerCase(), limit },
@@ -56,9 +59,16 @@ export function useOrderBook(options: UseOrderBookOptions = {}) {
 
   useEffect(() => {
     fetchOrderBook();
-    
+
     const interval = setInterval(fetchOrderBook, refreshInterval);
-    return () => clearInterval(interval);
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') fetchOrderBook();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
   }, [fetchOrderBook, refreshInterval]);
 
   return {
