@@ -1,0 +1,6 @@
+# Cloudflare Pages / Netlify redirects.
+#
+# Expose the machine-readable accuracy feed under a friendly URL so partners
+# can hit https://oraclebull.com/accuracy.json directly instead of the raw
+# edge-function URL.
+/accuracy.json    https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/accuracy-feed   200
