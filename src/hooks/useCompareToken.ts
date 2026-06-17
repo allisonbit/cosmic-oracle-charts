@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { invokeFunction } from "@/integrations/supabase/functions";
+import { coingeckoFetch } from "@/lib/coingecko";
 
 // Normalized shape used by the comparison UI — works for ANY token whether it
 // resolves from CoinGecko (rich majors) or token-search (DexScreener/Alchemy DEX
@@ -89,11 +90,19 @@ async function resolveToken(slug: string): Promise<CompareToken | null> {
 
   // 2. Try CoinGecko by id for rich major-coin data (rank, ATH, 7d/30d, scores).
   try {
-    const res = await fetch(`https://api.coingecko.com/api/v3/coins/${slug}?localization=false&tickers=false&market_data=true&community_data=true&developer_data=false&sparkline=false`);
-    if (res.ok) {
-      const j = await res.json();
-      if (j?.id && j?.market_data) return normalizeCG(j, slug);
-    }
+    const j = await coingeckoFetch<any>({
+      path: `coins/${slug}`,
+      params: {
+        localization: false,
+        tickers: false,
+        market_data: true,
+        community_data: true,
+        developer_data: false,
+        sparkline: false,
+      },
+      ttlMs: 60_000,
+    });
+    if (j?.id && j?.market_data) return normalizeCG(j, slug);
   } catch { /* fall through */ }
 
   // 3. Fallback: worldwide token-search by symbol/name.
@@ -126,9 +135,11 @@ export function useCoinList() {
   return useQuery<CoinListItem[]>({
     queryKey: ["coin-list-all"],
     queryFn: async () => {
-      const res = await fetch("https://api.coingecko.com/api/v3/coins/list");
-      if (!res.ok) throw new Error("Failed to load coin list");
-      const json = (await res.json()) as CoinListItem[];
+      const json = await coingeckoFetch<CoinListItem[]>({
+        path: "coins/list",
+        // List rarely changes — let the edge cache hold it for 5 minutes.
+        ttlMs: 5 * 60_000,
+      });
       return Array.isArray(json) ? json : [];
     },
     staleTime: 1000 * 60 * 60 * 24, // 24h — the full list rarely changes
