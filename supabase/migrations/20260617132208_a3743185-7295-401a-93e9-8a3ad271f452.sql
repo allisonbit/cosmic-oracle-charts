@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.enforce_premium_server_only() FROM PUBLIC, anon, authenticated;
