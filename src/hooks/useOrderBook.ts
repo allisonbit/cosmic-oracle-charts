@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { invokeFunction } from '@/integrations/supabase/functions';
 
 interface OrderLevel {
@@ -36,6 +36,7 @@ export function useOrderBook(options: UseOrderBookOptions = {}) {
   const [data, setData] = useState<OrderBookData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const loggedErrorRef = useRef(false);
 
   const fetchOrderBook = useCallback(async () => {
     // Skip polling while the tab is hidden — saves edge-function invocations on
@@ -50,7 +51,10 @@ export function useOrderBook(options: UseOrderBookOptions = {}) {
       setData(orderBookData);
       setError(null);
     } catch (err) {
-      console.error('Order book fetch error:', err);
+      if (!loggedErrorRef.current) {
+        loggedErrorRef.current = true;
+        console.error('Order book fetch error (will retry silently):', err);
+      }
       setError(err instanceof Error ? err.message : 'Unknown error');
     } finally {
       setIsLoading(false);

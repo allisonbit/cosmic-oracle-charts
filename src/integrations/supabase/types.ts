@@ -523,6 +523,105 @@ export type Database = {
         }
         Relationships: []
       }
+      trade_setups: {
+        Row: {
+          bias: string
+          chain: string | null
+          coin_id: string
+          confidence: number
+          contract_address: string | null
+          entry_high: number
+          entry_low: number
+          entry_price: number
+          expires_at: string | null
+          generated_at: string
+          hit_targets: number
+          id: string
+          image: string | null
+          last_price: number
+          name: string
+          peak_price: number
+          pnl_percent: number
+          resolved_at: string | null
+          scope: string
+          seo_slug: string | null
+          status: string
+          stop_loss: number
+          symbol: string
+          take_profit_1: number
+          take_profit_2: number
+          take_profit_3: number
+          timeframe: string
+          updated_at: string
+          user_id: string | null
+          write_up: string | null
+        }
+        Insert: {
+          bias: string
+          chain?: string | null
+          coin_id: string
+          confidence?: number
+          contract_address?: string | null
+          entry_high?: number
+          entry_low?: number
+          entry_price?: number
+          expires_at?: string | null
+          generated_at?: string
+          hit_targets?: number
+          id?: string
+          image?: string | null
+          last_price?: number
+          name: string
+          peak_price?: number
+          pnl_percent?: number
+          resolved_at?: string | null
+          scope?: string
+          seo_slug?: string | null
+          status?: string
+          stop_loss?: number
+          symbol: string
+          take_profit_1?: number
+          take_profit_2?: number
+          take_profit_3?: number
+          timeframe: string
+          updated_at?: string
+          user_id?: string | null
+          write_up?: string | null
+        }
+        Update: {
+          bias?: string
+          chain?: string | null
+          coin_id?: string
+          confidence?: number
+          contract_address?: string | null
+          entry_high?: number
+          entry_low?: number
+          entry_price?: number
+          expires_at?: string | null
+          generated_at?: string
+          hit_targets?: number
+          id?: string
+          image?: string | null
+          last_price?: number
+          name?: string
+          peak_price?: number
+          pnl_percent?: number
+          resolved_at?: string | null
+          scope?: string
+          seo_slug?: string | null
+          status?: string
+          stop_loss?: number
+          symbol?: string
+          take_profit_1?: number
+          take_profit_2?: number
+          take_profit_3?: number
+          timeframe?: string
+          updated_at?: string
+          user_id?: string | null
+          write_up?: string | null
+        }
+        Relationships: []
+      }
       user_alerts: {
         Row: {
           coin_id: string
