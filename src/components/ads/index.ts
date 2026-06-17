@@ -9,3 +9,4 @@ export { SmallBannerAd } from "./SmallBannerAd";
 export { LargeBannerAd } from "./LargeBannerAd";
 export { MediumRectangleAd } from "./MediumRectangleAd";
 export { SmartlinkAd } from "./SmartlinkAd";
+export { AdsterraStickyFooter } from "./AdsterraStickyFooter";
