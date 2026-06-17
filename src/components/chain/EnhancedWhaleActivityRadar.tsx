@@ -218,7 +218,14 @@ export function EnhancedWhaleActivityRadar({ chain, whaleActivity: initialWhaleA
                   fill={dot.type === "buy" ? "hsl(160 84% 39%)" : dot.type === "sell" ? "hsl(0 84% 60%)" : "hsl(38 92% 50%)"}
                   className="animate-pulse"
                 >
-                  <animate attributeName="opacity" values="0.4;1;0.4" dur={`${2 + Math.random() * 2}s`} repeatCount="indefinite" />
+                  {/* Pulse speed is market-driven: larger transactions pulse faster
+                      (more urgent). Maps tx size (0..max) → 3.5s … 1.2s. */}
+                  <animate
+                    attributeName="opacity"
+                    values="0.4;1;0.4"
+                    dur={`${(3.5 - Math.min(2.3, (dot.size / 12) * 2.3)).toFixed(2)}s`}
+                    repeatCount="indefinite"
+                  />
                 </circle>
                 <circle
                   cx={dot.x}
