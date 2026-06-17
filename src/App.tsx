@@ -24,6 +24,7 @@ const AdminRoute = lazy(() => import("@/components/auth/AdminRoute").then(m => (
 // Lazy load heavy global modals
 const AIChatBubble = lazy(() => import("@/components/chat/AIChatBubble").then(m => ({ default: m.AIChatBubble })));
 const QuickTradeModal = lazy(() => import("@/components/trading/QuickTradeModal").then(m => ({ default: m.QuickTradeModal })));
+const LiveVisitorCounter = lazy(() => import("@/components/system/LiveVisitorCounter").then(m => ({ default: m.LiveVisitorCounter })));
 
 // Eager load critical pages
 import Index from "./pages/Index";
@@ -282,6 +283,9 @@ const App = () => (
             </Suspense>
             <AIChatBubble />
             <QuickTradeModal />
+            <Suspense fallback={null}>
+              <LiveVisitorCounter />
+            </Suspense>
             {/* Global sticky footer ad — appears on all pages, dismissible, z-40 so mobile nav (z-50) stays on top */}
             <StickyFooterAd showDelay={4000} />
           </BrowserRouter>
