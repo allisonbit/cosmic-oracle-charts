@@ -1,9 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+import { corsHeaders } from "../_shared/cors.ts";
+import { getAlchemyKeyOrEmpty } from "../_shared/alchemy.ts";
 
 // In-memory cache
 const cache: Record<string, { data: any; ts: number }> = {};
@@ -152,11 +149,7 @@ const alchemyNetworks: Record<string, string> = {
   solana:   'solana-mainnet',  // uses Solana JSON-RPC
 };
 
-function getAlchemyApiKey(): string {
-  return Deno.env.get('ALCHEMY_API_KEY_1') ||
-         Deno.env.get('ALCHEMY_API_KEY_2') ||
-         Deno.env.get('ALCHEMY_API_KEY_3') || '';
-}
+const getAlchemyApiKey = getAlchemyKeyOrEmpty;
 
 interface AlchemyChainData {
   gasFees: number | null;

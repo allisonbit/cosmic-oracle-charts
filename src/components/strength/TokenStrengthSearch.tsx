@@ -15,6 +15,7 @@ import {
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import type { StrengthData } from "@/hooks/useStrengthMeter";
+import { coingeckoFetch } from "@/lib/coingecko";
 
 interface TokenStrengthSearchProps {
   allAssets: StrengthData[];
@@ -61,23 +62,24 @@ export function TokenStrengthSearch({ allAssets }: TokenStrengthSearchProps) {
       // Check if it looks like a contract address
       const isAddress = searchQuery.startsWith('0x') && searchQuery.length >= 10;
       
-      const searchUrl = `https://api.coingecko.com/api/v3/search?query=${encodeURIComponent(searchQuery)}`;
-      
-      const response = await fetch(searchUrl);
-      if (!response.ok) throw new Error('Search failed');
-      
-      const data = await response.json();
+      const data = await coingeckoFetch<any>({
+        path: "search",
+        params: { query: searchQuery },
+        ttlMs: 60_000,
+      });
+      if (!data) throw new Error('Search failed');
       const coins = data.coins || [];
       
       // Get price data for found coins
       const results: SearchResult[] = await Promise.all(
         coins.slice(0, 8).map(async (coin: any) => {
           try {
-            const priceRes = await fetch(
-              `https://api.coingecko.com/api/v3/simple/price?ids=${coin.id}&vs_currencies=usd&include_24hr_change=true`
-            );
-            const priceData = await priceRes.json();
-            const change = priceData[coin.id]?.usd_24h_change || 0;
+            const priceData = await coingeckoFetch<Record<string, any>>({
+              path: "simple/price",
+              params: { ids: coin.id, vs_currencies: "usd", include_24hr_change: true },
+              ttlMs: 30_000,
+            });
+            const change = priceData?.[coin.id]?.usd_24h_change || 0;
             
             // Calculate synthetic strength score
             const strengthScore = Math.min(100, Math.max(0, 50 + change * 2));

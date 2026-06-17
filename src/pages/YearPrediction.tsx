@@ -6,6 +6,7 @@ import { Helmet } from "react-helmet-async";
 import { TrendingUp, TrendingDown, Calendar, Target, Shield, Zap, AlertTriangle, ChevronRight, BarChart3, Globe } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getCryptoBySlug, TOP_CRYPTOS } from "@/hooks/usePricePrediction";
+import { coingeckoFetch } from "@/lib/coingecko";
 
 const VALID_YEARS = ["2025", "2026", "2027", "2028", "2030"];
 
@@ -114,11 +115,20 @@ export default function YearPrediction() {
   const { data: marketData } = useQuery({
     queryKey: ["coingecko-simple", crypto.id],
     queryFn: async () => {
-      const res = await fetch(
-        `https://api.coingecko.com/api/v3/simple/price?ids=${crypto.id}&vs_currencies=usd&include_market_cap=true&include_24hr_change=true&include_24hr_vol=true&include_ath=true`
-      );
-      if (!res.ok) throw new Error("CoinGecko fetch failed");
-      return res.json();
+      const data = await coingeckoFetch<Record<string, any>>({
+        path: "simple/price",
+        params: {
+          ids: crypto.id,
+          vs_currencies: "usd",
+          include_market_cap: true,
+          include_24hr_change: true,
+          include_24hr_vol: true,
+          include_ath: true,
+        },
+        ttlMs: 60_000,
+      });
+      if (!data) throw new Error("CoinGecko fetch failed");
+      return data;
     },
     staleTime: 5 * 60 * 1000,
   });
