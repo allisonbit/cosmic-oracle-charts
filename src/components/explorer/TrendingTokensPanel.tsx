@@ -183,7 +183,7 @@ export function TrendingTokensPanel({ chain, onTokenSelect }: TrendingTokensPane
                 <div className="flex items-center gap-3">
                   <span className="text-xs text-muted-foreground w-5">#{i + 1}</span>
                   {token.logo ? (
-                    <img src={token.logo} alt={token.symbol} className="w-8 h-8 rounded-full bg-muted" />
+                  <img src={token.logo} alt={token.symbol} width={32} height={32} loading="lazy" decoding="async" className="w-8 h-8 rounded-full bg-muted" />
                   ) : (
                     <div className="w-8 h-8 rounded-full bg-warning/20 flex items-center justify-center">
                       <Zap className="w-4 h-4 text-warning" />

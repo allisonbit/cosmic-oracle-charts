@@ -31,6 +31,8 @@ export function useFundingRates(options: UseFundingRatesOptions = {}) {
   const [error, setError] = useState<string | null>(null);
 
   const fetchFundingRates = useCallback(async () => {
+    // Skip polling while tab is hidden — resumes on visibility return below.
+    if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return;
     try {
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/funding-rates`,
@@ -71,9 +73,16 @@ export function useFundingRates(options: UseFundingRatesOptions = {}) {
 
   useEffect(() => {
     fetchFundingRates();
-    
+
     const interval = setInterval(fetchFundingRates, refreshInterval);
-    return () => clearInterval(interval);
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') fetchFundingRates();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
   }, [fetchFundingRates, refreshInterval]);
 
   return {

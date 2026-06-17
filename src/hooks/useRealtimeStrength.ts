@@ -82,6 +82,8 @@ export function useRealtimeStrength(timeframe: string = '24h') {
   const isInitializedRef = useRef(false);
 
   const fetchData = useCallback(async () => {
+    // Skip work when tab is hidden — resumes on visibility return below.
+    if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return;
     try {
       // Fetch market data from CoinGecko via our Edge Function to prevent rate limits
       const { data, error } = await invokeFunction('crypto-prices');
@@ -205,10 +207,16 @@ export function useRealtimeStrength(timeframe: string = '24h') {
     // Set up real-time polling every 10 seconds for 24/7 updates
     intervalRef.current = setInterval(fetchData, 10000);
 
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') fetchData();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
+      document.removeEventListener('visibilitychange', onVisible);
     };
   }, [fetchData]);
 
