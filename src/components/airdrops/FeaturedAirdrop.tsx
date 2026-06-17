@@ -42,7 +42,7 @@ export function FeaturedAirdrop() {
         <div>
           <div className="flex items-center gap-3 mb-3">
             <div className="w-14 h-14 rounded-2xl bg-muted/50 border border-border p-2 flex items-center justify-center">
-              <img src={featured.logo} alt={featured.name} className="w-full h-full object-contain" />
+             <img src={featured.logo} alt={featured.name} width={64} height={64} loading="lazy" decoding="async" className="w-full h-full object-contain" />
             </div>
             <div>
               <h2 className="font-display font-bold text-xl text-foreground flex items-center gap-2">

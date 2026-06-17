@@ -69,7 +69,7 @@ export function Footer() {
           <div className="col-span-2 space-y-4">
             <Link to="/" className="flex items-center gap-3" aria-label="OracleBull – Home">
               <div className="w-10 h-10 rounded-full overflow-hidden shadow-lg shadow-primary/30">
-                <img src={oracleLogo} alt="OracleBull logo" className="w-full h-full object-cover" />
+               <img src={oracleLogo} alt="OracleBull logo" width={40} height={40} loading="lazy" decoding="async" className="w-full h-full object-cover" />
               </div>
               <span className="font-display text-lg font-bold glow-text">ORACLEBULL</span>
             </Link>

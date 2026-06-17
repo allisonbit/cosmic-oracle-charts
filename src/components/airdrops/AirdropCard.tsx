@@ -85,7 +85,7 @@ export function AirdropCard({ project, rank }: { project: AirdropProject; rank?:
       <div className={cn("flex justify-between items-start mb-4 relative z-10", rank ? "pl-8" : "")}>
         <div className="flex items-center gap-3">
           <div className="w-11 h-11 rounded-xl bg-muted/50 p-1.5 flex items-center justify-center border border-border shrink-0">
-            <img src={project.logo} alt={project.name} className="w-full h-full object-contain" onError={e => { (e.target as HTMLImageElement).style.display = "none"; }} />
+           <img src={project.logo} alt={project.name} width={48} height={48} loading="lazy" decoding="async" className="w-full h-full object-contain" onError={e => { (e.target as HTMLImageElement).style.display = "none"; }} />
           </div>
           <div>
             <h3 className="font-display font-bold text-base text-foreground flex items-center gap-2 flex-wrap">

@@ -87,7 +87,7 @@ export function SocialSentimentPanel({ tokens, globalData, isLoading }: SocialSe
               onClick={() => setSelectedToken(coin.symbol)}
               className="gap-2 whitespace-nowrap shrink-0"
             >
-              <img src={coin.image} alt={coin.name} className="w-4 h-4 rounded-full" />
+             <img src={coin.image} alt={coin.name} width={16} height={16} loading="lazy" decoding="async" className="w-4 h-4 rounded-full" />
               {coin.symbol}
               <div className={cn("w-2 h-2 rounded-full", getSentimentBg(s.overall))} />
             </Button>
@@ -101,7 +101,7 @@ export function SocialSentimentPanel({ tokens, globalData, isLoading }: SocialSe
           <div className="holo-card p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <img src={selectedCoin.image} alt={selectedCoin.name} className="w-10 h-10 rounded-full" />
+               <img src={selectedCoin.image} alt={selectedCoin.name} width={40} height={40} loading="lazy" decoding="async" className="w-10 h-10 rounded-full" />
                 <div>
                   <h3 className="font-display font-bold text-xl">{selectedCoin.symbol}</h3>
                   <p className="text-sm text-muted-foreground">{selectedCoin.name} • {formatNumber(selectedCoin.price)}</p>
@@ -222,7 +222,7 @@ export function SocialSentimentPanel({ tokens, globalData, isLoading }: SocialSe
                         onClick={() => setSelectedToken(coin.symbol)}
                         className="w-full flex items-center gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors text-left"
                       >
-                        <img src={coin.image} alt={coin.name} className="w-6 h-6 rounded-full" />
+                       <img src={coin.image} alt={coin.name} width={24} height={24} loading="lazy" decoding="async" className="w-6 h-6 rounded-full" />
                         <span className="font-bold text-sm w-12">{coin.symbol}</span>
                         <Progress value={s.overall} className="flex-1 h-2" />
                         <span className={cn("font-bold text-sm w-8 text-right", getSentimentColor(s.overall))}>
