@@ -36,6 +36,7 @@ export function useOrderBook(options: UseOrderBookOptions = {}) {
   const [data, setData] = useState<OrderBookData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const loggedErrorRef = useState({ current: false })[0];
 
   const fetchOrderBook = useCallback(async () => {
     // Skip polling while the tab is hidden — saves edge-function invocations on
@@ -50,12 +51,15 @@ export function useOrderBook(options: UseOrderBookOptions = {}) {
       setData(orderBookData);
       setError(null);
     } catch (err) {
-      console.error('Order book fetch error:', err);
+      if (!loggedErrorRef.current) {
+        loggedErrorRef.current = true;
+        console.error('Order book fetch error (will retry silently):', err);
+      }
       setError(err instanceof Error ? err.message : 'Unknown error');
     } finally {
       setIsLoading(false);
     }
-  }, [pair, exchange, limit]);
+  }, [pair, exchange, limit, loggedErrorRef]);
 
   useEffect(() => {
     fetchOrderBook();
