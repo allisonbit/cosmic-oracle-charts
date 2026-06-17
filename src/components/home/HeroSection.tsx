@@ -175,7 +175,7 @@ export function HeroSection() {
                   className="w-full h-full object-cover scale-[1.02]"
                   loading="eager"
                   decoding="async"
-                  fetchPriority="high"
+                  {...({ fetchpriority: "high" } as any)}
                   width={448}
                   height={448}
                 />
