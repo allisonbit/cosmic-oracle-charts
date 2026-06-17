@@ -73,18 +73,16 @@ const Dashboard = () => {
         {/* Header */}
         <DashboardHeader lastUpdate={lastUpdate} />
 
-        {isLoading ? (
-          // Reserve ~3x viewport — close to the real dashboard's height — so the
-          // footer/content below doesn't jump when the real dashboard mounts.
-          // Keeps CLS under the 0.1 "Good" threshold.
-          <div className="flex justify-center items-start pt-32 min-h-[300vh]">
-            <div className="flex flex-col items-center gap-4">
-              <Loader2 className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 animate-spin text-primary" />
-              <p className="text-muted-foreground font-display text-xs sm:text-sm">Loading live market data...</p>
-            </div>
+        {/* Always render the layout — each panel handles its own loading state
+            via skeletons. Gating the entire dashboard behind a single loader
+            previously caused a ~0.35 CLS jump when content swapped in. */}
+        {isLoading && (
+          <div className="mb-4 flex items-center gap-3 text-xs text-muted-foreground">
+            <Loader2 className="w-4 h-4 animate-spin text-primary" />
+            <span>Loading live market data…</span>
           </div>
-        ) : (
-          <>
+        )}
+        <>
             {/* Quick Actions */}
             <div className="mb-4 sm:mb-6">
               <WidgetErrorBoundary><EnhancedQuickActions /></WidgetErrorBoundary>
@@ -266,7 +264,6 @@ const Dashboard = () => {
             {/* Educational How It Works Section */}
             <DashboardHowItWorks />
           </>
-        )}
       </div>
 
     </Layout>
