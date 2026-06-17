@@ -7,7 +7,7 @@ import { TrendingUp, TrendingDown, Calendar, Target, Shield, Zap, AlertTriangle,
 import { Badge } from "@/components/ui/badge";
 import { getCryptoBySlug, TOP_CRYPTOS } from "@/hooks/usePricePrediction";
 
-const VALID_YEARS = ["2026", "2027", "2028", "2030"];
+const VALID_YEARS = ["2025", "2026", "2027", "2028", "2030"];
 
 // Projection multipliers by year — based on historical crypto cycle analysis
 const YEAR_PROJECTIONS: Record<string, {
@@ -15,6 +15,20 @@ const YEAR_PROJECTIONS: Record<string, {
   bearLabel: string; baseLabel: string; bullLabel: string;
   context: string; keyEvents: string[];
 }> = {
+  "2025": {
+    bear: 0.75, base: 1.35, bull: 2.1,
+    bearLabel: "Macro slowdown, ETF outflows or regulatory shock",
+    baseLabel: "Post-halving uptrend with sustained spot ETF inflows",
+    bullLabel: "Institutional FOMO, treasury adoption and parabolic Q4",
+    context: "2025 is the primary post-halving growth year following Bitcoin's April 2024 halving. Historically the 12–18 months after a halving deliver crypto's strongest gains, and this cycle adds sustained US spot ETF inflows plus corporate treasury adoption as a structural new demand source.",
+    keyEvents: [
+      "Bitcoin post-halving supply squeeze taking full effect",
+      "Sustained US Bitcoin and Ethereum spot ETF net inflows",
+      "Federal Reserve rate cuts boosting risk-asset liquidity",
+      "Corporate treasury Bitcoin adoption expanding beyond MicroStrategy",
+      "Altcoin rotation as BTC dominance peaks mid-cycle",
+    ],
+  },
   "2026": {
     bear: 0.65, base: 1.7, bull: 3.2,
     bearLabel: "Regulatory crackdown or macro recession slows adoption",

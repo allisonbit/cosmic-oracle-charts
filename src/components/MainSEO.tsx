@@ -106,7 +106,7 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
     keywords: "trade crypto, buy crypto, sell crypto, swap tokens, crypto bridge, dex trading, decentralized exchange, buy bitcoin, buy ethereum, buy solana"
   },
   "/scanner": {
-    title: `Crypto Token Scanner – Find Hidden Gems & New Tokens (${currentMonth} ${currentYear})`,
+    title: `Crypto Token Scanner – Find Hidden Gems & New Tokens`,
     description: "Scan for new and trending crypto tokens across all blockchains. Find hidden gems, analyze token metrics, liquidity, and risk scores. Free real-time scanner.",
     keywords: "crypto scanner, token scanner, new crypto tokens, hidden gems crypto, crypto gem finder, low cap crypto, new token alert"
   },
@@ -116,27 +116,27 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
     keywords: "oracle bull sitemap, crypto tools, blockchain analytics"
   },
   "/my/scanner": {
-    title: `Free Wallet Scanner – Analyze Any Crypto Wallet Instantly (${currentMonth} ${currentYear})`,
+    title: `Free Wallet Scanner – Analyze Any Crypto Wallet`,
     description: "Paste any EVM or Solana wallet address for instant AI analysis. See holdings, hidden gems, risk scores & pump potential. 100% free, no signup.",
     keywords: "crypto wallet scanner free, wallet analyzer, portfolio tracker, check crypto wallet, solana wallet checker, ethereum wallet scanner"
   },
   "/sentiment": {
-    title: `Crypto Fear & Greed Index + Whale Tracker (Live ${currentMonth} ${currentYear})`,
+    title: `Crypto Fear & Greed Index + Live Whale Tracker`,
     description: "Real-time crypto sentiment: Fear & Greed Index, whale transaction alerts, social buzz from Twitter/Reddit/Telegram & trending topics. Make data-driven trading decisions.",
     keywords: "crypto fear greed index today, whale alerts crypto, crypto sentiment analysis, crypto social signals, bitcoin sentiment, is crypto bullish today"
   },
   "/explorer": {
-    title: `Crypto Token Explorer – Search Any Coin by Name or Contract (${currentMonth} ${currentYear})`,
+    title: `Crypto Token Explorer – Search Coin or Contract`,
     description: "Search 10,000+ tokens by name, symbol, or contract address. Get price charts, holder analysis, liquidity depth & DeFi metrics across 30+ blockchains. Free.",
     keywords: "crypto token explorer, search cryptocurrency, token contract lookup, crypto analysis by address, defi token scanner, crypto lookup"
   },
   "/learn": {
-    title: `Learn Crypto Free – Daily Articles & Trading Guides (${currentMonth} ${currentYear})`,
+    title: `Learn Crypto Free – Articles & Trading Guides`,
     description: "Free daily crypto education: AI-written market insights, Bitcoin guides, DeFi tutorials, technical analysis lessons & trading strategies. 2000+ articles available.",
     keywords: "learn crypto free, crypto education, bitcoin guide for beginners, defi tutorial, crypto trading course free, how to trade crypto"
   },
   "/insights": {
-    title: `Crypto Market Analysis Today – AI-Powered Daily Insights (${currentMonth} ${currentYear})`,
+    title: `Crypto Market Analysis – AI-Powered Daily Insights`,
     description: "Daily AI market analysis for Bitcoin, Ethereum, Solana & altcoins. On-chain data, technical indicators & expert research. Updated every day, always free.",
     keywords: "crypto analysis today, daily crypto insights, bitcoin market analysis, ethereum analysis today, crypto research, crypto news analysis"
   },
