@@ -74,7 +74,10 @@ const Dashboard = () => {
         <DashboardHeader lastUpdate={lastUpdate} />
 
         {isLoading ? (
-          <div className="flex justify-center items-center min-h-[50vh]">
+          // Reserve roughly the real dashboard's vertical footprint so the
+          // footer doesn't jump when content swaps in. Tuned to keep CLS in the
+          // "Good" (<0.1) band on first load.
+          <div className="flex justify-center items-start pt-32 min-h-[260vh]">
             <div className="flex flex-col items-center gap-4">
               <Loader2 className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 animate-spin text-primary" />
               <p className="text-muted-foreground font-display text-xs sm:text-sm">Loading live market data...</p>
