@@ -61,6 +61,7 @@ const Advertise = lazy(() => import("./pages/Advertise"));
 const YearPrediction = lazy(() => import("./pages/YearPrediction"));
 const Scanner = lazy(() => import("./pages/Scanner"));
 const Admin = lazy(() => import("./pages/Admin"));
+const BacklinkOutreach = lazy(() => import("./pages/admin/BacklinkOutreach"));
 const MyHub = lazy(() => import("./pages/MyHub"));
 const MyWatchlistPage = lazy(() => import("./pages/MyWatchlist"));
 const MyPortfolioPage = lazy(() => import("./pages/MyPortfolio"));
