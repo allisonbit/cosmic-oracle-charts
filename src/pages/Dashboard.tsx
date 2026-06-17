@@ -74,9 +74,10 @@ const Dashboard = () => {
         <DashboardHeader lastUpdate={lastUpdate} />
 
         {isLoading ? (
-          // Reserve enough vertical space so the footer/content below doesn't
-          // jump when the real dashboard mounts — keeps CLS under control.
-          <div className="flex justify-center items-start pt-32 min-h-[200vh]">
+          // Reserve ~3x viewport — close to the real dashboard's height — so the
+          // footer/content below doesn't jump when the real dashboard mounts.
+          // Keeps CLS under the 0.1 "Good" threshold.
+          <div className="flex justify-center items-start pt-32 min-h-[300vh]">
             <div className="flex flex-col items-center gap-4">
               <Loader2 className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 animate-spin text-primary" />
               <p className="text-muted-foreground font-display text-xs sm:text-sm">Loading live market data...</p>
