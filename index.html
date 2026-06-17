@@ -260,15 +260,38 @@
          DOM (inside #root) for crawlers; this overlay only covers it visually
          for the brief pre-mount instant, then fades out. -->
     <style>
-      #app-loading-overlay{position:fixed;inset:0;z-index:2147483600;display:flex;align-items:center;justify-content:center;background:#ffffff;transition:opacity .25s ease}
-      html[data-app-mounted="1"] #app-loading-overlay{opacity:0;pointer-events:none;visibility:hidden}
-      #app-loading-overlay .ob-spin{width:42px;height:42px;border-radius:9999px;border:3px solid rgba(37,99,235,.18);border-top-color:#2563eb;animation:obspin .7s linear infinite}
+      #app-loading-overlay{position:fixed;inset:0;z-index:2147483600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:#F5F8FC;transition:opacity 300ms ease-out;opacity:1}
+      #app-loading-overlay.ob-hide{opacity:0;pointer-events:none}
+      #app-loading-overlay .ob-logo{width:88px;height:88px;border-radius:20px;object-fit:cover;box-shadow:0 10px 30px rgba(37,99,235,.18)}
+      #app-loading-overlay .ob-spin{width:36px;height:36px;border-radius:9999px;border:3px solid rgba(37,99,235,.18);border-top-color:#2563eb;animation:obspin .7s linear infinite}
       @keyframes obspin{to{transform:rotate(360deg)}}
       @media (prefers-reduced-motion: reduce){#app-loading-overlay .ob-spin{animation-duration:1.6s}}
     </style>
     <noscript><style>#app-loading-overlay{display:none!important}</style></noscript>
-    <div id="app-loading-overlay" aria-hidden="true"><div class="ob-spin"></div></div>
-    <script>(function(){try{if(localStorage.getItem('oraclebull-theme')==='dark'){var o=document.getElementById('app-loading-overlay');if(o)o.style.background='#06080f';}}catch(e){}setTimeout(function(){var o=document.getElementById('app-loading-overlay');if(o&&document.documentElement.dataset.appMounted!=='1'){o.style.opacity='0';o.style.pointerEvents='none';o.style.visibility='hidden';}},10000);})();</script>
+    <div id="app-loading-overlay" role="status" aria-live="polite" aria-label="Loading Oracle Bull">
+      <img src="/oracle-bot-mascot.jpg" alt="Oracle Bull" class="ob-logo" width="88" height="88" decoding="async" />
+      <div class="ob-spin" aria-hidden="true"></div>
+    </div>
+    <script>(function(){
+      try{if(localStorage.getItem('oraclebull-theme')==='dark'){var o=document.getElementById('app-loading-overlay');if(o)o.style.background='#06080f';}}catch(e){}
+      function removeOverlay(){
+        var o=document.getElementById('app-loading-overlay');
+        if(!o) return;
+        o.classList.add('ob-hide');
+        setTimeout(function(){ if(o&&o.parentNode) o.parentNode.removeChild(o); },320);
+      }
+      window.__oracleBoot=window.__oracleBoot||{};
+      window.__oracleBoot.hideOverlay=removeOverlay;
+      // Observe data-app-mounted flip and remove overlay on next frame.
+      var html=document.documentElement;
+      var mo=new MutationObserver(function(){
+        if(html.dataset.appMounted==='1'){ mo.disconnect(); requestAnimationFrame(removeOverlay); }
+      });
+      mo.observe(html,{attributes:true,attributeFilter:['data-app-mounted']});
+      // Safety net: never let the overlay linger.
+      setTimeout(function(){ if(html.dataset.appMounted!=='1') return; removeOverlay(); },1500);
+      setTimeout(function(){ removeOverlay(); },10000);
+    })();</script>
 
     <div id="root">
       <div id="boot-fallback" role="status" aria-live="polite" style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center;background:#ffffff;color:#1e293b;">
