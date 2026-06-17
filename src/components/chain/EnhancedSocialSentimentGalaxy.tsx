@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ChainConfig } from "@/lib/chainConfig";
 import { SocialSentiment } from "@/hooks/useChainForecast";
+import { seededRng } from "@/lib/seededRandom";
 import { Twitter, MessageCircle, Send, Newspaper, ExternalLink, ChevronDown, ChevronUp, TrendingUp, TrendingDown, Users, Activity, Info, BarChart3, Globe, Zap, Target, Eye, Hash } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
