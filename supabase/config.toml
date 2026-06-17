@@ -175,3 +175,10 @@ verify_jwt = false
 [functions.airdrops.rate_limit]
 requests = 600
 per = 3600
+
+[functions.ai-trading-signals]
+verify_jwt = false
+# Paid LLM endpoint — cap global throughput as a backstop.
+[functions.ai-trading-signals.rate_limit]
+requests = 50
+per = 3600
