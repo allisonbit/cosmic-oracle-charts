@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ChainConfig } from "@/lib/chainConfig";
 import { SocialSentiment } from "@/hooks/useChainForecast";
+import { seededRng } from "@/lib/seededRandom";
 import { Twitter, MessageCircle, Send, Newspaper, ExternalLink, ChevronDown, ChevronUp, TrendingUp, TrendingDown, Users, Activity, Info, BarChart3, Globe, Zap, Target, Eye, Hash } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -309,42 +310,45 @@ export function EnhancedSocialSentimentGalaxy({ chain, socialSentiment, isLoadin
                     Negative
                   </text>
 
-                  {/* Animated star particles */}
-                  {socialSentiment && Array.from({ length: Math.floor(socialSentiment.overallSentiment / 3) }).map((_, i) => (
-                    <circle
-                      key={`pos-${i}`}
-                      cx={50 + Math.random() * 100}
-                      cy={40 + Math.random() * 80}
-                      r={2 + Math.random() * 4}
-                      fill="hsl(160 84% 50%)"
-                      opacity={0.5 + Math.random() * 0.5}
-                    >
-                      <animate
-                        attributeName="opacity"
-                        values={`${0.3 + Math.random() * 0.3};${0.7 + Math.random() * 0.3};${0.3 + Math.random() * 0.3}`}
-                        dur={`${2 + Math.random() * 2}s`}
-                        repeatCount="indefinite"
-                      />
-                    </circle>
-                  ))}
-
-                  {socialSentiment && Array.from({ length: Math.floor((100 - socialSentiment.overallSentiment) / 5) }).map((_, i) => (
-                    <circle
-                      key={`neg-${i}`}
-                      cx={250 + Math.random() * 100}
-                      cy={40 + Math.random() * 80}
-                      r={2 + Math.random() * 4}
-                      fill="hsl(0 84% 60%)"
-                      opacity={0.4 + Math.random() * 0.4}
-                    >
-                      <animate
-                        attributeName="opacity"
-                        values={`${0.3};${0.7};${0.3}`}
-                        dur={`${2 + Math.random() * 2}s`}
-                        repeatCount="indefinite"
-                      />
-                    </circle>
-                  ))}
+                  {/* Animated star particles — positions are deterministic
+                      (seeded by chain id), and pulse speed is market-driven:
+                      stronger sentiment = faster pulse on the dominant side. */}
+                  {socialSentiment && (() => {
+                    const score = socialSentiment.overallSentiment; // 0..100
+                    const posCount = Math.floor(score / 3);
+                    const negCount = Math.floor((100 - score) / 5);
+                    const posRng = seededRng(`${chain.id}|pos|${Math.round(score)}`);
+                    const negRng = seededRng(`${chain.id}|neg|${Math.round(score)}`);
+                    // Bullish → fast positive pulse (1.2s) / slow negative (3.5s) and vice versa.
+                    const posDur = (3.5 - (score / 100) * 2.3).toFixed(2);
+                    const negDur = (1.2 + (score / 100) * 2.3).toFixed(2);
+                    return (
+                      <>
+                        {Array.from({ length: posCount }).map((_, i) => {
+                          const cx = 50 + posRng() * 100;
+                          const cy = 40 + posRng() * 80;
+                          const r = 2 + posRng() * 4;
+                          const op = 0.5 + posRng() * 0.5;
+                          return (
+                            <circle key={`pos-${i}`} cx={cx} cy={cy} r={r} fill="hsl(160 84% 50%)" opacity={op}>
+                              <animate attributeName="opacity" values="0.3;0.95;0.3" dur={`${posDur}s`} repeatCount="indefinite" />
+                            </circle>
+                          );
+                        })}
+                        {Array.from({ length: negCount }).map((_, i) => {
+                          const cx = 250 + negRng() * 100;
+                          const cy = 40 + negRng() * 80;
+                          const r = 2 + negRng() * 4;
+                          const op = 0.4 + negRng() * 0.4;
+                          return (
+                            <circle key={`neg-${i}`} cx={cx} cy={cy} r={r} fill="hsl(0 84% 60%)" opacity={op}>
+                              <animate attributeName="opacity" values="0.3;0.7;0.3" dur={`${negDur}s`} repeatCount="indefinite" />
+                            </circle>
+                          );
+                        })}
+                      </>
+                    );
+                  })()}
                 </svg>
               </div>
             </TabsContent>
