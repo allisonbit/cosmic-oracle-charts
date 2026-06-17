@@ -1,57 +1,98 @@
-# Blue Pro Plan
+## Goal
 
-Three phases. I ship phase 1, you confirm, I ship phase 2, and so on. No big-bang rewrites.
+Give the site two things it's missing: **(A) reasons for other sites to link to it** (linkable assets) and **(B) hundreds of low-competition long-tail pages** that can rank in weeks instead of months. You'll handle outreach; this plan covers everything we build in code.
 
-## Phase 1 — Bug sweep (ship first)
+---
 
-Goal: zero red errors on `/`, `/dashboard`, `/tools`, `/explorer`, `/sentiment`.
+## Part 1 — Backlink Magnets (Linkable Assets)
 
-1. Drive Playwright across the 5 hot routes, capture console + network failures, screenshot each.
-2. Fix the known offenders from the current console:
-   - `useMarketData` "Failed to fetch" fallback warning → add timeout + 1 retry + silent fallback so it stops spamming.
-   - `orderbook` edge fn returning HTML (noted in `.lovable/plan.md`) → repair endpoint URL / CORS.
-3. Fix anything else the sweep surfaces (broken edge fn, 404 asset, hydration warning).
+We build 3 assets other crypto sites and journalists will naturally cite + link to.
 
-Done when all 5 routes load with a clean console.
+### 1.1 Embeddable Widgets (`/embed/*`)
+Public, iframe-friendly widgets that other blogs can paste into their articles. Every embed includes a small "Powered by Oracle Bull" backlink — this is how Investing.com, CoinGecko etc. built their early authority.
 
-## Phase 2 — Performance pass on hot routes
+- `/embed/price/:coin` — live price + 24h chart
+- `/embed/fear-greed` — current fear & greed index
+- `/embed/prediction/:coin` — today's AI signal card
+- `/embed/strength/:coin` — strength meter gauge
 
-Goal: measurable LCP/INP win on `/` and `/dashboard`, no behaviour change.
+Each route renders a minimal, frameable page (no nav/footer), allows `X-Frame-Options: ALLOW`, and exposes a one-line `<iframe>` snippet on a new `/embed` directory page.
 
-1. Run Lighthouse via Playwright on `/` and `/dashboard`, save the JSON.
-2. Target only what the trace flags. Likely candidates:
-   - Add `<link rel="preconnect">` for the 2-3 actually-used API origins.
-   - Convert any large non-hero image in `public/` to WebP/AVIF (script-only, no code churn).
-   - Defer any third-party script that blocks LCP (AdSense already deferred; double-check ticker/analytics).
-3. Re-run Lighthouse, paste before/after scores.
+### 1.2 Weekly "State of Crypto" Report (`/reports/weekly`)
+Auto-generated every Monday by a new `weekly-report` edge function + pg_cron job. Pulls top movers, whale activity, sentiment shifts, and predictions accuracy into a single citable URL with a permanent slug (`/reports/2026-w25`). Adds JSON-LD `Report` schema. These are the pages journalists screenshot and link to.
 
-No `manualChunks`, no blanket `React.memo`, no React-Query swap — these are explicitly forbidden by project memory.
+### 1.3 Public Prediction Accuracy Leaderboard (`/accuracy`)
+Already-resolved AI predictions vs. actual outcomes, exposed as a transparent track record. Sortable by coin and timeframe. Auto-generates a JSON feed at `/accuracy.json` that aggregators can pull. This is the "proof page" that makes the rest of the site link-worthy.
 
-## Phase 3 — Kill remaining `Math.random()` data
+---
 
-Walk through `.lovable/plan.md` phases 2 → 4 in order:
+## Part 2 — Long-Tail Programmatic SEO (500+ new pages)
 
-- **2:** `MarketStatsBar`, `TokenHoldersTab`, `TokenTradingTab`, token detail panels, `TopTokensTable`.
-- **3:** Sentiment + signals panels (use existing `sentiment-data` / `whale-tracker` edge fns; hide cards with no source).
-- **4:** Chain analytics, misc demo numbers, `MyCopyTrading` / `MySignals` / `MyNewsFeed`.
+Targets keywords with low difficulty + clear intent that a new domain can actually rank for in 4–8 weeks.
 
-Rule per file: wire to real API → on failure show `—` and a skeleton, never random.
+### 2.1 "Will X hit $Y by Z" pages (`/predict/:coin/:target/:year`)
+~300 pages. Template covers: current price, distance to target, % required move, historical comparable moves, AI verdict, time-series chart, FAQ block. Generated from a static slug list of top 30 coins × 5 price targets × 2 years.
 
-### Phase 3 status (shipped)
+### 2.2 "X vs Y" comparison pages (`/vs/:coinA/:coinB`)
+~150 pages. Pairs all top 20 coins. Side-by-side: price, market cap, 1y return, volatility, sentiment, AI prediction, "which is the better buy right now" verdict. These rank fast because comparison intent has low SERP competition.
 
-- `MySignals.tsx` — removed `Math.random()` fallback signals. On edge-fn failure we now show the empty state + error toast, never invented prices.
-- `MyCopyTrading.tsx` — replaced random `streak` with real trailing run of consecutive correct resolved predictions per trader.
-- `EnhancedOverviewPanel.tsx` — social-score sparkline bars are now deterministic (`(i*7 + score) % 17`) instead of `Math.random()` so they don't twitch on re-render.
+### 2.3 "How much is X worth in Y" converter pages (`/convert/:coin/:fiat`)
+~60 pages. Top 20 coins × top 3 fiats. Live rate, historical chart, "1 BTC = $X" structured FAQ. Pure long-tail traffic generator.
 
-Remaining `Math.random()` call sites are decorative SVG flair (sentiment galaxy star positions, whale radar pulse durations, Monte Carlo DCA simulator, related-article shuffle in `LearnArticle`). These are intentional and not user-data — left as-is.
+### 2.4 Sitemap + indexing wiring
+- All new routes added to `sitemap.xml` (split into `sitemap-predict.xml`, `sitemap-vs.xml`, `sitemap-convert.xml` to keep each under the 50k URL cap).
+- `seo-prerender.mjs` updated so each route gets unique server-rendered title/description/H1/FAQ markup (no client-only content).
+- `ping-search-engines` edge function called on deploy to push the new URL batch to IndexNow.
 
-## Out of scope (won't touch)
+---
 
-- Custom Vite chunking (caused TDZ outage — memory rule).
-- Dark mode / non-Inter fonts (memory rule).
-- Removing AdSense, adding paid tiers, re-adding Telegram (memory rules).
-- `OptionsFlowPanel` — no free data source, will be hidden per existing plan.
+## Technical Section
 
-## Deliverable for the first reply
+**New files**
+```
+src/pages/embed/EmbedPrice.tsx
+src/pages/embed/EmbedFearGreed.tsx
+src/pages/embed/EmbedPrediction.tsx
+src/pages/embed/EmbedStrength.tsx
+src/pages/embed/EmbedIndex.tsx          // /embed directory
+src/pages/reports/WeeklyReport.tsx      // /reports/:slug
+src/pages/Accuracy.tsx                  // /accuracy
+src/pages/programmatic/PredictTarget.tsx
+src/pages/programmatic/VsCompare.tsx
+src/pages/programmatic/Convert.tsx
+src/lib/programmaticSlugs.ts            // slug generators
+supabase/functions/weekly-report/index.ts
+supabase/functions/accuracy-feed/index.ts
+```
 
-Phase 1 only: bug sweep + the two known fixes, with Playwright screenshots showing clean console. Then I stop and wait for your go-ahead on Phase 2.
+**Edits**
+- `src/App.tsx` — add 9 new routes (lazy-loaded).
+- `src/components/layout/Layout.tsx` — render no chrome when route starts with `/embed/`.
+- `public/_headers` — `X-Frame-Options: ALLOWALL` scoped to `/embed/*`.
+- `scripts/seo-prerender.mjs` — register the new templates + iterate slug lists.
+- `public/sitemap.xml` — split into index + child sitemaps.
+- Migration: add `weekly_reports` table (slug, week_iso, content jsonb, published_at) + RLS public read, service_role write. Add `prediction_outcomes` view aggregating `predictions_cache` vs realized prices for `/accuracy`.
+- pg_cron: schedule `weekly-report` every Monday 00:05 UTC.
+
+**Constraints honored**
+- No modals/dropdowns — every page is a full route (flat navigation mandate).
+- Light theme, Inter font, JSON-LD on every new template.
+- Static HTML rendered before JS via `seo-prerender.mjs` (500–1000 word floor on each template).
+- No `Math.random()`; all numbers from real APIs with skeleton fallbacks.
+- Ad slots reused from existing `AdPlacement` components.
+
+**Out of scope (you handle)**
+- Manual outreach / guest posts / Reddit promotion.
+- Submitting embeds to crypto tool directories.
+- Buying domain authority shortcuts.
+
+---
+
+## Execution Order
+
+1. Programmatic SEO templates (2.1 → 2.2 → 2.3) + sitemap wiring — biggest traffic upside, fastest to ship.
+2. Accuracy leaderboard (1.3) — needed as proof before pitching embeds.
+3. Embeddable widgets (1.1) — needs the accuracy page to be credible.
+4. Weekly report generator (1.2) — last; depends on cron + data being warm.
+
+Approve and I'll start with step 1.
