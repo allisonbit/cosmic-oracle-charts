@@ -34,7 +34,7 @@ export function HomeNews() {
             return (
               <Link key={a.id} to={`/news/${a.slug}`} className="group rounded-xl border border-border/50 bg-card/40 overflow-hidden hover:border-primary/40 transition-all flex flex-col">
                 <div className="aspect-video bg-muted relative overflow-hidden">
-                  {a.imageUrl && <img src={a.imageUrl} alt="" loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />}
+                  {a.imageUrl && <img src={a.imageUrl} alt="" loading="lazy" width={320} height={180} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />}
                   <span className={cn("absolute top-2 left-2 text-[9px] font-bold px-1.5 py-0.5 rounded border backdrop-blur-md", s.className)}>{s.label}</span>
                 </div>
                 <div className="p-2.5 flex flex-col flex-1">
