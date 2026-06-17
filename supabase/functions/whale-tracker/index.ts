@@ -1,10 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+import { corsHeaders } from "../_shared/cors.ts";
+import { getAlchemyKeyOrEmpty } from "../_shared/alchemy.ts";
 
 interface WhaleTransaction {
   id: string;
@@ -20,13 +17,7 @@ interface WhaleTransaction {
   impact: 'high' | 'medium' | 'low';
 }
 
-// Get API key from multiple possible sources
-function getAlchemyApiKey(): string {
-  return Deno.env.get('ALCHEMY_API_KEY_1') || 
-         Deno.env.get('ALCHEMY_API_KEY_2') || 
-         Deno.env.get('ALCHEMY_API_KEY_3') ||
-         '';
-}
+const getAlchemyApiKey = getAlchemyKeyOrEmpty;
 
 // Alchemy network endpoints
 const alchemyNetworks: Record<string, string> = {
