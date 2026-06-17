@@ -61,6 +61,7 @@ const Advertise = lazy(() => import("./pages/Advertise"));
 const YearPrediction = lazy(() => import("./pages/YearPrediction"));
 const Scanner = lazy(() => import("./pages/Scanner"));
 const Admin = lazy(() => import("./pages/Admin"));
+const BacklinkOutreach = lazy(() => import("./pages/admin/BacklinkOutreach"));
 const MyHub = lazy(() => import("./pages/MyHub"));
 const MyWatchlistPage = lazy(() => import("./pages/MyWatchlist"));
 const MyPortfolioPage = lazy(() => import("./pages/MyPortfolio"));
@@ -264,6 +265,7 @@ const App = () => (
                 <Route path="/editorial-policy" element={B(<EditorialPolicy />)} />
                 <Route path="/advertise" element={B(<Advertise />)} />
                 <Route path="/admin" element={B(<ProtectedRoute><AdminRoute><Admin /></AdminRoute></ProtectedRoute>)} />
+                <Route path="/admin/backlinks" element={B(<ProtectedRoute><AdminRoute><BacklinkOutreach /></AdminRoute></ProtectedRoute>)} />
                 <Route path="/my" element={B(<MyHub />)} />
                 <Route path="/my/watchlist" element={B(<MyWatchlistPage />)} />
                 <Route path="/my/portfolio" element={B(<MyPortfolioPage />)} />
