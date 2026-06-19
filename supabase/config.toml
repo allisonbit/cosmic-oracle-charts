@@ -84,6 +84,12 @@ per = 3600
 
 [functions.prediction-prewarm]
 verify_jwt = false
+# Cron-driven (every 10 min ≈ 6/hr). CRITICAL cost-bomb: each invocation fans out
+# ~100 paid AI predictions, so one anonymous POST = up to ~100 paid LLM calls.
+# Cap total throughput just above the legit cron rate; real fix = WEBHOOK_API_KEY.
+[functions.prediction-prewarm.rate_limit]
+requests = 15
+per = 3600
 
 [functions.orderbook]
 verify_jwt = false
