@@ -154,6 +154,19 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // ── Optional shared-secret gate (fail-open until WEBHOOK_API_KEY is set) ──────
+  // Cron-only function. This is the worst cost-bomb: each call fans out ~100 paid
+  // AI predictions, so an anonymous POST = up to ~100 paid LLM calls. Once
+  // WEBHOOK_API_KEY is set as a Supabase secret AND the cron job sends it as the
+  // `x-webhook-key` header, anonymous callers are rejected. Until the secret is
+  // set, behavior is unchanged (open) — so deploying this breaks nothing.
+  const webhookKey = Deno.env.get('WEBHOOK_API_KEY');
+  if (webhookKey && req.headers.get('x-webhook-key') !== webhookKey) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+
   try {
     console.log('Starting prediction pre-warming...');
     
