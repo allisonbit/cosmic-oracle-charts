@@ -86,10 +86,17 @@ serve(async (req) => {
   try {
     // Concurrent requests during a cache miss now share one upstream fetch.
     const result = await getOrSet(CACHE_KEY, { ttlMs: CACHE_TTL }, fetchFromCoinGecko);
-    return jsonResponse(result);
+    // CDN edge cache: serve repeat hits from the edge for 30s, allow a stale
+    // copy for 60s more while revalidating — cuts upstream CoinGecko load.
+    return jsonResponse(result, {
+      headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60" },
+    });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Unknown error";
     console.warn("crypto-prices upstream error, serving fallback:", message);
-    return jsonResponse({ prices: fallbackPrices, timestamp: Date.now(), source: "fallback" });
+    return jsonResponse(
+      { prices: fallbackPrices, timestamp: Date.now(), source: "fallback" },
+      { headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60" } },
+    );
   }
 });

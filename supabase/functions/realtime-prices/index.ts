@@ -24,9 +24,11 @@ serve(async (req) => {
     }
 
     const prices = await fetchChainPrices(chains);
-    
+
     return new Response(JSON.stringify({ prices, timestamp: Date.now() }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      // Let the edge CDN serve one cached body to all visitors between refreshes
+      // instead of every ~20s poll hitting the function (and CoinGecko) directly.
+      headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60" },
     });
   } catch (error) {
     console.error("Error:", error);
@@ -56,7 +58,7 @@ async function fetchChainPrices(chains: string[]): Promise<Record<string, any>> 
   try {
     const response = await fetch(
       `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_market_cap=true`,
-      { headers: { "Accept": "application/json" } }
+      { headers: { "Accept": "application/json" }, signal: AbortSignal.timeout(8000) }
     );
 
     if (!response.ok) {
