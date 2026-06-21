@@ -174,8 +174,12 @@
   <meta name="twitter:title" content="Free Crypto Price Predictions &amp; Market Analytics">
   <meta property="og:description" content="Free crypto price predictions, whale tracking &amp; sentiment for Bitcoin, Ethereum, Solana &amp; 1000+ tokens. Real-time, no signup needed.">
   <meta name="twitter:description" content="Free crypto price predictions, whale tracking &amp; sentiment for Bitcoin, Ethereum, Solana &amp; 1000+ tokens. Real-time, no signup needed.">
-  <!-- Adsterra popunder — fires once per session, counts impressions from bounce visitors instantly -->
+  <!-- Adsterra popunder DISABLED 2026-06-21. Popunders violate Google's Better Ads
+       Standards and can trigger ranking suppression / Safe Browsing flags. It was
+       added 2026-06-17, coinciding with the traffic decline. Re-enable ONLY if you
+       accept the SEO risk; banner + native + smartlink units keep earning without it.
   <script src="https://pl29778335.effectivecpmnetwork.com/09/e5/e9/09e5e969444706c90d2f89869ecb1ca0.js"></script>
+  -->
 </head>
 
   <body class="touch-manipulation">
@@ -406,11 +410,13 @@
         allow_google_signals: true,
         allow_ad_personalization_signals: true,
         link_attribution: true,
-        anonymize_ip: false,
-        // First-party transport routes hits through our supabase.co subdomain
-        // so ad-blockers that block google-analytics.com still let beacons through.
-        transport_url: 'https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/ga-collect',
-        first_party_collection: true
+        anonymize_ip: false
+        // NOTE: transport_url proxy (ga-collect) REMOVED 2026-06-21. It overrode
+        // GA's default endpoint and routed 100% of hits through a self-hosted edge
+        // function — which did not exist 06-17..06-19, silently dropping ALL
+        // analytics and causing the apparent traffic "crash". Sending directly to
+        // google-analytics.com is the reliable default. Re-add a proxy only after
+        // verifying it returns 2xx for /g/collect in the browser Network tab.
       });
 
       // Web Vitals (LCP) — non-blocking
