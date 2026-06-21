@@ -73,8 +73,10 @@ export default function MyCopyTrading() {
         .limit(100);
 
       const userIds = [...new Set((predsData || []).map(p => p.user_id))];
+      // public_profiles view exposes only non-PII columns (no email). Cast keeps the
+      // typed client happy since the view shares profiles' column shape here.
       const { data: profilesData } = await supabase
-        .from("profiles")
+        .from("public_profiles" as "profiles")
         .select("id, display_name, avatar_url")
         .in("id", userIds.length > 0 ? userIds : ['none']);
 

@@ -78,9 +78,10 @@ function SocialContent() {
       map.set(p.user_id, entry);
     });
 
-    // Fetch profiles for leaderboard users
+    // Fetch profiles for leaderboard users via the non-PII public_profiles view
+    // (no email). Cast keeps the typed client happy (shared column shape).
     const userIds = Array.from(map.keys());
-    const { data: profiles } = await supabase.from("profiles").select("id, display_name, avatar_url").in("id", userIds);
+    const { data: profiles } = await supabase.from("public_profiles" as "profiles").select("id, display_name, avatar_url").in("id", userIds);
 
     const board: LeaderboardEntry[] = Array.from(map.entries()).map(([uid, stats]) => {
       const prof = profiles?.find((p: any) => p.id === uid) as any;

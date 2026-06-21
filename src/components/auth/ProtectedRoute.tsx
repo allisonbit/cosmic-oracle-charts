@@ -1,26 +1,17 @@
 import { useAuth } from "@/hooks/useAuth";
-import { lovable } from "@/integrations/lovable/index";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
+import { AuthDialog } from "@/components/auth/AuthDialog";
 import { LogIn, Shield, Sparkles, TrendingUp, Bell, MessageCircle } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 
+/**
+ * Gates on the real Supabase session (useAuth().user). Previously this gated on
+ * wagmi `isConnected`, which created NO Supabase session — so users passed the gate
+ * but useAuth().user stayed null and every /my mutation silently no-op'd.
+ */
 export function ProtectedRoute({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
-  const [signingIn, setSigningIn] = useState(false);
-
-  const handleSignIn = async () => {
-    setSigningIn(true);
-    try {
-      await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: `${window.location.origin}/my`,
-      });
-    } catch (e) {
-      console.error("Sign in error:", e);
-    } finally {
-      setSigningIn(false);
-    }
-  };
 
   if (loading) {
     return (
@@ -62,17 +53,14 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
                 </div>
               ))}
             </div>
-            <Button
-              size="lg"
-              onClick={handleSignIn}
-              disabled={signingIn}
-              className="w-full gap-3 text-base h-12"
-            >
-              <LogIn className="w-5 h-5" />
-              {signingIn ? "Connecting..." : "Sign In with Google"}
-            </Button>
+            <AuthDialog defaultTab="signup">
+              <Button size="lg" className="w-full gap-3 text-base h-12">
+                <LogIn className="w-5 h-5" />
+                Sign In / Create free account
+              </Button>
+            </AuthDialog>
             <p className="text-xs text-muted-foreground">
-              Free forever · No credit card required
+              Free forever · No credit card required · Wallet created for you
             </p>
           </div>
         </div>
