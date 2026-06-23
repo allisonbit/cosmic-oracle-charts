@@ -23,19 +23,23 @@ export default function PredictTarget() {
   const target = Number(targetStr);
   const year = Number(yearStr);
 
+  // Hooks must run unconditionally before any early return (Rules of Hooks).
+  // The query is gated with `enabled` so it only fires for a valid coin; the
+  // Navigate guard below handles the invalid-params case.
+  const { data, isLoading } = useQuery({
+    queryKey: ["predict-target-price", coinDef?.cgId],
+    queryFn: () =>
+      coingeckoFetch<PriceData>({
+        path: `coins/${coinDef!.cgId}`,
+        params: { localization: "false", tickers: "false", community_data: "false", developer_data: "false" },
+      }),
+    enabled: Boolean(coinDef),
+    staleTime: 5 * 60_000,
+  });
+
   if (!coinDef || !Number.isFinite(target) || target <= 0 || !Number.isFinite(year)) {
     return <Navigate to="/predictions" replace />;
   }
-
-  const { data, isLoading } = useQuery({
-    queryKey: ["predict-target-price", coinDef.cgId],
-    queryFn: () =>
-      coingeckoFetch<PriceData>({
-        path: `coins/${coinDef.cgId}`,
-        params: { localization: "false", tickers: "false", community_data: "false", developer_data: "false" },
-      }),
-    staleTime: 5 * 60_000,
-  });
 
   const md = data?.market_data;
   const currentPrice = md?.current_price?.usd ?? 0;

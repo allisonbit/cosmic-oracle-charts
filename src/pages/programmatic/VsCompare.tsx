@@ -25,22 +25,26 @@ export default function VsCompare() {
   const a = COIN_BY_SLUG[coinA];
   const b = COIN_BY_SLUG[coinB];
 
-  if (!a || !b) return <Navigate to="/compare" replace />;
-  if (a.slug === b.slug) return <Navigate to={`/price-prediction/${a.slug}`} replace />;
-
+  // Hooks must run unconditionally before any early return (Rules of Hooks).
+  // The query is gated with `enabled` so it only fires for a valid, distinct
+  // pair; the Navigate guards below handle the invalid cases.
   const { data, isLoading } = useQuery({
-    queryKey: ["vs-markets", a.cgId, b.cgId],
+    queryKey: ["vs-markets", a?.cgId, b?.cgId],
     queryFn: () =>
       coingeckoFetch<CoinMarket[]>({
         path: "coins/markets",
         params: {
           vs_currency: "usd",
-          ids: `${a.cgId},${b.cgId}`,
+          ids: `${a!.cgId},${b!.cgId}`,
           price_change_percentage: "24h,7d,30d,1y",
         },
       }),
+    enabled: Boolean(a && b && a.slug !== b.slug),
     staleTime: 2 * 60_000,
   });
+
+  if (!a || !b) return <Navigate to="/compare" replace />;
+  if (a.slug === b.slug) return <Navigate to={`/price-prediction/${a.slug}`} replace />;
 
   const mA = data?.find((m) => m.id === a.cgId);
   const mB = data?.find((m) => m.id === b.cgId);

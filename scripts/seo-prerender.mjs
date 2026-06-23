@@ -98,7 +98,7 @@ try {
 // array start (that regression silently dropped all 8 detail pages to blank shells).
 let AIRDROPS = [];
 try {
-  const adSrc = fs.readFileSync(path.join(__dirname, '..', 'src', 'components', 'airdrops', 'airdropData.ts'), 'utf8');
+  const adSrc = fs.readFileSync(path.join(__dirname, '..', 'src', 'components', 'airdrops', 'airdropData.ts'), 'utf8').replace(/\r\n/g, '\n');
   const arrStart = adSrc.indexOf('= [', adSrc.indexOf('AIRDROPS_DATA')) + 2;
   const chunks = adSrc.slice(arrStart).split(/\n  \{\n/).slice(1);
   AIRDROPS = chunks.map((c) => {

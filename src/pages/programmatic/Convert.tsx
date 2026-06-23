@@ -17,17 +17,21 @@ export default function Convert() {
   const fiatDef = FIAT_BY_SLUG[fiat as FiatCode];
   const [amount, setAmount] = useState("1");
 
-  if (!coinDef || !fiatDef) return <Navigate to="/" replace />;
-
+  // All hooks must run before any early return (Rules of Hooks). The query is
+  // gated with `enabled` so it only fires once the route params resolve to a
+  // real coin/fiat pair; the Navigate guard below handles the invalid case.
   const { data } = useQuery({
-    queryKey: ["convert", coinDef.cgId, fiatDef.slug],
+    queryKey: ["convert", coinDef?.cgId, fiatDef?.slug],
     queryFn: () =>
       coingeckoFetch<SimplePrice>({
         path: "simple/price",
-        params: { ids: coinDef.cgId, vs_currencies: fiatDef.slug, include_24hr_change: "true" },
+        params: { ids: coinDef!.cgId, vs_currencies: fiatDef!.slug, include_24hr_change: "true" },
       }),
+    enabled: Boolean(coinDef && fiatDef),
     staleTime: 60_000,
   });
+
+  if (!coinDef || !fiatDef) return <Navigate to="/" replace />;
 
   const rate = data?.[coinDef.cgId]?.[fiatDef.slug] ?? 0;
   const change24h = data?.[coinDef.cgId]?.[`${fiatDef.slug}_24h_change`] ?? 0;

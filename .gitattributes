@@ -1,0 +1,12 @@
+# Keep line endings deterministic across OS so build-time source parsers
+# (e.g. scripts/seo-prerender.mjs splitting airdropData.ts on \n) behave the
+# same on Windows checkouts as in Linux CI. Without this, a CRLF checkout made
+# the prerenderer parse 0 airdrop projects locally.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.webp binary
+*.woff binary
+*.woff2 binary

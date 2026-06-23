@@ -207,8 +207,8 @@ export default function Learn() {
   return (
     <Layout>
       <SEO
-        title="Crypto Insights - Daily AI-Powered Analysis | Oracle Bull"
-        description="Get 20 fresh AI-generated cryptocurrency articles daily. Expert analysis on market structure, DeFi, Bitcoin, Ethereum, altcoins, trading strategies, and more."
+        title="Learn Crypto Free – Guides & Trading Education | Oracle Bull"
+        description="Free crypto education: Bitcoin guides, DeFi tutorials, technical analysis lessons and trading strategies for all levels. Plus daily AI-generated market analysis."
       />
       <FAQSchema items={LEARN_FAQS} url="https://oraclebull.com/learn" />
       <HowToSchema
@@ -236,10 +236,10 @@ export default function Learn() {
                     </Badge>
                   </div>
                   <h1 className="text-2xl sm:text-3xl lg:text-4xl font-display font-bold tracking-tight mb-2">
-                    Crypto Insights
+                    Learn Crypto — Free Guides & Education
                   </h1>
                   <p className="text-muted-foreground text-sm sm:text-base max-w-lg leading-relaxed">
-                    Daily AI-powered analysis on market trends, DeFi, Bitcoin, altcoins, and trading strategies.
+                    Free guides plus daily AI-powered analysis on market trends, DeFi, Bitcoin, altcoins, and trading strategies.
                   </p>
                 </div>
                 <div className="flex items-center gap-4 text-xs sm:text-sm text-muted-foreground">
@@ -546,11 +546,13 @@ export default function Learn() {
                   </li>
                 ))}
               </ul>
-              {data?.posts?.map(post => (
-                <li key={post.slug}>
-                  <a href={`https://oraclebull.com/learn/${post.slug}`}>{post.title}</a>
-                </li>
-              ))}
+              <ul>
+                {data?.posts?.map(post => (
+                  <li key={post.slug}>
+                    <a href={`https://oraclebull.com/learn/${post.slug}`}>{post.title}</a>
+                  </li>
+                ))}
+              </ul>
               <p>
                 <a href="https://oraclebull.com/insights">Market Insights</a> · 
                 <a href="https://oraclebull.com/predictions">Price Predictions</a> · 

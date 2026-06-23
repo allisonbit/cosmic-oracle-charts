@@ -17,7 +17,6 @@ const DESKTOP_KEY = "42c0ffb054b17a9a444907f2efaf44e8"; // 728x90 (same as Large
 const MOBILE_KEY = "77bf78d1aee783820db24b5061eaa4e3";  // 320x50  (same as SmallBannerAd)
 
 declare global {
-  // eslint-disable-next-line no-var
   var __hpfMounted: boolean | undefined;
 }
 
@@ -28,6 +27,9 @@ export function AdsterraStickyFooter({ className }: { className?: string }) {
   const [skip, setSkip] = useState(false);
 
   useEffect(() => {
+    // Capture the node now so cleanup references the same element this effect
+    // wired up, not whatever containerRef points at when cleanup later runs.
+    const container = containerRef.current;
     // Defer a tick so any in-page HPF (LargeBannerAd / MediumRectangleAd /
     // SmallBannerAd) registers itself first on initial mount.
     const t = setTimeout(() => {
@@ -37,7 +39,7 @@ export function AdsterraStickyFooter({ className }: { className?: string }) {
       }
       if (typeof window !== "undefined") window.__hpfMounted = true;
 
-      if (injected.current || !containerRef.current) return;
+      if (injected.current || !container) return;
       injected.current = true;
 
       const isMobile = window.innerWidth < 768;
@@ -50,8 +52,8 @@ export function AdsterraStickyFooter({ className }: { className?: string }) {
       const inv = document.createElement("script");
       inv.src = `https://www.highperformanceformat.com/${key}/invoke.js`;
       inv.async = true;
-      containerRef.current.appendChild(cfg);
-      containerRef.current.appendChild(inv);
+      container.appendChild(cfg);
+      container.appendChild(inv);
     }, 150);
 
     return () => {
@@ -59,7 +61,7 @@ export function AdsterraStickyFooter({ className }: { className?: string }) {
       if (typeof window !== "undefined" && injected.current) {
         window.__hpfMounted = false;
       }
-      if (containerRef.current) containerRef.current.innerHTML = "";
+      if (container) container.innerHTML = "";
       injected.current = false;
     };
   }, []);
