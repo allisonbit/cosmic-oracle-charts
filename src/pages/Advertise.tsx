@@ -6,8 +6,8 @@ const Advertise = () => {
   return (
     <Layout>
       <SEO
-        title="Advertise With Us | OracleBull - Crypto Market Intelligence"
-        description="Reach a highly engaged cryptocurrency audience. Advertise on OracleBull and connect with crypto traders, investors, and enthusiasts. View our ad formats and media kit."
+        title="Advertise on Oracle Bull | Oracle Bull"
+        description="Reach a highly engaged cryptocurrency audience. Advertise on Oracle Bull and connect with crypto traders, investors, and enthusiasts. View our ad formats and media kit."
       />
 
       <div className="container mx-auto px-4 py-12 max-w-5xl">
@@ -16,7 +16,7 @@ const Advertise = () => {
             <Megaphone className="w-8 h-8 text-primary" />
           </div>
           <h1 className="text-3xl md:text-5xl font-display font-bold mb-4">
-            Advertise on <span className="text-gradient-cosmic">OracleBull</span>
+            Advertise on <span className="text-gradient-cosmic">Oracle Bull</span>
           </h1>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Reach a highly engaged audience of cryptocurrency traders, DeFi enthusiasts, and digital asset investors who actively seek market intelligence.
@@ -43,7 +43,7 @@ const Advertise = () => {
         <section className="holo-card p-6 md:p-8 mb-8">
           <h2 className="text-xl font-display font-bold mb-4">Who We Reach</h2>
           <p className="text-muted-foreground mb-4">
-            OracleBull attracts a premium crypto-native audience actively looking for market data and investment insights:
+            Oracle Bull attracts a premium crypto-native audience actively looking for market data and investment insights:
           </p>
           <div className="grid md:grid-cols-2 gap-3">
             {[
@@ -98,7 +98,7 @@ const Advertise = () => {
         <section className="holo-card p-6 md:p-8 mb-8">
           <h2 className="text-xl font-display font-bold mb-4">Advertising Policies</h2>
           <p className="text-muted-foreground mb-4">
-            To protect our audience and maintain the integrity of OracleBull, we do not accept advertisements for:
+            To protect our audience and maintain the integrity of Oracle Bull, we do not accept advertisements for:
           </p>
           <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-4 text-sm">
             <li>Unregistered or unlicensed financial services</li>

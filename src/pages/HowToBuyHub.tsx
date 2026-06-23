@@ -93,7 +93,7 @@ export default function HowToBuyHub() {
               Simple, accurate, up-to-date guides for buying any cryptocurrency safely - with AI-powered tips on <em>when</em> to buy, not just <em>how</em>.
             </p>
             <div className="inline-block px-4 py-2 bg-background/50 border border-border rounded-lg text-xs text-muted-foreground/80 max-w-2xl mx-auto">
-              <strong>Advertiser Disclosure:</strong> OracleBull is an independent platform. We may receive compensation from the cryptocurrency exchanges or brokers recommended in these guides at no additional cost to you. This compensation does not impact our AI-driven market analysis or ratings.
+              <strong>Advertiser Disclosure:</strong> Oracle Bull is an independent platform. We may receive compensation from the cryptocurrency exchanges or brokers recommended in these guides at no additional cost to you. This compensation does not impact our AI-driven market analysis or ratings.
             </div>
           </div>
 

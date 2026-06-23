@@ -8,15 +8,15 @@ const ContactPage = () => {
   return (
     <Layout>
       <SEO
-        title="Contact Us | OracleBull Market Intelligence"
-        description="Get in touch with the OracleBull team. Reach out for support, feedback, partnership inquiries, or general questions about our AI-powered market analytics platform."
+        title="Contact Oracle Bull | Oracle Bull"
+        description="Get in touch with the Oracle Bull team. Reach out for support, feedback, partnership inquiries, or general questions about our AI-powered market analytics platform."
       />
 
       <div className="container mx-auto px-4 py-12">
         {/* Header */}
         <header className="text-center mb-12">
           <h1 className="text-3xl md:text-5xl font-display font-bold mb-4">
-            Contact <span className="text-gradient-cosmic">OracleBull</span>
+            Contact <span className="text-gradient-cosmic">Oracle Bull</span>
           </h1>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
             Have a question, feedback, or partnership inquiry? We'd love to hear from you.
@@ -89,7 +89,7 @@ const ContactPage = () => {
           </h2>
           <div className="space-y-6">
             <div className="holo-card p-6">
-              <h3 className="font-bold text-foreground mb-2">Is OracleBull free to use?</h3>
+              <h3 className="font-bold text-foreground mb-2">Is Oracle Bull free to use?</h3>
               <p className="text-sm text-muted-foreground">
                 Yes! All of our analytics tools, predictions, and educational content are 100% free 
                 with no signup required. We believe market intelligence should be accessible to everyone.
@@ -98,7 +98,7 @@ const ContactPage = () => {
             <div className="holo-card p-6">
               <h3 className="font-bold text-foreground mb-2">Do you provide financial advice?</h3>
               <p className="text-sm text-muted-foreground">
-                No. OracleBull is a market intelligence and analytics platform that provides educational 
+                No. Oracle Bull is a market intelligence and analytics platform that provides educational 
                 insights and data-driven analysis. Nothing on our platform constitutes financial advice. 
                 Always do your own research and consult a qualified financial advisor.
               </p>

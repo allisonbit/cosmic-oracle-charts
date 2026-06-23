@@ -171,7 +171,7 @@ export function HeroSection() {
               <div className="relative w-[72%] h-[72%] rounded-full overflow-hidden shadow-[0_0_80px_-20px_hsl(var(--primary))] border border-primary/20 z-10 float">
                 <img
                   src={cosmicOracle}
-                  alt="OracleBull AI"
+                  alt="Oracle Bull AI"
                   className="w-full h-full object-cover scale-[1.02]"
                   loading="eager"
                   decoding="async"

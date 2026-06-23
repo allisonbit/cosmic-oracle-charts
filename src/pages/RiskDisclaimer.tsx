@@ -6,8 +6,8 @@ const RiskDisclaimer = () => {
   return (
     <Layout>
       <SEO 
-        title="Risk Disclaimer | OracleBull Market Intelligence"
-        description="Important risk disclaimer for OracleBull users. Understand the risks associated with cryptocurrency and forex markets before using our analytics platform."
+        title="Risk Disclaimer | Oracle Bull"
+        description="Important risk disclaimer for Oracle Bull users. Understand the risks associated with cryptocurrency and forex markets before using our analytics platform."
       />
       
       <div className="container mx-auto px-4 py-12 max-w-4xl">
@@ -16,7 +16,7 @@ const RiskDisclaimer = () => {
             <AlertTriangle className="w-8 h-8 text-danger" />
           </div>
           <h1 className="text-3xl md:text-4xl font-display font-bold mb-4">Risk Disclaimer</h1>
-          <p className="text-muted-foreground">Please read carefully before using OracleBull</p>
+          <p className="text-muted-foreground">Please read carefully before using Oracle Bull</p>
         </header>
 
         {/* Important Warning Banner */}
@@ -26,7 +26,7 @@ const RiskDisclaimer = () => {
             <div>
               <h2 className="text-xl font-display font-bold text-danger mb-3">Important Warning</h2>
               <p className="text-foreground mb-4">
-                OracleBull provides market analysis and educational insights only. 
+                Oracle Bull provides market analysis and educational insights only. 
                 <strong className="text-danger"> This is not financial advice.</strong>
               </p>
               <p className="text-muted-foreground">
@@ -96,7 +96,7 @@ const RiskDisclaimer = () => {
               <h2 className="text-xl font-display font-bold">Our Platform's Role</h2>
             </div>
             <p className="text-muted-foreground mb-4">
-              OracleBull is designed to be:
+              Oracle Bull is designed to be:
             </p>
             <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-4">
               <li><strong>Educational:</strong> We provide learning resources about markets</li>
@@ -120,7 +120,7 @@ const RiskDisclaimer = () => {
               <h2 className="text-xl font-display font-bold">Your Responsibilities</h2>
             </div>
             <p className="text-muted-foreground mb-4">
-              By using OracleBull, you acknowledge that you are responsible for:
+              By using Oracle Bull, you acknowledge that you are responsible for:
             </p>
             <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-4">
               <li>Conducting your own research (DYOR - Do Your Own Research)</li>
@@ -150,7 +150,7 @@ const RiskDisclaimer = () => {
           <section className="holo-card p-6 md:p-8">
             <h2 className="text-xl font-display font-bold mb-4">Acknowledgment</h2>
             <p className="text-muted-foreground">
-              By using OracleBull, you acknowledge that you have read, understood, and agree to this 
+              By using Oracle Bull, you acknowledge that you have read, understood, and agree to this 
               Risk Disclaimer. You understand that cryptocurrency and forex trading involves substantial 
               risk and that you are solely responsible for any decisions you make based on information 
               found on this platform.

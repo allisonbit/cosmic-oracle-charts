@@ -6,8 +6,8 @@ const Terms = () => {
   return (
     <Layout>
       <SEO 
-        title="Terms of Service | OracleBull Market Intelligence"
-        description="OracleBull terms of service. Understand the terms and conditions for using our market intelligence and analytics platform."
+        title="Terms of Service | Oracle Bull"
+        description="Oracle Bull terms of service. Understand the terms and conditions for using our market intelligence and analytics platform."
       />
       
       <div className="container mx-auto px-4 py-12 max-w-4xl">
@@ -23,7 +23,7 @@ const Terms = () => {
           <section className="holo-card p-6 md:p-8">
             <h2 className="text-xl font-display font-bold mb-4">1. Acceptance of Terms</h2>
             <p className="text-muted-foreground">
-              By accessing or using OracleBull ("the Platform," "we," "our"), you agree to be bound by 
+              By accessing or using Oracle Bull ("the Platform," "we," "our"), you agree to be bound by 
               these Terms of Service and all applicable laws and regulations. If you do not agree with 
               any of these terms, you are prohibited from using or accessing this site.
             </p>
@@ -32,7 +32,7 @@ const Terms = () => {
           <section className="holo-card p-6 md:p-8">
             <h2 className="text-xl font-display font-bold mb-4">2. Description of Service</h2>
             <p className="text-muted-foreground">
-              OracleBull is a Market Intelligence & Analytics Platform that provides:
+              Oracle Bull is a Market Intelligence & Analytics Platform that provides:
             </p>
             <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-4 mt-4">
               <li>Market analysis and trend identification</li>
@@ -54,7 +54,7 @@ const Terms = () => {
             <div className="bg-warning/10 border border-warning/30 rounded-lg p-4 mb-4">
               <p className="text-warning font-bold mb-2">THIS IS NOT FINANCIAL ADVICE</p>
               <p className="text-muted-foreground text-sm">
-                The information provided on OracleBull is for general informational and educational 
+                The information provided on Oracle Bull is for general informational and educational 
                 purposes only. It should not be considered as financial, investment, trading, or any 
                 other type of professional advice.
               </p>
@@ -90,9 +90,9 @@ const Terms = () => {
               <h2 className="text-xl font-display font-bold m-0">5. Intellectual Property</h2>
             </div>
             <p className="text-muted-foreground">
-              All content on OracleBull, including but not limited to text, graphics, logos, icons, 
+              All content on Oracle Bull, including but not limited to text, graphics, logos, icons, 
               images, audio clips, digital downloads, data compilations, and software, is the property 
-              of OracleBull or its content suppliers and protected by international copyright laws.
+              of Oracle Bull or its content suppliers and protected by international copyright laws.
             </p>
             <p className="text-muted-foreground mt-4">
               You may not reproduce, distribute, modify, create derivative works from, or commercially 
@@ -119,7 +119,7 @@ const Terms = () => {
           <section className="holo-card p-6 md:p-8">
             <h2 className="text-xl font-display font-bold mb-4">7. Limitation of Liability</h2>
             <p className="text-muted-foreground">
-              To the fullest extent permitted by law, OracleBull shall not be liable for:
+              To the fullest extent permitted by law, Oracle Bull shall not be liable for:
             </p>
             <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-4 mt-4">
               <li>Any direct, indirect, incidental, special, or consequential damages</li>

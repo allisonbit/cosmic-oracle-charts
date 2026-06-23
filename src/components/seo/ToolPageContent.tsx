@@ -18,7 +18,7 @@ export function SentimentHowItWorks() {
       <div className="prose max-w-none text-muted-foreground space-y-4">
         <p>
           Market sentiment analysis is the process of measuring the overall attitude of market participants 
-          toward a particular asset or the market as a whole. At OracleBull, we combine multiple data sources 
+          toward a particular asset or the market as a whole. At Oracle Bull, we combine multiple data sources 
           and advanced AI algorithms to provide a comprehensive view of market psychology.
         </p>
         
@@ -173,7 +173,7 @@ export function ExplorerHowItWorks() {
         
         <h3 className="text-lg font-bold text-foreground mt-6 mb-3">Multi-Chain Architecture</h3>
         <p>
-          Unlike single-chain explorers, OracleBull aggregates data from every major blockchain ecosystem:
+          Unlike single-chain explorers, Oracle Bull aggregates data from every major blockchain ecosystem:
         </p>
         <ul className="list-disc list-inside space-y-2 ml-4">
           <li><strong>EVM Chains:</strong> Ethereum, Arbitrum, Base, Polygon, Optimism, Avalanche, BNB Chain</li>
@@ -290,7 +290,7 @@ export function PredictionsHowItWorks() {
       
       <div className="prose max-w-none text-muted-foreground space-y-4">
         <p>
-          OracleBull's AI market analysis system combines technical analysis, on-chain data, and sentiment 
+          Oracle Bull's AI market analysis system combines technical analysis, on-chain data, and sentiment 
           indicators to generate comprehensive market insights for over 1,000 cryptocurrencies. Our models 
           are trained on years of historical data and updated in real-time.
         </p>
@@ -440,7 +440,7 @@ export function DashboardHowItWorks() {
       
       <div className="prose max-w-none text-muted-foreground space-y-4">
         <p>
-          The OracleBull Dashboard is your command center for cryptocurrency market intelligence. 
+          The Oracle Bull Dashboard is your command center for cryptocurrency market intelligence. 
           We've designed it to deliver institutional-grade data in an accessible format, helping 
           you make informed decisions without information overload.
         </p>
@@ -557,7 +557,7 @@ export function FactoryHowItWorks() {
       
       <div className="prose max-w-none text-muted-foreground space-y-4">
         <p>
-          The Crypto Factory is OracleBull's market intelligence aggregator, combining multiple 
+          The Crypto Factory is Oracle Bull's market intelligence aggregator, combining multiple 
           data streams into actionable insights. We monitor over 50 news sources, on-chain events, 
           and market narratives to keep you informed of market-moving developments.
         </p>

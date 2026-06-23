@@ -6,8 +6,8 @@ const PrivacyPolicy = () => {
   return (
     <Layout>
       <SEO 
-        title="Privacy Policy | OracleBull Market Intelligence"
-        description="OracleBull privacy policy. Learn how we handle your data, what information we collect, and how we protect your privacy on our market intelligence platform."
+        title="Privacy Policy | Oracle Bull"
+        description="Oracle Bull privacy policy. Learn how we handle your data, what information we collect, and how we protect your privacy on our market intelligence platform."
       />
       
       <div className="container mx-auto px-4 py-12 max-w-4xl">
@@ -26,7 +26,7 @@ const PrivacyPolicy = () => {
               <h2 className="text-xl font-display font-bold m-0">Introduction</h2>
             </div>
             <p className="text-muted-foreground">
-              OracleBull ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy 
+              Oracle Bull ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy 
               explains how we collect, use, and safeguard information when you visit our website and use our 
               market intelligence and analytics platform.
             </p>

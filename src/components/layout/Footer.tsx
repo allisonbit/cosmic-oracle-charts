@@ -55,7 +55,7 @@ export function Footer() {
           <p className="text-center text-xs md:text-sm text-muted-foreground">
             <AlertTriangle className="w-4 h-4 inline-block mr-2 text-warning" />
             <span className="font-medium text-warning">Disclaimer:</span>{" "}
-            OracleBull provides market analysis and educational insights only. This is not financial advice.
+            Oracle Bull provides market analysis and educational insights only. This is not financial advice.
             <Link to="/risk-disclaimer" className="text-primary hover:underline ml-2">
               Read full disclaimer →
             </Link>
@@ -67,9 +67,9 @@ export function Footer() {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6 md:gap-8">
           {/* Logo & Description */}
           <div className="col-span-2 space-y-4">
-            <Link to="/" className="flex items-center gap-3" aria-label="OracleBull – Home">
+            <Link to="/" className="flex items-center gap-3" aria-label="Oracle Bull – Home">
               <div className="w-10 h-10 rounded-full overflow-hidden shadow-lg shadow-primary/30">
-               <img src={oracleLogo} alt="OracleBull logo" width={40} height={40} loading="lazy" decoding="async" className="w-full h-full object-cover" />
+               <img src={oracleLogo} alt="Oracle Bull logo" width={40} height={40} loading="lazy" decoding="async" className="w-full h-full object-cover" />
               </div>
               <span className="font-display text-lg font-bold glow-text">ORACLEBULL</span>
             </Link>
@@ -296,7 +296,7 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
-              aria-label="Follow OracleBull on X (Twitter)"
+              aria-label="Follow Oracle Bull on X (Twitter)"
             >
               <Twitter className="w-5 h-5" aria-hidden="true" />
             </a>
@@ -305,7 +305,7 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
-              aria-label="Join OracleBull Telegram community"
+              aria-label="Join Oracle Bull Telegram community"
             >
               <MessageCircle className="w-5 h-5" aria-hidden="true" />
             </a>
@@ -314,7 +314,7 @@ export function Footer() {
           <div className="text-center text-xs md:text-sm text-muted-foreground">
             <p>© {new Date().getFullYear()} OracleBull.com - Free AI Crypto Analytics Platform. All rights reserved.</p>
             <div className="mt-4 p-4 rounded-xl bg-background/50 border border-border text-[11px] md:text-xs text-muted-foreground max-w-5xl mx-auto text-left md:text-center leading-relaxed">
-              <span className="font-bold text-foreground">Financial Risk Warning:</span> Cryptocurrency trading and investments are highly volatile and carry a high degree of risk. You could lose some or all of your initial investment. OracleBull provides data, market analysis, and AI predictions for informational and educational purposes only, and does not constitute financial or investment advice. We are not a registered broker or financial advisor. Never invest money you cannot afford to lose. Past performance is not indicative of future results.
+              <span className="font-bold text-foreground">Financial Risk Warning:</span> Cryptocurrency trading and investments are highly volatile and carry a high degree of risk. You could lose some or all of your initial investment. Oracle Bull provides data, market analysis, and AI predictions for informational and educational purposes only, and does not constitute financial or investment advice. We are not a registered broker or financial advisor. Never invest money you cannot afford to lose. Past performance is not indicative of future results.
             </div>
           </div>
         </div>

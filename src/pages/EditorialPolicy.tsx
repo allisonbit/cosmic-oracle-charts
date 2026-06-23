@@ -6,8 +6,8 @@ const EditorialPolicy = () => {
   return (
     <Layout>
       <SEO
-        title="Editorial Policy | OracleBull Market Intelligence"
-        description="OracleBull's editorial policy outlines how we create, review, and publish cryptocurrency market analysis, price predictions, and educational content. Our standards for accuracy, transparency, and independence."
+        title="Editorial Policy | Oracle Bull"
+        description="Oracle Bull's editorial policy outlines how we create, review, and publish cryptocurrency market analysis, price predictions, and educational content. Our standards for accuracy, transparency, and independence."
       />
 
       <div className="container mx-auto px-4 py-12 max-w-4xl">
@@ -17,7 +17,7 @@ const EditorialPolicy = () => {
           </div>
           <h1 className="text-3xl md:text-4xl font-display font-bold mb-4">Editorial Policy</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            OracleBull is committed to providing accurate, transparent, and independent market analysis. 
+            Oracle Bull is committed to providing accurate, transparent, and independent market analysis. 
             This policy outlines the standards and processes that govern all content published on our platform.
           </p>
           <p className="text-muted-foreground mt-2 text-sm">Last updated: June 2025</p>
@@ -31,7 +31,7 @@ const EditorialPolicy = () => {
               <h2 className="text-xl font-display font-bold m-0">Our Mission & Independence</h2>
             </div>
             <p className="text-muted-foreground mb-4">
-              OracleBull is an independent market intelligence platform. Our core mission is to provide 
+              Oracle Bull is an independent market intelligence platform. Our core mission is to provide 
               cryptocurrency market data, analysis, and educational resources to help people better understand 
               digital asset markets.
             </p>
@@ -47,7 +47,7 @@ const EditorialPolicy = () => {
               <BookOpen className="w-6 h-6 text-secondary" />
               <h2 className="text-xl font-display font-bold m-0">Content Standards</h2>
             </div>
-            <p className="text-muted-foreground mb-4">All content published on OracleBull must meet the following standards:</p>
+            <p className="text-muted-foreground mb-4">All content published on Oracle Bull must meet the following standards:</p>
             <ul className="list-disc list-inside text-muted-foreground space-y-3 ml-4">
               <li><strong>Accuracy:</strong> Market data is sourced from reputable public APIs (CoinGecko, on-chain data providers). We display data as-is and note when data may be delayed or estimated.</li>
               <li><strong>Transparency:</strong> We clearly distinguish between factual market data and analytical interpretations or AI-generated predictions.</li>
@@ -63,7 +63,7 @@ const EditorialPolicy = () => {
               <h2 className="text-xl font-display font-bold m-0">Advertiser Disclosure</h2>
             </div>
             <p className="text-muted-foreground mb-4">
-              OracleBull is supported by advertising and may receive compensation from:
+              Oracle Bull is supported by advertising and may receive compensation from:
             </p>
             <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-4">
               <li>Display advertising networks (including Bitmedia.io, Google AdSense)</li>
@@ -98,7 +98,7 @@ const EditorialPolicy = () => {
               <Scale className="w-6 h-6 text-primary" />
               <h2 className="text-xl font-display font-bold m-0">Prohibited Content</h2>
             </div>
-            <p className="text-muted-foreground mb-4">OracleBull will never publish:</p>
+            <p className="text-muted-foreground mb-4">Oracle Bull will never publish:</p>
             <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-4">
               <li>Content that constitutes personalized financial or investment advice</li>
               <li>False or misleading market data or claims</li>
@@ -115,8 +115,8 @@ const EditorialPolicy = () => {
               <h2 className="text-xl font-display font-bold m-0">User-Generated Content</h2>
             </div>
             <p className="text-muted-foreground">
-              OracleBull does not currently host user-generated content (comments, forums, or posts). 
-              All content on the platform is produced by the OracleBull team or generated algorithmically 
+              Oracle Bull does not currently host user-generated content (comments, forums, or posts). 
+              All content on the platform is produced by the Oracle Bull team or generated algorithmically 
               from verified public data sources. This policy may be updated if community features are 
               introduced in the future.
             </p>

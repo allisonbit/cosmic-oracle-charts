@@ -46,9 +46,9 @@ const ABOUT_HOWTO_STEPS = [
 const About = () => {
   return (
     <Layout>
-      <SEO 
-        title="About OracleBull | AI-Powered Market Intelligence Platform"
-        description="Learn about OracleBull, the leading market intelligence and analytics platform providing AI-driven crypto and forex market analysis, sentiment tracking, and educational insights."
+      <SEO
+        title="About Oracle Bull | Oracle Bull"
+        description="Learn about Oracle Bull, a free AI-powered crypto analytics platform providing AI-driven market analysis, sentiment tracking, whale monitoring and educational insights."
       />
       <FAQSchema items={ABOUT_FAQS} url="https://oraclebull.com/about" />
       <HowToSchema
@@ -62,10 +62,10 @@ const About = () => {
         {/* Hero Section */}
         <header className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6">
-            About <span className="text-gradient-cosmic">OracleBull</span>
+            About <span className="text-gradient-cosmic">Oracle Bull</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            OracleBull is a Market Intelligence & Analytics Platform that combines advanced AI algorithms 
+            Oracle Bull is a Market Intelligence & Analytics Platform that combines advanced AI algorithms
             with real-time data to deliver comprehensive market analysis and educational insights.
           </p>
         </header>
@@ -201,7 +201,7 @@ const About = () => {
         <section className="mb-16">
           <div className="holo-card p-8 md:p-12">
             <h2 className="text-2xl md:text-3xl font-display font-bold text-center mb-8">
-              Who Uses OracleBull?
+              Who Uses Oracle Bull?
             </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="flex items-start gap-3">
