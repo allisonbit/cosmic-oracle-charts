@@ -170,7 +170,7 @@ export default function Insights() {
   return (
     <Layout>
       <Helmet>
-        <title>Crypto Market Insights & Analysis | Oracle Bull</title>
+        <title>Crypto Market Analysis Today – AI-Powered Daily Insights | Oracle Bull</title>
         <meta name="description" content="Daily AI-powered cryptocurrency market analysis. Expert insights on Bitcoin, Ethereum, DeFi, altcoins, and more. Updated every day." />
         <link rel="canonical" href="https://oraclebull.com/insights" />
         <meta property="og:title" content="Crypto Market Insights | Oracle Bull" />
@@ -199,10 +199,10 @@ export default function Insights() {
                     )}
                   </div>
                   <h1 className="text-2xl sm:text-3xl lg:text-4xl font-display font-bold tracking-tight mb-2">
-                    Market Insights
+                    Crypto Market Analysis & Insights
                   </h1>
                   <p className="text-muted-foreground text-sm sm:text-base max-w-lg leading-relaxed">
-                    Expert analysis on crypto markets, generated daily with real-time data.
+                    Daily AI-powered analysis on crypto markets — Bitcoin, Ethereum, DeFi and altcoins — generated with real-time data.
                   </p>
                 </div>
                 <div className="flex items-center gap-4 text-xs sm:text-sm text-muted-foreground">

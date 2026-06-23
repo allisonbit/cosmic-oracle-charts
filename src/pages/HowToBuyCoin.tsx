@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import { coingeckoFetch } from "@/lib/coingecko";
 
 // ─── Metadata ────────────────────────────────────────────────────────────────
-const COIN_META: Record<string, {
+export const COIN_META: Record<string, {
   name: string; ticker: string; color: string;
   tagline: string; category: string; year: number; founder: string;
 }> = {
