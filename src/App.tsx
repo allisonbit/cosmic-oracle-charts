@@ -80,6 +80,7 @@ const MarketPage = lazy(() => import("./pages/MarketPage"));
 const Airdrops = lazy(() => import("./pages/Airdrops"));
 const AirdropDetail = lazy(() => import("./pages/AirdropDetail"));
 const ToolsHub = lazy(() => import("./pages/ToolsHub"));
+const Polymarket = lazy(() => import("./pages/Polymarket"));
 const ProfitCalculator = lazy(() => import("./pages/tools/ProfitCalculator"));
 const DCACalculator = lazy(() => import("./pages/tools/DCACalculator"));
 const ILCalculator = lazy(() => import("./pages/tools/ILCalculator"));
@@ -241,7 +242,7 @@ const App = () => (
                 <Route path="/airdrops/:id" element={B(<AirdropDetail />)} />
 
                 <Route path="/tools" element={B(<ToolsHub />)} />
-                <Route path="/polymarket" element={B(<ToolsHub />)} />
+                <Route path="/polymarket" element={B(<Polymarket />)} />
                 <Route path="/tools/profit-calculator" element={B(<ProfitCalculator />)} />
                 <Route path="/tools/dca-calculator" element={B(<DCACalculator />)} />
                 <Route path="/tools/impermanent-loss-calculator" element={B(<ILCalculator />)} />
