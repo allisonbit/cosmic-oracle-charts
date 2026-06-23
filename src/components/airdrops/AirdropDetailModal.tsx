@@ -112,7 +112,7 @@ export function AirdropDetailModal({ project, onClose }: { project: AirdropProje
           {/* Overview */}
           {guide?.overview && (
             <Section title="Project Overview" icon={<Star className="w-4 h-4" />}>
-              <div className="prose prose-invert prose-sm max-w-none text-muted-foreground leading-relaxed whitespace-pre-line">
+              <div className="prose prose-neutral dark:prose-invert prose-sm max-w-none text-muted-foreground leading-relaxed whitespace-pre-line">
                 {guide.overview}
               </div>
             </Section>

@@ -191,7 +191,7 @@ export default function DCACalculator() {
           </div>
 
           {/* SEO Write-up Section */}
-          <div className="mt-16 prose prose-invert max-w-none">
+          <div className="mt-16 prose prose-neutral dark:prose-invert max-w-none">
             <h2>Why Dollar Cost Averaging (DCA) is the Best Strategy</h2>
             <p>
               Dollar-cost averaging (DCA) is an investment strategy in which an investor divides up the total amount to be invested across periodic purchases of a target asset in an effort to reduce the impact of volatility on the overall purchase.

@@ -129,7 +129,7 @@ export default function ILCalculator() {
           </div>
 
           {/* SEO Write-up Section */}
-          <div className="mt-16 prose prose-invert max-w-none">
+          <div className="mt-16 prose prose-neutral dark:prose-invert max-w-none">
             <h2>What is Impermanent Loss (IL)?</h2>
             <p>
               Impermanent loss occurs when you provide liquidity to an automated market maker (AMM) like Uniswap, SushiSwap, or PancakeSwap, and the price of your deposited assets changes compared to when you deposited them.

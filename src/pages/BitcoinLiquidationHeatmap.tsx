@@ -101,7 +101,7 @@ export default function BitcoinLiquidationHeatmap() {
           <LiquidationHeatmap />
         </section>
 
-        <section className="prose prose-invert max-w-none mb-10">
+        <section className="prose prose-neutral dark:prose-invert max-w-none mb-10">
           <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
             <BarChart3 className="w-6 h-6 text-primary" /> How the Bitcoin Liquidation Heatmap Works
           </h2>

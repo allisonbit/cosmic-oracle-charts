@@ -421,7 +421,7 @@ export default function HowToBuyCoin() {
           </div>
 
           {/* SEO Prose */}
-          <article className="prose prose-invert max-w-none">
+          <article className="prose prose-neutral dark:prose-invert max-w-none">
             <h2>About {meta.name} ({meta.ticker})</h2>
             <p>
               {meta.name} was created in {meta.year} by {meta.founder}. It is classified as a <strong>{meta.category}</strong> asset and is currently ranked{" "}

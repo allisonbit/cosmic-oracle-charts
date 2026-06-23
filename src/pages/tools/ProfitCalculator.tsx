@@ -12,8 +12,7 @@ export default function ProfitCalculator() {
   const [sellPrice, setSellPrice] = useState<number>(100000);
   const [feePercentage, setFeePercentage] = useState<number>(0.1);
 
-  // Math logic
-  const coinsBought = investment / buyPrice;
+  // Math logic — fees are charged on both the entry (buy) and the exit (sell).
   const buyFeeAmount = investment * (feePercentage / 100);
   const netInvestment = investment - buyFeeAmount;
   const actualCoinsBought = netInvestment / buyPrice;
@@ -156,7 +155,7 @@ export default function ProfitCalculator() {
           </div>
 
           {/* SEO Write-up Section */}
-          <div className="mt-16 prose prose-invert max-w-none">
+          <div className="mt-16 prose prose-neutral dark:prose-invert max-w-none">
             <h2>How to Use the Crypto Profit Calculator</h2>
             <p>
               Calculating your exact crypto profit is essential for proper risk management. While it might seem as simple as subtracting your buy price from your sell price, hidden exchange fees can eat significantly into your actual ROI.
