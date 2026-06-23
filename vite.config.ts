@@ -327,26 +327,39 @@ const allRoutes = [
   ...airdropRoutes,
 ];
 
+const DEFAULT_SUPABASE_URL = "https://qynszkirmcrldqmiplwh.supabase.co";
+const DEFAULT_SUPABASE_PUBLISHABLE_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJIUzI1NiIsInJlZiI6InF5bnN6a2lybWNybGRxbWlwbHdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzU2NTQsImV4cCI6MjA4MDc1MTY1NH0.8Jr8lpfAifN-ozIQmA9_wU5YqYjZVlq3Q35KccSI-g0";
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode, command }) => {
   // Fail the production build loudly instead of silently shipping the
   // "missing-key" Supabase fallback (which 401s every request on the live site).
   // The anon/publishable key is safe to expose in the client bundle.
   const env = loadEnv(mode, process.cwd(), "");
+  const resolvedSupabaseUrl =
+    env.VITE_SUPABASE_URL ||
+    process.env.VITE_SUPABASE_URL ||
+    DEFAULT_SUPABASE_URL;
+  const resolvedSupabaseKey =
+    env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+    env.VITE_SUPABASE_ANON_KEY ||
+    process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.VITE_SUPABASE_ANON_KEY ||
+    DEFAULT_SUPABASE_PUBLISHABLE_KEY;
+
+  process.env.VITE_SUPABASE_URL = resolvedSupabaseUrl;
+  process.env.VITE_SUPABASE_PUBLISHABLE_KEY = resolvedSupabaseKey;
+  process.env.VITE_SUPABASE_ANON_KEY = resolvedSupabaseKey;
+
   if (command === "build" && mode !== "development") {
-    const supaKey =
-      env.VITE_SUPABASE_PUBLISHABLE_KEY ||
-      env.VITE_SUPABASE_ANON_KEY ||
-      process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
-      process.env.VITE_SUPABASE_ANON_KEY;
-    const supaUrl = env.VITE_SUPABASE_URL || process.env.VITE_SUPABASE_URL;
-    if (!supaKey || supaKey === "missing-key") {
+    if (!resolvedSupabaseKey || resolvedSupabaseKey === "missing-key") {
       console.warn(
         "[build] Warning: VITE_SUPABASE_PUBLISHABLE_KEY (or VITE_SUPABASE_ANON_KEY) is not set. " +
           "The bundle will ship a placeholder and Supabase requests will 401 at runtime.",
       );
     }
-    if (!supaUrl) {
+    if (!resolvedSupabaseUrl) {
       console.warn("[build] Warning: VITE_SUPABASE_URL is not set.");
     }
   }
@@ -436,6 +449,11 @@ export default defineConfig(({ mode, command }) => {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+  define: {
+    "import.meta.env.VITE_SUPABASE_URL": JSON.stringify(resolvedSupabaseUrl),
+    "import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY": JSON.stringify(resolvedSupabaseKey),
+    "import.meta.env.VITE_SUPABASE_ANON_KEY": JSON.stringify(resolvedSupabaseKey),
   },
   build: {
     minify: true,

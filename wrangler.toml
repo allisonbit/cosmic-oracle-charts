@@ -14,7 +14,11 @@
 # - not_found_handling "single-page-application": paths with no prerendered file
 #   (e.g. /my/*, /trade) fall back to index.html so React Router handles them.
 name = "cosmic-oracle-charts"
-compatibility_date = "2025-06-01"
+compatibility_date = "2026-06-21"
+
+# Cloudflare Pages Git builds need an explicit output directory. Without this,
+# the build can finish Vite successfully but never publish the generated site.
+pages_build_output_dir = "./dist"
 
 [assets]
 directory = "./dist"
