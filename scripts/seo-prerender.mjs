@@ -771,7 +771,7 @@ const factorySub = {
       { q: 'What is a crypto narrative?', a: 'A crypto narrative is the dominant theme attracting capital at a given time — for example AI tokens, real-world assets (RWA), memecoins or Layer-2s. Narratives drive sector-wide rallies as money rotates in.' },
       { q: 'How do I spot narrative rotation?', a: 'Watch which sectors are outperforming on rising volume while others fade. This narrative tracker ranks active themes by momentum so you can see where capital is rotating before it is obvious.' },
     ]],
-  '/factory/news': ['Crypto News Today', 'Breaking crypto news from 50+ sources with real-time sentiment scoring.',
+  '/factory/news': ['Crypto News Sentiment & Market Impact', 'Breaking crypto news from 50+ sources, each scored bullish, bearish or neutral for its likely market impact.',
     'Every headline is scored bullish, bearish or neutral and tagged to the coins it affects, so you get signal — not just a wall of stories.',
     [
       { q: 'How often does the crypto news update?', a: 'The feed aggregates breaking stories from 50+ trusted crypto publications and refreshes continuously, each scored for bullish, bearish or neutral market impact.' },

@@ -29,8 +29,8 @@ function FactoryNewsSchema() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    name: "Crypto News Feed - AI-Analyzed Market News | Oracle Bull",
-    description: "Real-time cryptocurrency news with AI-powered sentiment analysis. Get breaking crypto news, market updates, and understand their impact on prices.",
+    name: "Crypto News Sentiment Feed - AI Market-Impact Analysis | Oracle Bull",
+    description: "Cryptocurrency news scored Bullish, Bearish or Neutral by AI with its likely market impact. A sentiment-first feed inside the Crypto Factory.",
     url: "https://oraclebull.com/factory/news",
     breadcrumb: {
       "@type": "BreadcrumbList",
@@ -44,12 +44,12 @@ function FactoryNewsSchema() {
 
   return (
     <Helmet>
-      <title>Crypto News Today | AI-Analyzed Market News & Sentiment | Oracle Bull</title>
-      <meta name="description" content="Real-time cryptocurrency news feed with AI-powered sentiment analysis. Breaking crypto news, market updates, regulatory developments, and their impact on token prices analyzed automatically." />
-      <meta name="keywords" content="crypto news, cryptocurrency news, bitcoin news, ethereum news, market sentiment, crypto updates, blockchain news, defi news" />
+      <title>Crypto News Sentiment Feed — AI Market-Impact Analysis | Oracle Bull</title>
+      <meta name="description" content="Every crypto headline scored Bullish, Bearish or Neutral by AI, with its likely market impact. A sentiment-first news feed inside the Crypto Factory — see how news moves prices before you trade." />
+      <meta name="keywords" content="crypto news sentiment, crypto market impact analysis, bullish bearish crypto news, ai crypto news analysis, crypto news sentiment score" />
       <link rel="canonical" href="https://oraclebull.com/factory/news" />
-      <meta property="og:title" content="Crypto News Today | AI-Analyzed Sentiment | Oracle Bull" />
-      <meta property="og:description" content="Real-time cryptocurrency news with AI-powered sentiment analysis. Understand market impact before trading." />
+      <meta property="og:title" content="Crypto News Sentiment Feed — AI Market-Impact Analysis | Oracle Bull" />
+      <meta property="og:description" content="Crypto headlines scored Bullish / Bearish / Neutral by AI with likely market impact. See how the news moves prices." />
       <meta property="og:url" content="https://oraclebull.com/factory/news" />
       <script type="application/ld+json">{JSON.stringify(schema)}</script>
     </Helmet>
