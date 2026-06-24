@@ -1,31 +1,21 @@
 import { cn } from "@/lib/utils";
 import { memo } from "react";
-import { LazyAd } from "./LazyAd";
+import { AdSlot } from "./AdSlot";
 
 interface BannerAdProps {
   className?: string;
+  /** Ignored — retained for backward compat with existing call sites. */
   slot?: string;
 }
 
 /**
- * Responsive banner ad optimized for viewability
- * - Desktop: 728x90 leaderboard
- * - Mobile: 320x50 mobile banner
- * - Fixed dimensions prevent CLS
+ * Responsive banner ad. Routes through the AdSlot coordinator so it serves live
+ * Adsterra inventory (the first banner-style slot on a page becomes the page's
+ * single HPF 728x90/320x50 unit; later slots fall back to native/smartlink).
+ * Previously rendered dead AdSense.
  */
-export const BannerAd = memo(function BannerAd({ className, slot }: BannerAdProps) {
-  return (
-    <div className={cn("w-full flex justify-center py-4", className)}>
-      {/* Desktop banner - centered */}
-      <div className="hidden md:flex justify-center">
-        <LazyAd size="banner" slot={slot} />
-      </div>
-      {/* Mobile banner - centered */}
-      <div className="flex md:hidden justify-center">
-        <LazyAd size="mobile-banner" slot={slot} />
-      </div>
-    </div>
-  );
+export const BannerAd = memo(function BannerAd({ className }: BannerAdProps) {
+  return <AdSlot variant="banner" className={cn("py-4", className)} />;
 });
 
 export default BannerAd;

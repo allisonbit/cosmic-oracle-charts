@@ -9,7 +9,7 @@ import { Loader2 } from "lucide-react";
 import { SEO, StructuredData } from "@/components/MainSEO";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
-import { AdSenseManager, StickyFooterAd } from "@/components/ads";
+import { AdsterraStickyFooter } from "@/components/ads";
 import { usePageTracking } from "@/hooks/usePageTracking";
 import { useSearchEnginePing } from "@/hooks/useSearchEnginePing";
 import { AppErrorBoundary } from "@/components/system/AppErrorBoundary";
@@ -200,7 +200,6 @@ const App = () => (
             <ScrollToTop />
             <ChunkLoadRecovery />
             <PageTracker />
-            <AdSenseManager />
             <SEO />
             <StructuredData />
             <Suspense fallback={<PageLoader />}>
@@ -289,8 +288,9 @@ const App = () => (
             <Suspense fallback={null}>
               <LiveVisitorCounter />
             </Suspense>
-            {/* Global sticky footer ad — appears on all pages, dismissible, z-40 so mobile nav (z-50) stays on top */}
-            <StickyFooterAd showDelay={4000} />
+            {/* Global sticky footer ad — appears on all pages, dismissible, z-40 so mobile nav (z-50) stays on top.
+                AdsterraStickyFooter self-skips if another HPF banner already claimed the page (via window.__hpfMounted). */}
+            <AdsterraStickyFooter />
           </BrowserRouter>
         </AppErrorBoundary>
       </TooltipProvider>
