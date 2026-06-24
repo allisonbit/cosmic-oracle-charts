@@ -3,4 +3,10 @@
 # Expose the machine-readable accuracy feed under a friendly URL so partners
 # can hit https://oraclebull.com/accuracy.json directly instead of the raw
 # edge-function URL.
-/accuracy.json    https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/accuracy-feed   200
+#
+# NOTE: must be 302 (redirect), NOT 200 (proxy). Cloudflare Pages rejects a
+# 200 proxy to an EXTERNAL absolute URL ("Proxy (200) redirects can only point
+# to relative paths"), which broke the deploy. 302 bounces the client to the
+# Supabase function instead of proxying it, and works on both Cloudflare and
+# Netlify.
+/accuracy.json    https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/accuracy-feed   302
