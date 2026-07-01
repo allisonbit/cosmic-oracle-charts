@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" prefix="og: https://ogp.me/ns#">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
@@ -9,140 +9,27 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="format-detection" content="telephone=no" />
-    
-    <!-- Preconnect for critical resources (before any scripts) -->
+
+    <!-- Preconnect for critical resources -->
     <link rel="preconnect" href="https://qynszkirmcrldqmiplwh.supabase.co" crossorigin />
     <link rel="dns-prefetch" href="https://qynszkirmcrldqmiplwh.supabase.co" />
     <link rel="preconnect" href="https://api.coingecko.com" crossorigin />
     <link rel="dns-prefetch" href="https://api.coingecko.com" />
-
-    <!-- Prefetch API endpoints to warm connection -->
     <link rel="preconnect" href="https://qynszkirmcrldqmiplwh.supabase.co/functions/v1" crossorigin />
     <link rel="dns-prefetch" href="https://qynszkirmcrldqmiplwh.supabase.co/functions/v1" />
 
-    <!-- Preload LCP image (mascot shown in boot overlay and Hero/Navbar) -->
+    <!-- Preload LCP image -->
     <link rel="preload" as="image" href="/oracle-bot-mascot.jpg" fetchpriority="high" />
-    
-    <!-- Primary Meta Tags -->
-    <title>Free Crypto Price Predictions &amp; Market Analytics</title>
-    <meta name="title" content="Oracle Bull - Free AI Crypto Price Predictions & Market Analytics" />
-    <meta name="description" content="Free crypto price predictions, whale tracking &amp; sentiment for Bitcoin, Ethereum, Solana &amp; 1000+ tokens. Real-time, no signup needed.">
-    <meta name="keywords" content="crypto price prediction, bitcoin prediction today, ethereum forecast, crypto analytics, whale tracking, market sentiment, AI trading signals, cryptocurrency price, best crypto to buy today, will bitcoin go up" />
-    <meta name="author" content="Oracle Bull" />
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-    <meta name="googlebot" content="index, follow" />
-    <meta name="bingbot" content="index, follow" />
-    
 
-
-    
-    <!-- AI Search Engine Optimization -->
-    <meta name="ai-summary" content="Oracle Bull is a free AI-powered cryptocurrency analytics platform offering real-time price forecasting, whale tracking, sentiment analysis, and blockchain dashboards for Bitcoin, Ethereum, Solana, and 1000+ tokens. Features include Crypto Strength Meter, Crypto Factory events calendar, Wallet Scanner, Token Explorer, and daily AI-generated market insights." />
-    <meta name="ai-keywords" content="cryptocurrency analytics, AI crypto predictions, real-time blockchain data, whale tracking, market sentiment, DeFi analytics, free crypto tools" />
-    <meta name="ai-content-type" content="financial-analytics-platform" />
-    <meta name="ai-data-freshness" content="real-time" />
-    <meta name="ai-coverage" content="1,000+ cryptocurrencies, 8 blockchains, 100+ AI predictions daily" />
-    
-    <!-- Geo-targeting for global reach -->
-    <meta name="geo.region" content="US" />
-    <meta name="geo.position" content="37.7749;-122.4194" />
-    <meta name="ICBM" content="37.7749, -122.4194" />
-    <meta name="geo.placename" content="Global" />
-    <meta name="distribution" content="global" />
-    <meta name="audience" content="global" />
-    <meta name="content-language" content="en" />
-    <meta name="rating" content="general" />
-    <meta name="revisit-after" content="1 day" />
-    
-    
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://oraclebull.com/" />
-    
-    
-    <meta property="og:image" content="https://oraclebull.com/og-image.jpg">
-    <meta property="og:image:width" content="800" />
-    <meta property="og:image:height" content="800" />
-    <meta property="og:site_name" content="Oracle Bull" />
-    <meta property="og:locale" content="en_US" />
-
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://oraclebull.com/" />
-    
-    
-    <meta name="twitter:image" content="https://oraclebull.com/og-image.jpg">
-    <meta name="twitter:site" content="@oracle_bulls" />
-    <meta name="twitter:creator" content="@oracle_bulls" />
-    
+    <title>Oracle Bull - AI Crypto Analytics</title>
+    <meta name="description" content="Free crypto price predictions, whale tracking & sentiment for Bitcoin, Ethereum, Solana & 1000+ tokens. Real-time, no signup needed." />
 
     <!-- Favicons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="https://oraclebull.com/oracle-bot-mascot.jpg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/oracle-bot-mascot.jpg" />
     <link rel="icon" type="image/jpeg" href="/oracle-bot-mascot.jpg" />
-    
-    <!-- Sitemap references for crawlers -->
-    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
-    <link rel="sitemap" type="application/xml" title="Sitemap Index" href="https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/sitemap?type=index" />
-    
-    <!-- Hreflang for global geo-targeting -->
-    <link rel="alternate" hreflang="en" href="https://oraclebull.com/" />
-    <link rel="alternate" hreflang="x-default" href="https://oraclebull.com/" />
-    <link rel="alternate" hreflang="en-US" href="https://oraclebull.com/" />
-    <link rel="alternate" hreflang="en-GB" href="https://oraclebull.com/" />
-    <link rel="alternate" hreflang="en-AU" href="https://oraclebull.com/" />
-    <link rel="alternate" hreflang="en-IN" href="https://oraclebull.com/" />
     <link rel="manifest" href="/manifest.json" />
-    
-    <!-- Core structured data embedded in HTML (no JS required) -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "@id": "https://oraclebull.com/#organization",
-      "name": "Oracle Bull",
-      "url": "https://oraclebull.com",
-      "logo": "https://oraclebull.com/oracle-bot-mascot.jpg",
-      "description": "Free AI-powered cryptocurrency analytics platform with real-time price predictions, market sentiment analysis, whale tracking, and blockchain dashboards for Bitcoin, Ethereum, Solana and 1,000+ tokens.",
-      "sameAs": ["https://x.com/oracle_bulls", "https://t.me/oracle_bulls"],
-      "contactPoint": {"@type": "ContactPoint", "contactType": "customer service", "url": "https://oraclebull.com/contact"}
-    }
-    </script>
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "@id": "https://oraclebull.com/#website",
-      "name": "Oracle Bull",
-      "url": "https://oraclebull.com",
-      "description": "Free AI-powered cryptocurrency price predictions and market analytics for Bitcoin, Ethereum, Solana and 1,000+ tokens.",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://oraclebull.com/explorer?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      },
-      "publisher": {"@id": "https://oraclebull.com/#organization"}
-    }
-    </script>
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SiteNavigationElement",
-      "name": ["Dashboard", "AI Predictions", "Market Sentiment", "Token Explorer", "Strength Meter", "Crypto Factory", "Learn", "Insights"],
-      "url": [
-        "https://oraclebull.com/dashboard",
-        "https://oraclebull.com/predictions",
-        "https://oraclebull.com/sentiment",
-        "https://oraclebull.com/explorer",
-        "https://oraclebull.com/strength-meter",
-        "https://oraclebull.com/factory",
-        "https://oraclebull.com/learn",
-        "https://oraclebull.com/insights"
-      ]
-    }
-    </script>
-    
-    <!-- Critical CSS for faster FCP (light canvas before app CSS loads) -->
+
+    <!-- Critical CSS for faster FCP -->
     <style>
       :root{--background:214 38% 98.5%;--foreground:222 47% 12%}
       *,::before,::after{box-sizing:border-box;border-width:0;border-style:solid}
@@ -150,104 +37,17 @@
       body{margin:0;line-height:inherit;background-color:hsl(var(--background));color:hsl(var(--foreground))}
       #root{min-height:100vh;display:flex;flex-direction:column}
     </style>
-  
-  <meta property="og:title" content="Free Crypto Price Predictions &amp; Market Analytics">
-  <meta name="twitter:title" content="Free Crypto Price Predictions &amp; Market Analytics">
-  <meta property="og:description" content="Free crypto price predictions, whale tracking &amp; sentiment for Bitcoin, Ethereum, Solana &amp; 1000+ tokens. Real-time, no signup needed.">
-  <meta name="twitter:description" content="Free crypto price predictions, whale tracking &amp; sentiment for Bitcoin, Ethereum, Solana &amp; 1000+ tokens. Real-time, no signup needed.">
-</head>
+  </head>
 
   <body class="touch-manipulation">
-    <!-- Noscript fallback for SEO crawlers and accessibility -->
     <noscript>
       <div style="text-align: center; padding: 40px; font-family: system-ui, sans-serif; background: #06080F; color: #E8EDF5; min-height: 100vh;">
-        <header>
-          <h1 style="font-size: 2rem; margin-bottom: 1rem;">Oracle Bull - AI-Powered Crypto Analytics Platform</h1>
-          <p style="max-width: 700px; margin: 0 auto 2rem; line-height: 1.6;">
-            Free AI-powered cryptocurrency forecasting platform with real-time price charts, market predictions, whale tracking, and sentiment analysis for Bitcoin, Ethereum, Solana, and 1000+ tokens.
-          </p>
-        </header>
-        <nav style="margin-bottom: 2rem; line-height: 2.2;">
-          <a href="/" style="color: #2563eb; margin: 0 10px;">Home</a>
-          <a href="/dashboard" style="color: #2563eb; margin: 0 10px;">Dashboard</a>
-          <a href="/predictions" style="color: #2563eb; margin: 0 10px;">AI Predictions</a>
-          <a href="/sentiment" style="color: #2563eb; margin: 0 10px;">Sentiment</a>
-          <a href="/explorer" style="color: #2563eb; margin: 0 10px;">Token Explorer</a>
-          <a href="/insights" style="color: #2563eb; margin: 0 10px;">Insights</a>
-          <a href="/learn" style="color: #2563eb; margin: 0 10px;">Learn</a>
-          <a href="/strength-meter" style="color: #2563eb; margin: 0 10px;">Strength Meter</a>
-          <a href="/factory" style="color: #2563eb; margin: 0 10px;">Crypto Factory</a>
-          <a href="/portfolio" style="color: #2563eb; margin: 0 10px;">Wallet Scanner</a>
-          <a href="/about" style="color: #2563eb; margin: 0 10px;">About</a>
-          <a href="/contact" style="color: #2563eb; margin: 0 10px;">Contact</a>
-          <br/>
-          <a href="/factory/events" style="color: #2563eb; margin: 0 10px;">Market Events</a>
-          <a href="/factory/onchain" style="color: #2563eb; margin: 0 10px;">On-Chain</a>
-          <a href="/factory/narratives" style="color: #2563eb; margin: 0 10px;">Narratives</a>
-          <a href="/factory/news" style="color: #2563eb; margin: 0 10px;">Crypto News</a>
-          <br/>
-          <a href="/chain/ethereum" style="color: #2563eb; margin: 0 10px;">Ethereum</a>
-          <a href="/chain/bitcoin" style="color: #2563eb; margin: 0 10px;">Bitcoin</a>
-          <a href="/chain/solana" style="color: #2563eb; margin: 0 10px;">Solana</a>
-          <a href="/chain/cardano" style="color: #2563eb; margin: 0 10px;">Cardano</a>
-          <a href="/chain/polygon" style="color: #2563eb; margin: 0 10px;">Polygon</a>
-          <a href="/chain/avalanche" style="color: #2563eb; margin: 0 10px;">Avalanche</a>
-          <br/>
-          <a href="/price-prediction/bitcoin" style="color: #2563eb; margin: 0 10px;">Bitcoin Prediction</a>
-          <a href="/price-prediction/ethereum" style="color: #2563eb; margin: 0 10px;">Ethereum Prediction</a>
-          <a href="/price-prediction/solana" style="color: #2563eb; margin: 0 10px;">Solana Prediction</a>
-          <a href="/price-prediction/ripple" style="color: #2563eb; margin: 0 10px;">XRP Prediction</a>
-          <a href="/price-prediction/cardano" style="color: #2563eb; margin: 0 10px;">Cardano Prediction</a>
-          <br/>
-          <a href="/market/best-crypto-to-buy-today" style="color: #2563eb; margin: 0 10px;">Best Crypto to Buy Today</a>
-          <a href="/market/top-crypto-gainers-today" style="color: #2563eb; margin: 0 10px;">Top Gainers Today</a>
-          <a href="/market/next-crypto-to-explode" style="color: #2563eb; margin: 0 10px;">Next Crypto to Explode</a>
-          <a href="/market/crypto-market-prediction-today" style="color: #2563eb; margin: 0 10px;">Market Prediction Today</a>
-          <br/>
-          <a href="/privacy-policy" style="color: #2563eb; margin: 0 10px;">Privacy Policy</a>
-          <a href="/terms" style="color: #2563eb; margin: 0 10px;">Terms</a>
-          <a href="/risk-disclaimer" style="color: #2563eb; margin: 0 10px;">Risk Disclaimer</a>
-          <a href="/sitemap" style="color: #2563eb; margin: 0 10px;">Sitemap</a>
-          <a href="/html-sitemap.html" style="color: #2563eb; margin: 0 10px;">HTML Sitemap</a>
-        </nav>
-        <main style="max-width: 800px; margin: 0 auto; text-align: left;">
-          <section style="margin-bottom: 2rem;">
-            <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Real-Time Crypto Dashboard</h2>
-            <p style="color: #cbd5e1; line-height: 1.6;">Track live cryptocurrency prices, Fear &amp; Greed Index, market momentum, volume leaders, and AI-powered insights. Our dashboard provides institutional-grade market intelligence updated continuously 24/7.</p>
-          </section>
-          <section style="margin-bottom: 2rem;">
-            <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem;">AI Price Predictions</h2>
-            <p style="color: #cbd5e1; line-height: 1.6;">Get daily, weekly, and monthly price predictions for Bitcoin, Ethereum, Solana, and 1000+ cryptocurrencies. Each prediction includes entry zones, stop-loss levels, and take-profit targets powered by machine learning analysis.</p>
-          </section>
-          <section style="margin-bottom: 2rem;">
-            <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Market Sentiment Analysis</h2>
-            <p style="color: #cbd5e1; line-height: 1.6;">Monitor social sentiment, whale activity, trending topics, and live market signals. Our sentiment scanner tracks Twitter, Reddit, Telegram, and on-chain data to help you understand market psychology.</p>
-          </section>
-          <section style="margin-bottom: 2rem;">
-            <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Multi-Chain Analytics</h2>
-            <p style="color: #cbd5e1; line-height: 1.6;">Deep dive into Ethereum, Solana, Base, Arbitrum, Polygon, BNB Chain, Optimism and Avalanche. Track DeFi TVL, network health, gas fees, and ecosystem token discovery with real-time on-chain data.</p>
-          </section>
-          <section style="margin-bottom: 2rem;">
-            <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Crypto Strength Meter</h2>
-            <p style="color: #cbd5e1; line-height: 1.6;">Compare cryptocurrency strength across momentum, volume, and sentiment dimensions. Identify the strongest and weakest assets in the market with our proprietary scoring algorithm.</p>
-          </section>
-          <section style="margin-bottom: 2rem;">
-            <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Educational Resources</h2>
-            <p style="color: #cbd5e1; line-height: 1.6;">Learn about cryptocurrency investing, blockchain technology, DeFi strategies, and trading fundamentals with our comprehensive library of educational articles and market guides.</p>
-          </section>
-        </main>
-        <footer style="font-size: 0.875rem; color: #cbd5e1;">
-          <p>Please enable JavaScript to use the full interactive experience.</p>
-          <p style="margin-top: 1rem;">&copy; 2026 Oracle Bull. AI-powered cryptocurrency analytics. Not financial advice.</p>
-        </footer>
+        <h1 style="font-size: 2rem; margin-bottom: 1rem;">Oracle Bull - AI Crypto Analytics</h1>
+        <p>Please enable JavaScript to use Oracle Bull.</p>
       </div>
     </noscript>
 
-    <!-- Branded boot overlay: hides the static prerendered SEO HTML behind a
-         clean spinner until React mounts, so users never see a flash of the
-         plain pre-rendered page before the real app. The SEO HTML stays in the
-         DOM (inside #root) for crawlers; this overlay only covers it visually
-         for the brief pre-mount instant, then fades out. -->
+    <!-- Boot overlay -->
     <style>
       #app-loading-overlay{position:fixed;inset:0;z-index:2147483600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:#F5F8FC;transition:opacity 300ms ease-out;opacity:1}
       #app-loading-overlay.ob-hide{opacity:0;pointer-events:none}
@@ -271,13 +71,11 @@
       }
       window.__oracleBoot=window.__oracleBoot||{};
       window.__oracleBoot.hideOverlay=removeOverlay;
-      // Observe data-app-mounted flip and remove overlay on next frame.
       var html=document.documentElement;
       var mo=new MutationObserver(function(){
         if(html.dataset.appMounted==='1'){ mo.disconnect(); requestAnimationFrame(removeOverlay); }
       });
       mo.observe(html,{attributes:true,attributeFilter:['data-app-mounted']});
-      // Safety net: never let the overlay linger.
       setTimeout(function(){ if(html.dataset.appMounted!=='1') return; removeOverlay(); },1500);
       setTimeout(function(){ removeOverlay(); },10000);
     })();</script>
@@ -295,15 +93,10 @@
     <script>
       (function () {
         var root = document.getElementById('root');
-        function setHtml(html) {
-          if (!root) return;
-          root.innerHTML = html;
-        }
+        function setHtml(html) { if (!root) return; root.innerHTML = html; }
 
         window.__oracleBoot = {
-          markMounted: function () {
-            document.documentElement.dataset.appMounted = '1';
-          },
+          markMounted: function () { document.documentElement.dataset.appMounted = '1'; },
           showError: function (reason) {
             document.documentElement.dataset.appMounted = '0';
             try { var _ov = document.getElementById('app-loading-overlay'); if (_ov) _ov.style.display = 'none'; } catch (e) {}
@@ -311,65 +104,39 @@
               '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center;background:#ffffff;color:#1e293b;">' +
                 '<div style="max-width:560px;">' +
                   '<div style="font-size:18px;font-weight:700;margin-bottom:8px;">Site failed to load</div>' +
-                  '<div style="font-size:13px;opacity:.75;line-height:1.6;">' +
-                    'Your browser could not load the app scripts. Please do a hard refresh (Ctrl/⌘+Shift+R) or try an incognito window.' +
-                  '</div>' +
+                  '<div style="font-size:13px;opacity:.75;line-height:1.6;">Please do a hard refresh (Ctrl/⌘+Shift+R) or try an incognito window.</div>' +
                   (reason ? '<div style="margin-top:10px;font-size:12px;opacity:.55;">' + String(reason).slice(0, 140) + '</div>' : '') +
-                  '<div style="margin-top:16px;">' +
-                    '<button onclick="location.reload()" style="padding:10px 14px;border-radius:10px;border:1px solid rgba(0,0,0,.12);background:rgba(0,0,0,.04);color:#1e293b;cursor:pointer;">Reload</button>' +
-                  '</div>' +
+                  '<div style="margin-top:16px;"><button onclick="location.reload()" style="padding:10px 14px;border-radius:10px;border:1px solid rgba(0,0,0,.12);background:rgba(0,0,0,.04);color:#1e293b;cursor:pointer;">Reload</button></div>' +
                 '</div>' +
               '</div>'
             );
           }
         };
 
-        // If React never mounts, try one safe auto-reload (common after deployments with stale caches).
         setTimeout(function () {
           if (document.documentElement.dataset.appMounted === '1') return;
-
           try {
             var k = '__oracle_boot_reload_v1';
-            if (sessionStorage.getItem(k) !== '1') {
-              sessionStorage.setItem(k, '1');
-              location.reload();
-              return;
-            }
-          } catch (e) {
-            // ignore
-          }
-
+            if (sessionStorage.getItem(k) !== '1') { sessionStorage.setItem(k, '1'); location.reload(); return; }
+          } catch (e) {}
           var el = document.getElementById('boot-fallback');
-          if (el) {
-            el.innerHTML =
-              '<div style="max-width:560px;">' +
-                '<div style="font-size:18px;font-weight:700;margin-bottom:8px;">Still loading…</div>' +
-                '<div style="font-size:13px;opacity:.75;line-height:1.6;">If you see a blank screen, your browser may have cached an old version. Please hard refresh (Ctrl/⌘+Shift+R) or try an incognito window.</div>' +
-              '</div>';
-          }
+          if (el) el.innerHTML = '<div style="max-width:560px;"><div style="font-size:18px;font-weight:700;margin-bottom:8px;">Still loading…</div><div style="font-size:13px;opacity:.75;line-height:1.6;">Please hard refresh (Ctrl/⌘+Shift+R) or try incognito.</div></div>';
         }, 8000);
 
-        // Only show "Site failed to load" for actual fatal script/chunk load errors.
         var fatalPattern = /script error|ChunkLoadError|Loading chunk|Failed to fetch dynamically imported module|Importing a module script failed|SyntaxError.*unexpected|Cannot access .* before initialization/i;
-
         window.addEventListener('error', function (e) {
           if (document.documentElement.dataset.appMounted === '1') return;
           var msg = (e && e.message) || String(e || '');
-          if (fatalPattern.test(msg) && window.__oracleBoot && window.__oracleBoot.showError) {
-            window.__oracleBoot.showError(msg);
-          }
+          if (fatalPattern.test(msg) && window.__oracleBoot && window.__oracleBoot.showError) window.__oracleBoot.showError(msg);
         });
         window.addEventListener('unhandledrejection', function (e) {
           if (document.documentElement.dataset.appMounted === '1') return;
           var reason = (e && e.reason && e.reason.message) ? e.reason.message : String(e && e.reason ? e.reason : '');
-          if (fatalPattern.test(reason) && window.__oracleBoot && window.__oracleBoot.showError) {
-            window.__oracleBoot.showError(reason);
-          }
+          if (fatalPattern.test(reason) && window.__oracleBoot && window.__oracleBoot.showError) window.__oracleBoot.showError(reason);
         });
       })();
     </script>
 
     <script type="module" src="/src/main.tsx" onerror="window.__oracleBoot && window.__oracleBoot.showError('entry script failed')"></script>
-    
   </body>
 </html>

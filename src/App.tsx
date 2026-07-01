@@ -6,12 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { lazy, Suspense, memo, useEffect } from "react";
 import React from 'react';
 import { Loader2 } from "lucide-react";
-import { SEO, StructuredData } from "@/components/MainSEO";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
-import { AdsterraStickyFooter } from "@/components/ads";
-import { usePageTracking } from "@/hooks/usePageTracking";
-import { useSearchEnginePing } from "@/hooks/useSearchEnginePing";
 import { AppErrorBoundary } from "@/components/system/AppErrorBoundary";
 import { RouteErrorBoundary } from "@/components/system/RouteErrorBoundary";
 
@@ -140,13 +136,6 @@ const queryClient = new QueryClient({
 const B = (el: JSX.Element) => <RouteErrorBoundary>{el}</RouteErrorBoundary>;
 
 
-// Page tracking wrapper component
-const PageTracker = memo(function PageTracker() {
-  usePageTracking();
-  useSearchEnginePing();
-  return null;
-});
-
 // Auto-recover from stale chunk cache after deployments (prevents blank screens)
 const ChunkLoadRecovery = memo(function ChunkLoadRecovery() {
   useEffect(() => {
@@ -199,9 +188,6 @@ const App = () => (
           <BrowserRouter>
             <ScrollToTop />
             <ChunkLoadRecovery />
-            <PageTracker />
-            <SEO />
-            <StructuredData />
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route path="/" element={B(<Index />)} />
@@ -288,9 +274,6 @@ const App = () => (
             <Suspense fallback={null}>
               <LiveVisitorCounter />
             </Suspense>
-            {/* Global sticky footer ad — appears on all pages, dismissible, z-40 so mobile nav (z-50) stays on top.
-                AdsterraStickyFooter self-skips if another HPF banner already claimed the page (via window.__hpfMounted). */}
-            <AdsterraStickyFooter />
           </BrowserRouter>
         </AppErrorBoundary>
       </TooltipProvider>

@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 vite build && node scripts/seo-prerender.mjs",
-    "build:prerender": "cross-env NODE_OPTIONS=--max-old-space-size=4096 vite build && node scripts/prerender.mjs",
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 vite build",
+    "build:prerender": "cross-env NODE_OPTIONS=--max-old-space-size=4096 vite build",
     "build:dev": "cross-env NODE_OPTIONS=--max-old-space-size=4096 vite build --mode development",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
