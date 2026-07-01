@@ -387,9 +387,6 @@ export function SEO({ title, description, keywords, image, type = "website", can
       ? "noindex, nofollow"
       : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
     setMeta("robots", robotsContent);
-    setMeta("googlebot", robotsContent);
-    setMeta("bingbot", isPrivatePage ? "noindex" : "index, follow");
-
     // Open Graph
     setMeta("og:title", finalTitle, true);
     setMeta("og:description", finalDescription, true);
@@ -407,16 +404,6 @@ export function SEO({ title, description, keywords, image, type = "website", can
     setMeta("twitter:description", finalDescription);
     setMeta("twitter:image", finalImage);
 
-    // AI Search Engine Optimization
-    setMeta("ai-summary", finalDescription);
-    setMeta("ai-keywords", finalKeywords);
-
-    // Additional SEO meta tags
-    setMeta("rating", "general");
-    setMeta("distribution", "global");
-    setMeta("revisit-after", "1 day");
-    setMeta("language", "en");
-
     // Canonical URL
     let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
     if (!canonical) {
@@ -425,50 +412,6 @@ export function SEO({ title, description, keywords, image, type = "website", can
       document.head.appendChild(canonical);
     }
     canonical.href = canonicalUrl;
-
-    // Hreflang tags for global geo-targeting
-    const hreflangMap: Record<string, string> = {
-      "en": canonicalUrl,
-      "x-default": canonicalUrl,
-      "en-US": canonicalUrl,
-      "en-GB": canonicalUrl,
-      "en-AU": canonicalUrl,
-      "en-CA": canonicalUrl,
-      "en-IN": canonicalUrl,
-      "en-SG": canonicalUrl,
-      "en-NG": canonicalUrl,
-      "en-ZA": canonicalUrl,
-      "en-AE": canonicalUrl,
-      "en-PH": canonicalUrl,
-    };
-
-    // Remove old hreflang tags
-    document.querySelectorAll('link[rel="alternate"][hreflang]').forEach(el => el.remove());
-
-    // Add fresh hreflang tags
-    Object.entries(hreflangMap).forEach(([lang, url]) => {
-      const link = document.createElement("link");
-      link.rel = "alternate";
-      link.hreflang = lang;
-      link.href = url;
-      document.head.appendChild(link);
-    });
-
-    // Geo-targeting meta tags for global reach
-    setMeta("geo.region", "US");
-    setMeta("geo.position", "37.7749;-122.4194");
-    setMeta("ICBM", "37.7749, -122.4194");
-    setMeta("geo.placename", "Global");
-    setMeta("content-language", "en");
-    setMeta("audience", "global");
-
-    // Enhanced AI search signals
-    setMeta("ai-content-type", "financial-analytics-platform");
-    setMeta("ai-data-freshness", "real-time");
-    setMeta("ai-coverage", "10000+ cryptocurrencies across 30+ blockchains");
-
-    // Speakable / voice search optimization
-    setMeta("speakable", finalDescription.slice(0, 150));
 
   }, [finalTitle, finalDescription, finalKeywords, finalImage, canonicalUrl, type, currentPath, noindex]);
 
