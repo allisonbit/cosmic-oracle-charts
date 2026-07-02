@@ -189,7 +189,7 @@ export default function PredictionHub() {
         </div>
 
         {/* === LIVE MONITORING BAR === */}
-        <div className="flex flex-wrap items-center gap-3 mb-6 px-4 py-2.5 rounded-lg border border-border bg-card text-xs">
+        <div className="flex flex-wrap items-center gap-3 mb-6 px-0 py-2.5 border-b border-border/30 text-xs">
           <div className="flex items-center gap-1.5">
             <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
             <span className="font-mono text-success font-medium">LIVE</span>
@@ -245,33 +245,33 @@ export default function PredictionHub() {
           </div>
 
           {/* Market Pulse Bar */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-            <div className="rounded-xl border border-border bg-card p-4">
-              <div className="text-xs text-muted-foreground mb-1">Bullish Signals</div>
-              <div className="text-2xl font-bold text-success">{marketStats.bullish}</div>
-              <div className="text-xs text-muted-foreground">of {displayCryptos.length} tokens</div>
+          <div className="flex flex-wrap gap-0 mb-6 border-y border-border/30 divide-x divide-border/30">
+            <div className="stat-inline flex-1 min-w-[120px] py-4 px-4">
+              <span className="section-label mb-1">Bullish Signals</span>
+              <span className="stat-value text-success">{marketStats.bullish}</span>
+              <span className="stat-label">of {displayCryptos.length} tokens</span>
             </div>
-            <div className="rounded-xl border border-border bg-card p-4">
-              <div className="text-xs text-muted-foreground mb-1">Bearish Signals</div>
-              <div className="text-2xl font-bold text-danger">{marketStats.bearish}</div>
-              <div className="text-xs text-muted-foreground">of {displayCryptos.length} tokens</div>
+            <div className="stat-inline flex-1 min-w-[120px] py-4 px-4">
+              <span className="section-label mb-1">Bearish Signals</span>
+              <span className="stat-value text-danger">{marketStats.bearish}</span>
+              <span className="stat-label">of {displayCryptos.length} tokens</span>
             </div>
-            <div className="rounded-xl border border-border bg-card p-4">
-              <div className="text-xs text-muted-foreground mb-1">Neutral</div>
-              <div className="text-2xl font-bold text-warning">{marketStats.neutral}</div>
-              <div className="text-xs text-muted-foreground">waiting for signal</div>
+            <div className="stat-inline flex-1 min-w-[120px] py-4 px-4">
+              <span className="section-label mb-1">Neutral</span>
+              <span className="stat-value text-warning">{marketStats.neutral}</span>
+              <span className="stat-label">waiting for signal</span>
             </div>
-            <div className="rounded-xl border border-border bg-card p-4">
-              <div className="text-xs text-muted-foreground mb-1">Avg Confidence</div>
-              <div className="text-2xl font-bold text-primary">{marketStats.avgConfidence}%</div>
-              <div className="text-xs text-muted-foreground">across all tokens</div>
+            <div className="stat-inline flex-1 min-w-[120px] py-4 px-4">
+              <span className="section-label mb-1">Avg Confidence</span>
+              <span className="stat-value text-primary">{marketStats.avgConfidence}%</span>
+              <span className="stat-label">across all tokens</span>
             </div>
           </div>
         </section>
 
         {/* === GLOBAL SEARCH === */}
         <section className="mb-8 relative" style={{ zIndex: 100 }}>
-          <div className="rounded-xl border-2 border-primary/30 bg-card p-5 shadow-sm">
+          <div className="border-b border-primary/30 pb-6">
             <div className="flex items-center gap-2 mb-3">
               <Globe className="w-4 h-4 text-primary" />
               <span className="text-sm font-semibold">Search Any Token Worldwide</span>
@@ -295,7 +295,7 @@ export default function PredictionHub() {
             <Link
               key={tf.id}
               to={`/price-prediction/bitcoin/${tf.id}`}
-              className="group rounded-xl border border-border bg-card p-5 hover:border-primary/50 hover:shadow-md transition-all"
+              className="group border-t border-border/40 pt-5 pb-4 hover:bg-muted/20 px-2 transition-colors"
             >
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -375,17 +375,17 @@ export default function PredictionHub() {
 
           {/* Token Table */}
           {isLoading ? (
-            <div className="space-y-2">
+            <div className="space-y-0">
               {Array.from({ length: 10 }).map((_, i) => (
-                <div key={i} className="h-14 rounded-lg bg-muted/30 animate-pulse" />
+                <div key={i} className="h-14 bg-muted/20 animate-pulse border-b border-border/20" />
               ))}
             </div>
           ) : (
-            <div className="rounded-xl border border-border overflow-hidden">
+            <div className="overflow-hidden border-t border-border/40">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm min-w-[900px]">
                   <thead>
-                    <tr className="bg-muted/40 border-b border-border">
+                    <tr className="border-b border-border">
                       <th className="text-left p-3 text-xs font-medium text-muted-foreground w-10">#</th>
                       <th className="text-left p-3 text-xs font-medium text-muted-foreground w-[180px] min-w-[140px]">Token</th>
                       <th className="text-right p-3 text-xs font-medium text-muted-foreground w-[100px]">Price</th>
@@ -494,8 +494,8 @@ export default function PredictionHub() {
         <PredictionsDataMeaning />
         <PredictionHubSEOContent />
 
-        <section className="mt-8 rounded-xl border border-border bg-card p-8">
-          <h2 className="text-2xl font-bold mb-4 text-center">About AI Crypto Predictions</h2>
+        <section className="mt-8 border-t border-border/30 pt-8">
+          <h2 className="text-2xl font-bold mb-4">About AI Crypto Predictions</h2>
           <div className="prose max-w-none text-muted-foreground text-sm">
             <p className="mb-3">
               Oracle Bull provides AI-powered cryptocurrency predictions for <strong>any token in the world</strong>. 

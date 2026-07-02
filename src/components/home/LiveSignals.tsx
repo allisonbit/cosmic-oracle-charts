@@ -17,11 +17,9 @@ const TARGET_COINS = [
   { id: "cardano",       symbol: "ADA", name: "Cardano",   color: "#0033ad" },
 ];
 
-// Animated mini sparkline — generates visually accurate trend line
 function MiniSparkline({ change24h, color }: { change24h: number; color: string }) {
   const isUp = change24h >= 0;
   const points = useMemo(() => {
-    // Seeded by trend+magnitude so the sparkline is stable, not re-randomized each render
     const rng = seededRng(`${color}|${isUp}|${change24h.toFixed(2)}`);
     let y = isUp ? 32 : 8;
     return Array.from({ length: 20 }, (_, i) => {
@@ -46,7 +44,6 @@ function MiniSparkline({ change24h, color }: { change24h: number; color: string 
   );
 }
 
-// Format price accurately
 function fmtPrice(p: number) {
   if (!p || p === 0) return "—";
   if (p >= 10000) return `$${p.toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
@@ -55,24 +52,17 @@ function fmtPrice(p: number) {
   return `$${p.toPrecision(4)}`;
 }
 
-// Adapter: build the card's `sig` shape from the SHARED canonical setup so the
-// home "high-conviction" card shows the EXACT same entry/SL/TP/bias/confidence
-// as the prediction page's TradeSetupCard (single source of truth).
 function toSignal(canonical: ReturnType<typeof useCanonicalSetup>) {
   const isBullish =
     canonical.bias === "bullish" ||
     (canonical.bias === "neutral" && canonical.probabilityBullish >= 50);
-
-  // Entry = top of the setup's entry zone (= the setup's entry price).
   const entry = canonical.entryHigh || canonical.lastPrice || 0;
   const tp = canonical.tp1;
   const tp2 = canonical.tp2;
   const sl = canonical.stopLoss;
-
   const riskReward = Math.abs(entry - sl) > 0
     ? (Math.abs(tp - entry) / Math.abs(entry - sl)).toFixed(1)
     : "2.0";
-
   const ti = canonical.prediction?.technicalIndicators;
   return {
     isBullish,
@@ -87,15 +77,14 @@ function toSignal(canonical: ReturnType<typeof useCanonicalSetup>) {
     macdSignal: ti?.macd?.trend ?? null,
     probBull: canonical.probabilityBullish,
     probBear: canonical.probabilityBearish,
-    summary: canonical.prediction?.summary ?? null,
   };
 }
 
 const RISK_COLORS: Record<string, string> = {
-  low:     "text-success border-success/40 bg-success/8",
-  medium:  "text-warning border-warning/40 bg-warning/8",
-  high:    "text-orange-400 border-orange-400/40 bg-orange-400/8",
-  extreme: "text-danger border-danger/40 bg-danger/8",
+  low:     "text-success border-success/40",
+  medium:  "text-warning border-warning/40",
+  high:    "text-orange-400 border-orange-400/40",
+  extreme: "text-danger border-danger/40",
 };
 
 function SignalCard({ coin, livePrice, idx }: {
@@ -122,7 +111,7 @@ function SignalCard({ coin, livePrice, idx }: {
   const hasLivePrice = (livePrice?.price ?? 0) > 0;
 
   if (isLoading && !hasLivePrice) {
-    return <Skeleton className="h-[360px] w-full rounded-2xl" />;
+    return <Skeleton className="h-80 w-full" />;
   }
 
   const rsiLabel = sig.rsi != null
@@ -136,155 +125,143 @@ function SignalCard({ coin, livePrice, idx }: {
     <Link
       to={`/price-prediction/${coin.id}/daily`}
       className={cn(
-        "group relative block rounded-2xl border overflow-hidden transition-all duration-300",
-        "hover:-translate-y-1.5 hover:shadow-2xl",
+        "group relative block border-t overflow-hidden transition-colors py-5",
+        "hover:bg-muted/20",
         mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4",
-        "transition-[opacity,transform] ease-out",
-        sig.isBullish
-          ? "border-success/20 hover:border-success/50"
-          : "border-danger/20 hover:border-danger/50"
+        "transition-[opacity,transform,background-color] ease-out",
+        sig.isBullish ? "border-success/30" : "border-danger/30"
       )}
-      style={{ transitionDelay: `${idx * 60}ms` }}
+      style={{
+        transitionDelay: `${idx * 60}ms`,
+        borderTopColor: coin.color + "44",
+      }}
     >
-      {/* Top accent bar */}
-      <div
-        className="h-0.5 w-full"
-        style={{ background: `linear-gradient(90deg, transparent, ${coin.color}, transparent)` }}
-      />
-      {/* Background glow */}
-      <div className={cn("absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300", sig.isBullish ? "bg-success/3" : "bg-danger/3")} />
+      {/* Thin top accent line */}
+      <div className="h-0.5 w-full absolute top-0 left-0"
+        style={{ background: `linear-gradient(90deg, ${coin.color}, transparent)` }} />
 
-      <div className="p-5 relative">
-        {/* Header */}
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <CoinImage symbol={coin.symbol} image={livePrice?.image} size={32} />
-            <div>
-              <p className="font-bold text-sm leading-none">{coin.symbol}</p>
-              <p className="text-[10px] text-muted-foreground mt-0.5">{coin.name} • 1D</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-1.5">
-            {/* Risk level badge */}
-            <span className={cn("text-[9px] font-bold uppercase px-1.5 py-0.5 rounded border", RISK_COLORS[sig.riskLevel])}>
-              {sig.riskLevel}
-            </span>
-            {/* Long/Short badge */}
-            <div className={cn(
-              "flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase border",
-              sig.isBullish
-                ? "bg-success/10 text-success border-success/30"
-                : "bg-danger/10 text-danger border-danger/30"
-            )}>
-              {sig.isBullish ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-              {sig.isBullish ? "LONG" : "SHORT"}
-            </div>
+      {/* Header */}
+      <div className="flex items-start justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <CoinImage symbol={coin.symbol} image={livePrice?.image} size={28} />
+          <div>
+            <p className="font-bold text-sm leading-none">{coin.symbol}</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">{coin.name} · Daily</p>
           </div>
         </div>
-
-        {/* Live price + change */}
-        <div className="flex items-baseline gap-2 mb-2">
-          <span className="text-xl font-display font-bold">{fmtPrice(livePrice?.price || 0)}</span>
-          <span className={cn("text-xs font-bold", change >= 0 ? "text-success" : "text-danger")}>
-            {change >= 0 ? "+" : ""}{change.toFixed(2)}%
+        <div className="flex items-center gap-1.5">
+          <span className={cn("text-[9px] font-bold uppercase px-1.5 py-0.5 rounded border", RISK_COLORS[sig.riskLevel])}>
+            {sig.riskLevel}
           </span>
-          {sig.rsi != null && (
-            <span className={cn("text-[10px] font-semibold ml-auto", rsiColor)}>
-              RSI {sig.rsi.toFixed(0)} · {rsiLabel}
-            </span>
-          )}
-        </div>
-
-        {/* Sparkline */}
-        <div className="mb-2 -mx-1">
-          <MiniSparkline change24h={change} color={sig.isBullish ? "#22c55e" : "#ef4444"} />
-        </div>
-
-        {/* 24h range bar */}
-        {livePrice?.high24h && livePrice?.low24h && livePrice.high24h > livePrice.low24h && (
-          <div className="mb-3">
-            <div className="flex justify-between text-[9px] text-muted-foreground mb-1">
-              <span>L {fmtPrice(livePrice.low24h)}</span>
-              <span className="font-medium text-foreground">24h Range</span>
-              <span>H {fmtPrice(livePrice.high24h)}</span>
-            </div>
-            <div className="h-1 w-full bg-muted/60 rounded-full overflow-hidden relative">
-              <div className="h-full bg-gradient-to-r from-danger via-warning to-success rounded-full" style={{ width: "100%", opacity: 0.5 }} />
-              <div
-                className="absolute top-0 h-full w-0.5 bg-foreground rounded-full"
-                style={{ left: `${Math.min(100, Math.max(0, ((livePrice.price - livePrice.low24h) / (livePrice.high24h - livePrice.low24h)) * 100))}%` }}
-              />
-            </div>
+          <div className={cn(
+            "flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase border",
+            sig.isBullish ? "text-success border-success/30" : "text-danger border-danger/30"
+          )}>
+            {sig.isBullish ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+            {sig.isBullish ? "LONG" : "SHORT"}
           </div>
+        </div>
+      </div>
+
+      {/* Live price */}
+      <div className="flex items-baseline gap-2 mb-2">
+        <span className="text-xl font-display font-bold">{fmtPrice(livePrice?.price || 0)}</span>
+        <span className={cn("text-xs font-bold", change >= 0 ? "text-success" : "text-danger")}>
+          {change >= 0 ? "+" : ""}{change.toFixed(2)}%
+        </span>
+        {sig.rsi != null && (
+          <span className={cn("text-[10px] font-semibold ml-auto", rsiColor)}>
+            RSI {sig.rsi.toFixed(0)} · {rsiLabel}
+          </span>
         )}
+      </div>
 
-        {/* Bull / Bear probability bar */}
+      {/* Sparkline */}
+      <div className="mb-2 -mx-1">
+        <MiniSparkline change24h={change} color={sig.isBullish ? "#22c55e" : "#ef4444"} />
+      </div>
+
+      {/* 24h range bar */}
+      {livePrice?.high24h && livePrice?.low24h && livePrice.high24h > livePrice.low24h && (
         <div className="mb-3">
-          <div className="flex justify-between text-[9px] mb-1">
-            <span className="text-success font-bold flex items-center gap-0.5">
-              <TrendingUp className="w-2.5 h-2.5" /> Bull {sig.probBull}%
-            </span>
-            <span className="text-[9px] font-medium text-muted-foreground flex items-center gap-1">
-              <Zap className="w-2.5 h-2.5 text-warning" /> AI Confidence
-            </span>
-            <span className="text-danger font-bold flex items-center gap-0.5">
-              Bear {sig.probBear}% <TrendingDown className="w-2.5 h-2.5" />
-            </span>
+          <div className="flex justify-between text-[9px] text-muted-foreground mb-1">
+            <span>L {fmtPrice(livePrice.low24h)}</span>
+            <span className="font-medium text-foreground">24h Range</span>
+            <span>H {fmtPrice(livePrice.high24h)}</span>
           </div>
-          <div className="h-1.5 w-full bg-muted/60 rounded-full overflow-hidden flex">
-            <div className="h-full bg-success rounded-l-full transition-all duration-1000" style={{ width: mounted ? `${sig.probBull}%` : "50%" }} />
-            <div className="h-full bg-danger rounded-r-full transition-all duration-1000" style={{ width: mounted ? `${sig.probBear}%` : "50%" }} />
+          <div className="h-1 w-full bg-muted/60 rounded-full overflow-hidden relative">
+            <div className="h-full bg-gradient-to-r from-danger via-warning to-success rounded-full" style={{ width: "100%", opacity: 0.5 }} />
+            <div
+              className="absolute top-0 h-full w-0.5 bg-foreground rounded-full"
+              style={{ left: `${Math.min(100, Math.max(0, ((livePrice.price - livePrice.low24h) / (livePrice.high24h - livePrice.low24h)) * 100))}%` }}
+            />
           </div>
         </div>
+      )}
 
-        {/* Entry / TP1 / SL grid */}
-        <div className="grid grid-cols-3 gap-1.5 mb-2">
-          <div className="text-center p-2 rounded-lg bg-muted/40 border border-border/30">
-            <p className="text-[9px] text-muted-foreground uppercase font-bold mb-0.5">Entry</p>
-            <p className="text-[11px] font-mono font-semibold">{fmtPrice(sig.entry)}</p>
-          </div>
-          <div className="text-center p-2 rounded-lg bg-success/5 border border-success/20">
-            <p className="text-[9px] text-success uppercase font-black mb-0.5 flex items-center justify-center gap-0.5">
-              <Target className="w-2 h-2" />TP1
-            </p>
-            <p className="text-[11px] font-mono font-semibold text-success">{fmtPrice(sig.tp)}</p>
-          </div>
-          <div className="text-center p-2 rounded-lg bg-danger/5 border border-danger/20">
-            <p className="text-[9px] text-danger uppercase font-black mb-0.5 flex items-center justify-center gap-0.5">
-              <ShieldAlert className="w-2 h-2" />SL
-            </p>
-            <p className="text-[11px] font-mono font-semibold text-danger">{fmtPrice(sig.sl)}</p>
-          </div>
+      {/* Bull/Bear probability bar */}
+      <div className="mb-3">
+        <div className="flex justify-between text-[9px] mb-1">
+          <span className="text-success font-bold flex items-center gap-0.5">
+            <TrendingUp className="w-2.5 h-2.5" /> Bull {sig.probBull}%
+          </span>
+          <span className="text-[9px] font-medium text-muted-foreground flex items-center gap-1">
+            <Zap className="w-2.5 h-2.5 text-warning" /> AI Confidence
+          </span>
+          <span className="text-danger font-bold flex items-center gap-0.5">
+            Bear {sig.probBear}% <TrendingDown className="w-2.5 h-2.5" />
+          </span>
         </div>
-
-        {/* TP2 row */}
-        <div className="mb-3">
-          <div className="flex items-center justify-between px-2 py-1.5 rounded-lg bg-success/5 border border-success/15">
-            <p className="text-[9px] text-success uppercase font-black flex items-center gap-0.5">
-              <Target className="w-2.5 h-2.5" />TP2 (Extended)
-            </p>
-            <p className="text-[11px] font-mono font-semibold text-success">{fmtPrice(sig.tp2)}</p>
-            <p className="text-[9px] text-muted-foreground">R:R {sig.riskReward}x</p>
-          </div>
+        <div className="h-1.5 w-full bg-muted/60 rounded-full overflow-hidden flex">
+          <div className="h-full bg-success rounded-l-full transition-all duration-1000" style={{ width: mounted ? `${sig.probBull}%` : "50%" }} />
+          <div className="h-full bg-danger rounded-r-full transition-all duration-1000" style={{ width: mounted ? `${sig.probBear}%` : "50%" }} />
         </div>
+      </div>
 
-        {/* Footer */}
-        <div className="flex items-center justify-between pt-2 border-t border-border/30">
-          <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-            <BarChart3 className="w-3 h-3" />
-            {sig.macdSignal && <span className="capitalize">{sig.macdSignal}</span>}
-          </div>
-          <div className="flex items-center gap-1 text-[10px] font-semibold text-primary group-hover:gap-2 transition-all">
-            Full Analysis
-            <ChevronRight className="w-3 h-3" />
-          </div>
+      {/* Entry / TP1 / SL — inline labels, no boxes */}
+      <div className="grid grid-cols-3 gap-2 mb-2">
+        <div className="text-center">
+          <p className="section-label mb-0.5">Entry</p>
+          <p className="text-[11px] font-mono font-semibold">{fmtPrice(sig.entry)}</p>
+        </div>
+        <div className="text-center">
+          <p className="section-label mb-0.5 text-success flex items-center justify-center gap-0.5">
+            <Target className="w-2 h-2" />TP1
+          </p>
+          <p className="text-[11px] font-mono font-semibold text-success">{fmtPrice(sig.tp)}</p>
+        </div>
+        <div className="text-center">
+          <p className="section-label mb-0.5 text-danger flex items-center justify-center gap-0.5">
+            <ShieldAlert className="w-2 h-2" />SL
+          </p>
+          <p className="text-[11px] font-mono font-semibold text-danger">{fmtPrice(sig.sl)}</p>
+        </div>
+      </div>
+
+      {/* TP2 row */}
+      <div className="mb-3 flex items-center justify-between border-t border-border/20 pt-2">
+        <p className="text-[9px] text-success font-bold flex items-center gap-0.5">
+          <Target className="w-2.5 h-2.5" />TP2 (Extended)
+        </p>
+        <p className="text-[11px] font-mono font-semibold text-success">{fmtPrice(sig.tp2)}</p>
+        <p className="text-[9px] text-muted-foreground">R:R {sig.riskReward}x</p>
+      </div>
+
+      {/* Footer */}
+      <div className="flex items-center justify-between pt-2 border-t border-border/20">
+        <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+          <BarChart3 className="w-3 h-3" />
+          {sig.macdSignal && <span className="capitalize">{sig.macdSignal}</span>}
+        </div>
+        <div className="flex items-center gap-1 text-[10px] font-semibold text-primary group-hover:gap-2 transition-all">
+          Full Analysis
+          <ChevronRight className="w-3 h-3" />
         </div>
       </div>
     </Link>
   );
 }
 
-// Live "last updated" timer
 function LastUpdated() {
   const [secs, setSecs] = useState(0);
   useEffect(() => {
@@ -301,7 +278,6 @@ function LastUpdated() {
 
 export function LiveSignals() {
   const { data: pricesData } = useCryptoPrices();
-  // Map symbol → live price for quick lookup
   const priceMap = useMemo(() => {
     const m: Record<string, CryptoPrice> = {};
     const prices = pricesData?.prices ?? [];
@@ -310,45 +286,42 @@ export function LiveSignals() {
   }, [pricesData?.prices]);
 
   return (
-    <section className="py-12 relative overflow-hidden" aria-labelledby="live-signals-heading">
-      {/* Subtle background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/2 to-transparent pointer-events-none" />
-
-      <div className="container mx-auto px-4 relative z-10">
+    <section className="py-12" aria-labelledby="live-signals-heading">
+      <div className="container mx-auto px-4">
         {/* Section header */}
+        <div className="section-header mb-2">
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-success" />
+            </span>
+            <span className="section-label flex items-center gap-1.5">
+              <Radio className="w-3 h-3" />
+              Live AI Signals
+            </span>
+            <LastUpdated />
+          </div>
+          <Link
+            to="/predictions"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-primary transition-colors shrink-0 group"
+          >
+            View All <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+          </Link>
+        </div>
+
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-success" />
-              </span>
-              <span className="text-success font-bold text-xs tracking-widest uppercase flex items-center gap-1.5">
-                <Radio className="w-3 h-3" />
-                Live AI Signals
-              </span>
-              <LastUpdated />
-            </div>
             <h2 id="live-signals-heading" className="text-2xl md:text-3xl font-display font-bold">
-              Today's{" "}
-              <span className="text-gradient-cosmic">High-Conviction</span>{" "}
-              Trade Setups
+              Today's <span className="text-gradient-cosmic">High-Conviction</span> Trade Setups
             </h2>
             <p className="text-muted-foreground text-sm mt-1">
               AI-generated signals from live CoinGecko market data + on-chain momentum — updated every 15s.
             </p>
           </div>
-          <Link
-            to="/predictions"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-primary transition-colors shrink-0 group"
-          >
-            View All Signals
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-          </Link>
         </div>
 
-        {/* Signal cards grid — 3 cols on desktop, 2 on tablet, 1 on mobile */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Signal grid — 3 cols desktop, 2 tablet, 1 mobile */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6">
           {TARGET_COINS.map((coin, idx) => (
             <SignalCard
               key={coin.id}
@@ -360,14 +333,14 @@ export function LiveSignals() {
         </div>
 
         {/* Bottom CTA */}
-        <div className="mt-8 text-center">
+        <div className="mt-8 pt-6 border-t border-border/30">
           <Link
             to="/predictions"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary/10 border border-primary/20 text-primary text-sm font-semibold hover:bg-primary/20 transition-all hover:scale-[1.02]"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline group"
           >
             <Zap className="w-4 h-4" />
             See AI Predictions for 1,000+ Tokens
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
           </Link>
         </div>
       </div>

@@ -102,7 +102,7 @@ const Dashboard = () => {
             {fearGreedIndex !== null && (
               <Link
                 to="/sentiment"
-                className="holo-card p-4 sm:p-6 mb-4 sm:mb-6 flex flex-col sm:flex-row items-center gap-4 sm:gap-8 group hover:border-primary/40 transition-all"
+                className="border-b border-border/30 py-5 mb-5 flex flex-col sm:flex-row items-center gap-4 sm:gap-8 group hover:bg-muted/20 transition-colors"
               >
                 {/* Gauge */}
                 <div className="relative w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0">

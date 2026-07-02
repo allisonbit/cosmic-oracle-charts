@@ -19,7 +19,7 @@
     --background: 214 38% 98.5%;
     --foreground: 222 47% 12%;
 
-    --card: 0 0% 100%;
+    --card: 214 38% 98.5%;
     --card-foreground: 222 47% 12%;
 
     --popover: 0 0% 100%;
@@ -142,7 +142,7 @@
     --background: 224 44% 4%;        /* #06080F near-black, blue undertone */
     --foreground: 213 31% 95%;       /* cool white */
 
-    --card: 222 40% 8%;              /* #0C0F18 raised panel */
+    --card: 224 44% 4%;              /* same as background — editorial: no card surface */
     --card-foreground: 213 31% 95%;
 
     --popover: 222 38% 10%;          /* elevated (menus, dialogs) */
@@ -329,36 +329,12 @@
 }
 
 @layer components {
-  /* Card surface — raised panel with a faint top edge-light for dark depth;
-     lifts + accent border on hover (pointer devices). */
+  /* Editorial section wrapper — no box, no bg, no shadow. */
   .holo-card {
-    @apply relative overflow-hidden rounded-xl;
-    background: hsl(var(--card));
-    border: 1px solid hsl(var(--border));
-    box-shadow: var(--shadow-sm);
-    transition: transform var(--dur) var(--ease-out),
-                box-shadow var(--dur) var(--ease-out),
-                border-color var(--dur) var(--ease-out);
+    @apply relative overflow-hidden;
   }
-
-  /* Subtle top edge-light reads as a beveled surface on the black canvas */
-  .holo-card::before {
-    content: "";
-    position: absolute;
-    inset: 0 0 auto 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, hsl(216 96% 60% / 0.18), transparent);
-    pointer-events: none;
-  }
-
-  @media (pointer: fine) {
-    .holo-card:hover {
-      box-shadow: var(--shadow-md);
-      border-color: hsl(var(--primary) / 0.4);
-    }
-  }
-
-  .holo-card::after { content: none; }
+  .holo-card::before { content: none; }
+  .holo-card::after  { content: none; }
 
   /* Frosted-glass surface for floating widgets/overlays. */
   .glass-panel {
@@ -412,6 +388,62 @@
   /* Stars effect - hidden in light mode */
   .stars {
     display: none;
+  }
+
+  /* ── Editorial design system ─────────────────────────────────────────────
+     TechCrunch-style typography-first layout utilities.
+     Use these instead of Card chrome for section headers, data rows, dividers.
+     ──────────────────────────────────────────────────────────────────────── */
+
+  /* Small-caps category label: "MARKET SIGNALS", "AI PREDICTIONS" */
+  .section-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: hsl(var(--muted-foreground));
+    line-height: 1;
+  }
+
+  /* Hover row — content lists without card borders */
+  .editorial-row {
+    @apply flex items-center gap-3 py-3 border-b border-border/30;
+    transition: background-color 150ms ease;
+  }
+  @media (pointer: fine) {
+    .editorial-row:hover {
+      background-color: hsl(var(--muted) / 0.4);
+    }
+  }
+
+  /* Full-width horizontal rule between major sections */
+  .section-divider {
+    @apply border-t border-border/30 my-6;
+  }
+
+  /* Inline stat: big number + small label, no box */
+  .stat-inline {
+    @apply flex flex-col gap-0.5;
+  }
+  .stat-inline .stat-value {
+    font-family: var(--font-mono);
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: hsl(var(--foreground));
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-inline .stat-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Editorial section header: thin rule + label above a content block */
+  .section-header {
+    @apply border-t border-border/40 pt-4 mb-4 flex items-center justify-between;
   }
 }
 

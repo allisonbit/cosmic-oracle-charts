@@ -3,9 +3,6 @@ import { useMarketData } from "@/hooks/useMarketData";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 
-// Single, honest platform-stats strip.
-// Every number here is either live from the market API or a static fact we can
-// stand behind (8 supported chains). No fabricated vanity metrics.
 export function PlatformStats() {
   const { data, isLoading } = useMarketData();
   const global = data?.global;
@@ -18,7 +15,6 @@ export function PlatformStats() {
       icon: Globe,
       link: "/dashboard",
       color: "text-primary",
-      bg: "bg-primary/10",
     },
     {
       label: "24h Trading Volume",
@@ -27,7 +23,6 @@ export function PlatformStats() {
       icon: Activity,
       link: "/dashboard",
       color: "text-secondary",
-      bg: "bg-secondary/10",
     },
     {
       label: "BTC Dominance",
@@ -36,7 +31,6 @@ export function PlatformStats() {
       icon: BarChart3,
       link: "/price-prediction/bitcoin/daily",
       color: "text-warning",
-      bg: "bg-warning/10",
     },
     {
       label: "Coins Tracked",
@@ -47,59 +41,48 @@ export function PlatformStats() {
       icon: Coins,
       link: "/explorer",
       color: "text-success",
-      bg: "bg-success/10",
     },
     {
-      // Static but true: the platform covers 8 major chains (see FAQ / chain pages).
       label: "Blockchains",
       value: "8",
       change: null,
       icon: Layers,
       link: "/chain/ethereum",
       color: "text-chart-4",
-      bg: "bg-chart-4/10",
     },
   ];
 
   return (
-    <section className="py-6 md:py-8 border-y border-border/30" aria-label="Live market statistics">
+    <section className="border-y border-border/30" aria-label="Live market statistics">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
-          {stats.map((stat, index) => {
+        <div className="flex flex-col sm:flex-row flex-wrap">
+          {stats.map((stat) => {
             const Icon = stat.icon;
             const showSkeleton = isLoading || stat.value === null;
             return (
               <Link
                 key={stat.label}
                 to={stat.link}
-                className="group holo-card p-4 md:p-5 animate-fade-in hover:border-primary/30 hover:shadow-md transition-all"
-                style={{ animationDelay: `${index * 0.06}s` }}
+                className="flex-1 min-w-[45%] sm:min-w-0 py-5 px-4 border-b border-border/20 sm:border-b-0 sm:border-l sm:first:border-l-0 sm:border-border/30 group hover:bg-muted/30 transition-colors"
               >
-                <div className="flex items-center gap-2 mb-2">
-                  <div className={cn("w-7 h-7 rounded-lg flex items-center justify-center", stat.bg)}>
-                    <Icon className={cn("w-3.5 h-3.5", stat.color)} />
+                <div className="stat-inline">
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <Icon className={cn("w-3 h-3", stat.color)} />
+                    <span className="section-label">{stat.label}</span>
                   </div>
-                  <span className="text-muted-foreground text-[10px] md:text-xs">{stat.label}</span>
-                </div>
-                <div className="text-xl md:text-2xl font-display font-bold text-foreground">
                   {showSkeleton ? (
-                    <div className="h-7 w-24 bg-muted animate-pulse rounded" />
+                    <div className="h-7 w-20 bg-muted animate-pulse rounded" />
                   ) : (
-                    stat.value
+                    <span className={cn("stat-value group-hover:text-primary transition-colors", stat.color)}>
+                      {stat.value}
+                    </span>
+                  )}
+                  {stat.change !== null && stat.change !== undefined && !showSkeleton && (
+                    <span className={cn("text-[10px] font-semibold mt-0.5", stat.change >= 0 ? "text-success" : "text-danger")}>
+                      {stat.change >= 0 ? "+" : ""}{stat.change.toFixed(1)}% 24h
+                    </span>
                   )}
                 </div>
-                {stat.change !== undefined && stat.change !== null && (
-                  <div
-                    className={cn(
-                      "flex items-center gap-1 text-xs mt-1.5",
-                      stat.change >= 0 ? "text-success" : "text-danger"
-                    )}
-                  >
-                    {stat.change >= 0 ? "+" : ""}
-                    {(stat.change ?? 0).toFixed(1)}%
-                    <span className="text-muted-foreground ml-1">24h</span>
-                  </div>
-                )}
               </Link>
             );
           })}
