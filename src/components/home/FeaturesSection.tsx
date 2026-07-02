@@ -138,7 +138,7 @@ export function FeaturesSection() {
                 {/* Text */}
                 <div className="flex-1 min-w-0">
                   <div className="section-label mb-1">{f.label}</div>
-                  <h3 className={`font-display text-lg font-bold mb-1.5 group-hover:${f.accent} transition-colors`}>
+                  <h3 className="font-display text-lg font-bold mb-1.5 group-hover:text-primary transition-colors">
                     {f.title}
                   </h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{f.description}</p>

@@ -336,9 +336,16 @@
   .holo-card::before { content: none; }
   .holo-card::after  { content: none; }
 
+  /* glass-card: subtle editorial surface for data widgets (admin, strength, factory).
+     Provides a thin border so card structure is legible without the old box look. */
+  .glass-card {
+    @apply relative overflow-hidden;
+    border: 1px solid hsl(var(--border) / 0.35);
+  }
+
   /* Frosted-glass surface for floating widgets/overlays. */
   .glass-panel {
-    background: hsl(var(--card) / 0.6);
+    background: hsl(var(--popover) / 0.7);
     backdrop-filter: blur(16px) saturate(150%);
     -webkit-backdrop-filter: blur(16px) saturate(150%);
     border: 1px solid hsl(var(--border) / 0.7);
