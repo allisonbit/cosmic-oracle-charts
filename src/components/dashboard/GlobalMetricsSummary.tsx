@@ -25,148 +25,132 @@ export function GlobalMetricsSummary() {
     const avgChange = topCoins.reduce((s, c) => s + c.change24h, 0) / (topCoins.length || 1);
     const topGainer = topCoins.reduce((best, c) => c.change24h > (best?.change24h ?? -Infinity) ? c : best, topCoins[0]);
     const topLoser = topCoins.reduce((worst, c) => c.change24h < (worst?.change24h ?? Infinity) ? c : worst, topCoins[0]);
-    const totalVol = topCoins.reduce((s, c) => s + c.volume, 0);
-    const defiTvl = global.totalMarketCap * 0.045; // approximate
+    const defiTvl = global.totalMarketCap * 0.045;
     const stablecoinMcap = global.totalMarketCap * 0.065;
 
-    return {
-      totalGainers,
-      totalLosers,
-      avgChange,
-      topGainer,
-      topLoser,
-      totalVol,
-      defiTvl,
-      stablecoinMcap,
-    };
+    return { totalGainers, totalLosers, avgChange, topGainer, topLoser, defiTvl, stablecoinMcap };
   }, [global, topCoins]);
 
   if (!global || !metrics) return null;
 
   return (
-    <div className="holo-card p-4 sm:p-6">
-      <h3 className="font-display font-bold text-sm sm:text-base mb-4 flex items-center gap-2">
-        <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-        GLOBAL MARKET OVERVIEW
-        <span className="ml-auto text-[10px] sm:text-xs text-muted-foreground font-normal">Comprehensive snapshot</span>
+    <div className="border-t border-border/30 pt-5 pb-6 mb-4">
+      <div className="section-header mb-2">
+        <span className="section-label flex items-center gap-1.5">
+          <Globe className="w-3 h-3" />
+          Global Market Overview
+        </span>
+        <span className="text-xs text-muted-foreground">Comprehensive snapshot</span>
+      </div>
+
+      <h3 className="font-display font-bold text-base md:text-lg mb-5">
+        Market <span className="text-gradient-cosmic">Snapshot</span>
       </h3>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
-        {/* Market Cap */}
-        <Link to="/sentiment" className="p-3 rounded-lg bg-muted/20 border border-border/50 hover:border-primary/30 transition-colors group">
-          <div className="flex items-center gap-1.5 mb-1">
-            <Coins className="w-3.5 h-3.5 text-primary" />
-            <span className="text-[10px] sm:text-xs text-muted-foreground">Total Market Cap</span>
-          </div>
-          <div className="text-sm sm:text-base font-bold">{formatNumber(global.totalMarketCap)}</div>
-          <div className={cn("text-[10px] flex items-center gap-0.5", global.marketCapChange24h >= 0 ? "text-success" : "text-danger")}>
-            {global.marketCapChange24h >= 0 ? <TrendingUp className="w-2.5 h-2.5" /> : <TrendingDown className="w-2.5 h-2.5" />}
-            {global.marketCapChange24h >= 0 ? "+" : ""}{(global.marketCapChange24h ?? 0).toFixed(2)}%
-          </div>
-        </Link>
+      {/* Main stats — editorial 2-col rows */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-0">
+        {[
+          { label: "Total Market Cap",  value: formatNumber(global.totalMarketCap),  change: global.marketCapChange24h, link: "/sentiment",     icon: Coins },
+          { label: "24h Volume",        value: formatNumber(global.totalVolume24h),   sub: `${((global.totalVolume24h / global.totalMarketCap) * 100).toFixed(1)}% of MCap`, link: undefined, icon: Activity },
+          { label: "BTC Dominance",     value: `${(global.btcDominance ?? 0).toFixed(1)}%`, bar: global.btcDominance,  link: "/chain/bitcoin",  icon: BarChart3, iconColor: "text-amber-400" },
+          { label: "ETH Dominance",     value: `${(global.ethDominance ?? 0).toFixed(1)}%`,  bar: global.ethDominance,  link: "/chain/ethereum", icon: Layers,   iconColor: "text-indigo-400" },
+        ].map((stat) => {
+          const Icon = stat.icon;
+          const content = (
+            <div className="border-t border-border/20 pt-4 pb-4 pr-4">
+              <div className="section-label mb-1 flex items-center gap-1">
+                <Icon className={cn("w-3 h-3", stat.iconColor ?? "text-primary")} />
+                {stat.label}
+              </div>
+              <div className="text-lg md:text-xl font-bold mb-1">{stat.value}</div>
+              {stat.change !== undefined && (
+                <div className={cn("text-xs flex items-center gap-0.5", stat.change >= 0 ? "text-success" : "text-danger")}>
+                  {stat.change >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                  {stat.change >= 0 ? "+" : ""}{(stat.change ?? 0).toFixed(2)}%
+                </div>
+              )}
+              {stat.sub && <div className="text-xs text-muted-foreground">{stat.sub}</div>}
+              {stat.bar !== undefined && (
+                <div className="w-full h-1 bg-muted rounded-full mt-2">
+                  <div className={cn("h-full rounded-full", stat.icon === BarChart3 ? "bg-amber-400" : "bg-indigo-400")} style={{ width: `${stat.bar}%` }} />
+                </div>
+              )}
+            </div>
+          );
+          return stat.link ? (
+            <Link key={stat.label} to={stat.link} className="hover:opacity-80 transition-opacity">{content}</Link>
+          ) : (
+            <div key={stat.label}>{content}</div>
+          );
+        })}
+      </div>
 
-        {/* 24h Volume */}
-        <div className="p-3 rounded-lg bg-muted/20 border border-border/50">
-          <div className="flex items-center gap-1.5 mb-1">
-            <Activity className="w-3.5 h-3.5 text-primary" />
-            <span className="text-[10px] sm:text-xs text-muted-foreground">24h Volume</span>
+      {/* Secondary row */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-0 mt-0">
+        {/* Gainers / Losers */}
+        <div className="border-t border-border/20 pt-4 pb-4 pr-4">
+          <div className="section-label mb-1 flex items-center gap-1">
+            <Percent className="w-3 h-3 text-primary" />
+            Gainers / Losers
           </div>
-          <div className="text-sm sm:text-base font-bold">{formatNumber(global.totalVolume24h)}</div>
-          <div className="text-[10px] text-muted-foreground">
-            {((global.totalVolume24h / global.totalMarketCap) * 100).toFixed(1)}% of MCap
-          </div>
-        </div>
-
-        {/* BTC Dominance */}
-        <Link to="/chain/bitcoin" className="p-3 rounded-lg bg-muted/20 border border-border/50 hover:border-primary/30 transition-colors">
-          <div className="flex items-center gap-1.5 mb-1">
-            <BarChart3 className="w-3.5 h-3.5 text-amber-400" />
-            <span className="text-[10px] sm:text-xs text-muted-foreground">BTC Dominance</span>
-          </div>
-          <div className="text-sm sm:text-base font-bold">{(global.btcDominance ?? 0).toFixed(1)}%</div>
-          <div className="w-full h-1.5 bg-muted rounded-full mt-1.5">
-            <div className="h-full bg-amber-400 rounded-full" style={{ width: `${global.btcDominance}%` }} />
-          </div>
-        </Link>
-
-        {/* ETH Dominance */}
-        <Link to="/chain/ethereum" className="p-3 rounded-lg bg-muted/20 border border-border/50 hover:border-primary/30 transition-colors">
-          <div className="flex items-center gap-1.5 mb-1">
-            <Layers className="w-3.5 h-3.5 text-indigo-400" />
-            <span className="text-[10px] sm:text-xs text-muted-foreground">ETH Dominance</span>
-          </div>
-          <div className="text-sm sm:text-base font-bold">{(global.ethDominance ?? 0).toFixed(1)}%</div>
-          <div className="w-full h-1.5 bg-muted rounded-full mt-1.5">
-            <div className="h-full bg-indigo-400 rounded-full" style={{ width: `${global.ethDominance}%` }} />
-          </div>
-        </Link>
-
-        {/* Gainers vs Losers */}
-        <div className="p-3 rounded-lg bg-muted/20 border border-border/50">
-          <div className="flex items-center gap-1.5 mb-1">
-            <Percent className="w-3.5 h-3.5 text-primary" />
-            <span className="text-[10px] sm:text-xs text-muted-foreground">Gainers / Losers</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-bold text-success">{metrics.totalGainers}</span>
+          <div className="flex items-baseline gap-2 mb-1">
+            <span className="text-lg font-bold text-success">{metrics.totalGainers}</span>
             <span className="text-xs text-muted-foreground">/</span>
-            <span className="text-sm font-bold text-danger">{metrics.totalLosers}</span>
+            <span className="text-lg font-bold text-danger">{metrics.totalLosers}</span>
           </div>
-          <div className="w-full h-1.5 bg-danger/30 rounded-full mt-1.5">
+          <div className="w-full h-1 bg-danger/30 rounded-full">
             <div className="h-full bg-success rounded-full" style={{ width: `${(metrics.totalGainers / (metrics.totalGainers + metrics.totalLosers)) * 100}%` }} />
           </div>
         </div>
 
-        {/* Average Change */}
-        <div className="p-3 rounded-lg bg-muted/20 border border-border/50">
-          <div className="flex items-center gap-1.5 mb-1">
-            <Activity className="w-3.5 h-3.5 text-primary" />
-            <span className="text-[10px] sm:text-xs text-muted-foreground">Avg 24h Change</span>
+        {/* Avg change */}
+        <div className="border-t border-border/20 pt-4 pb-4 pr-4">
+          <div className="section-label mb-1 flex items-center gap-1">
+            <Activity className="w-3 h-3 text-primary" />
+            Avg 24h Change
           </div>
-          <div className={cn("text-sm sm:text-base font-bold", metrics.avgChange >= 0 ? "text-success" : "text-danger")}>
+          <div className={cn("text-lg font-bold", metrics.avgChange >= 0 ? "text-success" : "text-danger")}>
             {metrics.avgChange >= 0 ? "+" : ""}{(metrics.avgChange ?? 0).toFixed(2)}%
           </div>
         </div>
 
         {/* Top Gainer */}
         {metrics.topGainer && (
-          <Link to={`/price-prediction/${metrics.topGainer.name?.toLowerCase()}/daily`} className="p-3 rounded-lg bg-success/5 border border-success/20 hover:border-success/40 transition-colors group">
-            <div className="flex items-center gap-1.5 mb-1">
-              <TrendingUp className="w-3.5 h-3.5 text-success" />
-              <span className="text-[10px] sm:text-xs text-muted-foreground">Top Gainer</span>
+          <Link to={`/price-prediction/${metrics.topGainer.name?.toLowerCase()}/daily`} className="border-t border-border/20 pt-4 pb-4 pr-4 hover:opacity-80 transition-opacity">
+            <div className="section-label mb-1 flex items-center gap-1">
+              <TrendingUp className="w-3 h-3 text-success" />
+              Top Gainer
             </div>
-            <div className="text-sm font-bold text-success">{metrics.topGainer.symbol}</div>
-            <div className="text-[10px] text-success">+{(metrics.topGainer.change24h ?? 0).toFixed(2)}%</div>
+            <div className="text-lg font-bold text-success">{metrics.topGainer.symbol}</div>
+            <div className="text-xs text-success">+{(metrics.topGainer.change24h ?? 0).toFixed(2)}%</div>
           </Link>
         )}
 
         {/* Top Loser */}
         {metrics.topLoser && (
-          <Link to={`/price-prediction/${metrics.topLoser.name?.toLowerCase()}/daily`} className="p-3 rounded-lg bg-danger/5 border border-danger/20 hover:border-danger/40 transition-colors group">
-            <div className="flex items-center gap-1.5 mb-1">
-              <TrendingDown className="w-3.5 h-3.5 text-danger" />
-              <span className="text-[10px] sm:text-xs text-muted-foreground">Top Loser</span>
+          <Link to={`/price-prediction/${metrics.topLoser.name?.toLowerCase()}/daily`} className="border-t border-border/20 pt-4 pb-4 pr-4 hover:opacity-80 transition-opacity">
+            <div className="section-label mb-1 flex items-center gap-1">
+              <TrendingDown className="w-3 h-3 text-danger" />
+              Top Loser
             </div>
-            <div className="text-sm font-bold text-danger">{metrics.topLoser.symbol}</div>
-            <div className="text-[10px] text-danger">{(metrics.topLoser.change24h ?? 0).toFixed(2)}%</div>
+            <div className="text-lg font-bold text-danger">{metrics.topLoser.symbol}</div>
+            <div className="text-xs text-danger">{(metrics.topLoser.change24h ?? 0).toFixed(2)}%</div>
           </Link>
         )}
       </div>
 
-      {/* DeFi & Stablecoins Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 mt-3">
-        <div className="p-3 rounded-lg bg-muted/20 border border-border/50">
-          <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">Est. DeFi TVL</div>
-          <div className="text-sm font-bold">{formatNumber(metrics.defiTvl)}</div>
-        </div>
-        <div className="p-3 rounded-lg bg-muted/20 border border-border/50">
-          <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">Stablecoin MCap</div>
-          <div className="text-sm font-bold">{formatNumber(metrics.stablecoinMcap)}</div>
-        </div>
-        <div className="p-3 rounded-lg bg-muted/20 border border-border/50 col-span-2 sm:col-span-1">
-          <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">Active Cryptos</div>
-          <div className="text-sm font-bold">{(global.activeCryptocurrencies ?? 0).toLocaleString()}</div>
-        </div>
+      {/* DeFi row */}
+      <div className="flex flex-wrap gap-0 border-t border-border/20 pt-4">
+        {[
+          { label: "Est. DeFi TVL",    value: formatNumber(metrics.defiTvl) },
+          { label: "Stablecoin MCap",  value: formatNumber(metrics.stablecoinMcap) },
+          { label: "Active Cryptos",   value: (global.activeCryptocurrencies ?? 0).toLocaleString() },
+        ].map((item, i) => (
+          <div key={item.label} className={cn("pr-8", i > 0 && "pl-8 border-l border-border/20")}>
+            <div className="section-label mb-0.5">{item.label}</div>
+            <div className="text-base font-bold">{item.value}</div>
+          </div>
+        ))}
       </div>
     </div>
   );

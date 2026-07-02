@@ -1,5 +1,5 @@
-import { 
-  PieChart, TrendingUp, TrendingDown, Activity, Eye, Info, Clock
+import {
+  PieChart, TrendingUp, TrendingDown, Activity
 } from "lucide-react";
 import { useMarketData } from "@/hooks/useMarketData";
 import { useState, useMemo } from "react";
@@ -22,19 +22,19 @@ export function EnhancedDominanceChart() {
   const global = data?.global;
 
   const dominanceData: DominanceData[] = useMemo(() => [
-    { 
+    {
       name: "BTC", value: global?.btcDominance || 55, color: "hsl(38, 92%, 50%)",
       description: "Bitcoin's share of total crypto market capitalization",
       implications: ["High BTC dominance often signals risk-off sentiment", "Capital tends to flow to BTC during uncertainty", "Altcoins may underperform when BTC dominance rises"],
       chainLink: "/chain/bitcoin"
     },
-    { 
+    {
       name: "ETH", value: global?.ethDominance || 18, color: "hsl(230, 60%, 50%)",
       description: "Ethereum's share of total crypto market capitalization",
       implications: ["ETH dominance reflects DeFi and NFT ecosystem health", "Rising ETH dominance may signal alt season beginning"],
       chainLink: "/chain/ethereum"
     },
-    { 
+    {
       name: "Others", value: 100 - (global?.btcDominance || 55) - (global?.ethDominance || 18), color: "hsl(190, 100%, 50%)",
       description: "Combined share of all other cryptocurrencies",
       implications: ["High 'Others' dominance signals alt season", "Capital rotating into smaller projects"]
@@ -56,16 +56,18 @@ export function EnhancedDominanceChart() {
   }, [global]);
 
   return (
-    <div className="holo-card p-3 sm:p-4 md:p-6">
-      <div className="flex items-center justify-between mb-3 sm:mb-4">
-        <h3 className="font-display font-bold text-sm sm:text-base md:text-lg flex items-center gap-2">
-          <PieChart className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-          MARKET DOMINANCE
-        </h3>
+    <div className="border-t border-border/30 pt-5 pb-5">
+      <div className="section-header mb-2">
+        <span className="section-label flex items-center gap-1.5">
+          <PieChart className="w-3 h-3 text-primary" />
+          Market Dominance
+        </span>
+        <span className={cn("text-xs font-bold", marketAnalysis.color)}>{marketAnalysis.phase}</span>
       </div>
-      
-      <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
-        <div 
+
+      <div className="flex flex-col sm:flex-row items-center gap-5 mt-4">
+        {/* Conic pie chart — keep as-is, it's a visualization not chrome */}
+        <div
           className="w-28 h-28 sm:w-32 sm:h-32 rounded-full relative flex-shrink-0"
           style={{
             background: `conic-gradient(
@@ -79,22 +81,23 @@ export function EnhancedDominanceChart() {
             <div className="text-center">
               <span className="font-display text-[10px] sm:text-xs text-muted-foreground block">PHASE</span>
               <span className={cn("font-display text-[9px] sm:text-[10px] font-bold", marketAnalysis.color)}>
-                {marketAnalysis.phase}
+                {marketAnalysis.phase.split(" ")[0]}
               </span>
             </div>
           </div>
         </div>
 
-        <div className="space-y-2 sm:space-y-3 flex-1 w-full sm:w-auto">
+        {/* Dominance list — editorial rows */}
+        <div className="flex-1 w-full">
           {dominanceData.map(item => (
             <div key={item.name}>
               <button
                 onClick={() => setExpandedSegment(expandedSegment === item.name ? null : item.name)}
-                className="w-full flex items-center justify-between gap-4 p-2 -mx-2 rounded-lg hover:bg-muted/30 transition-colors"
+                className="w-full editorial-row items-center justify-between text-left"
               >
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 sm:w-4 sm:h-4 rounded" style={{ background: item.color }} />
-                  <span className="font-display font-bold text-sm sm:text-base">{item.name}</span>
+                  <div className="w-3 h-3 rounded-sm flex-shrink-0" style={{ background: item.color }} />
+                  <span className="font-display font-bold text-sm">{item.name}</span>
                   {item.change !== undefined && (
                     <span className={cn("text-xs flex items-center gap-0.5", item.change >= 0 ? "text-success" : "text-danger")}>
                       {item.change >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
@@ -102,15 +105,15 @@ export function EnhancedDominanceChart() {
                     </span>
                   )}
                 </div>
-                <span className="text-base sm:text-lg font-bold">{(item.value ?? 0).toFixed(1)}%</span>
+                <span className="text-base font-bold">{(item.value ?? 0).toFixed(1)}%</span>
               </button>
-              
+
               {expandedSegment === item.name && (
-                <div className="ml-6 mt-2 mb-3 p-3 rounded-lg bg-muted/20 border border-border/30 animate-in fade-in slide-in-from-top-1 duration-200">
-                  <p className="text-xs text-muted-foreground mb-2">{item.description}</p>
+                <div className="ml-5 pb-3 border-l-2 pl-3 animate-in fade-in slide-in-from-top-1 duration-150" style={{ borderColor: item.color }}>
+                  <p className="text-xs text-muted-foreground mb-1.5">{item.description}</p>
                   <ul className="space-y-1 mb-2">
                     {item.implications.map((imp, i) => (
-                      <li key={i} className="flex items-start gap-1.5 text-xs text-muted-foreground">
+                      <li key={i} className="text-xs text-muted-foreground flex items-start gap-1.5">
                         <div className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ background: item.color }} />
                         {imp}
                       </li>
@@ -128,13 +131,11 @@ export function EnhancedDominanceChart() {
         </div>
       </div>
 
-      <div className="mt-4 pt-3 border-t border-border/30">
-        <div className="flex items-center justify-between text-xs">
-          <span className="text-muted-foreground flex items-center gap-1">
-            <Activity className="w-3 h-3" /> Market Phase:
-          </span>
-          <span className={cn("font-bold", marketAnalysis.color)}>{marketAnalysis.phase}</span>
-        </div>
+      <div className="mt-4 pt-3 border-t border-border/30 flex items-center justify-between text-xs text-muted-foreground">
+        <span className="flex items-center gap-1">
+          <Activity className="w-3 h-3" /> Market Phase
+        </span>
+        <span className={cn("font-bold", marketAnalysis.color)}>{marketAnalysis.phase}</span>
       </div>
     </div>
   );

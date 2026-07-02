@@ -1,12 +1,11 @@
-import { 
-  Flame, TrendingUp, TrendingDown, AlertTriangle, Rocket, 
-  Clock, Activity, Zap, Bell, Volume2
+import {
+  Flame, TrendingUp, TrendingDown, AlertTriangle, Rocket,
+  Activity, Zap, Bell, Volume2, Radio
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMarketData } from "@/hooks/useMarketData";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { TokenIcon } from "@/components/ui/token-icon";
 
 interface Alert {
   type: "pump" | "dump" | "breakout" | "warning" | "volume_spike" | "whale";
@@ -35,23 +34,23 @@ export function EnhancedTrendingAlerts({ compact }: EnhancedTrendingAlertsProps)
 
     topCoins.forEach(coin => {
       const volumeToMcap = (coin.volume / coin.marketCap) * 100;
-      
+
       if (coin.change24h > 15) {
-        alertList.push({ type: "pump", symbol: coin.symbol, name: coin.name, message: `Massive pump - up ${(coin.change24h ?? 0).toFixed(1)}% in 24h`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(), severity: "critical" });
+        alertList.push({ type: "pump", symbol: coin.symbol, name: coin.name, message: `Massive pump — up ${(coin.change24h ?? 0).toFixed(1)}% in 24h`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(), severity: "critical" });
       } else if (coin.change24h > 8) {
-        alertList.push({ type: "breakout", symbol: coin.symbol, name: coin.name, message: `Strong breakout with ${(coin.change24h ?? 0).toFixed(1)}% gains`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(), severity: "high" });
+        alertList.push({ type: "breakout", symbol: coin.symbol, name: coin.name, message: `Strong breakout — ${(coin.change24h ?? 0).toFixed(1)}% gains`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(), severity: "high" });
       } else if (coin.change24h > 5) {
-        alertList.push({ type: "breakout", symbol: coin.symbol, name: coin.name, message: `Breaking out with ${(coin.change24h ?? 0).toFixed(1)}% gains`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(), severity: "medium" });
+        alertList.push({ type: "breakout", symbol: coin.symbol, name: coin.name, message: `Breaking out — ${(coin.change24h ?? 0).toFixed(1)}% gains`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(), severity: "medium" });
       } else if (coin.change24h < -15) {
-        alertList.push({ type: "dump", symbol: coin.symbol, name: coin.name, message: `Major crash - down ${Math.abs(coin.change24h).toFixed(1)}%`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(), severity: "critical" });
+        alertList.push({ type: "dump", symbol: coin.symbol, name: coin.name, message: `Major crash — down ${Math.abs(coin.change24h).toFixed(1)}%`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(), severity: "critical" });
       } else if (coin.change24h < -8) {
-        alertList.push({ type: "dump", symbol: coin.symbol, name: coin.name, message: `Sharp decline - down ${Math.abs(coin.change24h).toFixed(1)}%`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(), severity: "high" });
+        alertList.push({ type: "dump", symbol: coin.symbol, name: coin.name, message: `Sharp decline — down ${Math.abs(coin.change24h).toFixed(1)}%`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(), severity: "high" });
       } else if (coin.change24h < -5) {
-        alertList.push({ type: "warning", symbol: coin.symbol, name: coin.name, message: `Correction underway - ${(coin.change24h ?? 0).toFixed(1)}%`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(), severity: "medium" });
+        alertList.push({ type: "warning", symbol: coin.symbol, name: coin.name, message: `Correction — ${(coin.change24h ?? 0).toFixed(1)}%`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(), severity: "medium" });
       }
 
       if (volumeToMcap > 15) {
-        alertList.push({ type: "volume_spike", symbol: coin.symbol, name: coin.name, message: `Unusual volume - ${(volumeToMcap ?? 0).toFixed(1)}% of market cap traded`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(), severity: volumeToMcap > 25 ? "critical" : "high" });
+        alertList.push({ type: "volume_spike", symbol: coin.symbol, name: coin.name, message: `Unusual volume — ${(volumeToMcap ?? 0).toFixed(1)}% of market cap traded`, change: coin.change24h, volume: coin.volume, price: coin.price, marketCap: coin.marketCap, timestamp: new Date(), severity: volumeToMcap > 25 ? "critical" : "high" });
       }
     });
 
@@ -66,111 +65,94 @@ export function EnhancedTrendingAlerts({ compact }: EnhancedTrendingAlertsProps)
   }, [data, compact, filter]);
 
   const getAlertStyle = (type: string) => {
-    const baseStyles = {
-      pump: { icon: Rocket, color: "text-success", bg: "bg-success/10 border-success/30" },
-      breakout: { icon: TrendingUp, color: "text-primary", bg: "bg-primary/10 border-primary/30" },
-      dump: { icon: TrendingDown, color: "text-danger", bg: "bg-danger/10 border-danger/30" },
-      warning: { icon: AlertTriangle, color: "text-warning", bg: "bg-warning/10 border-warning/30" },
-      volume_spike: { icon: Volume2, color: "text-secondary", bg: "bg-secondary/10 border-secondary/30" },
-      whale: { icon: Activity, color: "text-primary", bg: "bg-primary/10 border-primary/30" },
+    const styles = {
+      pump:         { icon: Rocket,       color: "text-success",          dot: "bg-success" },
+      breakout:     { icon: TrendingUp,   color: "text-primary",          dot: "bg-primary" },
+      dump:         { icon: TrendingDown, color: "text-danger",           dot: "bg-danger" },
+      warning:      { icon: AlertTriangle,color: "text-warning",          dot: "bg-warning" },
+      volume_spike: { icon: Volume2,      color: "text-secondary",        dot: "bg-secondary" },
+      whale:        { icon: Activity,     color: "text-primary",          dot: "bg-primary" },
     };
-    return baseStyles[type as keyof typeof baseStyles] || { icon: Flame, color: "text-muted-foreground", bg: "bg-muted" };
-  };
-
-  const getTimeAgo = (date: Date) => {
-    const mins = Math.floor((Date.now() - date.getTime()) / 60000);
-    if (mins < 1) return "Just now";
-    if (mins < 60) return `${mins}m ago`;
-    return `${Math.floor(mins / 60)}h ago`;
+    return styles[type as keyof typeof styles] || { icon: Flame, color: "text-muted-foreground", dot: "bg-muted-foreground" };
   };
 
   const getCoinId = (alert: Alert) => alert.name?.toLowerCase().replace(/\s+/g, '-') || alert.symbol.toLowerCase();
 
   return (
-    <div className="holo-card p-4 md:p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-display font-bold text-lg flex items-center gap-2">
-          <Bell className="w-5 h-5 text-warning animate-pulse" />
-          LIVE ALERTS
-        </h3>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <div className={cn("w-2 h-2 rounded-full animate-pulse", isLoading ? "bg-warning" : "bg-success")} />
-          Live
+    <div className="border-t border-border/30 pt-5 pb-5">
+      <div className="section-header mb-2">
+        <span className="section-label flex items-center gap-1.5">
+          <Bell className="w-3 h-3 text-warning" />
+          Live Alerts
+          <span className="relative flex h-2 w-2 ml-1">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-success" />
+          </span>
+        </span>
+        <div className="flex items-center gap-1 text-xs">
+          {(["all", "bullish", "bearish"] as const).map(f => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={cn(
+                "px-2 py-0.5 capitalize transition-colors",
+                filter === f ? "text-primary font-semibold" : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              {f}
+            </button>
+          ))}
         </div>
       </div>
 
-      <div className="flex gap-1 mb-4 bg-muted/30 p-1 rounded-lg">
-        {[
-          { key: "all", label: "All" },
-          { key: "bullish", label: "Bullish" },
-          { key: "bearish", label: "Bearish" },
-        ].map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setFilter(tab.key as any)}
-            className={cn(
-              "flex-1 py-1.5 px-2 text-xs font-display rounded transition-colors",
-              filter === tab.key ? "bg-primary/20 text-primary" : "text-muted-foreground hover:text-foreground"
-            )}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-      
+      <h3 className="font-display font-bold text-base md:text-lg mb-4">
+        Market <span className="text-gradient-cosmic">Alerts</span>
+      </h3>
+
       {alerts.length > 0 ? (
-        <div className="space-y-2">
+        <div>
           {alerts.map((alert, i) => {
             const style = getAlertStyle(alert.type);
             const AlertIcon = style.icon;
             return (
-              <Link 
+              <Link
                 key={`${alert.symbol}-${alert.type}-${i}`}
                 to={`/price-prediction/${getCoinId(alert)}/daily`}
-                className={cn(
-                  "w-full p-3 rounded-lg border flex items-center gap-3 animate-fade-in transition-all hover:scale-[1.01] text-left group",
-                  style.bg,
-                  alert.severity === "critical" && "ring-1 ring-offset-1 ring-offset-background"
-                )}
-                style={{ animationDelay: `${i * 0.05}s` }}
+                className="editorial-row group items-start gap-3"
               >
-                <div className="relative">
-                  <AlertIcon className={cn("w-5 h-5", style.color)} />
-                  {alert.severity === "critical" && (
-                    <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-danger animate-pulse" />
-                  )}
-                </div>
+                <div className={cn("w-1.5 h-1.5 rounded-full flex-shrink-0 mt-1.5", style.dot)} />
+                <AlertIcon className={cn("w-4 h-4 flex-shrink-0 mt-0.5", style.color)} />
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="font-display font-bold">{alert.symbol}</span>
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="font-display font-bold text-sm">{alert.symbol}</span>
                     <span className={cn("text-xs font-bold", alert.change >= 0 ? "text-success" : "text-danger")}>
                       {alert.change >= 0 ? "+" : ""}{(alert.change ?? 0).toFixed(1)}%
                     </span>
-                    <span className="text-[10px] text-muted-foreground ml-auto">{getTimeAgo(alert.timestamp)}</span>
+                    {alert.severity === "critical" && (
+                      <span className="text-[9px] font-bold uppercase text-danger">CRITICAL</span>
+                    )}
                   </div>
-                  <div className="text-xs text-muted-foreground truncate">{alert.message}</div>
+                  <div className="text-xs text-muted-foreground line-clamp-1">{alert.message}</div>
                 </div>
-                <Zap className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                <Zap className="w-3.5 h-3.5 text-primary opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 mt-0.5" />
               </Link>
             );
           })}
         </div>
       ) : (
-        <div className="text-center py-8 text-muted-foreground">
-          <Flame className="w-8 h-8 mx-auto mb-2 opacity-50" />
-          <p className="text-sm">No major alerts at the moment</p>
-          <p className="text-xs mt-1">Market is relatively stable</p>
+        <div className="py-6 text-center text-muted-foreground">
+          <Flame className="w-6 h-6 mx-auto mb-2 opacity-40" />
+          <p className="text-sm">No major alerts — market is stable</p>
         </div>
       )}
 
-      <div className="mt-4 pt-3 border-t border-border/30 flex items-center justify-between">
-        <span className="text-xs text-muted-foreground flex items-center gap-1">
+      <div className="mt-4 pt-4 border-t border-border/30 flex items-center justify-between text-xs text-muted-foreground">
+        <span className="flex items-center gap-1">
           <Activity className="w-3 h-3" />
           {alerts.length} active alerts
         </span>
-        <span className="text-xs text-success flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
-          Live monitoring
+        <span className="flex items-center gap-1 text-success">
+          <Radio className="w-3 h-3" /> Live monitoring
         </span>
       </div>
     </div>

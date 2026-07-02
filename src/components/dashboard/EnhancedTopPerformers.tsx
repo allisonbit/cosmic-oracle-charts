@@ -1,13 +1,11 @@
-import { 
-  TrendingUp, TrendingDown, Crown, Medal, Award, ArrowRight, 
-  Eye, Activity, Zap
+import {
+  TrendingUp, TrendingDown, ArrowRight, Activity
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMarketData } from "@/hooks/useMarketData";
 import { useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { CoinImage } from "@/components/ui/CoinImage";
-
 import { TradeButtons } from "@/components/trading/TradeButtons";
 
 interface CoinData {
@@ -24,8 +22,7 @@ interface EnhancedTopPerformersProps {
 }
 
 export function EnhancedTopPerformers({ onCoinClick }: EnhancedTopPerformersProps) {
-  const { data, isLoading } = useMarketData();
-  const navigate = useNavigate();
+  const { data } = useMarketData();
   const [view, setView] = useState<"gainers" | "losers">("gainers");
 
   const { gainers, losers } = useMemo(() => {
@@ -38,7 +35,6 @@ export function EnhancedTopPerformers({ onCoinClick }: EnhancedTopPerformersProp
   }, [data]);
 
   const displayedCoins = view === "gainers" ? gainers : losers;
-  const icons = [Crown, Medal, Award];
 
   const formatNumber = (num: number) => {
     if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
@@ -50,83 +46,65 @@ export function EnhancedTopPerformers({ onCoinClick }: EnhancedTopPerformersProp
   const getCoinId = (coin: CoinData) => coin.name?.toLowerCase().replace(/\s+/g, '-') || coin.symbol.toLowerCase();
 
   return (
-    <div className="holo-card p-3 sm:p-4 md:p-6">
-      <div className="flex items-center justify-between mb-3 sm:mb-4 gap-2">
-        <h3 className="font-display font-bold text-sm sm:text-base md:text-lg flex items-center gap-2">
+    <div className="border-t border-border/30 pt-5 pb-5">
+      <div className="section-header mb-2">
+        <span className="section-label flex items-center gap-1.5">
           {view === "gainers" ? (
-            <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-success" />
+            <TrendingUp className="w-3 h-3 text-success" />
           ) : (
-            <TrendingDown className="w-4 h-4 sm:w-5 sm:h-5 text-danger" />
+            <TrendingDown className="w-3 h-3 text-danger" />
           )}
-          <span className="hidden sm:inline">{view === "gainers" ? "TOP GAINERS" : "TOP LOSERS"}</span>
-          <span className="sm:hidden">{view === "gainers" ? "GAINERS" : "LOSERS"}</span>
-        </h3>
-        <div className="flex items-center gap-2">
-          <div className="flex gap-1 bg-muted/50 p-1 rounded-lg">
-            <button
-              onClick={() => setView("gainers")}
-              className={cn(
-                "px-2 sm:px-3 py-1.5 rounded text-[10px] sm:text-xs font-display transition-all",
-                view === "gainers" ? "bg-success/20 text-success" : "text-muted-foreground"
-              )}
-            >
-              Gainers
-            </button>
-            <button
-              onClick={() => setView("losers")}
-              className={cn(
-                "px-2 sm:px-3 py-1.5 rounded text-[10px] sm:text-xs font-display transition-all",
-                view === "losers" ? "bg-danger/20 text-danger" : "text-muted-foreground"
-              )}
-            >
-              Losers
-            </button>
-          </div>
+          Top Performers
+        </span>
+        <div className="flex items-center gap-1 text-xs">
+          <button
+            onClick={() => setView("gainers")}
+            className={cn("px-2 py-0.5 transition-colors", view === "gainers" ? "text-success font-semibold" : "text-muted-foreground hover:text-foreground")}
+          >
+            Gainers
+          </button>
+          <button
+            onClick={() => setView("losers")}
+            className={cn("px-2 py-0.5 transition-colors", view === "losers" ? "text-danger font-semibold" : "text-muted-foreground hover:text-foreground")}
+          >
+            Losers
+          </button>
         </div>
       </div>
 
-      <div className="space-y-2 sm:space-y-3">
-        {displayedCoins.map((coin, i) => {
-          const Icon = icons[i] || Award;
+      <h3 className="font-display font-bold text-base md:text-lg mb-4">
+        {view === "gainers" ? "Top Gainers" : "Top Losers"} <span className="text-muted-foreground font-normal text-sm">24h</span>
+      </h3>
+
+      <div>
+        {displayedCoins.map((coin) => {
           const isPositive = coin.change24h >= 0;
           const volumeToMcap = (coin.volume / coin.marketCap) * 100;
           const coinId = getCoinId(coin);
-          
+
           return (
             <Link
               key={coin.symbol}
               to={`/price-prediction/${coinId}/daily`}
-              className={cn(
-                "w-full flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-lg border transition-all active:scale-[0.98] text-left group",
-                isPositive ? "bg-success/5 border-success/20 hover:border-success/40" : "bg-danger/5 border-danger/20 hover:border-danger/40"
-              )}
+              className="editorial-row group items-center gap-3"
             >
-              <CoinImage symbol={coin.symbol} size={24} />
+              <CoinImage symbol={coin.symbol} size={28} className="flex-shrink-0" />
 
-              
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                  <span className="font-display font-bold text-sm sm:text-base">{coin.symbol}</span>
-                  <span className="text-[10px] sm:text-xs text-muted-foreground truncate hidden xs:inline">{coin.name}</span>
-                  {volumeToMcap > 10 && <Activity className="w-3 h-3 text-warning" />}
+                <div className="flex items-center gap-1.5 mb-0.5">
+                  <span className="font-display font-bold text-sm">{coin.symbol}</span>
+                  <span className="text-xs text-muted-foreground truncate">{coin.name}</span>
+                  {volumeToMcap > 10 && <Activity className="w-3 h-3 text-warning flex-shrink-0" />}
                 </div>
-                <div className="text-[10px] sm:text-xs text-muted-foreground flex items-center gap-2">
-                  <span>${(coin.price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
-                  <span className="text-primary/50">•</span>
-                  <span>Vol: {formatNumber(coin.volume)}</span>
+                <div className="text-xs text-muted-foreground">
+                  ${(coin.price ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })} · {formatNumber(coin.volume)}
                 </div>
               </div>
 
               <div className="text-right flex-shrink-0">
-                <div className={cn(
-                  "font-bold flex items-center gap-1 justify-end text-sm sm:text-base",
-                  isPositive ? "text-success" : "text-danger"
-                )}>
+                <div className={cn("font-bold text-sm flex items-center gap-0.5 justify-end", isPositive ? "text-success" : "text-danger")}>
                   {isPositive ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
                   {isPositive ? "+" : ""}{(coin.change24h ?? 0).toFixed(1)}%
-                </div>
-                <div className="text-[10px] sm:text-xs text-primary flex items-center gap-1 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Eye className="w-3 h-3" /> View
                 </div>
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity" onClick={e => e.preventDefault()}>
                   <TradeButtons symbol={coin.symbol} name={coin.name} price={coin.price} variant="inline" />
@@ -137,12 +115,11 @@ export function EnhancedTopPerformers({ onCoinClick }: EnhancedTopPerformersProp
         })}
       </div>
 
-      <Link 
-        to="/explorer"
-        className="mt-3 sm:mt-4 w-full flex items-center justify-center gap-2 text-xs sm:text-sm text-primary hover:text-primary/80 font-medium py-2"
-      >
-        View All Tokens <ArrowRight className="w-4 h-4" />
-      </Link>
+      <div className="mt-4 pt-3 border-t border-border/30">
+        <Link to="/explorer" className="text-xs text-primary font-semibold hover:underline flex items-center gap-1">
+          View all tokens <ArrowRight className="w-3 h-3" />
+        </Link>
+      </div>
     </div>
   );
 }

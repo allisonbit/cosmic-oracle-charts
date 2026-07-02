@@ -65,7 +65,7 @@ export function LiveAlphaFeed() {
 
   return (
     <section
-      className="holo-card p-4 sm:p-6"
+      className="border-t border-border/30 pt-5 pb-5"
       aria-labelledby="alpha-feed-heading"
     >
       {/* Header */}

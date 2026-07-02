@@ -239,13 +239,13 @@ const Dashboard = () => {
             <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
               <div>
                 <WidgetErrorBoundary><EnhancedVolumeLeaders /></WidgetErrorBoundary>
-                <p className="text-xs text-muted-foreground mt-2 p-3 bg-muted/10 rounded-lg">
+                <p className="text-xs text-muted-foreground mt-2 border-t border-border/20 pt-2">
                   <strong className="text-foreground">Volume Leaders:</strong> Cryptocurrencies with the highest 24-hour trading activity. High volume confirms price movements and indicates strong market interest.
                 </p>
               </div>
               <div>
                 <WidgetErrorBoundary><EnhancedDominanceChart /></WidgetErrorBoundary>
-                <p className="text-xs text-muted-foreground mt-2 p-3 bg-muted/10 rounded-lg">
+                <p className="text-xs text-muted-foreground mt-2 border-t border-border/20 pt-2">
                   <strong className="text-foreground">Market Dominance:</strong> Shows percentage of total market cap held by each cryptocurrency. BTC dominance above 50% typically indicates a risk-off environment.
                 </p>
               </div>

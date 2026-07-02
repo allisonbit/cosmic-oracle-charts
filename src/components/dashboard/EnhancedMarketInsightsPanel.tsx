@@ -1,7 +1,7 @@
-import { 
-  Brain, TrendingUp, TrendingDown, Clock, Sparkles, ArrowRight, 
-  Activity, Zap, Target, AlertTriangle, 
-  Info, Lightbulb, ChevronDown
+import {
+  Brain, TrendingUp, TrendingDown, Clock, Sparkles, ArrowRight,
+  Activity, Target, AlertTriangle,
+  Info, Lightbulb, ChevronRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMarketData } from "@/hooks/useMarketData";
@@ -68,81 +68,75 @@ export function EnhancedMarketInsightsPanel() {
 
   const getTypeStyle = (type: string) => {
     switch (type) {
-      case "bullish": return { color: "text-success", bg: "bg-success/10", border: "border-success/30", icon: TrendingUp };
-      case "bearish": return { color: "text-danger", bg: "bg-danger/10", border: "border-danger/30", icon: TrendingDown };
-      case "warning": return { color: "text-warning", bg: "bg-warning/10", border: "border-warning/30", icon: AlertTriangle };
-      case "opportunity": return { color: "text-primary", bg: "bg-primary/10", border: "border-primary/30", icon: Lightbulb };
-      case "activity": return { color: "text-secondary", bg: "bg-secondary/10", border: "border-secondary/30", icon: Activity };
-      default: return { color: "text-muted-foreground", bg: "bg-muted/50", border: "border-border", icon: Info };
+      case "bullish":    return { color: "text-success",           dot: "bg-success",          icon: TrendingUp };
+      case "bearish":    return { color: "text-danger",            dot: "bg-danger",           icon: TrendingDown };
+      case "warning":    return { color: "text-warning",           dot: "bg-warning",          icon: AlertTriangle };
+      case "opportunity":return { color: "text-primary",           dot: "bg-primary",          icon: Lightbulb };
+      case "activity":   return { color: "text-secondary",         dot: "bg-secondary",        icon: Activity };
+      default:           return { color: "text-muted-foreground",  dot: "bg-muted-foreground", icon: Info };
     }
   };
 
   const displayedInsights = expanded ? insights : insights.slice(0, 3);
 
   return (
-    <div className="holo-card p-4 md:p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-display font-bold text-lg flex items-center gap-2">
-          <Brain className="w-5 h-5 text-primary" />
-          AI MARKET INSIGHTS
-        </h3>
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <div className={cn("w-2 h-2 rounded-full animate-pulse", isLoading ? "bg-warning" : "bg-success")} />
-            Live
-          </div>
-          <Sparkles className="w-4 h-4 text-warning" />
-        </div>
+    <div className="border-t border-border/30 pt-5 pb-5">
+      <div className="section-header mb-2">
+        <span className="section-label flex items-center gap-1.5">
+          <Brain className="w-3 h-3 text-primary" />
+          AI Market Insights
+          <span className={cn("w-2 h-2 rounded-full animate-pulse ml-1", isLoading ? "bg-warning" : "bg-success")} />
+        </span>
+        <Sparkles className="w-3.5 h-3.5 text-warning" />
       </div>
 
-      <div className="space-y-3">
+      <h3 className="font-display font-bold text-base md:text-lg mb-4">
+        Market <span className="text-gradient-cosmic">Intelligence</span>
+      </h3>
+
+      <div>
         {displayedInsights.map((insight, i) => {
           const style = getTypeStyle(insight.type);
           const TypeIcon = style.icon;
           const isExpanded = expandedInsight === i;
+
           return (
-            <div key={i}>
-              <button 
+            <div key={i} className="border-b border-border/20 last:border-b-0">
+              <button
                 onClick={() => setExpandedInsight(isExpanded ? null : i)}
-                className={cn(
-                  "w-full p-4 rounded-lg border transition-all hover:scale-[1.01] text-left",
-                  style.bg, style.border,
-                  insight.importance === "high" && "ring-1 ring-offset-1 ring-offset-background"
-                )}
+                className="w-full py-3.5 text-left group flex items-start gap-3 hover:opacity-80 transition-opacity"
               >
-                <div className="flex items-start justify-between gap-2 mb-2">
-                  <div className="flex items-center gap-2">
-                    <TypeIcon className={cn("w-4 h-4", style.color)} />
-                    <h4 className={cn("font-display font-bold text-sm", style.color)}>{insight.title}</h4>
+                <div className={cn("w-1.5 h-1.5 rounded-full flex-shrink-0 mt-1.5", style.dot)} />
+                <TypeIcon className={cn("w-4 h-4 flex-shrink-0 mt-0.5", style.color)} />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className={cn("font-display font-bold text-sm", style.color)}>
+                      {insight.title}
+                    </span>
                     {insight.importance === "high" && (
-                      <span className="text-[10px] bg-primary/20 text-primary px-1.5 py-0.5 rounded font-display">IMPORTANT</span>
+                      <span className="text-[9px] font-bold uppercase text-primary">KEY</span>
                     )}
                   </div>
-                  <ChevronDown className={cn("w-4 h-4 text-muted-foreground transition-transform", isExpanded && "rotate-180")} />
-                </div>
-                <p className="text-sm text-muted-foreground mb-2">{insight.description}</p>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1 text-xs text-primary">
+                  <p className="text-xs text-muted-foreground line-clamp-2">{insight.description}</p>
+                  <div className="flex items-center gap-1 text-xs text-primary mt-1">
                     <Target className="w-3 h-3" /> {insight.action}
                   </div>
-                  <span className="text-[10px] text-muted-foreground">{insight.category}</span>
                 </div>
+                <ChevronRight className={cn("w-4 h-4 text-muted-foreground flex-shrink-0 mt-1 transition-transform", isExpanded && "rotate-90")} />
               </button>
-              
-              {isExpanded && (
-                <div className="ml-4 mt-2 mb-1 p-3 rounded-lg bg-muted/20 border border-border/30 animate-in fade-in slide-in-from-top-1 duration-200">
-                  {insight.details && (
-                    <ul className="space-y-1.5 mb-3">
-                      {insight.details.map((detail, j) => (
-                        <li key={j} className="flex items-start gap-2 text-xs text-muted-foreground">
-                          <Sparkles className="w-3 h-3 text-primary mt-0.5 flex-shrink-0" />
-                          {detail}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+
+              {isExpanded && insight.details && (
+                <div className="ml-8 pb-3 animate-in fade-in slide-in-from-top-1 duration-150">
+                  <ul className="space-y-1.5 mb-2">
+                    {insight.details.map((detail, j) => (
+                      <li key={j} className="flex items-start gap-2 text-xs text-muted-foreground">
+                        <Sparkles className="w-3 h-3 text-primary mt-0.5 flex-shrink-0" />
+                        {detail}
+                      </li>
+                    ))}
+                  </ul>
                   {insight.links && insight.links.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-3">
                       {insight.links.map(link => (
                         <a key={link.label} href={link.url} target="_blank" rel="noopener noreferrer"
                           className="text-xs text-primary hover:underline flex items-center gap-1">
@@ -159,15 +153,17 @@ export function EnhancedMarketInsightsPanel() {
       </div>
 
       {insights.length > 3 && (
-        <button onClick={() => setExpanded(!expanded)}
-          className="w-full mt-4 text-sm text-primary hover:text-primary/80 font-medium flex items-center justify-center gap-1">
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="w-full mt-3 pt-3 border-t border-border/30 text-xs text-primary font-semibold flex items-center gap-1"
+        >
           {expanded ? "Show Less" : `Show ${insights.length - 3} More Insights`}
-          <ArrowRight className={cn("w-4 h-4 transition-transform", expanded && "rotate-90")} />
+          <ArrowRight className={cn("w-3 h-3 transition-transform", expanded && "rotate-90")} />
         </button>
       )}
 
-      <div className="mt-4 pt-4 border-t border-border/50 flex items-center justify-between">
-        <span className="text-xs text-muted-foreground flex items-center gap-1">
+      <div className="mt-4 pt-3 border-t border-border/30 flex items-center justify-between text-xs text-muted-foreground">
+        <span className="flex items-center gap-1">
           <Clock className="w-3 h-3" /> Updated just now
         </span>
         <Link to="/sentiment" className="text-xs text-primary hover:underline flex items-center gap-1">
