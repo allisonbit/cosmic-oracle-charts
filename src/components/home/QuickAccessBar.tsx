@@ -60,11 +60,9 @@ export function QuickAccessBar() {
                   to={link.href}
                   className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors group"
                 >
-                  <div className={`w-5 h-5 sm:w-6 sm:h-6 ${link.bgColor} rounded flex items-center justify-center`}>
-                    <span className={`${link.textColor} text-xs`}>
-                      {typeof link.icon === 'string' ? link.icon : link.icon}
-                    </span>
-                  </div>
+                  <span className={`${link.textColor} text-xs leading-none`}>
+                    {typeof link.icon === 'string' ? link.icon : link.icon}
+                  </span>
                   <span className="text-xs sm:text-sm group-hover:text-primary transition-colors">
                     {link.label}
                   </span>

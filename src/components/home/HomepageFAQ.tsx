@@ -105,7 +105,7 @@ export function HomepageFAQ() {
               <AccordionItem
                 key={index}
                 value={`faq-${index}`}
-                className="border border-border/50 rounded-xl px-5 md:px-6 bg-card/50 data-[state=open]:border-primary/30 transition-colors"
+                className="border-b border-border/30 last:border-b-0"
               >
                 <AccordionTrigger className="text-sm md:text-base font-medium text-foreground hover:text-primary py-4 md:py-5 text-left">
                   {faq.question}

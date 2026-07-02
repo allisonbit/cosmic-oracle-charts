@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Layers, Coins, Cpu, Gamepad2, Shield } from "lucide-react";
+import { ArrowRight, Layers, Coins, Cpu, Gamepad2 } from "lucide-react";
 
 const categories = [
   {
@@ -50,33 +50,34 @@ const categories = [
 
 export function MarketCategoriesHub() {
   return (
-    <section className="py-16 md:py-24 border-t border-border/50 bg-background/50 relative" aria-labelledby="categories-heading">
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center mb-12">
-          <h2 id="categories-heading" className="text-[clamp(1.5rem,3vw,2rem)] font-display font-bold">
+    <section className="py-16 md:py-24 border-t border-border/30" aria-labelledby="categories-heading">
+      <div className="container mx-auto px-4">
+        <div className="section-header mb-2">
+          <span className="section-label">Market Categories</span>
+        </div>
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+          <h2 id="categories-heading" className="text-[clamp(1.5rem,3vw,2.25rem)] font-display font-extrabold leading-tight">
             Explore Crypto <span className="text-gradient-cosmic">Categories</span>
           </h2>
-          <p className="text-muted-foreground mt-3 max-w-2xl mx-auto text-sm md:text-base">
+          <p className="text-muted-foreground text-sm md:text-base max-w-sm">
             Deep dive into specific market sectors with our AI-powered price predictions and on-chain analytics.
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl">
           {categories.map((category) => {
             const Icon = category.icon;
             return (
-              <div key={category.title} className="flex flex-col">
+              <div key={category.title} className="flex flex-col border-t border-border/30 pt-6">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="p-2 rounded-lg bg-primary/10">
-                    <Icon className="w-5 h-5 text-primary" />
-                  </div>
-                  <h3 className="font-display font-bold text-lg">{category.title}</h3>
+                  <Icon className="w-4 h-4 text-primary flex-shrink-0" />
+                  <h3 className="font-display font-bold text-base md:text-lg">{category.title}</h3>
                 </div>
                 
-                <ul className="space-y-3">
+                <ul className="space-y-2.5">
                   {category.links.map((link) => (
                     <li key={link.name}>
-                      <Link 
+                      <Link
                         to={link.url}
                         className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center group"
                       >
@@ -86,12 +87,12 @@ export function MarketCategoriesHub() {
                     </li>
                   ))}
                 </ul>
-                
-                <Link 
-                  to="/explorer" 
-                  className="mt-4 text-xs font-semibold text-primary/80 hover:text-primary inline-flex items-center uppercase tracking-wider"
+
+                <Link
+                  to="/explorer"
+                  className="mt-4 text-xs font-semibold text-primary/70 hover:text-primary inline-flex items-center uppercase tracking-wider"
                 >
-                  View all {category.title} <ArrowRight className="w-3 h-3 ml-1" />
+                  View all <ArrowRight className="w-3 h-3 ml-1" />
                 </Link>
               </div>
             );
