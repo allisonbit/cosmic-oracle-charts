@@ -97,12 +97,12 @@ export function SignalChart({ symbol, name, currentPrice, bias, confidence, trad
   }, [chartData, zones]);
 
   return (
-    <div className="holo-card p-4 sm:p-6">
+    <div className="border-t border-border/30 pt-5">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="font-display text-sm sm:text-base font-bold flex items-center gap-2">
             <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-            {name} ({symbol.toUpperCase()}) SIGNAL CHART
+            {name} ({symbol.toUpperCase()}) Signal Chart
           </h3>
           <p className="text-[10px] text-muted-foreground mt-0.5">
             AI-powered trading zones overlay
@@ -218,34 +218,32 @@ export function SignalChart({ symbol, name, currentPrice, bias, confidence, trad
         </ResponsiveContainer>
       </div>
 
-      {/* Trading Zones Summary */}
-      <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-2">
-        <div className="p-2 rounded-lg bg-green-500/10 border border-green-500/20 text-center">
-          <div className="text-[10px] text-muted-foreground flex items-center justify-center gap-1">
-            <Target className="w-3 h-3 text-green-400" />
-            Entry Zone
+      {/* Trading Zones Summary — inline strip, colored left accents */}
+      <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-3 border-t border-border/20 pt-3">
+        <div className="border-l-2 border-green-500 pl-2.5">
+          <div className="section-label mb-0.5 flex items-center gap-1">
+            <Target className="w-3 h-3 text-green-400" /> Entry Zone
           </div>
           <div className="text-xs font-mono font-medium text-green-400">
             {formatPrice(zones.entryLow)} - {formatPrice(zones.entryHigh)}
           </div>
         </div>
-        <div className="p-2 rounded-lg bg-red-500/10 border border-red-500/20 text-center">
-          <div className="text-[10px] text-muted-foreground flex items-center justify-center gap-1">
-            <Shield className="w-3 h-3 text-red-400" />
-            Stop Loss
+        <div className="border-l-2 border-red-500 pl-2.5">
+          <div className="section-label mb-0.5 flex items-center gap-1">
+            <Shield className="w-3 h-3 text-red-400" /> Stop Loss
           </div>
           <div className="text-xs font-mono font-medium text-red-400">
             {formatPrice(zones.stopLoss)}
           </div>
         </div>
-        <div className="p-2 rounded-lg bg-primary/10 border border-primary/20 text-center">
-          <div className="text-[10px] text-muted-foreground">TP1</div>
+        <div className="border-l-2 border-primary pl-2.5">
+          <div className="section-label mb-0.5">TP1</div>
           <div className="text-xs font-mono font-medium text-primary">
             {formatPrice(zones.takeProfit1)}
           </div>
         </div>
-        <div className="p-2 rounded-lg bg-primary/10 border border-primary/20 text-center">
-          <div className="text-[10px] text-muted-foreground">TP2 / TP3</div>
+        <div className="border-l-2 border-primary pl-2.5">
+          <div className="section-label mb-0.5">TP2 / TP3</div>
           <div className="text-xs font-mono font-medium text-primary">
             {formatPrice(zones.takeProfit2)} / {formatPrice(zones.takeProfit3)}
           </div>

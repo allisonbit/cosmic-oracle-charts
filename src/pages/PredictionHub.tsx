@@ -342,17 +342,17 @@ export default function PredictionHub() {
           </div>
 
           {/* Filter chips */}
-          <div className="flex flex-wrap items-center gap-2 mb-4">
-            <div className="flex rounded-lg border border-border overflow-hidden">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-4 border-b border-border/30 pb-3">
+            <div className="flex items-center gap-4 text-xs">
               {(['all', 'bullish', 'bearish', 'neutral'] as const).map(cat => (
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
                   className={cn(
-                    "px-3 py-1.5 text-xs font-medium transition-colors capitalize",
+                    "font-medium transition-colors capitalize pb-1 -mb-[13px] border-b-2",
                     selectedCategory === cat
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-card text-muted-foreground hover:text-foreground"
+                      ? "text-primary border-primary font-semibold"
+                      : "text-muted-foreground border-transparent hover:text-foreground"
                   )}
                 >
                   {cat}
@@ -364,7 +364,7 @@ export default function PredictionHub() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="bg-card border border-border rounded px-2 py-1 text-xs"
+                className="bg-transparent border-b border-border px-1 py-0.5 text-xs focus:outline-none focus:border-primary"
               >
                 <option value="confidence">Confidence</option>
                 <option value="change">24h Change</option>

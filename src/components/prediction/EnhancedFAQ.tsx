@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HelpCircle } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 
@@ -83,22 +82,20 @@ export function EnhancedFAQ({ coinName, symbol, timeframe, currentPrice, bias, c
         </script>
       </Helmet>
       
-      <Card className="bg-card/50 border-border/50 backdrop-blur-sm">
-        <CardHeader>
-          <CardTitle className="text-xl flex items-center gap-2">
-            <HelpCircle className="h-5 w-5 text-primary" />
-            {coinName} Investment Questions
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
+      <section className="border-t border-border/30 pt-5">
+        <h2 className="text-xl font-bold flex items-center gap-2 mb-5">
+          <HelpCircle className="h-5 w-5 text-primary" />
+          {coinName} Investment Questions
+        </h2>
+        <div className="space-y-5">
           {faqs.map((faq, index) => (
-            <article key={index} className="space-y-2">
+            <article key={index} className="space-y-2 border-b border-border/20 last:border-b-0 pb-5 last:pb-0">
               <h3 className="font-semibold text-foreground text-base">{faq.question}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">{faq.answer}</p>
             </article>
           ))}
-        </CardContent>
-      </Card>
+        </div>
+      </section>
     </>
   );
 }

@@ -21,8 +21,6 @@ import { SetupSchema } from "@/components/prediction/SetupSchema";
 import { GlobalTokenSearch } from "@/components/prediction/GlobalTokenSearch";
 import { GlobalToken } from "@/hooks/useGlobalTokenSearch";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { InArticleAd } from "@/components/ads";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RefreshCw, AlertTriangle, Radio, Clock, Activity, Globe, ChevronRight, TrendingUp, TrendingDown, Minus } from "lucide-react";
@@ -130,7 +128,7 @@ export default function PricePrediction() {
         </div>
 
         {/* === SEARCH BAR === */}
-        <div className="rounded-xl border border-border bg-card p-3 mb-4">
+        <div className="mb-5">
           <GlobalTokenSearch
             onSelect={handleTokenSelect}
             onSearchResults={() => {}}
@@ -180,13 +178,11 @@ export default function PricePrediction() {
                 </div>
               </div>
             ) : error ? (
-              <Card className="border-danger/20 bg-danger/5">
-                <CardContent className="p-6 text-center">
-                  <AlertTriangle className="h-8 w-8 text-danger mx-auto mb-2" />
-                  <p className="text-danger font-medium">Failed to load prediction</p>
-                  <p className="text-sm text-muted-foreground mt-1">Please try refreshing or select another token.</p>
-                </CardContent>
-              </Card>
+              <div className="border-l-4 border-danger pl-5 py-4">
+                <AlertTriangle className="h-8 w-8 text-danger mb-2" />
+                <p className="text-danger font-medium">Failed to load prediction</p>
+                <p className="text-sm text-muted-foreground mt-1">Please try refreshing or select another token.</p>
+              </div>
             ) : data ? (
               <>
                 {/* Hero */}
@@ -278,30 +274,30 @@ export default function PricePrediction() {
           
           {/* === SIDEBAR === */}
           <aside className="lg:col-span-4 space-y-5">
-            {/* Quick Info Card */}
+            {/* Quick Info */}
             {data && (
-              <Card className="bg-card border-border">
-                <CardContent className="p-4 space-y-3">
-                  <div className="text-center">
-                    <div className="text-xs text-muted-foreground mb-1">Current Price</div>
-                    <div className="text-2xl font-bold font-mono text-primary">
-                      ${data.currentPrice?.toLocaleString() || '—'}
-                    </div>
+              <section className="border-t border-border/30 pt-4">
+                <div className="mb-3">
+                  <div className="section-label mb-1">Current Price</div>
+                  <div className="text-2xl font-bold font-mono text-primary">
+                    ${data.currentPrice?.toLocaleString() || '—'}
                   </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="rounded-lg bg-success/10 p-2.5 text-center">
-                      <TrendingUp className="w-3.5 h-3.5 text-success mx-auto mb-0.5" />
-                      <div className="text-lg font-bold text-success">{data.probabilityBullish}%</div>
-                      <div className="text-[10px] text-muted-foreground">Bullish</div>
+                </div>
+                <div className="flex items-stretch divide-x divide-border/30 border-t border-border/20 pt-3">
+                  <div className="flex-1 border-l-2 border-success pl-3">
+                    <div className="section-label mb-0.5 flex items-center gap-1">
+                      <TrendingUp className="w-3 h-3 text-success" /> Bullish
                     </div>
-                    <div className="rounded-lg bg-danger/10 p-2.5 text-center">
-                      <TrendingDown className="w-3.5 h-3.5 text-danger mx-auto mb-0.5" />
-                      <div className="text-lg font-bold text-danger">{data.probabilityBearish}%</div>
-                      <div className="text-[10px] text-muted-foreground">Bearish</div>
-                    </div>
+                    <div className="text-lg font-bold text-success">{data.probabilityBullish}%</div>
                   </div>
-                </CardContent>
-              </Card>
+                  <div className="flex-1 border-l-2 border-danger pl-3 ml-3">
+                    <div className="section-label mb-0.5 flex items-center gap-1">
+                      <TrendingDown className="w-3 h-3 text-danger" /> Bearish
+                    </div>
+                    <div className="text-lg font-bold text-danger">{data.probabilityBearish}%</div>
+                  </div>
+                </div>
+              </section>
             )}
             
             <TimeframeSelector coinId={crypto.id} coinName={crypto.name} currentTimeframe={validTimeframe} />

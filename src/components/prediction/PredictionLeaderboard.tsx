@@ -167,62 +167,60 @@ export function PredictionLeaderboard() {
   };
 
   return (
-    <div className="rounded-xl border border-border bg-card p-4 sm:p-6">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <Trophy className="w-5 h-5 text-warning" />
-          <h3 className="font-bold text-base sm:text-lg">Prediction Leaderboard</h3>
-        </div>
-        <Badge variant="outline" className="text-xs">
-          Live Tracking
-        </Badge>
+    <div className="border-t border-border/30 pt-5">
+      <div className="section-header mb-2">
+        <span className="section-label flex items-center gap-1.5">
+          <Trophy className="w-3.5 h-3.5 text-warning" />
+          Prediction Leaderboard
+        </span>
+        <Badge variant="outline" className="text-xs">Live Tracking</Badge>
       </div>
 
       <p className="text-xs text-muted-foreground mb-4">
         Real predictions from our AI engine with tracked outcomes verified against live market prices.
       </p>
 
-      {/* Stats Summary */}
-      <div className="grid grid-cols-3 gap-3 mb-4">
-        <div className="p-3 rounded-lg bg-muted/30 text-center">
+      {/* Stats Summary — inline strip */}
+      <div className="flex items-stretch divide-x divide-border/30 border-y border-border/20 py-4 mb-4">
+        <div className="flex-1 text-center px-2">
           <Award className="w-4 h-4 text-primary mx-auto mb-1" />
           <div className="text-xl font-bold text-primary">{(stats.avgAccuracy ?? 0).toFixed(1)}%</div>
-          <div className="text-[10px] text-muted-foreground">Avg Accuracy</div>
+          <div className="section-label mt-0.5">Avg Accuracy</div>
         </div>
-        <div className="p-3 rounded-lg bg-muted/30 text-center">
+        <div className="flex-1 text-center px-2">
           <CheckCircle className="w-4 h-4 text-success mx-auto mb-1" />
           <div className="text-xl font-bold text-success">{stats.correctDirections}</div>
-          <div className="text-[10px] text-muted-foreground">Correct Calls</div>
+          <div className="section-label mt-0.5">Correct Calls</div>
         </div>
-        <div className="p-3 rounded-lg bg-muted/30 text-center">
+        <div className="flex-1 text-center px-2">
           <BarChart3 className="w-4 h-4 text-foreground mx-auto mb-1" />
           <div className="text-xl font-bold">{predictions.length}</div>
-          <div className="text-[10px] text-muted-foreground">Total Tracked</div>
+          <div className="section-label mt-0.5">Total Tracked</div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-2 mb-4">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-4 text-xs">
         {(['all', 'accurate', 'inaccurate'] as const).map(f => (
           <button
             key={f}
             onClick={() => setFilter(f)}
             className={cn(
-              "px-3 py-1 rounded-full text-xs font-medium transition-colors",
-              filter === f ? "bg-primary text-primary-foreground" : "bg-muted/50 text-muted-foreground hover:bg-muted"
+              "font-medium transition-colors",
+              filter === f ? "text-primary font-semibold" : "text-muted-foreground hover:text-foreground"
             )}
           >
             {f === 'all' ? 'All' : f === 'accurate' ? '✓ Accurate (70%+)' : '✗ Missed'}
           </button>
         ))}
-        <div className="ml-auto flex gap-1">
+        <div className="ml-auto flex gap-3">
           {(['all', 'daily', 'weekly', 'monthly'] as const).map(tf => (
             <button
               key={tf}
               onClick={() => setTimeframeFilter(tf)}
               className={cn(
-                "px-2 py-1 rounded text-[10px] font-medium transition-colors",
-                timeframeFilter === tf ? "bg-primary/20 text-primary" : "text-muted-foreground hover:text-foreground"
+                "text-[11px] font-medium transition-colors",
+                timeframeFilter === tf ? "text-primary font-semibold" : "text-muted-foreground hover:text-foreground"
               )}
             >
               {tf === 'all' ? 'All' : tf.charAt(0).toUpperCase() + tf.slice(1)}
@@ -241,9 +239,9 @@ export function PredictionLeaderboard() {
         </div>
       ) : (
         <>
-          <div className="rounded-lg border border-border overflow-hidden">
+          <div className="overflow-x-auto border-t border-border/40">
             <table className="w-full text-sm">
-              <thead className="bg-muted/30">
+              <thead className="border-b border-border/40">
                 <tr>
                   <th className="text-left p-2 sm:p-3 font-medium text-muted-foreground text-xs">Token</th>
                   <th className="text-center p-2 sm:p-3 font-medium text-muted-foreground text-xs">Signal</th>
@@ -315,7 +313,7 @@ export function PredictionLeaderboard() {
           {filtered.length > 8 && (
             <button
               onClick={() => setExpanded(!expanded)}
-              className="w-full mt-3 py-2 rounded-lg bg-muted/30 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors flex items-center justify-center gap-1"
+              className="w-full mt-3 pt-3 border-t border-border/30 text-xs text-primary font-semibold hover:text-primary/80 transition-colors flex items-center justify-center gap-1"
             >
               {expanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
               {expanded ? 'Show Less' : `Show All (${filtered.length} predictions)`}

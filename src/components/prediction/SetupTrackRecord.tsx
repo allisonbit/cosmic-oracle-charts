@@ -31,7 +31,7 @@ export function SetupTrackRecord({ coinId, name }: { coinId: string; name: strin
   if (!stats) return null;
 
   return (
-    <section className="holo-card p-4 sm:p-6" aria-labelledby="track-record-heading">
+    <section className="border-t border-border/30 pt-5" aria-labelledby="track-record-heading">
       <div className="flex items-center justify-between gap-2 mb-1">
         <h2 id="track-record-heading" className="font-display text-base sm:text-lg font-bold flex items-center gap-2">
           <Trophy className="w-4 h-4 sm:w-5 sm:h-5 text-warning" />
@@ -43,7 +43,8 @@ export function SetupTrackRecord({ coinId, name }: { coinId: string; name: strin
         Real outcomes of past {name} setups — each was generated once and monitored to its target or stop. No cherry-picking.
       </p>
 
-      <div className="grid grid-cols-3 gap-2 mb-4">
+      {/* Inline stat strip */}
+      <div className="flex items-stretch divide-x divide-border/30 border-y border-border/20 py-4 mb-4">
         <Stat label="Win Rate" value={`${stats.winRate}%`} cls={stats.winRate >= 50 ? "text-success" : "text-danger"} />
         <Stat label="Resolved" value={`${stats.resolved.length}`} cls="text-foreground" />
         <Stat
@@ -54,8 +55,8 @@ export function SetupTrackRecord({ coinId, name }: { coinId: string; name: strin
       </div>
 
       {/* Recent outcomes */}
-      <div className="space-y-1.5">
-        <div className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground flex items-center gap-1 mb-1">
+      <div>
+        <div className="section-label flex items-center gap-1 mb-1">
           <History className="w-3 h-3" /> Recent Outcomes
         </div>
         {stats.resolved.slice(0, 6).map((s) => {
@@ -63,7 +64,7 @@ export function SetupTrackRecord({ coinId, name }: { coinId: string; name: strin
           const stopped = s.status === "stopped";
           const Icon = win ? CheckCircle2 : stopped ? XCircle : Clock;
           return (
-            <div key={s.id} className="flex items-center justify-between rounded-lg bg-muted/20 px-3 py-1.5 text-xs">
+            <div key={s.id} className="editorial-row justify-between text-xs">
               <span className="flex items-center gap-1.5">
                 <Icon className={cn("w-3.5 h-3.5", win ? "text-success" : stopped ? "text-danger" : "text-muted-foreground")} />
                 <span className="font-medium capitalize">{s.status.replace("_", " ")}</span>
@@ -82,9 +83,9 @@ export function SetupTrackRecord({ coinId, name }: { coinId: string; name: strin
 
 function Stat({ label, value, cls }: { label: string; value: string; cls: string }) {
   return (
-    <div className="rounded-lg bg-muted/30 p-3 text-center">
+    <div className="flex-1 text-center px-2">
       <div className={cn("font-display text-xl font-bold", cls)}>{value}</div>
-      <div className="text-[10px] text-muted-foreground mt-0.5">{label}</div>
+      <div className="section-label mt-0.5">{label}</div>
     </div>
   );
 }

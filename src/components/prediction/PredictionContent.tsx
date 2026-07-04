@@ -1,5 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertTriangle, Info, ExternalLink } from "lucide-react";
+import { AlertTriangle, Info } from "lucide-react";
 
 interface DisclaimerProps {
   coinName: string;
@@ -7,33 +6,31 @@ interface DisclaimerProps {
 
 export function Disclaimer({ coinName }: DisclaimerProps) {
   return (
-    <Card className="bg-yellow-500/5 border-yellow-500/20">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-lg flex items-center gap-2 text-yellow-500">
-          <AlertTriangle className="h-5 w-5" />
-          Important Disclaimer
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="text-sm text-muted-foreground space-y-3">
+    <section className="border-l-4 border-yellow-500 pl-5">
+      <h2 className="text-lg font-bold flex items-center gap-2 text-yellow-500 mb-3">
+        <AlertTriangle className="h-5 w-5" />
+        Important Disclaimer
+      </h2>
+      <div className="text-sm text-muted-foreground space-y-3">
         <p>
-          <strong>Not Financial Advice:</strong> The {coinName} price predictions and analysis provided on this page 
-          are for informational and educational purposes only. They do not constitute financial advice, 
+          <strong>Not Financial Advice:</strong> The {coinName} price predictions and analysis provided on this page
+          are for informational and educational purposes only. They do not constitute financial advice,
           investment recommendations, or trading signals.
         </p>
         <p>
-          <strong>Risk Warning:</strong> Cryptocurrency investments carry significant risk. Prices are highly 
+          <strong>Risk Warning:</strong> Cryptocurrency investments carry significant risk. Prices are highly
           volatile and can result in substantial losses. Past performance does not guarantee future results.
         </p>
         <p>
-          <strong>Do Your Own Research:</strong> Always conduct your own research and consider consulting with 
+          <strong>Do Your Own Research:</strong> Always conduct your own research and consider consulting with
           a qualified financial advisor before making any investment decisions.
         </p>
         <p className="text-xs">
-          Oracle Bull uses AI and technical analysis models to generate predictions. While we strive for accuracy, 
+          Oracle Bull uses AI and technical analysis models to generate predictions. While we strive for accuracy,
           no prediction method can guarantee results. Trade responsibly.
         </p>
-      </CardContent>
-    </Card>
+      </div>
+    </section>
   );
 }
 
@@ -45,7 +42,7 @@ interface FAQSectionProps {
 
 export function FAQSection({ coinName, symbol, timeframe }: FAQSectionProps) {
   const timeframeText = timeframe === 'daily' ? 'today' : timeframe === 'weekly' ? 'this week' : 'this month';
-  
+
   const faqs = [
     {
       question: `What will ${coinName} price be ${timeframeText}?`,
@@ -68,24 +65,22 @@ export function FAQSection({ coinName, symbol, timeframe }: FAQSectionProps) {
       answer: `We analyze RSI (Relative Strength Index), MACD (Moving Average Convergence Divergence), Moving Averages (20, 50, 200-day), Bollinger Bands, Volume Analysis, Support/Resistance levels, and market sentiment. Each indicator provides different insights into price momentum and potential reversals.`
     }
   ];
-  
+
   return (
-    <Card className="bg-card/50 border-border/50 backdrop-blur-sm">
-      <CardHeader>
-        <CardTitle className="text-xl flex items-center gap-2">
-          <Info className="h-5 w-5 text-primary" />
-          Frequently Asked Questions
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
+    <section className="border-t border-border/30 pt-5">
+      <h2 className="text-xl font-bold flex items-center gap-2 mb-5">
+        <Info className="h-5 w-5 text-primary" />
+        Frequently Asked Questions
+      </h2>
+      <div className="space-y-5">
         {faqs.map((faq, index) => (
-          <div key={index} className="space-y-2">
+          <div key={index} className="space-y-2 border-b border-border/20 last:border-b-0 pb-5 last:pb-0">
             <h3 className="font-semibold text-foreground">{faq.question}</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">{faq.answer}</p>
           </div>
         ))}
-      </CardContent>
-    </Card>
+      </div>
+    </section>
   );
 }
 
@@ -95,38 +90,36 @@ interface MethodologyProps {
 
 export function Methodology({ coinName }: MethodologyProps) {
   return (
-    <Card className="bg-card/50 border-border/50 backdrop-blur-sm">
-      <CardHeader>
-        <CardTitle className="text-xl">Our Prediction Methodology</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4 text-sm text-muted-foreground">
+    <section className="border-t border-border/30 pt-5">
+      <h2 className="text-xl font-bold mb-4">Our Prediction Methodology</h2>
+      <div className="space-y-4 text-sm text-muted-foreground">
         <div>
           <h3 className="font-semibold text-foreground mb-2">Technical Analysis</h3>
           <p>We analyze key technical indicators including RSI, MACD, Moving Averages, and Bollinger Bands to identify trend direction, momentum, and potential reversal points.</p>
         </div>
-        
+
         <div>
-          <h3 className="font-semibold text-foreground mb-2">Support & Resistance</h3>
+          <h3 className="font-semibold text-foreground mb-2">Support &amp; Resistance</h3>
           <p>Our algorithms calculate dynamic support and resistance levels using pivot points, Fibonacci retracements, and historical price action to identify key price zones.</p>
         </div>
-        
+
         <div>
           <h3 className="font-semibold text-foreground mb-2">AI-Powered Analysis</h3>
           <p>Advanced machine learning models process market data, sentiment signals, and historical patterns to generate probability-weighted predictions with confidence scores.</p>
         </div>
-        
+
         <div>
           <h3 className="font-semibold text-foreground mb-2">Risk Assessment</h3>
           <p>Each prediction includes a comprehensive risk assessment considering volatility, market conditions, and potential downside scenarios to help you manage your exposure.</p>
         </div>
-        
-        <div className="pt-4 border-t border-border/50">
+
+        <div className="pt-4 border-t border-border/20">
           <p className="text-xs">
-            Our predictions are updated automatically based on real-time market data. Daily predictions refresh every 5 minutes, 
+            Our predictions are updated automatically based on real-time market data. Daily predictions refresh every 5 minutes,
             weekly predictions every 30 minutes, and monthly predictions hourly.
           </p>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </section>
   );
 }

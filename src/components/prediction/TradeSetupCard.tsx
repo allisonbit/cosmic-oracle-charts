@@ -61,7 +61,7 @@ export function TradeSetupCard({ coinId, symbol, name, timeframe, contractAddres
     : 0;
 
   return (
-    <section className="holo-card p-4 sm:p-6" aria-labelledby="trade-setup-heading">
+    <section className="border-t border-border/30 pt-5" aria-labelledby="trade-setup-heading">
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
         <h2 id="trade-setup-heading" className="font-display text-base sm:text-lg font-bold flex items-center gap-2">
@@ -83,26 +83,26 @@ export function TradeSetupCard({ coinId, symbol, name, timeframe, contractAddres
           : "Live setup from the latest analysis. It locks and is monitored to its outcome once tracking is active."}
       </p>
 
-      {/* Bias + P&L row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
-        <div className="rounded-lg bg-muted/30 p-2.5">
-          <div className="text-[10px] text-muted-foreground">Direction</div>
+      {/* Bias + P&L row — inline stat strip */}
+      <div className="grid grid-cols-2 sm:flex sm:items-stretch sm:divide-x sm:divide-border/30 border-y border-border/20 py-4 mb-4 gap-y-3">
+        <div className="sm:px-5 sm:first:pl-0">
+          <div className="section-label mb-1">Direction</div>
           <div className={cn("flex items-center gap-1 font-display font-bold", biasColor)}>
             <BiasIcon className="w-4 h-4" /> {bias.toUpperCase()}
           </div>
         </div>
-        <div className="rounded-lg bg-muted/30 p-2.5">
-          <div className="text-[10px] text-muted-foreground">Confidence</div>
+        <div className="sm:px-5">
+          <div className="section-label mb-1">Confidence</div>
           <div className="font-display font-bold text-foreground">{confidence}%</div>
         </div>
-        <div className="rounded-lg bg-muted/30 p-2.5">
-          <div className="text-[10px] text-muted-foreground">Live P&L</div>
+        <div className="sm:px-5">
+          <div className="section-label mb-1">Live P&amp;L</div>
           <div className={cn("font-mono font-bold", pnl >= 0 ? "text-success" : "text-danger")}>
             {pnl >= 0 ? "+" : ""}{pnl.toFixed(2)}%
           </div>
         </div>
-        <div className="rounded-lg bg-muted/30 p-2.5">
-          <div className="text-[10px] text-muted-foreground">Risk / Reward</div>
+        <div className="sm:px-5">
+          <div className="section-label mb-1">Risk / Reward</div>
           <div className="font-mono font-bold text-primary">1:{rr ? rr.toFixed(1) : "—"}</div>
         </div>
       </div>
@@ -166,9 +166,9 @@ function LevelRow({
 }) {
   return (
     <div className={cn(
-      "flex items-center justify-between rounded-lg px-3 py-1.5 text-sm",
-      highlight ? "bg-primary/5 border border-primary/20" : "bg-muted/20",
-      reached && "ring-1 ring-success/40",
+      "flex items-center justify-between py-2 text-sm border-b border-border/20 last:border-b-0",
+      highlight && "border-l-2 border-l-primary pl-2.5",
+      reached && "border-l-2 border-l-success pl-2.5",
     )}>
       <span className="flex items-center gap-1.5 text-muted-foreground text-xs">
         <Icon className={cn("w-3.5 h-3.5", color)} />
