@@ -25,7 +25,6 @@ const routeLabels: Record<string, string> = {
   "insights": "Market Insights",
   "contact": "Contact Us",
   "about": "About Oracle Bull",
-  "sitemap": "Sitemap",
   "privacy-policy": "Privacy Policy",
   "terms": "Terms of Service",
   "risk-disclaimer": "Risk Disclaimer",

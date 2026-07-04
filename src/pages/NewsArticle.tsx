@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import { SITE_URL } from "@/lib/siteConfig";
 import { useNewsArticle, timeAgo, sentimentStyle, type NewsArticleData } from "@/hooks/useNews";
-import { InArticleAd, SidebarAd } from "@/components/ads";
 import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
 } from "@/components/ui/accordion";
@@ -352,7 +351,6 @@ export default function NewsArticle() {
                 </button>
               </div>
 
-              <InArticleAd className="my-10" />
 
               {/* Key Takeaways */}
               {article.takeaways.length > 0 && (
@@ -427,7 +425,6 @@ export default function NewsArticle() {
 
             {/* Sidebar */}
             <aside className="space-y-0">
-              <SidebarAd className="mb-6 hidden lg:flex" />
 
               {/* Coins mentioned */}
               {article.coins.length > 0 && (

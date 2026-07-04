@@ -12,7 +12,6 @@ import { NewsPanel } from "@/components/sentiment/NewsPanel";
 import { GoogleTrendsPanel } from "@/components/sentiment/GoogleTrendsPanel";
 import { GitHubActivityPanel } from "@/components/sentiment/GitHubActivityPanel";
 import { SentimentSchema, SentimentSEOContent, SentimentHowItWorks, SentimentDataMeaning } from "@/components/seo/index";
-import { InArticleAd, SidebarAd } from "@/components/ads";
 import { useNavigate } from "react-router-dom";
 
 // New enhanced components
@@ -220,7 +219,6 @@ const SentimentPage = () => {
               whaleActivity={whaleActivity}
             />
 
-            <InArticleAd />
 
             <SectorHeatmap coins={topCoins} />
             <DivergenceScanner coins={topCoins} />
@@ -242,7 +240,6 @@ const SentimentPage = () => {
                 isLoading={sentimentLoading} 
               />
             </div>
-            <InArticleAd />
             <div className="grid lg:grid-cols-2 gap-6">
               <GoogleTrendsPanel 
                 trending={sentimentData?.trending || []}

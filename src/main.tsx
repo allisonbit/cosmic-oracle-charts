@@ -7,10 +7,6 @@ import "@fontsource-variable/plus-jakarta-sans/index.css";
 import "@fontsource-variable/sora/index.css";
 import "@fontsource-variable/jetbrains-mono/index.css";
 
-// Structured error tracking (disabled until VITE_SENTRY_DSN is set)
-import { initSentry } from "./lib/sentry";
-initSentry();
-
 import "./index.css";
 
 // Mark mounted BEFORE render to prevent race condition with API error handlers

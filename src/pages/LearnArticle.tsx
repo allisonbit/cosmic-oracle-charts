@@ -16,7 +16,6 @@ import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
 } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
-import { InArticleAd } from "@/components/ads";
 
 export default function LearnArticle() {
   const { slug } = useParams();
@@ -224,7 +223,6 @@ export default function LearnArticle() {
             dangerouslySetInnerHTML={{ __html: processedContent }}
           />
 
-          <InArticleAd className="my-8" />
 
           {/* FAQs */}
           {article.faqs.length > 0 && (

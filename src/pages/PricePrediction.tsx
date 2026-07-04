@@ -21,7 +21,6 @@ import { SetupSchema } from "@/components/prediction/SetupSchema";
 import { GlobalTokenSearch } from "@/components/prediction/GlobalTokenSearch";
 import { GlobalToken } from "@/hooks/useGlobalTokenSearch";
 import { Skeleton } from "@/components/ui/skeleton";
-import { InArticleAd } from "@/components/ads";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RefreshCw, AlertTriangle, Radio, Clock, Activity, Globe, ChevronRight, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -255,7 +254,6 @@ export default function PricePrediction() {
                 
                 <ScenariosPanel data={data} />
                 
-                <InArticleAd />
                 
                 <HighIntentCTA coinName={crypto.name} symbol={crypto.symbol} />
                 

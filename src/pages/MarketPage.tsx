@@ -6,7 +6,6 @@ import { Helmet } from "react-helmet-async";
 import { TrendingUp, Star, Shield, Zap, BarChart3, ChevronRight, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { NativeBannerAd, SmartlinkAd } from "@/components/ads";
 
 // Market page config — one entry per /market/:slug route
 const MARKET_CONFIGS: Record<string, {
@@ -452,11 +451,6 @@ export default function MarketPage() {
             <span className="text-foreground">{title}</span>
           </nav>
 
-          {/* Smartlink (sponsored) near the top, per owner request. */}
-          <div className="flex justify-center mb-6">
-            <SmartlinkAd />
-          </div>
-
           {/* Hero */}
           <div className="mb-10">
             {config && (
@@ -586,12 +580,6 @@ export default function MarketPage() {
               </div>
             </section>
           )}
-
-          {/* Live Adsterra native banner + smartlink after the market content */}
-          <div className="mt-10 flex flex-col items-center gap-3">
-            <NativeBannerAd />
-            <SmartlinkAd />
-          </div>
         </div>
       </main>
 

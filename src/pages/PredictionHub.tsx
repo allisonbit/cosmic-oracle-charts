@@ -16,7 +16,6 @@ import { Input } from "@/components/ui/input";
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { SEO } from "@/components/MainSEO";
 import { Helmet } from "react-helmet-async";
-import { BannerAd, InArticleAd, NativeBannerAd, SmartlinkAd } from "@/components/ads";
 import { PredictionHubSEOContent, PredictionsHowItWorks, PredictionsDataMeaning } from "@/components/seo/index";
 import { GlobalTokenSearch } from "@/components/prediction/GlobalTokenSearch";
 import { PredictionLeaderboard } from "@/components/prediction/PredictionLeaderboard";
@@ -183,9 +182,7 @@ export default function PredictionHub() {
 
       <main className="flex-1 container mx-auto px-4 py-20 md:py-28 max-w-7xl">
 
-        {/* Smartlink (sponsored) near the top, per owner request. */}
         <div className="flex justify-center mb-5">
-          <SmartlinkAd />
         </div>
 
         {/* === LIVE MONITORING BAR === */}
@@ -311,7 +308,6 @@ export default function PredictionHub() {
           ))}
         </section>
 
-        <BannerAd className="mb-8" />
 
         {/* === LEADERBOARD === */}
         <section className="mb-8">
@@ -483,10 +479,7 @@ export default function PredictionHub() {
           )}
         </section>
 
-        <InArticleAd className="mb-8" />
-        {/* Live Adsterra native banner (container-id based, collision-free) */}
         <div className="container mx-auto px-4 max-w-5xl mb-8">
-          <NativeBannerAd />
         </div>
 
         {/* === SEO CONTENT === */}
@@ -513,9 +506,7 @@ export default function PredictionHub() {
           </div>
         </section>
 
-        {/* Smartlink (sponsored) at the bottom too, per owner request. */}
         <div className="flex justify-center mt-8">
-          <SmartlinkAd />
         </div>
       </main>
 

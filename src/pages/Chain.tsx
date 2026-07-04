@@ -13,7 +13,6 @@ import { ChainExternalLinks } from "@/components/chain/ChainExternalLinks";
 import { ChainSpecificMetrics } from "@/components/chain/ChainSpecificMetrics";
 import { LiveTokenSearchPanel } from "@/components/chain/LiveTokenSearchPanel";
 import { ChainFAQSchema, ChainFAQDisplay } from "@/components/chain/ChainFAQSchema";
-import { InArticleAd } from "@/components/ads";
 import { ChainSEOContent } from "@/components/seo/index";
 import { LazySection } from "@/components/ui/LazySection";
 import {
@@ -343,7 +342,6 @@ export default function Chain() {
           </TabsContent>
         </Tabs>
 
-        <InArticleAd className="my-6" />
 
         {/* ═══════════ ABOUT / SEO CONTENT ═══════════ */}
         {seo && (

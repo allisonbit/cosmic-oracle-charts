@@ -6,7 +6,6 @@ import {
   Newspaper, Brain, TrendingUp, Clock, Search, ArrowRight, RefreshCw,
   Loader2, Bookmark, Flame, X, Sparkles, Activity, Zap, Radar, ChevronRight,
 } from "lucide-react";
-import { InArticleAd } from "@/components/ads";
 import { SITE_URL } from "@/lib/siteConfig";
 import {
   useNewsFeed, timeAgo, sentimentStyle, type NewsArticleData,
@@ -508,7 +507,6 @@ export default function NewsHub() {
                   {articles.slice(feedStart, visibleCount).map((a, i) => (
                     <div key={a.id}>
                       <NewsCard article={a} large={i % 5 === 0} />
-                      {(i + 1) % 8 === 0 && <InArticleAd className="my-8" />}
                     </div>
                   ))}
 

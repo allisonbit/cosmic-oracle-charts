@@ -27,7 +27,6 @@ import { GlobalMetricsSummary } from "@/components/dashboard/GlobalMetricsSummar
 import { SectorPerformancePanel } from "@/components/dashboard/SectorPerformancePanel";
 import { RecentTradesPanel } from "@/components/dashboard/RecentTradesPanel";
 import { Link, useNavigate } from "react-router-dom";
-import { SidebarAd, InArticleAd } from "@/components/ads";
 import { CoinDetailModal } from "@/components/dashboard/CoinDetailModal";
 import { DashboardSchema, DashboardSEOContent, HowToReadDashboard, WhatMakesUsDifferent, RelatedMarketInsights, DashboardHowItWorks, DashboardItemListSchema } from "@/components/seo/index";
 
@@ -194,7 +193,6 @@ const Dashboard = () => {
                 <WidgetErrorBoundary><EnhancedTopPerformers onCoinClick={(coin: any) => navigate(`/price-prediction/${coin.name?.toLowerCase() || coin.symbol?.toLowerCase()}/daily`)} /></WidgetErrorBoundary>
                 <WidgetErrorBoundary><MarketRegimeIndicator /></WidgetErrorBoundary>
                 {/* Sidebar ad */}
-                <SidebarAd />
               </div>
             </div>
 
@@ -204,8 +202,6 @@ const Dashboard = () => {
               <WidgetErrorBoundary><RecentTradesPanel /></WidgetErrorBoundary>
             </div>
 
-            {/* In-article ad between major sections */}
-            <InArticleAd className="mb-4 sm:mb-6" />
 
             {/* Advanced Analytics Section */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">

@@ -8,7 +8,6 @@ import { QuickAccessBar } from "@/components/home/QuickAccessBar";
 import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BannerAd, InArticleAd, NativeBannerAd, MediumRectangleAd, SmartlinkAd } from "@/components/ads";
 import { SEO } from "@/components/MainSEO";
 import { ViewportSection } from "@/components/system/ViewportSection";
 
@@ -75,11 +74,6 @@ const Index = () => {
         {/* 1. Hero — H1, prominent search, live price chips */}
         <HeroSection />
 
-        {/* Smartlink (sponsored) near the top of the homepage, per owner request. */}
-        <div className="container mx-auto px-4 flex justify-center my-4">
-          <SmartlinkAd />
-        </div>
-
         {/* 2. Latest crypto news — attractive, dynamic lead */}
         <Suspense fallback={<SectionFallback />}>
           <HomeNews />
@@ -105,14 +99,6 @@ const Index = () => {
           <PlatformStats />
         </Suspense>
 
-        {/* Ad placement — below fold. BannerAd is the (dormant) AdSense unit;
-            NativeBannerAd is the live Adsterra revenue unit. Container-id based,
-            so it's collision-free alongside the in-article HPF rectangle below. */}
-        <BannerAd className="mt-4" />
-        <div className="container mx-auto px-4 max-w-5xl">
-          <NativeBannerAd />
-        </div>
-
         {/* 5. How It Works — 3-step onboarding */}
         <ViewportSection fallback={<SectionFallback />}>
           <Suspense fallback={<SectionFallback />}>
@@ -133,13 +119,6 @@ const Index = () => {
             <SEOContentBlock />
           </Suspense>
         </ViewportSection>
-
-        {/* In-article ad — dormant AdSense unit + live Adsterra 300x250 rectangle
-            (the single HPF unit on this page; pairs safely with the native banner). */}
-        <InArticleAd />
-        <div className="flex justify-center my-6">
-          <MediumRectangleAd />
-        </div>
 
         {/* 7. Explore chains — internal linking */}
         <ViewportSection fallback={<SectionFallback />}>
@@ -168,10 +147,6 @@ const Index = () => {
             <NewsletterCTASection />
           </Suspense>
         </ViewportSection>
-        {/* Smartlink (sponsored) at the bottom of the homepage, per owner request. */}
-        <div className="container mx-auto px-4 flex justify-center my-6">
-          <SmartlinkAd />
-        </div>
       </main>
 
       <Footer />

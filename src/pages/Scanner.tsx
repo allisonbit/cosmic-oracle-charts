@@ -18,7 +18,6 @@ import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 import { CoinImage } from "@/components/ui/CoinImage";
 import { SEO } from "@/components/MainSEO";
 import { Helmet } from "react-helmet-async";
-import { InArticleAd } from "@/components/ads";
 
 type ScannedToken = LiveToken & { strength: number };
 
@@ -462,7 +461,6 @@ export default function Scanner() {
             </>
           )}
 
-          <InArticleAd className="mt-8 mb-4" />
 
           {/* SEO content */}
           <div className="prose prose-sm dark:prose-invert max-w-none mt-8">

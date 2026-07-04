@@ -7,7 +7,6 @@ import { SITE_URL } from "@/lib/siteConfig";
 import { useRealtimeStrength } from "@/hooks/useRealtimeStrength";
 import type { StrengthData } from "@/hooks/useStrengthMeter";
 import { CoinImage } from "@/components/ui/CoinImage";
-import { InArticleAd } from "@/components/ads";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import {
@@ -406,7 +405,6 @@ export default function StrengthMeter() {
           </TabsContent>
         </Tabs>
 
-        <InArticleAd className="my-4" />
 
         {/* ─── SEO CONTENT ─── */}
         <article className="prose prose-neutral dark:prose-invert max-w-none space-y-2">

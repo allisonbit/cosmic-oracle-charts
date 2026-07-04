@@ -110,11 +110,6 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
     description: "Scan for new and trending crypto tokens across all blockchains. Find hidden gems, analyze token metrics, liquidity, and risk scores. Free real-time scanner.",
     keywords: "crypto scanner, token scanner, new crypto tokens, hidden gems crypto, crypto gem finder, low cap crypto, new token alert"
   },
-  "/sitemap": {
-    title: "Sitemap – All Oracle Bull Pages & Tools",
-    description: "Complete index of Oracle Bull: crypto analytics, blockchain dashboards, AI predictions, educational guides & trading tools. Find every feature.",
-    keywords: "oracle bull sitemap, crypto tools, blockchain analytics"
-  },
   "/my/scanner": {
     title: `Free Wallet Scanner – Analyze Any Crypto Wallet`,
     description: "Paste any EVM or Solana wallet address for instant AI analysis. See holdings, hidden gems, risk scores & pump potential. 100% free, no signup.",

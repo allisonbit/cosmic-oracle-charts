@@ -17,7 +17,6 @@ import { formatDistanceToNow } from "date-fns";
 import { SEO } from "@/components/MainSEO";
 import { Helmet } from "react-helmet-async";
 import { SITE_URL } from "@/lib/siteConfig";
-import { InArticleAd } from "@/components/ads";
 
 const EXPLORER_TX: Record<string, string> = {
   ethereum: "https://etherscan.io/tx/", bitcoin: "https://mempool.space/tx/", solana: "https://solscan.io/tx/",
@@ -395,7 +394,6 @@ export default function CryptoFactory() {
             </div>
           </div>
 
-          <InArticleAd className="my-6" />
 
           {/* ─── SEO CONTENT ─── */}
           <article className="prose prose-neutral dark:prose-invert max-w-3xl mx-auto">

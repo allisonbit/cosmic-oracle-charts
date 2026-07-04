@@ -15,7 +15,6 @@ import { ExplorerSchema, ExplorerSEOContent } from "@/components/seo/index";
 import { toast } from "sonner";
 import { SEO } from "@/components/MainSEO";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { InArticleAd } from "@/components/ads";
 
 type ViewTab = 'trending' | 'top' | 'gainers' | 'losers' | 'new';
 type TimeFilter = '5m' | '1h' | '6h' | '24h';
@@ -457,7 +456,6 @@ const ExplorerPage = () => {
             </div>
           )}
 
-          <div className="px-3"><InArticleAd className="mt-6 mb-4" /></div>
 
           {/* SEO Footer */}
           <div className="border-t border-border bg-card px-4 py-6">

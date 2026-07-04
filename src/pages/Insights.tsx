@@ -42,7 +42,6 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format, parseISO, isToday, isYesterday } from "date-fns";
-import { BannerAd, InArticleAd } from "@/components/ads";
 import { InsightsSEOContent } from "@/components/seo/index";
 import { EducationalArticlesPanel } from "@/components/insights/EducationalArticlesPanel";
 
@@ -363,7 +362,6 @@ export default function Insights() {
             </section>
           )}
 
-          <BannerAd className="mb-6" />
 
           {/* ═══════════ ARTICLES GRID ═══════════ */}
           {isLoading ? (
@@ -483,7 +481,6 @@ export default function Insights() {
             </>
           )}
 
-          <InArticleAd className="mt-8" />
           <EducationalArticlesPanel />
           <InsightsSEOContent />
 

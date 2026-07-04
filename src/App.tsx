@@ -42,7 +42,6 @@ const FactoryEvents = lazy(() => import("./pages/FactoryEvents"));
 const FactoryOnchain = lazy(() => import("./pages/FactoryOnchain"));
 const FactoryNarratives = lazy(() => import("./pages/FactoryNarratives"));
 const FactoryNews = lazy(() => import("./pages/FactoryNews"));
-const Sitemap = lazy(() => import("./pages/Sitemap"));
 const Insights = lazy(() => import("./pages/Insights"));
 const InsightArticle = lazy(() => import("./pages/InsightArticle"));
 const PricePrediction = lazy(() => import("./pages/PricePrediction"));
@@ -210,7 +209,6 @@ const App = () => (
                 <Route path="/factory/onchain" element={B(<FactoryOnchain />)} />
                 <Route path="/factory/narratives" element={B(<FactoryNarratives />)} />
                 <Route path="/factory/news" element={B(<FactoryNews />)} />
-                <Route path="/sitemap" element={B(<Sitemap />)} />
                 <Route path="/insights" element={B(<Insights />)} />
                 <Route path="/insights/:slug" element={B(<InsightArticle />)} />
                 <Route path="/predictions" element={B(<PredictionHub />)} />
