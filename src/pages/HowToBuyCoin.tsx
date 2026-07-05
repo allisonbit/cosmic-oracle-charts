@@ -186,25 +186,25 @@ export default function HowToBuyCoin() {
 
           {/* Live Stats Bar */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10">
-            <div className="holo-card p-4">
+            <div className="border-t border-border/30 pt-5">
               <div className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold mb-1">Current Price</div>
               <div className="font-bold text-xl font-display">
                 {currentPrice ? `$${currentPrice.toLocaleString()}` : <span className="animate-pulse text-muted-foreground">Loading...</span>}
               </div>
             </div>
-            <div className="holo-card p-4">
+            <div className="border-t border-border/30 pt-5">
               <div className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold mb-1">24h Change</div>
               <div className={cn("font-bold text-xl font-display", change24h >= 0 ? "text-success" : "text-danger")}>
                 {change24h >= 0 ? "+" : ""}{change24h.toFixed(2)}%
               </div>
             </div>
-            <div className="holo-card p-4">
+            <div className="border-t border-border/30 pt-5">
               <div className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold mb-1">Market Cap Rank</div>
               <div className="font-bold text-xl font-display">
                 {rank ? `#${rank}` : <span className="animate-pulse text-muted-foreground">–</span>}
               </div>
             </div>
-            <div className="holo-card p-4">
+            <div className="border-t border-border/30 pt-5">
               <div className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold mb-1">Community Bullish</div>
               <div className={cn("font-bold text-xl font-display", sentiment >= 60 ? "text-success" : "text-warning")}>
                 {sentiment.toFixed(0)}%
@@ -248,7 +248,7 @@ export default function HowToBuyCoin() {
           <h2 className="text-2xl font-bold font-display mb-6">How to Buy {meta.name} - Step by Step</h2>
           <div className="space-y-4 mb-12">
             {STEPS.map((step) => (
-              <div key={step.num} className="holo-card p-5 flex gap-5">
+              <div key={step.num} className="border-t border-border/30 pt-5 flex gap-5">
                 <div className="shrink-0 w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center font-black text-primary text-sm">
                   {step.num}
                 </div>
@@ -265,7 +265,7 @@ export default function HowToBuyCoin() {
           <p className="text-muted-foreground text-sm mb-6">All platforms below are regulated and support {meta.ticker} purchases.</p>
           <div className="space-y-3 mb-12">
             {EXCHANGES.map((ex, i) => (
-              <div key={ex.name} className="holo-card p-4 md:p-5 flex flex-col md:flex-row md:items-center gap-4">
+              <div key={ex.name} className="border-t border-border/30 pt-5 flex flex-col md:flex-row md:items-center gap-4">
                 <div className="flex items-center gap-4 flex-1">
                   <div className="w-10 h-10 rounded-xl bg-muted/50 border border-border flex items-center justify-center font-bold text-sm shrink-0">
                     {i + 1}
@@ -308,7 +308,7 @@ export default function HowToBuyCoin() {
           <h2 className="text-2xl font-bold font-display mb-6">Payment Methods</h2>
           <div className="grid sm:grid-cols-2 gap-4 mb-12">
             {PAYMENT_METHODS.map(({ icon: Icon, label, speed, fee, note }) => (
-              <div key={label} className="holo-card p-5">
+              <div key={label} className="border-t border-border/30 pt-5">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                     <Icon className="w-4 h-4 text-primary" />
@@ -333,7 +333,7 @@ export default function HowToBuyCoin() {
           {/* Risks & Tips */}
           <div className="grid md:grid-cols-2 gap-6 mb-12">
             {/* Safety tips */}
-            <div className="holo-card p-6">
+            <div className="border-t border-border/30 pt-5">
               <h2 className="font-bold font-display text-lg mb-4 flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-success" /> Safety Checklist
               </h2>
@@ -355,7 +355,7 @@ export default function HowToBuyCoin() {
             </div>
 
             {/* Common mistakes */}
-            <div className="holo-card p-6">
+            <div className="border-t border-border/30 pt-5">
               <h2 className="font-bold font-display text-lg mb-4 flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-warning" /> Common Mistakes to Avoid
               </h2>
@@ -378,7 +378,7 @@ export default function HowToBuyCoin() {
           </div>
 
           {/* Cross-promotion: next steps */}
-          <div className="holo-card p-6 mb-12">
+          <div className="border-t border-border/30 pt-5 mb-12">
             <h2 className="font-bold font-display text-xl mb-2 flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-primary" />
               You Bought {meta.ticker}. Now What?

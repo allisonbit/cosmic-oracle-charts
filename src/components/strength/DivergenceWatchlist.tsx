@@ -75,7 +75,7 @@ export function DivergenceWatchlist({ assets }: DivergenceWatchlistProps) {
 
   if (divergences.length === 0) {
     return (
-      <Card className="glass-card border-primary/20">
+      <Card className="">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-lg">
             <AlertTriangle className="w-5 h-5 text-primary" />
@@ -92,7 +92,7 @@ export function DivergenceWatchlist({ assets }: DivergenceWatchlistProps) {
   }
 
   return (
-    <Card className="glass-card border-primary/20">
+    <Card className="">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-lg">
@@ -121,7 +121,7 @@ export function DivergenceWatchlist({ assets }: DivergenceWatchlistProps) {
               className="block"
             >
               <div className={cn(
-                "p-3 rounded-lg border transition-all hover:scale-[1.01]",
+                "py-2.5 border-b border-border/20 transition-all",
                 divergence.type === 'bullish' 
                   ? "bg-success/10 border-success/30 hover:border-success/50" 
                   : "bg-danger/10 border-danger/30 hover:border-danger/50"

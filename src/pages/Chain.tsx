@@ -45,7 +45,7 @@ const NetworkInfoPanel = lazy(() => import("@/components/chain/NetworkInfoPanel"
 
 const ComponentLoader = memo(function ComponentLoader() {
   return (
-    <div className="holo-card p-4 sm:p-6 animate-pulse">
+    <div className="border-t border-border/30 pt-5 animate-pulse">
       <Skeleton className="h-6 w-48 mb-4" />
       <Skeleton className="h-32" />
     </div>
@@ -103,7 +103,7 @@ export default function Chain() {
     return (
       <Layout>
         <div className="container mx-auto px-4 py-24 flex items-center justify-center">
-          <div className="holo-card p-8 text-center max-w-md">
+          <div className="border-t border-border/30 pt-8 text-center max-w-md">
             <Globe className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
             <h1 className="text-2xl font-display font-bold text-foreground mb-3">Chain Not Found</h1>
             <p className="text-muted-foreground mb-6">That blockchain isn't in our system yet. Explore the chains we cover below.</p>

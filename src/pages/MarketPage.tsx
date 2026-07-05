@@ -466,7 +466,7 @@ export default function MarketPage() {
           </div>
 
           {/* Description card */}
-          <div className="rounded-2xl border border-border/50 bg-card/30 backdrop-blur-sm p-6 mb-10">
+          <div className="border-t border-border/30 pt-6 mb-10">
             <div className="flex items-start gap-4">
               <div className="rounded-xl bg-primary/10 p-3 mt-0.5 shrink-0">
                 <BarChart3 className="h-6 w-6 text-primary" />
@@ -494,7 +494,7 @@ export default function MarketPage() {
                   <Link
                     key={coinId}
                     to={`/price-prediction/${coinId}`}
-                    className="group flex items-center justify-between rounded-xl border border-border/50 bg-card/30 backdrop-blur-sm p-4 hover:border-primary/40 hover:bg-card/60 transition-all duration-200"
+                    className="group flex items-center justify-between border-b border-border/20 py-3.5 hover:bg-muted/20 transition-all"
                     aria-label={`View ${coin.name} AI price prediction`}
                   >
                     <div className="flex items-center gap-4">
@@ -525,7 +525,7 @@ export default function MarketPage() {
 
           {/* FAQ */}
           {config && (
-            <section className="mb-12 rounded-2xl border border-border/50 bg-card/20 p-6">
+            <section className="mb-12 border-t border-border/30 pt-6">
               <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
                 <Zap className="h-5 w-5 text-yellow-500" />
                 Frequently Asked Question
@@ -538,7 +538,7 @@ export default function MarketPage() {
           )}
 
           {/* Tools CTA */}
-          <section className="mb-12 rounded-2xl border border-primary/20 bg-primary/5 p-6">
+          <section className="mb-12 border-l-4 border-primary pl-6">
             <h2 className="font-bold text-lg mb-2 flex items-center gap-2">
               <Shield className="h-5 w-5 text-primary" />
               Go Deeper with Oracle Bull Tools
@@ -571,7 +571,7 @@ export default function MarketPage() {
                   <Link
                     key={m.slug}
                     to={`/market/${m.slug}`}
-                    className="group rounded-xl border border-border/50 bg-card/20 p-4 hover:border-primary/40 hover:bg-card/50 transition-all text-center"
+                    className="group border-t border-border/20 pt-4 hover:bg-muted/20 transition-all text-center"
                   >
                     <p className="text-sm font-semibold group-hover:text-primary transition-colors">{m.label}</p>
                     <ChevronRight className="h-4 w-4 text-muted-foreground mx-auto mt-1 group-hover:text-primary group-hover:translate-x-0.5 transition-all" />

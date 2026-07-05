@@ -61,7 +61,7 @@ const categories = [
 
 function ArticleCardSkeleton() {
   return (
-    <Card className="overflow-hidden border-border/40">
+    <Card className="overflow-hidden">
       <CardContent className="p-0">
         <Skeleton className="h-40 w-full" />
         <div className="p-4 space-y-3">
@@ -81,7 +81,7 @@ function ArticleCardSkeleton() {
 
 function FeaturedSkeleton() {
   return (
-    <Card className="overflow-hidden border-border/40">
+    <Card className="overflow-hidden">
       <CardContent className="p-0">
         <Skeleton className="h-56 w-full" />
         <div className="p-5 space-y-3">
@@ -184,7 +184,7 @@ export default function Insights() {
 
           {/* ═══════════ HERO ═══════════ */}
           <header className="mb-8 sm:mb-10">
-            <div className="rounded-2xl bg-gradient-to-br from-primary/8 via-card to-card border border-border/50 p-6 sm:p-8 lg:p-10">
+            <div className="border-l-4 border-primary pl-6 sm:pl-8 py-2">
               <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-2 mb-3">
@@ -264,7 +264,7 @@ export default function Insights() {
                       key={cat.id}
                       onClick={() => handleCategoryChange(cat.id)}
                       className={cn(
-                        "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200",
+                        "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap",
                         isActive
                           ? "bg-primary text-primary-foreground shadow-sm"
                           : "bg-muted/40 text-muted-foreground hover:bg-muted/70 hover:text-foreground"
@@ -307,7 +307,7 @@ export default function Insights() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Main featured */}
                 <Link to={`/insights/${featuredArticles[0].slug}`} className="group md:col-span-2">
-                  <Card className="h-full overflow-hidden border-border/40 hover:border-primary/40 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5">
+                  <Card className="h-full overflow-hidden">
                     <CardContent className="p-0">
                       <div className="h-40 sm:h-56 bg-gradient-to-br from-primary/15 via-primary/5 to-transparent relative overflow-hidden">
                         {featuredArticles[0].imageUrl && (
@@ -337,7 +337,7 @@ export default function Insights() {
                 <div className="flex flex-col gap-4">
                   {featuredArticles.slice(1, 3).map((article) => (
                     <Link key={article.id} to={`/insights/${article.slug}`} className="group flex-1">
-                      <Card className="h-full overflow-hidden border-border/40 hover:border-primary/40 transition-all duration-300 hover:shadow-md hover:shadow-primary/5">
+                      <Card className="h-full overflow-hidden">
                         <CardContent className="p-0">
                           <div className="h-24 sm:h-28 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent relative overflow-hidden">
                             {article.imageUrl && (
@@ -374,7 +374,7 @@ export default function Insights() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {paginatedArticles.map((post) => (
                     <Link key={post.id} to={`/insights/${post.slug}`} className="group">
-                      <Card className="h-full overflow-hidden border-border/40 hover:border-primary/30 transition-all duration-300 hover:shadow-md hover:shadow-primary/5 active:scale-[0.99]">
+                      <Card className="h-full overflow-hidden">
                         <CardContent className="p-0">
                           {/* Image header */}
                           <div className="h-32 sm:h-40 relative overflow-hidden bg-gradient-to-br from-muted/30 to-muted/10">
@@ -491,7 +491,7 @@ export default function Insights() {
             </h2>
             <div className="space-y-4">
               {INSIGHTS_FAQS.map((f) => (
-                <article key={f.question} className="rounded-xl border border-border/50 bg-card p-5">
+                <article key={f.question} className="border-t border-border/30 pt-5">
                   <h3 className="font-semibold text-base mb-2">{f.question}</h3>
                   <p className="text-muted-foreground text-sm leading-relaxed">{f.answer}</p>
                 </article>

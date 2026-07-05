@@ -83,7 +83,7 @@ function ArticleCard({ post }: { post: BlogPost }) {
 
   return (
     <Link to={`/insights/${post.slug || post.id}`} className="group">
-      <Card className="h-full overflow-hidden border-border/40 hover:border-primary/30 transition-all duration-300 hover:shadow-md hover:shadow-primary/5 active:scale-[0.99]">
+      <Card className="h-full overflow-hidden">
         <CardContent className="p-0">
           <div className="relative h-32 sm:h-40 overflow-hidden bg-gradient-to-br from-muted/30 to-muted/10">
             {post.imageUrl && (
@@ -126,7 +126,7 @@ function ArticleCard({ post }: { post: BlogPost }) {
 
 function CardSkeleton() {
   return (
-    <Card className="overflow-hidden border-border/40">
+    <Card className="overflow-hidden">
       <CardContent className="p-0">
         <Skeleton className="h-40 w-full" />
         <div className="p-4 space-y-3">
@@ -223,7 +223,7 @@ export default function Learn() {
 
           {/* ═══════════ HERO ═══════════ */}
           <header className="mb-8 sm:mb-10">
-            <div className="rounded-2xl bg-gradient-to-br from-primary/8 via-card to-card border border-border/50 p-6 sm:p-8 lg:p-10">
+            <div className="border-l-4 border-primary pl-6 sm:pl-8 py-2">
               <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-2 mb-3">
@@ -313,7 +313,7 @@ export default function Learn() {
                       key={cat}
                       onClick={() => handleCategoryChange(cat)}
                       className={cn(
-                        "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200",
+                        "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap",
                         isActive
                           ? "bg-primary text-primary-foreground shadow-sm"
                           : "bg-muted/40 text-muted-foreground hover:bg-muted/70 hover:text-foreground"
@@ -349,7 +349,7 @@ export default function Learn() {
               to={`/insights/${featuredPost.slug || featuredPost.id}`}
               className="group block mb-8"
             >
-              <Card className="overflow-hidden border-border/40 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5">
+              <Card className="overflow-hidden">
                 <CardContent className="p-0">
                   <div className="flex flex-col sm:grid sm:grid-cols-2 gap-0">
                     <div className="relative h-48 sm:h-64 overflow-hidden bg-gradient-to-br from-primary/10 to-muted/10">
@@ -474,7 +474,7 @@ export default function Learn() {
               ) : (
                 educationalArticles.slice(0, 8).map((article) => (
                   <Link key={article.id} to={`/learn/${article.slug}`} className="group">
-                    <Card className="h-full border-border/40 hover:border-primary/30 transition-all duration-200 hover:shadow-sm">
+                    <Card className="h-full">
                       <CardContent className="p-3 sm:p-4">
                         <Badge variant="outline" className="text-[10px] mb-2">{article.category}</Badge>
                         <h3 className="font-display font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors leading-snug">
@@ -518,7 +518,7 @@ export default function Learn() {
             </h2>
             <div className="space-y-4">
               {LEARN_FAQS.map((f) => (
-                <article key={f.question} className="rounded-xl border border-border/50 bg-card p-5">
+                <article key={f.question} className="border-t border-border/30 pt-5">
                   <h3 className="font-semibold text-base mb-2">{f.question}</h3>
                   <p className="text-muted-foreground text-sm leading-relaxed">{f.answer}</p>
                 </article>

@@ -102,7 +102,7 @@ export default function Airdrops() {
             guide on how airdrops work, how to farm them safely, how values are estimated, and the tax basics — all in one place.
           </p>
 
-          <div className="not-prose rounded-xl border border-warning/30 bg-warning/5 p-3 text-sm text-muted-foreground flex items-start gap-2 my-6">
+          <div className="not-prose border-l-4 border-warning pl-3 py-1 text-sm text-muted-foreground flex items-start gap-2 my-6">
             <ShieldCheck className="w-4 h-4 text-warning shrink-0 mt-0.5" />
             <span>Never sign a transaction you don't understand and never connect your wallet to a site you reached from a DM or ad. Use only the official links below. Estimated values are research estimates, not guarantees.</span>
           </div>

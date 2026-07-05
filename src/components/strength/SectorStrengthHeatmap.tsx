@@ -87,7 +87,7 @@ export function SectorStrengthHeatmap({ assets }: SectorStrengthHeatmapProps) {
   };
 
   return (
-    <Card className="glass-card border-primary/20">
+    <Card className="">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Grid3X3 className="w-5 h-5 text-primary" />
@@ -105,7 +105,7 @@ export function SectorStrengthHeatmap({ assets }: SectorStrengthHeatmapProps) {
               <Tooltip key={sector.id}>
                 <TooltipTrigger asChild>
                   <div className={cn(
-                    "p-4 rounded-lg border cursor-pointer transition-all duration-300",
+                    "p-4 border-b border-border/20 cursor-pointer transition-all",
                     getHeatColor(sector.avgStrength)
                   )}>
                     <div className="flex items-start justify-between mb-2">

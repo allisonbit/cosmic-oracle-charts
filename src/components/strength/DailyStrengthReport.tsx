@@ -72,7 +72,7 @@ export function DailyStrengthReport({ assets, chains }: DailyStrengthReportProps
   const mood = getMarketMood();
 
   return (
-    <Card className="glass-card border-primary/20">
+    <Card className="">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <FileText className="w-5 h-5 text-primary" />

@@ -42,7 +42,7 @@ export function StrengthComparisonGauge({ assets, chains }: StrengthComparisonGa
   };
 
   return (
-    <Card className="glass-card border-primary/20">
+    <Card className="">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Gauge className="w-5 h-5 text-primary" />

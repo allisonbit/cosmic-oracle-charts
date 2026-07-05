@@ -78,8 +78,8 @@ export function ExpandableStrengthCard({ data, rank, onCompare }: ExpandableStre
 
   return (
     <Card className={cn(
-      "glass-card transition-all duration-300 group overflow-hidden",
-      isOpen ? "border-primary/40 ring-1 ring-primary/20" : "hover:border-primary/30"
+      "transition-all duration-300 group overflow-hidden border-t border-border/30 pt-1",
+      isOpen ? "border-l-2 border-l-primary pl-1" : ""
     )}>
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleTrigger asChild>

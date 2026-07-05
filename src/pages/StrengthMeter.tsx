@@ -234,7 +234,7 @@ export default function StrengthMeter() {
         <DailyStrengthReport assets={assets} chains={chains} />
 
         {/* Controls */}
-        <section className="rounded-2xl border border-border/50 bg-card/40 p-3 sm:p-4 space-y-3">
+        <section className="border-t border-border/30 pt-4 space-y-3">
           <div className="flex flex-wrap items-center gap-3">
             <div className="flex bg-muted/40 rounded-lg p-0.5">
               {(["assets", "chains"] as const).map((v) => (
@@ -269,7 +269,7 @@ export default function StrengthMeter() {
 
         {/* Selected asset gauge */}
         {selected && (
-          <section className="rounded-2xl border border-border/50 bg-card/40 p-4 sm:p-6 flex flex-col sm:flex-row items-center gap-6">
+          <section className="border-t border-border/30 pt-5 flex flex-col sm:flex-row items-center gap-6">
             <StrengthGauge score={selected.strengthScore} />
             <div className="flex-1 w-full min-w-0">
               <div className="flex items-center gap-2.5 mb-1 flex-wrap">
@@ -313,7 +313,7 @@ export default function StrengthMeter() {
               <h2 className="text-lg font-semibold">Strength Leaderboard {category !== "All" && view === "assets" ? `· ${category}` : ""}</h2>
               <span className="text-xs text-muted-foreground">{rows.length} {view}</span>
             </div>
-            <div className="rounded-2xl border border-border/50 overflow-hidden bg-card/40">
+            <div className="border-t border-border/30 pt-5 overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm min-w-[760px]">
                   <thead className="bg-muted/30 border-b border-border/50">
@@ -442,7 +442,7 @@ export default function StrengthMeter() {
             <div className="not-prose grid grid-cols-2 sm:grid-cols-5 gap-2 my-3">
               {[["81–100", "Extremely Strong"], ["61–80", "Strong"], ["41–60", "Neutral"], ["21–40", "Weak"], ["0–20", "Extremely Weak"]].map(([range, label]) => {
                 const mid = parseInt(range) + 5; const col = scoreColor(mid);
-                return <div key={range} className="rounded-lg border border-border/50 p-2 text-center"><div className="text-xs font-bold font-mono" style={{ color: col }}>{range}</div><div className="text-[10px] text-muted-foreground">{label}</div></div>;
+                return <div key={range} className="border-t border-border/20 pt-2 text-center"><div className="text-xs font-bold font-mono" style={{ color: col }}>{range}</div><div className="text-[10px] text-muted-foreground">{label}</div></div>;
               })}
             </div>
           </section>
