@@ -132,6 +132,7 @@ export function Footer() {
               <li><Link to="/about" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"><Info className="w-3 h-3" /> About Us</Link></li>
               <li><Link to="/contact" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Contact</Link></li>
               <li><Link to="/advertise" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Advertise With Us</Link></li>
+              <li><Link to="/connect" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Connect to ChatGPT / Claude</Link></li>
               <li><Link to="/editorial-policy" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Editorial Policy</Link></li>
               <li><Link to="/privacy-policy" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"><Shield className="w-3 h-3" /> Privacy Policy</Link></li>
               <li><Link to="/terms" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"><FileText className="w-3 h-3" /> Terms of Service</Link></li>
