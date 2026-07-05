@@ -249,6 +249,7 @@ const App = () => (
                 <Route path="/risk-disclaimer" element={B(<RiskDisclaimer />)} />
                 <Route path="/editorial-policy" element={B(<EditorialPolicy />)} />
                 <Route path="/advertise" element={B(<Advertise />)} />
+                <Route path="/connect" element={B(<Connect />)} />
                 <Route path="/admin" element={B(<ProtectedRoute><AdminRoute><Admin /></AdminRoute></ProtectedRoute>)} />
                 <Route path="/admin/backlinks" element={B(<ProtectedRoute><AdminRoute><BacklinkOutreach /></AdminRoute></ProtectedRoute>)} />
                 <Route path="/my" element={B(<MyHub />)} />
