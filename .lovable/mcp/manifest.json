@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "sdk_version": "0.20.0",
+  "path": "/functions/v1/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "oracle-bull-mcp",
+      "version": "0.1.0",
+      "title": "Oracle Bull MCP"
+    },
+    "tools": [
+      {
+        "name": "search_tokens",
+        "title": "Search cryptocurrencies",
+        "description": "Search for cryptocurrencies by name or symbol. Returns matching coins with their CoinGecko id, useful for feeding into get_token_price.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Search query, e.g. 'sol' or 'ethena'."
+            }
+          },
+          "required": [
+            "query"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_token_price",
+        "title": "Get token price",
+        "description": "Fetch the current USD price, 24h change, market cap, and volume for a cryptocurrency by CoinGecko id (e.g. 'bitcoin', 'ethereum', 'ethena').",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "coin_id": {
+              "type": "string",
+              "minLength": 1,
+              "description": "CoinGecko coin id, lowercase (e.g. 'bitcoin', 'ethereum')."
+            }
+          },
+          "required": [
+            "coin_id"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_trending_tokens",
+        "title": "Get trending tokens",
+        "description": "Fetch the top trending cryptocurrencies right now (by search volume on CoinGecko).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 15,
+              "description": "Max number of trending tokens to return (default 7)."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
