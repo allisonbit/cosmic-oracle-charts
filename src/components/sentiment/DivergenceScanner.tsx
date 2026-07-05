@@ -62,11 +62,11 @@ export function DivergenceScanner({ coins }: DivergenceScannerProps) {
   const getCoinId = (d: DivergenceSignal) => d.name?.toLowerCase().replace(/\s+/g, '-') || d.symbol.toLowerCase();
 
   return (
-    <div className="holo-card p-4 md:p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-display font-bold text-sm flex items-center gap-2">
-          <Target className="w-4 h-4 text-primary" />
-          DIVERGENCE SCANNER
+    <div className="border-t border-border/30 pt-5">
+      <div className="section-header mb-4">
+        <h3 className="section-label flex items-center gap-2">
+          <Target className="w-3.5 h-3.5 text-primary" />
+          Divergence Scanner
         </h3>
         <div className="flex items-center gap-3 text-xs">
           <span className="flex items-center gap-1 text-success"><TrendingUp className="w-3 h-3" /> {bullishCount} Bullish</span>
@@ -79,20 +79,20 @@ export function DivergenceScanner({ coins }: DivergenceScannerProps) {
         Detects when price and sentiment diverge — click to view full analysis
       </div>
 
-      <div className="space-y-2">
+      <div>
         {divergences.map((div) => (
           <button
             key={div.symbol}
             onClick={() => navigate(`/price-prediction/${getCoinId(div)}/daily`)}
             className={cn(
-              "w-full p-3 rounded-lg border flex items-center justify-between transition-all text-left group",
-              div.divergenceType === 'bullish' ? "bg-success/10 border-success/30 hover:border-success/50" : "bg-danger/10 border-danger/30 hover:border-danger/50"
+              "w-full py-3 pl-3 border-l-2 border-b border-b-border/20 flex items-center justify-between transition-all text-left group hover:bg-muted/20",
+              div.divergenceType === 'bullish' ? "border-l-success" : "border-l-danger"
             )}
           >
             <div className="flex items-center gap-3">
-              <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center", div.divergenceType === 'bullish' ? "bg-success/20" : "bg-danger/20")}>
+              <span className="flex-shrink-0">
                 {div.divergenceType === 'bullish' ? <TrendingUp className="w-5 h-5 text-success" /> : <TrendingDown className="w-5 h-5 text-danger" />}
-              </div>
+              </span>
               <div>
                 <div className="flex items-center gap-2">
                   <span className="font-display font-bold">{div.symbol}</span>

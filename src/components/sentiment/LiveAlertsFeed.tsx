@@ -5,7 +5,6 @@ import {
   Twitter, Volume2, Activity, Target
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
 interface Alert {
@@ -193,45 +192,46 @@ export function LiveAlertsFeed({ whaleData, coins }: LiveAlertsFeedProps) {
 
   return (
     <div className="space-y-4">
-      {/* Header Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="holo-card p-4 text-center">
+      {/* Header Stats — inline strip */}
+      <div className="grid grid-cols-2 md:flex md:items-stretch md:divide-x md:divide-border/30 border-y border-border/30 py-4 gap-y-4">
+        <div className="md:flex-1 md:px-4 md:first:pl-0 text-center">
           <Bell className="w-5 h-5 text-primary mx-auto mb-1" />
           <div className="text-2xl font-display font-bold">{alerts.length}</div>
-          <div className="text-xs text-muted-foreground">Active Alerts</div>
+          <div className="section-label mt-0.5">Active Alerts</div>
         </div>
-        <div className="holo-card p-4 text-center">
+        <div className="md:flex-1 md:px-4 text-center">
           <AlertTriangle className="w-5 h-5 text-danger mx-auto mb-1" />
           <div className="text-2xl font-display font-bold text-danger">{criticalCount}</div>
-          <div className="text-xs text-muted-foreground">Critical</div>
+          <div className="section-label mt-0.5">Critical</div>
         </div>
-        <div className="holo-card p-4 text-center">
+        <div className="md:flex-1 md:px-4 text-center">
           <Waves className="w-5 h-5 text-primary mx-auto mb-1" />
           <div className="text-2xl font-display font-bold">{whaleCount}</div>
-          <div className="text-xs text-muted-foreground">Whale Alerts</div>
+          <div className="section-label mt-0.5">Whale Alerts</div>
         </div>
-        <div className="holo-card p-4 text-center">
+        <div className="md:flex-1 md:px-4 text-center">
           <Target className="w-5 h-5 text-success mx-auto mb-1" />
           <div className="text-2xl font-display font-bold text-success">
             {formatValue(whaleData?.netflow)}
           </div>
-          <div className="text-xs text-muted-foreground">Net Flow</div>
+          <div className="section-label mt-0.5">Net Flow</div>
         </div>
       </div>
 
       {/* Filter Bar */}
-      <div className="flex items-center justify-between flex-wrap gap-2">
-        <div className="flex gap-2 flex-wrap">
+      <div className="flex items-center justify-between flex-wrap gap-2 border-b border-border/30 pb-2">
+        <div className="flex gap-5 flex-wrap text-xs">
           {(['all', 'critical', 'whale', 'volume', 'social'] as const).map(f => (
-            <Button
+            <button
               key={f}
-              variant={filter === f ? "default" : "outline"}
-              size="sm"
               onClick={() => setFilter(f)}
-              className="capitalize text-xs"
+              className={cn(
+                "capitalize font-medium transition-colors pb-1.5 -mb-[9px] border-b-2",
+                filter === f ? "text-primary border-primary" : "text-muted-foreground border-transparent hover:text-foreground"
+              )}
             >
               {f === 'critical' ? '🔥 Critical' : f}
-            </Button>
+            </button>
           ))}
         </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -241,31 +241,32 @@ export function LiveAlertsFeed({ whaleData, coins }: LiveAlertsFeedProps) {
       </div>
 
       {/* Alerts Feed */}
-      <div className="holo-card p-4 md:p-6">
-        <h2 className="font-display font-bold text-lg mb-4 flex items-center gap-2">
-          <Zap className="w-5 h-5 text-primary" />
-          LIVE MARKET ALERTS
+      <div className="border-t border-border/30 pt-5">
+        <h2 className="section-label mb-4 flex items-center gap-2">
+          <Zap className="w-3.5 h-3.5 text-primary" />
+          Live Market Alerts
         </h2>
-        
-        <div className="space-y-3 max-h-[500px] overflow-y-auto">
+
+        <div className="max-h-[500px] overflow-y-auto">
           {filteredAlerts.map((alert, i) => (
             <button
               key={alert.id}
               onClick={() => handleAlertClick(alert)}
               className={cn(
-                "w-full p-4 rounded-lg border flex items-start gap-3 transition-all text-left group animate-fade-in",
-                alert.severity === 'critical' ? "bg-danger/10 border-danger/40 hover:border-danger" :
-                alert.severity === 'high' ? "bg-warning/10 border-warning/40 hover:border-warning" :
-                "bg-muted/30 border-border hover:border-primary/50"
+                "w-full py-3.5 pl-3 border-l-2 border-b border-b-border/20 flex items-start gap-3 transition-all text-left group animate-fade-in hover:bg-muted/20",
+                alert.severity === 'critical' ? "border-l-danger" :
+                alert.severity === 'high' ? "border-l-warning" :
+                "border-l-border"
               )}
               style={{ animationDelay: `${i * 0.05}s` }}
             >
-              <div className={cn(
-                "w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0",
-                getSeverityColor(alert.severity)
+              <span className={cn(
+                "flex-shrink-0 mt-0.5",
+                alert.severity === 'critical' ? "text-danger" :
+                alert.severity === 'high' ? "text-warning" : "text-primary"
               )}>
                 {getAlertIcon(alert.type)}
-              </div>
+              </span>
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1 flex-wrap">

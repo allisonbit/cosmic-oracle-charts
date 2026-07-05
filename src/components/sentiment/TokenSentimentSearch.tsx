@@ -127,7 +127,7 @@ export function TokenSentimentSearch() {
     score >= 65 ? "text-success" : score >= 45 ? "text-warning" : "text-danger";
 
   const getSentimentBg = (score: number) =>
-    score >= 65 ? "bg-success/15 border-success/30" : score >= 45 ? "bg-warning/15 border-warning/30" : "bg-danger/15 border-danger/30";
+    score >= 65 ? "border-success" : score >= 45 ? "border-warning" : "border-danger";
 
   const getSentimentLabel = (score: number) =>
     score >= 75 ? "Very Bullish" : score >= 60 ? "Bullish" : score >= 45 ? "Neutral" : score >= 30 ? "Bearish" : "Very Bearish";
@@ -139,10 +139,10 @@ export function TokenSentimentSearch() {
     v >= 1e9 ? `$${(v / 1e9).toFixed(2)}B` : v >= 1e6 ? `$${(v / 1e6).toFixed(2)}M` : v >= 1e3 ? `$${(v / 1e3).toFixed(1)}K` : `$${(v ?? 0).toFixed(0)}`;
 
   return (
-    <div className="holo-card p-4 sm:p-6 mb-6" ref={containerRef}>
+    <div className="border-t border-border/30 pt-5 mb-6" ref={containerRef}>
       <div className="flex items-center gap-2 mb-4">
-        <Search className="w-5 h-5 text-primary" />
-        <h3 className="font-display font-bold text-sm sm:text-base">TOKEN SENTIMENT SCANNER</h3>
+        <Search className="w-4 h-4 text-primary" />
+        <h3 className="section-label">Token Sentiment Scanner</h3>
         <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/20 text-primary font-mono">Live</span>
       </div>
 
@@ -235,7 +235,7 @@ export function TokenSentimentSearch() {
           </div>
 
           {/* Overall Sentiment Gauge */}
-          <div className={cn("rounded-xl border p-4", getSentimentBg(selectedToken.sentiment.overall))}>
+          <div className={cn("border-l-2 pl-4", getSentimentBg(selectedToken.sentiment.overall))}>
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-mono text-muted-foreground">OVERALL SENTIMENT</span>
               <span className={cn("font-display font-bold text-2xl", getSentimentColor(selectedToken.sentiment.overall))}>
@@ -259,26 +259,26 @@ export function TokenSentimentSearch() {
             </div>
           </div>
 
-          {/* Metrics Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {/* Metrics Grid — inline strip */}
+          <div className="grid grid-cols-2 sm:flex sm:items-stretch sm:divide-x sm:divide-border/30 border-y border-border/20 py-4 gap-y-4">
             {[
               { label: "Buy Pressure", value: selectedToken.sentiment.buyPressure, icon: TrendingUp, suffix: "%" },
               { label: "Social Buzz", value: selectedToken.sentiment.socialBuzz, icon: MessageCircle, suffix: "/100" },
               { label: "Whale Interest", value: selectedToken.sentiment.whaleInterest, icon: Users, suffix: "/100" },
               { label: "Volume 24h", value: 0, icon: BarChart3, display: formatVol(selectedToken.token.volume24h) },
             ].map((m) => (
-              <div key={m.label} className="rounded-lg bg-muted/30 border border-border/30 p-3 text-center">
+              <div key={m.label} className="sm:flex-1 sm:px-4 sm:first:pl-0 text-center">
                 <m.icon className="w-4 h-4 mx-auto mb-1 text-muted-foreground" />
                 <div className={cn("font-bold text-lg font-mono", m.value ? getSentimentColor(m.value) : "text-foreground")}>
                   {m.display || `${m.value}${m.suffix}`}
                 </div>
-                <div className="text-[10px] text-muted-foreground">{m.label}</div>
+                <div className="section-label mt-0.5">{m.label}</div>
               </div>
             ))}
           </div>
 
           {/* Transaction Breakdown */}
-          <div className="rounded-lg bg-muted/20 border border-border/30 p-3">
+          <div className="border-t border-border/20 pt-3">
             <div className="text-xs font-mono text-muted-foreground mb-2">24H TRANSACTION FLOW</div>
             <div className="flex items-center gap-2 mb-2">
               <div className="flex-1 h-3 rounded-full overflow-hidden bg-muted flex">
@@ -294,12 +294,12 @@ export function TokenSentimentSearch() {
           </div>
 
           {/* Quick Stats */}
-          <div className="grid grid-cols-2 gap-3 text-xs">
-            <div className="flex justify-between p-2 rounded bg-muted/20">
+          <div className="grid grid-cols-2 gap-6 text-xs border-t border-border/20 pt-3">
+            <div className="flex justify-between">
               <span className="text-muted-foreground">Liquidity</span>
               <span className="font-mono font-bold">{formatVol(selectedToken.token.liquidity)}</span>
             </div>
-            <div className="flex justify-between p-2 rounded bg-muted/20">
+            <div className="flex justify-between">
               <span className="text-muted-foreground">Market Cap</span>
               <span className="font-mono font-bold">{formatVol(selectedToken.token.marketCap)}</span>
             </div>

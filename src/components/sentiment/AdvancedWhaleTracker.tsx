@@ -94,37 +94,37 @@ export function AdvancedWhaleTracker({ onRefresh }: AdvancedWhaleTrackerProps) {
 
   return (
     <div className="space-y-6">
-      {/* Stats Overview */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="holo-card p-4 text-center">
+      {/* Stats Overview — inline strip */}
+      <div className="grid grid-cols-2 md:flex md:items-stretch md:divide-x md:divide-border/30 border-y border-border/30 py-4 gap-y-4">
+        <div className="md:flex-1 md:px-4 md:first:pl-0 text-center">
           <Activity className="w-6 h-6 text-primary mx-auto mb-2" />
           <div className="text-2xl font-display font-bold">{transactions.length}</div>
-          <div className="text-xs text-muted-foreground">Movements (24h)</div>
+          <div className="section-label mt-0.5">Movements (24h)</div>
         </div>
-        <div className="holo-card p-4 text-center">
+        <div className="md:flex-1 md:px-4 text-center">
           <TrendingUp className="w-6 h-6 text-success mx-auto mb-2" />
           <div className="text-2xl font-display font-bold text-success">{formatValue(buyVolume)}</div>
-          <div className="text-xs text-muted-foreground">Accumulation</div>
+          <div className="section-label mt-0.5">Accumulation</div>
         </div>
-        <div className="holo-card p-4 text-center">
+        <div className="md:flex-1 md:px-4 text-center">
           <TrendingDown className="w-6 h-6 text-danger mx-auto mb-2" />
           <div className="text-2xl font-display font-bold text-danger">{formatValue(sellVolume)}</div>
-          <div className="text-xs text-muted-foreground">Distribution</div>
+          <div className="section-label mt-0.5">Distribution</div>
         </div>
-        <div className="holo-card p-4 text-center">
+        <div className="md:flex-1 md:px-4 text-center">
           <DollarSign className="w-6 h-6 mx-auto mb-2" />
           <div className={cn("text-2xl font-display font-bold", netFlow >= 0 ? "text-success" : "text-danger")}>
             {netFlow >= 0 ? '+' : ''}{formatValue(netFlow)}
           </div>
-          <div className="text-xs text-muted-foreground">Net Flow</div>
+          <div className="section-label mt-0.5">Net Flow</div>
         </div>
       </div>
 
       {/* Flow Visualization */}
-      <div className="holo-card p-4 md:p-6">
-        <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
-          <BarChart3 className="w-4 h-4 text-primary" />
-          CAPITAL FLOW ANALYSIS
+      <div className="border-t border-border/30 pt-5">
+        <h3 className="section-label mb-4 flex items-center gap-2">
+          <BarChart3 className="w-3.5 h-3.5 text-primary" />
+          Capital Flow Analysis
         </h3>
         <div className="flex items-center gap-4 mb-4">
           <div className="flex-1">
@@ -149,29 +149,30 @@ export function AdvancedWhaleTracker({ onRefresh }: AdvancedWhaleTrackerProps) {
             </div>
           </div>
         </div>
-        <div className={cn("text-center p-3 rounded-lg", netFlow >= 0 ? "bg-success/10 text-success" : "bg-danger/10 text-danger")}>
+        <div className={cn("border-l-2 pl-3 py-1", netFlow >= 0 ? "border-success text-success" : "border-danger text-danger")}>
           <span className="font-bold">{netFlow >= 0 ? '📈 Accumulation Phase' : '📉 Distribution Phase'}</span>
           <span className="text-sm ml-2">({netFlow >= 0 ? 'Bullish' : 'Bearish'} Signal)</span>
         </div>
       </div>
 
       {/* Chain Selector & Filter */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <div className="flex gap-2 overflow-x-auto">
+      <div className="flex items-center justify-between flex-wrap gap-3 border-b border-border/30 pb-2">
+        <div className="flex gap-5 overflow-x-auto text-sm">
           {chains.map(chain => (
-            <Button key={chain.id} variant={selectedChain === chain.id ? "default" : "outline"} size="sm"
-              onClick={() => setSelectedChain(chain.id)} className="whitespace-nowrap">
+            <button key={chain.id} onClick={() => setSelectedChain(chain.id)}
+              className={cn("whitespace-nowrap font-medium transition-colors pb-1.5 -mb-[9px] border-b-2",
+                selectedChain === chain.id ? "text-primary border-primary" : "text-muted-foreground border-transparent hover:text-foreground")}>
               {chain.name}
-            </Button>
+            </button>
           ))}
         </div>
-        <div className="flex items-center gap-2">
-          <div className="flex gap-1">
+        <div className="flex items-center gap-4">
+          <div className="flex gap-4 text-xs">
             {(['all', 'buy', 'sell'] as const).map(f => (
-              <Button key={f} variant={filter === f ? "secondary" : "ghost"} size="sm"
-                onClick={() => setFilter(f)} className="capitalize text-xs">
+              <button key={f} onClick={() => setFilter(f)}
+                className={cn("capitalize font-medium transition-colors", filter === f ? "text-primary" : "text-muted-foreground hover:text-foreground")}>
                 {f === 'all' ? 'All' : f === 'buy' ? '🟢 Buys' : '🔴 Sells'}
-              </Button>
+              </button>
             ))}
           </div>
           <Button variant="outline" size="sm" onClick={handleRefresh} disabled={isLoading}>
@@ -181,45 +182,41 @@ export function AdvancedWhaleTracker({ onRefresh }: AdvancedWhaleTrackerProps) {
       </div>
 
       {/* Transactions List - click navigates to prediction page */}
-      <div className="holo-card p-4 md:p-6">
-        <h2 className="font-display font-bold text-lg mb-4 flex items-center gap-2">
-          <Waves className="w-5 h-5 text-primary" />
-          LIVE WHALE TRANSACTIONS
-          <span className="ml-auto text-xs text-muted-foreground flex items-center gap-1">
+      <div className="border-t border-border/30 pt-5">
+        <h2 className="section-label mb-4 flex items-center gap-2">
+          <Waves className="w-3.5 h-3.5 text-primary" />
+          Live Whale Transactions
+          <span className="ml-auto text-xs text-muted-foreground flex items-center gap-1 normal-case tracking-normal font-normal">
             <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
             {whaleData?.source === 'alchemy' ? 'Live from Alchemy' : 'Real-time Data'}
           </span>
         </h2>
 
-        <div className="space-y-3">
+        <div>
           {filteredTransactions.map((tx, i) => {
             const tier = getWhaleTier(tx.value);
-            
+
             return (
               <button
                 key={tx.id}
                 onClick={() => handleTxClick(tx.asset)}
                 className={cn(
-                  "w-full p-4 rounded-lg border flex items-center justify-between transition-all text-left group animate-fade-in",
-                  tx.type === 'buy' ? "bg-success/10 border-success/30 hover:border-success" :
-                  tx.type === 'sell' ? "bg-danger/10 border-danger/30 hover:border-danger" :
-                  "bg-muted/30 border-border hover:border-primary/50"
+                  "w-full py-3.5 pl-3 border-l-2 border-b border-b-border/20 flex items-center justify-between transition-all text-left group animate-fade-in hover:bg-muted/20",
+                  tx.type === 'buy' ? "border-l-success" :
+                  tx.type === 'sell' ? "border-l-danger" :
+                  "border-l-border"
                 )}
                 style={{ animationDelay: `${i * 0.05}s` }}
               >
                 <div className="flex items-center gap-4">
-                  <div className={cn(
-                    "w-12 h-12 rounded-full flex items-center justify-center",
-                    tx.type === 'buy' ? "bg-success/20" : 
-                    tx.type === 'sell' ? "bg-danger/20" : "bg-muted"
-                  )}>
-                    {tx.type === 'buy' ? 
+                  <span className="flex-shrink-0">
+                    {tx.type === 'buy' ?
                       <TrendingUp className="w-6 h-6 text-success" /> :
                       tx.type === 'sell' ?
                       <TrendingDown className="w-6 h-6 text-danger" /> :
                       <ArrowRight className="w-6 h-6 text-muted-foreground" />
                     }
-                  </div>
+                  </span>
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-display font-bold">{tx.asset}</span>
@@ -267,12 +264,12 @@ export function AdvancedWhaleTracker({ onRefresh }: AdvancedWhaleTrackerProps) {
       </div>
 
       {/* External Links */}
-      <div className="holo-card p-4 md:p-6">
-        <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
-          <ExternalLink className="w-4 h-4 text-primary" />
-          WHALE INTELLIGENCE TOOLS
+      <div className="border-t border-border/30 pt-5">
+        <h3 className="section-label mb-4 flex items-center gap-2">
+          <ExternalLink className="w-3.5 h-3.5 text-primary" />
+          Whale Intelligence Tools
         </h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-4">
           {[
             { name: 'Whale Alert', url: 'https://whale-alert.io/', desc: 'Live whale transactions' },
             { name: 'Nansen', url: 'https://www.nansen.ai/', desc: 'Smart money tracking' },
@@ -280,10 +277,10 @@ export function AdvancedWhaleTracker({ onRefresh }: AdvancedWhaleTrackerProps) {
             { name: 'DeBank', url: 'https://debank.com/', desc: 'DeFi portfolio tracker' },
           ].map(link => (
             <a key={link.name} href={link.url} target="_blank" rel="noopener noreferrer"
-              className="flex flex-col items-start p-3 gap-1 rounded-lg border border-border hover:border-primary/50 transition-colors">
+              className="flex flex-col items-start gap-1 border-t border-border/20 pt-2 group hover:opacity-80 transition-opacity">
               <div className="flex items-center gap-2">
                 <Globe className="w-4 h-4 text-primary" />
-                <span className="font-medium text-sm">{link.name}</span>
+                <span className="font-medium text-sm group-hover:text-primary transition-colors">{link.name}</span>
               </div>
               <span className="text-xs text-muted-foreground">{link.desc}</span>
             </a>
