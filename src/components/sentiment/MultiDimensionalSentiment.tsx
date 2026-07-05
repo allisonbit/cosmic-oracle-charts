@@ -44,12 +44,12 @@ export function MultiDimensionalSentiment({
   const getTrendArrow = (trend: 'up' | 'down' | 'stable') => trend === 'up' ? '↗️' : trend === 'down' ? '↘️' : '→';
 
   return (
-    <div className="holo-card p-4 md:p-6">
+    <div className="border-t border-border/30 pt-5">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="font-display font-bold text-sm flex items-center gap-2">
-            <BarChart3 className="w-4 h-4 text-primary" />
-            ORACLEBULL SENTIMENT ENGINE
+          <h3 className="section-label flex items-center gap-2">
+            <BarChart3 className="w-3.5 h-3.5 text-primary" />
+            OracleBull Sentiment Engine
           </h3>
           <p className="text-xs text-muted-foreground mt-1">Multi-dimensional weighted analysis</p>
         </div>
@@ -75,14 +75,14 @@ export function MultiDimensionalSentiment({
       </div>
 
       {/* All dimensions shown inline - no dropdowns */}
-      <div className="space-y-4">
+      <div>
         {dimensions.map(dim => (
-          <div key={dim.id} className="p-3 rounded-lg bg-muted/20 border border-border/30">
+          <div key={dim.id} className="border-b border-border/20 last:border-b-0 py-4">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <div className={cn("p-1.5 rounded", getScoreColor(dim.score).replace('text-', 'bg-') + '/20')}>
+                <span className={cn("flex-shrink-0", getScoreColor(dim.score))}>
                   {dim.icon}
-                </div>
+                </span>
                 <span className="text-sm font-medium">{dim.name}</span>
                 <span className="text-xs text-muted-foreground">({(dim.weight * 100).toFixed(0)}%)</span>
                 <span className="text-xs">{getTrendArrow(dim.trend)}</span>
@@ -95,15 +95,15 @@ export function MultiDimensionalSentiment({
               )} style={{ width: `${dim.score}%` }} />
             </div>
             <p className="text-xs text-muted-foreground mb-2">{dim.description}</p>
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-x-3 gap-y-1 flex-wrap">
               {dim.dataPoints.map((point, i) => (
-                <span key={i} className="text-xs px-2 py-0.5 rounded bg-muted/50 text-muted-foreground">{point}</span>
+                <span key={i} className="text-xs text-muted-foreground">• {point}</span>
               ))}
             </div>
-            <div className="flex flex-wrap gap-2 mt-2">
+            <div className="flex flex-wrap gap-3 mt-2">
               {dim.sources.map(source => (
                 <a key={source.name} href={source.url} target="_blank" rel="noopener noreferrer"
-                  className="text-xs px-2 py-1 rounded border border-border/50 hover:border-primary/50 text-primary flex items-center gap-1">
+                  className="text-xs text-primary hover:underline flex items-center gap-1">
                   {source.name} <ExternalLink className="w-3 h-3" />
                 </a>
               ))}

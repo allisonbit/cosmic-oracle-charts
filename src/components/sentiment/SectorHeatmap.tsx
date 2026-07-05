@@ -105,13 +105,6 @@ export function SectorHeatmap({ coins }: SectorHeatmapProps) {
     },
   ];
 
-  const getSentimentColor = (sentiment: number) => {
-    if (sentiment >= 70) return 'bg-success/30 border-success/50 hover:bg-success/40';
-    if (sentiment >= 50) return 'bg-primary/20 border-primary/40 hover:bg-primary/30';
-    if (sentiment >= 35) return 'bg-warning/20 border-warning/40 hover:bg-warning/30';
-    return 'bg-danger/20 border-danger/40 hover:bg-danger/30';
-  };
-
   const getSentimentTextColor = (sentiment: number) => {
     if (sentiment >= 70) return 'text-success';
     if (sentiment >= 50) return 'text-primary';
@@ -127,11 +120,11 @@ export function SectorHeatmap({ coins }: SectorHeatmapProps) {
 
   return (
     <>
-      <div className="holo-card p-4 md:p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-display font-bold text-sm flex items-center gap-2">
-            <Cpu className="w-4 h-4 text-primary" />
-            SECTOR SENTIMENT HEATMAP
+      <div className="border-t border-border/30 pt-5">
+        <div className="section-header mb-4">
+          <h3 className="section-label flex items-center gap-2">
+            <Cpu className="w-3.5 h-3.5 text-primary" />
+            Sector Sentiment Heatmap
           </h3>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Info className="w-3 h-3" />
@@ -139,20 +132,17 @@ export function SectorHeatmap({ coins }: SectorHeatmapProps) {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-5">
           {sectors.map(sector => (
             <button
               key={sector.id}
               onClick={() => setSelectedSector(sector)}
-              className={cn(
-                "p-4 rounded-xl border transition-all text-left group",
-                getSentimentColor(sector.sentiment)
-              )}
+              className="text-left group border-t border-border/20 pt-3 hover:opacity-80 transition-opacity"
             >
               <div className="flex items-center justify-between mb-2">
-                <div className={cn("p-2 rounded-lg bg-background/50", getSentimentTextColor(sector.sentiment))}>
+                <span className={cn("flex-shrink-0", getSentimentTextColor(sector.sentiment))}>
                   {sector.icon}
-                </div>
+                </span>
                 <div className={cn(
                   "flex items-center gap-1 text-xs font-bold",
                   sector.change >= 0 ? "text-success" : "text-danger"
@@ -169,7 +159,7 @@ export function SectorHeatmap({ coins }: SectorHeatmapProps) {
                 <span className="text-xs text-muted-foreground">{formatVolume(sector.volume)}</span>
               </div>
               <div className="h-1 bg-muted rounded-full mt-2 overflow-hidden">
-                <div 
+                <div
                   className={cn(
                     "h-full rounded-full transition-all",
                     sector.sentiment >= 70 ? "bg-success" :

@@ -22,7 +22,7 @@ export function GitHubActivityPanel({ topCoins, isLoading }: GitHubActivityPanel
 
   if (isLoading) {
     return (
-      <div className="holo-card p-6 flex items-center justify-center min-h-[300px]">
+      <div className="border-t border-border/30 pt-5 flex items-center justify-center min-h-[300px]">
         <Loader2 className="w-6 h-6 animate-spin text-primary" />
       </div>
     );
@@ -32,23 +32,23 @@ export function GitHubActivityPanel({ topCoins, isLoading }: GitHubActivityPanel
   const maxVolume = Math.max(...coins.map(c => c.volume), 1);
 
   return (
-    <div className="holo-card p-6">
-      <h3 className="font-display font-bold text-lg mb-6 flex items-center gap-2">
-        <BarChart3 className="w-5 h-5 text-primary" />
-        MARKET DEEP DIVE
-        <span className="text-xs text-muted-foreground font-normal ml-auto">Live data</span>
+    <div className="border-t border-border/30 pt-5">
+      <h3 className="section-label mb-4 flex items-center gap-2">
+        <BarChart3 className="w-3.5 h-3.5 text-primary" />
+        Market Deep Dive
+        <span className="text-xs text-muted-foreground font-normal normal-case tracking-normal ml-auto">Live data</span>
       </h3>
 
-      <div className="space-y-3">
+      <div>
         {coins.map((coin) => {
           const athDistance = coin.athChangePercentage;
           const range24h = coin.high24h - coin.low24h;
-          const positionInRange = coin.high24h > coin.low24h 
-            ? ((coin.price - coin.low24h) / range24h) * 100 
+          const positionInRange = coin.high24h > coin.low24h
+            ? ((coin.price - coin.low24h) / range24h) * 100
             : 50;
 
           return (
-            <div key={coin.id} className="p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+            <div key={coin.id} className="border-b border-border/20 last:border-b-0 py-4">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <img src={coin.image} alt={coin.name} className="w-6 h-6 rounded-full" loading="lazy" />
@@ -77,17 +77,17 @@ export function GitHubActivityPanel({ topCoins, isLoading }: GitHubActivityPanel
               </div>
 
               {/* 24h Range + ATH Distance */}
-              <div className="grid grid-cols-3 gap-2 text-center">
-                <div className="p-2 rounded bg-muted/50">
-                  <div className="text-[10px] text-muted-foreground">24h Low</div>
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div>
+                  <div className="section-label mb-0.5">24h Low</div>
                   <div className="text-xs font-bold">{formatNumber(coin.low24h)}</div>
                 </div>
-                <div className="p-2 rounded bg-muted/50">
-                  <div className="text-[10px] text-muted-foreground">24h Range</div>
+                <div>
+                  <div className="section-label mb-0.5">24h Range</div>
                   <Progress value={positionInRange} className="h-1 mt-1" />
                 </div>
-                <div className="p-2 rounded bg-muted/50">
-                  <div className="text-[10px] text-muted-foreground">24h High</div>
+                <div>
+                  <div className="section-label mb-0.5">24h High</div>
                   <div className="text-xs font-bold">{formatNumber(coin.high24h)}</div>
                 </div>
               </div>
@@ -97,10 +97,10 @@ export function GitHubActivityPanel({ topCoins, isLoading }: GitHubActivityPanel
       </div>
 
       {/* Summary */}
-      <div className="mt-6 p-4 rounded-lg bg-primary/10 border border-primary/20">
+      <div className="mt-6 border-l-2 border-primary pl-4">
         <div className="flex items-center gap-2 mb-2">
           <Activity className="w-4 h-4 text-primary" />
-          <span className="text-xs font-display text-primary">MARKET INSIGHT</span>
+          <span className="section-label text-primary">Market Insight</span>
         </div>
         <p className="text-sm text-muted-foreground">
           {(() => {

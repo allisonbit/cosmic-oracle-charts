@@ -40,15 +40,15 @@ export function NewsPanel({ news, isLoading }: NewsPanelProps) {
   };
 
   return (
-    <div className="holo-card p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="font-display font-bold text-lg flex items-center gap-2">
-          <Newspaper className="w-5 h-5 text-primary" />
-          LIVE CRYPTO NEWS
+    <div className="border-t border-border/30 pt-5">
+      <div className="section-header mb-4">
+        <h3 className="section-label flex items-center gap-2">
+          <Newspaper className="w-3.5 h-3.5 text-primary" />
+          Live Crypto News
         </h3>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <Sparkles className="w-3 h-3 text-primary animate-pulse" />
-          AI-analyzed sentiment • Live
+          AI-analyzed • Live
         </div>
       </div>
 
@@ -59,7 +59,7 @@ export function NewsPanel({ news, isLoading }: NewsPanelProps) {
       ) : news.length === 0 ? (
         <p className="text-sm text-muted-foreground text-center py-8">No news available</p>
       ) : (
-        <div className="space-y-3">
+        <div>
           {news.map((article, i) => (
             <a
               key={i}
@@ -67,7 +67,7 @@ export function NewsPanel({ news, isLoading }: NewsPanelProps) {
               target="_blank"
               rel="noopener noreferrer"
               className={cn(
-                "block w-full text-left p-4 rounded-lg bg-muted/30 border-l-4 hover:bg-muted/50 transition-all group",
+                "block w-full text-left py-3 pl-3 border-l-2 border-b border-b-border/20 hover:bg-muted/20 transition-all group",
                 getSentimentBorder(article.sentiment)
               )}
             >

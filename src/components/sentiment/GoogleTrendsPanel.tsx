@@ -13,7 +13,7 @@ interface GoogleTrendsPanelProps {
 export function GoogleTrendsPanel({ trending, trendingCategories, fearGreed, isLoading }: GoogleTrendsPanelProps) {
   if (isLoading) {
     return (
-      <div className="holo-card p-6 flex items-center justify-center min-h-[300px]">
+      <div className="border-t border-border/30 pt-5 flex items-center justify-center min-h-[300px]">
         <Loader2 className="w-6 h-6 animate-spin text-primary" />
       </div>
     );
@@ -22,17 +22,17 @@ export function GoogleTrendsPanel({ trending, trendingCategories, fearGreed, isL
   const maxRank = Math.max(...trending.map(t => t.marketCapRank || 1000), 1);
 
   return (
-    <div className="holo-card p-6">
-      <h3 className="font-display font-bold text-lg mb-6 flex items-center gap-2">
-        <Flame className="w-5 h-5 text-warning" />
-        TRENDING NOW
-        <span className="text-xs text-muted-foreground font-normal ml-auto">Live from CoinGecko</span>
+    <div className="border-t border-border/30 pt-5">
+      <h3 className="section-label mb-4 flex items-center gap-2">
+        <Flame className="w-3.5 h-3.5 text-warning" />
+        Trending Now
+        <span className="text-xs text-muted-foreground font-normal normal-case tracking-normal ml-auto">Live from CoinGecko</span>
       </h3>
 
       {/* Trending Coins */}
-      <div className="space-y-3 mb-6">
+      <div className="mb-6">
         {trending.slice(0, 8).map((coin, i) => (
-          <div key={coin.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+          <div key={coin.id} className="editorial-row gap-3">
             <span className="text-xs text-muted-foreground w-5 font-bold">#{i + 1}</span>
             <img src={coin.thumb} alt={coin.name} className="w-6 h-6 rounded-full" loading="lazy" />
             <div className="flex-1 min-w-0">
@@ -59,13 +59,13 @@ export function GoogleTrendsPanel({ trending, trendingCategories, fearGreed, isL
       {/* Trending Categories */}
       {trendingCategories.length > 0 && (
         <div className="mb-6">
-          <h4 className="font-display font-bold text-sm mb-3 flex items-center gap-2">
-            <BarChart3 className="w-4 h-4 text-primary" />
-            HOT SECTORS
+          <h4 className="section-label mb-3 flex items-center gap-2">
+            <BarChart3 className="w-3.5 h-3.5 text-primary" />
+            Hot Sectors
           </h4>
-          <div className="grid grid-cols-1 gap-2">
+          <div>
             {trendingCategories.map((cat) => (
-              <div key={cat.name} className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
+              <div key={cat.name} className="editorial-row justify-between">
                 <span className="text-sm font-medium truncate flex-1">{cat.name}</span>
                 <div className="flex items-center gap-3 shrink-0">
                   {cat.coinsCount > 0 && (
@@ -87,8 +87,8 @@ export function GoogleTrendsPanel({ trending, trendingCategories, fearGreed, isL
 
       {/* Fear & Greed History */}
       {fearGreed.length > 0 && (
-        <div className="p-4 rounded-lg bg-muted/30">
-          <h4 className="font-display font-bold text-xs mb-3 text-muted-foreground">FEAR & GREED (7 DAY)</h4>
+        <div className="border-t border-border/20 pt-4">
+          <h4 className="section-label mb-3">Fear &amp; Greed (7 Day)</h4>
           <div className="flex gap-2">
             {fearGreed.map((entry, i) => (
               <div key={i} className="flex-1 text-center">

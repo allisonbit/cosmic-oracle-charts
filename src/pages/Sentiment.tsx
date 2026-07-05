@@ -140,26 +140,26 @@ const SentimentPage = () => {
           )}
         </div>
 
-        {/* Global Market Stats from real data */}
+        {/* Global Market Stats from real data — inline strip */}
         {sentimentData?.global && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-            <div className="holo-card p-4 text-center">
-              <div className="text-xs text-muted-foreground mb-1">Total Market Cap</div>
+          <div className="grid grid-cols-2 md:flex md:items-stretch md:divide-x md:divide-border/30 border-y border-border/30 py-4 mb-6 gap-y-4">
+            <div className="md:px-6 md:first:pl-0">
+              <div className="section-label mb-1">Total Market Cap</div>
               <div className="font-bold text-lg">{formatNumber(sentimentData.global.totalMarketCap)}</div>
               <div className={cn("text-xs font-medium", (sentimentData.global.marketCapChange24h ?? 0) >= 0 ? "text-success" : "text-danger")}>
                 {(sentimentData.global.marketCapChange24h ?? 0) >= 0 ? "+" : ""}{(sentimentData.global.marketCapChange24h ?? 0).toFixed(2)}%
               </div>
             </div>
-            <div className="holo-card p-4 text-center">
-              <div className="text-xs text-muted-foreground mb-1">24h Volume</div>
+            <div className="md:px-6">
+              <div className="section-label mb-1">24h Volume</div>
               <div className="font-bold text-lg">{formatNumber(sentimentData.global.totalVolume)}</div>
             </div>
-            <div className="holo-card p-4 text-center">
-              <div className="text-xs text-muted-foreground mb-1">BTC Dominance</div>
+            <div className="md:px-6">
+              <div className="section-label mb-1">BTC Dominance</div>
               <div className="font-bold text-lg">{(sentimentData.global.btcDominance ?? 0).toFixed(1)}%</div>
             </div>
-            <div className="holo-card p-4 text-center">
-              <div className="text-xs text-muted-foreground mb-1">Active Cryptos</div>
+            <div className="md:px-6">
+              <div className="section-label mb-1">Active Cryptos</div>
               <div className="font-bold text-lg">{(sentimentData.global.activeCryptos ?? 0).toLocaleString()}</div>
             </div>
           </div>
@@ -178,8 +178,8 @@ const SentimentPage = () => {
         {/* Token Sentiment Search */}
         <TokenSentimentSearch />
 
-        {/* Navigation Tabs */}
-        <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+        {/* Navigation Tabs — editorial underline */}
+        <div className="flex gap-6 mb-6 overflow-x-auto border-b border-border/30">
           {[
             { id: "overview", label: "Overview", icon: Activity },
             { id: "social", label: "Social", icon: MessageCircle },
@@ -187,16 +187,19 @@ const SentimentPage = () => {
             { id: "signals", label: "Live Signals", icon: Zap },
           ].map(tab => {
             const Icon = tab.icon;
+            const active = activeTab === tab.id;
             return (
-              <Button
+              <button
                 key={tab.id}
-                variant={activeTab === tab.id ? "default" : "outline"}
                 onClick={() => setActiveTab(tab.id as typeof activeTab)}
-                className="gap-2 whitespace-nowrap"
+                className={cn(
+                  "flex items-center gap-2 whitespace-nowrap pb-2.5 -mb-px border-b-2 text-sm font-medium transition-colors",
+                  active ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
+                )}
               >
                 <Icon className="w-4 h-4" />
                 {tab.label}
-              </Button>
+              </button>
             );
           })}
         </div>

@@ -98,7 +98,7 @@ export function SocialSentimentPanel({ tokens, globalData, isLoading }: SocialSe
       {selectedCoin && sentiment && (
         <>
           {/* Header */}
-          <div className="holo-card p-6">
+          <div className="border-t border-border/30 pt-5">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                <img src={selectedCoin.image} alt={selectedCoin.name} width={40} height={40} loading="lazy" decoding="async" className="w-10 h-10 rounded-full" />
@@ -111,24 +111,24 @@ export function SocialSentimentPanel({ tokens, globalData, isLoading }: SocialSe
                 <div className={cn("text-3xl font-display font-bold", getSentimentColor(sentiment.overall))}>
                   {sentiment.overall}
                 </div>
-                <div className="text-xs text-muted-foreground">Composite Score</div>
+                <div className="section-label">Composite Score</div>
               </div>
             </div>
 
-            {/* Quick Stats from real data */}
-            <div className="grid grid-cols-4 gap-3">
-              <div className="p-3 rounded-lg bg-muted/30 text-center">
-                <div className="text-xs text-muted-foreground mb-1">24h Change</div>
+            {/* Quick Stats from real data — inline strip */}
+            <div className="flex items-stretch divide-x divide-border/30 border-t border-border/20 pt-4">
+              <div className="flex-1 px-3 first:pl-0 text-center">
+                <div className="section-label mb-1">24h Change</div>
                 <div className={cn("font-bold", selectedCoin.change24h >= 0 ? "text-success" : "text-danger")}>
                   {selectedCoin.change24h >= 0 ? "+" : ""}{(selectedCoin.change24h ?? 0).toFixed(2)}%
                 </div>
               </div>
-              <div className="p-3 rounded-lg bg-muted/30 text-center">
-                <div className="text-xs text-muted-foreground mb-1">Vol/MCap</div>
+              <div className="flex-1 px-3 text-center">
+                <div className="section-label mb-1">Vol/MCap</div>
                 <div className="font-bold text-primary">{sentiment.volumeRatio}%</div>
               </div>
-              <div className="p-3 rounded-lg bg-muted/30 text-center">
-                <div className="text-xs text-muted-foreground mb-1">Whale Activity</div>
+              <div className="flex-1 px-3 text-center">
+                <div className="section-label mb-1">Whale Activity</div>
                 <div className={cn(
                   "font-bold",
                   sentiment.whaleActivity === 'high' ? 'text-success' :
@@ -137,8 +137,8 @@ export function SocialSentimentPanel({ tokens, globalData, isLoading }: SocialSe
                   {sentiment.whaleActivity.toUpperCase()}
                 </div>
               </div>
-              <div className="p-3 rounded-lg bg-muted/30 text-center">
-                <div className="text-xs text-muted-foreground mb-1">From ATH</div>
+              <div className="flex-1 px-3 text-center">
+                <div className="section-label mb-1">From ATH</div>
                 <div className={cn("font-bold", selectedCoin.athChangePercentage > -20 ? "text-warning" : "text-danger")}>
                   {(selectedCoin.athChangePercentage ?? 0).toFixed(0)}%
                 </div>
@@ -154,10 +154,10 @@ export function SocialSentimentPanel({ tokens, globalData, isLoading }: SocialSe
             </TabsList>
 
             <TabsContent value="overview" className="space-y-4 mt-4">
-              <div className="holo-card p-6">
-                <h4 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
-                  <BarChart3 className="w-4 h-4 text-primary" />
-                  SENTIMENT BREAKDOWN
+              <div className="border-t border-border/30 pt-5">
+                <h4 className="section-label mb-4 flex items-center gap-2">
+                  <BarChart3 className="w-3.5 h-3.5 text-primary" />
+                  Sentiment Breakdown
                 </h4>
                 <div className="space-y-4">
                   {[
@@ -184,12 +184,12 @@ export function SocialSentimentPanel({ tokens, globalData, isLoading }: SocialSe
             </TabsContent>
 
             <TabsContent value="metrics" className="space-y-4 mt-4">
-              <div className="holo-card p-6">
-                <h4 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
-                  <Activity className="w-4 h-4 text-primary" />
-                  REAL-TIME METRICS
+              <div className="border-t border-border/30 pt-5">
+                <h4 className="section-label mb-4 flex items-center gap-2">
+                  <Activity className="w-3.5 h-3.5 text-primary" />
+                  Real-Time Metrics
                 </h4>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-4">
                   {[
                     { label: 'Market Cap', value: formatNumber(selectedCoin.marketCap) },
                     { label: '24h Volume', value: formatNumber(selectedCoin.volume) },
@@ -198,8 +198,8 @@ export function SocialSentimentPanel({ tokens, globalData, isLoading }: SocialSe
                     { label: 'ATH', value: formatNumber(selectedCoin.ath) },
                     { label: 'Circulating Supply', value: selectedCoin.circulatingSupply > 1e9 ? `${(selectedCoin.circulatingSupply / 1e9).toFixed(2)}B` : `${(selectedCoin.circulatingSupply / 1e6).toFixed(2)}M` },
                   ].map((item) => (
-                    <div key={item.label} className="p-3 rounded-lg bg-muted/30">
-                      <div className="text-xs text-muted-foreground mb-1">{item.label}</div>
+                    <div key={item.label} className="border-t border-border/20 pt-2">
+                      <div className="section-label mb-1">{item.label}</div>
                       <div className="font-bold text-sm">{item.value}</div>
                     </div>
                   ))}
@@ -208,19 +208,19 @@ export function SocialSentimentPanel({ tokens, globalData, isLoading }: SocialSe
             </TabsContent>
 
             <TabsContent value="comparison" className="space-y-4 mt-4">
-              <div className="holo-card p-6">
-                <h4 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
-                  <Globe className="w-4 h-4 text-primary" />
-                  TOP 10 SENTIMENT COMPARISON
+              <div className="border-t border-border/30 pt-5">
+                <h4 className="section-label mb-4 flex items-center gap-2">
+                  <Globe className="w-3.5 h-3.5 text-primary" />
+                  Top 10 Sentiment Comparison
                 </h4>
-                <div className="space-y-3">
+                <div>
                   {coins.map((coin) => {
                     const s = deriveSentiment(coin, globalData);
                     return (
                       <button
                         key={coin.symbol}
                         onClick={() => setSelectedToken(coin.symbol)}
-                        className="w-full flex items-center gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors text-left"
+                        className="editorial-row w-full gap-3 text-left"
                       >
                        <img src={coin.image} alt={coin.name} width={24} height={24} loading="lazy" decoding="async" className="w-6 h-6 rounded-full" />
                         <span className="font-bold text-sm w-12">{coin.symbol}</span>

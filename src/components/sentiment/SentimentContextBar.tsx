@@ -44,19 +44,13 @@ export function SentimentContextBar({
   };
 
   return (
-    <div className="holo-card p-4 mb-6">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="border-y border-border/30 py-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:divide-x md:divide-border/30">
         {/* Trend */}
-        <div className="flex items-center gap-3">
-          <div className={cn(
-            "w-10 h-10 rounded-lg flex items-center justify-center",
-            trend === 'improving' ? "bg-success/20" : 
-            trend === 'declining' ? "bg-danger/20" : "bg-warning/20"
-          )}>
-            {getTrendIcon()}
-          </div>
+        <div className="flex items-center gap-3 md:px-4 md:first:pl-0">
+          {getTrendIcon()}
           <div>
-            <div className="text-xs text-muted-foreground font-display">TREND</div>
+            <div className="section-label">Trend</div>
             <div className={cn(
               "font-bold",
               trend === 'improving' ? "text-success" : 
@@ -68,20 +62,14 @@ export function SentimentContextBar({
         </div>
 
         {/* Vs. Price */}
-        <div className="flex items-center gap-3">
-          <div className={cn(
-            "w-10 h-10 rounded-lg flex items-center justify-center",
-            vsPrice === 'bullish_divergence' ? "bg-success/20" :
-            vsPrice === 'bearish_divergence' ? "bg-danger/20" : "bg-muted"
-          )}>
-            <Target className={cn(
-              "w-4 h-4",
-              vsPrice === 'bullish_divergence' ? "text-success" :
-              vsPrice === 'bearish_divergence' ? "text-danger" : "text-muted-foreground"
-            )} />
-          </div>
+        <div className="flex items-center gap-3 md:px-4">
+          <Target className={cn(
+            "w-4 h-4 flex-shrink-0",
+            vsPrice === 'bullish_divergence' ? "text-success" :
+            vsPrice === 'bearish_divergence' ? "text-danger" : "text-muted-foreground"
+          )} />
           <div>
-            <div className="text-xs text-muted-foreground font-display">VS. PRICE</div>
+            <div className="section-label">Vs. Price</div>
             <div className={cn(
               "font-bold text-sm",
               vsPrice === 'bullish_divergence' ? "text-success" :
@@ -93,12 +81,10 @@ export function SentimentContextBar({
         </div>
 
         {/* Top Sector */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
-            <Cpu className="w-4 h-4 text-primary" />
-          </div>
+        <div className="flex items-center gap-3 md:px-4">
+          <Cpu className="w-4 h-4 text-primary flex-shrink-0" />
           <div>
-            <div className="text-xs text-muted-foreground font-display">TOP SECTOR</div>
+            <div className="section-label">Top Sector</div>
             <div className="font-bold text-sm flex items-center gap-1">
               {topSector}
               <span className={cn(
@@ -112,20 +98,14 @@ export function SentimentContextBar({
         </div>
 
         {/* Whale Mood */}
-        <div className="flex items-center gap-3">
-          <div className={cn(
-            "w-10 h-10 rounded-lg flex items-center justify-center",
-            whaleMood === 'accumulating' ? "bg-success/20" :
-            whaleMood === 'distributing' ? "bg-danger/20" : "bg-muted"
-          )}>
-            <Waves className={cn(
-              "w-4 h-4",
-              whaleMood === 'accumulating' ? "text-success" :
-              whaleMood === 'distributing' ? "text-danger" : "text-muted-foreground"
-            )} />
-          </div>
+        <div className="flex items-center gap-3 md:px-4">
+          <Waves className={cn(
+            "w-4 h-4 flex-shrink-0",
+            whaleMood === 'accumulating' ? "text-success" :
+            whaleMood === 'distributing' ? "text-danger" : "text-muted-foreground"
+          )} />
           <div>
-            <div className="text-xs text-muted-foreground font-display">WHALE MOOD</div>
+            <div className="section-label">Whale Mood</div>
             <div className={cn(
               "font-bold text-sm flex items-center gap-1",
               whaleMood === 'accumulating' ? "text-success" :
