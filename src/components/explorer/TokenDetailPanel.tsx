@@ -98,7 +98,7 @@ export function TokenDetailPanel({ token, chain, forecast, aiLoading }: TokenDet
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="holo-card p-6">
+      <div className="border-t border-border/30 pt-5">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-6">
           <div className="flex items-center gap-4">
             <CoinImage symbol={token.symbol} image={token.logo} size={64} />
@@ -160,7 +160,7 @@ export function TokenDetailPanel({ token, chain, forecast, aiLoading }: TokenDet
             { label: "Standard", value: chain.tokenStandard, icon: Zap },
             { label: "Chain", value: chain.name, icon: Globe },
           ].map((stat) => (
-            <div key={stat.label} className="p-3 rounded-lg bg-muted/30 text-center">
+            <div key={stat.label} className="py-2.5 text-center">
               <stat.icon className={cn("w-4 h-4 mx-auto mb-1", stat.color || "text-primary")} />
               <div className="text-[10px] text-muted-foreground font-display">{stat.label}</div>
               <div className="text-sm font-bold">{stat.value}</div>
@@ -182,7 +182,7 @@ export function TokenDetailPanel({ token, chain, forecast, aiLoading }: TokenDet
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-4 mt-4">
           {/* Price Chart */}
-          <div className="holo-card p-6">
+          <div className="border-t border-border/30 pt-5">
             <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-primary" />
               PRICE CHART (24H)
@@ -219,7 +219,7 @@ export function TokenDetailPanel({ token, chain, forecast, aiLoading }: TokenDet
           </div>
 
           {/* AI Analysis */}
-          <div className="holo-card p-6">
+          <div className="border-t border-border/30 pt-5">
             <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
               <Brain className="w-4 h-4 text-primary" />
               AI ANALYSIS
@@ -231,7 +231,7 @@ export function TokenDetailPanel({ token, chain, forecast, aiLoading }: TokenDet
               </div>
             ) : forecast ? (
               <div className="grid md:grid-cols-2 gap-4">
-                <div className="p-4 rounded-lg bg-muted/30">
+                <div className="py-3 border-b border-border/20">
                   <div className="flex items-center gap-2 mb-2">
                     <Target className="w-4 h-4 text-primary" />
                     <span className="text-xs font-display">TREND</span>
@@ -243,7 +243,7 @@ export function TokenDetailPanel({ token, chain, forecast, aiLoading }: TokenDet
                     {forecast.trend?.toUpperCase() || 'NEUTRAL'}
                   </p>
                 </div>
-                <div className="p-4 rounded-lg bg-muted/30">
+                <div className="py-3 border-b border-border/20">
                   <div className="flex items-center gap-2 mb-2">
                     <Shield className="w-4 h-4 text-danger" />
                     <span className="text-xs font-display">RISK</span>
@@ -253,14 +253,14 @@ export function TokenDetailPanel({ token, chain, forecast, aiLoading }: TokenDet
                     <span className="text-sm font-bold">{forecast.riskLevel || 50}%</span>
                   </div>
                 </div>
-                <div className="p-4 rounded-lg bg-muted/30">
+                <div className="py-3 border-b border-border/20">
                   <div className="flex items-center gap-2 mb-2">
                     <Clock className="w-4 h-4 text-secondary" />
                     <span className="text-xs font-display">SHORT TERM</span>
                   </div>
                   <p className="text-sm text-muted-foreground">{forecast.shortTerm || 'No prediction available'}</p>
                 </div>
-                <div className="p-4 rounded-lg bg-muted/30">
+                <div className="py-3 border-b border-border/20">
                   <div className="flex items-center gap-2 mb-2">
                     <Rocket className="w-4 h-4 text-warning" />
                     <span className="text-xs font-display">LONG TERM</span>
@@ -279,7 +279,7 @@ export function TokenDetailPanel({ token, chain, forecast, aiLoading }: TokenDet
 
         {/* Holders Tab */}
         <TabsContent value="holders" className="space-y-4 mt-4">
-          <div className="holo-card p-6">
+          <div className="border-t border-border/30 pt-5">
             <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
               <Users className="w-4 h-4 text-primary" />
               HOLDER DISTRIBUTION
@@ -306,25 +306,25 @@ export function TokenDetailPanel({ token, chain, forecast, aiLoading }: TokenDet
                 </ResponsiveContainer>
               </div>
               <div className="space-y-3">
-                <div className="p-3 rounded-lg bg-muted/30">
+                <div className="py-2.5 border-b border-border/20">
                   <div className="flex justify-between items-center">
                     <span className="text-sm">Total Holders</span>
                     <span className="font-bold">24,532</span>
                   </div>
                 </div>
-                <div className="p-3 rounded-lg bg-muted/30">
+                <div className="py-2.5 border-b border-border/20">
                   <div className="flex justify-between items-center">
                     <span className="text-sm">Holder Growth (7d)</span>
                     <span className="font-bold text-success">+2.4%</span>
                   </div>
                 </div>
-                <div className="p-3 rounded-lg bg-muted/30">
+                <div className="py-2.5 border-b border-border/20">
                   <div className="flex justify-between items-center">
                     <span className="text-sm">Exchange Holdings</span>
                     <span className="font-bold">18.5%</span>
                   </div>
                 </div>
-                <div className="p-3 rounded-lg bg-muted/30">
+                <div className="py-2.5 border-b border-border/20">
                   <div className="flex justify-between items-center">
                     <span className="text-sm">Whale Concentration</span>
                     <span className="font-bold text-warning">Medium</span>
@@ -335,7 +335,7 @@ export function TokenDetailPanel({ token, chain, forecast, aiLoading }: TokenDet
           </div>
 
           {/* Top Holders */}
-          <div className="holo-card p-6">
+          <div className="border-t border-border/30 pt-5">
             <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
               <Wallet className="w-4 h-4 text-primary" />
               TOP HOLDERS
@@ -348,7 +348,7 @@ export function TokenDetailPanel({ token, chain, forecast, aiLoading }: TokenDet
                 { rank: 4, address: '0x7c2b5...9d2e', balance: '2.4M', pct: 3.7, label: 'Whale' },
                 { rank: 5, address: '0x5a1f8...6c3b', balance: '1.9M', pct: 2.9, label: 'Exchange' },
               ].map((holder) => (
-                <div key={holder.rank} className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+                <div key={holder.rank} className="flex items-center justify-between py-2.5 border-b border-border/20 hover:bg-muted/20 transition-colors">
                   <div className="flex items-center gap-3">
                     <span className="text-xs text-muted-foreground w-6">#{holder.rank}</span>
                     <code className="text-xs font-mono text-primary">{holder.address}</code>
@@ -366,14 +366,14 @@ export function TokenDetailPanel({ token, chain, forecast, aiLoading }: TokenDet
 
         {/* Liquidity Tab */}
         <TabsContent value="liquidity" className="space-y-4 mt-4">
-          <div className="holo-card p-6">
+          <div className="border-t border-border/30 pt-5">
             <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
               <Droplets className="w-4 h-4 text-primary" />
               LIQUIDITY POOLS
             </h3>
             <div className="space-y-3">
               {liquidityData.map((pool) => (
-                <div key={pool.name} className="p-4 rounded-lg bg-muted/30">
+                <div key={pool.name} className="py-3 border-b border-border/20">
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-bold">{pool.name}</span>
                     <span className="text-success font-bold">{pool.apr}% APR</span>
@@ -388,11 +388,11 @@ export function TokenDetailPanel({ token, chain, forecast, aiLoading }: TokenDet
             </div>
           </div>
 
-          <div className="holo-card p-6">
+          <div className="border-t border-border/30 pt-5">
             <h3 className="font-display font-bold text-sm mb-4">SLIPPAGE CALCULATOR</h3>
             <div className="grid grid-cols-3 gap-3">
               {['$1K', '$10K', '$100K'].map((amount) => (
-                <div key={amount} className="p-3 rounded-lg bg-muted/30 text-center">
+                <div key={amount} className="py-2.5 text-center">
                   <div className="text-xs text-muted-foreground mb-1">Trade {amount}</div>
                   <div className="font-bold text-warning">
                     {amount === '$1K' ? '0.1%' : amount === '$10K' ? '0.8%' : '3.2%'}
@@ -406,7 +406,7 @@ export function TokenDetailPanel({ token, chain, forecast, aiLoading }: TokenDet
 
         {/* DeFi Tab */}
         <TabsContent value="defi" className="space-y-4 mt-4">
-          <div className="holo-card p-6">
+          <div className="border-t border-border/30 pt-5">
             <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
               <Building className="w-4 h-4 text-primary" />
               DEFI INTEGRATIONS
@@ -418,7 +418,7 @@ export function TokenDetailPanel({ token, chain, forecast, aiLoading }: TokenDet
                 { protocol: 'Uniswap V3', status: 'Pool', apr: '24.5%', details: 'Fee: 0.3%' },
                 { protocol: 'Curve', status: 'Pool', apr: '12.8%', details: 'Gauge: Yes' },
               ].map((integration) => (
-                <div key={integration.protocol} className="p-4 rounded-lg bg-muted/30">
+                <div key={integration.protocol} className="py-3 border-b border-border/20">
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-bold">{integration.protocol}</span>
                     <span className="text-xs px-2 py-0.5 rounded bg-success/20 text-success">{integration.status}</span>
@@ -432,7 +432,7 @@ export function TokenDetailPanel({ token, chain, forecast, aiLoading }: TokenDet
             </div>
           </div>
 
-          <div className="holo-card p-6">
+          <div className="border-t border-border/30 pt-5">
             <h3 className="font-display font-bold text-sm mb-4">BRIDGE SUPPORT</h3>
             <div className="flex flex-wrap gap-2">
               {['Wormhole', 'LayerZero', 'Axelar', 'Stargate', 'Multichain'].map((bridge) => (
@@ -446,35 +446,35 @@ export function TokenDetailPanel({ token, chain, forecast, aiLoading }: TokenDet
 
         {/* Supply Tab */}
         <TabsContent value="supply" className="space-y-4 mt-4">
-          <div className="holo-card p-6">
+          <div className="border-t border-border/30 pt-5">
             <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
               <PieChart className="w-4 h-4 text-primary" />
               TOKEN DISTRIBUTION
             </h3>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
+                <div className="flex items-center justify-between py-2.5 border-b border-border/20">
                   <div className="flex items-center gap-2">
                     <Unlock className="w-4 h-4 text-success" />
                     <span>Circulating</span>
                   </div>
                   <span className="font-bold">{supplyData.circulating}%</span>
                 </div>
-                <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
+                <div className="flex items-center justify-between py-2.5 border-b border-border/20">
                   <div className="flex items-center gap-2">
                     <Lock className="w-4 h-4 text-warning" />
                     <span>Locked</span>
                   </div>
                   <span className="font-bold">{supplyData.locked}%</span>
                 </div>
-                <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
+                <div className="flex items-center justify-between py-2.5 border-b border-border/20">
                   <div className="flex items-center gap-2">
                     <Users className="w-4 h-4 text-secondary" />
                     <span>Team</span>
                   </div>
                   <span className="font-bold">{supplyData.team}%</span>
                 </div>
-                <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
+                <div className="flex items-center justify-between py-2.5 border-b border-border/20">
                   <div className="flex items-center gap-2">
                     <Building className="w-4 h-4 text-primary" />
                     <span>Treasury</span>
@@ -503,7 +503,7 @@ export function TokenDetailPanel({ token, chain, forecast, aiLoading }: TokenDet
       </Tabs>
 
       {/* Trade Actions */}
-      <div className="holo-card p-6">
+      <div className="border-t border-border/30 pt-5">
         <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
           <Zap className="w-4 h-4 text-primary" />
           TRADE {token.symbol}

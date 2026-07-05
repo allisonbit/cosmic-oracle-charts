@@ -132,7 +132,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
     return (
       <button 
         onClick={onClick}
-        className="p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all text-left w-full group"
+        className="py-3 border-b border-border/20 hover:bg-muted/20 transition-all text-left w-full group"
       >
         <div className="flex items-center justify-between mb-1">
           <div className="flex items-center gap-2">
@@ -155,7 +155,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
   return (
     <div className="space-y-6">
       {/* Header with Price and Actions */}
-      <div className="holo-card p-6">
+      <div className="border-t border-border/30 pt-5">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-6">
           <div className="flex items-center gap-4">
             <CoinImage symbol={token.symbol} image={token.logo} size={64} />
@@ -220,7 +220,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
       </div>
 
       {/* Trade Actions */}
-      <div className="holo-card p-6">
+      <div className="border-t border-border/30 pt-5">
         <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
           <Zap className="w-4 h-4 text-primary" />
           TRADE {token.symbol}
@@ -265,7 +265,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
         <TabsContent value="overview" className="space-y-4 mt-4">
           <div className="grid md:grid-cols-2 gap-4">
             {/* Price Chart */}
-            <div className="holo-card p-6">
+            <div className="border-t border-border/30 pt-5">
               <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
                 <BarChart3 className="w-4 h-4 text-primary" />
                 PRICE CHART (24H)
@@ -289,13 +289,13 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
             </div>
 
             {/* Price Stats */}
-            <div className="holo-card p-6">
+            <div className="border-t border-border/30 pt-5">
               <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
                 <Target className="w-4 h-4 text-primary" />
                 PRICE STATISTICS
               </h3>
               <div className="space-y-3">
-                <button onClick={() => setDetailModal({ type: 'ath', data: mockStats })} className="w-full flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+                <button onClick={() => setDetailModal({ type: 'ath', data: mockStats })} className="w-full flex items-center justify-between py-2.5 border-b border-border/20 hover:bg-muted/20 transition-colors">
                   <div className="flex items-center gap-2">
                     <ArrowUpRight className="w-4 h-4 text-success" />
                     <span className="text-sm">All-Time High</span>
@@ -305,7 +305,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
                     <div className="text-xs text-muted-foreground">{mockStats.athDate ?? "in range"}</div>
                   </div>
                 </button>
-                <button onClick={() => setDetailModal({ type: 'atl', data: mockStats })} className="w-full flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+                <button onClick={() => setDetailModal({ type: 'atl', data: mockStats })} className="w-full flex items-center justify-between py-2.5 border-b border-border/20 hover:bg-muted/20 transition-colors">
                   <div className="flex items-center gap-2">
                     <ArrowDownRight className="w-4 h-4 text-danger" />
                     <span className="text-sm">All-Time Low</span>
@@ -315,7 +315,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
                     <div className="text-xs text-muted-foreground">{mockStats.atlDate ?? "in range"}</div>
                   </div>
                 </button>
-                <div className="p-3 rounded-lg bg-muted/30">
+                <div className="py-2.5 border-b border-border/20">
                   <div className="text-xs text-muted-foreground mb-2">Price from range high</div>
                   <Progress value={mockStats.ath ? ((mockStats.ath - token.price) / mockStats.ath) * 100 : 0} className="h-2" />
                   <div className="text-xs text-danger mt-1">{mockStats.ath ? `-${(((mockStats.ath - token.price) / mockStats.ath) * 100).toFixed(2)}%` : "—"}</div>
@@ -325,7 +325,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
           </div>
 
           {/* Volume Chart */}
-          <div className="holo-card p-6">
+          <div className="border-t border-border/30 pt-5">
             <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-primary" />
               RECENT VOLUME
@@ -346,7 +346,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
         {/* Trading Tab */}
         <TabsContent value="trading" className="space-y-4 mt-4">
           <div className="grid md:grid-cols-2 gap-4">
-            <div className="holo-card p-6">
+            <div className="border-t border-border/30 pt-5">
               <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
                 <Activity className="w-4 h-4 text-primary" />
                 24H TRADING ACTIVITY
@@ -366,7 +366,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
                   </div>
                   <span className="font-bold text-danger">{mockStats.sells24h !== null ? mockStats.sells24h.toLocaleString() : "—"}</span>
                 </button>
-                <div className="p-3 rounded-lg bg-muted/30">
+                <div className="py-2.5 border-b border-border/20">
                   <div className="text-xs text-muted-foreground mb-2">Buy/Sell Ratio</div>
                   {mockStats.buys24h !== null && mockStats.sells24h !== null && mockStats.transactions24h ? (
                     <>
@@ -386,7 +386,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
               </div>
             </div>
 
-            <div className="holo-card p-6">
+            <div className="border-t border-border/30 pt-5">
               <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
                 <DollarSign className="w-4 h-4 text-primary" />
                 TOP DEX PAIRS
@@ -400,7 +400,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
                   <button
                     key={pair.pair}
                     onClick={() => setDetailModal({ type: 'pair', data: pair })}
-                    className="w-full flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
+                    className="w-full flex items-center justify-between py-2.5 border-b border-border/20 hover:bg-muted/20 transition-colors"
                   >
                     <div>
                       <div className="font-medium text-sm">{pair.pair}</div>
@@ -420,7 +420,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
         {/* Holders Tab */}
         <TabsContent value="holders" className="space-y-4 mt-4">
           <div className="grid md:grid-cols-2 gap-4">
-            <div className="holo-card p-6">
+            <div className="border-t border-border/30 pt-5">
               <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
                 <Users className="w-4 h-4 text-primary" />
                 HOLDER DISTRIBUTION
@@ -451,7 +451,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
               </div>
             </div>
 
-            <div className="holo-card p-6">
+            <div className="border-t border-border/30 pt-5">
               <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
                 <Wallet className="w-4 h-4 text-primary" />
                 TOP HOLDERS
@@ -467,7 +467,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
                   <button
                     key={holder.rank}
                     onClick={() => setDetailModal({ type: 'holder', data: holder })}
-                    className="w-full flex items-center justify-between p-2 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
+                    className="w-full flex items-center justify-between py-2 border-b border-border/20 hover:bg-muted/20 transition-colors"
                   >
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-muted-foreground w-5">#{holder.rank}</span>
@@ -487,7 +487,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
 
         {/* Liquidity Tab */}
         <TabsContent value="liquidity" className="space-y-4 mt-4">
-          <div className="holo-card p-6">
+          <div className="border-t border-border/30 pt-5">
             <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
               <Droplets className="w-4 h-4 text-primary" />
               LIQUIDITY POOLS
@@ -502,7 +502,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
                 <button
                   key={pool.name}
                   onClick={() => setDetailModal({ type: 'pool', data: pool })}
-                  className="w-full p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors text-left"
+                  className="w-full py-3 border-b border-border/20 hover:bg-muted/20 transition-colors text-left"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-bold">{pool.name}</span>
@@ -523,7 +523,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
         {/* Security Tab */}
         <TabsContent value="security" className="space-y-4 mt-4">
           <div className="grid md:grid-cols-2 gap-4">
-            <div className="holo-card p-6">
+            <div className="border-t border-border/30 pt-5">
               <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
                 <Shield className="w-4 h-4 text-primary" />
                 SECURITY SCORE
@@ -552,7 +552,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
               </div>
             </div>
 
-            <div className="holo-card p-6">
+            <div className="border-t border-border/30 pt-5">
               <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
                 <Eye className="w-4 h-4 text-primary" />
                 AUDIT & VERIFICATION
@@ -567,7 +567,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
                   <button
                     key={audit.name}
                     onClick={() => window.open(audit.url, "_blank")}
-                    className="w-full flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
+                    className="w-full flex items-center justify-between py-2.5 border-b border-border/20 hover:bg-muted/20 transition-colors"
                   >
                     <span className="text-sm">{audit.name}</span>
                     <div className="flex items-center gap-2">
@@ -583,7 +583,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
 
         {/* AI Analysis Tab */}
         <TabsContent value="ai" className="space-y-4 mt-4">
-          <div className="holo-card p-6">
+          <div className="border-t border-border/30 pt-5">
             <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
               <Brain className="w-4 h-4 text-primary" />
               AI-POWERED ANALYSIS
@@ -595,7 +595,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
               </div>
             ) : forecast ? (
               <div className="grid md:grid-cols-2 gap-4">
-                <button onClick={() => setDetailModal({ type: 'trend', data: forecast })} className="p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors text-left">
+                <button onClick={() => setDetailModal({ type: 'trend', data: forecast })} className="py-3 border-b border-border/20 hover:bg-muted/20 transition-colors text-left">
                   <div className="flex items-center gap-2 mb-2">
                     <Target className="w-4 h-4 text-primary" />
                     <span className="text-xs font-display">TREND ANALYSIS</span>
@@ -604,7 +604,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
                     {forecast.trend?.toUpperCase() || 'NEUTRAL'}
                   </p>
                 </button>
-                <button onClick={() => setDetailModal({ type: 'risk', data: forecast })} className="p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors text-left">
+                <button onClick={() => setDetailModal({ type: 'risk', data: forecast })} className="py-3 border-b border-border/20 hover:bg-muted/20 transition-colors text-left">
                   <div className="flex items-center gap-2 mb-2">
                     <Shield className="w-4 h-4 text-danger" />
                     <span className="text-xs font-display">RISK LEVEL</span>
@@ -614,14 +614,14 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
                     <span className="text-sm font-bold">{forecast.riskLevel || 50}%</span>
                   </div>
                 </button>
-                <button onClick={() => setDetailModal({ type: 'shortTerm', data: forecast })} className="p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors text-left">
+                <button onClick={() => setDetailModal({ type: 'shortTerm', data: forecast })} className="py-3 border-b border-border/20 hover:bg-muted/20 transition-colors text-left">
                   <div className="flex items-center gap-2 mb-2">
                     <Clock className="w-4 h-4 text-secondary" />
                     <span className="text-xs font-display">SHORT TERM (24-48H)</span>
                   </div>
                   <p className="text-sm text-muted-foreground">{forecast.shortTerm || 'No prediction available'}</p>
                 </button>
-                <button onClick={() => setDetailModal({ type: 'longTerm', data: forecast })} className="p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors text-left">
+                <button onClick={() => setDetailModal({ type: 'longTerm', data: forecast })} className="py-3 border-b border-border/20 hover:bg-muted/20 transition-colors text-left">
                   <div className="flex items-center gap-2 mb-2">
                     <Rocket className="w-4 h-4 text-warning" />
                     <span className="text-xs font-display">LONG TERM (7D+)</span>

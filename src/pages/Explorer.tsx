@@ -59,7 +59,7 @@ function ChainSidebar({ selected, onSelect }: { selected: string; onSelect: (id:
   }, [search]);
 
   return (
-    <div className="w-full lg:w-52 shrink-0 border-r border-border bg-card/50 flex flex-col">
+    <div className="w-full lg:w-52 shrink-0 border-r border-border/40 flex flex-col">
       <div className="p-2 border-b border-border">
         <div className="relative">
           <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
@@ -256,7 +256,7 @@ const ExplorerPage = () => {
       </Helmet>
 
       {/* Page header (H1 for SEO) */}
-      <div className="border-b border-border bg-card/40">
+      <div className="border-b border-border/40">
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
@@ -418,7 +418,7 @@ const ExplorerPage = () => {
               <div className="text-center py-16 text-muted-foreground text-sm">No tokens found. Try searching or selecting a different chain.</div>
             ) : (
               sortedTokens.map((token, idx) => (
-                <button key={`${token.symbol}-${idx}`} onClick={() => openToken(token)} className="w-full text-left rounded-xl border border-border bg-card hover:border-primary/40 transition-colors p-3">
+                <button key={`${token.symbol}-${idx}`} onClick={() => openToken(token)} className="w-full text-left border-b border-border/20 hover:bg-muted/20 transition-colors py-3">
                   <div className="flex items-center gap-2.5">
                     <span className="text-[10px] text-muted-foreground font-mono w-5 shrink-0">{idx + 1}</span>
                     <CoinImage symbol={token.symbol} image={token.logo} size={32} className="shrink-0" />

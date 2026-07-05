@@ -43,7 +43,7 @@ export function MarketStatsBar({ chain }: MarketStatsBarProps) {
   const tvlChange = data?.tvlChange1d ?? null;
 
   return (
-    <div className="holo-card p-4 overflow-x-auto">
+    <div className="border-t border-border/30 pt-5 overflow-x-auto">
       <div className="flex items-center gap-6 min-w-max text-sm">
         <div className="flex items-center gap-2">
           <span className="text-xl">{chain.icon}</span>

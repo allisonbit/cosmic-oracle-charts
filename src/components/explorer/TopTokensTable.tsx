@@ -103,7 +103,7 @@ export function TopTokensTable({ chain, onTokenSelect }: TopTokensTableProps) {
   };
 
   return (
-    <div className="holo-card p-6">
+    <div className="border-t border-border/30 pt-5">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-display font-bold text-sm flex items-center gap-2">
           TOP TOKENS ON {chain.name.toUpperCase()}

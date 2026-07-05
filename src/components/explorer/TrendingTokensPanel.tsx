@@ -73,7 +73,7 @@ export function TrendingTokensPanel({ chain, onTokenSelect }: TrendingTokensPane
     <button
       key={`${token.symbol}-${index}`}
       onClick={() => handleTokenClick(token)}
-      className="w-full flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all group"
+      className="w-full flex items-center justify-between py-2.5 border-b border-border/20 hover:bg-muted/20 transition-all group"
     >
       <div className="flex items-center gap-3">
       <span className="text-xs text-muted-foreground w-5">#{index + 1}</span>
@@ -103,7 +103,7 @@ export function TrendingTokensPanel({ chain, onTokenSelect }: TrendingTokensPane
   );
 
   return (
-    <div className="holo-card p-6">
+    <div className="border-t border-border/30 pt-5">
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-display font-bold text-sm flex items-center gap-2">
@@ -178,7 +178,7 @@ export function TrendingTokensPanel({ chain, onTokenSelect }: TrendingTokensPane
               <button
                 key={`${token.symbol}-${i}`}
                 onClick={() => handleTokenClick(token)}
-                className="w-full flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all group"
+                className="w-full flex items-center justify-between py-2.5 border-b border-border/20 hover:bg-muted/20 transition-all group"
               >
                 <div className="flex items-center gap-3">
                   <span className="text-xs text-muted-foreground w-5">#{i + 1}</span>
