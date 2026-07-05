@@ -160,7 +160,7 @@ export function EnhancedOverviewPanel({
         {/* Fear & Greed */}
         <button 
           onClick={() => setSelectedMetric('fear-greed')}
-          className="holo-card p-4 md:p-6 text-center hover:border-primary/50 transition-all group cursor-pointer"
+          className="border-t border-border/20 pt-4 text-center hover:opacity-80 transition-all group cursor-pointer"
         >
           <Brain className="w-6 h-6 md:w-8 md:h-8 text-primary mx-auto mb-2" />
           <h3 className="font-display text-[10px] md:text-xs text-muted-foreground mb-1">FEAR & GREED</h3>
@@ -184,7 +184,7 @@ export function EnhancedOverviewPanel({
         {/* Social Sentiment */}
         <button 
           onClick={() => setSelectedMetric('social')}
-          className="holo-card p-4 md:p-6 text-center hover:border-primary/50 transition-all group cursor-pointer"
+          className="border-t border-border/20 pt-4 text-center hover:opacity-80 transition-all group cursor-pointer"
         >
           <Users className="w-6 h-6 md:w-8 md:h-8 text-secondary mx-auto mb-2" />
           <h3 className="font-display text-[10px] md:text-xs text-muted-foreground mb-1">SOCIAL SCORE</h3>
@@ -216,7 +216,7 @@ export function EnhancedOverviewPanel({
         {/* Volatility */}
         <button 
           onClick={() => setSelectedMetric('volatility')}
-          className="holo-card p-4 md:p-6 text-center hover:border-primary/50 transition-all group cursor-pointer"
+          className="border-t border-border/20 pt-4 text-center hover:opacity-80 transition-all group cursor-pointer"
         >
           <Zap className="w-6 h-6 md:w-8 md:h-8 text-warning mx-auto mb-2" />
           <h3 className="font-display text-[10px] md:text-xs text-muted-foreground mb-1">VOLATILITY</h3>
@@ -237,7 +237,7 @@ export function EnhancedOverviewPanel({
         {/* Whale Activity */}
         <button 
           onClick={() => setSelectedMetric('whale')}
-          className="holo-card p-4 md:p-6 text-center hover:border-primary/50 transition-all group cursor-pointer"
+          className="border-t border-border/20 pt-4 text-center hover:opacity-80 transition-all group cursor-pointer"
         >
           <Waves className="w-6 h-6 md:w-8 md:h-8 text-primary mx-auto mb-2" />
           <h3 className="font-display text-[10px] md:text-xs text-muted-foreground mb-1">WHALE ACTIVITY</h3>
@@ -254,11 +254,11 @@ export function EnhancedOverviewPanel({
       </div>
 
       {/* Market Momentum Bar */}
-      <div className="holo-card p-4 md:p-6 mb-6">
-        <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
-          <BarChart3 className="w-4 h-4 text-primary" />
-          MARKET MOMENTUM
-          <span className="ml-auto text-xs text-muted-foreground">Based on {totalCoins} coins</span>
+      <div className="border-t border-border/30 pt-5 mb-6">
+        <h3 className="section-label mb-4 flex items-center gap-2">
+          <BarChart3 className="w-3.5 h-3.5 text-primary" />
+          Market Momentum
+          <span className="ml-auto text-xs text-muted-foreground normal-case tracking-normal font-normal">Based on {totalCoins} coins</span>
         </h3>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">

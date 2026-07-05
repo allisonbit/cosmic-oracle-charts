@@ -71,13 +71,13 @@ export function EnhancedWhaleTracker({ whaleAlerts }: EnhancedWhaleTrackerProps)
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid md:grid-cols-4 gap-4">
-        <div className="holo-card p-5 text-center">
+        <div className="border-t border-border/20 pt-4 text-center">
           <Waves className="w-8 h-8 text-primary mx-auto mb-2" />
           <div className="text-3xl font-display font-bold">{whaleAlerts.length}</div>
           <div className="text-xs text-muted-foreground">Active Movements</div>
           <div className="mt-2 text-xs text-primary">Last 24 hours</div>
         </div>
-        <div className="holo-card p-5 text-center hover:border-success/50 transition-colors cursor-pointer" onClick={() => setFilter('accumulation')}>
+        <div className="border-t border-border/20 pt-4 text-center hover:opacity-80 transition-opacity cursor-pointer" onClick={() => setFilter('accumulation')}>
           <TrendingUp className="w-8 h-8 text-success mx-auto mb-2" />
           <div className="text-3xl font-display font-bold text-success">{accumulationCount}</div>
           <div className="text-xs text-muted-foreground">Accumulation Events</div>
@@ -85,7 +85,7 @@ export function EnhancedWhaleTracker({ whaleAlerts }: EnhancedWhaleTrackerProps)
             <ArrowUpRight className="w-3 h-3" /> Bullish signals
           </div>
         </div>
-        <div className="holo-card p-5 text-center hover:border-danger/50 transition-colors cursor-pointer" onClick={() => setFilter('distribution')}>
+        <div className="border-t border-border/20 pt-4 text-center hover:opacity-80 transition-opacity cursor-pointer" onClick={() => setFilter('distribution')}>
           <TrendingDown className="w-8 h-8 text-danger mx-auto mb-2" />
           <div className="text-3xl font-display font-bold text-danger">{distributionCount}</div>
           <div className="text-xs text-muted-foreground">Distribution Events</div>
@@ -93,7 +93,7 @@ export function EnhancedWhaleTracker({ whaleAlerts }: EnhancedWhaleTrackerProps)
             <ArrowDownRight className="w-3 h-3" /> Bearish signals
           </div>
         </div>
-        <div className="holo-card p-5 text-center">
+        <div className="border-t border-border/20 pt-4 text-center">
           <DollarSign className="w-8 h-8 text-warning mx-auto mb-2" />
           <div className="text-3xl font-display font-bold">${(totalVolume / 1e9).toFixed(1)}B</div>
           <div className="text-xs text-muted-foreground">Total Volume Tracked</div>
@@ -123,7 +123,7 @@ export function EnhancedWhaleTracker({ whaleAlerts }: EnhancedWhaleTrackerProps)
       </div>
 
       {/* Whale Alerts List */}
-      <div className="holo-card p-6">
+      <div className="border-t border-border/30 pt-5">
         <h2 className="font-display font-bold text-lg mb-6 flex items-center gap-2">
           <Waves className="w-5 h-5 text-primary" />
           LIVE WHALE ALERTS
@@ -143,8 +143,8 @@ export function EnhancedWhaleTracker({ whaleAlerts }: EnhancedWhaleTrackerProps)
                   usdValue: alert.usdValue ?? parseFloat(alert.amount.replace('B', '')) * 1e9
                 })}
                 className={cn(
-                  "w-full p-4 rounded-lg border flex items-center justify-between animate-fade-in text-left transition-all group",
-                  alert.type === "accumulation" ? "bg-success/10 border-success/30 hover:border-success/50" : "bg-danger/10 border-danger/30 hover:border-danger/50"
+                  "w-full py-3.5 pl-3 border-l-2 border-b border-b-border/20 flex items-center justify-between animate-fade-in text-left transition-all group hover:bg-muted/20",
+                  alert.type === "accumulation" ? "border-success" : "border-danger"
                 )}
                 style={{ animationDelay: `${i * 0.1}s` }}
               >
@@ -210,7 +210,7 @@ export function EnhancedWhaleTracker({ whaleAlerts }: EnhancedWhaleTrackerProps)
       </div>
 
       {/* External Links */}
-      <div className="holo-card p-6">
+      <div className="border-t border-border/30 pt-5">
         <h3 className="font-display font-bold text-sm mb-4 flex items-center gap-2">
           <ExternalLink className="w-4 h-4 text-primary" />
           WHALE TRACKING TOOLS

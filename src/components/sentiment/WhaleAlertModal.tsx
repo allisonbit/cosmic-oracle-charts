@@ -69,8 +69,8 @@ export function WhaleAlertModal({ open, onOpenChange, alert }: WhaleAlertModalPr
         <div className="space-y-5 py-4">
           {/* Alert Summary */}
           <div className={cn(
-            "p-4 rounded-xl border",
-            isAccumulation ? "bg-success/10 border-success/30" : "bg-danger/10 border-danger/30"
+            "border-l-2 pl-4",
+            isAccumulation ? "border-success" : "border-danger"
           )}>
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
@@ -89,7 +89,7 @@ export function WhaleAlertModal({ open, onOpenChange, alert }: WhaleAlertModalPr
           {(alert.price || alert.change24h !== undefined) && (
             <div className="grid grid-cols-2 gap-3">
               {alert.price && (
-                <div className="p-3 rounded-lg bg-muted/10 border border-border/30">
+                <div className="border-t border-border/20 pt-3">
                   <div className="flex items-center gap-2 text-muted-foreground mb-1">
                     <BarChart3 className="h-4 w-4" />
                     <span className="text-xs">Current Price</span>
@@ -100,7 +100,7 @@ export function WhaleAlertModal({ open, onOpenChange, alert }: WhaleAlertModalPr
                 </div>
               )}
               {alert.change24h !== undefined && (
-                <div className="p-3 rounded-lg bg-muted/10 border border-border/30">
+                <div className="border-t border-border/20 pt-3">
                   <div className="flex items-center gap-2 text-muted-foreground mb-1">
                     <Target className="h-4 w-4" />
                     <span className="text-xs">24h Change</span>
@@ -126,7 +126,7 @@ export function WhaleAlertModal({ open, onOpenChange, alert }: WhaleAlertModalPr
           </div>
 
           {/* Suggested Action */}
-          <div className="p-4 rounded-xl border border-primary/30 bg-primary/5">
+          <div className="border-l-2 border-primary pl-4">
             <h4 className="font-display font-bold text-sm mb-2 text-primary">Suggested Action</h4>
             <p className="text-sm text-foreground">{getAction()}</p>
           </div>

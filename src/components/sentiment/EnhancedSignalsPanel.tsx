@@ -130,22 +130,22 @@ export function EnhancedSignalsPanel({ coins, onCoinClick }: EnhancedSignalsPane
     <div className="space-y-6">
       {/* Signal Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="holo-card p-4 text-center">
+        <div className="border-t border-border/20 pt-4 text-center">
           <Zap className="w-6 h-6 text-primary mx-auto mb-2" />
           <div className="text-2xl font-display font-bold">{coins.length}</div>
           <div className="text-xs text-muted-foreground">Active Signals</div>
         </div>
-        <div className="holo-card p-4 text-center">
+        <div className="border-t border-border/20 pt-4 text-center">
           <Rocket className="w-6 h-6 text-success mx-auto mb-2" />
           <div className="text-2xl font-display font-bold text-success">{pumpCount}</div>
           <div className="text-xs text-muted-foreground">Pump Signals</div>
         </div>
-        <div className="holo-card p-4 text-center">
+        <div className="border-t border-border/20 pt-4 text-center">
           <AlertTriangle className="w-6 h-6 text-danger mx-auto mb-2" />
           <div className="text-2xl font-display font-bold text-danger">{dumpCount}</div>
           <div className="text-xs text-muted-foreground">Dump Signals</div>
         </div>
-        <div className="holo-card p-4 text-center">
+        <div className="border-t border-border/20 pt-4 text-center">
           <Activity className="w-6 h-6 text-warning mx-auto mb-2" />
           <div className={cn("text-2xl font-display font-bold", avgChange >= 0 ? "text-success" : "text-danger")}>
             {avgChange >= 0 ? "+" : ""}{(avgChange ?? 0).toFixed(2)}%
@@ -176,7 +176,7 @@ export function EnhancedSignalsPanel({ coins, onCoinClick }: EnhancedSignalsPane
       </div>
 
       {/* Signals List */}
-      <div className="holo-card p-6">
+      <div className="border-t border-border/30 pt-5">
         <h2 className="font-display font-bold text-lg mb-6 flex items-center gap-2">
           <Zap className="w-5 h-5 text-primary" />
           LIVE MARKET SIGNALS
@@ -192,7 +192,7 @@ export function EnhancedSignalsPanel({ coins, onCoinClick }: EnhancedSignalsPane
                 key={coin.symbol}
                 onClick={() => setSelectedCoin(coin)}
                 className={cn(
-                  "w-full flex items-start gap-4 p-4 rounded-lg border transition-all animate-fade-in text-left group",
+                  "w-full flex items-start gap-4 py-3.5 pl-3 border-l-2 border-b border-b-border/20 transition-all animate-fade-in text-left group hover:bg-muted/20",
                   signal.type === "pump" ? "border-success/50 bg-success/10 hover:border-success" :
                   signal.type === "bullish" ? "border-success/30 bg-success/5 hover:border-success/50" : 
                   signal.type === "dump" ? "border-danger/50 bg-danger/10 hover:border-danger" :

@@ -109,7 +109,7 @@ export function TopicDetailModal({ open, onOpenChange, topic }: TopicDetailModal
             </h4>
             
             <div className="space-y-2">
-              <div className="flex items-center justify-between p-3 rounded-lg bg-muted/10 border border-border/30">
+              <div className="flex items-center justify-between border-t border-border/20 pt-3">
                 <div className="flex items-center gap-2">
                   <Twitter className="w-4 h-4 text-[#1DA1F2]" />
                   <span className="text-sm">Twitter/X</span>
@@ -122,7 +122,7 @@ export function TopicDetailModal({ open, onOpenChange, topic }: TopicDetailModal
                 </div>
               </div>
               
-              <div className="flex items-center justify-between p-3 rounded-lg bg-muted/10 border border-border/30">
+              <div className="flex items-center justify-between border-t border-border/20 pt-3">
                 <div className="flex items-center gap-2">
                   <MessageCircle className="w-4 h-4 text-[#FF4500]" />
                   <span className="text-sm">Reddit</span>
@@ -135,7 +135,7 @@ export function TopicDetailModal({ open, onOpenChange, topic }: TopicDetailModal
                 </div>
               </div>
               
-              <div className="flex items-center justify-between p-3 rounded-lg bg-muted/10 border border-border/30">
+              <div className="flex items-center justify-between border-t border-border/20 pt-3">
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 text-[#0088cc]" />
                   <span className="text-sm">Telegram</span>
@@ -152,16 +152,16 @@ export function TopicDetailModal({ open, onOpenChange, topic }: TopicDetailModal
 
           {/* Sentiment Analysis */}
           <div className={cn(
-            "p-4 rounded-xl border",
-            topic.sentiment === "bullish" ? "bg-success/10 border-success/30" :
-            topic.sentiment === "bearish" ? "bg-danger/10 border-danger/30" : "bg-warning/10 border-warning/30"
+            "border-l-2 pl-4",
+            topic.sentiment === "bullish" ? "border-success" :
+            topic.sentiment === "bearish" ? "border-danger" : "border-warning"
           )}>
             <h4 className="font-display font-bold text-sm mb-2">Sentiment Analysis</h4>
             <p className="text-sm text-muted-foreground">{getSentimentAnalysis()}</p>
           </div>
 
           {/* Trend Analysis */}
-          <div className="p-4 rounded-xl border border-primary/30 bg-primary/5">
+          <div className="border-l-2 border-primary pl-4">
             <h4 className="font-display font-bold text-sm mb-2 text-primary">Trend Analysis</h4>
             <p className="text-sm text-foreground">{getTrendAnalysis()}</p>
           </div>

@@ -99,12 +99,12 @@ export function CoinDetailModal({ open, onOpenChange, coin }: CoinDetailModalPro
           {/* Signal Box */}
           {coin.signalType && (
             <div className={cn(
-              "p-4 rounded-xl border",
+              "border-l-2 pl-4",
               coin.signalType === "pump" || coin.signalType === "bullish" 
-                ? "bg-success/10 border-success/30" 
+                ? "border-success" 
                 : coin.signalType === "dump" || coin.signalType === "bearish"
-                ? "bg-danger/10 border-danger/30"
-                : "bg-warning/10 border-warning/30"
+                ? "border-danger"
+                : "border-warning"
             )}>
               <div className="flex items-center gap-2 mb-2">
                 {coin.signalType === "pump" && <Flame className="w-4 h-4 text-success" />}
@@ -116,28 +116,28 @@ export function CoinDetailModal({ open, onOpenChange, coin }: CoinDetailModalPro
 
           {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="p-3 rounded-lg bg-muted/10 border border-border/30">
+            <div className="border-t border-border/20 pt-3">
               <div className="flex items-center gap-2 text-muted-foreground mb-1">
                 <BarChart3 className="h-4 w-4" />
                 <span className="text-xs">Volume 24h</span>
               </div>
               <p className="text-lg font-semibold text-foreground">{formatLargeNumber(coin.volume)}</p>
             </div>
-            <div className="p-3 rounded-lg bg-muted/10 border border-border/30">
+            <div className="border-t border-border/20 pt-3">
               <div className="flex items-center gap-2 text-muted-foreground mb-1">
                 <DollarSign className="h-4 w-4" />
                 <span className="text-xs">Market Cap</span>
               </div>
               <p className="text-lg font-semibold text-foreground">{formatLargeNumber(coin.marketCap)}</p>
             </div>
-            <div className="p-3 rounded-lg bg-muted/10 border border-border/30">
+            <div className="border-t border-border/20 pt-3">
               <div className="flex items-center gap-2 text-muted-foreground mb-1">
                 <Activity className="h-4 w-4" />
                 <span className="text-xs">Vol/MCap</span>
               </div>
               <p className="text-lg font-semibold text-foreground">{(volumeToMcap ?? 0).toFixed(2)}%</p>
             </div>
-            <div className="p-3 rounded-lg bg-muted/10 border border-border/30">
+            <div className="border-t border-border/20 pt-3">
               <div className="flex items-center gap-2 text-muted-foreground mb-1">
                 <Target className="h-4 w-4" />
                 <span className="text-xs">Risk Level</span>
@@ -171,7 +171,7 @@ export function CoinDetailModal({ open, onOpenChange, coin }: CoinDetailModalPro
           </div>
 
           {/* AI Insight */}
-          <div className="p-4 rounded-xl border border-primary/30 bg-primary/5">
+          <div className="border-l-2 border-primary pl-4">
             <div className="flex items-center gap-2 mb-2">
               <Clock className="w-4 h-4 text-primary" />
               <span className="font-display font-bold text-sm text-primary">AI INSIGHT</span>
