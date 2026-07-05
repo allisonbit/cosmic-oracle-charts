@@ -91,6 +91,7 @@ const PredictTarget = lazy(() => import("./pages/programmatic/PredictTarget"));
 const VsCompare = lazy(() => import("./pages/programmatic/VsCompare"));
 const Convert = lazy(() => import("./pages/programmatic/Convert"));
 const Accuracy = lazy(() => import("./pages/Accuracy"));
+const Connect = lazy(() => import("./pages/Connect"));
 // Loading fallback component
 const PageLoader = memo(function PageLoader() {
   return (
@@ -248,6 +249,7 @@ const App = () => (
                 <Route path="/risk-disclaimer" element={B(<RiskDisclaimer />)} />
                 <Route path="/editorial-policy" element={B(<EditorialPolicy />)} />
                 <Route path="/advertise" element={B(<Advertise />)} />
+                <Route path="/connect" element={B(<Connect />)} />
                 <Route path="/admin" element={B(<ProtectedRoute><AdminRoute><Admin /></AdminRoute></ProtectedRoute>)} />
                 <Route path="/admin/backlinks" element={B(<ProtectedRoute><AdminRoute><BacklinkOutreach /></AdminRoute></ProtectedRoute>)} />
                 <Route path="/my" element={B(<MyHub />)} />
