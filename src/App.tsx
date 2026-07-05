@@ -91,6 +91,7 @@ const PredictTarget = lazy(() => import("./pages/programmatic/PredictTarget"));
 const VsCompare = lazy(() => import("./pages/programmatic/VsCompare"));
 const Convert = lazy(() => import("./pages/programmatic/Convert"));
 const Accuracy = lazy(() => import("./pages/Accuracy"));
+const Connect = lazy(() => import("./pages/Connect"));
 // Loading fallback component
 const PageLoader = memo(function PageLoader() {
   return (
