@@ -297,7 +297,7 @@ export function SEO({ title, description, keywords, image, type = "website", can
     const readable = slug.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase());
     // Map common market slugs to highly optimized titles
     const marketTitles: Record<string, { title: string; description: string; keywords: string }> = {
-      "best-crypto-to-buy-today": { title: `Best Crypto to Buy Today – AI Picks & Live Analysis (${currentMonth} ${currentYear})`, description: `Which cryptocurrency should you buy today? AI-curated picks based on real-time momentum, volume, sentiment, and technical signals. Updated ${currentMonth} ${currentYear}.`, keywords: "best crypto to buy today, crypto to buy now, best cryptocurrency 2024, top crypto picks today" },
+      "best-crypto-to-buy-today": { title: `Best Crypto to Buy Today – AI Picks & Live Analysis (${currentMonth} ${currentYear})`, description: `Which cryptocurrency should you buy today? AI-curated picks based on real-time momentum, volume, sentiment, and technical signals. Updated ${currentMonth} ${currentYear}.`, keywords: `best crypto to buy today, crypto to buy now, best cryptocurrency ${currentYear}, top crypto picks today` },
       "top-crypto-gainers-today": { title: `Top Crypto Gainers Today – Biggest Winners Right Now (${currentMonth} ${currentYear})`, description: `Live list of today's top crypto gainers by 24h price change with volume analysis, momentum scores, and AI insights. Updated every 30 seconds.`, keywords: "top crypto gainers today, biggest crypto movers today, best performing crypto today, crypto up today" },
       "crypto-market-prediction-today": { title: `Crypto Market Prediction Today – Bullish or Bearish? (${currentMonth} ${currentYear})`, description: `AI-powered crypto market prediction for today. BTC dominance, altcoin rotation signals, Fear & Greed Index, and overall market outlook. Updated ${currentMonth} ${currentYear}.`, keywords: "crypto market prediction today, will crypto go up today, crypto market outlook, bitcoin market today" },
       "which-crypto-will-go-up-today": { title: `Which Crypto Will Go Up Today? AI Predictions (${currentMonth} ${currentYear})`, description: `AI-ranked list of cryptocurrencies most likely to go up today based on momentum, breakout signals, and whale activity. See today's top movers.`, keywords: "which crypto will go up today, crypto going up today, crypto to buy today, best crypto for today" },
@@ -312,7 +312,7 @@ export function SEO({ title, description, keywords, image, type = "website", can
       "cheap-crypto-to-buy-now": { title: `Cheap Crypto to Buy Now – Best Affordable Coins Under $1 (${currentMonth} ${currentYear})`, description: `Top low-priced cryptocurrencies worth buying now. Affordable tokens under $1 with strong fundamentals, growing communities, and AI growth scores.`, keywords: "cheap crypto to buy now, best crypto under $1, affordable crypto, low price high potential" },
       "undervalued-crypto-to-buy": { title: `Undervalued Crypto to Buy – Hidden Gems Below Fair Value (${currentMonth} ${currentYear})`, description: `Cryptocurrencies trading below their AI-estimated fair value. Find fundamentally strong tokens that are currently undervalued by the market.`, keywords: "undervalued crypto to buy, undervalued cryptocurrency, crypto hidden gems, crypto below fair value" },
       "crypto-with-most-potential": { title: `Crypto with Most Potential – Highest Upside Picks (${currentMonth} ${currentYear})`, description: `Cryptocurrencies with the highest long-term growth potential. AI-scored by technology, team, tokenomics, ecosystem growth, and market positioning.`, keywords: "crypto with most potential, highest potential crypto, best crypto long term, most promising crypto" },
-      "best-altcoins-to-buy": { title: `Best Altcoins to Buy Right Now – Top Picks (${currentMonth} ${currentYear})`, description: `The best altcoins to buy now ranked by investment potential, market momentum, and AI analysis. Discover which non-Bitcoin cryptos lead the market.`, keywords: "best altcoins to buy, best altcoins 2024, top altcoins, altcoins to invest in" },
+      "best-altcoins-to-buy": { title: `Best Altcoins to Buy Right Now – Top Picks (${currentMonth} ${currentYear})`, description: `The best altcoins to buy now ranked by investment potential, market momentum, and AI analysis. Discover which non-Bitcoin cryptos lead the market.`, keywords: `best altcoins to buy, best altcoins ${currentYear}, top altcoins, altcoins to invest in` },
       "top-meme-coins": { title: `Top Meme Coins Right Now – Best Meme Crypto Rankings (${currentMonth} ${currentYear})`, description: `Live rankings of the hottest meme coins by community strength, social buzz, trading volume, and price momentum. Includes DOGE, SHIB, PEPE & more.`, keywords: "top meme coins, best meme crypto, meme coin rankings, best meme coins to buy" },
       "best-defi-tokens": { title: `Best DeFi Tokens to Buy – Top DeFi Coins (${currentMonth} ${currentYear})`, description: `The best decentralized finance tokens ranked by TVL growth, protocol revenue, tokenomics, and AI analysis. Find the top DeFi investments.`, keywords: "best defi tokens, top defi coins, defi tokens to buy, best defi crypto" },
       "top-ai-crypto-tokens": { title: `Top AI Crypto Tokens – Best Artificial Intelligence Coins (${currentMonth} ${currentYear})`, description: `Rankings of the best AI-focused blockchain projects by market cap, utility, and ecosystem growth. Track the AI crypto narrative in real time.`, keywords: "top AI crypto tokens, best AI crypto, artificial intelligence coins, AI blockchain projects" },
@@ -348,14 +348,7 @@ export function SEO({ title, description, keywords, image, type = "website", can
 
   const finalTitle = title || pageMeta.title;
   const finalDescription = description || pageMeta.description;
-  const finalKeywords = keywords || pageMeta.keywords;
   const finalImage = image || defaultMeta.image;
-  // Alias coin slugs (CoinGecko IDs used by some internal links) must canonicalize
-  // to the primary friendly-slug prediction page so JS-rendering crawlers (Googlebot)
-  // see the SAME canonical the prerenderer baked in — otherwise the runtime would
-  // reset it to a self-referential URL and reintroduce duplicate content.
-  const canonicalTarget = canonicalPath || resolveCanonicalPath(currentPath);
-  const canonicalUrl = `${defaultMeta.baseUrl}${canonicalTarget}`;
 
   useEffect(() => {
     document.title = finalTitle;

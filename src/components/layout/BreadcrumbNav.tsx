@@ -161,7 +161,10 @@ export function BreadcrumbNav() {
 
   return (
     <>
-      
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <nav
         aria-label="Breadcrumb navigation"
         className="container mx-auto px-3 sm:px-4 flex items-center gap-1 text-xs md:text-sm text-muted-foreground overflow-x-auto scrollbar-hide py-2 md:py-3"

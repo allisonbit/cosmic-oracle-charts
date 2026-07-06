@@ -46,7 +46,7 @@ export function HeroSection() {
             LIVE
           </span>
           <span className="text-muted-foreground font-mono">
-            {time.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" })} UTC
+            {time.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit", timeZone: "UTC" })} UTC
           </span>
           <span className="text-border">·</span>
           <Link to="/predictions" className="inline-flex items-center gap-1 text-primary hover:underline">

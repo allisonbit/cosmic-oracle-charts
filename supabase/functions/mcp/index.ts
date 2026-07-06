@@ -8,7 +8,7 @@ import { defineMcp } from "npm:@lovable.dev/mcp-js@0.20.0";
 // src/lib/mcp/tools/get-token-price.ts
 import { defineTool } from "npm:@lovable.dev/mcp-js@0.20.0";
 import { z } from "npm:zod@^3.25.76";
-var get_token_price_default = defineTool({
+const get_token_price_default = defineTool({
   name: "get_token_price",
   title: "Get token price",
   description: "Fetch the current USD price, 24h change, market cap, and volume for a cryptocurrency by CoinGecko id (e.g. 'bitcoin', 'ethereum', 'ethena').",
@@ -51,7 +51,7 @@ var get_token_price_default = defineTool({
 // src/lib/mcp/tools/get-trending-tokens.ts
 import { defineTool as defineTool2 } from "npm:@lovable.dev/mcp-js@0.20.0";
 import { z as z2 } from "npm:zod@^3.25.76";
-var get_trending_tokens_default = defineTool2({
+const get_trending_tokens_default = defineTool2({
   name: "get_trending_tokens",
   title: "Get trending tokens",
   description: "Fetch the top trending cryptocurrencies right now (by search volume on CoinGecko).",
@@ -85,7 +85,7 @@ var get_trending_tokens_default = defineTool2({
 // src/lib/mcp/tools/search-tokens.ts
 import { defineTool as defineTool3 } from "npm:@lovable.dev/mcp-js@0.20.0";
 import { z as z3 } from "npm:zod@^3.25.76";
-var search_tokens_default = defineTool3({
+const search_tokens_default = defineTool3({
   name: "search_tokens",
   title: "Search cryptocurrencies",
   description: "Search for cryptocurrencies by name or symbol. Returns matching coins with their CoinGecko id, useful for feeding into get_token_price.",
@@ -118,7 +118,7 @@ var search_tokens_default = defineTool3({
 });
 
 // src/lib/mcp/index.ts
-var mcp_default = defineMcp({
+const mcp_default = defineMcp({
   name: "oracle-bull-mcp",
   title: "Oracle Bull MCP",
   version: "0.1.0",
