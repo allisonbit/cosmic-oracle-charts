@@ -30,7 +30,7 @@ function CoinColumn({ data, slug, isLoading }: { data?: CompareToken | null; slu
   }
   if (!data) {
     return (
-      <div className="text-center p-6 rounded-xl border border-border bg-background/50">
+      <div className="text-center py-6 border-t border-border/20">
         <div className="font-bold mb-1">{prettify(slug).slice(0, 24)}</div>
         <p className="text-xs text-muted-foreground">Couldn't load live data for this token. Try searching it again from the compare hub.</p>
       </div>

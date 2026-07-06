@@ -75,7 +75,7 @@ function TokenPicker({ label, selected, onSelect }: { label: string; selected: P
       <label className="text-xs text-muted-foreground font-bold uppercase tracking-wider">{label}</label>
 
       {selected ? (
-        <div className="flex items-center gap-3 p-3 rounded-xl border border-primary/30 bg-primary/5">
+        <div className="flex items-center gap-3 p-3 border-l-2 border-primary">
           <CoinImage symbol={selected.symbol} image={selected.logo} size={36} />
           <div className="min-w-0 flex-1">
             <div className="font-bold truncate">{selected.name}</div>

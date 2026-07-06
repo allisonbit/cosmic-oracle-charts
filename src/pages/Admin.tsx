@@ -64,7 +64,7 @@ function StatusCard({ title, value, subtitle, icon: Icon, status = "success" }: 
 }) {
   const statusColors = { success: "text-green-400", warning: "text-yellow-400", error: "text-red-400", info: "text-blue-400" };
   return (
-    <Card className="glass-card border-primary/20">
+    <Card className="border-t border-border/30 pt-5">
       <CardContent className="p-4">
         <div className="flex items-start justify-between">
           <div>
@@ -143,7 +143,7 @@ export default function Admin() {
         </div>
 
         {/* Agent Controls */}
-        <Card className="glass-card border-primary/20">
+        <Card className="border-t border-border/30 pt-5">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-lg">
               <Bot className="w-5 h-5 text-primary" />
@@ -195,7 +195,7 @@ export default function Admin() {
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-4">
             <div className="grid md:grid-cols-2 gap-4">
-              <Card className="glass-card border-primary/20">
+              <Card className="border-t border-border/30 pt-5">
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-lg"><Shield className="w-5 h-5 text-primary" />SEO Health</CardTitle>
                 </CardHeader>
@@ -215,7 +215,7 @@ export default function Admin() {
                 </CardContent>
               </Card>
 
-              <Card className="glass-card border-primary/20">
+              <Card className="border-t border-border/30 pt-5">
                 <CardHeader className="pb-3"><CardTitle className="flex items-center gap-2 text-lg"><Bot className="w-5 h-5 text-primary" />Recent Activity</CardTitle></CardHeader>
                 <CardContent>
                   <ScrollArea className="h-[200px]">
@@ -238,7 +238,7 @@ export default function Admin() {
             </div>
 
             {seoReport && seoReport.recommendations.length > 0 && (
-              <Card className="glass-card border-primary/20">
+              <Card className="border-t border-border/30 pt-5">
                 <CardHeader className="pb-3"><CardTitle className="flex items-center gap-2 text-lg"><AlertTriangle className="w-5 h-5 text-yellow-400" />Recommendations</CardTitle></CardHeader>
                 <CardContent>
                   <ScrollArea className="h-[200px]">
@@ -258,7 +258,7 @@ export default function Admin() {
 
           {/* Drafts Tab */}
           <TabsContent value="drafts" className="space-y-4">
-            <Card className="glass-card border-primary/20">
+            <Card className="border-t border-border/30 pt-5">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2"><FileText className="w-5 h-5 text-primary" />Content Drafts</CardTitle>
                 <CardDescription>AI-generated content awaiting review and publishing</CardDescription>
@@ -303,7 +303,7 @@ export default function Admin() {
 
           {/* Logs Tab */}
           <TabsContent value="logs" className="space-y-4">
-            <Card className="glass-card border-primary/20">
+            <Card className="border-t border-border/30 pt-5">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2"><Activity className="w-5 h-5 text-primary" />Automation Logs</CardTitle>
                 <CardDescription>Complete history of agent actions</CardDescription>
@@ -339,7 +339,7 @@ export default function Admin() {
 
           {/* SEO Tab */}
           <TabsContent value="seo" className="space-y-4">
-            <Card className="glass-card border-primary/20">
+            <Card className="border-t border-border/30 pt-5">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2"><Globe className="w-5 h-5 text-primary" />Page Health Details</CardTitle>
               </CardHeader>
@@ -382,7 +382,7 @@ export default function Admin() {
               </CardContent>
             </Card>
             {seoReport && seoReport.brokenLinks.length > 0 && (
-              <Card className="glass-card border-red-500/20">
+              <Card className="border-l-2 border-red-500 pl-4">
                 <CardHeader><CardTitle className="flex items-center gap-2 text-red-400"><LinkIcon className="w-5 h-5" />Broken Links ({seoReport.brokenLinks.length})</CardTitle></CardHeader>
                 <CardContent><ul className="space-y-2">{seoReport.brokenLinks.map((link, i) => (<li key={i} className="text-sm flex items-center gap-2 text-red-400"><XCircle className="w-4 h-4" />{link}</li>))}</ul></CardContent>
               </Card>
@@ -392,14 +392,14 @@ export default function Admin() {
           {/* Content Tab */}
           <TabsContent value="content" className="space-y-4">
             <div className="grid md:grid-cols-2 gap-4">
-              <Card className="glass-card border-primary/20">
+              <Card className="border-t border-border/30 pt-5">
                 <CardHeader><CardTitle className="flex items-center gap-2"><TrendingUp className="w-5 h-5 text-primary" />Insights Engine</CardTitle></CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between"><span className="text-muted-foreground">Total</span><span className="text-xl font-bold">{contentStats?.insightsCount || 0}</span></div>
                   <div className="flex items-center justify-between"><span className="text-muted-foreground">Status</span><div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" /><span className="text-green-400 text-sm">Running</span></div></div>
                 </CardContent>
               </Card>
-              <Card className="glass-card border-primary/20">
+              <Card className="border-t border-border/30 pt-5">
                 <CardHeader><CardTitle className="flex items-center gap-2"><Database className="w-5 h-5 text-primary" />Learn Engine</CardTitle></CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between"><span className="text-muted-foreground">Total</span><span className="text-xl font-bold">{contentStats?.learnCount || 0}</span></div>
@@ -407,7 +407,7 @@ export default function Admin() {
                 </CardContent>
               </Card>
             </div>
-            <Card className="glass-card border-primary/20">
+            <Card className="border-t border-border/30 pt-5">
               <CardHeader><CardTitle>Content Growth</CardTitle></CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -428,7 +428,7 @@ export default function Admin() {
 
           {/* Performance Tab */}
           <TabsContent value="performance" className="space-y-4">
-            <Card className="glass-card border-primary/20">
+            <Card className="border-t border-border/30 pt-5">
               <CardHeader><CardTitle className="flex items-center gap-2"><Activity className="w-5 h-5 text-primary" />Core Web Vitals</CardTitle></CardHeader>
               <CardContent>
                 {seoReport ? (
@@ -443,7 +443,7 @@ export default function Admin() {
               </CardContent>
             </Card>
             {seoReport && seoReport.slowPages.length > 0 && (
-              <Card className="glass-card border-yellow-500/20">
+              <Card className="border-l-2 border-yellow-500 pl-4">
                 <CardHeader><CardTitle className="flex items-center gap-2 text-yellow-400"><Clock className="w-5 h-5" />Slow Pages ({seoReport.slowPages.length})</CardTitle></CardHeader>
                 <CardContent><ul className="space-y-2">{seoReport.slowPages.map((page, i) => (<li key={i} className="text-sm flex items-center gap-2 text-yellow-400"><Clock className="w-4 h-4" />{page}</li>))}</ul></CardContent>
               </Card>

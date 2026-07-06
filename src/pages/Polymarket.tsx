@@ -48,7 +48,7 @@ function MarketCard({ m }: { m: PolymarketMarket }) {
   const Risk = RISK_META[s.risk].icon;
   const top = s.probabilities.slice(0, m.outcomes.length === 2 ? 2 : 3);
   return (
-    <a href={m.url} target="_blank" rel="noopener noreferrer" className="group block rounded-2xl border border-border/50 bg-card/40 hover:border-primary/40 transition-all overflow-hidden">
+    <a href={m.url} target="_blank" rel="noopener noreferrer" className="group block border-t border-border/20 pt-4 hover:bg-muted/20 transition-all overflow-hidden">
       <div className="p-4 space-y-3">
         <div className="flex items-start gap-3">
           {m.image && <img src={m.image} alt="" loading="lazy" className="w-11 h-11 rounded-lg object-cover shrink-0 bg-muted" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />}

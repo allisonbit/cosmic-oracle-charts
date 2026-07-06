@@ -239,25 +239,25 @@ export default function FactoryNews() {
 
         {/* Summary Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <Card className="glass-card">
+          <Card className="border-t border-border/30 pt-5">
             <CardContent className="p-4 text-center">
               <p className="text-sm text-muted-foreground">Total Articles</p>
               <p className="text-2xl font-bold">{filteredNews.length}</p>
             </CardContent>
           </Card>
-          <Card className="glass-card">
+          <Card className="border-t border-border/30 pt-5">
             <CardContent className="p-4 text-center">
               <p className="text-sm text-green-400">Bullish News</p>
               <p className="text-2xl font-bold text-green-400">{bullishCount}</p>
             </CardContent>
           </Card>
-          <Card className="glass-card">
+          <Card className="border-t border-border/30 pt-5">
             <CardContent className="p-4 text-center">
               <p className="text-sm text-red-400">Bearish News</p>
               <p className="text-2xl font-bold text-red-400">{bearishCount}</p>
             </CardContent>
           </Card>
-          <Card className="glass-card">
+          <Card className="border-t border-border/30 pt-5">
             <CardContent className="p-4 text-center">
               <p className="text-sm text-primary">High Impact</p>
               <p className="text-2xl font-bold text-primary">{highImpactCount}</p>
@@ -292,7 +292,7 @@ export default function FactoryNews() {
         </section>
 
         {/* Filters */}
-        <Card className="glass-card mb-6">
+        <Card className="border-t border-border/30 pt-5 mb-6">
           <CardContent className="p-4">
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
@@ -337,7 +337,7 @@ export default function FactoryNews() {
                 <Newspaper className="w-5 h-5 text-primary" />
                 Latest Crypto News ({filteredNews.length})
               </h2>
-              <Card className="glass-card">
+              <Card className="border-t border-border/30 pt-5">
                 <CardContent className="p-6">
                   {isLoading ? (
                     <div className="space-y-6">
@@ -362,7 +362,7 @@ export default function FactoryNews() {
           {/* Sidebar */}
           <aside className="space-y-6">
             {/* Factory Navigation */}
-            <Card className="glass-card">
+            <Card className="border-t border-border/30 pt-5">
               <CardContent className="p-4">
                 <h3 className="font-semibold mb-3">Crypto Factory Sections</h3>
                 <nav className="space-y-2">
@@ -388,7 +388,7 @@ export default function FactoryNews() {
             </Card>
 
             {/* Related Links */}
-            <Card className="glass-card">
+            <Card className="border-t border-border/30 pt-5">
               <CardContent className="p-4">
                 <h3 className="font-semibold mb-3">Related Analysis</h3>
                 <div className="space-y-2 text-sm">
@@ -416,7 +416,7 @@ export default function FactoryNews() {
             <TopCryptoPredictionLinks />
 
             {/* News Trading Tips */}
-            <Card className="glass-card">
+            <Card className="border-t border-border/30 pt-5">
               <CardContent className="p-4">
                 <h3 className="font-semibold mb-3">Trading on News</h3>
                 <ul className="text-sm text-muted-foreground space-y-2">

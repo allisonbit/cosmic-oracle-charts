@@ -181,13 +181,13 @@ export default function FactoryOnchain() {
 
         {/* Summary Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <Card className="glass-card">
+          <Card className="border-t border-border/30 pt-5">
             <CardContent className="p-4 text-center">
               <p className="text-sm text-muted-foreground">Total Activity</p>
               <p className="text-2xl font-bold">{data?.onChainActivity.length || 0}</p>
             </CardContent>
           </Card>
-          <Card className="glass-card">
+          <Card className="border-t border-border/30 pt-5">
             <CardContent className="p-4 text-center">
               <p className="text-sm text-muted-foreground">Net Flow</p>
               <p className={cn("text-2xl font-bold", totalInflowUSD > totalOutflowUSD ? "text-green-400" : "text-red-400")}>
@@ -195,13 +195,13 @@ export default function FactoryOnchain() {
               </p>
             </CardContent>
           </Card>
-          <Card className="glass-card">
+          <Card className="border-t border-border/30 pt-5">
             <CardContent className="p-4 text-center">
               <p className="text-sm text-green-400">Total Inflows</p>
               <p className="text-2xl font-bold text-green-400">${(totalInflowUSD / 1000000).toFixed(1)}M</p>
             </CardContent>
           </Card>
-          <Card className="glass-card">
+          <Card className="border-t border-border/30 pt-5">
             <CardContent className="p-4 text-center">
               <p className="text-sm text-red-400">Total Outflows</p>
               <p className="text-2xl font-bold text-red-400">${(totalOutflowUSD / 1000000).toFixed(1)}M</p>
@@ -238,7 +238,7 @@ export default function FactoryOnchain() {
         </section>
 
         {/* Filters */}
-        <Card className="glass-card mb-6">
+        <Card className="border-t border-border/30 pt-5 mb-6">
           <CardContent className="p-4">
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
@@ -281,7 +281,7 @@ export default function FactoryOnchain() {
                 <Activity className="w-5 h-5 text-primary" />
                 Live On-Chain Feed ({data?.onChainActivity.length || 0})
               </h2>
-              <Card className="glass-card">
+              <Card className="border-t border-border/30 pt-5">
                 <CardContent className="p-6">
                   {isLoading ? (
                     <div className="space-y-4">
@@ -306,7 +306,7 @@ export default function FactoryOnchain() {
           {/* Sidebar */}
           <aside className="space-y-6">
             {/* Factory Navigation */}
-            <Card className="glass-card">
+            <Card className="border-t border-border/30 pt-5">
               <CardContent className="p-4">
                 <h3 className="font-semibold mb-3">Crypto Factory Sections</h3>
                 <nav className="space-y-2">
@@ -332,7 +332,7 @@ export default function FactoryOnchain() {
             </Card>
 
             {/* Related Links */}
-            <Card className="glass-card">
+            <Card className="border-t border-border/30 pt-5">
               <CardContent className="p-4">
                 <h3 className="font-semibold mb-3">Related Analysis</h3>
                 <div className="space-y-2 text-sm">
@@ -356,7 +356,7 @@ export default function FactoryOnchain() {
             <TopCryptoPredictionLinks />
 
             {/* Interpretation Guide */}
-            <Card className="glass-card">
+            <Card className="border-t border-border/30 pt-5">
               <CardContent className="p-4">
                 <h3 className="font-semibold mb-3">How to Interpret Flows</h3>
                 <ul className="text-sm text-muted-foreground space-y-2">
