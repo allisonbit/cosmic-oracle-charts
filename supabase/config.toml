@@ -200,6 +200,3 @@ verify_jwt = false
 [functions.accuracy-feed.rate_limit]
 requests = 600
 per = 3600
-
-[functions.ga-collect]
-verify_jwt = false
