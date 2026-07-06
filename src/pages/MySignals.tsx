@@ -99,7 +99,7 @@ function SignalsContent() {
         </div>
 
         {watchlist.length === 0 && (
-          <Card className="border-warning/20 bg-warning/5">
+          <Card>
             <CardContent className="p-3 flex items-center gap-3">
               <AlertTriangle className="w-4 h-4 text-warning shrink-0" />
               <p className="text-xs text-muted-foreground">Add coins to your <strong>Watchlist</strong> for personalized signals.</p>
@@ -110,27 +110,27 @@ function SignalsContent() {
         {/* Summary Stats */}
         {signals.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-3">
-            <Card className="border-border"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[10px] text-muted-foreground uppercase">Total Signals</p>
               <p className="text-lg font-bold">{signals.length}</p>
             </CardContent></Card>
-            <Card className="border-border bg-success/5"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[10px] text-muted-foreground uppercase">Buy</p>
               <p className="text-lg font-bold text-success">{buyCount}</p>
             </CardContent></Card>
-            <Card className="border-border bg-danger/5"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[10px] text-muted-foreground uppercase">Sell</p>
               <p className="text-lg font-bold text-danger">{sellCount}</p>
             </CardContent></Card>
-            <Card className="border-border bg-warning/5"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[10px] text-muted-foreground uppercase">Hold</p>
               <p className="text-lg font-bold text-warning">{holdCount}</p>
             </CardContent></Card>
-            <Card className="border-border"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[10px] text-muted-foreground uppercase">Avg Confidence</p>
               <p className="text-lg font-bold font-mono">{(avgConfidence ?? 0).toFixed(0)}%</p>
             </CardContent></Card>
-            <Card className="border-border"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[10px] text-muted-foreground uppercase">Strongest</p>
               <p className="text-sm font-bold">{strongestSignal?.symbol}</p>
               <p className="text-xs text-muted-foreground">{strongestSignal?.strength}% strength</p>
@@ -169,7 +169,7 @@ function SignalsContent() {
             const potentialLoss = ((signal.stopLoss - signal.entry) / signal.entry * 100);
 
             return (
-              <Card key={i} className={cn("border transition-all hover:shadow-md", getTypeColor(signal.type))}>
+              <Card key={i} className={cn("border transition-all", getTypeColor(signal.type))}>
                 <CardContent className="p-4 space-y-3">
                   {/* Header */}
                   <div className="flex items-center justify-between">

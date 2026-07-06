@@ -46,7 +46,7 @@ const Terms = () => {
             </p>
           </section>
 
-          <section className="holo-card p-6 md:p-8 border-warning/30">
+          <section className="holo-card p-6 md:p-8">
             <div className="flex items-center gap-3 mb-4">
               <AlertTriangle className="w-6 h-6 text-warning" />
               <h2 className="text-xl font-display font-bold m-0">3. Important Disclaimer</h2>

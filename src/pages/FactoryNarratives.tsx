@@ -195,25 +195,25 @@ export default function FactoryNarratives() {
 
         {/* Summary Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <Card className="border-t border-border/30 pt-5">
+          <Card className="pt-5">
             <CardContent className="p-4 text-center">
               <p className="text-sm text-muted-foreground">Total Narratives</p>
               <p className="text-2xl font-bold">{filteredNarratives.length}</p>
             </CardContent>
           </Card>
-          <Card className="border-t border-border/30 pt-5">
+          <Card className="pt-5">
             <CardContent className="p-4 text-center">
               <p className="text-sm text-green-400">Bullish Sectors</p>
               <p className="text-2xl font-bold text-green-400">{bullishCount}</p>
             </CardContent>
           </Card>
-          <Card className="border-t border-border/30 pt-5">
+          <Card className="pt-5">
             <CardContent className="p-4 text-center">
               <p className="text-sm text-red-400">Bearish Sectors</p>
               <p className="text-2xl font-bold text-red-400">{bearishCount}</p>
             </CardContent>
           </Card>
-          <Card className="border-t border-border/30 pt-5">
+          <Card className="pt-5">
             <CardContent className="p-4 text-center">
               <p className="text-sm text-muted-foreground">Neutral</p>
               <p className="text-2xl font-bold">{filteredNarratives.length - bullishCount - bearishCount}</p>
@@ -248,7 +248,7 @@ export default function FactoryNarratives() {
         </section>
 
         {/* Filters */}
-        <Card className="border-t border-border/30 pt-5 mb-6">
+        <Card className="pt-5 mb-6">
           <CardContent className="p-4">
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
@@ -294,7 +294,7 @@ export default function FactoryNarratives() {
                   ))}
                 </div>
               ) : (
-                <Card className="border-t border-border/30 pt-5">
+                <Card className="pt-5">
                   <CardContent className="p-8 text-center text-muted-foreground">
                     No narratives match your search.
                   </CardContent>
@@ -306,7 +306,7 @@ export default function FactoryNarratives() {
           {/* Sidebar */}
           <aside className="space-y-6">
             {/* Factory Navigation */}
-            <Card className="border-t border-border/30 pt-5">
+            <Card className="pt-5">
               <CardContent className="p-4">
                 <h3 className="font-semibold mb-3">Crypto Factory Sections</h3>
                 <nav className="space-y-2">
@@ -332,7 +332,7 @@ export default function FactoryNarratives() {
             </Card>
 
             {/* Related Links */}
-            <Card className="border-t border-border/30 pt-5">
+            <Card className="pt-5">
               <CardContent className="p-4">
                 <h3 className="font-semibold mb-3">Related Analysis</h3>
                 <div className="space-y-2 text-sm">
@@ -356,7 +356,7 @@ export default function FactoryNarratives() {
             <TopCryptoPredictionLinks />
 
             {/* Trading Tips */}
-            <Card className="border-t border-border/30 pt-5">
+            <Card className="pt-5">
               <CardContent className="p-4">
                 <h3 className="font-semibold mb-3">Narrative Trading Tips</h3>
                 <ul className="text-sm text-muted-foreground space-y-2">

@@ -206,7 +206,7 @@ function TokenCard({ token, onOpen }: { token: ScannedToken; onOpen: () => void 
   const t = token as any;
   return (
     <button onClick={onOpen} className="text-left">
-      <Card className="border-t border-border/30 pt-5 h-full">
+      <Card className="pt-5 h-full">
         <CardContent className="p-3.5 space-y-3">
           <div className="flex items-center gap-2.5">
             <CoinImage symbol={token.symbol} image={token.logo} size={34} />
@@ -234,7 +234,7 @@ function TokenCard({ token, onOpen }: { token: ScannedToken; onOpen: () => void 
 
 function OverviewStat({ label, value, icon: Icon, color }: { label: string; value: React.ReactNode; icon: typeof Zap; color?: string }) {
   return (
-    <Card className="border-t border-border/30 pt-5">
+    <Card className="pt-5">
       <CardContent className="p-2.5 flex items-center gap-2">
         <Icon className={cn("w-4 h-4 shrink-0", color)} />
         <div className="min-w-0">
@@ -382,7 +382,7 @@ export default function Scanner() {
           </div>
 
           {/* Search + filters */}
-          <Card className="border-t border-border/30 pt-5">
+          <Card className="pt-5">
             <CardContent className="p-4 space-y-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -430,7 +430,7 @@ export default function Scanner() {
           {isLoading ? (
             <div className="flex items-center justify-center py-20"><RefreshCw className="w-6 h-6 text-primary animate-spin" /><span className="ml-3 text-muted-foreground">Scanning tokens worldwide...</span></div>
           ) : view === "table" ? (
-            <Card className="overflow-x-auto border-t border-border/30 pt-5">
+            <Card className="overflow-x-auto pt-5">
               <div className="min-w-[1040px]">
                 <div className={cn("grid items-center gap-1 px-3 py-2.5 bg-muted/30 border-b border-border/30 text-[10px] font-medium text-muted-foreground uppercase tracking-wider", GRID)}>
                   <span>Token</span><span className="text-right">Price</span><span className="text-right">1H</span><span className="text-right">24H</span><span className="text-right">7D</span><span className="text-right">Volume</span><span className="text-right">Liquidity</span><span className="text-right">Buy %</span><span className="text-right">MCap</span><span className="text-right">Strength</span><span></span>

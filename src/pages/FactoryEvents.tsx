@@ -226,7 +226,7 @@ export default function FactoryEvents() {
         </section>
 
         {/* Filters */}
-        <Card className="border-t border-border/30 pt-5 mb-6">
+        <Card className="pt-5 mb-6">
           <CardContent className="p-4">
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
@@ -282,7 +282,7 @@ export default function FactoryEvents() {
                 <Clock className="w-5 h-5 text-primary" />
                 Upcoming Events ({upcomingEvents.length})
               </h2>
-              <Card className="border-t border-border/30 pt-5">
+              <Card className="pt-5">
                 <CardContent className="p-6">
                   {isLoading ? (
                     <div className="space-y-4">
@@ -309,7 +309,7 @@ export default function FactoryEvents() {
                 <Calendar className="w-5 h-5 text-muted-foreground" />
                 Recent Events ({pastEvents.length})
               </h2>
-              <Card className="border-t border-border/30 pt-5">
+              <Card className="pt-5">
                 <CardContent className="p-6">
                   {isLoading ? (
                     <div className="space-y-4">
@@ -334,7 +334,7 @@ export default function FactoryEvents() {
           {/* Sidebar */}
           <aside className="space-y-6">
             {/* Factory Navigation */}
-            <Card className="border-t border-border/30 pt-5">
+            <Card className="pt-5">
               <CardContent className="p-4">
                 <h3 className="font-semibold mb-3">Crypto Factory Sections</h3>
                 <nav className="space-y-2">
@@ -360,7 +360,7 @@ export default function FactoryEvents() {
             </Card>
 
             {/* Related Links */}
-            <Card className="border-t border-border/30 pt-5">
+            <Card className="pt-5">
               <CardContent className="p-4">
                 <h3 className="font-semibold mb-3">Related Analysis</h3>
                 <div className="space-y-2 text-sm">
@@ -384,7 +384,7 @@ export default function FactoryEvents() {
             <TopCryptoPredictionLinks />
 
             {/* How to Use */}
-            <Card className="border-t border-border/30 pt-5">
+            <Card className="pt-5">
               <CardContent className="p-4">
                 <h3 className="font-semibold mb-3">How to Use Event Data</h3>
                 <ul className="text-sm text-muted-foreground space-y-2">

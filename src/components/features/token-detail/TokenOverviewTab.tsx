@@ -19,7 +19,7 @@ export function TokenOverviewTab({ token, derivedMetrics, radarData, supplyPie, 
     <div className="space-y-4">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Risk Score */}
-        <Card className="border-border lg:col-span-1">
+        <Card className="lg:col-span-1">
           <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><Gauge className="w-4 h-4" /> Risk Score</CardTitle></CardHeader>
           <CardContent>
             {derivedMetrics && <RiskGauge score={derivedMetrics.riskScore} />}
@@ -27,7 +27,7 @@ export function TokenOverviewTab({ token, derivedMetrics, radarData, supplyPie, 
         </Card>
 
         {/* Token Health Radar */}
-        <Card className="border-border lg:col-span-2">
+        <Card className="lg:col-span-2">
           <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><Radar className="w-4 h-4" /> Token Health</CardTitle></CardHeader>
           <CardContent>
             <div className="h-[220px]">
@@ -48,7 +48,7 @@ export function TokenOverviewTab({ token, derivedMetrics, radarData, supplyPie, 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* ATH/ATL */}
         {derivedMetrics && (
-          <Card className="border-border">
+          <Card>
             <CardHeader className="pb-2"><CardTitle className="text-sm">Price History</CardTitle></CardHeader>
             <CardContent className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
@@ -78,7 +78,7 @@ export function TokenOverviewTab({ token, derivedMetrics, radarData, supplyPie, 
         )}
 
         {/* Supply */}
-        <Card className="border-border">
+        <Card>
           <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><PieChart className="w-4 h-4" /> Supply Info</CardTitle></CardHeader>
           <CardContent>
             {derivedMetrics?.circulatingSupply ? (

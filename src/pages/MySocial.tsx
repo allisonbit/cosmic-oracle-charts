@@ -153,7 +153,7 @@ function SocialContent() {
 
         {/* New prediction form */}
         {showForm && (
-          <Card className="border-primary/20">
+          <Card>
             <CardHeader>
               <CardTitle className="text-sm">Share Your Prediction</CardTitle>
             </CardHeader>

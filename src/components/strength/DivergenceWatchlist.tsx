@@ -75,7 +75,7 @@ export function DivergenceWatchlist({ assets }: DivergenceWatchlistProps) {
 
   if (divergences.length === 0) {
     return (
-      <Card className="">
+      <Card>
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-lg">
             <AlertTriangle className="w-5 h-5 text-primary" />
@@ -92,7 +92,7 @@ export function DivergenceWatchlist({ assets }: DivergenceWatchlistProps) {
   }
 
   return (
-    <Card className="">
+    <Card>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-lg">

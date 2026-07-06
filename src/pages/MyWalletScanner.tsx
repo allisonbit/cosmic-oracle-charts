@@ -111,7 +111,7 @@ function fmtCompact(n: number): string {
 
 function StatCard({ label, value, sub, className, valueClass }: { label: string; value: React.ReactNode; sub?: React.ReactNode; className?: string; valueClass?: string }) {
   return (
-    <Card className={cn("border-border", className)}>
+    <Card className={cn(className)}>
       <CardContent className="p-3 text-center">
         <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{label}</p>
         <p className={cn("text-lg font-bold font-mono", valueClass)}>{value}</p>
@@ -227,7 +227,7 @@ function ScannerContent() {
         </div>
 
         {/* Search */}
-        <Card className="border-primary/20">
+        <Card>
           <CardContent className="pt-5 pb-5 space-y-3">
             <div className="flex gap-3">
               <Input
@@ -261,7 +261,7 @@ function ScannerContent() {
 
         {/* Empty state */}
         {!analysis && !loading && (
-          <Card className="border-dashed">
+          <Card>
             <CardContent className="py-16 text-center">
               <Wallet className="w-12 h-12 text-muted-foreground/40 mx-auto mb-3" />
               <h3 className="font-semibold mb-1">Scan any wallet on any chain</h3>
@@ -302,7 +302,7 @@ function ScannerContent() {
             </div>
 
             {/* AI insight */}
-            <Card className="border-primary/20 bg-primary/5">
+            <Card>
               <CardContent className="pt-5 pb-5">
                 <div className="flex items-start gap-3">
                   <div className="p-2 rounded-lg bg-primary/10 shrink-0"><Brain className="w-5 h-5 text-primary" /></div>
@@ -316,7 +316,7 @@ function ScannerContent() {
 
             {/* Top Picks */}
             {topPickHoldings.length > 0 && (
-              <Card className="border-success/20 bg-gradient-to-br from-success/5 to-transparent">
+              <Card>
                 <CardContent className="p-4">
                   <h3 className="text-sm font-semibold flex items-center gap-2 mb-3"><Flame className="w-4 h-4 text-success" /> Top Picks — High Momentum</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -396,7 +396,7 @@ function ScannerContent() {
 
             {/* Warnings */}
             {analysis.warnings.length > 0 && (
-              <Card className="border-warning/20 bg-warning/5">
+              <Card>
                 <CardContent className="p-4 space-y-2">
                   <h3 className="text-sm font-semibold flex items-center gap-2"><AlertTriangle className="w-4 h-4 text-warning" /> {analysis.warnings.length} Warning{analysis.warnings.length > 1 ? 's' : ''}</h3>
                   {analysis.warnings.map((w, i) => (
@@ -505,7 +505,7 @@ function ScannerContent() {
                     const reco = RECO_META[token.recommendation] ?? RECO_META.hold;
                     const RecoIcon = reco.icon;
                     return (
-                      <Card key={i} className="border-border">
+                      <Card key={i}>
                         <CardContent className="p-3.5">
                           <div className="flex items-center gap-2.5 mb-2">
                             <CoinImage symbol={token.symbol} image={token.logo} size={28} />

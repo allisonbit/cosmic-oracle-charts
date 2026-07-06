@@ -217,7 +217,7 @@ export default function LearnArticle() {
 
           {/* FAQs */}
           {article.faqs.length > 0 && (
-            <Card className="mb-8 border-border/40">
+            <Card className="mb-8">
               <CardContent className="p-5 sm:p-6">
                 <h2 className="text-lg font-display font-bold mb-4 flex items-center gap-2">
                   <HelpCircle className="h-5 w-5 text-primary" />
@@ -241,7 +241,7 @@ export default function LearnArticle() {
 
           {/* Related Links */}
           {article.relatedLinks.length > 0 && (
-            <Card className="mb-8 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
+            <Card className="mb-8">
               <CardContent className="p-5 sm:p-6">
                 <h2 className="text-base font-display font-bold mb-4">Explore More Tools</h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
@@ -269,7 +269,7 @@ export default function LearnArticle() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {relatedArticles.map((related) => (
                   <Link key={related.id} to={`/learn/${related.slug}`} className="group">
-                    <Card className="h-full border-border/40 hover:border-primary/30 transition-all duration-200">
+                    <Card className="h-full transition-all duration-200">
                       <CardContent className="p-4 flex gap-3">
                         <div className="flex-1 min-w-0">
                           <Badge variant="outline" className="text-[10px] mb-2">{related.category}</Badge>

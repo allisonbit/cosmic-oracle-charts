@@ -40,7 +40,7 @@ export function EducationalArticlesPanel() {
             to={`/learn/${article.slug}`}
             className="group"
           >
-            <Card className="h-full overflow-hidden border-border/50 hover:border-primary/50 active:scale-[0.98] transition-all hover:shadow-lg hover:shadow-primary/10">
+            <Card className="h-full overflow-hidden active:scale-[0.98] transition-all">
               <CardContent className="p-0">
                 {/* Article Header Gradient */}
                 <div className="h-24 sm:h-28 bg-gradient-to-br from-primary/30 via-secondary/20 to-primary/10 flex items-center justify-center relative">

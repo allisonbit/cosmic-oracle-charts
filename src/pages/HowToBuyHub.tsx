@@ -116,7 +116,7 @@ export default function HowToBuyHub() {
               <Link
                 key={guide.id}
                 to={`/how-to-buy/${guide.id}`}
-                className="holo-card p-5 group hover:border-primary/50 transition-all hover:scale-[1.02]"
+                className="holo-card p-5 group transition-all hover:scale-[1.02]"
               >
                 <div className="flex justify-between items-start mb-3">
                   <div>

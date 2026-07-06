@@ -12,7 +12,7 @@ interface TokenChartTabProps {
 
 export function TokenChartTab({ chartData, chartTimeframe, setChartTimeframe, isPositive }: TokenChartTabProps) {
   return (
-    <Card className="border-border">
+    <Card>
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
         <CardTitle className="text-sm">Price Chart</CardTitle>
         <div className="flex gap-1">

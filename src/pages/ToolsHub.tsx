@@ -123,7 +123,7 @@ export default function ToolsHub() {
               <Link
                 key={to}
                 to={to}
-                className="holo-card p-5 group hover:border-primary/50 transition-all hover:scale-[1.02] flex flex-col"
+                className="holo-card p-5 group transition-all hover:scale-[1.02] flex flex-col"
               >
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
                   <Icon className="w-5 h-5 text-primary" />

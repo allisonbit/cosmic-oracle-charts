@@ -46,7 +46,7 @@ export function TokenHoldersTab({ derivedMetrics }: TokenHoldersTabProps) {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <Card className="border-border">
+      <Card>
         <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><Wallet className="w-4 h-4" /> Holder Distribution</CardTitle></CardHeader>
         <CardContent>
           {isLoading && <div className="h-32 rounded bg-muted/30 animate-pulse" />}
@@ -61,7 +61,7 @@ export function TokenHoldersTab({ derivedMetrics }: TokenHoldersTabProps) {
         </CardContent>
       </Card>
 
-      <Card className="border-border">
+      <Card>
         <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><Flame className="w-4 h-4 text-warning" /> Top Holders</CardTitle></CardHeader>
         <CardContent className="space-y-3">
           {isLoading && Array.from({ length: 5 }).map((_, i) => (

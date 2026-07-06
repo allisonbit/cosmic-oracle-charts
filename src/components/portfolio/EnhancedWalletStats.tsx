@@ -181,7 +181,7 @@ export function EnhancedWalletStats({ analysis }: WalletStatsProps) {
             <button
               key={stat.id}
               onClick={() => setSelectedStat(stat.id)}
-              className="holo-card p-4 hover:border-primary/50 transition-all hover:scale-[1.02] text-left group"
+              className="holo-card p-4 transition-all hover:scale-[1.02] text-left group"
             >
               <div className="flex items-center gap-2 mb-2">
                 <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center", stat.bg)}>

@@ -249,7 +249,7 @@ export default function YearPrediction() {
           <h2 className="text-xl font-display font-bold mb-4">{coinName} {year} Price Targets</h2>
           <div className="grid md:grid-cols-3 gap-4">
             {/* Bear */}
-            <div className="holo-card p-5 border-danger/20">
+            <div className="holo-card p-5">
               <div className="flex items-center gap-2 mb-3">
                 <TrendingDown className="w-5 h-5 text-danger" />
                 <span className="font-bold text-danger">Bear Case</span>
@@ -263,7 +263,7 @@ export default function YearPrediction() {
               <p className="text-sm text-muted-foreground">{proj.bearLabel}</p>
             </div>
             {/* Base */}
-            <div className="holo-card p-5 border-primary/30 ring-1 ring-primary/20">
+            <div className="holo-card p-5">
               <div className="flex items-center gap-2 mb-3">
                 <Target className="w-5 h-5 text-primary" />
                 <span className="font-bold text-primary">Base Case</span>
@@ -278,7 +278,7 @@ export default function YearPrediction() {
               <p className="text-sm text-muted-foreground">{proj.baseLabel}</p>
             </div>
             {/* Bull */}
-            <div className="holo-card p-5 border-success/20">
+            <div className="holo-card p-5">
               <div className="flex items-center gap-2 mb-3">
                 <TrendingUp className="w-5 h-5 text-success" />
                 <span className="font-bold text-success">Bull Case</span>
@@ -378,7 +378,7 @@ export default function YearPrediction() {
           <div className="grid grid-cols-3 gap-3">
             {["daily", "weekly", "monthly"].map(tf => (
               <Link key={tf} to={`/price-prediction/${coinId}/${tf}`}
-                className="holo-card p-4 text-center hover:border-primary/50 transition-colors group">
+                className="holo-card p-4 text-center transition-colors group">
                 <p className="font-bold capitalize group-hover:text-primary transition-colors">{tf}</p>
                 <p className="text-xs text-muted-foreground mt-1">{coinSymbol} forecast</p>
               </Link>
@@ -392,7 +392,7 @@ export default function YearPrediction() {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {relatedCoins.map(coin => (
               <Link key={coin.id} to={`/price-prediction/${coin.id}/${year}`}
-                className="holo-card p-4 hover:border-primary/50 transition-colors group flex items-center justify-between">
+                className="holo-card p-4 transition-colors group flex items-center justify-between">
                 <div>
                   <p className="font-bold group-hover:text-primary transition-colors">{coin.symbol.toUpperCase()}</p>
                   <p className="text-xs text-muted-foreground">{coin.name} {year}</p>

@@ -79,7 +79,7 @@ export function WeightingPlayground({ assets }: WeightingPlaygroundProps) {
   const totalWeight = Object.values(weights).reduce((a, b) => a + b, 0);
 
   return (
-    <Card className="">
+    <Card>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-lg">

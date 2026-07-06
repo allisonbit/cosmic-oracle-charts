@@ -45,7 +45,7 @@ export function PredictionCard({ crypto }: PredictionCardProps) {
   const takeProfit = crypto.takeProfit || crypto.price * (1 + 0.08 * priceMultiplier);
 
   return (
-    <div className="holo-card p-4 hover:border-primary/50 transition-all group">
+    <div className="holo-card p-4 transition-all group">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-3">

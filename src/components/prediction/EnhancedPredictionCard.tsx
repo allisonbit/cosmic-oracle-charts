@@ -168,7 +168,7 @@ export function EnhancedPredictionCard({ crypto, showFullDetails = false }: Enha
 
   return (
     <div 
-      className="holo-card p-4 hover:border-primary/50 transition-all group cursor-pointer"
+      className="holo-card p-4 transition-all group cursor-pointer"
       onClick={() => setExpanded(!expanded)}
     >
       {/* Header */}

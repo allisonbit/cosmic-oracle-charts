@@ -186,19 +186,19 @@ export default function MyNewsFeed() {
 
           {/* Market Sentiment Summary */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <Card className="border-border"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[10px] text-muted-foreground uppercase">Total Updates</p>
               <p className="text-lg font-bold">{feedItems.length}</p>
             </CardContent></Card>
-            <Card className="border-border bg-danger/5"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[10px] text-muted-foreground uppercase">Urgent</p>
               <p className="text-lg font-bold text-danger">{highPriorityCount}</p>
             </CardContent></Card>
-            <Card className="border-border bg-success/5"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[10px] text-muted-foreground uppercase">Bullish Signals</p>
               <p className="text-lg font-bold text-success">{bullishCount}</p>
             </CardContent></Card>
-            <Card className="border-border bg-danger/5"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[10px] text-muted-foreground uppercase">Bearish Signals</p>
               <p className="text-lg font-bold text-danger">{bearishCount}</p>
             </CardContent></Card>
@@ -233,7 +233,7 @@ export default function MyNewsFeed() {
                 const isExpanded = expandedItems.has(item.id);
                 return (
                   <Card key={item.id} className={cn(
-                    "border-l-2 transition-all hover:shadow-sm cursor-pointer",
+                    "border-l-2 transition-all cursor-pointer",
                     item.priority === 'high' ? "border-l-danger" : item.priority === 'medium' ? "border-l-warning" : "border-l-muted",
                     item.read && "opacity-60"
                   )} onClick={() => { markRead(item.id); toggleExpand(item.id); }}>

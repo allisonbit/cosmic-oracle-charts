@@ -200,37 +200,37 @@ export default function MyTradeJournal() {
 
           {/* Stats Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-8 gap-2 sm:gap-3">
-            <Card className={cn("border-border", totalPnL >= 0 ? "bg-success/5" : "bg-danger/5")}><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Total P&L</p>
               <p className={cn("text-lg font-bold font-mono", totalPnL >= 0 ? "text-success" : "text-danger")}>{formatCompact(totalPnL)}</p>
             </CardContent></Card>
-            <Card className="border-border"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Win Rate</p>
               <p className={cn("text-lg font-bold font-mono", winRate >= 50 ? "text-success" : "text-danger")}>{(winRate ?? 0).toFixed(1)}%</p>
             </CardContent></Card>
-            <Card className="border-border"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Profit Factor</p>
               <p className={cn("text-lg font-bold font-mono", profitFactor >= 1 ? "text-success" : "text-danger")}>{(profitFactor ?? 0).toFixed(2)}</p>
             </CardContent></Card>
-            <Card className="border-border"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Streak</p>
               <p className={cn("text-lg font-bold font-mono flex items-center gap-1", streak > 0 ? "text-success" : streak < 0 ? "text-danger" : "text-foreground")}>
                 {streak > 0 && <Flame className="w-4 h-4" />}{Math.abs(streak)} {streak > 0 ? 'W' : streak < 0 ? 'L' : ''}
               </p>
             </CardContent></Card>
-            <Card className="border-border"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Avg Win</p>
               <p className="text-sm font-bold font-mono text-success">{formatCompact(avgWin)}</p>
             </CardContent></Card>
-            <Card className="border-border"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Avg Loss</p>
               <p className="text-sm font-bold font-mono text-danger">{formatCompact(avgLoss)}</p>
             </CardContent></Card>
-            <Card className="border-border"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Best Trade</p>
               <p className="text-sm font-bold font-mono text-success">{formatCompact(biggestWin)}</p>
             </CardContent></Card>
-            <Card className="border-border"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Open Exposure</p>
               <p className="text-sm font-bold font-mono">{formatCompact(openExposure)}</p>
             </CardContent></Card>
@@ -246,7 +246,7 @@ export default function MyTradeJournal() {
                 <TabsTrigger value="breakdown" className="text-xs gap-1"><Percent className="w-3.5 h-3.5" /> Breakdown</TabsTrigger>
               </TabsList>
               <TabsContent value="equity" className="mt-3">
-                <Card className="border-border">
+                <Card>
                   <CardContent className="p-4">
                     <div className="h-[220px]">
                       <ResponsiveContainer width="100%" height="100%">
@@ -263,7 +263,7 @@ export default function MyTradeJournal() {
                 </Card>
               </TabsContent>
               <TabsContent value="monthly" className="mt-3">
-                <Card className="border-border"><CardContent className="p-4">
+                <Card><CardContent className="p-4">
                   <div className="h-[220px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={monthData}>
@@ -279,7 +279,7 @@ export default function MyTradeJournal() {
                 </CardContent></Card>
               </TabsContent>
               <TabsContent value="assets" className="mt-3">
-                <Card className="border-border"><CardContent className="p-4">
+                <Card><CardContent className="p-4">
                   <div className="h-[220px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={assetData} layout="vertical">
@@ -295,7 +295,7 @@ export default function MyTradeJournal() {
                 </CardContent></Card>
               </TabsContent>
               <TabsContent value="breakdown" className="mt-3">
-                <Card className="border-border"><CardContent className="p-4">
+                <Card><CardContent className="p-4">
                   <div className="h-[220px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart><Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={70} innerRadius={40}
@@ -311,7 +311,7 @@ export default function MyTradeJournal() {
 
           {/* Add Trade Form */}
           {showForm && (
-            <Card className="border-primary/30 bg-primary/5">
+            <Card>
               <CardContent className="p-4 space-y-4">
                 <h3 className="font-semibold text-sm">Log New Trade</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -362,7 +362,7 @@ export default function MyTradeJournal() {
             {loading ? (
               <div className="text-center py-12 text-muted-foreground">Loading trades...</div>
             ) : filteredTrades.length === 0 ? (
-              <Card className="border-border"><CardContent className="p-10 text-center text-muted-foreground">
+              <Card><CardContent className="p-10 text-center text-muted-foreground">
                 <BookOpen className="w-12 h-12 mx-auto mb-3 opacity-20" />
                 <h3 className="font-semibold text-foreground mb-1">No Trades Yet</h3>
                 <p className="text-sm">Log your first trade to start building your equity curve</p>
@@ -390,7 +390,7 @@ function TradeRow({ trade, onClose, onDelete }: { trade: Trade; onClose: (t: Tra
     : Math.ceil((Date.now() - new Date(trade.entered_at).getTime()) / (1000 * 60 * 60 * 24));
 
   return (
-    <Card className={cn("border-border transition-all hover:shadow-sm", isOpen ? "border-l-2 border-l-primary" : isProfitable ? "border-l-2 border-l-success" : "border-l-2 border-l-danger")}>
+    <Card className={cn("transition-all", isOpen ? "border-l-2 border-l-primary" : isProfitable ? "border-l-2 border-l-success" : "border-l-2 border-l-danger")}>
       <CardContent className="p-3">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div className="flex items-center gap-3">

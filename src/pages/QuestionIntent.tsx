@@ -273,7 +273,7 @@ export default function QuestionIntent() {
                 <Link
                   key={i}
                   to={`/q/${q.pattern}`}
-                  className="holo-card p-4 hover:border-primary/50 transition-all group flex items-center justify-between"
+                  className="holo-card p-4 transition-all group flex items-center justify-between"
                 >
                   <span className="font-medium group-hover:text-primary transition-colors">
                     {q.question}
@@ -292,7 +292,7 @@ export default function QuestionIntent() {
                 <Link
                   key={c.id}
                   to={`/price-prediction/${c.id}/${timeframe}`}
-                  className="holo-card p-3 text-center hover:border-primary/50 transition-all group"
+                  className="holo-card p-3 text-center transition-all group"
                 >
                   <div className="font-display font-bold text-sm group-hover:text-primary transition-colors">
                     {c.symbol.toUpperCase()}

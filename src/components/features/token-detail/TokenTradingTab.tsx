@@ -12,7 +12,7 @@ export function TokenTradingTab({ token, derivedMetrics }: TokenTradingTabProps)
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Buy/Sell Ratio */}
-        <Card className="border-border">
+        <Card>
           <CardHeader className="pb-2"><CardTitle className="text-sm">Buy/Sell Pressure (24h)</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             {(token.buys24h || token.sells24h) ? (
@@ -44,7 +44,7 @@ export function TokenTradingTab({ token, derivedMetrics }: TokenTradingTabProps)
         </Card>
 
         {/* Liquidity & Volume Deep Dive */}
-        <Card className="border-border">
+        <Card>
           <CardHeader className="pb-2"><CardTitle className="text-sm">Liquidity & Volume</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             <div className="flex justify-between items-center">
@@ -87,7 +87,7 @@ export function TokenTradingTab({ token, derivedMetrics }: TokenTradingTabProps)
       </div>
 
       {/* Multi-timeframe changes */}
-      <Card className="border-border">
+      <Card>
         <CardHeader className="pb-2"><CardTitle className="text-sm">Price Changes</CardTitle></CardHeader>
         <CardContent>
           <div className="grid grid-cols-3 gap-3">

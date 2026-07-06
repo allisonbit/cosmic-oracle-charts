@@ -87,7 +87,7 @@ export function SectorStrengthHeatmap({ assets }: SectorStrengthHeatmapProps) {
   };
 
   return (
-    <Card className="">
+    <Card>
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Grid3X3 className="w-5 h-5 text-primary" />

@@ -198,15 +198,15 @@ function TrackerContent() {
 
         {/* Summary Stats */}
         <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
-          <Card className="border-border"><CardContent className="p-3">
+          <Card><CardContent className="p-3">
             <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Invested</p>
             <p className="text-lg font-bold font-mono">{mask(formatCompact(totalInvested))}</p>
           </CardContent></Card>
-          <Card className="border-border"><CardContent className="p-3">
+          <Card><CardContent className="p-3">
             <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Current Value</p>
             <p className="text-lg font-bold font-mono">{mask(formatCompact(totalCurrent))}</p>
           </CardContent></Card>
-          <Card className={cn("border-border", totalPnL >= 0 ? "bg-success/5" : "bg-danger/5")}><CardContent className="p-3">
+          <Card><CardContent className="p-3">
             <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Total P&L</p>
             <p className={cn("text-lg font-bold font-mono", totalPnL >= 0 ? "text-success" : "text-danger")}>
               {mask(`${totalPnL >= 0 ? '+' : ''}${formatCompact(totalPnL)}`)}
@@ -215,17 +215,17 @@ function TrackerContent() {
               {totalPnLPct >= 0 ? '+' : ''}{(totalPnLPct ?? 0).toFixed(2)}%
             </p>
           </CardContent></Card>
-          <Card className="border-border"><CardContent className="p-3">
+          <Card><CardContent className="p-3">
             <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Assets</p>
             <p className="text-lg font-bold font-mono">{enriched.length}</p>
             <p className="text-xs text-muted-foreground">{profitableCount} profitable</p>
           </CardContent></Card>
-          <Card className="border-border"><CardContent className="p-3">
+          <Card><CardContent className="p-3">
             <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Best</p>
             <p className="text-sm font-bold text-success">{bestPerformer?.symbol || '—'}</p>
             <p className="text-xs text-success font-mono">{bestPerformer ? `+${(bestPerformer.pnlPct ?? 0).toFixed(1)}%` : ''}</p>
           </CardContent></Card>
-          <Card className="border-border"><CardContent className="p-3">
+          <Card><CardContent className="p-3">
             <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Worst</p>
             <p className="text-sm font-bold text-danger">{worstPerformer?.symbol || '—'}</p>
             <p className="text-xs text-danger font-mono">{worstPerformer ? `${(worstPerformer.pnlPct ?? 0).toFixed(1)}%` : ''}</p>
@@ -235,7 +235,7 @@ function TrackerContent() {
         {/* Charts */}
         {enriched.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Card className="border-border">
+            <Card>
               <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><PieChartIcon className="w-4 h-4" /> Allocation</CardTitle></CardHeader>
               <CardContent>
                 <div className="h-[220px]">
@@ -252,7 +252,7 @@ function TrackerContent() {
                 </div>
               </CardContent>
             </Card>
-            <Card className="border-border">
+            <Card>
               <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><BarChart3 className="w-4 h-4" /> P&L by Asset</CardTitle></CardHeader>
               <CardContent>
                 <div className="h-[220px]">
@@ -274,7 +274,7 @@ function TrackerContent() {
 
         {/* Add Form */}
         {showForm && (
-          <Card className="border-primary/30 bg-primary/5">
+          <Card>
             <CardContent className="p-4 space-y-4">
               <h3 className="font-semibold text-sm">Add New Holding</h3>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
@@ -332,7 +332,7 @@ function TrackerContent() {
               const isEditing = editingId === h.id;
 
               return (
-                <Card key={h.id} className={cn("border-border transition-all hover:shadow-sm", h.pnl >= 0 ? "border-l-2 border-l-success" : "border-l-2 border-l-danger")}>
+                <Card key={h.id} className={cn("transition-all", h.pnl >= 0 ? "border-l-2 border-l-success" : "border-l-2 border-l-danger")}>
                   <CardContent className="p-3">
                     <div className="flex items-center justify-between gap-3 flex-wrap">
                       <div className="flex items-center gap-3 min-w-0">

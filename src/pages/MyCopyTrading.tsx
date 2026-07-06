@@ -177,23 +177,23 @@ export default function MyCopyTrading() {
 
           {/* Summary Stats */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-3">
-            <Card className="border-border"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Following</p>
               <p className="text-lg font-bold">{totalFollowing}</p>
             </CardContent></Card>
-            <Card className="border-border"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Active Traders</p>
               <p className="text-lg font-bold">{topTraders.length}</p>
             </CardContent></Card>
-            <Card className="border-border"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Avg Win Rate</p>
               <p className={cn("text-lg font-bold font-mono", avgWinRate >= 50 ? "text-success" : "text-danger")}>{(avgWinRate ?? 0).toFixed(1)}%</p>
             </CardContent></Card>
-            <Card className="border-border"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Total Calls</p>
               <p className="text-lg font-bold">{predictions.length}</p>
             </CardContent></Card>
-            <Card className="border-border"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">24h Calls</p>
               <p className="text-lg font-bold">{recentPreds.length}</p>
             </CardContent></Card>
@@ -223,7 +223,7 @@ export default function MyCopyTrading() {
                 </CardContent></Card>
               ) : (
                 displayTraders.map((trader, idx) => (
-                  <Card key={trader.id} className={cn("border-border transition-all hover:shadow-sm", idx < 3 && "border-l-2 border-l-warning")}>
+                  <Card key={trader.id} className={cn("transition-all", idx < 3 && "border-l-2 border-l-warning")}>
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between gap-4 flex-wrap">
                         <div className="flex items-center gap-3">
@@ -325,7 +325,7 @@ function PredictionCard({ pred }: { pred: PublicPrediction }) {
   const timeAgo = timeSince < 3600000 ? `${Math.floor(timeSince / 60000)}m ago` : timeSince < 86400000 ? `${Math.floor(timeSince / 3600000)}h ago` : `${Math.floor(timeSince / 86400000)}d ago`;
 
   return (
-    <Card className={cn("border-border border-l-2 transition-all hover:shadow-sm", isBullish ? "border-l-success" : "border-l-danger")}>
+    <Card className={cn("border-l-2 transition-all", isBullish ? "border-l-success" : "border-l-danger")}>
       <CardContent className="p-3">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div className="flex items-center gap-2.5">

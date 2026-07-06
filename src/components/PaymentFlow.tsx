@@ -4,7 +4,7 @@ import { ShieldCheck, CheckCircle2 } from "lucide-react";
 
 export function PaymentFlow() {
   return (
-    <Card className="w-full max-w-md mx-auto cosmic-card border-white/10 glass-panel">
+    <Card className="w-full max-w-md mx-auto glass-panel">
       <CardHeader>
         <CardTitle className="text-xl flex items-center gap-2">
           <CheckCircle2 className="text-green-500 h-6 w-6" />

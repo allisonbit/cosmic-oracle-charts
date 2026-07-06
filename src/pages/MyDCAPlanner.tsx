@@ -190,31 +190,31 @@ export default function MyDCAPlanner() {
 
           {/* Summary */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-3">
-            <Card className="border-border"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Invested</p>
               <p className="text-lg font-bold font-mono">{formatCompact(totalInvested)}</p>
             </CardContent></Card>
-            <Card className="border-border"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Current Value</p>
               <p className="text-lg font-bold font-mono">{formatCompact(totalValue)}</p>
             </CardContent></Card>
-            <Card className={cn("border-border", totalPnL >= 0 ? "bg-success/5" : "bg-danger/5")}><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Total P&L</p>
               <p className={cn("text-lg font-bold font-mono", totalPnL >= 0 ? "text-success" : "text-danger")}>
                 {totalPnL >= 0 ? '+' : ''}{formatCompact(totalPnL)}
               </p>
               <p className={cn("text-xs font-mono", totalPnLPct >= 0 ? "text-success" : "text-danger")}>{totalPnLPct >= 0 ? '+' : ''}{(totalPnLPct ?? 0).toFixed(1)}%</p>
             </CardContent></Card>
-            <Card className="border-border"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Monthly Cost</p>
               <p className="text-sm font-bold font-mono">{formatCompact(monthlyCommitment)}</p>
               <p className="text-[10px] text-muted-foreground">/month</p>
             </CardContent></Card>
-            <Card className="border-border"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Active Plans</p>
               <p className="text-lg font-bold font-mono">{activePlans}</p>
             </CardContent></Card>
-            <Card className="border-border"><CardContent className="p-3">
+            <Card><CardContent className="p-3">
               <p className="text-[9px] text-muted-foreground uppercase">Best Plan</p>
               <p className="text-sm font-bold">{bestPlan?.symbol || '—'}</p>
             </CardContent></Card>
@@ -222,7 +222,7 @@ export default function MyDCAPlanner() {
 
           {/* Projection Chart */}
           {totalValue > 0 && (
-            <Card className="border-border">
+            <Card>
               <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><Activity className="w-4 h-4" /> 12-Month DCA Projection</CardTitle></CardHeader>
               <CardContent>
                 <div className="h-[200px]">
@@ -248,7 +248,7 @@ export default function MyDCAPlanner() {
 
           {/* New Plan Form */}
           {showForm && (
-            <Card className="border-primary/30 bg-primary/5">
+            <Card>
               <CardContent className="p-4 space-y-4">
                 <h3 className="font-semibold text-sm">Create DCA Plan</h3>
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
@@ -308,7 +308,7 @@ export default function MyDCAPlanner() {
                 const priceVsAvg = plan.avg_buy_price > 0 ? ((currentPrice - plan.avg_buy_price) / plan.avg_buy_price) * 100 : 0;
 
                 return (
-                  <Card key={plan.id} className={cn("border-border transition-all", !plan.is_active && "opacity-50", isDue && plan.is_active && "border-warning/50")}>
+                  <Card key={plan.id} className={cn("transition-all", !plan.is_active && "opacity-50", isDue && plan.is_active && "border-warning/50")}>
                     <CardContent className="p-4 space-y-3">
                       <div className="flex items-center justify-between gap-4 flex-wrap cursor-pointer" onClick={() => setExpandedPlan(isExpanded ? null : plan.id)}>
                         <div className="flex items-center gap-3">

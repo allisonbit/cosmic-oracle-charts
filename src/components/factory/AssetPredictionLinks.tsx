@@ -29,7 +29,7 @@ export function AssetPredictionLinks({
   if (matchedCryptos.length === 0) return null;
 
   return (
-    <Card className={`border-t border-border/30 pt-5 ${className}`}>
+    <Card className={`pt-5 ${className}`}>
       <CardContent className="p-4">
         <h3 className="font-semibold mb-3 flex items-center gap-2">
           <Target className="w-4 h-4 text-primary" />
@@ -68,7 +68,7 @@ export function TopCryptoPredictionLinks({ className = "" }: { className?: strin
   const topCryptos = TOP_50_CRYPTOS.slice(0, 10);
 
   return (
-    <Card className={`border-t border-border/30 pt-5 ${className}`}>
+    <Card className={`pt-5 ${className}`}>
       <CardContent className="p-4">
         <h3 className="font-semibold mb-3 flex items-center gap-2">
           <Target className="w-4 h-4 text-primary" />
@@ -127,7 +127,7 @@ export function MarketPagesLinks({ className = "" }: { className?: string }) {
   ];
 
   return (
-    <Card className={`border-t border-border/30 pt-5 ${className}`}>
+    <Card className={`pt-5 ${className}`}>
       <CardContent className="p-4">
         <h3 className="font-semibold mb-3 flex items-center gap-2">
           <BarChart3 className="w-4 h-4 text-primary" />

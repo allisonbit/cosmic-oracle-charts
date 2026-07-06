@@ -174,7 +174,7 @@ export default function CompareHub() {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
               {TRENDING_BATTLES.map((b) => (
                 <Link key={`${b.a}-${b.b}`} to={`/compare/${b.a}-vs-${b.b}`}
-                  className="holo-card px-4 py-3 text-sm font-semibold text-center hover:border-primary/50 hover:text-primary transition-all hover:scale-105 group">
+                  className="holo-card px-4 py-3 text-sm font-semibold text-center hover:text-primary transition-all hover:scale-105 group">
                   <span className="flex items-center justify-center gap-2">{b.label}<ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" /></span>
                 </Link>
               ))}

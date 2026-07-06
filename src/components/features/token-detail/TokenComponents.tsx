@@ -7,7 +7,7 @@ export function StatCard({ label, value, icon: Icon, change, accent }: {
   label: string; value: string; icon: any; change?: number; accent?: string;
 }) {
   return (
-    <Card className={cn("bg-card border-border", accent)}>
+    <Card className={cn(accent)}>
       <CardContent className="p-3 md:p-4">
         <div className="flex items-center justify-between mb-1">
           <span className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-wide">{label}</span>

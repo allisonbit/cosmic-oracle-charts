@@ -15,7 +15,7 @@ interface TokenAITabProps {
 export function TokenAITab({ token, aiLoading, forecast }: TokenAITabProps) {
   return (
     <div className="space-y-4">
-      <Card className="border-border">
+      <Card>
         <CardHeader>
           <CardTitle className="text-sm flex items-center gap-2">
             <Brain className="w-4 h-4 text-primary" />

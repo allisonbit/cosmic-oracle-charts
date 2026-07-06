@@ -44,7 +44,7 @@ const safeTime = (s?: string) => { try { return formatDistanceToNow(new Date(s |
 function FeedItem({ n, navigate }: { n: any; navigate: (p: string) => void }) {
   const high = (n.impactScore ?? 0) >= 75;
   return (
-    <Card className={cn("border-t border-border/30 pt-5 group", high && "border-l-2 border-l-primary")}>
+    <Card className={cn("pt-5 group", high && "border-l-2 border-l-primary")}>
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
           {n.imageUrl && <div className="w-16 h-14 rounded-lg overflow-hidden shrink-0 hidden sm:block bg-muted"><img src={n.imageUrl} alt="" loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} /></div>}
@@ -269,7 +269,7 @@ export default function CryptoFactory() {
                 { label: "Fear & Greed", value: `${fearGreed.value}`, icon: Gauge, color: fgColor },
                 { label: "Active Coins", value: `${(data.globalStats.activeCryptocurrencies || 0).toLocaleString()}`, icon: Eye },
               ].map((s) => (
-                <Card key={s.label} className="border-t border-border/30 pt-5"><CardContent className="p-2.5">
+                <Card key={s.label} className="pt-5"><CardContent className="p-2.5">
                   <div className="flex items-center gap-1.5"><s.icon className={cn("w-3.5 h-3.5 text-muted-foreground", s.color)} /><span className="text-[10px] text-muted-foreground uppercase tracking-wider truncate">{s.label}</span></div>
                   <p className={cn("text-base font-bold font-mono mt-0.5", s.color)}>{s.value}</p>
                   {s.change !== undefined && <span className={cn("text-[11px] font-mono", s.change >= 0 ? "text-green-400" : "text-red-400")}>{s.change >= 0 ? "+" : ""}{(s.change ?? 0).toFixed(2)}%</span>}
@@ -296,7 +296,7 @@ export default function CryptoFactory() {
           )}
 
           {/* Composite sentiment (real, from scored news + F&G) */}
-          <Card className="border-t border-border/30 pt-5"><CardContent className="p-4">
+          <Card className="pt-5"><CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-sm font-semibold flex items-center gap-1.5"><Brain className="w-4 h-4 text-primary" /> Market Sentiment</h2>
               <span className={cn("text-sm font-bold", sentBreakdown.composite >= 60 ? "text-success" : sentBreakdown.composite >= 45 ? "text-warning" : "text-danger")}>{sentBreakdown.label} · {sentBreakdown.composite}/100</span>
@@ -339,7 +339,7 @@ export default function CryptoFactory() {
             {/* CENTER — Intel feed */}
             <Column id="feed" className="space-y-3 min-w-0">
               {/* Feed controls */}
-              <Card className="border-t border-border/30 pt-5"><CardContent className="p-3 space-y-2.5">
+              <Card className="pt-5"><CardContent className="p-3 space-y-2.5">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input placeholder="Filter feed by asset or keyword…" value={q} onChange={(e) => setParam("q", e.target.value)} className="pl-9 h-9 bg-background/50 border-border/40 text-sm" />
@@ -364,7 +364,7 @@ export default function CryptoFactory() {
               </div>
               {isLoading ? <div className="space-y-3">{Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-24 w-full" />)}</div>
                 : news.length ? <div className="space-y-3">{news.map((n) => <FeedItem key={n.id} n={n} navigate={navigate} />)}</div>
-                : <Card className="border-t border-border/30 pt-5"><CardContent className="p-8 text-center text-muted-foreground text-sm">No items match your filters.</CardContent></Card>}
+                : <Card className="pt-5"><CardContent className="p-8 text-center text-muted-foreground text-sm">No items match your filters.</CardContent></Card>}
             </Column>
 
             {/* RIGHT — On-chain + events */}

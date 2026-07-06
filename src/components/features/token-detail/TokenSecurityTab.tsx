@@ -14,7 +14,7 @@ export function TokenSecurityTab({ token, derivedMetrics, topHolderPct }: TokenS
   const holderValue = !hasHolderInfo ? "—" : (topHolderPct as number) > 30 ? "High" : "Distributed";
   const holderOk = hasHolderInfo ? (topHolderPct as number) < 30 : true;
   return (
-    <Card className="border-border">
+    <Card>
       <CardHeader>
         <CardTitle className="text-sm flex items-center gap-2"><Shield className="w-4 h-4" /> Token Security Audit</CardTitle>
       </CardHeader>
