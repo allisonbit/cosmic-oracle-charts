@@ -52,7 +52,6 @@ const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const RiskDisclaimer = lazy(() => import("./pages/RiskDisclaimer"));
 const EditorialPolicy = lazy(() => import("./pages/EditorialPolicy"));
-const Advertise = lazy(() => import("./pages/Advertise"));
 const YearPrediction = lazy(() => import("./pages/YearPrediction"));
 const Scanner = lazy(() => import("./pages/Scanner"));
 const Admin = lazy(() => import("./pages/Admin"));
@@ -248,7 +247,6 @@ const App = () => (
                 <Route path="/terms" element={B(<Terms />)} />
                 <Route path="/risk-disclaimer" element={B(<RiskDisclaimer />)} />
                 <Route path="/editorial-policy" element={B(<EditorialPolicy />)} />
-                <Route path="/advertise" element={B(<Advertise />)} />
                 <Route path="/connect" element={B(<Connect />)} />
                 <Route path="/admin" element={B(<ProtectedRoute><AdminRoute><Admin /></AdminRoute></ProtectedRoute>)} />
                 <Route path="/admin/backlinks" element={B(<ProtectedRoute><AdminRoute><BacklinkOutreach /></AdminRoute></ProtectedRoute>)} />

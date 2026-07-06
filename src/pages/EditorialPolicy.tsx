@@ -63,16 +63,14 @@ const EditorialPolicy = () => {
               <h2 className="text-xl font-display font-bold m-0">Advertiser Disclosure</h2>
             </div>
             <p className="text-muted-foreground mb-4">
-              Oracle Bull is supported by advertising and may receive compensation from:
+              Oracle Bull does not run advertising networks. We may receive compensation only from:
             </p>
             <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-4">
-              <li>Display advertising networks (including Bitmedia.io, Google AdSense)</li>
               <li>Affiliate partnerships with cryptocurrency exchanges (e.g., Binance, Coinbase, Bybit)</li>
-              <li>Sponsored content, clearly labeled as "Sponsored" or "Advertisement"</li>
             </ul>
             <p className="text-muted-foreground mt-4">
-              Compensation from advertisers and affiliate partners does not influence our editorial content, 
-              data rankings, or market analysis. We only recommend exchanges and services we consider 
+              Compensation from affiliate partners does not influence our editorial content,
+              data rankings, or market analysis. We only recommend exchanges and services we consider
               reputable based on publicly available information.
             </p>
           </section>
