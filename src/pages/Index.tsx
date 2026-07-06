@@ -10,6 +10,7 @@ import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SEO } from "@/components/MainSEO";
 import { ViewportSection } from "@/components/system/ViewportSection";
+import { TrustStrip, ValueStrip, WhyFreeStrip, CoverageStrip } from "@/components/home/InterstitialStrips";
 
 // Above-the-fold, live-data-first sections (eager-ish, but still split).
 const HomeNews = lazy(() => import("@/components/home/HomeNews").then(m => ({ default: m.HomeNews })));
@@ -71,77 +72,89 @@ const Index = () => {
       </header>
 
       <main id="main-content">
-        {/* 1. Hero — H1, prominent search, live price chips */}
+        {/* Lean editorial masthead — compact identity, search, live chips */}
         <HeroSection />
 
-        {/* 2. Latest crypto news — attractive, dynamic lead */}
+        {/* ═══ 1. THE NEWSROOM — latest crypto news leads, first thing seen ═══ */}
         <Suspense fallback={<SectionFallback />}>
           <HomeNews />
         </Suspense>
 
-        {/* 3. Prediction markets — what the crowd is betting on (hook) */}
+        {/* Scatter: trust signals as a thin strip right after the lead */}
+        <TrustStrip />
+
+        {/* ═══ 2. Prediction markets — what the crowd is betting on ═══ */}
         <Suspense fallback={<SectionFallback />}>
           <HomePolymarket />
         </Suspense>
 
-        {/* 4. Live AI Signals — high-conviction trade setups */}
+        {/* ═══ 3. Live AI signals — high-conviction trade setups ═══ */}
         <Suspense fallback={<SectionFallback />}>
           <LiveSignals />
         </Suspense>
 
-        {/* 5. Crypto market at a glance — live snapshot */}
+        {/* Scatter: value proposition pull-quote (old hero paragraph) */}
+        <ValueStrip />
+
+        {/* ═══ 4. Live market data — snapshot of gainers/losers/F&G ═══ */}
         <Suspense fallback={<SectionFallback />}>
           <MarketSnapshot />
         </Suspense>
 
-        {/* 6. Honest platform stats — single live strip */}
+        {/* ═══ 5. Honest platform stats — single live strip ═══ */}
         <Suspense fallback={<SectionFallback />}>
           <PlatformStats />
         </Suspense>
 
-        {/* 5. How It Works — 3-step onboarding */}
-        <ViewportSection fallback={<SectionFallback />}>
-          <Suspense fallback={<SectionFallback />}>
-            <HowItWorks />
-          </Suspense>
-        </ViewportSection>
+        {/* Scatter: coverage / real-time claim */}
+        <CoverageStrip />
 
-        {/* 6a. Platform features grid */}
-        <ViewportSection fallback={<SectionFallback />}>
-          <Suspense fallback={<SectionFallback />}>
-            <FeaturesSection />
-          </Suspense>
-        </ViewportSection>
-
-        {/* 6b. Why traders use us + why-free explainer */}
-        <ViewportSection fallback={<SectionFallback />}>
-          <Suspense fallback={<SectionFallback />}>
-            <SEOContentBlock />
-          </Suspense>
-        </ViewportSection>
-
-        {/* 7. Explore chains — internal linking */}
+        {/* Explore chains — internal linking */}
         <ViewportSection fallback={<SectionFallback />}>
           <Suspense fallback={<SectionFallback />}>
             <ChainLinks />
           </Suspense>
         </ViewportSection>
 
-        {/* 8. Market categories hub — internal linking */}
+        {/* Market categories hub — internal linking */}
         <ViewportSection fallback={<SectionFallback />}>
           <Suspense fallback={<SectionFallback />}>
             <MarketCategoriesHub />
           </Suspense>
         </ViewportSection>
 
-        {/* 9. FAQ — SEO rich snippets (aligned with prerender) */}
+        {/* Scatter: why it's free */}
+        <WhyFreeStrip />
+
+        {/* How It Works — 3-step onboarding */}
+        <ViewportSection fallback={<SectionFallback />}>
+          <Suspense fallback={<SectionFallback />}>
+            <HowItWorks />
+          </Suspense>
+        </ViewportSection>
+
+        {/* Why traders use us + deeper explainer */}
+        <ViewportSection fallback={<SectionFallback />}>
+          <Suspense fallback={<SectionFallback />}>
+            <SEOContentBlock />
+          </Suspense>
+        </ViewportSection>
+
+        {/* Platform features grid */}
+        <ViewportSection fallback={<SectionFallback />}>
+          <Suspense fallback={<SectionFallback />}>
+            <FeaturesSection />
+          </Suspense>
+        </ViewportSection>
+
+        {/* FAQ */}
         <ViewportSection fallback={<SectionFallback />}>
           <Suspense fallback={<SectionFallback />}>
             <HomepageFAQ />
           </Suspense>
         </ViewportSection>
 
-        {/* 10. Final conversion CTA */}
+        {/* Final conversion CTA */}
         <ViewportSection fallback={<SectionFallback />}>
           <Suspense fallback={<SectionFallback />}>
             <NewsletterCTASection />
