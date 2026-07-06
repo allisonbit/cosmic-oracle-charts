@@ -208,7 +208,7 @@ export function ChainOverviewPanel({ chain, overview, isLoading }: ChainOverview
           <div
             key={stat.label}
             className={cn(
-              "relative p-3 sm:p-4 rounded-xl border border-border/50 bg-muted/20 transition-all hover:bg-muted/40 group",
+              "relative p-3 sm:p-4 border-t border-border/20 pt-3 transition-all hover:bg-muted/40 group",
               isLoading && "animate-pulse",
               stat.link && "cursor-pointer"
             )}

@@ -250,7 +250,7 @@ export function EnhancedTokenDiscoveryEngine({ chain }: EnhancedTokenDiscoveryEn
               <div className={cn("w-2 h-2 rounded-full animate-pulse", isLoading || isFetching ? "bg-warning" : "bg-success")} />
               <span>Live</span>
             </div>
-            <button onClick={() => openDiscoveryModal('methodology', 'Discovery Methodology', {})} className="p-2 rounded-lg bg-muted/20 hover:bg-muted/40 transition-colors">
+            <button onClick={() => openDiscoveryModal('methodology', 'Discovery Methodology', {})} className="p-2 hover:bg-muted/40 transition-colors">
               <Info className="h-4 w-4 text-muted-foreground" />
             </button>
           </div>
@@ -294,7 +294,7 @@ export function EnhancedTokenDiscoveryEngine({ chain }: EnhancedTokenDiscoveryEn
               placeholder="Search tokens..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-lg bg-muted/20 border border-border/30 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
+              className="w-full pl-10 pr-4 py-2  text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
             />
           </div>
           <a href="/trade" className="px-4 py-2 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors text-sm flex items-center gap-2">

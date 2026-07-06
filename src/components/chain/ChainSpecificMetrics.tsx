@@ -35,19 +35,19 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
           <CollapsibleContent className="mt-4 space-y-4">
             {/* Rollup Stats */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Rollup Type</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.rollupType}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Parent Chain</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.parentChain}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Governance</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.governance}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Features</p>
                 <p className="text-xs font-display text-foreground">{chainSpecificData.features?.slice(0, 2).join(", ")}</p>
               </div>
@@ -88,7 +88,7 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
                     href={dex.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between p-2 rounded-lg bg-muted/10 border border-border/20 hover:bg-muted/20 transition-all group"
+                    className="flex items-center justify-between p-2 border border-border/20 hover:bg-muted/20 transition-all group"
                   >
                     <span className="text-sm text-foreground">{dex.name}</span>
                     <div className="flex items-center gap-2">
@@ -110,7 +110,7 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
               </h4>
               <div className="grid grid-cols-2 gap-2">
                 {chainSpecificData.defiProtocols?.map((protocol: any, i: number) => (
-                  <div key={i} className="p-2 rounded-lg bg-muted/10 border border-border/20">
+                  <div key={i} className="p-2 border border-border/20">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-foreground">{protocol.name}</span>
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted/30 text-muted-foreground">
@@ -151,19 +151,19 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
           <CollapsibleContent className="mt-4 space-y-4">
             {/* Network Stats */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Consensus</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.consensus}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Language</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.language}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Governance</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.governance}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Features</p>
                 <p className="text-xs font-display text-foreground">{chainSpecificData.features?.slice(0, 2).join(", ")}</p>
               </div>
@@ -209,7 +209,7 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
                     href={dex.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between p-2 rounded-lg bg-muted/10 border border-border/20 hover:bg-muted/20 transition-all group"
+                    className="flex items-center justify-between p-2 border border-border/20 hover:bg-muted/20 transition-all group"
                   >
                     <span className="text-sm text-foreground">{dex.name}</span>
                     <div className="flex items-center gap-2">
@@ -231,7 +231,7 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
               </h4>
               <div className="grid grid-cols-2 gap-2">
                 {chainSpecificData.defiProtocols?.map((protocol: any, i: number) => (
-                  <div key={i} className="p-2 rounded-lg bg-muted/10 border border-border/20">
+                  <div key={i} className="p-2 border border-border/20">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-foreground">{protocol.name}</span>
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted/30 text-muted-foreground">
@@ -272,19 +272,19 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
           <CollapsibleContent className="mt-4 space-y-4">
             {/* Network Stats */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Consensus</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.consensus}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Language</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.language}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Governance</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.governance}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Shardchains</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.shardchains || 256}</p>
               </div>
@@ -326,7 +326,7 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
                 </h4>
                 <div className="grid grid-cols-2 gap-2">
                   {chainSpecificData.telegramApps?.map((app: any, i: number) => (
-                    <div key={i} className="p-2 rounded-lg bg-muted/10 border border-border/20">
+                    <div key={i} className="p-2 border border-border/20">
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-foreground">{app.name}</span>
                         <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted/30 text-muted-foreground">
@@ -355,7 +355,7 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
                     href={dex.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between p-2 rounded-lg bg-muted/10 border border-border/20 hover:bg-muted/20 transition-all group"
+                    className="flex items-center justify-between p-2 border border-border/20 hover:bg-muted/20 transition-all group"
                   >
                     <span className="text-sm text-foreground">{dex.name}</span>
                     <div className="flex items-center gap-2">
@@ -394,19 +394,19 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
           
           <CollapsibleContent className="mt-4 space-y-4">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Consensus</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.consensus}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Language</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.language}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Governance</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.governance}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Active Subnets</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.uniqueMetrics?.activeSubnets || 45}</p>
               </div>
@@ -446,7 +446,7 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
                 </h4>
                 <div className="space-y-2">
                   {chainSpecificData.subnets.map((subnet: any, i: number) => (
-                    <div key={i} className="p-2 rounded-lg bg-muted/10 border border-border/20">
+                    <div key={i} className="p-2 border border-border/20">
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-foreground">{subnet.name}</span>
                         <span className="text-xs text-muted-foreground">
@@ -472,7 +472,7 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
                     href={dex.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between p-2 rounded-lg bg-muted/10 border border-border/20 hover:bg-muted/20 transition-all group"
+                    className="flex items-center justify-between p-2 border border-border/20 hover:bg-muted/20 transition-all group"
                   >
                     <span className="text-sm text-foreground">{dex.name}</span>
                     <div className="flex items-center gap-2">
@@ -511,19 +511,19 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
           
           <CollapsibleContent className="mt-4 space-y-4">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Consensus</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.consensus}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Language</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.language}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Governance</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.governance}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Avg Block Time</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.uniqueMetrics?.avgBlockTime}s</p>
               </div>
@@ -563,7 +563,7 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
                 </h4>
                 <div className="space-y-2">
                   {chainSpecificData.zkSolutions.map((zk: any, i: number) => (
-                    <div key={i} className="p-2 rounded-lg bg-muted/10 border border-border/20">
+                    <div key={i} className="p-2 border border-border/20">
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-foreground">{zk.name}</span>
                         <span className={`text-[10px] px-1.5 py-0.5 rounded ${
@@ -590,7 +590,7 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
               </h4>
               <div className="grid grid-cols-2 gap-2">
                 {chainSpecificData.defiProtocols?.map((protocol: any, i: number) => (
-                  <div key={i} className="p-2 rounded-lg bg-muted/10 border border-border/20">
+                  <div key={i} className="p-2 border border-border/20">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-foreground">{protocol.name}</span>
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted/30 text-muted-foreground">
@@ -630,19 +630,19 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
           
           <CollapsibleContent className="mt-4 space-y-4">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Rollup Type</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.rollupType}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Parent Chain</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.parentChain}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Governance</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.governance}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Features</p>
                 <p className="text-xs font-display text-foreground">{chainSpecificData.features?.slice(0, 2).join(", ")}</p>
               </div>
@@ -689,7 +689,7 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
                 </h4>
                 <div className="space-y-2">
                   {chainSpecificData.orbitChains.map((orbit: any, i: number) => (
-                    <div key={i} className="p-2 rounded-lg bg-muted/10 border border-border/20">
+                    <div key={i} className="p-2 border border-border/20">
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-foreground">{orbit.name}</span>
                         <span className={`text-[10px] px-1.5 py-0.5 rounded ${
@@ -719,7 +719,7 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
                     href={dex.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between p-2 rounded-lg bg-muted/10 border border-border/20 hover:bg-muted/20 transition-all group"
+                    className="flex items-center justify-between p-2 border border-border/20 hover:bg-muted/20 transition-all group"
                   >
                     <span className="text-sm text-foreground">{dex.name}</span>
                     <div className="flex items-center gap-2">
@@ -758,19 +758,19 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
           
           <CollapsibleContent className="mt-4 space-y-4">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Consensus</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.consensus}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Language</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.language}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Governance</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.governance}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Features</p>
                 <p className="text-xs font-display text-foreground">{chainSpecificData.features?.slice(0, 2).join(", ")}</p>
               </div>
@@ -816,7 +816,7 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
               </h4>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {chainSpecificData.defiProtocols?.slice(0, 6).map((protocol: any, i: number) => (
-                  <div key={i} className="p-2 rounded-lg bg-muted/10 border border-border/20">
+                  <div key={i} className="p-2 border border-border/20">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-foreground">{protocol.name}</span>
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted/30 text-muted-foreground">
@@ -856,19 +856,19 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
           
           <CollapsibleContent className="mt-4 space-y-4">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Consensus</p>
                 <p className="text-[10px] sm:text-sm font-display text-foreground">{chainSpecificData.consensus}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Language</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.language}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Governance</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.governance}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Features</p>
                 <p className="text-xs font-display text-foreground">{chainSpecificData.features?.slice(0, 2).join(", ")}</p>
               </div>
@@ -919,7 +919,7 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
                     href={dex.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between p-2 rounded-lg bg-muted/10 border border-border/20 hover:bg-muted/20 transition-all group"
+                    className="flex items-center justify-between p-2 border border-border/20 hover:bg-muted/20 transition-all group"
                   >
                     <span className="text-sm text-foreground">{dex.name}</span>
                     <div className="flex items-center gap-2">
@@ -958,19 +958,19 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
           
           <CollapsibleContent className="mt-4 space-y-4">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Consensus</p>
                 <p className="text-[10px] sm:text-sm font-display text-foreground">{chainSpecificData.consensus}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Language</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.language}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Governance</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.governance}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Block Time</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.uniqueMetrics?.blockTime}s</p>
               </div>
@@ -1009,7 +1009,7 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
               </h4>
               <div className="grid grid-cols-2 gap-2">
                 {chainSpecificData.defiProtocols?.map((protocol: any, i: number) => (
-                  <div key={i} className="p-2 rounded-lg bg-muted/10 border border-border/20">
+                  <div key={i} className="p-2 border border-border/20">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-foreground">{protocol.name}</span>
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted/30 text-muted-foreground">
@@ -1049,19 +1049,19 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
           
           <CollapsibleContent className="mt-4 space-y-4">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Rollup Type</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.rollupType}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Parent Chain</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.parentChain}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Governance</p>
                 <p className="text-sm font-display text-foreground">{chainSpecificData.governance}</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+              <div className="p-3">
                 <p className="text-xs text-muted-foreground">Features</p>
                 <p className="text-xs font-display text-foreground">{chainSpecificData.features?.slice(0, 2).join(", ")}</p>
               </div>
@@ -1133,7 +1133,7 @@ export function ChainSpecificMetrics({ chain, chainSpecificData }: ChainSpecific
                     href={dex.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between p-2 rounded-lg bg-muted/10 border border-border/20 hover:bg-muted/20 transition-all group"
+                    className="flex items-center justify-between p-2 border border-border/20 hover:bg-muted/20 transition-all group"
                   >
                     <span className="text-sm text-foreground">{dex.name}</span>
                     <div className="flex items-center gap-2">

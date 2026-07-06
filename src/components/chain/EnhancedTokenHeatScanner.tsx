@@ -126,12 +126,12 @@ export function EnhancedTokenHeatScanner({ chain, tokenHeat, isLoading }: TokenH
               placeholder="Search tokens..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-7 pr-3 py-1.5 rounded-lg bg-muted/30 border border-border/30 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/50 w-28 sm:w-36"
+              className="pl-7 pr-3 py-1.5  text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/50 w-28 sm:w-36"
             />
           </div>
           
           {/* Sort */}
-          <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-muted/30 border border-border/30">
+          <div className="flex items-center gap-1 px-2 py-1 ">
             <SortDesc className="h-3 w-3 text-muted-foreground" />
             <select
               value={sortBy}
@@ -180,7 +180,7 @@ export function EnhancedTokenHeatScanner({ chain, tokenHeat, isLoading }: TokenH
           <p className="text-lg font-bold text-primary">{sortedTokens.filter(t => getHeatLevel(t).level === "cool").length}</p>
           <p className="text-[10px] text-muted-foreground">Cool</p>
         </div>
-        <div className="p-2 rounded-lg bg-muted/20 border border-border/30 text-center">
+        <div className="p-2  text-center">
           <BarChart3 className="h-4 w-4 text-foreground mx-auto mb-1" />
           <p className="text-lg font-bold text-foreground">{sortedTokens.length}</p>
           <p className="text-[10px] text-muted-foreground">Total</p>

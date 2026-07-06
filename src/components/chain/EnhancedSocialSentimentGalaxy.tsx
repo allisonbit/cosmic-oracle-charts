@@ -108,7 +108,7 @@ export function EnhancedSocialSentimentGalaxy({ chain, socialSentiment, isLoadin
             )}
             <button
               onClick={() => openDetailModal('methodology', 'Sentiment Methodology', {})}
-              className="p-2 rounded-lg bg-muted/20 hover:bg-muted/40 transition-colors"
+              className="p-2 hover:bg-muted/40 transition-colors"
             >
               <Info className="h-4 w-4 text-muted-foreground" />
             </button>
@@ -357,7 +357,7 @@ export function EnhancedSocialSentimentGalaxy({ chain, socialSentiment, isLoadin
 
         {/* Community Analytics */}
         <Collapsible open={detailsExpanded} onOpenChange={setDetailsExpanded}>
-          <CollapsibleTrigger className="w-full mt-4 flex items-center justify-between p-3 rounded-lg bg-muted/10 hover:bg-muted/20 transition-colors">
+          <CollapsibleTrigger className="w-full mt-4 flex items-center justify-between p-3 hover:bg-muted/20 transition-colors">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <BarChart3 className="h-4 w-4" />
               <span>Advanced Analytics</span>
@@ -365,16 +365,16 @@ export function EnhancedSocialSentimentGalaxy({ chain, socialSentiment, isLoadin
             {detailsExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </CollapsibleTrigger>
           <CollapsibleContent>
-            <div className="mt-3 p-4 rounded-xl border border-border/30 bg-background/50 space-y-4">
+            <div className="mt-3 p-4 border-t border-border/20 pt-3 space-y-4">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <button
                   onClick={() => openDetailModal('overview', 'Total Mentions', { mentions: totalMentions })}
-                  className="p-3 rounded-lg bg-muted/10 hover:bg-muted/20 transition-all text-center"
+                  className="p-3 hover:bg-muted/20 transition-all text-center"
                 >
                   <p className="text-xs text-muted-foreground mb-1">Total Mentions (24h)</p>
                   <p className="text-lg font-display text-foreground">{(totalMentions ?? 0).toLocaleString()}</p>
                 </button>
-                <div className="p-3 rounded-lg bg-muted/10 text-center">
+                <div className="p-3 text-center">
                   <p className="text-xs text-muted-foreground mb-1">Sentiment Trend</p>
                   <p className={cn(
                     "text-lg font-display flex items-center justify-center gap-1",
@@ -387,11 +387,11 @@ export function EnhancedSocialSentimentGalaxy({ chain, socialSentiment, isLoadin
                     )}
                   </p>
                 </div>
-                <div className="p-3 rounded-lg bg-muted/10 text-center">
+                <div className="p-3 text-center">
                   <p className="text-xs text-muted-foreground mb-1">Influencer Score</p>
                   <p className="text-lg font-display text-foreground">8.4/10</p>
                 </div>
-                <div className="p-3 rounded-lg bg-muted/10 text-center">
+                <div className="p-3 text-center">
                   <p className="text-xs text-muted-foreground mb-1">Viral Potential</p>
                   <p className="text-lg font-display text-warning">Medium</p>
                 </div>

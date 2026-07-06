@@ -114,7 +114,7 @@ export function EnhancedInstitutionalView({ chain, institutionalData, isLoading 
           </div>
           <button
             onClick={() => openDetailModal('methodology', 'Institutional Data Methodology', {})}
-            className="p-2 rounded-lg bg-muted/20 hover:bg-muted/40 transition-colors"
+            className="p-2 hover:bg-muted/40 transition-colors"
           >
             <Info className="h-4 w-4 text-muted-foreground" />
           </button>
@@ -287,13 +287,13 @@ export function EnhancedInstitutionalView({ chain, institutionalData, isLoading 
                 <div className="bg-background/40 border border-border/30 rounded-lg p-4">
                   <h4 className="text-sm font-medium text-foreground mb-3">Futures Insights</h4>
                   <div className="space-y-3">
-                    <div className="p-3 rounded-lg bg-muted/10">
+                    <div className="p-3">
                       <p className="text-xs text-muted-foreground mb-1">Contango/Backwardation</p>
                       <p className={cn("text-sm font-medium", institutionalData.cmeFuturesAnalysis.basis > 0 ? "text-success" : "text-danger")}>
                         {institutionalData.cmeFuturesAnalysis.basis > 0 ? "Contango" : "Backwardation"} ({(institutionalData.cmeFuturesAnalysis.basisAnnualized ?? 0).toFixed(2)}% annualized)
                       </p>
                     </div>
-                    <div className="p-3 rounded-lg bg-muted/10">
+                    <div className="p-3">
                       <p className="text-xs text-muted-foreground mb-1">Market Sentiment</p>
                       <p className={cn("text-sm font-medium", institutionalData.cmeFuturesAnalysis.institutionalLongRatio > 50 ? "text-success" : "text-danger")}>
                         {institutionalData.cmeFuturesAnalysis.institutionalLongRatio > 50 ? "Bullish" : "Bearish"} Positioning

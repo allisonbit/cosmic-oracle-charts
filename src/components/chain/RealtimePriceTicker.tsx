@@ -96,14 +96,14 @@ export function RealtimePriceTicker({ chain }: RealtimePriceTickerProps) {
 
           {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+            <div className="p-3">
               <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
                 <BarChart3 className="h-3 w-3" />
                 <span className="text-xs">24h Volume</span>
               </div>
               <p className="text-sm font-display text-foreground">{formatVolume(priceData.volume24h)}</p>
             </div>
-            <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+            <div className="p-3">
               <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
                 <TrendingUp className="h-3 w-3" />
                 <span className="text-xs">Market Cap</span>

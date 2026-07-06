@@ -109,7 +109,7 @@ export function ChainHealthMetrics({ chain, healthData, isLoading, onRefresh }: 
             href={chain.explorerUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="p-2 rounded-lg bg-muted/20 hover:bg-muted/40 transition-colors"
+            className="p-2 hover:bg-muted/40 transition-colors"
             title="View on Explorer"
           >
             <ExternalLink className="h-4 w-4 text-muted-foreground" />
@@ -213,7 +213,7 @@ export function ChainHealthMetrics({ chain, healthData, isLoading, onRefresh }: 
       {/* MEV Metrics - Expandable */}
       <Collapsible open={mevExpanded} onOpenChange={setMevExpanded}>
         <CollapsibleTrigger className="w-full">
-          <div className="flex items-center justify-between p-3 rounded-lg bg-muted/10 hover:bg-muted/20 transition-colors mb-2">
+          <div className="flex items-center justify-between p-3 hover:bg-muted/20 transition-colors mb-2">
             <div className="flex items-center gap-2">
               <Zap className="h-4 w-4 text-warning" />
               <span className="text-sm font-medium text-foreground">MEV Analytics</span>
@@ -225,17 +225,17 @@ export function ChainHealthMetrics({ chain, healthData, isLoading, onRefresh }: 
           </div>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <div className="p-4 rounded-xl border border-border/30 bg-background/50 mb-4">
+          <div className="p-4 border-t border-border/20 pt-3 mb-4">
             <div className="grid grid-cols-3 gap-4 mb-4">
-              <div className="text-center p-3 rounded-lg bg-muted/10">
+              <div className="text-center p-3">
                 <span className="text-xs text-muted-foreground block mb-1">Flashbots</span>
                 <span className="text-lg font-bold text-foreground">{(healthData.mevMetrics.flashbotsBlocks ?? 0).toFixed(0)}%</span>
               </div>
-              <div className="text-center p-3 rounded-lg bg-muted/10">
+              <div className="text-center p-3">
                 <span className="text-xs text-muted-foreground block mb-1">Sandwich</span>
                 <span className="text-lg font-bold text-danger">{formatNumber(healthData.mevMetrics.sandwichAttacks, 0)}</span>
               </div>
-              <div className="text-center p-3 rounded-lg bg-muted/10">
+              <div className="text-center p-3">
                 <span className="text-xs text-muted-foreground block mb-1">MEV 24h</span>
                 <span className="text-lg font-bold text-success">${formatNumber(healthData.mevMetrics.mevRevenue24h)}</span>
               </div>
@@ -273,7 +273,7 @@ export function ChainHealthMetrics({ chain, healthData, isLoading, onRefresh }: 
       {/* Layer 2 Analytics - Expandable */}
       <Collapsible open={l2Expanded} onOpenChange={setL2Expanded}>
         <CollapsibleTrigger className="w-full">
-          <div className="flex items-center justify-between p-3 rounded-lg bg-muted/10 hover:bg-muted/20 transition-colors mb-2">
+          <div className="flex items-center justify-between p-3 hover:bg-muted/20 transition-colors mb-2">
             <div className="flex items-center gap-2">
               <Layers className="h-4 w-4 text-primary" />
               <span className="text-sm font-medium text-foreground">Layer 2 Bridged Assets</span>
@@ -287,7 +287,7 @@ export function ChainHealthMetrics({ chain, healthData, isLoading, onRefresh }: 
           </div>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <div className="p-4 rounded-xl border border-border/30 bg-background/50 mb-4">
+          <div className="p-4 border-t border-border/20 pt-3 mb-4">
             <div className="grid grid-cols-3 gap-4 mb-4">
               <a
                 href="https://arbiscan.io/"
@@ -346,7 +346,7 @@ export function ChainHealthMetrics({ chain, healthData, isLoading, onRefresh }: 
       <div className="grid md:grid-cols-2 gap-4">
         <Collapsible open={stakingExpanded} onOpenChange={setStakingExpanded}>
           <CollapsibleTrigger className="w-full">
-            <div className="flex items-center justify-between p-3 rounded-lg bg-muted/10 hover:bg-muted/20 transition-colors">
+            <div className="flex items-center justify-between p-3 hover:bg-muted/20 transition-colors">
               <div className="flex items-center gap-2">
                 <Flame className="h-4 w-4 text-orange-400" />
                 <span className="text-sm font-medium text-foreground">EIP-1559 Burn</span>
@@ -363,7 +363,7 @@ export function ChainHealthMetrics({ chain, healthData, isLoading, onRefresh }: 
             </div>
           </CollapsibleTrigger>
           <CollapsibleContent>
-            <div className="mt-2 p-4 rounded-xl border border-border/30 bg-background/50">
+            <div className="mt-2 p-4 border-t border-border/20 pt-3">
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">ETH Burned/Day</span>
@@ -393,11 +393,11 @@ export function ChainHealthMetrics({ chain, healthData, isLoading, onRefresh }: 
         </Collapsible>
 
         <div>
-          <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/10 mb-2">
+          <div className="flex items-center gap-2 p-3 mb-2">
             <TrendingUp className="h-4 w-4 text-success" />
             <span className="text-sm font-medium text-foreground">Staking Yields</span>
           </div>
-          <div className="p-4 rounded-xl border border-border/30 bg-background/50 space-y-2">
+          <div className="p-4 border-t border-border/20 pt-3 space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">Native Staking</span>
               <Badge variant="outline" className="text-success border-success/30">
@@ -435,7 +435,7 @@ export function ChainHealthMetrics({ chain, healthData, isLoading, onRefresh }: 
       {/* Contract Activity - Expandable */}
       <Collapsible open={contractsExpanded} onOpenChange={setContractsExpanded} className="mt-4">
         <CollapsibleTrigger className="w-full">
-          <div className="flex items-center justify-between p-3 rounded-lg bg-muted/10 hover:bg-muted/20 transition-colors">
+          <div className="flex items-center justify-between p-3 hover:bg-muted/20 transition-colors">
             <div className="flex items-center gap-2">
               <FileCode className="h-4 w-4 text-secondary" />
               <span className="text-sm font-medium text-foreground">Contract Deployments (24h)</span>
@@ -447,7 +447,7 @@ export function ChainHealthMetrics({ chain, healthData, isLoading, onRefresh }: 
           </div>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <div className="mt-2 p-4 rounded-xl border border-border/30 bg-background/50">
+          <div className="mt-2 p-4 border-t border-border/20 pt-3">
             <div className="flex items-center gap-4 mb-3">
               <div className="flex-1">
                 <div className="flex justify-between text-sm mb-1">

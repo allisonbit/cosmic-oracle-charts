@@ -237,7 +237,7 @@ export function NetworkInfoPanel({ chain, overview, isLoading }: NetworkInfoPane
           {liveStats.map((stat) => (
             <div 
               key={stat.label}
-              className="p-3 rounded-lg bg-muted/10 border border-border/30 hover:bg-muted/20 transition-all cursor-pointer group"
+              className="p-3 border border-border/30 hover:bg-muted/20 transition-all cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-1">
                 <stat.icon className="h-4 w-4 text-primary" />

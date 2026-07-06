@@ -175,7 +175,7 @@ export function SocialSentimentGalaxy({ chain, socialSentiment, isLoading }: Soc
                   open={isExpanded}
                   onOpenChange={() => togglePlatform(platform.key)}
                 >
-                  <div className="p-3 rounded-xl border border-border/50 bg-muted/20 hover:bg-muted/30 transition-all">
+                  <div className="p-3 border-t border-border/20 pt-3 hover:bg-muted/30 transition-all">
                     <CollapsibleTrigger className="w-full">
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
@@ -249,7 +249,7 @@ export function SocialSentimentGalaxy({ chain, socialSentiment, isLoading }: Soc
 
           {/* Expanded Analytics Section */}
           <Collapsible open={detailsExpanded} onOpenChange={setDetailsExpanded}>
-            <CollapsibleTrigger className="w-full mt-4 flex items-center justify-between p-3 rounded-lg bg-muted/10 hover:bg-muted/20 transition-colors">
+            <CollapsibleTrigger className="w-full mt-4 flex items-center justify-between p-3 hover:bg-muted/20 transition-colors">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Users className="h-4 w-4" />
                 <span>Community Analytics</span>
@@ -257,9 +257,9 @@ export function SocialSentimentGalaxy({ chain, socialSentiment, isLoading }: Soc
               {detailsExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
             </CollapsibleTrigger>
             <CollapsibleContent>
-              <div className="mt-3 p-4 rounded-xl border border-border/30 bg-background/50 space-y-4">
+              <div className="mt-3 p-4 border-t border-border/20 pt-3 space-y-4">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                  <div className="p-3 rounded-lg bg-muted/10">
+                  <div className="p-3">
                     <p className="text-xs text-muted-foreground mb-1">Total Mentions (24h)</p>
                     <p className="text-lg font-display text-foreground">
                       {socialSentiment ? 
@@ -269,7 +269,7 @@ export function SocialSentimentGalaxy({ chain, socialSentiment, isLoading }: Soc
                         : "0"}
                     </p>
                   </div>
-                  <div className="p-3 rounded-lg bg-muted/10">
+                  <div className="p-3">
                     <p className="text-xs text-muted-foreground mb-1">Sentiment Trend</p>
                     <p className={cn(
                       "text-lg font-display flex items-center justify-center gap-1",
@@ -282,11 +282,11 @@ export function SocialSentimentGalaxy({ chain, socialSentiment, isLoading }: Soc
                       )}
                     </p>
                   </div>
-                  <div className="p-3 rounded-lg bg-muted/10">
+                  <div className="p-3">
                     <p className="text-xs text-muted-foreground mb-1">Influencer Score</p>
                     <p className="text-lg font-display text-foreground">8.4/10</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-muted/10">
+                  <div className="p-3">
                     <p className="text-xs text-muted-foreground mb-1">Viral Potential</p>
                     <p className="text-lg font-display text-warning">Medium</p>
                   </div>

@@ -392,7 +392,7 @@ export function EnhancedChainHealthMonitor({ chain, healthData, isLoading, onRef
               href={chain.explorerUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 rounded-lg bg-muted/20 hover:bg-muted/40 transition-colors"
+              className="p-2 hover:bg-muted/40 transition-colors"
               title="View on Explorer"
             >
               <ExternalLink className="h-4 w-4 text-muted-foreground" />
@@ -493,7 +493,7 @@ export function EnhancedChainHealthMonitor({ chain, healthData, isLoading, onRef
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3 mb-4">
           <button
             onClick={() => setSelectedMetric(getGasMetricData())}
-            className="p-3 rounded-lg bg-muted/10 hover:bg-muted/20 border border-border/20 hover:border-warning/30 transition-all text-left group"
+            className="p-3 hover:bg-muted/20 border border-border/20 hover:border-warning/30 transition-all text-left group"
           >
             <div className="flex items-center gap-2 mb-1">
               <Flame className="h-4 w-4 text-orange-400" />
@@ -507,7 +507,7 @@ export function EnhancedChainHealthMonitor({ chain, healthData, isLoading, onRef
 
           <button
             onClick={() => setSelectedMetric(getMEVMetricData())}
-            className="p-3 rounded-lg bg-muted/10 hover:bg-muted/20 border border-border/20 hover:border-warning/30 transition-all text-left group"
+            className="p-3 hover:bg-muted/20 border border-border/20 hover:border-warning/30 transition-all text-left group"
           >
             <div className="flex items-center gap-2 mb-1">
               <Zap className="h-4 w-4 text-warning" />
@@ -519,7 +519,7 @@ export function EnhancedChainHealthMonitor({ chain, healthData, isLoading, onRef
 
           <button
             onClick={() => setSelectedMetric(getL2MetricData())}
-            className="p-3 rounded-lg bg-muted/10 hover:bg-muted/20 border border-border/20 hover:border-primary/30 transition-all text-left group"
+            className="p-3 hover:bg-muted/20 border border-border/20 hover:border-primary/30 transition-all text-left group"
           >
             <div className="flex items-center gap-2 mb-1">
               <Layers className="h-4 w-4 text-primary" />
@@ -533,7 +533,7 @@ export function EnhancedChainHealthMonitor({ chain, healthData, isLoading, onRef
 
           <button
             onClick={() => setSelectedMetric(getStakingMetricData())}
-            className="p-3 rounded-lg bg-muted/10 hover:bg-muted/20 border border-border/20 hover:border-success/30 transition-all text-left group"
+            className="p-3 hover:bg-muted/20 border border-border/20 hover:border-success/30 transition-all text-left group"
           >
             <div className="flex items-center gap-2 mb-1">
               <TrendingUp className="h-4 w-4 text-success" />
@@ -545,7 +545,7 @@ export function EnhancedChainHealthMonitor({ chain, healthData, isLoading, onRef
 
           <button
             onClick={() => setSelectedMetric(getContractMetricData())}
-            className="p-3 rounded-lg bg-muted/10 hover:bg-muted/20 border border-border/20 hover:border-secondary/30 transition-all text-left group"
+            className="p-3 hover:bg-muted/20 border border-border/20 hover:border-secondary/30 transition-all text-left group"
           >
             <div className="flex items-center gap-2 mb-1">
               <FileCode className="h-4 w-4 text-secondary" />
@@ -557,7 +557,7 @@ export function EnhancedChainHealthMonitor({ chain, healthData, isLoading, onRef
 
           <button
             onClick={() => setSelectedMetric(getNetworkSecurityData())}
-            className="p-3 rounded-lg bg-muted/10 hover:bg-muted/20 border border-border/20 hover:border-success/30 transition-all text-left group"
+            className="p-3 hover:bg-muted/20 border border-border/20 hover:border-success/30 transition-all text-left group"
           >
             <div className="flex items-center gap-2 mb-1">
               <Lock className="h-4 w-4 text-success" />

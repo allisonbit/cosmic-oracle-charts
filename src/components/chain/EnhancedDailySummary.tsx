@@ -132,7 +132,7 @@ export function EnhancedDailySummary({ chain, forecast, isLoading, onRefresh }: 
                   <span className={cn("text-xs", marketSignal.color)}>({(marketSignal.score ?? 0).toFixed(0)}%)</span>
                 </button>
               )}
-              <button onClick={() => openDetailModal('methodology', 'AI Methodology', {})} className="p-2 rounded-lg bg-muted/20 hover:bg-muted/40 transition-colors">
+              <button onClick={() => openDetailModal('methodology', 'AI Methodology', {})} className="p-2 hover:bg-muted/40 transition-colors">
                 <Info className="h-4 w-4 text-muted-foreground" />
               </button>
             </div>
@@ -246,7 +246,7 @@ export function EnhancedDailySummary({ chain, forecast, isLoading, onRefresh }: 
 
             <TabsContent value="insights" className="mt-4">
               <Collapsible open={insightsExpanded} onOpenChange={setInsightsExpanded}>
-                <div className="p-4 rounded-xl border border-border/30 bg-background/50 space-y-4">
+                <div className="p-4 border-t border-border/20 pt-3 space-y-4">
                   <CollapsibleTrigger className="w-full flex items-center justify-between">
                     <div className="flex items-center gap-2 text-sm text-foreground">
                       <Activity className="h-4 w-4" />
@@ -256,21 +256,21 @@ export function EnhancedDailySummary({ chain, forecast, isLoading, onRefresh }: 
                   </CollapsibleTrigger>
                   
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <div className="text-center p-3 rounded-lg bg-muted/10">
+                    <div className="text-center p-3">
                       <p className="text-xs text-muted-foreground mb-1">Market Mood</p>
                       <p className={cn("text-lg font-display", marketSignal?.color || "text-foreground")}>
                         {marketSignal?.signal || "Analyzing..."}
                       </p>
                     </div>
-                    <div className="text-center p-3 rounded-lg bg-muted/10">
+                    <div className="text-center p-3">
                       <p className="text-xs text-muted-foreground mb-1">AI Model</p>
                       <p className="text-lg font-display text-primary">GPT-4</p>
                     </div>
-                    <div className="text-center p-3 rounded-lg bg-muted/10">
+                    <div className="text-center p-3">
                       <p className="text-xs text-muted-foreground mb-1">Analysis Time</p>
                       <p className="text-lg font-display text-foreground">~15s</p>
                     </div>
-                    <div className="text-center p-3 rounded-lg bg-muted/10">
+                    <div className="text-center p-3">
                       <p className="text-xs text-muted-foreground mb-1">Sources</p>
                       <p className="text-lg font-display text-foreground">12+</p>
                     </div>

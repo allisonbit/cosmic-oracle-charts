@@ -231,7 +231,7 @@ export function EnhancedPredictionDeepDive({ chain, forecast, isLoading }: Enhan
         </div>
         <div className="grid md:grid-cols-3 gap-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="p-4 rounded-xl border border-border/50 bg-muted/20 animate-pulse">
+            <div key={i} className="p-4 border-t border-border/20 pt-3 animate-pulse">
               <div className="h-4 bg-muted rounded w-24 mb-3" />
               <div className="h-3 bg-muted rounded w-16 mb-4" />
               <div className="h-8 bg-muted rounded w-20 mb-3" />

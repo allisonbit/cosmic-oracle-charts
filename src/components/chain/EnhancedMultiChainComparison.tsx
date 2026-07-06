@@ -114,7 +114,7 @@ export function EnhancedMultiChainComparison({ chain, comparisonData, isLoading 
           </div>
           <button
             onClick={() => openDetailModal('methodology', 'Comparison Methodology', {})}
-            className="p-2 rounded-lg bg-muted/20 hover:bg-muted/40 transition-colors"
+            className="p-2 hover:bg-muted/40 transition-colors"
           >
             <Info className="h-4 w-4 text-muted-foreground" />
           </button>

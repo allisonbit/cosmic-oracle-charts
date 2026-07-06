@@ -93,7 +93,7 @@ export function EnhancedSmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: Enh
               href={`https://defillama.com/chain/${chain.name}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 rounded-lg bg-muted/20 hover:bg-muted/40 transition-colors"
+              className="p-2 hover:bg-muted/40 transition-colors"
               title="View on DeFi Llama"
             >
               <ExternalLink className="h-4 w-4 text-muted-foreground" />
@@ -209,7 +209,7 @@ export function EnhancedSmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: Enh
 
             {/* Top Swaps - Expandable */}
             <Collapsible open={swapsExpanded} onOpenChange={setSwapsExpanded}>
-              <div className="p-4 rounded-xl border border-border/50 bg-muted/20">
+              <div className="p-4 border-t border-border/20 pt-3">
                 <CollapsibleTrigger className="w-full flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Repeat className="h-4 w-4 text-primary" />
@@ -256,7 +256,7 @@ export function EnhancedSmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: Enh
 
             {/* Liquidity Changes - Expandable */}
             <Collapsible open={liquidityExpanded} onOpenChange={setLiquidityExpanded}>
-              <div className="p-4 rounded-xl border border-border/50 bg-muted/20">
+              <div className="p-4 border-t border-border/20 pt-3">
                 <CollapsibleTrigger className="w-full flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Droplets className="h-4 w-4 text-secondary" />
@@ -323,7 +323,7 @@ export function EnhancedSmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: Enh
 
             {/* Top Smart Money Wallets */}
             <Collapsible open={detailsExpanded} onOpenChange={setDetailsExpanded}>
-              <CollapsibleTrigger className="w-full flex items-center justify-between p-3 rounded-lg bg-muted/10 hover:bg-muted/20 transition-colors">
+              <CollapsibleTrigger className="w-full flex items-center justify-between p-3 hover:bg-muted/20 transition-colors">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Users className="h-4 w-4" />
                   <span>Top Smart Money Wallets</span>
@@ -331,21 +331,21 @@ export function EnhancedSmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: Enh
                 {detailsExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
               </CollapsibleTrigger>
               <CollapsibleContent>
-                <div className="mt-3 p-4 rounded-xl border border-border/30 bg-background/50 space-y-4">
+                <div className="mt-3 p-4 border-t border-border/20 pt-3 space-y-4">
                   <div className="grid grid-cols-4 gap-3 text-center">
-                    <div className="p-2 rounded-lg bg-muted/10">
+                    <div className="p-2">
                       <p className="text-xs text-muted-foreground">Smart Wallets</p>
                       <p className="text-lg font-display text-primary">{enhancedMetrics.smartMoneyWallets}</p>
                     </div>
-                    <div className="p-2 rounded-lg bg-muted/10">
+                    <div className="p-2">
                       <p className="text-xs text-muted-foreground">Profitable</p>
                       <p className="text-lg font-display text-success">{enhancedMetrics.profitableWallets}%</p>
                     </div>
-                    <div className="p-2 rounded-lg bg-muted/10">
+                    <div className="p-2">
                       <p className="text-xs text-muted-foreground">Avg Hold</p>
                       <p className="text-lg font-display text-foreground">{enhancedMetrics.avgHoldTime}</p>
                     </div>
-                    <div className="p-2 rounded-lg bg-muted/10">
+                    <div className="p-2">
                       <p className="text-xs text-muted-foreground">Win Rate</p>
                       <p className="text-lg font-display text-success">{enhancedMetrics.winRate}%</p>
                     </div>
@@ -356,7 +356,7 @@ export function EnhancedSmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: Enh
                       <button
                         key={i}
                         onClick={() => openDetailModal('wallet', 'Wallet Analysis', wallet)}
-                        className="w-full flex items-center justify-between p-3 rounded-lg bg-muted/10 hover:bg-muted/20 transition-all"
+                        className="w-full flex items-center justify-between p-3 hover:bg-muted/20 transition-all"
                       >
                         <div className="flex items-center gap-3">
                           <span className="text-xs text-muted-foreground">#{i + 1}</span>

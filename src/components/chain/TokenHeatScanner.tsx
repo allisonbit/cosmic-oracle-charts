@@ -72,7 +72,7 @@ export function TokenHeatScanner({ chain, tokenHeat, isLoading }: TokenHeatScann
               placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-7 pr-3 py-1.5 rounded-lg bg-muted/30 border border-border/30 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/50 w-24 sm:w-32"
+              className="pl-7 pr-3 py-1.5  text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/50 w-24 sm:w-32"
             />
           </div>
           <div className="flex items-center gap-3 sm:gap-4 text-[10px] sm:text-xs text-muted-foreground">

@@ -33,7 +33,7 @@ export function TokenAITab({ token, aiLoading, forecast }: TokenAITabProps) {
           ) : forecast ? (
             <>
               {/* Signal & Confidence */}
-              <div className="flex items-center gap-4 p-4 rounded-lg bg-muted/50">
+              <div className="flex items-center gap-4 p-4">
                 <div className={cn(
                   "px-4 py-2 rounded-lg text-sm font-bold",
                   forecast.bias === 'bullish' ? "bg-success/20 text-success" :
@@ -106,7 +106,7 @@ export function TokenAITab({ token, aiLoading, forecast }: TokenAITabProps) {
               {forecast.technicals && (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {Object.entries(forecast.technicals).slice(0, 12).map(([key, val]) => (
-                    <div key={key} className="p-3 rounded-lg bg-muted/50">
+                    <div key={key} className="p-3">
                       <p className="text-[10px] text-muted-foreground uppercase">{key.replace(/([A-Z])/g, ' $1')}</p>
                       <p className="text-sm font-bold font-mono">{typeof val === 'number' ? (val as number).toFixed(2) : String(val)}</p>
                     </div>

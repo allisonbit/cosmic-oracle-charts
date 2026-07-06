@@ -96,7 +96,7 @@ export function TokenTradingTab({ token, derivedMetrics }: TokenTradingTabProps)
               { label: '1h', val: token.change1h },
               { label: '24h', val: token.change24h },
             ].map(t => (
-              <div key={t.label} className="p-3 rounded-lg bg-muted/50 text-center">
+              <div key={t.label} className="p-3 text-center">
                 <p className="text-[10px] text-muted-foreground uppercase">{t.label}</p>
                 <p className={cn("text-sm font-bold font-mono", (t.val || 0) >= 0 ? "text-success" : "text-danger")}>
                   {formatChange(t.val)}

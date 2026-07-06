@@ -114,7 +114,7 @@ export function EcosystemTokenSearch({ chain, ecosystemTokens = [] }: EcosystemT
           filteredTokens.map((token, i) => (
             <div
               key={i}
-              className="p-3 rounded-lg bg-muted/10 border border-border/20 hover:bg-muted/20 transition-all group"
+              className="p-3 border border-border/20 hover:bg-muted/20 transition-all group"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3 min-w-0">

@@ -300,7 +300,7 @@ export function TokenDiscoveryEngine({ chain }: TokenDiscoveryEngineProps) {
           <button
             onClick={() => refetch()}
             disabled={isFetching}
-            className="p-2 rounded-lg bg-muted/20 hover:bg-muted/40 transition-colors disabled:opacity-50"
+            className="p-2 hover:bg-muted/40 transition-colors disabled:opacity-50"
           >
             <RefreshCw className={cn("h-4 w-4 text-muted-foreground", isFetching && "animate-spin")} />
           </button>
@@ -316,7 +316,7 @@ export function TokenDiscoveryEngine({ chain }: TokenDiscoveryEngineProps) {
             placeholder="Search tokens..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-lg bg-muted/20 border border-border/30 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
+            className="w-full pl-10 pr-4 py-2  text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
           />
         </div>
         <a

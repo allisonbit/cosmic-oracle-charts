@@ -61,7 +61,7 @@ export function ChainInfoCard({ chain }: ChainInfoCardProps) {
         {stats.map((stat) => (
           <div 
             key={stat.label}
-            className="p-3 rounded-lg bg-muted/20 border border-border/30"
+            className="p-3"
           >
             <div className="flex items-center gap-2 mb-1">
               <stat.icon className="h-4 w-4 text-primary" />

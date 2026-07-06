@@ -121,24 +121,24 @@ export function TokenOverviewTab({ token, derivedMetrics, radarData, supplyPie, 
 
       {/* Vol/Liq & Key Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="p-3 rounded-lg bg-muted/50 border border-border">
+        <div className="p-3 border border-border">
           <p className="text-[10px] text-muted-foreground uppercase">Vol / Liq Ratio</p>
           <p className="text-lg font-bold font-mono">{derivedMetrics ? (derivedMetrics.volLiqRatio * 100).toFixed(1) + '%' : '—'}</p>
           <p className="text-[10px] text-muted-foreground">{derivedMetrics && derivedMetrics.volLiqRatio > 1 ? '⚠️ High turnover' : '✅ Healthy'}</p>
         </div>
-        <div className="p-3 rounded-lg bg-muted/50 border border-border">
+        <div className="p-3 border border-border">
           <p className="text-[10px] text-muted-foreground uppercase">Buy Pressure</p>
           <p className="text-lg font-bold font-mono">{derivedMetrics ? (derivedMetrics.buyPressure ?? 0).toFixed(1) + '%' : '—'}</p>
           <p className={cn("text-[10px]", derivedMetrics && derivedMetrics.buyPressure > 55 ? "text-success" : "text-muted-foreground")}>
             {derivedMetrics && derivedMetrics.buyPressure > 55 ? '🟢 Bullish' : '⚪ Neutral'}
           </p>
         </div>
-        <div className="p-3 rounded-lg bg-muted/50 border border-border">
+        <div className="p-3 border border-border">
           <p className="text-[10px] text-muted-foreground uppercase">DEX</p>
           <p className="text-sm font-bold capitalize">{token.dexId || 'Unknown'}</p>
           <p className="text-[10px] text-muted-foreground">Trading venue</p>
         </div>
-        <div className="p-3 rounded-lg bg-muted/50 border border-border">
+        <div className="p-3 border border-border">
           <p className="text-[10px] text-muted-foreground uppercase">Chain</p>
           <p className="text-sm font-bold">{chainData.icon} {chainData.name}</p>
           <p className="text-[10px] text-muted-foreground">Network</p>

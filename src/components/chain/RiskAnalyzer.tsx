@@ -193,7 +193,7 @@ export function RiskAnalyzer({ chain }: RiskAnalyzerProps) {
             <button
               onClick={() => refetch()}
               disabled={isFetching}
-              className="p-2 rounded-lg bg-muted/20 hover:bg-muted/40 transition-colors disabled:opacity-50"
+              className="p-2 hover:bg-muted/40 transition-colors disabled:opacity-50"
             >
               <RefreshCw className={cn("h-4 w-4 text-muted-foreground", isFetching && "animate-spin")} />
             </button>

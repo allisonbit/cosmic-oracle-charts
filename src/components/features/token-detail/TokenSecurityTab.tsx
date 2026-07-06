@@ -28,7 +28,7 @@ export function TokenSecurityTab({ token, derivedMetrics, topHolderPct }: TokenS
             { label: 'Holder Concentration', value: holderValue, ok: holderOk, icon: PieChart },
             { label: 'Vol/Liq Ratio', value: derivedMetrics && derivedMetrics.volLiqRatio > 2 ? 'Risky' : 'Safe', ok: derivedMetrics ? derivedMetrics.volLiqRatio < 2 : true, icon: Gauge },
           ].map((check, i) => (
-            <div key={i} className="p-3 rounded-lg bg-muted/50 flex items-center gap-3">
+            <div key={i} className="p-3 flex items-center gap-3">
               <div className={cn("w-8 h-8 rounded-full flex items-center justify-center shrink-0",
                 check.ok ? "bg-success/20" : "bg-warning/20"
               )}>

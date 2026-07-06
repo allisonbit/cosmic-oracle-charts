@@ -85,7 +85,7 @@ export function DailySummary({ chain, forecast, isLoading, onRefresh }: DailySum
               <button
                 onClick={onRefresh}
                 disabled={isLoading}
-                className="p-2 rounded-lg bg-muted/20 hover:bg-muted/40 transition-colors disabled:opacity-50"
+                className="p-2 hover:bg-muted/40 transition-colors disabled:opacity-50"
               >
                 <RefreshCw className={cn("h-4 w-4 text-muted-foreground", isLoading && "animate-spin")} />
               </button>
@@ -117,7 +117,7 @@ export function DailySummary({ chain, forecast, isLoading, onRefresh }: DailySum
 
         {/* Expandable Insights */}
         <Collapsible open={insightsExpanded} onOpenChange={setInsightsExpanded} className="mt-6">
-          <CollapsibleTrigger className="w-full flex items-center justify-between p-3 rounded-lg bg-muted/10 hover:bg-muted/20 transition-colors">
+          <CollapsibleTrigger className="w-full flex items-center justify-between p-3 hover:bg-muted/20 transition-colors">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Activity className="h-4 w-4" />
               <span>Key Market Insights</span>
@@ -125,28 +125,28 @@ export function DailySummary({ chain, forecast, isLoading, onRefresh }: DailySum
             {insightsExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </CollapsibleTrigger>
           <CollapsibleContent>
-            <div className="mt-3 p-4 rounded-xl border border-border/30 bg-background/50 space-y-4">
+            <div className="mt-3 p-4 border-t border-border/20 pt-3 space-y-4">
               {/* Quick Stats */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <div className="text-center p-3 rounded-lg bg-muted/10">
+                <div className="text-center p-3">
                   <p className="text-xs text-muted-foreground mb-1">Market Mood</p>
                   <p className={cn("text-lg font-display", marketSignal?.color || "text-foreground")}>
                     {marketSignal?.signal || "Analyzing..."}
                   </p>
                 </div>
-                <div className="text-center p-3 rounded-lg bg-muted/10">
+                <div className="text-center p-3">
                   <p className="text-xs text-muted-foreground mb-1">Confidence</p>
                   <p className="text-lg font-display text-foreground">
                     {forecast ? `${marketSignal && marketSignal.signal !== "Neutral" ? 84 : 62}%` : "..."}
                   </p>
                 </div>
-                <div className="text-center p-3 rounded-lg bg-muted/10">
+                <div className="text-center p-3">
                   <p className="text-xs text-muted-foreground mb-1">Data Points</p>
                   <p className="text-lg font-display text-foreground">
                     {forecast ? `${series?.length ?? 0}` : "..."}
                   </p>
                 </div>
-                <div className="text-center p-3 rounded-lg bg-muted/10">
+                <div className="text-center p-3">
                   <p className="text-xs text-muted-foreground mb-1">AI Model</p>
                   <p className="text-lg font-display text-primary">GPT-4</p>
                 </div>

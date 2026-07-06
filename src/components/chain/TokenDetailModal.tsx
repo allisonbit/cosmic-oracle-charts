@@ -161,21 +161,21 @@ export function TokenDetailModal({ open, onOpenChange, token }: TokenDetailModal
 
           {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="p-3 rounded-lg bg-muted/10 border border-border/30">
+            <div className="p-3 border border-border/30">
               <div className="flex items-center gap-2 text-muted-foreground mb-1">
                 <BarChart3 className="h-4 w-4" />
                 <span className="text-xs">Volume 24h</span>
               </div>
               <p className="text-lg font-semibold text-foreground">{formatLargeNumber(token.volume24h)}</p>
             </div>
-            <div className="p-3 rounded-lg bg-muted/10 border border-border/30">
+            <div className="p-3 border border-border/30">
               <div className="flex items-center gap-2 text-muted-foreground mb-1">
                 <DollarSign className="h-4 w-4" />
                 <span className="text-xs">Market Cap</span>
               </div>
               <p className="text-lg font-semibold text-foreground">{formatLargeNumber(token.marketCap)}</p>
             </div>
-            <div className="p-3 rounded-lg bg-muted/10 border border-border/30">
+            <div className="p-3 border border-border/30">
               <div className="flex items-center gap-2 text-muted-foreground mb-1">
                 <TrendingUp className="h-4 w-4" />
                 <span className="text-xs">7D Change</span>
@@ -187,7 +187,7 @@ export function TokenDetailModal({ open, onOpenChange, token }: TokenDetailModal
                 {(token.change7d || 0) >= 0 ? "+" : ""}{(token.change7d || 0).toFixed(2)}%
               </p>
             </div>
-            <div className="p-3 rounded-lg bg-muted/10 border border-border/30">
+            <div className="p-3 border border-border/30">
               <div className="flex items-center gap-2 text-muted-foreground mb-1">
                 <Activity className="h-4 w-4" />
                 <span className="text-xs">Volatility</span>
@@ -240,7 +240,7 @@ export function TokenDetailModal({ open, onOpenChange, token }: TokenDetailModal
 
           {/* Risk Analysis */}
           {token.riskLevel && (
-            <div className="p-4 rounded-xl border border-border/30 bg-muted/10">
+            <div className="p-4 border-t border-border/20 pt-3">
               <div className="flex items-center gap-2 mb-3">
                 {token.riskLevel === "low" ? <Shield className="h-5 w-5 text-success" /> : <AlertTriangle className={cn("h-5 w-5", getRiskColor(token.riskLevel))} />}
                 <span className="font-medium text-foreground capitalize">{token.riskLevel} Risk</span>
