@@ -165,7 +165,7 @@ export function EnhancedSignalsPanel({ coins, onCoinClick }: EnhancedSignalsPane
               onClick={() => setFilter(f)}
               className="capitalize"
             >
-              {f === 'all' ? 'All' : f === 'extreme' ? '🔥 Extreme' : f}
+              {f === 'all' ? 'All' : f === 'extreme' ? 'Extreme' : f}
             </Button>
           ))}
         </div>

@@ -42,7 +42,7 @@ export function EnhancedSmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: Enh
     toast.success("Copied to clipboard");
   };
 
-  const getTradeLink = () => "/trade";
+  const getTradeLink = () => "/dashboard";
 
   const openDetailModal = (type: DetailModalData['type'], title: string, data: any) => {
     setModalData({ type, title, data });
@@ -244,7 +244,7 @@ export function EnhancedSmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: Enh
                 <CollapsibleContent>
                   <div className="mt-3 pt-3 border-t border-border/30 flex gap-2">
                     <a
-                      href="/trade"
+                      href="/dashboard"
                       className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors text-sm"
                     >
                       <Repeat className="h-4 w-4" /> Swap Tokens
@@ -310,7 +310,7 @@ export function EnhancedSmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: Enh
                         <Activity className="h-4 w-4" /> DeFi Llama
                       </a>
                       <a
-                        href="/trade"
+                        href="/dashboard"
                         className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-muted/20 text-muted-foreground hover:text-foreground transition-colors text-sm"
                       >
                         <ArrowRightLeft className="h-4 w-4" /> Trade

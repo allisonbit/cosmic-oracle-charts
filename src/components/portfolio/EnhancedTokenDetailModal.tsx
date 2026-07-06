@@ -665,7 +665,7 @@ export function EnhancedTokenDetailModal({ token, isOpen, onClose, walletAddress
                 <Button 
                   variant="outline" 
                   className="justify-start gap-2 h-10"
-                  onClick={() => window.open("/trade", "_self")}
+                  onClick={() => window.open("/dashboard", "_self")}
                 >
                   <RefreshCw className="w-4 h-4 text-primary" />
                   Swap
@@ -673,7 +673,7 @@ export function EnhancedTokenDetailModal({ token, isOpen, onClose, walletAddress
                 <Button 
                   variant="outline" 
                   className="justify-start gap-2 h-10"
-                  onClick={() => window.open("/trade", "_self")}
+                  onClick={() => window.open("/dashboard", "_self")}
                 >
                   <Zap className="w-4 h-4 text-primary" />
                   Bridge

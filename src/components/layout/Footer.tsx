@@ -101,7 +101,6 @@ export function Footer() {
               <li><Link to="/dashboard" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Live Market Dashboard</Link></li>
               <li><Link to="/explorer" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Token Explorer</Link></li>
               <li><Link to="/scanner" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Wallet Scanner</Link></li>
-              <li><Link to="/trade" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Trade Crypto</Link></li>
               <li><Link to="/chain/ethereum" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Ethereum Analytics</Link></li>
               <li><Link to="/chain/solana" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Solana Analytics</Link></li>
               <li><Link to="/chain/base" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Base Analytics</Link></li>

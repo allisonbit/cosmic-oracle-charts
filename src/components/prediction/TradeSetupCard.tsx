@@ -78,7 +78,7 @@ export function TradeSetupCard({ coinId, symbol, name, timeframe, contractAddres
       <p className="text-xs text-muted-foreground mb-4">
         {persisted
           ? status === "active"
-            ? "🔒 Levels locked. Entry, stop and targets stay fixed until the trade hits its target (counts as a win) or its stop — then the scanner opens the next setup. A bias divergence can replace it early."
+            ? "Levels locked. Entry, stop and targets stay fixed until the trade hits its target (counts as a win) or its stop — then the scanner opens the next setup. A bias divergence can replace it early."
             : "This setup has resolved — its result is recorded in the track record below. The scanner is opening the next setup for this coin."
           : "Live setup from the latest analysis. It locks and is monitored to its outcome once tracking is active."}
       </p>

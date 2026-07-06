@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, TrendingUp, Zap, Layers, BarChart3, Wallet, X } from "lucide-react";
+import { Search, TrendingUp, Zap, Layers, BarChart3, Wallet, X, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTokenSearch, SearchToken } from "@/hooks/useTokenSearch";
 import { CoinImage } from "@/components/ui/CoinImage";
@@ -23,7 +23,7 @@ const staticSearchItems: SearchResult[] = [
     title: 'AI Price Predictions',
     description: 'Daily crypto forecasts',
     url: '/predictions',
-    icon: <span className="text-primary">🤖</span>
+    icon: <Sparkles className="w-4 h-4 text-primary" />
   },
   {
     type: 'tool',

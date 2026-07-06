@@ -124,7 +124,7 @@ export function EnhancedTokenDetailPanel({ token, chain, forecast, aiLoading }: 
   ];
 
   const externalLinks = [
-    { name: chain.name + ' Explorer', url: getExplorerUrl(token.contractAddress || ''), icon: '🔍' },
+    { name: chain.name + ' Explorer', url: getExplorerUrl(token.contractAddress || ''), icon: '' },
   ];
 
   const renderStatCard = (label: string, value: string, change?: number, icon?: any, onClick?: () => void) => {

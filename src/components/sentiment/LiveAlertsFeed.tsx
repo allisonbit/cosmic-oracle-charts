@@ -230,7 +230,7 @@ export function LiveAlertsFeed({ whaleData, coins }: LiveAlertsFeedProps) {
                 filter === f ? "text-primary border-primary" : "text-muted-foreground border-transparent hover:text-foreground"
               )}
             >
-              {f === 'critical' ? '🔥 Critical' : f}
+              {f === 'critical' ? 'Critical' : f}
             </button>
           ))}
         </div>

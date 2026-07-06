@@ -232,15 +232,15 @@ export default function FactoryNarratives() {
             </p>
             <div className="grid md:grid-cols-3 gap-4 mt-4">
               <div className="p-3 rounded-lg bg-muted/30">
-                <h3 className="font-semibold text-foreground mb-1">🤖 AI & Machine Learning</h3>
+                <h3 className="font-semibold text-foreground mb-1">AI & Machine Learning</h3>
                 <p className="text-sm">Tokens powering decentralized AI infrastructure and compute networks.</p>
               </div>
               <div className="p-3 rounded-lg bg-muted/30">
-                <h3 className="font-semibold text-foreground mb-1">🔗 Layer 2 Scaling</h3>
+                <h3 className="font-semibold text-foreground mb-1">Layer 2 Scaling</h3>
                 <p className="text-sm">Solutions making Ethereum and Bitcoin faster and cheaper.</p>
               </div>
               <div className="p-3 rounded-lg bg-muted/30">
-                <h3 className="font-semibold text-foreground mb-1">🏦 DeFi & RWAs</h3>
+                <h3 className="font-semibold text-foreground mb-1">DeFi & RWAs</h3>
                 <p className="text-sm">Decentralized finance and real-world asset tokenization.</p>
               </div>
             </div>

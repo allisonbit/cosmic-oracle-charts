@@ -388,7 +388,7 @@ function TrackerContent() {
                         </div>
                       </div>
                     </div>
-                    {h.notes && <p className="text-xs text-muted-foreground mt-2 pl-[52px]">📝 {h.notes}</p>}
+                    {h.notes && <p className="text-xs text-muted-foreground mt-2 pl-[52px]">{h.notes}</p>}
                   </CardContent>
                 </Card>
               );

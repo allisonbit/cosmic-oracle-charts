@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, TrendingUp, BookOpen, Globe, Radio, Layers, Wallet, Home, Zap, Calendar, Target, Sparkles, BarChart3, Search, Gift, Calculator, ArrowRightLeft, Compass, Newspaper, ChevronDown, LayoutDashboard } from "lucide-react";
+import { Menu, X, TrendingUp, BookOpen, Globe, Radio, Layers, Home, Zap, Calendar, Target, Sparkles, BarChart3, Search, Gift, Calculator, ArrowRightLeft, Compass, Newspaper, ChevronDown, LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
 import oracleLogo from "@/assets/oracle-bull-logo.jpg";
 import { GlobalSearch } from "@/components/search/GlobalSearch";
@@ -12,7 +12,6 @@ const PRIMARY_NAV = [
   { path: "/",           label: "Home" },
   { path: "/dashboard",  label: "Dashboard" },
   { path: "/predictions",label: "Predictions" },
-  { path: "/trade",      label: "Trade" },
   { path: "/news",       label: "News" },
   { path: "/tools",      label: "Tools" },
 ];
@@ -52,7 +51,6 @@ const MOBILE_GROUPS = [
     { path: "/",            label: "Home",        icon: Home },
     { path: "/dashboard",   label: "Dashboard",   icon: LayoutDashboard },
     { path: "/predictions", label: "Predictions", icon: Target },
-    { path: "/trade",       label: "Trade",       icon: Wallet },
     { path: "/news",        label: "News",        icon: Newspaper },
     { path: "/tools",       label: "Tools",       icon: Calculator },
   ]},

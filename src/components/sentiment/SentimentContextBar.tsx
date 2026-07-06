@@ -25,8 +25,8 @@ export function SentimentContextBar({
   };
 
   const getTrendText = () => {
-    if (trend === 'improving') return 'Improving ↗️';
-    if (trend === 'declining') return 'Declining ↘️';
+    if (trend === 'improving') return 'Improving';
+    if (trend === 'declining') return 'Declining';
     return 'Stable →';
   };
 

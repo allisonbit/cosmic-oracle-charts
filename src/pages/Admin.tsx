@@ -245,7 +245,7 @@ export default function Admin() {
                     <ul className="space-y-2">
                       {seoReport.recommendations.map((rec, i) => (
                         <li key={i} className="text-sm flex items-start gap-2 p-2 rounded-lg bg-background/50">
-                          {rec.includes('CRITICAL') ? <XCircle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" /> : rec.includes('✅') ? <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" /> : <AlertTriangle className="w-4 h-4 text-yellow-400 mt-0.5 flex-shrink-0" />}
+                          {rec.includes('CRITICAL') ? <XCircle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" /> : rec.includes('PASS') ? <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" /> : <AlertTriangle className="w-4 h-4 text-yellow-400 mt-0.5 flex-shrink-0" />}
                           <span>{rec}</span>
                         </li>
                       ))}

@@ -66,12 +66,12 @@ function EventCard({ event }: { event: any }) {
   };
 
   const typeIcons = {
-    launch: '🚀',
-    upgrade: '⬆️',
-    fork: '🔱',
-    unlock: '🔓',
-    governance: '🗳️',
-    regulatory: '📜',
+    launch: 'Launch',
+    upgrade: 'Upgrade',
+    fork: 'Fork',
+    unlock: 'Unlock',
+    governance: 'Vote',
+    regulatory: 'Regulatory',
   };
 
   const eventDate = new Date(event.datetime);
@@ -91,7 +91,7 @@ function EventCard({ event }: { event: any }) {
           )}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-2">
-              <span className="text-xl">{typeIcons[event.type as keyof typeof typeIcons]}</span>
+              <span className="text-xs font-semibold uppercase text-muted-foreground">{typeIcons[event.type as keyof typeof typeIcons]}</span>
               <h3 className="font-semibold text-lg">{event.title}</h3>
               <Badge className={cn("text-xs border", impactColors[event.impact as keyof typeof impactColors])}>
                 {event.impact.toUpperCase()} IMPACT
@@ -210,15 +210,15 @@ export default function FactoryEvents() {
             </p>
             <div className="grid md:grid-cols-3 gap-4 mt-4">
               <div className="p-3 rounded-lg bg-muted/30">
-                <h3 className="font-semibold text-foreground mb-1">🔓 Token Unlocks</h3>
+                <h3 className="font-semibold text-foreground mb-1">Token Unlocks</h3>
                 <p className="text-sm">Vesting releases that increase circulating supply, often causing sell pressure.</p>
               </div>
               <div className="p-3 rounded-lg bg-muted/30">
-                <h3 className="font-semibold text-foreground mb-1">⬆️ Network Upgrades</h3>
+                <h3 className="font-semibold text-foreground mb-1">Network Upgrades</h3>
                 <p className="text-sm">Protocol improvements that can boost confidence and adoption.</p>
               </div>
               <div className="p-3 rounded-lg bg-muted/30">
-                <h3 className="font-semibold text-foreground mb-1">🗳️ Governance Votes</h3>
+                <h3 className="font-semibold text-foreground mb-1">Governance Votes</h3>
                 <p className="text-sm">Community decisions that shape protocol direction and tokenomics.</p>
               </div>
             </div>

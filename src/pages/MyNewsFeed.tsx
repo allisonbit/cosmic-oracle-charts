@@ -55,7 +55,7 @@ export default function MyNewsFeed() {
         items.push({
           id: `price-${coin.symbol}`,
           type: 'price_move',
-          title: `${coin.name} ${isBullish ? '📈' : '📉'} ${coin.change24h?.toFixed(2)}%`,
+          title: `${coin.name} ${isBullish ? '+' : '-'}${coin.change24h?.toFixed(2)}%`,
           description: `${coin.name} is trading at $${coin.price?.toLocaleString()} with ${absChange > 5 ? 'significant' : 'moderate'} movement. 24h volume: $${(coin.volume24h / 1e6).toFixed(1)}M. Market cap: $${(coin.marketCap / 1e9).toFixed(1)}B. ${absChange > 5 ? 'This level of volatility may present trading opportunities.' : 'Monitor for continuation or reversal signals.'}`,
           symbol: coin.symbol,
           change: coin.change24h,
@@ -71,7 +71,7 @@ export default function MyNewsFeed() {
         items.push({
           id: `vol-${coin.symbol}`,
           type: 'volume_spike',
-          title: `🔊 Volume Spike: ${coin.symbol} at ${((coin.volume24h / coin.marketCap) * 100).toFixed(0)}% of MCap`,
+          title: `Volume Spike: ${coin.symbol} at ${((coin.volume24h / coin.marketCap) * 100).toFixed(0)}% of MCap`,
           description: `Unusually high trading volume detected for ${coin.name}. Volume/MCap ratio is ${((coin.volume24h / coin.marketCap) * 100).toFixed(1)}%, which is significantly above average. This could indicate upcoming volatility, institutional interest, or a major narrative shift. Historical spikes of this magnitude often precede 5-15% moves.`,
           symbol: coin.symbol,
           value: `$${(coin.volume24h / 1e6).toFixed(0)}M vol`,
@@ -89,7 +89,7 @@ export default function MyNewsFeed() {
       items.push({
         id: `whale-${sym}-${i}`,
         type: 'whale_alert',
-        title: `🐋 Whale: ${amount} ${sym} ($${(usdVal / 1e6).toFixed(1)}M) transferred`,
+        title: `Whale: ${amount} ${sym} ($${(usdVal / 1e6).toFixed(1)}M) transferred`,
         description: `Large ${sym} transfer detected from exchange to unknown wallet. Transaction value: $${(usdVal / 1e6).toFixed(2)}M. This pattern is typically associated with accumulation — when whales move assets off exchanges, it reduces sell pressure and suggests long-term holding intent.`,
         symbol: sym,
         value: `$${(usdVal / 1e6).toFixed(1)}M`,
@@ -101,11 +101,11 @@ export default function MyNewsFeed() {
     });
 
     const newsItems = [
-      { title: '📊 Bitcoin Dominance Rises Above 56%', desc: 'BTC dominance continues to climb as altcoins face selling pressure. Historically, dominance peaks above 60% precede major altcoin rotation periods. Key altcoin sectors to watch: DeFi, L2s, and AI tokens.', sentiment: 'bearish' as const },
-      { title: '🏛️ SEC Announces New Crypto Framework Review', desc: 'The SEC has initiated a comprehensive review of crypto regulatory framework. This could impact DeFi protocols, stablecoins, and exchange-listed tokens. Market participants expect clarity on token classification within 90 days.', sentiment: 'neutral' as const },
-      { title: '🔗 Ethereum L2 Activity Hits Record High', desc: 'Layer 2 networks now process more transactions than Ethereum mainnet. Arbitrum leads with 45% of L2 volume, followed by Base at 28% and Optimism at 15%. Gas fees on L2s average $0.01-0.05 vs $2-5 on mainnet.', sentiment: 'bullish' as const },
-      { title: '💰 Stablecoin Supply Reaches $190B ATH', desc: 'Total stablecoin supply hits new all-time high at $190B, up 15% in 30 days. USDT dominates at $120B, USDC at $45B. Rising stablecoin supply historically correlates with incoming buy pressure across crypto markets.', sentiment: 'bullish' as const },
-      { title: '⚡ Bitcoin Mining Difficulty Hits Record', desc: 'Bitcoin mining difficulty increased 4.2% to a new all-time high. Hash rate exceeds 750 EH/s. Higher difficulty and hash rate signal growing network security and miner confidence in BTC price trajectory.', sentiment: 'bullish' as const },
+      { title: 'Bitcoin Dominance Rises Above 56%', desc: 'BTC dominance continues to climb as altcoins face selling pressure. Historically, dominance peaks above 60% precede major altcoin rotation periods. Key altcoin sectors to watch: DeFi, L2s, and AI tokens.', sentiment: 'bearish' as const },
+      { title: 'SEC Announces New Crypto Framework Review', desc: 'The SEC has initiated a comprehensive review of crypto regulatory framework. This could impact DeFi protocols, stablecoins, and exchange-listed tokens. Market participants expect clarity on token classification within 90 days.', sentiment: 'neutral' as const },
+      { title: 'Ethereum L2 Activity Hits Record High', desc: 'Layer 2 networks now process more transactions than Ethereum mainnet. Arbitrum leads with 45% of L2 volume, followed by Base at 28% and Optimism at 15%. Gas fees on L2s average $0.01-0.05 vs $2-5 on mainnet.', sentiment: 'bullish' as const },
+      { title: 'Stablecoin Supply Reaches $190B ATH', desc: 'Total stablecoin supply hits new all-time high at $190B, up 15% in 30 days. USDT dominates at $120B, USDC at $45B. Rising stablecoin supply historically correlates with incoming buy pressure across crypto markets.', sentiment: 'bullish' as const },
+      { title: 'Bitcoin Mining Difficulty Hits Record', desc: 'Bitcoin mining difficulty increased 4.2% to a new all-time high. Hash rate exceeds 750 EH/s. Higher difficulty and hash rate signal growing network security and miner confidence in BTC price trajectory.', sentiment: 'bullish' as const },
     ];
 
     newsItems.forEach((news, i) => {

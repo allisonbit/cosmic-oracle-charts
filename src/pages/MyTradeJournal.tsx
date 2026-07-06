@@ -460,7 +460,7 @@ function TradeRow({ trade, onClose, onDelete }: { trade: Trade; onClose: (t: Tra
             </Button>
           </div>
         </div>
-        {trade.notes && <p className="text-xs text-muted-foreground mt-2 pl-12">📝 {trade.notes}</p>}
+        {trade.notes && <p className="text-xs text-muted-foreground mt-2 pl-12">{trade.notes}</p>}
       </CardContent>
     </Card>
   );

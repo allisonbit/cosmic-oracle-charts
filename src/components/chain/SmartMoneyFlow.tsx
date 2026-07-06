@@ -27,7 +27,7 @@ export function SmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: SmartMoneyF
     ? (smartMoneyFlow.inflow / (smartMoneyFlow.inflow + smartMoneyFlow.outflow)) * 100
     : 50;
 
-  const getTradeLink = () => "/trade";
+  const getTradeLink = () => "/dashboard";
 
   return (
     <div className="holo-card p-6">
@@ -142,7 +142,7 @@ export function SmartMoneyFlow({ chain, smartMoneyFlow, isLoading }: SmartMoneyF
                 <CollapsibleContent>
                   <div className="mt-3 pt-3 border-t border-border/30">
                     <a
-                      href="/trade"
+                      href="/dashboard"
                       className="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors text-sm"
                     >
                       <Repeat className="h-4 w-4" />

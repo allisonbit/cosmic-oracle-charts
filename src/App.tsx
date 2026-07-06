@@ -68,7 +68,6 @@ const MyTradeJournal = lazy(() => import("./pages/MyTradeJournal"));
 const MyNewsFeed = lazy(() => import("./pages/MyNewsFeed"));
 const MyDCAPlanner = lazy(() => import("./pages/MyDCAPlanner"));
 const MyCopyTrading = lazy(() => import("./pages/MyCopyTrading"));
-const Trade = lazy(() => import("./pages/Trade"));
 const MarketPage = lazy(() => import("./pages/MarketPage"));
 const Airdrops = lazy(() => import("./pages/Airdrops"));
 const AirdropDetail = lazy(() => import("./pages/AirdropDetail"));
@@ -262,7 +261,6 @@ const App = () => (
                 <Route path="/my/news" element={B(<MyNewsFeed />)} />
                 <Route path="/my/dca" element={B(<MyDCAPlanner />)} />
                 <Route path="/my/copy" element={B(<MyCopyTrading />)} />
-                <Route path="/trade" element={B(<Trade />)} />
                 <Route path="*" element={B(<NotFound />)} />
               </Routes>
             </Suspense>

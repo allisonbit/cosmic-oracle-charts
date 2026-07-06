@@ -76,10 +76,10 @@ export function TokenTradingTab({ token, derivedMetrics }: TokenTradingTabProps)
             <div className="p-2 rounded bg-muted/50 mt-2">
               <p className="text-[10px] text-muted-foreground">
                 {derivedMetrics && derivedMetrics.volLiqRatio > 2
-                  ? '⚠️ Volume significantly exceeds liquidity — potential for high slippage'
+                  ? 'Warning: Volume significantly exceeds liquidity — potential for high slippage'
                   : derivedMetrics && derivedMetrics.volLiqRatio > 0.5
-                  ? '📊 Healthy volume-to-liquidity ratio'
-                  : '💤 Low trading activity relative to liquidity'}
+                  ? 'Healthy volume-to-liquidity ratio'
+                  : 'Low trading activity relative to liquidity'}
               </p>
             </div>
           </CardContent>

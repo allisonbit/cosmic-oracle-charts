@@ -159,7 +159,7 @@ export function WalletEligibilityChecker() {
       )}
 
       <p className="text-[10px] text-muted-foreground mt-3">
-        ⚠️ Results are AI estimates based on publicly known snapshot criteria. Always verify on official project sites.
+        Results are AI estimates based on publicly known snapshot criteria. Always verify on official project sites.
       </p>
     </div>
   );

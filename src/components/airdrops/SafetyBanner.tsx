@@ -33,7 +33,7 @@ export function SafetyBanner() {
             <AlertTriangle className="w-4 h-4 text-warning" />
           </div>
           <p className="text-sm font-semibold text-foreground">
-            🔐 Stay Safe — Airdrop Scam Protection Active
+            Stay Safe — Airdrop Scam Protection Active
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">

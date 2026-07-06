@@ -320,7 +320,7 @@ export function TokenDiscoveryEngine({ chain }: TokenDiscoveryEngineProps) {
           />
         </div>
         <a
-          href="/trade"
+          href="/dashboard"
           className="px-4 py-2 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors text-sm flex items-center gap-2"
         >
           <ArrowDownUp className="h-4 w-4" />
@@ -399,7 +399,7 @@ export function TokenDiscoveryEngine({ chain }: TokenDiscoveryEngineProps) {
                 {cat.tokens.length > 6 && (
                   <div className="mt-3 pt-3 border-t border-border/30 text-center">
                     <a
-                      href="/trade"
+                      href="/dashboard"
                       className="text-xs text-primary hover:underline"
                     >
                       Trade tokens →
@@ -416,7 +416,7 @@ export function TokenDiscoveryEngine({ chain }: TokenDiscoveryEngineProps) {
       <div className="mt-6 p-4 rounded-xl bg-muted/10 border border-border/30">
         <h4 className="text-sm font-medium text-foreground mb-3">Quick Actions</h4>
         <div className="flex flex-wrap gap-2">
-          <a href="/trade" className="px-3 py-1.5 rounded-lg bg-primary/20 text-xs text-primary hover:bg-primary/30 transition-colors flex items-center gap-1">
+          <a href="/dashboard" className="px-3 py-1.5 rounded-lg bg-primary/20 text-xs text-primary hover:bg-primary/30 transition-colors flex items-center gap-1">
             <ArrowDownUp className="h-3 w-3" /> Swap Tokens
           </a>
           <a

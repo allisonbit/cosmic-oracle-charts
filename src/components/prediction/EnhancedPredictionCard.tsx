@@ -343,7 +343,7 @@ export function EnhancedPredictionCard({ crypto, showFullDetails = false }: Enha
             <Badge variant="outline" className="text-[9px] py-0 px-1.5 text-danger border-danger/30">Seasonal Bearish</Badge>
           )}
           {indicators.volatilityRegime === 'extreme' && (
-            <Badge variant="outline" className="text-[9px] py-0 px-1.5 text-danger border-danger/30">⚠ High Vol</Badge>
+            <Badge variant="outline" className="text-[9px] py-0 px-1.5 text-danger border-danger/30">High Vol</Badge>
           )}
           {Math.abs(crypto.change24h || 0) > 5 && (
             <Badge variant="outline" className="text-[9px] py-0 px-1.5 text-warning border-warning/30">Strong Momentum</Badge>

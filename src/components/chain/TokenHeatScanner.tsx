@@ -224,7 +224,7 @@ export function TokenHeatScanner({ chain, tokenHeat, isLoading }: TokenHeatScann
       {/* Trade link */}
       <div className="mt-4 text-center">
         <a
-          href="/trade"
+          href="/dashboard"
           className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium"
         >
           <ArrowDownUp className="h-3.5 w-3.5" />

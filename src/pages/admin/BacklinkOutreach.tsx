@@ -611,7 +611,7 @@ export default function BacklinkOutreach() {
                         <Textarea readOnly value={tpl.body} className="min-h-[420px] font-mono text-xs" />
                       </div>
                       {tpl.note && (
-                        <p className="text-xs text-muted-foreground mt-3">💡 {tpl.note}</p>
+                        <p className="text-xs text-muted-foreground mt-3">{tpl.note}</p>
                       )}
                     </>
                   );

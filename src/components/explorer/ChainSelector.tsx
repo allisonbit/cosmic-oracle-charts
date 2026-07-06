@@ -48,7 +48,7 @@ export function ChainSelector({ selectedChain, onChainSelect }: ChainSelectorPro
       <PopoverTrigger asChild>
         <Button variant="outline" className="gap-2 min-w-[180px] justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-lg">{selectedChainData?.icon || '🔗'}</span>
+            <span className="text-lg">{selectedChainData?.icon || ''}</span>
             <span>{selectedChainData?.name || 'Select Chain'}</span>
           </div>
           <ChevronDown className="w-4 h-4 opacity-50" />

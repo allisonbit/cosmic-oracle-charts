@@ -41,7 +41,7 @@ export function MultiDimensionalSentiment({
   
   const getScoreColor = (score: number) => score >= 70 ? 'text-success' : score >= 50 ? 'text-primary' : score >= 35 ? 'text-warning' : 'text-danger';
   const getScoreLabel = (score: number) => score >= 80 ? 'Extreme Greed' : score >= 65 ? 'Greed' : score >= 50 ? 'Neutral-Bullish' : score >= 35 ? 'Neutral-Bearish' : score >= 20 ? 'Fear' : 'Extreme Fear';
-  const getTrendArrow = (trend: 'up' | 'down' | 'stable') => trend === 'up' ? '↗️' : trend === 'down' ? '↘️' : '→';
+  const getTrendArrow = (trend: 'up' | 'down' | 'stable') => trend === 'up' ? 'Up' : trend === 'down' ? 'Down' : 'Stable';
 
   return (
     <div className="border-t border-border/30 pt-5">

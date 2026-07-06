@@ -13,7 +13,7 @@ const POTENTIAL_CLS: Record<string, string> = { High: "text-success", Notable: "
 const UPDATED = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 
 const statusEmoji = (a: AirdropProject) =>
-  a.liveStatus === "Live" ? "🟢 Active" : a.liveStatus === "Upcoming" ? "📅 Upcoming" : "🗄 Ended";
+  a.liveStatus === "Live" ? "Active" : a.liveStatus === "Upcoming" ? "Upcoming" : "Ended";
 
 const faqs = [
   { q: "What crypto airdrops are happening in 2026?", a: "Major confirmed and expected airdrops in 2026–2027 span Ethereum Layer-2 rollups (Linea, zkSync, Scroll), new Layer-1s (Monad, Berachain, MegaETH), the Base ecosystem, and high-throughput venues like Hyperliquid. Each is tracked below with its status, estimated value range and the tasks required to qualify." },

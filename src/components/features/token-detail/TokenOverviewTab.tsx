@@ -124,13 +124,13 @@ export function TokenOverviewTab({ token, derivedMetrics, radarData, supplyPie, 
         <div className="p-3 border border-border">
           <p className="text-[10px] text-muted-foreground uppercase">Vol / Liq Ratio</p>
           <p className="text-lg font-bold font-mono">{derivedMetrics ? (derivedMetrics.volLiqRatio * 100).toFixed(1) + '%' : '—'}</p>
-          <p className="text-[10px] text-muted-foreground">{derivedMetrics && derivedMetrics.volLiqRatio > 1 ? '⚠️ High turnover' : '✅ Healthy'}</p>
+          <p className="text-[10px] text-muted-foreground">{derivedMetrics && derivedMetrics.volLiqRatio > 1 ? 'High turnover' : 'Healthy'}</p>
         </div>
         <div className="p-3 border border-border">
           <p className="text-[10px] text-muted-foreground uppercase">Buy Pressure</p>
           <p className="text-lg font-bold font-mono">{derivedMetrics ? (derivedMetrics.buyPressure ?? 0).toFixed(1) + '%' : '—'}</p>
           <p className={cn("text-[10px]", derivedMetrics && derivedMetrics.buyPressure > 55 ? "text-success" : "text-muted-foreground")}>
-            {derivedMetrics && derivedMetrics.buyPressure > 55 ? '🟢 Bullish' : '⚪ Neutral'}
+            {derivedMetrics && derivedMetrics.buyPressure > 55 ? 'Bullish' : 'Neutral'}
           </p>
         </div>
         <div className="p-3 border border-border">

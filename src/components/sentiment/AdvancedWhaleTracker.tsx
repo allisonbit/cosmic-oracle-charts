@@ -150,7 +150,7 @@ export function AdvancedWhaleTracker({ onRefresh }: AdvancedWhaleTrackerProps) {
           </div>
         </div>
         <div className={cn("border-l-2 pl-3 py-1", netFlow >= 0 ? "border-success text-success" : "border-danger text-danger")}>
-          <span className="font-bold">{netFlow >= 0 ? '📈 Accumulation Phase' : '📉 Distribution Phase'}</span>
+          <span className="font-bold">{netFlow >= 0 ? 'Accumulation Phase' : 'Distribution Phase'}</span>
           <span className="text-sm ml-2">({netFlow >= 0 ? 'Bullish' : 'Bearish'} Signal)</span>
         </div>
       </div>
@@ -171,7 +171,7 @@ export function AdvancedWhaleTracker({ onRefresh }: AdvancedWhaleTrackerProps) {
             {(['all', 'buy', 'sell'] as const).map(f => (
               <button key={f} onClick={() => setFilter(f)}
                 className={cn("capitalize font-medium transition-colors", filter === f ? "text-primary" : "text-muted-foreground hover:text-foreground")}>
-                {f === 'all' ? 'All' : f === 'buy' ? '🟢 Buys' : '🔴 Sells'}
+                {f === 'all' ? 'All' : f === 'buy' ? 'Buys' : 'Sells'}
               </button>
             ))}
           </div>

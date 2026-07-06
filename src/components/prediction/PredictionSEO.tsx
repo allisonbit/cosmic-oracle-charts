@@ -19,8 +19,7 @@ export function PredictionSEO({ coinName, symbol, timeframe, currentPrice, bias,
   const currentYear = new Date().getFullYear();
   const dateTag = timeframe === 'monthly' ? `${currentMonth} ${currentYear}` : `${currentMonth} ${new Date().getDate()}, ${currentYear}`;
   
-  const biasEmoji = bias === 'bullish' ? '📈' : bias === 'bearish' ? '📉' : '➡️';
-  const title = `${coinName} (${symbol.toUpperCase()}) Price Prediction ${timeframeText} ${biasEmoji} ${dateTag}`;
+  const title = `${coinName} (${symbol.toUpperCase()}) Price Prediction ${timeframeText} ${dateTag}`;
   const description = `Will ${symbol.toUpperCase()} go up ${timeframeLower}? ${coinName} AI prediction with ${bias || 'neutral'} bias${confidence ? ` (${confidence}% confidence)` : ''}. ${currentPrice ? `Current price: $${(currentPrice ?? 0).toLocaleString()}.` : ''} Free technical analysis, targets & risk levels.`;
   
   const currentDate = new Date();

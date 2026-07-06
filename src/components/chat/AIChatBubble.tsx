@@ -15,7 +15,7 @@ export function AIChatBubble() {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { id: "welcome", role: "assistant", content: "Hey! I'm Oracle Bull AI 🐂 Ask me anything about crypto markets, predictions, or trading strategies." }
+    { id: "welcome", role: "assistant", content: "Hey! I'm Oracle Bull AI. Ask me anything about crypto markets, predictions, or trading strategies." }
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);

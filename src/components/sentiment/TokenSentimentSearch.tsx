@@ -307,7 +307,7 @@ export function TokenSentimentSearch() {
 
           {/* Trade Actions */}
           <div className="flex gap-2 flex-wrap">
-            <a href="/trade"
+            <a href="/dashboard"
               className="text-[10px] px-2 py-1 rounded bg-primary/20 text-primary hover:bg-primary/30 flex items-center gap-1 transition-colors">
               <ArrowDownUp className="w-3 h-3" /> Trade
             </a>

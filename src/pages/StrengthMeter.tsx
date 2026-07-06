@@ -154,7 +154,7 @@ export default function StrengthMeter() {
 
   const shareTop = () => {
     const top3 = rows.slice(0, 3).map((r, i) => `#${i + 1} ${r.symbol} — ${r.strengthScore}/100`).join("\n");
-    const text = `🔥 Crypto Strength Rankings (${timeframe.toUpperCase()})\n${top3}\n\nFull rankings 👉 ${SITE_URL}/crypto-strength-meter\n#crypto #bitcoin #trading`;
+    const text = `Crypto Strength Rankings (${timeframe.toUpperCase()})\n${top3}\n\nFull rankings ${SITE_URL}/crypto-strength-meter\n#crypto #bitcoin #trading`;
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank");
   };
 

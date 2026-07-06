@@ -109,7 +109,7 @@ export function EnhancedTokenHeatScanner({ chain, tokenHeat, isLoading }: TokenH
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 sm:mb-6">
         <div>
           <h3 className="text-base sm:text-lg font-display text-foreground flex items-center gap-2">
-            🔥 Enhanced Token Heat Scanner
+            Enhanced Token Heat Scanner
             <Badge variant="outline" className="text-[10px] text-success border-success/30">
               <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse mr-1" />
               Live
@@ -293,7 +293,7 @@ export function EnhancedTokenHeatScanner({ chain, tokenHeat, isLoading }: TokenH
       {/* Quick Actions */}
       <div className="mt-4 pt-4 border-t border-border/30 flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap gap-2">
-          <a href="/trade"
+          <a href="/dashboard"
              className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors text-xs font-medium">
             <ArrowDownUp className="h-3 w-3" /> Trade Tokens
           </a>

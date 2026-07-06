@@ -238,7 +238,7 @@ export function LiveTokenSearchPanel({ chain }: LiveTokenSearchPanelProps) {
         {/* Quick Actions */}
         <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-border/30">
           <a
-            href="/trade"
+            href="/dashboard"
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-all text-xs"
           >
             Trade Tokens <ArrowDownUp className="h-3 w-3" />

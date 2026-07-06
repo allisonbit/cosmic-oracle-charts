@@ -57,7 +57,7 @@ function FeedItem({ n, navigate }: { n: any; navigate: (p: string) => void }) {
             <div className="flex items-center gap-2 mt-2 flex-wrap">
               <span className="text-[10px] font-semibold text-muted-foreground">{n.source}</span>
               <span className="text-[10px] text-muted-foreground">· {safeTime(n.publishedAt)}</span>
-              {high && <Badge variant="outline" className="text-[10px] bg-primary/10 text-primary border-primary/30">⚡ Impact {Math.round(n.impactScore)}</Badge>}
+              {high && <Badge variant="outline" className="text-[10px] bg-primary/10 text-primary border-primary/30">Impact {Math.round(n.impactScore)}</Badge>}
               <div className="ml-auto flex items-center gap-1">
                 {(n.relatedAssets || []).slice(0, 3).map((a: string) => (
                   <button key={a} onClick={() => navigate(`/price-prediction/${a.toLowerCase()}/daily`)} className="text-[10px] font-mono px-1.5 py-0.5 rounded border border-border/40 hover:border-primary/40 hover:text-primary transition-colors">{a}</button>
@@ -99,7 +99,7 @@ function WhaleCard({ a }: { a: any }) {
   return (
     <div className="border-t border-border/20 pt-3">
       <div className="flex items-center justify-between gap-2 mb-1">
-        <span className="text-xs font-semibold flex items-center gap-1.5">🐋 {a.asset} <span className="text-muted-foreground font-normal capitalize">{(a.type || "").replace(/_/g, " ")}</span></span>
+        <span className="text-xs font-semibold flex items-center gap-1.5">{a.asset} <span className="text-muted-foreground font-normal capitalize">{(a.type || "").replace(/_/g, " ")}</span></span>
         <span className="text-[10px] text-muted-foreground shrink-0">{safeTime(a.timestamp)}</span>
       </div>
       <div className="font-mono font-bold text-sm">{formatCompact(a.amountUSD)} <span className="text-xs text-muted-foreground font-normal">on {a.chain}</span></div>

@@ -175,9 +175,9 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
         ],
         insights: [
           financialData.mvrvRatio > 2.5 
-            ? "⚠️ MVRV in historically elevated zone - increased distribution risk" 
-            : financialData.mvrvRatio < 1 
-              ? "💚 MVRV below 1 historically signals accumulation opportunity"
+            ? "MVRV in historically elevated zone - increased distribution risk"
+            : financialData.mvrvRatio < 1
+              ? "MVRV below 1 historically signals accumulation opportunity"
               : "MVRV in neutral zone - no extreme signals",
           "MVRV peaks above 3.0 have historically marked cycle tops",
           "Values below 1.0 indicate aggregate unrealized losses",
@@ -302,8 +302,8 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
         ],
         insights: [
           financialData.exchangeNetflow.totalNetflow < 0 
-            ? "💚 Net outflows indicate accumulation - coins moving to cold storage"
-            : "⚠️ Net inflows suggest potential selling pressure ahead",
+            ? "Net outflows indicate accumulation - coins moving to cold storage"
+            : "Net inflows suggest potential selling pressure ahead",
           "Large Coinbase outflows often indicate institutional buying",
           "Watch for divergence between price and exchange flows",
           "Sudden spikes in inflows may precede volatility"
@@ -425,9 +425,9 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
         ],
         insights: [
           financialData.futuresData.fundingRate > 0.01 
-            ? "⚠️ Elevated positive funding - market overcrowded long"
+            ? "Elevated positive funding - market overcrowded long"
             : financialData.futuresData.fundingRate < -0.01 
-              ? "⚠️ Elevated negative funding - market overcrowded short"
+              ? "Elevated negative funding - market overcrowded short"
               : "Funding neutral - balanced positioning",
           "Extreme funding rates often precede reversals",
           "Persistent positive funding in uptrends is healthy",
@@ -467,9 +467,9 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
         ],
         insights: [
           financialData.futuresData.longRatio > 60 
-            ? "⚠️ Crowded long trade - high risk of long squeeze"
+            ? "Crowded long trade - high risk of long squeeze"
             : financialData.futuresData.longRatio < 40 
-              ? "⚠️ Crowded short trade - high risk of short squeeze"
+              ? "Crowded short trade - high risk of short squeeze"
               : "Balanced positioning - no extreme signals",
           "Top trader positioning often more predictive than retail",
           "Watch for rapid shifts in positioning as price moves",
@@ -509,7 +509,7 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
         ],
         insights: [
           financialData.futuresData.liquidations24h > 200000000 
-            ? "⚠️ High liquidation activity - market is highly leveraged"
+            ? "High liquidation activity - market is highly leveraged"
             : "Normal liquidation levels",
           "Cascading liquidations can accelerate price movements",
           "Identify liquidation clusters for support/resistance levels",
@@ -632,7 +632,7 @@ export function EnhancedDeepFinancialMetrics({ chain, financialData, isLoading }
         ],
         insights: [
           financialData.optionsData.impliedVolatility > 70 
-            ? "⚠️ Elevated IV - options are expensive, consider selling premium"
+            ? "Elevated IV - options are expensive, consider selling premium"
             : financialData.optionsData.impliedVolatility < 35 
               ? "Low IV - options are cheap, potential vol expansion ahead"
               : "Normal volatility environment",

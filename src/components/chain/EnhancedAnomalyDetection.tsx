@@ -121,7 +121,7 @@ export function EnhancedAnomalyDetection({ chain, anomalyData, isLoading }: Anom
           <Shield className="h-5 w-5 text-red-400" />
         </div>
         <div>
-          <h3 className="font-display text-lg text-foreground">🛡️ Enhanced Anomaly Detection</h3>
+          <h3 className="font-display text-lg text-foreground">Enhanced Anomaly Detection</h3>
           <p className="text-sm text-muted-foreground">Real-time threat monitoring & protection on {chain.name}</p>
         </div>
         <div className="ml-auto flex items-center gap-2">

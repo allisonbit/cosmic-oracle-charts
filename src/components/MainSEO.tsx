@@ -100,11 +100,6 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
     keywords: "crypto news today, breaking crypto news, bitcoin news, crypto news live, cryptocurrency headlines, crypto market news"
   },
 
-  "/trade": {
-    title: `Trade Crypto – Buy, Sell, Swap & Bridge Tokens`,
-    description: "Trade any token directly. Swap & bridge across 12+ chains including Ethereum, Base, Polygon & Arbitrum. Zero platform fees. Connect wallet to start.",
-    keywords: "trade crypto, buy crypto, sell crypto, swap tokens, crypto bridge, dex trading, decentralized exchange, buy bitcoin, buy ethereum, buy solana"
-  },
   "/scanner": {
     title: `Crypto Token Scanner – Find Hidden Gems & New Tokens`,
     description: "Scan for new and trending crypto tokens across all blockchains. Find hidden gems, analyze token metrics, liquidity, and risk scores. Free real-time scanner.",

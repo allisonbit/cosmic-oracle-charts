@@ -297,7 +297,7 @@ export function EnhancedTokenDiscoveryEngine({ chain }: EnhancedTokenDiscoveryEn
               className="w-full pl-10 pr-4 py-2  text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
             />
           </div>
-          <a href="/trade" className="px-4 py-2 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors text-sm flex items-center gap-2">
+          <a href="/dashboard" className="px-4 py-2 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors text-sm flex items-center gap-2">
             <ArrowDownUp className="h-4 w-4" />
             <span className="hidden sm:inline">Trade</span>
           </a>
@@ -390,10 +390,10 @@ export function EnhancedTokenDiscoveryEngine({ chain }: EnhancedTokenDiscoveryEn
         <div className="mt-6 p-4 rounded-xl bg-muted/10 border border-border/30">
           <h4 className="text-sm font-medium text-foreground mb-3">Quick Actions</h4>
           <div className="flex flex-wrap gap-2">
-            <a href="/trade" className="px-3 py-1.5 rounded-lg bg-primary/20 text-xs text-primary hover:bg-primary/30 transition-colors flex items-center gap-1">
+            <a href="/dashboard" className="px-3 py-1.5 rounded-lg bg-primary/20 text-xs text-primary hover:bg-primary/30 transition-colors flex items-center gap-1">
               <ArrowDownUp className="h-3 w-3" /> Swap Tokens
             </a>
-            <a href="/trade" className="px-3 py-1.5 rounded-lg bg-secondary/20 text-xs text-secondary-foreground hover:bg-secondary/30 transition-colors flex items-center gap-1">
+            <a href="/dashboard" className="px-3 py-1.5 rounded-lg bg-secondary/20 text-xs text-secondary-foreground hover:bg-secondary/30 transition-colors flex items-center gap-1">
               <Globe className="h-3 w-3" /> Bridge
             </a>
           </div>

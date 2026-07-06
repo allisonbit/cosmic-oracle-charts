@@ -264,7 +264,7 @@ export function TokenDetailModal({ token, isOpen, onClose }: TokenDetailModalPro
                   variant="outline" 
                   size="sm" 
                   className="gap-2"
-                  onClick={() => window.open("/trade", "_self")}
+                  onClick={() => window.open("/dashboard", "_self")}
                 >
                   <ArrowDownUp className="w-3 h-3" />
                   Trade

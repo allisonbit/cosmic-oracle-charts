@@ -193,7 +193,7 @@ export function MultiChainComparison({ chain, comparisonData, isLoading }: Multi
                 <div className="flex justify-between text-xs text-muted-foreground">
                   <span>24h: {formatNumber(bridge.volume24h)}</span>
                   {bridge.recentHacks > 0 && (
-                    <span className="text-red-400">⚠️ {bridge.recentHacks} incidents</span>
+                    <span className="text-red-400">{bridge.recentHacks} incidents</span>
                   )}
                 </div>
                 <div className="mt-2">

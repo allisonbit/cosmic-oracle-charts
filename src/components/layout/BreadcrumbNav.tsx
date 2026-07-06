@@ -29,7 +29,6 @@ const routeLabels: Record<string, string> = {
   "terms": "Terms of Service",
   "risk-disclaimer": "Risk Disclaimer",
   "market": "Market Analysis",
-  "trade": "Trade Crypto",
   "q": "AI Answers",
   "my": "My Hub",
   // Timeframes

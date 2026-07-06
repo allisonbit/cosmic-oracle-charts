@@ -228,7 +228,7 @@ export function AirdropDetailModal({ project, onClose }: { project: AirdropProje
 
           {/* Disclaimer */}
           <div className="text-[10px] text-muted-foreground p-3 rounded-xl bg-muted/20 border border-border/30 leading-relaxed">
-            ⚠️ <strong className="text-foreground">Disclaimer:</strong> This guide is for informational purposes only and does not constitute financial advice. Crypto airdrops carry significant risk including loss of gas fees and time. Always verify information on official project websites before interacting with any smart contracts. Never share your seed phrase or private keys with anyone.
+            <strong className="text-foreground">Disclaimer:</strong> This guide is for informational purposes only and does not constitute financial advice. Crypto airdrops carry significant risk including loss of gas fees and time. Always verify information on official project websites before interacting with any smart contracts. Never share your seed phrase or private keys with anyone.
           </div>
         </div>
       </div>

@@ -525,7 +525,7 @@ export function EnhancedAdvancedPredictionModels({ chain, predictionData, isLoad
           { label: "Last Updated", value: "2h ago" },
         ],
         insights: contract.issues.length > 0 
-          ? contract.issues.map(issue => `⚠️ ${issue}`)
+          ? contract.issues.map(issue => issue)
           : ["No major security issues detected", "Contract follows standard patterns", "Liquidity appears locked", "Consider monitoring for upgrades"],
         links: [
           { label: "Token Sniffer", url: `https://tokensniffer.com/` },

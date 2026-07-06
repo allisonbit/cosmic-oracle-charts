@@ -277,7 +277,7 @@ export function AdvancedPredictionModels({ chain, predictionData, isLoading }: A
               </div>
             </div>
             <div className="text-sm text-primary font-medium text-center">
-              💡 {predictionData.gasPrediction.recommendation}
+              {predictionData.gasPrediction.recommendation}
             </div>
           </div>
         </div>

@@ -206,7 +206,7 @@ export function ComparisonView({ tokens }: ComparisonViewProps) {
                     <Badge variant="outline" className={cn("text-[10px]",
                       t.agreement === 'aligned' ? 'text-success border-success/30 bg-success/10' : 'text-warning border-warning/30 bg-warning/10'
                     )}>
-                      {t.agreement === 'aligned' ? '✓ Aligned' : '⚡ Divergent'}
+                      {t.agreement === 'aligned' ? '✓ Aligned' : 'Divergent'}
                     </Badge>
                   </td>
                 )}

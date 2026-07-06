@@ -297,7 +297,7 @@ const AirdropDetail = () => {
 
         {/* Disclaimer */}
         <div className="text-xs text-muted-foreground p-3 sm:p-4 rounded-xl bg-muted/20 border border-border/30 leading-relaxed mb-6 sm:mb-8">
-          ⚠️ <strong className="text-foreground">Disclaimer:</strong> This guide is for informational purposes only and does not constitute financial advice. Crypto airdrops carry risk including loss of gas fees and time. Always verify on official project websites before interacting with any smart contracts. Never share your seed phrase or private keys.
+          <strong className="text-foreground">Disclaimer:</strong> This guide is for informational purposes only and does not constitute financial advice. Crypto airdrops carry risk including loss of gas fees and time. Always verify on official project websites before interacting with any smart contracts. Never share your seed phrase or private keys.
         </div>
 
         {/* Related airdrops */}

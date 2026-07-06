@@ -387,7 +387,7 @@ export default function MyDCAPlanner() {
                               {isDue && <p className="text-[10px] text-warning font-medium">Overdue!</p>}
                             </div>
                           </div>
-                          {plan.notes && <p className="text-xs text-muted-foreground">📝 {plan.notes}</p>}
+                          {plan.notes && <p className="text-xs text-muted-foreground">{plan.notes}</p>}
                         </div>
                       )}
                     </CardContent>

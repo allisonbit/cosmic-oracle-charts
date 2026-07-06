@@ -397,7 +397,7 @@ export function RiskAnalyzer({ chain }: RiskAnalyzerProps) {
                       {tokens.length > 5 && (
                         <div className="mt-3 text-center">
                           <a
-                            href="/trade"
+                            href="/dashboard"
                             className="text-xs text-primary hover:underline"
                           >
                             Trade tokens →

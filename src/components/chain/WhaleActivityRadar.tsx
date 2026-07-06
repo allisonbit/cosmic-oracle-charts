@@ -38,7 +38,7 @@ export function WhaleActivityRadar({ chain, whaleActivity: initialWhaleActivity,
   useEffect(() => {
     if (newAlert) {
       setShowNewAlertBanner(true);
-      toast.info(`🐳 New whale ${newAlert.type}: ${(newAlert.amount ?? 0).toLocaleString()} ${newAlert.token}`, {
+      toast.info(`New whale ${newAlert.type}: ${(newAlert.amount ?? 0).toLocaleString()} ${newAlert.token}`, {
         description: `Value: $${(newAlert.value / 1e6).toFixed(2)}M`,
         duration: 5000,
       });
