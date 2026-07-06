@@ -66,8 +66,8 @@ async function run() {
     const rootLen = await page.evaluate(() => (document.querySelector('#root')?.innerHTML || '').length).catch(() => 0);
     const stillBooting = await page.evaluate(() => !!document.getElementById('boot-fallback')).catch(() => false);
     await page.close();
-    // Ignore benign network errors (analytics/ads/3rd-party blocked, supabase data fetches in test env)
-    const fatal = errors.filter(e => !/supabase|coingecko|googletag|adsbygoogle|pagead|doubleclick|net::ERR|Failed to fetch|ERR_|40[0-9]|429|5[0-9][0-9]|privy|analytics|gtag|favicon|coinzilla|bitmedia|wallet|web3|rpc|infura|alchemy|funding rates|non-JSON|fetch error/i.test(e));
+    // Ignore benign network errors (third-party blocked, backend data fetches in test env)
+    const fatal = errors.filter(e => !/supabase|coingecko|net::ERR|Failed to fetch|ERR_|40[0-9]|429|5[0-9][0-9]|privy|favicon|wallet|web3|rpc|infura|alchemy|funding rates|non-JSON|fetch error/i.test(e));
     results.push({ route, rootLen, mounted: !stillBooting && rootLen > 800, navOk, fatal });
   }
 
