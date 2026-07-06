@@ -53,26 +53,7 @@ const AirdropDetail = () => {
       <Helmet>
         <title>{seoTitle}</title>
         <meta name="description" content={seoDesc} />
-        <meta name="keywords" content={`${project.name} airdrop 2026, ${project.ticker} airdrop, ${project.name} farming guide, ${project.name} tokenomics, ${project.category} airdrop 2026, crypto airdrop guide`} />
-        <link rel="canonical" href={canonicalUrl} />
-        <meta property="og:title" content={seoTitle} />
-        <meta property="og:description" content={seoDesc} />
-        <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:type" content="article" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={seoTitle} />
-        <meta name="twitter:description" content={seoDesc} />
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Article",
-          "headline": seoTitle,
-          "description": seoDesc,
-          "url": canonicalUrl,
-          "author": { "@type": "Organization", "name": "Oracle Bull" },
-          "publisher": { "@type": "Organization", "name": "Oracle Bull", "url": "https://oraclebull.com" },
-          "dateModified": new Date().toISOString(),
-          "mainEntityOfPage": canonicalUrl,
-        })}</script>
+        
       </Helmet>
 
       <div className="w-full max-w-4xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 md:py-8 overflow-x-hidden">

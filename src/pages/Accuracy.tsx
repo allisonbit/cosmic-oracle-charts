@@ -94,21 +94,7 @@ export default function Accuracy() {
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
-        <link rel="canonical" href="https://oraclebull.com/accuracy" />
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={description} />
-        <meta property="og:url" content="https://oraclebull.com/accuracy" />
-        <meta property="og:type" content="website" />
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Dataset",
-          name: "Oracle Bull AI Prediction Accuracy",
-          description,
-          url: "https://oraclebull.com/accuracy",
-          creator: { "@type": "Organization", name: "Oracle Bull" },
-          variableMeasured: ["Hit Rate", "Sample Size", "Average Confidence"],
-          temporalCoverage: "rolling",
-        })}</script>
+        
       </Helmet>
 
       <main className="max-w-5xl mx-auto px-4 py-10">

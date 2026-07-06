@@ -149,8 +149,8 @@ export default function Polymarket() {
         canonicalPath="/polymarket"
       />
       <Helmet>
-        <script type="application/ld+json">{JSON.stringify(webAppLd)}</script>
-        <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
+        
+        
       </Helmet>
 
       <div className="container mx-auto px-4 py-6 space-y-6 max-w-6xl">

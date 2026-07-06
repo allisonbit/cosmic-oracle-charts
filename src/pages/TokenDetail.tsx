@@ -209,8 +209,8 @@ export default function TokenDetail() {
         description={`Live ${token.symbol} price ${formatPrice(token.price)}, 24h change ${formatChange(token.change24h)}, volume ${formatCompact(token.volume24h)}. Full analysis for ${token.name} on ${chainData.name}.`}
       />
       <Helmet>
-        <script type="application/ld+json">{JSON.stringify(financialProductLd)}</script>
-        <script type="application/ld+json">{JSON.stringify(tokenFaqLd)}</script>
+        
+        
       </Helmet>
 
       <div className="container mx-auto px-4 py-4 md:py-6 space-y-5">

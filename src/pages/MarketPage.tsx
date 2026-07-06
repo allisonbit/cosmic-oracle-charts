@@ -429,10 +429,8 @@ export default function MarketPage() {
   return (
     <div className="min-h-screen flex flex-col cosmic-bg">
       <Helmet>
-        {faqSchema && (
-          <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
-        )}
-        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+        
+        
       </Helmet>
 
       <header>

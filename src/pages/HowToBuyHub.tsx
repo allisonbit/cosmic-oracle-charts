@@ -66,15 +66,7 @@ export default function HowToBuyHub() {
       <Helmet>
         <title>How to Buy Cryptocurrency – Beginner Guides | Oracle Bull</title>
         <meta name="description" content="Learn how to buy Bitcoin, Ethereum, Solana and 30+ cryptocurrencies safely. Step-by-step beginner guides with AI-powered tips on timing your purchase." />
-        <link rel="canonical" href="https://oraclebull.com/how-to-buy" />
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "CollectionPage",
-          "name": "How to Buy Crypto Guides | Oracle Bull",
-          "description": "Step-by-step guides on how to buy 80+ cryptocurrencies safely with AI purchase timing tips.",
-          "url": "https://oraclebull.com/how-to-buy",
-          "publisher": { "@type": "Organization", "name": "Oracle Bull", "url": "https://oraclebull.com" }
-        })}</script>
+        
       </Helmet>
 
       <div className="container mx-auto px-4 py-8">

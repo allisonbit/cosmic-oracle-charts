@@ -227,8 +227,8 @@ export default function CryptoFactory() {
         canonicalPath="/crypto-factory"
       />
       <Helmet>
-        <script type="application/ld+json">{JSON.stringify(webAppLd)}</script>
-        <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
+        
+        
       </Helmet>
 
       <div className="min-h-screen cosmic-bg">

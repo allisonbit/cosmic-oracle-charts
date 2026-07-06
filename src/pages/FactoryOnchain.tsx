@@ -46,12 +46,7 @@ function FactoryOnchainSchema() {
     <Helmet>
       <title>On-Chain Activity Feed | Whale Movements & Exchange Flows Today | Oracle Bull</title>
       <meta name="description" content="Real-time on-chain cryptocurrency activity tracker. Monitor whale movements, exchange inflows and outflows, bridge transfers, and large transactions across Ethereum, Solana, and major blockchains." />
-      <meta name="keywords" content="on-chain activity, whale movements, exchange flows, crypto transactions, blockchain activity, whale tracker, exchange inflow outflow" />
-      <link rel="canonical" href="https://oraclebull.com/factory/onchain" />
-      <meta property="og:title" content="On-Chain Activity Feed | Whale Movements Today | Oracle Bull" />
-      <meta property="og:description" content="Track real-time on-chain activity including whale movements, exchange flows, and large transactions." />
-      <meta property="og:url" content="https://oraclebull.com/factory/onchain" />
-      <script type="application/ld+json">{JSON.stringify(schema)}</script>
+      
     </Helmet>
   );
 }

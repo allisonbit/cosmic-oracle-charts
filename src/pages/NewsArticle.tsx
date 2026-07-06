@@ -144,7 +144,7 @@ export default function NewsArticle() {
   if (!article) {
     return (
       <Layout>
-        <Helmet><title>Article not found | Oracle Bull News</title><meta name="robots" content="noindex" /></Helmet>
+        <Helmet><title>Article not found | Oracle Bull News</title></Helmet>
         <div className="container mx-auto px-4 py-32 text-center">
           <Newspaper className="w-14 h-14 text-muted-foreground/40 mx-auto mb-4" />
           <h1 className="text-3xl font-bold mb-4 font-display">Article not found</h1>
@@ -195,22 +195,13 @@ export default function NewsArticle() {
       <Helmet>
         <title>{article.metaTitle || `${article.title} | Oracle Bull News`}</title>
         <meta name="description" content={article.metaDescription} />
-        <meta name="keywords" content={[article.primaryKeyword, ...article.secondaryKeywords].join(", ")} />
-        <link rel="canonical" href={canonical} />
-        <meta property="og:title" content={article.title} />
-        <meta property="og:description" content={article.metaDescription} />
-        {article.imageUrl && <meta property="og:image" content={article.imageUrl} />}
-        <meta property="og:url" content={canonical} />
-        <meta property="og:type" content="article" />
+        
         <meta property="article:published_time" content={isoPublished} />
         <meta property="article:section" content={article.category} />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={article.title} />
-        <meta name="twitter:description" content={article.metaDescription} />
-        {article.imageUrl && <meta name="twitter:image" content={article.imageUrl} />}
-        <script type="application/ld+json">{JSON.stringify(newsArticleLd)}</script>
-        <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>
-        {faqLd && <script type="application/ld+json">{JSON.stringify(faqLd)}</script>}
+        
+        
+        
+        
       </Helmet>
 
       {/* Reading progress bar */}

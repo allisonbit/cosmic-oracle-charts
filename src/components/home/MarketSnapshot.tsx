@@ -66,41 +66,6 @@ export function MarketSnapshot() {
     return { gainers: sorted.slice(0, 4), losers: sorted.slice(-4).reverse() };
   }, [pricesData]);
 
-  useEffect(() => {
-    const prices = pricesData?.prices || [];
-    if (!prices.length) return;
-    document.querySelectorAll('script[data-schema="home-itemlist"]').forEach((el) => el.remove());
-
-    const schema = {
-      "@context": "https://schema.org",
-      "@type": "ItemList",
-      name: "Live Cryptocurrency Prices",
-      description: "Real-time cryptocurrency prices and 24h change",
-      numberOfItems: Math.min(prices.length, 20),
-      itemListOrder: "https://schema.org/ItemListOrderDescending",
-      itemListElement: prices.slice(0, 20).map((coin, i) => ({
-        "@type": "ListItem",
-        position: i + 1,
-        item: {
-          "@type": "FinancialProduct",
-          name: coin.name,
-          description: `${coin.symbol} live price and AI forecast`,
-          url: `${SITE_URL}${coinHref(coin)}`,
-        },
-      })),
-    };
-
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.setAttribute("data-schema", "home-itemlist");
-    script.textContent = JSON.stringify(schema);
-    document.head.appendChild(script);
-
-    return () => {
-      document.querySelectorAll('script[data-schema="home-itemlist"]').forEach((el) => el.remove());
-    };
-  }, [pricesData]);
-
   return (
     <section className="py-10 md:py-14" aria-labelledby="market-snapshot-heading">
       <div className="container mx-auto px-4">

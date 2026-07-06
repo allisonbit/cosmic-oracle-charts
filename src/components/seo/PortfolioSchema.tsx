@@ -65,13 +65,8 @@ export function PortfolioSchema() {
     <Helmet>
       <title>Wallet Scanner | AI Portfolio Analysis | Oracle Bull</title>
       <meta name="description" content="AI-powered crypto wallet scanner. Analyze any wallet to find pumping tokens, assess portfolio risk, and get actionable investment insights. Free, no login required." />
-      <meta name="keywords" content="wallet scanner, crypto portfolio analyzer, wallet analysis, token scanner, defi portfolio, crypto holdings tracker" />
-      <link rel="canonical" href={`${SITE_URL}/portfolio`} />
-      <meta property="og:title" content="AI Wallet Scanner | Oracle Bull" />
-      <meta property="og:description" content="Analyze any crypto wallet with AI. Get risk scores, pump potential, and investment insights." />
-      <meta property="og:url" content={`${SITE_URL}/portfolio`} />
-      <script type="application/ld+json">{JSON.stringify(schema)}</script>
-      <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+      
+      
     </Helmet>
   );
 }

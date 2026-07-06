@@ -96,9 +96,7 @@ export function ChainFAQSchema({ chain, priceData }: ChainFAQSchemaProps) {
 
   return (
     <Helmet>
-      <script type="application/ld+json">
-        {JSON.stringify(faqSchema)}
-      </script>
+      
     </Helmet>
   );
 }

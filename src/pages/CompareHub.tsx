@@ -134,16 +134,7 @@ export default function CompareHub() {
       <Helmet>
         <title>Compare Cryptocurrencies Side by Side | Oracle Bull</title>
         <meta name="description" content="Compare any of 17,000+ cryptocurrencies side-by-side. Search by name, symbol or contract address across every chain — live price, market cap, volume, momentum & an AI verdict on which is the better buy." />
-        <link rel="canonical" href={`${SITE_URL}/compare`} />
-        <meta property="og:title" content="Compare Any Two Cryptocurrencies | Oracle Bull" />
-        <meta property="og:description" content="Search any token by name, symbol or contract and compare it head-to-head with live data and an AI verdict." />
-        <meta property="og:url" content={`${SITE_URL}/compare`} />
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org", "@type": "WebApplication", name: "Crypto Comparison Tool", url: `${SITE_URL}/compare`,
-          description: "Compare any two cryptocurrencies side-by-side with live data and an AI verdict.",
-          applicationCategory: "FinanceApplication", operatingSystem: "Any",
-          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-        })}</script>
+        
       </Helmet>
 
       <div className="container mx-auto px-4 py-8">

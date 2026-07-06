@@ -166,40 +166,26 @@ export function PredictionSEO({ coinName, symbol, timeframe, currentPrice, bias,
     <Helmet>
       <title>{title}</title>
       <meta name="description" content={description} />
-      <meta name="keywords" content={`${coinName} price prediction, ${symbol} forecast ${timeframeLower}, ${coinName} prediction ${timeframeText.toLowerCase()}, will ${symbol} go up, ${coinName} technical analysis, crypto prediction, ${symbol} price ${timeframeLower}, buy ${coinName}, ${symbol} investment`} />
       
       {/* Robots directives */}
-      <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
       
       {/* Open Graph */}
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={description} />
-      <meta property="og:type" content="article" />
-      <meta property="og:url" content={canonicalUrl} />
-      <meta property="og:image" content={`${baseUrl}/oracle-bull-logo.jpg`} />
-      <meta property="og:site_name" content="Oracle Bull" />
       <meta property="article:published_time" content={dateStr} />
       <meta property="article:modified_time" content={dateStr} />
       <meta property="article:section" content="Cryptocurrency" />
       
       {/* Twitter */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={title} />
-      <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={`${baseUrl}/oracle-bull-logo.jpg`} />
-      <meta name="twitter:site" content="@oracle_bulls" />
       
       {/* AI Search Optimization */}
       <meta name="ai-summary" content={`${coinName} ${timeframe} price prediction with ${bias || 'neutral'} outlook. Technical analysis includes RSI, MACD, moving averages, support/resistance levels. Current price: ${currentPrice ? `$${(currentPrice ?? 0).toLocaleString()}` : 'Loading'}.`} />
       
       {/* Canonical */}
-      <link rel="canonical" href={canonicalUrl} />
       
       {/* Structured Data */}
-      <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
-      <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
-      <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
-      <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+      
+      
+      
+      
     </Helmet>
   );
 }

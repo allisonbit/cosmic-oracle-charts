@@ -57,33 +57,6 @@ const faqs = [
 
 export function HomepageFAQ() {
   // Inject FAQ schema for Google rich snippets
-  useEffect(() => {
-    document.querySelectorAll('script[data-schema="homepage-faq"]').forEach(el => el.remove());
-
-    const schema = {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": faqs.map(faq => ({
-        "@type": "Question",
-        "name": faq.question,
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": faq.answer,
-        },
-      })),
-    };
-
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.setAttribute("data-schema", "homepage-faq");
-    script.textContent = JSON.stringify(schema);
-    document.head.appendChild(script);
-
-    return () => {
-      document.querySelectorAll('script[data-schema="homepage-faq"]').forEach(el => el.remove());
-    };
-  }, []);
-
   return (
     <section className="py-12 md:py-20 border-t border-border/30" aria-labelledby="faq-heading">
       <div className="container mx-auto px-4">

@@ -97,7 +97,7 @@ export default function ToolsHub() {
         canonicalPath="/tools"
       />
       <Helmet>
-        <script type="application/ld+json">{JSON.stringify(itemListLd)}</script>
+        
       </Helmet>
 
       <div className="container mx-auto px-4 py-8">

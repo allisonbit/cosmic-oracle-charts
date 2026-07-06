@@ -117,25 +117,8 @@ export default function PredictTarget() {
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
-        <link rel="canonical" href={canonical} />
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={description} />
-        <meta property="og:url" content={canonical} />
-        <meta property="og:type" content="article" />
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
-        })}</script>
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Home", item: "https://oraclebull.com/" },
-            { "@type": "ListItem", position: 2, name: "Predictions", item: "https://oraclebull.com/predictions" },
-            { "@type": "ListItem", position: 3, name: `${coinDef.name} $${fmtPrice(target)} by ${year}`, item: canonical },
-          ],
-        })}</script>
+        
+        
       </Helmet>
 
       <main className="max-w-4xl mx-auto px-4 py-10">

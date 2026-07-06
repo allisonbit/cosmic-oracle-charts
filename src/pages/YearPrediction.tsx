@@ -191,7 +191,7 @@ export default function YearPrediction() {
     <Layout>
       <SEO title={title} description={description} />
       <Helmet>
-        <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
+        
       </Helmet>
 
       <div className="container mx-auto px-4 py-8 max-w-5xl">

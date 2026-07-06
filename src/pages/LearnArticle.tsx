@@ -144,18 +144,9 @@ export default function LearnArticle() {
       <Helmet>
         <title>{article.metaTitle}</title>
         <meta name="description" content={article.metaDescription} />
-        <meta name="keywords" content={[article.primaryKeyword, ...article.secondaryKeywords].join(", ")} />
-        <link rel="canonical" href={shareUrl} />
-        <meta property="og:title" content={article.metaTitle} />
-        <meta property="og:description" content={article.metaDescription} />
-        <meta property="og:url" content={shareUrl} />
-        <meta property="og:type" content="article" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={article.metaTitle} />
-        <meta name="twitter:description" content={article.metaDescription} />
-        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
-        <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
-        <script type="application/ld+json">{JSON.stringify(breadcrumbData)}</script>
+        
+        
+        
       </Helmet>
 
       {/* Reading progress bar */}

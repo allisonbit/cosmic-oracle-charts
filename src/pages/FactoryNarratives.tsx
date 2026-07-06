@@ -36,12 +36,7 @@ function FactoryNarrativesSchema() {
     <Helmet>
       <title>Crypto Narratives & Trends | Market Sectors Today | Oracle Bull</title>
       <meta name="description" content="Track trending cryptocurrency narratives and market sectors in real-time. Discover which themes are gaining momentum: AI tokens, DeFi protocols, Layer 2 solutions, meme coins, and emerging crypto trends." />
-      <meta name="keywords" content="crypto narratives, crypto trends, market sectors, AI tokens, DeFi, Layer 2, meme coins, crypto themes, market momentum" />
-      <link rel="canonical" href="https://oraclebull.com/factory/narratives" />
-      <meta property="og:title" content="Crypto Narratives & Trends | Hot Sectors Today | Oracle Bull" />
-      <meta property="og:description" content="Track trending crypto narratives and market sectors. See which themes are gaining momentum in real-time." />
-      <meta property="og:url" content="https://oraclebull.com/factory/narratives" />
-      <script type="application/ld+json">{JSON.stringify(schema)}</script>
+      
     </Helmet>
   );
 }

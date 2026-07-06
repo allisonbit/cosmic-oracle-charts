@@ -51,14 +51,8 @@ export function DashboardSchema({ marketCap, fearGreedIndex, lastUpdate }: Dashb
     <Helmet>
       <title>Crypto Market Dashboard | Live Prices & AI Insights | Oracle Bull</title>
       <meta name="description" content="Real-time cryptocurrency dashboard with live prices, fear & greed index, AI market insights, and momentum analysis. Track BTC, ETH, and 100+ coins." />
-      <meta name="keywords" content="crypto dashboard, bitcoin price, cryptocurrency market, fear greed index, crypto live prices, market analysis, btc eth prices" />
-      <link rel="canonical" href={`${SITE_URL}/dashboard`} />
-      <meta property="og:title" content="Crypto Market Dashboard | Oracle Bull" />
-      <meta property="og:description" content="Real-time cryptocurrency dashboard with live prices, AI insights, and market momentum analysis." />
-      <meta property="og:url" content={`${SITE_URL}/dashboard`} />
-      <meta property="og:type" content="website" />
-      <script type="application/ld+json">{JSON.stringify(schema)}</script>
-      <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+      
+      
     </Helmet>
   );
 }

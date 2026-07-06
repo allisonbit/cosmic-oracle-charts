@@ -150,26 +150,8 @@ export default function Chain() {
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={metaDescription} />
-        <meta name="keywords" content={`${chain.name} analytics, ${chain.symbol} price, ${chain.name} tvl, ${chain.name} whale activity, ${chain.symbol} prediction, ${chain.name} ecosystem, ${chain.name} on-chain data`} />
-        <link rel="canonical" href={canonical} />
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={metaDescription} />
-        <meta property="og:url" content={canonical} />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org", "@type": "WebPage", name: title, description: metaDescription, url: canonical,
-          isPartOf: { "@type": "WebSite", name: "Oracle Bull", url: SITE_URL },
-          about: { "@type": "Thing", name: `${chain.name} (${chain.symbol})` }, inLanguage: "en-US",
-        })}</script>
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org", "@type": "BreadcrumbList",
-          itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
-            { "@type": "ListItem", position: 2, name: "Chains", item: `${SITE_URL}/dashboard` },
-            { "@type": "ListItem", position: 3, name: chain.name, item: canonical },
-          ],
-        })}</script>
+        
+        
       </Helmet>
       <ChainFAQSchema chain={chain} priceData={chainPrice} />
 

@@ -54,9 +54,7 @@ export function SetupSchema({
 
   return (
     <Helmet>
-      <script type="application/ld+json" data-schema="trade-setup">
-        {JSON.stringify(schema)}
-      </script>
+      
     </Helmet>
   );
 }

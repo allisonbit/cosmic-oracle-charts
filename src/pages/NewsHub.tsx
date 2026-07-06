@@ -376,28 +376,9 @@ export default function NewsHub() {
       <Helmet>
         <title>Crypto News Today – Live Headlines + AI Sentiment | Oracle Bull</title>
         <meta name="description" content="Breaking cryptocurrency news from 50+ trusted sources with AI Bullish/Bearish/Neutral ratings. Bitcoin, Ethereum, Solana, DeFi & regulation — auto-refreshes every 5 minutes." />
-        <meta name="keywords" content="crypto news today, bitcoin news, ethereum news, crypto market news, latest cryptocurrency news, crypto headlines" />
-        <link rel="canonical" href={`${SITE_URL}/news`} />
-        <meta property="og:title" content="Crypto News Today – Live Headlines + AI Sentiment | Oracle Bull" />
-        <meta property="og:description" content="Breaking crypto news with AI sentiment ratings, updated every 5 minutes." />
-        <meta property="og:url" content={`${SITE_URL}/news`} />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org", "@type": "CollectionPage",
-          name: "Crypto News Today | Oracle Bull",
-          url: `${SITE_URL}/news`,
-          isPartOf: { "@type": "WebSite", name: "Oracle Bull", url: SITE_URL },
-          publisher: { "@type": "Organization", name: "Oracle Bull", url: SITE_URL },
-        })}</script>
-        <script type="application/ld+json">{JSON.stringify(itemListLd)}</script>
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org", "@type": "BreadcrumbList",
-          itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
-            { "@type": "ListItem", position: 2, name: "News", item: `${SITE_URL}/news` },
-          ],
-        })}</script>
+        
+        
+        
       </Helmet>
 
       <div className="container mx-auto px-4 py-6">

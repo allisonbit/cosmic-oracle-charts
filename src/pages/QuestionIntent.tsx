@@ -94,23 +94,7 @@ export default function QuestionIntent() {
         keywords={`${crypto.name} prediction, ${crypto.symbol} price today, ${crypto.name} forecast, will ${crypto.symbol} go up, ${crypto.name} ${timeframe} prediction`}
       />
       <Helmet>
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            "mainEntity": [{
-              "@type": "Question",
-              "name": question,
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": prediction ? 
-                  `Based on our AI analysis, ${crypto.name} shows a ${prediction.bias} bias with ${prediction.confidence}% confidence. Current price: ${formatPrice(prediction.currentPrice)}. ${prediction.summary}` :
-                  `Our AI is analyzing ${crypto.name} price data. Check back for the latest ${timeframe} prediction.`
-              }
-            }],
-            "dateModified": new Date().toISOString()
-          })}
-        </script>
+        
       </Helmet>
 
       <header>

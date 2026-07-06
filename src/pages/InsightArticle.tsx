@@ -163,21 +163,12 @@ export default function InsightArticle() {
       <Helmet>
         <title>{article.metaTitle || article.title} | Oracle Bull</title>
         <meta name="description" content={article.metaDescription} />
-        <meta name="keywords" content={[article.primaryKeyword, ...article.secondaryKeywords].join(", ")} />
-        <link rel="canonical" href={shareUrl} />
-        <meta property="og:title" content={article.title} />
-        <meta property="og:description" content={article.metaDescription} />
-        <meta property="og:url" content={shareUrl} />
-        <meta property="og:type" content="article" />
         <meta property="article:published_time" content={article.publishedAt} />
         <meta property="article:section" content={article.category} />
         <meta property="article:tag" content={article.primaryKeyword} />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={article.title} />
-        <meta name="twitter:description" content={article.metaDescription} />
-        {structuredData && <script type="application/ld+json">{JSON.stringify(structuredData)}</script>}
-        {faqStructuredData && <script type="application/ld+json">{JSON.stringify(faqStructuredData)}</script>}
-        <script type="application/ld+json">{JSON.stringify(breadcrumbData)}</script>
+        
+        
+        
       </Helmet>
 
       {/* Reading progress bar */}

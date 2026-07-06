@@ -46,12 +46,7 @@ function FactoryNewsSchema() {
     <Helmet>
       <title>Crypto News Sentiment Feed — AI Market-Impact Analysis | Oracle Bull</title>
       <meta name="description" content="Every crypto headline scored Bullish, Bearish or Neutral by AI, with its likely market impact. A sentiment-first news feed inside the Crypto Factory — see how news moves prices before you trade." />
-      <meta name="keywords" content="crypto news sentiment, crypto market impact analysis, bullish bearish crypto news, ai crypto news analysis, crypto news sentiment score" />
-      <link rel="canonical" href="https://oraclebull.com/factory/news" />
-      <meta property="og:title" content="Crypto News Sentiment Feed — AI Market-Impact Analysis | Oracle Bull" />
-      <meta property="og:description" content="Crypto headlines scored Bullish / Bearish / Neutral by AI with likely market impact. See how the news moves prices." />
-      <meta property="og:url" content="https://oraclebull.com/factory/news" />
-      <script type="application/ld+json">{JSON.stringify(schema)}</script>
+      
     </Helmet>
   );
 }

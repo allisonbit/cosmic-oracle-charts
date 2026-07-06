@@ -53,13 +53,7 @@ function FactoryEventsSchema() {
     <Helmet>
       <title>Crypto Events Calendar | Token Unlocks & Network Upgrades Today | Oracle Bull</title>
       <meta name="description" content="Live cryptocurrency market events calendar. Track token unlocks, vesting schedules, network upgrades, hard forks, governance votes, and regulatory announcements affecting crypto prices today." />
-      <meta name="keywords" content="crypto events, token unlocks, crypto calendar, network upgrades, crypto governance, vesting schedule, crypto news, market events" />
-      <link rel="canonical" href="https://oraclebull.com/factory/events" />
-      <meta property="og:title" content="Crypto Events Calendar | Live Market Events | Oracle Bull" />
-      <meta property="og:description" content="Track live cryptocurrency market events including token unlocks, network upgrades, and governance votes. Updated 24/7." />
-      <meta property="og:url" content="https://oraclebull.com/factory/events" />
-      <meta property="og:type" content="website" />
-      <script type="application/ld+json">{JSON.stringify(schema)}</script>
+      
     </Helmet>
   );
 }

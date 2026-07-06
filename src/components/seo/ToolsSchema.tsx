@@ -51,10 +51,8 @@ export function StrengthMeterSchema() {
     <Helmet>
       <title>Crypto Strength Meter | Relative Strength Analysis | Oracle Bull</title>
       <meta name="description" content="Compare crypto strength in real-time. Analyze relative performance of cryptocurrencies and blockchains with our AI-powered strength scoring system." />
-      <meta name="keywords" content="crypto strength, relative strength, momentum analysis, crypto comparison, strength indicator, market momentum" />
-      <link rel="canonical" href={`${SITE_URL}/strength-meter`} />
-      <script type="application/ld+json">{JSON.stringify(schema)}</script>
-      <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+      
+      
     </Helmet>
   );
 }
@@ -87,9 +85,7 @@ export function CryptoFactorySchema() {
     <Helmet>
       <title>Crypto Factory | Market Events & News Hub | Oracle Bull</title>
       <meta name="description" content="Your centralized crypto intelligence hub. Track market events, on-chain activity, emerging narratives, and curated news all in one place." />
-      <meta name="keywords" content="crypto events, blockchain calendar, crypto news, market events, on-chain data, crypto narratives" />
-      <link rel="canonical" href={`${SITE_URL}/factory`} />
-      <script type="application/ld+json">{JSON.stringify(schema)}</script>
+      
     </Helmet>
   );
 }
@@ -113,8 +109,7 @@ export function TokenSchema({ symbol, name, price }: { symbol: string; name: str
     <Helmet>
       <title>{symbol} Token | Price & Market Data | Oracle Bull</title>
       <meta name="description" content={`${name} (${symbol}) live price, market data, and community information. Track ${symbol} performance and join the community.`} />
-      <link rel="canonical" href={`${SITE_URL}/contact`} />
-      <script type="application/ld+json">{JSON.stringify(schema)}</script>
+      
     </Helmet>
   );
 }

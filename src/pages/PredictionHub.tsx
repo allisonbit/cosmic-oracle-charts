@@ -166,16 +166,7 @@ export default function PredictionHub() {
         canonicalPath="/predictions"
       />
       <Helmet>
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebPage",
-            "name": "Global Crypto Predictions Hub",
-            "description": "AI-powered predictions for any cryptocurrency worldwide",
-            "url": "https://oraclebull.com/predictions",
-            "publisher": { "@type": "Organization", "name": "Oracle Bull", "url": "https://oraclebull.com" }
-          })}
-        </script>
+        
       </Helmet>
 
       <header><Navbar /></header>

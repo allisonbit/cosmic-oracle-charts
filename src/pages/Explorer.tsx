@@ -251,8 +251,7 @@ const ExplorerPage = () => {
       />
       <ExplorerSchema chainCount={ALL_CHAINS.length} />
       <Helmet>
-        <link rel="canonical" href={`${SITE_URL}/explorer`} />
-        <script type="application/ld+json">{JSON.stringify(itemListLd)}</script>
+        
       </Helmet>
 
       {/* Page header (H1 for SEO) */}

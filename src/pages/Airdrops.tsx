@@ -72,17 +72,10 @@ export default function Airdrops() {
       <Helmet>
         <title>Crypto Airdrops 2026–2027 — All Active, Upcoming & Confirmed Airdrops | Oracle Bull</title>
         <meta name="description" content="Track every crypto airdrop in 2026 and 2027. Active tasks, snapshot dates, eligibility, estimated values and step-by-step guides for Base, Ethereum, Solana, zkSync and more. Updated regularly." />
-        <meta name="keywords" content="crypto airdrops 2026, crypto airdrops 2027, best crypto airdrops 2026, base airdrop 2026, ethereum airdrop 2026, solana airdrop 2026, zksync airdrop, how to qualify for crypto airdrops, confirmed crypto airdrops 2026, airdrop guide" />
-        <link rel="canonical" href={canonical} />
-        <meta property="og:title" content="Crypto Airdrops 2026–2027 — All Active & Upcoming | Oracle Bull" />
-        <meta property="og:description" content="Track every crypto airdrop in 2026 and 2027 — eligibility, tasks, estimated values and guides for Base, Ethereum, Solana and more." />
-        <meta property="og:url" content={canonical} />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <script type="application/ld+json">{JSON.stringify(webAppLd)}</script>
-        <script type="application/ld+json">{JSON.stringify(itemListLd)}</script>
-        <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
-        <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>
+        
+        
+        
+        
       </Helmet>
 
       <div className="container mx-auto px-4 py-8">

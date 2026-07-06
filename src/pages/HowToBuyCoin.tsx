@@ -147,12 +147,7 @@ export default function HowToBuyCoin() {
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDesc} />
-        <link rel="canonical" href={canonical} />
-        <meta property="og:title" content={pageTitle} />
-        <meta property="og:description" content={pageDesc} />
-        <meta property="og:url" content={canonical} />
-        <meta name="keywords" content={`how to buy ${meta.name}, buy ${meta.ticker}, purchase ${meta.name}, ${meta.ticker} price, best exchange for ${meta.name}`} />
-        <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
+        
       </Helmet>
 
       <div className="container mx-auto px-4 py-8">

@@ -65,20 +65,10 @@ export default function BitcoinLiquidationHeatmap() {
           name="description"
           content="Free real-time Bitcoin liquidation heatmap. Track BTC long and short liquidation clusters, leverage zones, and price levels where cascading liquidations are likely to trigger reversals."
         />
-        <meta
-          name="keywords"
-          content="bitcoin liquidation heatmap, btc liquidation map, bitcoin liquidations, btc leverage heatmap, bitcoin liquidity heatmap, crypto liquidation levels, btc long short liquidations"
-        />
-        <link rel="canonical" href={url} />
-        <meta property="og:title" content="Bitcoin Liquidation Heatmap | Live BTC Liquidity Levels" />
-        <meta
-          property="og:description"
-          content="Live Bitcoin liquidation heatmap showing BTC long and short liquidity clusters in real time."
-        />
-        <meta property="og:url" content={url} />
-        <meta property="og:type" content="website" />
-        <script type="application/ld+json">{JSON.stringify(appSchema)}</script>
-        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+        
+        
+        
+        
       </Helmet>
 
       <div className="container mx-auto px-4 py-8 max-w-6xl">

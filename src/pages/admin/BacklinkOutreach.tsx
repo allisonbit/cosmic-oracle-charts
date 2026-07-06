@@ -444,7 +444,6 @@ export default function BacklinkOutreach() {
     <>
       <Helmet>
         <title>Backlink Outreach – Admin</title>
-        <meta name="robots" content="noindex,nofollow" />
       </Helmet>
       <Navbar />
       <main className="container mx-auto max-w-7xl px-4 py-8">

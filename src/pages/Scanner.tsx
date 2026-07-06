@@ -336,7 +336,7 @@ export default function Scanner() {
   return (
     <Layout>
       <SEO title="Crypto Token Scanner – Every Token, CEX & DEX, All Chains" description="Scan every cryptocurrency in the world across CEX and DEX. Live data from DexScreener, CoinGecko and Alchemy: strength scoring, multi-timeframe momentum, liquidity, buy pressure and new-pair discovery on all chains." />
-      <Helmet><link rel="canonical" href="https://oraclebull.com/scanner" /></Helmet>
+      <Helmet></Helmet>
 
       <div className="min-h-screen cosmic-bg">
         {/* Live status bar */}

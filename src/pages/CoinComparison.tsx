@@ -177,20 +177,7 @@ export default function CoinComparison() {
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDesc} />
-        <link rel="canonical" href={canonicalUrl} />
-        <meta property="og:title" content={pageTitle} />
-        <meta property="og:description" content={pageDesc} />
-        <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org", "@type": "WebPage", name: pageTitle, description: pageDesc, url: canonicalUrl,
-          breadcrumb: { "@type": "BreadcrumbList", itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
-            { "@type": "ListItem", position: 2, name: "Compare", item: `${SITE_URL}/compare` },
-            { "@type": "ListItem", position: 3, name: `${tickA} vs ${tickB}`, item: canonicalUrl },
-          ] },
-        })}</script>
+        
       </Helmet>
 
       <div className="container mx-auto px-4 py-8">

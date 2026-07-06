@@ -69,13 +69,8 @@ export function ExplorerSchema({ chainCount = 30 }: ExplorerSchemaProps) {
     <Helmet>
       <title>Universal Token Explorer | Multi-Chain Search | Oracle Bull</title>
       <meta name="description" content={`Search any cryptocurrency token across ${chainCount}+ blockchains. Find tokens by contract address, name, or symbol with real-time price data and AI analysis.`} />
-      <meta name="keywords" content="token explorer, contract address lookup, token search, multi-chain explorer, defi token finder, crypto token info" />
-      <link rel="canonical" href={`${SITE_URL}/explorer`} />
-      <meta property="og:title" content="Universal Token Explorer | Oracle Bull" />
-      <meta property="og:description" content={`Search any token across ${chainCount}+ blockchains with AI-powered analysis.`} />
-      <meta property="og:url" content={`${SITE_URL}/explorer`} />
-      <script type="application/ld+json">{JSON.stringify(schema)}</script>
-      <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+      
+      
     </Helmet>
   );
 }

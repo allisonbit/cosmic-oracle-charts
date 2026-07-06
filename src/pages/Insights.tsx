@@ -171,11 +171,7 @@ export default function Insights() {
       <Helmet>
         <title>Crypto Market Analysis Today – AI-Powered Daily Insights | Oracle Bull</title>
         <meta name="description" content="Daily AI-powered cryptocurrency market analysis. Expert insights on Bitcoin, Ethereum, DeFi, altcoins, and more. Updated every day." />
-        <link rel="canonical" href="https://oraclebull.com/insights" />
-        <meta property="og:title" content="Crypto Market Insights | Oracle Bull" />
-        <meta property="og:description" content="Daily AI-powered crypto analysis and trading intelligence." />
-        <meta property="og:url" content="https://oraclebull.com/insights" />
-        <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
+        
       </Helmet>
       <FAQSchema items={INSIGHTS_FAQS} url="https://oraclebull.com/insights" />
 

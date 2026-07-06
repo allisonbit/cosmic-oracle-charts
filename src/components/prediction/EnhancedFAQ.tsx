@@ -77,9 +77,7 @@ export function EnhancedFAQ({ coinName, symbol, timeframe, currentPrice, bias, c
   return (
     <>
       <Helmet>
-        <script type="application/ld+json">
-          {JSON.stringify(faqSchema)}
-        </script>
+        
       </Helmet>
       
       <section className="border-t border-border/30 pt-5">
