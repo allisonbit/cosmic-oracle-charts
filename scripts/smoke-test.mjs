@@ -41,8 +41,8 @@ async function test() {
     const stillBooting = await page.evaluate(() => !!document.getElementById('boot-fallback'));
     const privyLoaded = requests.some(u => /PrivyLayer/.test(u));
     await page.close();
-    // ignore benign network errors (analytics/ads blocked, supabase fetches in test env)
-    const fatal = errors.filter(e => !/supabase|coingecko|googletag|adsbygoogle|net::ERR|Failed to fetch|401|403|429|privy|analytics|gtag|favicon/i.test(e));
+    // ignore benign network errors (third-party blocked, backend fetches in test env)
+    const fatal = errors.filter(e => !/supabase|coingecko|net::ERR|Failed to fetch|401|403|429|privy|favicon/i.test(e));
     return { rootLen, bodyText, stillBooting, privyLoaded, errors, fatal };
   }
 

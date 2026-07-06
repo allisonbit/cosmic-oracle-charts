@@ -220,7 +220,7 @@ async function runContentCycle(supabase: any, auditResults: any[], existingSlugs
   const randomTopics = ALL_TOPICS.sort(() => Math.random() - 0.5).slice(0, 3);
   const candidateTopics = [...unusedClusterTopics.slice(0, 5), ...randomTopics];
 
-  const systemPrompt = `You are the OracleBull Autonomous Traffic Agent — an expert SEO content strategist for ${SITE_URL}, a free AI-powered crypto analysis platform monetized 100% through Google AdSense.
+  const systemPrompt = `You are the OracleBull Autonomous Traffic Agent — an expert SEO content strategist for ${SITE_URL}, a free AI-powered crypto analysis platform.
 
 PRIMARY OBJECTIVE: Maximize organic Google Search traffic safely and sustainably.
 TODAY: ${new Date().toISOString().split("T")[0]}
@@ -242,7 +242,6 @@ STRICT PROHIBITIONS:
 - No clickbait or misleading claims
 - No keyword stuffing
 - No plagiarized content
-- Must comply with Google AdSense policies
 - Never duplicate slug: ${existingSlugs.slice(0, 50).join(", ")}
 
 SITE AUDIT (fix issues where relevant):
@@ -382,7 +381,7 @@ RULES:
 - Add current 2025 data and statistics
 - Improve internal linking to OracleBull tools
 - No financial guarantees
-- AdSense compliant`,
+- Editorially neutral and policy-compliant`,
         },
         {
           role: "user",
