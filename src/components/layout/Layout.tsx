@@ -5,6 +5,7 @@ import { Footer } from "./Footer";
 import { MobileBottomNav } from "./MobileBottomNav";
 import { BreadcrumbNav } from "./BreadcrumbNav";
 import { CookieBanner } from "../legal/CookieBanner";
+import { AdUnit } from "../ads/AdUnit";
 import { Loader2 } from "lucide-react";
 
 interface LayoutProps {
@@ -37,9 +38,11 @@ export function Layout({ children, showTicker = true }: LayoutProps) {
       
       <main id="main-content" className={`flex-1 ${showTicker ? "" : "mt-14 md:mt-16"} pb-36 md:pb-28 scroll-smooth-touch`}>
         <BreadcrumbNav />
+        <AdUnit format="horizontal" className="my-2 max-w-5xl mx-auto px-4" />
         <Suspense fallback={<LoadingFallback />}>
           {children}
         </Suspense>
+        <AdUnit format="horizontal" className="mt-6 mb-2 max-w-5xl mx-auto px-4" />
       </main>
       
       <Footer />

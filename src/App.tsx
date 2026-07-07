@@ -11,6 +11,7 @@ import { AppErrorBoundary } from "@/components/system/AppErrorBoundary";
 import { RouteErrorBoundary } from "@/components/system/RouteErrorBoundary";
 
 import { ScrollToTop } from "@/components/system/ScrollToTop";
+import { AdRefresh } from "@/components/ads/AdRefresh";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 // AdminRoute is lazy so its supabase `.from()` dependency (the heavy
 // @supabase/supabase-js client) stays out of the initial bundle.
@@ -188,6 +189,7 @@ const App = () => (
           <BrowserRouter>
             <ScrollToTop />
             <ChunkLoadRecovery />
+            <AdRefresh />
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route path="/" element={B(<Index />)} />
