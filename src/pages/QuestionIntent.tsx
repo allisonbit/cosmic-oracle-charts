@@ -19,6 +19,8 @@ import { AdsterraBanner } from "@/components/ads/AdsterraBanner";
 import { AdsterraBanner300 } from "@/components/ads/AdsterraBanner300";
 import { AdsterraBanner320 } from "@/components/ads/AdsterraBanner320";
 import { AdsterraSmartlink } from "@/components/ads/AdsterraSmartlink";
+import { AdsterraStickyBanner } from "@/components/ads/AdsterraStickyBanner";
+import { AdBreak } from "@/components/ads/AdBreak";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function QuestionIntent() {
@@ -159,8 +161,10 @@ export default function QuestionIntent() {
       </header>
 
       <main className="flex-1 container mx-auto px-4 py-24 md:py-32">
-        <AdUnit format="horizontal" className="my-2 max-w-5xl mx-auto" />
         <AdsterraSmartlink variant="banner" className="my-3 max-w-5xl mx-auto" />
+        <div className="hidden md:block"><AdsterraBanner className="my-2" /></div>
+        <div className="block md:hidden"><AdsterraBanner320 className="my-2" /></div>
+        <AdUnit format="horizontal" className="my-2 max-w-5xl mx-auto" />
         <div className="max-w-4xl mx-auto">
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
@@ -323,6 +327,8 @@ export default function QuestionIntent() {
               </>
             ) : null}
           </section>
+
+          <AdBreak variant="compact" />
 
           {/* Narrative Answer Section */}
           {prediction && (
@@ -604,6 +610,8 @@ export default function QuestionIntent() {
             </section>
           )}
 
+          <AdBreak variant="full" />
+
           {/* Shareable Card */}
           {prediction && (
             <section className="mb-8">
@@ -861,13 +869,14 @@ export default function QuestionIntent() {
       </main>
 
       <AdsterraNative className="my-4 max-w-5xl mx-auto px-4" />
-      <AdsterraBanner className="my-4" />
       <AdsterraBanner300 className="my-4" />
-      <AdsterraBanner320 className="my-4" />
+      <div className="hidden md:block"><AdsterraBanner className="my-4" /></div>
+      <div className="block md:hidden"><AdsterraBanner320 className="my-4" /></div>
       <AdsterraSmartlink variant="button" className="my-4" />
       <AdUnit format="horizontal" className="mt-6 mb-2 max-w-5xl mx-auto px-4" />
       <Footer />
       <MobileBottomNav />
+      <AdsterraStickyBanner />
       <div className="h-20 md:hidden" aria-hidden="true" />
     </div>
   );

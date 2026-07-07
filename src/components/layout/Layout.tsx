@@ -11,6 +11,7 @@ import { AdsterraBanner } from "../ads/AdsterraBanner";
 import { AdsterraBanner300 } from "../ads/AdsterraBanner300";
 import { AdsterraBanner320 } from "../ads/AdsterraBanner320";
 import { AdsterraSmartlink } from "../ads/AdsterraSmartlink";
+import { AdsterraStickyBanner } from "../ads/AdsterraStickyBanner";
 import { Loader2 } from "lucide-react";
 
 interface LayoutProps {
@@ -40,24 +41,41 @@ export function Layout({ children, showTicker = true }: LayoutProps) {
           </div>
         )}
       </header>
-      
+
       <main id="main-content" className={`flex-1 ${showTicker ? "" : "mt-14 md:mt-16"} pb-36 md:pb-28 scroll-smooth-touch`}>
         <BreadcrumbNav />
-        <AdUnit format="horizontal" className="my-2 max-w-5xl mx-auto px-4" />
+
+        {/* Top ad zone — first thing users see */}
         <AdsterraSmartlink variant="banner" className="my-3 max-w-5xl mx-auto px-4" />
+        <div className="hidden md:block">
+          <AdsterraBanner className="my-2" />
+        </div>
+        <div className="block md:hidden">
+          <AdsterraBanner320 className="my-2" />
+        </div>
+        <AdUnit format="horizontal" className="my-2 max-w-5xl mx-auto px-4" />
+
+        {/* Page content */}
         <Suspense fallback={<LoadingFallback />}>
           {children}
         </Suspense>
+
+        {/* Bottom ad zone — after content */}
         <AdsterraNative className="my-4 max-w-5xl mx-auto px-4" />
-        <AdsterraBanner className="my-4" />
         <AdsterraBanner300 className="my-4" />
-        <AdsterraBanner320 className="my-4" />
+        <div className="hidden md:block">
+          <AdsterraBanner className="my-4" />
+        </div>
+        <div className="block md:hidden">
+          <AdsterraBanner320 className="my-4" />
+        </div>
         <AdsterraSmartlink variant="button" className="my-4" />
         <AdUnit format="horizontal" className="mt-6 mb-2 max-w-5xl mx-auto px-4" />
       </main>
-      
+
       <Footer />
       <MobileBottomNav />
+      <AdsterraStickyBanner />
       <CookieBanner />
     </div>
   );

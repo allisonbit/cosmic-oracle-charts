@@ -13,6 +13,8 @@ import { AdsterraBanner } from "@/components/ads/AdsterraBanner";
 import { AdsterraBanner300 } from "@/components/ads/AdsterraBanner300";
 import { AdsterraBanner320 } from "@/components/ads/AdsterraBanner320";
 import { AdsterraSmartlink } from "@/components/ads/AdsterraSmartlink";
+import { AdsterraStickyBanner } from "@/components/ads/AdsterraStickyBanner";
+import { AdBreak } from "@/components/ads/AdBreak";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SEO } from "@/components/MainSEO";
@@ -100,9 +102,12 @@ const Index = () => {
       </header>
 
       <main id="main-content">
-        <AdUnit format="horizontal" className="my-2 max-w-5xl mx-auto px-4" />
+        {/* Top ad zone */}
         <AdsterraSmartlink variant="banner" className="my-3 max-w-5xl mx-auto px-4" />
-        {/* Lean editorial masthead — compact identity, search, live chips */}
+        <div className="hidden md:block"><AdsterraBanner className="my-2" /></div>
+        <div className="block md:hidden"><AdsterraBanner320 className="my-2" /></div>
+        <AdUnit format="horizontal" className="my-2 max-w-5xl mx-auto px-4" />
+
         <HeroSection />
 
         {/* ═══ 1. THE NEWSROOM — latest crypto news leads, first thing seen ═══ */}
@@ -112,6 +117,9 @@ const Index = () => {
 
         {/* Scatter: trust signals as a thin strip right after the lead */}
         <TrustStrip />
+
+        {/* Mid-content ad break */}
+        <AdBreak variant="compact" />
 
         {/* ═══ 2. Prediction markets — what the crowd is betting on ═══ */}
         <Suspense fallback={<SectionFallback />}>
@@ -138,6 +146,9 @@ const Index = () => {
 
         {/* Scatter: coverage / real-time claim */}
         <CoverageStrip />
+
+        {/* Mid-content ad break */}
+        <AdBreak variant="full" />
 
         {/* Explore chains — internal linking */}
         <ViewportSection fallback={<SectionFallback />}>
@@ -193,13 +204,14 @@ const Index = () => {
       </main>
 
       <AdsterraNative className="my-4 max-w-5xl mx-auto px-4" />
-      <AdsterraBanner className="my-4" />
       <AdsterraBanner300 className="my-4" />
-      <AdsterraBanner320 className="my-4" />
+      <div className="hidden md:block"><AdsterraBanner className="my-4" /></div>
+      <div className="block md:hidden"><AdsterraBanner320 className="my-4" /></div>
       <AdsterraSmartlink variant="button" className="my-4" />
       <AdUnit format="horizontal" className="mt-6 mb-2 max-w-5xl mx-auto px-4" />
       <Footer />
       <MobileBottomNav />
+      <AdsterraStickyBanner />
       {/* Bottom padding for mobile nav */}
       <div className="h-20 md:hidden" aria-hidden="true" />
     </div>
