@@ -9,6 +9,7 @@ import { AdUnit } from "../ads/AdUnit";
 import { AdsterraNative } from "../ads/AdsterraNative";
 import { AdsterraBanner } from "../ads/AdsterraBanner";
 import { AdsterraBanner300 } from "../ads/AdsterraBanner300";
+import { AdsterraBanner320 } from "../ads/AdsterraBanner320";
 import { AdsterraSmartlink } from "../ads/AdsterraSmartlink";
 import { Loader2 } from "lucide-react";
 
@@ -50,6 +51,7 @@ export function Layout({ children, showTicker = true }: LayoutProps) {
         <AdsterraNative className="my-4 max-w-5xl mx-auto px-4" />
         <AdsterraBanner className="my-4" />
         <AdsterraBanner300 className="my-4" />
+        <AdsterraBanner320 className="my-4" />
         <AdsterraSmartlink variant="button" className="my-4" />
         <AdUnit format="horizontal" className="mt-6 mb-2 max-w-5xl mx-auto px-4" />
       </main>
