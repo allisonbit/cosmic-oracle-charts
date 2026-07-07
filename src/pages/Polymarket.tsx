@@ -51,7 +51,7 @@ function MarketCard({ m }: { m: PolymarketMarket }) {
     <a href={m.url} target="_blank" rel="noopener noreferrer" className="group block border-t border-border/20 pt-4 hover:bg-muted/20 transition-all overflow-hidden">
       <div className="p-4 space-y-3">
         <div className="flex items-start gap-3">
-          {m.image && <img src={m.image} alt={m.title || m.question} loading="lazy" className="w-11 h-11 rounded-lg object-cover shrink-0 bg-muted" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />}
+          {m.image && <img src={m.image} alt={m.question} loading="lazy" className="w-11 h-11 rounded-lg object-cover shrink-0 bg-muted" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />}
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5 mb-1">
               <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-primary/10 text-primary">{m.category}</span>
