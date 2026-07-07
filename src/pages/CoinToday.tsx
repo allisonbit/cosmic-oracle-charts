@@ -15,6 +15,7 @@ import { ShareablePredictionCard } from "@/components/predictions/ShareablePredi
 import { AdsterraNative } from "@/components/ads/AdsterraNative";
 import { AdUnit } from "@/components/ads/AdUnit";
 import { AdsterraBanner } from "@/components/ads/AdsterraBanner";
+import { AdsterraBanner300 } from "@/components/ads/AdsterraBanner300";
 import { usePricePrediction, TOP_CRYPTOS, ALL_CRYPTOS } from "@/hooks/usePricePrediction";
 import { useCanonicalSetup } from "@/hooks/useCanonicalSetup";
 
@@ -476,6 +477,7 @@ export default function CoinToday() {
 
       <AdsterraNative className="my-4 max-w-5xl mx-auto px-4" />
       <AdsterraBanner className="my-4" />
+      <AdsterraBanner300 className="my-4" />
       <AdUnit format="horizontal" className="mt-6 mb-2 max-w-5xl mx-auto px-4" />
       <Footer />
       <MobileBottomNav />
