@@ -227,6 +227,7 @@ const App = () => (
                 <Route path="/tools/profit-calculator" element={B(<ProfitCalculator />)} />
                 <Route path="/tools/dca-calculator" element={B(<DCACalculator />)} />
                 <Route path="/tools/impermanent-loss-calculator" element={B(<ILCalculator />)} />
+                <Route path="/tools/position-size-calculator" element={B(<ILCalculator />)} />
                 <Route path="/compare" element={B(<CompareHub />)} />
                 <Route path="/compare/:coins" element={B(<CoinComparison />)} />
                 <Route path="/how-to-buy" element={B(<HowToBuyHub />)} />

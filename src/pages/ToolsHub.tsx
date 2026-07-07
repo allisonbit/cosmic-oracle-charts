@@ -3,7 +3,7 @@ import { SEO } from "@/components/MainSEO";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import {
-  Calculator, TrendingDown, Droplets, Gauge, Search, Zap, Activity,
+  Calculator, TrendingDown, Gauge, Search, Zap, Activity,
   GitCompare, Flame, BarChart3, ArrowRight, Newspaper, Brain,
   TrendingUp, Target, Shield, ChevronRight,
 } from "lucide-react";
@@ -25,11 +25,11 @@ const TOOLS = [
     tag: "Calculator",
   },
   {
-    to: "/tools/impermanent-loss-calculator",
-    label: "Impermanent Loss Calculator",
-    desc: "Estimate impermanent loss for an AMM liquidity pool before you provide liquidity.",
-    icon: Droplets,
-    tag: "DeFi",
+    to: "/tools/position-size-calculator",
+    label: "Position Size Calculator",
+    desc: "Calculate exact position size from account balance, risk percentage, and stop loss for any token.",
+    icon: Shield,
+    tag: "Risk",
   },
   {
     to: "/scanner",
@@ -230,11 +230,11 @@ export default function ToolsHub() {
                 <Link to="/tools/profit-calculator" className="text-primary hover:underline">profit calculator</Link>,
                 plan a dollar-cost-averaging strategy with the{" "}
                 <Link to="/tools/dca-calculator" className="text-primary hover:underline">DCA calculator</Link>, or
-                estimate{" "}
-                <Link to="/tools/impermanent-loss-calculator" className="text-primary hover:underline">
-                  impermanent loss
+                size your trades with the{" "}
+                <Link to="/tools/position-size-calculator" className="text-primary hover:underline">
+                  position size calculator
                 </Link>{" "}
-                before providing liquidity. Go deeper with the{" "}
+                to manage risk properly. Go deeper with the{" "}
                 <Link to="/scanner" className="text-primary hover:underline">token scanner</Link>,{" "}
                 <Link to="/crypto-strength-meter" className="text-primary hover:underline">strength meter</Link> and{" "}
                 <Link to="/compare" className="text-primary hover:underline">comparison tool</Link>. Every tool is
