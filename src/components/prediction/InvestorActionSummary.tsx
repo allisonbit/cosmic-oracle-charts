@@ -141,13 +141,13 @@ export function InvestorActionSummary({
       <div className="flex flex-wrap gap-2">
         <Link
           to={`/price-prediction/${symbol.toLowerCase()}/${timeframe}`}
-          className="flex items-center gap-1 text-sm px-4 py-2 bg-primary/20 hover:bg-primary/30 rounded-lg transition-colors"
+          className="flex items-center gap-1 text-sm px-4 py-2 bg-primary/20 hover:bg-primary/30 transition-colors"
         >
           Full {coinName} Analysis <ChevronRight className="w-4 h-4" />
         </Link>
         <Link
           to={`/strength?coin=${symbol.toLowerCase()}`}
-          className="flex items-center gap-1 text-sm px-4 py-2 bg-muted hover:bg-muted/80 rounded-lg transition-colors"
+          className="flex items-center gap-1 text-sm px-4 py-2 bg-muted hover:bg-muted/80 transition-colors"
         >
           {symbol} Strength Score
         </Link>

@@ -2,10 +2,11 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Link, useNavigate } from "react-router-dom";
-import { 
+import {
   TrendingUp, TrendingDown, Minus, Clock, Calendar, CalendarDays,
   ChevronRight, Zap, Target, Shield, BarChart3, Globe, Sparkles,
-  Search, ArrowUpRight, Activity, RefreshCw, Radio, Eye, Filter
+  Search, ArrowUpRight, Activity, RefreshCw, Radio, Eye, Filter,
+  Bookmark, CheckCircle2, XCircle
 } from "lucide-react";
 import { TOP_50_CRYPTOS } from "@/lib/extendedCryptos";
 import { TokenIcon } from "@/components/ui/token-icon";
@@ -24,6 +25,8 @@ import { cn } from "@/lib/utils";
 import { computeLocalSignal } from "@/lib/localSignal";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { useMySetups, TradeSetup } from "@/hooks/useTradeSetups";
+import { useAuth } from "@/hooks/useAuth";
 
 const formatPrice = (p: number) => {
   if (!p || p <= 0) return '—';
@@ -69,6 +72,9 @@ export default function PredictionHub() {
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'bullish' | 'bearish' | 'neutral'>('all');
   const [sortBy, setSortBy] = useState<'confidence' | 'change' | 'marketCap'>('confidence');
   const [liveTime, setLiveTime] = useState(new Date());
+  const { user } = useAuth();
+  const { data: mySetups } = useMySetups();
+  const [showSavedSetups, setShowSavedSetups] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => setLiveTime(new Date()), 1000);
@@ -171,7 +177,7 @@ export default function PredictionHub() {
 
       <header><Navbar /></header>
 
-      <main className="flex-1 container mx-auto px-4 py-20 md:py-28 max-w-7xl">
+      <main className="flex-1 container mx-auto px-4 py-20 md:py-28">
 
         <div className="flex justify-center mb-5">
         </div>
@@ -304,6 +310,104 @@ export default function PredictionHub() {
         <section className="mb-8">
           <PredictionLeaderboard />
         </section>
+
+        {/* === MY SAVED SETUPS === */}
+        {user?.id && mySetups && mySetups.length > 0 && (
+          <section className="mb-8 border-t border-border/30 pt-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold flex items-center gap-2">
+                <Bookmark className="w-5 h-5 text-primary" />
+                My Saved Setups
+                <Badge variant="outline" className="text-[10px] ml-1">{mySetups.length}</Badge>
+              </h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-xs"
+                onClick={() => setShowSavedSetups(!showSavedSetups)}
+              >
+                {showSavedSetups ? "Hide" : "Show All"}
+              </Button>
+            </div>
+            {showSavedSetups && (
+              <div className="border-t border-border/40 overflow-x-auto">
+                <table className="w-full text-sm min-w-[700px]">
+                  <thead>
+                    <tr className="border-b border-border">
+                      <th className="text-left p-3 text-xs font-medium text-muted-foreground">Token</th>
+                      <th className="text-center p-3 text-xs font-medium text-muted-foreground">Direction</th>
+                      <th className="text-right p-3 text-xs font-medium text-muted-foreground">Entry</th>
+                      <th className="text-right p-3 text-xs font-medium text-muted-foreground">Stop Loss</th>
+                      <th className="text-right p-3 text-xs font-medium text-muted-foreground">TP1</th>
+                      <th className="text-center p-3 text-xs font-medium text-muted-foreground">Status</th>
+                      <th className="text-right p-3 text-xs font-medium text-muted-foreground">P&L</th>
+                      <th className="text-right p-3 text-xs font-medium text-muted-foreground">Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {mySetups.map((s: TradeSetup) => {
+                      const isWin = s.status === "hit_tp1" || s.status === "hit_tp2" || s.status === "hit_tp3";
+                      const isStopped = s.status === "stopped";
+                      return (
+                        <tr
+                          key={s.id}
+                          className="border-b border-border/30 hover:bg-muted/20 transition-colors cursor-pointer"
+                          onClick={() => navigate(`/price-prediction/${s.coin_id}/${s.timeframe}`)}
+                        >
+                          <td className="p-3">
+                            <div className="flex items-center gap-2">
+                              <TokenIcon coinId={s.coin_id} symbol={s.symbol} size="sm" />
+                              <div>
+                                <div className="font-medium text-sm">{s.name}</div>
+                                <div className="text-[10px] text-muted-foreground">{s.symbol.toUpperCase()} · {s.timeframe}</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="p-3 text-center">
+                            <Badge variant="outline" className={cn("text-[10px] gap-0.5",
+                              s.bias === "bullish" ? "border-success/40 text-success" :
+                              s.bias === "bearish" ? "border-danger/40 text-danger" :
+                              "border-warning/40 text-warning"
+                            )}>
+                              {s.bias === "bullish" && <TrendingUp className="w-3 h-3" />}
+                              {s.bias === "bearish" && <TrendingDown className="w-3 h-3" />}
+                              {s.bias === "neutral" && <Minus className="w-3 h-3" />}
+                              {s.bias.toUpperCase()}
+                            </Badge>
+                          </td>
+                          <td className="p-3 text-right font-mono text-xs">{formatPrice(s.entry_price)}</td>
+                          <td className="p-3 text-right font-mono text-xs text-danger">{formatPrice(s.stop_loss)}</td>
+                          <td className="p-3 text-right font-mono text-xs text-success">{formatPrice(s.take_profit_1)}</td>
+                          <td className="p-3 text-center">
+                            <span className={cn("inline-flex items-center gap-1 text-[10px] font-bold",
+                              isWin ? "text-success" : isStopped ? "text-danger" :
+                              s.status === "active" ? "text-primary" : "text-muted-foreground"
+                            )}>
+                              {isWin && <CheckCircle2 className="w-3 h-3" />}
+                              {isStopped && <XCircle className="w-3 h-3" />}
+                              {s.status === "active" && <Activity className="w-3 h-3" />}
+                              {s.status.replace("_", " ").toUpperCase()}
+                            </span>
+                          </td>
+                          <td className="p-3 text-right">
+                            <span className={cn("font-mono text-xs font-bold",
+                              (s.pnl_percent || 0) >= 0 ? "text-success" : "text-danger"
+                            )}>
+                              {(s.pnl_percent || 0) >= 0 ? "+" : ""}{(s.pnl_percent || 0).toFixed(1)}%
+                            </span>
+                          </td>
+                          <td className="p-3 text-right text-xs text-muted-foreground">
+                            {new Date(s.generated_at).toLocaleDateString()}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </section>
+        )}
 
         {/* === MAIN TOKEN TABLE === */}
         <section className="mb-8">

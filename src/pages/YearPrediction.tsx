@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { getCryptoBySlug, TOP_CRYPTOS } from "@/hooks/usePricePrediction";
 import { coingeckoFetch } from "@/lib/coingecko";
 
-const VALID_YEARS = ["2025", "2026", "2027", "2028", "2030"];
+const VALID_YEARS = ["2025", "2026", "2027", "2028", "2030"] as const;
 
 // Projection multipliers by year — based on historical crypto cycle analysis
 const YEAR_PROJECTIONS: Record<string, {
@@ -223,21 +223,21 @@ export default function YearPrediction() {
 
         {/* Live Price Bar */}
         {currentPrice > 0 && (
-          <div className="holo-card p-4 mb-6 flex flex-wrap items-center gap-6">
-            <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-0.5">Current {coinSymbol} Price</p>
+          <div className="flex flex-wrap items-stretch divide-x divide-border/30 border-y border-border/30 py-4 mb-8">
+            <div className="pr-6">
+              <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-0.5">Current {coinSymbol} Price</p>
               <p className="text-2xl font-display font-bold">{formatPrice(currentPrice)}</p>
             </div>
-            <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-0.5">24h Change</p>
+            <div className="px-6">
+              <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-0.5">24h Change</p>
               <p className={`text-lg font-bold flex items-center gap-1 ${change24h >= 0 ? "text-success" : "text-danger"}`}>
                 {change24h >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
                 {change24h >= 0 ? "+" : ""}{change24h.toFixed(2)}%
               </p>
             </div>
             {marketCap > 0 && (
-              <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wide mb-0.5">Market Cap</p>
+              <div className="px-6">
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-0.5">Market Cap</p>
                 <p className="text-lg font-bold">{formatMarketCap(marketCap)}</p>
               </div>
             )}
@@ -247,9 +247,9 @@ export default function YearPrediction() {
         {/* Price Targets Grid */}
         <section className="mb-8" aria-label={`${coinName} ${year} price scenarios`}>
           <h2 className="text-xl font-display font-bold mb-4">{coinName} {year} Price Targets</h2>
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-3 gap-0 border-t border-border/40">
             {/* Bear */}
-            <div className="holo-card p-5">
+            <div className="border-b md:border-b-0 md:border-r border-border/30 py-5 pr-5">
               <div className="flex items-center gap-2 mb-3">
                 <TrendingDown className="w-5 h-5 text-danger" />
                 <span className="font-bold text-danger">Bear Case</span>
@@ -263,7 +263,7 @@ export default function YearPrediction() {
               <p className="text-sm text-muted-foreground">{proj.bearLabel}</p>
             </div>
             {/* Base */}
-            <div className="holo-card p-5">
+            <div className="border-b md:border-b-0 md:border-r border-border/30 py-5 px-5">
               <div className="flex items-center gap-2 mb-3">
                 <Target className="w-5 h-5 text-primary" />
                 <span className="font-bold text-primary">Base Case</span>
@@ -278,7 +278,7 @@ export default function YearPrediction() {
               <p className="text-sm text-muted-foreground">{proj.baseLabel}</p>
             </div>
             {/* Bull */}
-            <div className="holo-card p-5">
+            <div className="py-5 pl-5">
               <div className="flex items-center gap-2 mb-3">
                 <TrendingUp className="w-5 h-5 text-success" />
                 <span className="font-bold text-success">Bull Case</span>
@@ -295,7 +295,7 @@ export default function YearPrediction() {
         </section>
 
         {/* Market Context */}
-        <section className="holo-card p-6 mb-8">
+        <section className="border-t border-border/30 pt-6 mb-8">
           <div className="flex items-center gap-2 mb-4">
             <Globe className="w-5 h-5 text-primary" />
             <h2 className="text-xl font-display font-bold">{year} Market Context</h2>
@@ -315,10 +315,10 @@ export default function YearPrediction() {
         {/* Year Comparison Table */}
         <section className="mb-8">
           <h2 className="text-xl font-display font-bold mb-4">{coinName} Long-Term Price Prediction Table</h2>
-          <div className="holo-card overflow-x-auto">
+          <div className="border-t border-border/40 overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border/50">
+                <tr className="border-b border-border">
                   <th className="text-left p-4 font-bold">Year</th>
                   <th className="text-right p-4 font-bold text-danger">Bear Case</th>
                   <th className="text-right p-4 font-bold text-primary">Base Case</th>
@@ -359,9 +359,9 @@ export default function YearPrediction() {
         {/* FAQ */}
         <section className="mb-8">
           <h2 className="text-xl font-display font-bold mb-4">{coinName} {year} FAQ</h2>
-          <div className="space-y-4">
+          <div>
             {faqItems.map((item, i) => (
-              <div key={i} className="holo-card p-5">
+              <div key={i} className="border-b border-border/30 py-4">
                 <h3 className="font-bold mb-2">{item.q}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{item.a}</p>
               </div>
@@ -370,15 +370,15 @@ export default function YearPrediction() {
         </section>
 
         {/* Short-term predictions crosslink */}
-        <section className="holo-card p-6 mb-8">
+        <section className="border-t border-border/30 pt-6 mb-8">
           <div className="flex items-center gap-2 mb-4">
             <BarChart3 className="w-5 h-5 text-primary" />
             <h2 className="text-xl font-display font-bold">Short-Term {coinName} Predictions</h2>
           </div>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-0 border-t border-border/40">
             {["daily", "weekly", "monthly"].map(tf => (
               <Link key={tf} to={`/price-prediction/${coinId}/${tf}`}
-                className="holo-card p-4 text-center transition-colors group">
+                className="border-r last:border-r-0 border-border/30 p-4 text-center transition-colors hover:bg-muted/20 group">
                 <p className="font-bold capitalize group-hover:text-primary transition-colors">{tf}</p>
                 <p className="text-xs text-muted-foreground mt-1">{coinSymbol} forecast</p>
               </Link>
@@ -389,10 +389,10 @@ export default function YearPrediction() {
         {/* Related coins */}
         <section className="mb-8">
           <h2 className="text-xl font-display font-bold mb-4">Other {year} Crypto Predictions</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="border-t border-border/40">
             {relatedCoins.map(coin => (
               <Link key={coin.id} to={`/price-prediction/${coin.id}/${year}`}
-                className="holo-card p-4 transition-colors group flex items-center justify-between">
+                className="flex items-center justify-between py-3 border-b border-border/30 hover:bg-muted/20 transition-colors px-1 group">
                 <div>
                   <p className="font-bold group-hover:text-primary transition-colors">{coin.symbol.toUpperCase()}</p>
                   <p className="text-xs text-muted-foreground">{coin.name} {year}</p>
@@ -404,7 +404,7 @@ export default function YearPrediction() {
         </section>
 
         {/* Disclaimer */}
-        <div className="bg-warning/5 border border-warning/20 rounded-xl p-5">
+        <div className="border-t border-warning/30 pt-5">
           <div className="flex items-start gap-2">
             <AlertTriangle className="w-4 h-4 text-warning mt-0.5 flex-shrink-0" />
             <p className="text-xs text-muted-foreground leading-relaxed">

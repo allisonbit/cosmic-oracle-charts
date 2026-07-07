@@ -16,7 +16,6 @@ interface TradeSetupCardProps {
   contractAddress?: string;
   chain?: string;
   image?: string;
-  // Live prediction fallback (used until/if the persisted setup exists)
   fallback?: {
     bias: "bullish" | "bearish" | "neutral";
     confidence: number;
@@ -32,16 +31,15 @@ interface TradeSetupCardProps {
 
 const STATUS_META: Record<TradeSetup["status"], { label: string; cls: string; icon: typeof CheckCircle2 }> = {
   active:      { label: "Active · Locked",    cls: "bg-primary/10 text-primary border-primary/20",  icon: Activity },
-  hit_tp1:     { label: "WIN · TP1 ✓",        cls: "bg-success/10 text-success border-success/20",  icon: CheckCircle2 },
-  hit_tp2:     { label: "WIN · TP2 ✓",        cls: "bg-success/10 text-success border-success/20",  icon: CheckCircle2 },
-  hit_tp3:     { label: "WIN · TP3 ✓",        cls: "bg-success/15 text-success border-success/30",  icon: CheckCircle2 },
+  hit_tp1:     { label: "WIN · TP1",          cls: "bg-success/10 text-success border-success/20",  icon: CheckCircle2 },
+  hit_tp2:     { label: "WIN · TP2",          cls: "bg-success/10 text-success border-success/20",  icon: CheckCircle2 },
+  hit_tp3:     { label: "WIN · TP3",          cls: "bg-success/15 text-success border-success/30",  icon: CheckCircle2 },
   stopped:     { label: "LOSS · Stopped",     cls: "bg-danger/10 text-danger border-danger/20",     icon: XCircle },
   invalidated: { label: "Replaced · Divergence", cls: "bg-warning/10 text-warning border-warning/20", icon: XCircle },
   expired:     { label: "Expired",            cls: "bg-muted text-muted-foreground border-border",  icon: Clock },
 };
 
 export function TradeSetupCard({ coinId, symbol, name, timeframe, contractAddress, chain, image }: TradeSetupCardProps) {
-  // Single source of truth — identical to the home "high-conviction" cards.
   const canonical = useCanonicalSetup(coinId, symbol, timeframe as any, { contractAddress, chain });
   const setup = canonical.setup;
   const saveSetup = useSaveSetup();
@@ -83,7 +81,7 @@ export function TradeSetupCard({ coinId, symbol, name, timeframe, contractAddres
           : "Live setup from the latest analysis. It locks and is monitored to its outcome once tracking is active."}
       </p>
 
-      {/* Bias + P&L row — inline stat strip */}
+      {/* Bias + P&L row */}
       <div className="grid grid-cols-2 sm:flex sm:items-stretch sm:divide-x sm:divide-border/30 border-y border-border/20 py-4 mb-4 gap-y-3">
         <div className="sm:px-5 sm:first:pl-0">
           <div className="section-label mb-1">Direction</div>

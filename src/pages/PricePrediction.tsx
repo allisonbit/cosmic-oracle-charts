@@ -72,10 +72,10 @@ export default function PricePrediction() {
         <div className="container mx-auto px-4 py-8">
           <div className="space-y-4">
             <Skeleton className="h-10 w-2/3" />
-            <Skeleton className="h-64 w-full rounded-xl" />
+            <Skeleton className="h-64 w-full" />
             <div className="grid grid-cols-2 gap-4">
-              <Skeleton className="h-48 rounded-xl" />
-              <Skeleton className="h-48 rounded-xl" />
+              <Skeleton className="h-48" />
+              <Skeleton className="h-48" />
             </div>
           </div>
           <p className="text-center text-muted-foreground mt-6 flex items-center justify-center gap-2 text-sm">
@@ -104,7 +104,7 @@ export default function PricePrediction() {
         />
       )}
       
-      <div className="container mx-auto px-4 py-6 max-w-7xl">
+      <div className="container mx-auto px-4 py-6">
         
         {/* === STATUS BAR === */}
         <div className="flex flex-wrap items-center gap-2 mb-4 text-xs">
@@ -169,11 +169,11 @@ export default function PricePrediction() {
             
             {isLoading ? (
               <div className="space-y-4">
-                <Skeleton className="h-52 rounded-xl" />
-                <Skeleton className="h-40 rounded-xl" />
+                <Skeleton className="h-52" />
+                <Skeleton className="h-40" />
                 <div className="grid grid-cols-2 gap-4">
-                  <Skeleton className="h-60 rounded-xl" />
-                  <Skeleton className="h-60 rounded-xl" />
+                  <Skeleton className="h-60" />
+                  <Skeleton className="h-60" />
                 </div>
               </div>
             ) : error ? (
