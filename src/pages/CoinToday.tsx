@@ -18,7 +18,7 @@ import { AdsterraBanner } from "@/components/ads/AdsterraBanner";
 import { AdsterraBanner300 } from "@/components/ads/AdsterraBanner300";
 import { AdsterraBanner320 } from "@/components/ads/AdsterraBanner320";
 import { AdsterraSmartlink } from "@/components/ads/AdsterraSmartlink";
-import { AdsterraStickyBanner } from "@/components/ads/AdsterraStickyBanner";
+
 import { AdBreak } from "@/components/ads/AdBreak";
 import { usePricePrediction, TOP_CRYPTOS, ALL_CRYPTOS } from "@/hooks/usePricePrediction";
 import { useCanonicalSetup } from "@/hooks/useCanonicalSetup";
@@ -492,7 +492,7 @@ export default function CoinToday() {
       <AdUnit format="horizontal" className="mt-6 mb-2 max-w-5xl mx-auto px-4" />
       <Footer />
       <MobileBottomNav />
-      <AdsterraStickyBanner />
+
       <div className="h-20 md:hidden" aria-hidden="true" />
     </div>
   );
