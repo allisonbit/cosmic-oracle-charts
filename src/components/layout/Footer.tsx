@@ -134,6 +134,8 @@ export function Footer() {
               <li><Link to="/editorial-policy" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Editorial Policy</Link></li>
               <li><Link to="/privacy-policy" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"><Shield className="w-3 h-3" /> Privacy Policy</Link></li>
               <li><Link to="/terms" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"><FileText className="w-3 h-3" /> Terms of Service</Link></li>
+              <li><Link to="/cookie-policy" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"><Shield className="w-3 h-3" /> Cookie Policy</Link></li>
+              <li><a href="#" className="termly-display-preferences flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"><Shield className="w-3 h-3" /> Consent Preferences</a></li>
               <li><Link to="/risk-disclaimer" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"><AlertTriangle className="w-3 h-3" /> Risk Disclaimer</Link></li>
             </ul>
           </nav>

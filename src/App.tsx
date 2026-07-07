@@ -49,6 +49,7 @@ const QuestionIntent = lazy(() => import("./pages/QuestionIntent"));
 const About = lazy(() => import("./pages/About"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Terms = lazy(() => import("./pages/Terms"));
+const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
 const RiskDisclaimer = lazy(() => import("./pages/RiskDisclaimer"));
 const EditorialPolicy = lazy(() => import("./pages/EditorialPolicy"));
 const YearPrediction = lazy(() => import("./pages/YearPrediction"));
@@ -244,6 +245,7 @@ const App = () => (
                 <Route path="/about" element={B(<About />)} />
                 <Route path="/privacy-policy" element={B(<PrivacyPolicy />)} />
                 <Route path="/terms" element={B(<Terms />)} />
+                <Route path="/cookie-policy" element={B(<CookiePolicy />)} />
                 <Route path="/risk-disclaimer" element={B(<RiskDisclaimer />)} />
                 <Route path="/editorial-policy" element={B(<EditorialPolicy />)} />
                 <Route path="/connect" element={B(<Connect />)} />
