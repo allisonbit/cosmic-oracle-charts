@@ -11,8 +11,9 @@ export function ScrollToTop() {
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-    if (typeof window.gtag === "function") {
-      window.gtag("event", "page_view", { page_path: pathname });
+    const gtag = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
+    if (typeof gtag === "function") {
+      gtag("event", "page_view", { page_path: pathname });
     }
   }, [pathname]);
 
