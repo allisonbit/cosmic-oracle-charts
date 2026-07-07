@@ -1,9 +1,13 @@
 /// <reference types="vite/client" />
 
-interface Window {
-  gtag?: (
-    command: string,
-    action: string,
-    params?: Record<string, unknown>
-  ) => void;
+declare global {
+  interface Window {
+    gtag?: (
+      command: string,
+      action: string,
+      params?: Record<string, unknown>
+    ) => void;
+  }
 }
+
+export {};
