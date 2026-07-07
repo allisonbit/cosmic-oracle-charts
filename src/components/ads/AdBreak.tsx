@@ -4,6 +4,7 @@ import { AdsterraBanner300 } from "./AdsterraBanner300";
 import { AdsterraBanner320 } from "./AdsterraBanner320";
 import { AdsterraSmartlink } from "./AdsterraSmartlink";
 import { AdUnit } from "./AdUnit";
+import { LazyAd } from "./LazyAd";
 
 interface AdBreakProps {
   variant?: "full" | "compact";
@@ -13,7 +14,7 @@ interface AdBreakProps {
 export function AdBreak({ variant = "compact", className = "" }: AdBreakProps) {
   if (variant === "full") {
     return (
-      <div className={`py-4 space-y-4 ${className}`}>
+      <LazyAd className={`py-1 space-y-1 ${className}`}>
         <AdsterraNative className="max-w-5xl mx-auto px-4" />
         <div className="hidden md:block">
           <AdsterraBanner />
@@ -24,12 +25,12 @@ export function AdBreak({ variant = "compact", className = "" }: AdBreakProps) {
         <AdsterraBanner300 />
         <AdsterraSmartlink variant="banner" className="max-w-5xl mx-auto px-4" />
         <AdUnit format="horizontal" className="max-w-5xl mx-auto px-4" />
-      </div>
+      </LazyAd>
     );
   }
 
   return (
-    <div className={`py-3 space-y-3 ${className}`}>
+    <LazyAd className={`py-1 space-y-1 ${className}`}>
       <div className="hidden md:block">
         <AdsterraBanner />
       </div>
@@ -37,6 +38,6 @@ export function AdBreak({ variant = "compact", className = "" }: AdBreakProps) {
         <AdsterraBanner320 />
       </div>
       <AdUnit format="horizontal" className="max-w-5xl mx-auto px-4" />
-    </div>
+    </LazyAd>
   );
 }

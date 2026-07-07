@@ -15,6 +15,7 @@ import { AdsterraBanner320 } from "@/components/ads/AdsterraBanner320";
 import { AdsterraSmartlink } from "@/components/ads/AdsterraSmartlink";
 
 import { AdBreak } from "@/components/ads/AdBreak";
+import { LazyAd } from "@/components/ads/LazyAd";
 import { AdsterraStickyBanner } from "@/components/ads/AdsterraStickyBanner";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -104,10 +105,12 @@ const Index = () => {
 
       <main id="main-content">
         {/* Top ad zone */}
-        <AdsterraSmartlink variant="banner" className="my-3 max-w-5xl mx-auto px-4" />
-        <div className="hidden md:block"><AdsterraBanner className="my-2" /></div>
-        <div className="block md:hidden"><AdsterraBanner320 className="my-2" /></div>
-        <AdUnit format="horizontal" className="my-2 max-w-5xl mx-auto px-4" />
+        <div className="space-y-1 mb-1">
+          <AdsterraSmartlink variant="banner" className="max-w-5xl mx-auto px-4" />
+          <div className="hidden md:block"><AdsterraBanner /></div>
+          <div className="block md:hidden"><AdsterraBanner320 /></div>
+          <AdUnit format="horizontal" className="max-w-5xl mx-auto px-4" />
+        </div>
 
         <HeroSection />
 
@@ -204,12 +207,14 @@ const Index = () => {
         </ViewportSection>
       </main>
 
-      <AdsterraNative className="my-4 max-w-5xl mx-auto px-4" />
-      <AdsterraBanner300 className="my-4" />
-      <div className="hidden md:block"><AdsterraBanner className="my-4" /></div>
-      <div className="block md:hidden"><AdsterraBanner320 className="my-4" /></div>
-      <AdsterraSmartlink variant="button" className="my-4" />
-      <AdUnit format="horizontal" className="mt-6 mb-2 max-w-5xl mx-auto px-4" />
+      <LazyAd className="space-y-1">
+        <AdsterraNative className="max-w-5xl mx-auto px-4" />
+        <AdsterraBanner300 />
+        <div className="hidden md:block"><AdsterraBanner /></div>
+        <div className="block md:hidden"><AdsterraBanner320 /></div>
+        <AdsterraSmartlink variant="button" />
+        <AdUnit format="horizontal" className="max-w-5xl mx-auto px-4" />
+      </LazyAd>
       <Footer />
       <MobileBottomNav />
       <AdsterraStickyBanner />
