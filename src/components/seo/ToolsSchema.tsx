@@ -109,7 +109,7 @@ export function TokenSchema({ symbol, name, price }: { symbol: string; name: str
     <Helmet>
       <title>{symbol} Token | Price & Market Data | Oracle Bull</title>
       <meta name="description" content={`${name} (${symbol}) live price, market data, and community information. Track ${symbol} performance and join the community.`} />
-      
+      <script type="application/ld+json">{JSON.stringify(schema)}</script>
     </Helmet>
   );
 }

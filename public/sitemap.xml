@@ -176,6 +176,31 @@
   <!-- ═══ LEARN ═══ -->
   <url><loc>https://oraclebull.com/learn</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
 
+  <!-- ═══ PROGRAMMATIC SEO — Predict / Compare / Convert ═══ -->
+  <url><loc>https://oraclebull.com/predict/bitcoin/100000/2026</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/predict/bitcoin/150000/2026</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/predict/bitcoin/200000/2026</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/predict/ethereum/5000/2026</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/predict/ethereum/10000/2026</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/predict/solana/500/2026</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/predict/solana/1000/2026</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/predict/xrp/5/2026</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/predict/dogecoin/1/2026</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/vs/bitcoin/ethereum</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/vs/bitcoin/solana</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/vs/ethereum/solana</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/vs/bitcoin/xrp</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/vs/ethereum/cardano</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/vs/solana/cardano</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/convert/bitcoin/usd</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/convert/ethereum/usd</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/convert/solana/usd</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/convert/bitcoin/eur</loc><changefreq>daily</changefreq><priority>0.5</priority></url>
+  <url><loc>https://oraclebull.com/convert/bitcoin/gbp</loc><changefreq>daily</changefreq><priority>0.5</priority></url>
+
+  <!-- ═══ CONNECT ═══ -->
+  <url><loc>https://oraclebull.com/connect</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+
   <!-- ═══ ABOUT & LEGAL ═══ -->
   <url><loc>https://oraclebull.com/about</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://oraclebull.com/contact</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
