@@ -51,8 +51,8 @@ function FactoryEventsSchema() {
 
   return (
     <Helmet>
-      <title>Crypto Events Calendar | Token Unlocks & Network Upgrades Today | Oracle Bull</title>
-      <meta name="description" content="Live cryptocurrency market events calendar. Track token unlocks, vesting schedules, network upgrades, hard forks, governance votes, and regulatory announcements affecting crypto prices today." />
+      <title>Crypto Events Calendar | Launches & Upgrades | Oracle Bull</title>
+      <meta name="description" content="Track upcoming crypto events: token launches, protocol upgrades, airdrops & governance votes. Never miss a market-moving event. Updated live." />
       
     </Helmet>
   );

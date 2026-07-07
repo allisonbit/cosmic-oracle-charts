@@ -60,10 +60,10 @@ export default function BitcoinLiquidationHeatmap() {
   return (
     <Layout>
       <Helmet>
-        <title>Bitcoin Liquidation Heatmap | Live BTC Liquidity Levels | Oracle Bull</title>
+        <title>Bitcoin Liquidation Heatmap | Live | Oracle Bull</title>
         <meta
           name="description"
-          content="Free real-time Bitcoin liquidation heatmap. Track BTC long and short liquidation clusters, leverage zones, and price levels where cascading liquidations are likely to trigger reversals."
+          content="Free real-time Bitcoin liquidation heatmap. Track BTC long/short liquidation clusters & leverage zones where cascading liquidations trigger reversals."
         />
         
         

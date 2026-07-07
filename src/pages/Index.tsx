@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { useAuth } from "@/hooks/useAuth";
 import { Navbar } from "@/components/layout/Navbar";
 import { CryptoTicker } from "@/components/layout/CryptoTicker";
@@ -62,6 +63,27 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <SEO />
+      <Helmet>
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          "name": "Oracle Bull",
+          "applicationCategory": "FinanceApplication",
+          "operatingSystem": "Web Browser",
+          "url": "https://oraclebull.com",
+          "description": "Free AI-powered cryptocurrency analytics platform with price predictions, whale tracking, sentiment analysis, and trading tools for 1000+ tokens.",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          "provider": { "@type": "Organization", "name": "Oracle Bull", "url": "https://oraclebull.com" },
+          "featureList": [
+            "AI crypto price predictions",
+            "Real-time whale tracking",
+            "Fear & Greed Index",
+            "Crypto strength meter",
+            "Token explorer",
+            "DCA & profit calculators"
+          ]
+        })}</script>
+      </Helmet>
 
       <header>
         <Navbar />

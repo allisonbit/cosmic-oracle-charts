@@ -70,8 +70,8 @@ export default function Airdrops() {
   return (
     <Layout>
       <Helmet>
-        <title>Crypto Airdrops 2026–2027 — All Active, Upcoming & Confirmed Airdrops | Oracle Bull</title>
-        <meta name="description" content="Track every crypto airdrop in 2026 and 2027. Active tasks, snapshot dates, eligibility, estimated values and step-by-step guides for Base, Ethereum, Solana, zkSync and more. Updated regularly." />
+        <title>Crypto Airdrops 2026 | Active & Upcoming | Oracle Bull</title>
+        <meta name="description" content="Track every crypto airdrop in 2026: active tasks, snapshot dates, eligibility & estimated values for Base, Ethereum, Solana & more. Updated daily." />
         
         
         

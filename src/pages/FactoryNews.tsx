@@ -44,8 +44,8 @@ function FactoryNewsSchema() {
 
   return (
     <Helmet>
-      <title>Crypto News Sentiment Feed — AI Market-Impact Analysis | Oracle Bull</title>
-      <meta name="description" content="Every crypto headline scored Bullish, Bearish or Neutral by AI, with its likely market impact. A sentiment-first news feed inside the Crypto Factory — see how news moves prices before you trade." />
+      <title>Crypto News Today | Sentiment-Tagged | Oracle Bull</title>
+      <meta name="description" content="Breaking crypto news from 50+ sources with real-time bullish/bearish AI sentiment scores. Filter by coin, chain or impact. Stay ahead of the market." />
       
     </Helmet>
   );

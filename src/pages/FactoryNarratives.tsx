@@ -34,8 +34,8 @@ function FactoryNarrativesSchema() {
 
   return (
     <Helmet>
-      <title>Crypto Narratives & Trends | Market Sectors Today | Oracle Bull</title>
-      <meta name="description" content="Track trending cryptocurrency narratives and market sectors in real-time. Discover which themes are gaining momentum: AI tokens, DeFi protocols, Layer 2 solutions, meme coins, and emerging crypto trends." />
+      <title>Crypto Narratives | Trending Sectors 2026 | Oracle Bull</title>
+      <meta name="description" content="Track trending crypto narratives in real-time: AI tokens, DeFi, RWA, meme coins & L2s. Identify sector rotation before it happens. Free tool." />
       
     </Helmet>
   );

@@ -71,8 +71,8 @@ export default function PositionSizeCalculator() {
   return (
     <Layout>
       <Helmet>
-        <title>Position Size Calculator – Risk Management | Oracle Bull</title>
-        <meta name="description" content="Calculate exact position size based on your account, risk percentage, and stop loss. See reward targets at 1:1, 2:1, and 3:1 risk-reward ratios for any crypto token." />
+        <title>Crypto Position Size Calculator | Oracle Bull</title>
+        <meta name="description" content="Calculate exact position size from account balance, risk % and stop loss for any token. Manage risk like a pro trader. Free, instant, no signup." />
       </Helmet>
 
       <div className="container mx-auto px-4 py-6">

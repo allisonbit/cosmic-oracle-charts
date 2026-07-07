@@ -64,8 +64,8 @@ export default function HowToBuyHub() {
   return (
     <Layout>
       <Helmet>
-        <title>How to Buy Cryptocurrency – Beginner Guides | Oracle Bull</title>
-        <meta name="description" content="Learn how to buy Bitcoin, Ethereum, Solana and 30+ cryptocurrencies safely. Step-by-step beginner guides with AI-powered tips on timing your purchase." />
+        <title>How to Buy Crypto | Step-by-Step Guides | Oracle Bull</title>
+        <meta name="description" content="Learn how to buy Bitcoin, Ethereum, Solana & 30+ cryptos safely. Step-by-step beginner guides with the best exchanges and AI timing tips. Start now." />
         
       </Helmet>
 

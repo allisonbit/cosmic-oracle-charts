@@ -44,8 +44,8 @@ function FactoryOnchainSchema() {
 
   return (
     <Helmet>
-      <title>On-Chain Activity Feed | Whale Movements & Exchange Flows Today | Oracle Bull</title>
-      <meta name="description" content="Real-time on-chain cryptocurrency activity tracker. Monitor whale movements, exchange inflows and outflows, bridge transfers, and large transactions across Ethereum, Solana, and major blockchains." />
+      <title>On-Chain Intel | Whale Moves & Smart Money | Oracle Bull</title>
+      <meta name="description" content="Real-time on-chain analytics: whale wallet moves, large transfers, smart money accumulation & exchange flows. See what whales do before the market." />
       
     </Helmet>
   );

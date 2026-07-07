@@ -65,8 +65,8 @@ export function PortfolioSchema() {
     <Helmet>
       <title>Wallet Scanner | AI Portfolio Analysis | Oracle Bull</title>
       <meta name="description" content="AI-powered crypto wallet scanner. Analyze any wallet to find pumping tokens, assess portfolio risk, and get actionable investment insights. Free, no login required." />
-      
-      
+      <script type="application/ld+json">{JSON.stringify(schema)}</script>
+      <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
     </Helmet>
   );
 }

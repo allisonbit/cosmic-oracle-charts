@@ -65,8 +65,8 @@ export default function DCACalculator() {
   return (
     <Layout>
       <Helmet>
-        <title>DCA Calculator – Any Crypto Token | Oracle Bull</title>
-        <meta name="description" content="Dollar-cost averaging calculator for any cryptocurrency. Search by name or symbol, set your schedule, and project returns over time." />
+        <title>Crypto DCA Calculator | Free Tool | Oracle Bull</title>
+        <meta name="description" content="Dollar-cost averaging calculator for any cryptocurrency. Set your schedule, project returns over time & see how DCA beats lump-sum investing. Free." />
       </Helmet>
 
       <div className="container mx-auto px-4 py-6">

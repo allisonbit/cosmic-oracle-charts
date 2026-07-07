@@ -51,8 +51,8 @@ export function StrengthMeterSchema() {
     <Helmet>
       <title>Crypto Strength Meter | Relative Strength Analysis | Oracle Bull</title>
       <meta name="description" content="Compare crypto strength in real-time. Analyze relative performance of cryptocurrencies and blockchains with our AI-powered strength scoring system." />
-      
-      
+      <script type="application/ld+json">{JSON.stringify(schema)}</script>
+      <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
     </Helmet>
   );
 }
@@ -85,7 +85,7 @@ export function CryptoFactorySchema() {
     <Helmet>
       <title>Crypto Factory | Market Events & News Hub | Oracle Bull</title>
       <meta name="description" content="Your centralized crypto intelligence hub. Track market events, on-chain activity, emerging narratives, and curated news all in one place." />
-      
+      <script type="application/ld+json">{JSON.stringify(schema)}</script>
     </Helmet>
   );
 }

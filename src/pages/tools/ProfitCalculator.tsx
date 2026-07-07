@@ -42,8 +42,8 @@ export default function ProfitCalculator() {
   return (
     <Layout>
       <Helmet>
-        <title>Crypto Profit Calculator – Any Token | Oracle Bull</title>
-        <meta name="description" content="Calculate exact crypto trading profit and ROI for any token. Search by name, symbol, or contract address. Auto-fills live prices from CoinGecko." />
+        <title>Crypto Profit Calculator | Free ROI Tool | Oracle Bull</title>
+        <meta name="description" content="Calculate exact crypto trading profit and ROI for any token. Auto-fills live prices, includes exchange fees. Free, instant results for any coin." />
       </Helmet>
 
       <div className="container mx-auto px-4 py-6">

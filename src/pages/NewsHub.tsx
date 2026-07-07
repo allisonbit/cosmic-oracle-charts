@@ -374,8 +374,8 @@ export default function NewsHub() {
   return (
     <Layout>
       <Helmet>
-        <title>Crypto News Today – Live Headlines + AI Sentiment | Oracle Bull</title>
-        <meta name="description" content="Breaking cryptocurrency news from 50+ trusted sources with AI Bullish/Bearish/Neutral ratings. Bitcoin, Ethereum, Solana, DeFi & regulation — auto-refreshes every 5 minutes." />
+        <title>Crypto News Today | AI Sentiment Headlines | Oracle Bull</title>
+        <meta name="description" content="Breaking crypto news from 50+ sources with AI bullish/bearish sentiment ratings. Bitcoin, Ethereum, DeFi & regulation. Auto-refreshes every 5 min." />
         
         
         

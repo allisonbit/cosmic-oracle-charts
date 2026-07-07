@@ -132,8 +132,8 @@ export default function CompareHub() {
   return (
     <Layout>
       <Helmet>
-        <title>Compare Cryptocurrencies Side by Side | Oracle Bull</title>
-        <meta name="description" content="Compare any of 17,000+ cryptocurrencies side-by-side. Search by name, symbol or contract address across every chain — live price, market cap, volume, momentum & an AI verdict on which is the better buy." />
+        <title>Compare Crypto Side by Side | Free Tool | Oracle Bull</title>
+        <meta name="description" content="Compare any two cryptocurrencies side by side. Live prices, market cap, volume, momentum & AI verdict on which is the better buy. 17,000+ tokens." />
         
       </Helmet>
 
