@@ -15,6 +15,7 @@ import { useCanonicalSetup } from "@/hooks/useCanonicalSetup";
 import { ShareablePredictionCard } from "@/components/predictions/ShareablePredictionCard";
 import { AdsterraNative } from "@/components/ads/AdsterraNative";
 import { AdUnit } from "@/components/ads/AdUnit";
+import { AdsterraBanner } from "@/components/ads/AdsterraBanner";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function QuestionIntent() {
@@ -856,6 +857,7 @@ export default function QuestionIntent() {
       </main>
 
       <AdsterraNative className="my-4 max-w-5xl mx-auto px-4" />
+      <AdsterraBanner className="my-4" />
       <AdUnit format="horizontal" className="mt-6 mb-2 max-w-5xl mx-auto px-4" />
       <Footer />
       <MobileBottomNav />

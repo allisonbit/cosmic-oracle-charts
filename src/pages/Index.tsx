@@ -9,6 +9,7 @@ import { QuickAccessBar } from "@/components/home/QuickAccessBar";
 import { Footer } from "@/components/layout/Footer";
 import { AdsterraNative } from "@/components/ads/AdsterraNative";
 import { AdUnit } from "@/components/ads/AdUnit";
+import { AdsterraBanner } from "@/components/ads/AdsterraBanner";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SEO } from "@/components/MainSEO";
@@ -188,6 +189,7 @@ const Index = () => {
       </main>
 
       <AdsterraNative className="my-4 max-w-5xl mx-auto px-4" />
+      <AdsterraBanner className="my-4" />
       <AdUnit format="horizontal" className="mt-6 mb-2 max-w-5xl mx-auto px-4" />
       <Footer />
       <MobileBottomNav />
