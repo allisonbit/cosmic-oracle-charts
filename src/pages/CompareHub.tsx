@@ -81,17 +81,17 @@ function TokenPicker({ label, selected, onSelect }: { label: string; selected: P
             <div className="font-bold truncate">{selected.name}</div>
             <div className="text-xs text-muted-foreground font-mono">{selected.symbol}{selected.chain ? ` · ${selected.chain}` : ""}</div>
           </div>
-          <button onClick={() => onSelect(null)} className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground"><X className="w-4 h-4" /></button>
+          <button onClick={() => onSelect(null)} className="p-1.5 hover:bg-muted text-muted-foreground"><X className="w-4 h-4" /></button>
         </div>
       ) : (
         <>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input type="text" placeholder="Search 17,000+ tokens or paste contract…" value={q} onChange={(e) => setQ(e.target.value)}
-              className="w-full bg-background/50 border border-border rounded-lg pl-9 pr-9 py-2.5 text-sm focus:outline-none focus:border-primary" />
+              className="w-full bg-background/50 border border-border pl-9 pr-9 py-2.5 text-sm focus:outline-none focus:border-primary" />
             {isLoading && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-primary" />}
           </div>
-          <div className="h-52 overflow-y-auto rounded-lg border border-border bg-background/50">
+          <div className="h-52 overflow-y-auto border border-border bg-background/50">
             {q.length >= 2 ? (
               results.length > 0 ? results.map((t, i) => (
                 <button key={`${t.symbol}-${t.coingeckoId || t.chain}-${i}`} onClick={() => pick(t)} className="w-full flex items-center gap-2.5 px-3 py-2.5 text-left hover:bg-muted transition-colors border-b border-border/40 last:border-0">
@@ -104,7 +104,7 @@ function TokenPicker({ label, selected, onSelect }: { label: string; selected: P
               <div className="p-2">
                 <div className="text-[10px] text-muted-foreground uppercase tracking-wider px-1 pb-1">Popular</div>
                 {POPULAR.map((c) => (
-                  <button key={c.coingeckoId} onClick={() => pick(c)} className="w-full flex items-center gap-2.5 px-2 py-2 text-left hover:bg-muted rounded-md transition-colors">
+                  <button key={c.coingeckoId} onClick={() => pick(c)} className="w-full flex items-center gap-2.5 px-2 py-2 text-left hover:bg-muted transition-colors">
                     <CoinImage symbol={c.symbol} size={24} />
                     <span className="text-sm font-medium">{c.name}</span><span className="text-xs text-muted-foreground font-mono ml-auto">{c.symbol}</span>
                   </button>
@@ -141,10 +141,10 @@ export default function CompareHub() {
         <div className="container mx-auto">
           {/* Hero */}
           <div className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wider mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary text-xs font-semibold tracking-wider mb-4">
               <GitCompare className="w-4 h-4" /><span>COMPARE ANY TOKEN · ANY CHAIN</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold font-display mb-4 glow-text">Compare Any Two Cryptocurrencies</h1>
+            <h1 className="text-4xl md:text-5xl font-bold font-display mb-4">Compare Any Two Cryptocurrencies</h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Search <span className="text-foreground font-medium">17,000+ tokens</span> by name, symbol or contract address — then get a live side-by-side breakdown and an AI verdict on which wins.
             </p>
@@ -152,17 +152,17 @@ export default function CompareHub() {
           </div>
 
           {/* Picker */}
-          <div className="holo-card p-6 md:p-8 mb-10">
+          <div className="border-t border-border/30 pt-6 md:pt-8 mb-10">
             <div className="grid md:grid-cols-[1fr_auto_1fr] gap-5 items-start">
               <TokenPicker label="First Token" selected={coinA} onSelect={setCoinA} />
               <div className="hidden md:flex flex-col items-center justify-center pt-8">
-                <div className="w-12 h-12 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center"><span className="font-black text-primary text-sm">VS</span></div>
+                <div className="w-12 h-12 bg-primary/10 border border-primary/30 flex items-center justify-center"><span className="font-black text-primary text-sm">VS</span></div>
               </div>
               <TokenPicker label="Second Token" selected={coinB} onSelect={setCoinB} />
             </div>
             <div className="mt-6 flex justify-center">
               <button onClick={handleCompare} disabled={!canCompare}
-                className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3 rounded-xl font-bold text-lg hover:bg-primary/90 transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100">
+                className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3 font-bold text-lg hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                 <Zap className="w-5 h-5" /> Compare <ArrowRight className="w-5 h-5" />
               </button>
             </div>
@@ -174,7 +174,7 @@ export default function CompareHub() {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
               {TRENDING_BATTLES.map((b) => (
                 <Link key={`${b.a}-${b.b}`} to={`/compare/${b.a}-vs-${b.b}`}
-                  className="holo-card px-4 py-3 text-sm font-semibold text-center hover:text-primary transition-all hover:scale-105 group">
+                  className="border border-border/40 px-4 py-3 text-sm font-semibold text-center hover:text-primary hover:border-primary/40 transition-all group">
                   <span className="flex items-center justify-center gap-2">{b.label}<ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" /></span>
                 </Link>
               ))}

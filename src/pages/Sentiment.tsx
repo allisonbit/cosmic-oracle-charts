@@ -107,7 +107,7 @@ const SentimentPage = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold">
-              <span className="glow-text">SENTIMENT</span> <span className="text-gradient-cosmic">INTELLIGENCE</span>
+              <span>SENTIMENT</span> <span className="text-foreground">INTELLIGENCE</span>
             </h1>
             <p className="text-muted-foreground text-xs sm:text-sm flex items-center gap-2 mt-1">
               <Clock className="w-3 h-3" />
@@ -115,7 +115,7 @@ const SentimentPage = () => {
             </p>
           </div>
           <div className={cn(
-            "px-4 py-2 rounded-full font-display font-bold text-sm flex items-center gap-2",
+            "px-4 py-2 font-display font-bold text-sm flex items-center gap-2",
             marketMomentum === "BULLISH" ? "bg-success/20 text-success" : 
             marketMomentum === "BEARISH" ? "bg-danger/20 text-danger" : "bg-warning/20 text-warning"
           )}>

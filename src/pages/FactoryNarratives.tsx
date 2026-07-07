@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { useCryptoFactory } from "@/hooks/useCryptoFactory";
-import { Card, CardContent } from "@/components/ui/card";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -55,10 +55,10 @@ function NarrativeCard({ narrative }: { narrative: any }) {
   };
 
   return (
-    <article className="border rounded-lg border-border/50 p-5 hover:border-primary/40 transition-all">
+    <article className="border-b border-border/30 pb-5 hover:border-primary/40 transition-all">
       <div className="flex items-start justify-between gap-4 mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
+          <div className="w-12 h-12 bg-primary/20 flex items-center justify-center">
             <Flame className="w-6 h-6 text-orange-400" />
           </div>
           <div>
@@ -87,7 +87,7 @@ function NarrativeCard({ narrative }: { narrative: any }) {
       <p className="text-muted-foreground mb-4">{narrative.description}</p>
       
       {/* SEO-friendly analysis */}
-      <div className="bg-muted/30 rounded-lg p-4 mb-4">
+      <div className="border-t border-border/20 pt-3 mb-4">
         <p className="text-sm text-muted-foreground">
           The <strong>{narrative.narrative}</strong> sector is showing{' '}
           <strong className={narrative.sentiment === 'bullish' ? 'text-green-400' : narrative.sentiment === 'bearish' ? 'text-red-400' : 'text-yellow-400'}>
@@ -183,7 +183,7 @@ export default function FactoryNarratives() {
 
         {/* H1 Header */}
         <header className="mb-6">
-          <h1 className="text-3xl md:text-4xl font-display font-bold glow-text flex items-center gap-3">
+          <h1 className="text-3xl md:text-4xl font-display font-bold flex items-center gap-3">
             <TrendingUp className="w-10 h-10 text-primary" />
             Crypto Narratives & Trends
           </h1>
@@ -194,35 +194,27 @@ export default function FactoryNarratives() {
         </header>
 
         {/* Summary Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <Card className="pt-5">
-            <CardContent className="p-4 text-center">
-              <p className="text-sm text-muted-foreground">Total Narratives</p>
-              <p className="text-2xl font-bold">{filteredNarratives.length}</p>
-            </CardContent>
-          </Card>
-          <Card className="pt-5">
-            <CardContent className="p-4 text-center">
-              <p className="text-sm text-green-400">Bullish Sectors</p>
-              <p className="text-2xl font-bold text-green-400">{bullishCount}</p>
-            </CardContent>
-          </Card>
-          <Card className="pt-5">
-            <CardContent className="p-4 text-center">
-              <p className="text-sm text-red-400">Bearish Sectors</p>
-              <p className="text-2xl font-bold text-red-400">{bearishCount}</p>
-            </CardContent>
-          </Card>
-          <Card className="pt-5">
-            <CardContent className="p-4 text-center">
-              <p className="text-sm text-muted-foreground">Neutral</p>
-              <p className="text-2xl font-bold">{filteredNarratives.length - bullishCount - bearishCount}</p>
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-2 md:flex md:items-stretch md:divide-x md:divide-border/30 border-y border-border/30 py-4 mb-6 gap-y-4">
+          <div className="md:px-6 md:first:pl-0 text-center">
+            <p className="text-sm text-muted-foreground">Total Narratives</p>
+            <p className="text-2xl font-bold">{filteredNarratives.length}</p>
+          </div>
+          <div className="md:px-6 text-center">
+            <p className="text-sm text-green-400">Bullish Sectors</p>
+            <p className="text-2xl font-bold text-green-400">{bullishCount}</p>
+          </div>
+          <div className="md:px-6 text-center">
+            <p className="text-sm text-red-400">Bearish Sectors</p>
+            <p className="text-2xl font-bold text-red-400">{bearishCount}</p>
+          </div>
+          <div className="md:px-6 text-center">
+            <p className="text-sm text-muted-foreground">Neutral</p>
+            <p className="text-2xl font-bold">{filteredNarratives.length - bullishCount - bearishCount}</p>
+          </div>
         </div>
 
         {/* SEO Introduction */}
-        <section className="holo-card p-6 mb-6">
+        <section className="border-t border-border/30 pt-5 mb-6">
           <h2 className="text-xl font-semibold mb-3">What Are Crypto Narratives?</h2>
           <div className="prose max-w-none text-muted-foreground">
             <p className="mb-3">
@@ -231,15 +223,15 @@ export default function FactoryNarratives() {
               before mainstream adoption. Oracle Bull tracks narrative momentum across all major sectors.
             </p>
             <div className="grid md:grid-cols-3 gap-4 mt-4">
-              <div className="p-3 rounded-lg bg-muted/30">
+              <div className="p-3 border-b border-border/20 pb-3">
                 <h3 className="font-semibold text-foreground mb-1">AI & Machine Learning</h3>
                 <p className="text-sm">Tokens powering decentralized AI infrastructure and compute networks.</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/30">
+              <div className="p-3 border-b border-border/20 pb-3">
                 <h3 className="font-semibold text-foreground mb-1">Layer 2 Scaling</h3>
                 <p className="text-sm">Solutions making Ethereum and Bitcoin faster and cheaper.</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/30">
+              <div className="p-3 border-b border-border/20 pb-3">
                 <h3 className="font-semibold text-foreground mb-1">DeFi & RWAs</h3>
                 <p className="text-sm">Decentralized finance and real-world asset tokenization.</p>
               </div>
@@ -248,8 +240,7 @@ export default function FactoryNarratives() {
         </section>
 
         {/* Filters */}
-        <Card className="pt-5 mb-6">
-          <CardContent className="p-4">
+        <div className="border-t border-border/30 pt-4 mb-6">
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -270,8 +261,7 @@ export default function FactoryNarratives() {
                 Refresh
               </Button>
             </div>
-          </CardContent>
-        </Card>
+        </div>
 
         {/* Narratives Grid */}
         <div className="grid lg:grid-cols-3 gap-6">
@@ -294,11 +284,9 @@ export default function FactoryNarratives() {
                   ))}
                 </div>
               ) : (
-                <Card className="pt-5">
-                  <CardContent className="p-8 text-center text-muted-foreground">
+                <div className="p-8 text-center text-muted-foreground border-t border-border/30">
                     No narratives match your search.
-                  </CardContent>
-                </Card>
+                </div>
               )}
             </section>
           </div>
@@ -306,34 +294,31 @@ export default function FactoryNarratives() {
           {/* Sidebar */}
           <aside className="space-y-6">
             {/* Factory Navigation */}
-            <Card className="pt-5">
-              <CardContent className="p-4">
+            <div className="border-t border-border/30 pt-4">
                 <h3 className="font-semibold mb-3">Crypto Factory Sections</h3>
                 <nav className="space-y-2">
-                  <Link to="/factory/events" className="flex items-center gap-2 p-2 rounded hover:bg-muted/50">
+                  <Link to="/factory/events" className="flex items-center gap-2 p-2 hover:bg-muted/50">
                     <Calendar className="w-4 h-4" />
                     <span>Market Events</span>
                   </Link>
-                  <Link to="/factory/onchain" className="flex items-center gap-2 p-2 rounded hover:bg-muted/50">
+                  <Link to="/factory/onchain" className="flex items-center gap-2 p-2 hover:bg-muted/50">
                     <Activity className="w-4 h-4" />
                     <span>On-Chain Activity</span>
                   </Link>
-                  <Link to="/factory/narratives" className="flex items-center gap-2 p-2 rounded bg-primary/10 text-primary">
+                  <Link to="/factory/narratives" className="flex items-center gap-2 p-2 bg-primary/10 text-primary">
                     <TrendingUp className="w-4 h-4" />
                     <span>Trending Narratives</span>
                     <Badge variant="outline" className="ml-auto">{filteredNarratives.length}</Badge>
                   </Link>
-                  <Link to="/factory/news" className="flex items-center gap-2 p-2 rounded hover:bg-muted/50">
+                  <Link to="/factory/news" className="flex items-center gap-2 p-2 hover:bg-muted/50">
                     <Newspaper className="w-4 h-4" />
                     <span>Crypto News</span>
                   </Link>
                 </nav>
-              </CardContent>
-            </Card>
+            </div>
 
             {/* Related Links */}
-            <Card className="pt-5">
-              <CardContent className="p-4">
+            <div className="border-t border-border/30 pt-4">
                 <h3 className="font-semibold mb-3">Related Analysis</h3>
                 <div className="space-y-2 text-sm">
                   <Link to="/predictions" className="flex items-center gap-2 text-primary hover:text-primary/80">
@@ -349,15 +334,13 @@ export default function FactoryNarratives() {
                     Market Dashboard
                   </Link>
                 </div>
-              </CardContent>
-            </Card>
+            </div>
 
             {/* Top Crypto Predictions */}
             <TopCryptoPredictionLinks />
 
             {/* Trading Tips */}
-            <Card className="pt-5">
-              <CardContent className="p-4">
+            <div className="border-t border-border/30 pt-4">
                 <h3 className="font-semibold mb-3">Narrative Trading Tips</h3>
                 <ul className="text-sm text-muted-foreground space-y-2">
                   <li>• Focus on narratives with <strong>high momentum scores</strong></li>
@@ -365,13 +348,12 @@ export default function FactoryNarratives() {
                   <li>• Diversify across multiple bullish sectors</li>
                   <li>• Watch for narrative rotation signals</li>
                 </ul>
-              </CardContent>
-            </Card>
+            </div>
           </aside>
         </div>
 
         {/* FAQ Section */}
-        <section className="mt-8 holo-card p-6">
+        <section className="mt-8 border-t border-border/30 pt-5">
           <h2 className="text-xl font-semibold mb-4">Crypto Narratives FAQ</h2>
           <div className="space-y-4">
             <div>

@@ -17,8 +17,8 @@ function ScoreBar({ label, value, color, desc }: { label: string; value: number;
         <span className="text-sm text-muted-foreground font-medium truncate">{label}</span>
         <span className="text-sm font-bold text-foreground shrink-0">{value}/100</span>
       </div>
-      <div className="w-full h-2.5 rounded-full bg-muted/50">
-        <div className={cn("h-2.5 rounded-full transition-all duration-1000", color)} style={{ width: `${value}%` }} />
+      <div className="w-full h-2.5 bg-muted/50 overflow-hidden">
+        <div className={cn("h-2.5 transition-all duration-1000", color)} style={{ width: `${value}%` }} />
       </div>
       {desc && <p className="text-xs text-muted-foreground">{desc}</p>}
     </div>
@@ -29,7 +29,7 @@ function Section({ title, icon, children, id }: { title: string; icon: React.Rea
   return (
     <section id={id} className="mb-8 sm:mb-10">
       <div className="flex items-center gap-3 mb-4 pb-3 border-b border-border/50">
-        <div className="p-2 rounded-xl bg-primary/10 border border-primary/20 text-primary shrink-0">{icon}</div>
+        <div className="text-primary shrink-0">{icon}</div>
         <h2 className="font-display font-bold text-lg sm:text-xl text-foreground leading-tight">{title}</h2>
       </div>
       {children}
@@ -73,42 +73,42 @@ const AirdropDetail = () => {
           <span>Back to all airdrops</span>
         </Link>
 
-        {/* ── Hero Card ── */}
-        <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-background to-background p-4 sm:p-6 md:p-8 mb-6 sm:mb-8">
-          <div className="absolute top-0 right-0 w-40 sm:w-56 h-40 sm:h-56 bg-primary/15 blur-3xl rounded-full pointer-events-none" />
+        {/* ── Hero ── */}
+        <div className="relative border-t border-primary/30 pt-6 md:pt-8 mb-6 sm:mb-8">
+          <div className="absolute top-0 right-0 w-40 sm:w-56 h-40 sm:h-56 bg-primary/15 blur-3xl pointer-events-none" />
 
           <div className="relative z-10">
             {/* Status badges — wrap on mobile */}
             <div className="flex flex-wrap items-center gap-2 mb-4">
               <span className={cn(
-                "flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full border",
+                "flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 border",
                 project.liveStatus === "Live" ? "bg-success/10 border-success/30 text-success"
                   : project.liveStatus === "Upcoming" ? "bg-warning/10 border-warning/30 text-warning"
                   : "bg-muted/50 border-border text-muted-foreground"
               )}>
-                {project.liveStatus === "Live" && <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse shrink-0" />}
+                {project.liveStatus === "Live" && <span className="w-1.5 h-1.5 bg-success animate-pulse shrink-0" />}
                 {project.liveStatus}
               </span>
               {project.isVerified && (
-                <span className="flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-primary/10 border border-primary/30 text-primary">
+                <span className="flex items-center gap-1 text-xs font-bold px-2.5 py-1 bg-primary/10 border border-primary/30 text-primary">
                   <CheckCircle2 className="w-3 h-3 shrink-0" /> Verified
                 </span>
               )}
-              <span className={cn("text-xs font-bold px-2.5 py-1 rounded-full border",
+              <span className={cn("text-xs font-bold px-2.5 py-1 border",
                 project.riskLevel === "Low" ? "bg-success/8 border-success/20 text-success"
                   : project.riskLevel === "Medium" ? "bg-warning/8 border-warning/20 text-warning"
                   : "bg-danger/8 border-danger/20 text-danger"
               )}>{project.riskLevel} Risk</span>
-              <span className="text-xs px-2.5 py-1 rounded-full bg-muted/50 border border-border text-muted-foreground">{project.category}</span>
+              <span className="text-xs px-2.5 py-1 bg-muted/50 border border-border text-muted-foreground">{project.category}</span>
             </div>
 
             {/* Title row */}
             <div className="flex items-start gap-3 sm:gap-4 mb-3">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-muted/50 border border-border p-2 flex items-center justify-center shrink-0">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-muted/50 border border-border p-2 flex items-center justify-center shrink-0">
                 <img src={project.logo} alt={project.name} className="w-full h-full object-contain" onError={e => { (e.target as HTMLImageElement).style.display = "none"; }} />
               </div>
               <div className="min-w-0">
-                <h1 className="font-display font-bold text-2xl sm:text-3xl md:text-4xl text-foreground glow-text leading-tight">
+                <h1 className="font-display font-bold text-2xl sm:text-3xl md:text-4xl text-foreground leading-tight">
                   {project.name}{" "}
                   <span className="text-muted-foreground text-base sm:text-xl font-normal">({project.ticker})</span>
                 </h1>
@@ -126,7 +126,7 @@ const AirdropDetail = () => {
                 { label: "Effort:Reward", value: `${project.rewardRatio.toFixed(1)}x`, color: "text-success", icon: <TrendingUp className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> },
                 { label: "Funding", value: project.funding, color: "text-foreground", icon: <BarChart3 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-primary" /> },
               ].map((m, i) => (
-                <div key={i} className="bg-background/60 border border-border/60 rounded-xl p-2.5 sm:p-3 min-w-0">
+                <div key={i} className="border-b border-border/30 py-2.5 sm:py-3 min-w-0">
                   <div className="flex items-center gap-1 text-[10px] text-muted-foreground mb-1 uppercase tracking-wide">{m.icon} <span className="truncate">{m.label}</span></div>
                   <div className={cn("font-display font-bold text-xs sm:text-sm truncate", m.color)}>{m.value}</div>
                 </div>
@@ -135,7 +135,7 @@ const AirdropDetail = () => {
 
             {/* Countdown */}
             {project.snapshotDate && (
-              <div className="inline-flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl bg-warning/5 border border-warning/20">
+              <div className="inline-flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 border-t border-warning/30 pt-3">
                 <Clock className="w-4 h-4 text-warning shrink-0" />
                 <AirdropCountdown targetDate={project.snapshotDate} label={project.liveStatus === "Live" ? "Snapshot" : "Launch"} />
               </div>
@@ -145,7 +145,7 @@ const AirdropDetail = () => {
 
         {/* Table of Contents */}
         {guide && (
-          <div className="holo-card p-4 mb-6 sm:mb-8">
+          <div className="border-t border-border/30 pt-4 mb-6 sm:mb-8">
             <div className="flex items-center gap-2 mb-3">
               <BookOpen className="w-4 h-4 text-primary shrink-0" />
               <span className="text-sm font-bold text-foreground">Table of Contents</span>
@@ -162,7 +162,7 @@ const AirdropDetail = () => {
                 guide.proTips?.length && { href: "#tips", label: "Oracle Bull Pro Tips" },
                 guide.communityLinks?.length && { href: "#links", label: "Official Links" },
               ].filter(Boolean).map((item: any, i) => (
-                <a key={i} href={item.href} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors py-1 px-1 rounded-lg hover:bg-primary/5">
+                <a key={i} href={item.href} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors py-1 px-1 hover:bg-primary/5">
                   <ChevronRight className="w-3 h-3 text-primary shrink-0" />
                   <span>{item.label}</span>
                 </a>
@@ -173,13 +173,13 @@ const AirdropDetail = () => {
 
         {/* AI Score Breakdown */}
         <Section title="Oracle Bull AI Score Breakdown" icon={<Brain className="w-4 h-4" />}>
-          <div className="space-y-4 p-4 sm:p-5 rounded-2xl bg-primary/5 border border-primary/15">
+          <div className="space-y-4 border-t border-border/30 pt-4">
             <ScoreBar label="Overall AI Score" value={project.aiScore} color="bg-primary" desc="Composite signal across all metrics" />
             <ScoreBar label="Legitimacy" value={project.legitimacyScore} color="bg-success" desc="On-chain + VC + team credibility" />
             <ScoreBar label="AI Confidence" value={project.aiConfidence === "Very High" ? 95 : project.aiConfidence === "High" ? 80 : project.aiConfidence === "Medium" ? 60 : 40} color="bg-warning" desc={`${project.aiConfidence} confidence in TGE timing`} />
             <ScoreBar label="Ease of Farming" value={100 - (project.effortScore - 1) * 20} color="bg-blue-500" desc={`${project.difficulty} effort required`} />
           </div>
-          <div className="mt-4 p-4 rounded-xl bg-muted/20 border border-border/40">
+          <div className="mt-4 border-t border-border/20 pt-3">
             <p className="text-sm text-muted-foreground leading-relaxed italic">{project.aiAnalysis}</p>
           </div>
         </Section>
@@ -194,7 +194,7 @@ const AirdropDetail = () => {
         {/* Why it matters */}
         {guide?.whyItMatters && (
           <Section title="Why This Airdrop Matters" icon={<Zap className="w-4 h-4" />} id="why">
-            <div className="text-sm sm:text-base text-muted-foreground leading-relaxed whitespace-pre-line p-4 sm:p-5 rounded-2xl bg-primary/5 border border-primary/15">{guide.whyItMatters}</div>
+            <div className="text-sm sm:text-base text-muted-foreground leading-relaxed whitespace-pre-line border-l-2 border-primary pl-4">{guide.whyItMatters}</div>
           </Section>
         )}
 
@@ -203,7 +203,7 @@ const AirdropDetail = () => {
           <Section title="Step-by-Step Farming Guide" icon={<ChevronRight className="w-4 h-4" />} id="guide">
             <div className="space-y-3">
               {guide.stepByStep.map((step, i) => (
-                <div key={i} className="flex gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl bg-background/60 border border-border/60 hover:border-primary/20 transition-colors">
+                <div key={i} className="flex gap-3 sm:gap-4 p-3 sm:p-4 border-b border-border/30 hover:border-primary/20 transition-colors">
                   <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary text-primary-foreground text-xs sm:text-sm font-bold flex items-center justify-center shrink-0 mt-0.5">{i + 1}</div>
                   <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{step}</p>
                 </div>
@@ -224,7 +224,7 @@ const AirdropDetail = () => {
           <Section title="Venture Capital Backers" icon={<TrendingUp className="w-4 h-4" />} id="backers">
             <div className="flex flex-wrap gap-2">
               {guide.vcBackers.map((vc, i) => (
-                <span key={i} className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-muted/50 border border-border text-xs sm:text-sm font-semibold text-foreground hover:border-primary/30 transition-colors">{vc}</span>
+                <span key={i} className="px-3 sm:px-4 py-1.5 sm:py-2 border border-border text-xs sm:text-sm font-semibold text-foreground hover:border-primary/30 transition-colors">{vc}</span>
               ))}
             </div>
           </Section>
@@ -249,7 +249,7 @@ const AirdropDetail = () => {
         {guide?.riskAnalysis && (
           <Section title="Risk Analysis" icon={<Shield className="w-4 h-4" />} id="risk">
             <div className={cn(
-              "text-sm sm:text-base leading-relaxed whitespace-pre-line p-4 sm:p-5 rounded-2xl border",
+              "text-sm sm:text-base leading-relaxed whitespace-pre-line p-4 sm:p-5 border-t pt-4",
               project.riskLevel === "Low" ? "bg-success/5 border-success/20 text-muted-foreground"
                 : project.riskLevel === "Medium" ? "bg-warning/5 border-warning/20 text-muted-foreground"
                 : "bg-danger/5 border-danger/20 text-muted-foreground"
@@ -272,7 +272,7 @@ const AirdropDetail = () => {
           <Section title="Oracle Bull Pro Tips" icon={<Star className="w-4 h-4" />} id="tips">
             <div className="space-y-3">
               {guide.proTips.map((tip, i) => (
-                <div key={i} className="flex gap-3 p-3 sm:p-4 rounded-xl bg-primary/5 border border-primary/15 hover:border-primary/30 transition-colors">
+                <div key={i} className="flex gap-3 p-3 sm:p-4 border-b border-border/30 hover:border-primary/30 transition-colors">
                   <Zap className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                   <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{tip}</p>
                 </div>
@@ -287,7 +287,7 @@ const AirdropDetail = () => {
             <div className="flex flex-wrap gap-2 sm:gap-3">
               {guide.communityLinks.map((link, i) => (
                 <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-muted/40 border border-border text-xs sm:text-sm font-semibold text-foreground hover:bg-primary/8 hover:border-primary/30 transition-all">
+                  className="flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 border border-border text-xs sm:text-sm font-semibold text-foreground hover:bg-primary/8 hover:border-primary/30 transition-all">
                   {link.name} <ExternalLink className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-muted-foreground shrink-0" />
                 </a>
               ))}
@@ -296,7 +296,7 @@ const AirdropDetail = () => {
         )}
 
         {/* Disclaimer */}
-        <div className="text-xs text-muted-foreground p-3 sm:p-4 rounded-xl bg-muted/20 border border-border/30 leading-relaxed mb-6 sm:mb-8">
+        <div className="text-xs text-muted-foreground p-3 sm:p-4 border-t border-border/30 pt-4 leading-relaxed mb-6 sm:mb-8">
           <strong className="text-foreground">Disclaimer:</strong> This guide is for informational purposes only and does not constitute financial advice. Crypto airdrops carry risk including loss of gas fees and time. Always verify on official project websites before interacting with any smart contracts. Never share your seed phrase or private keys.
         </div>
 
@@ -306,8 +306,8 @@ const AirdropDetail = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
             {AIRDROPS_DATA.filter(a => a.id !== project.id).slice(0, 4).map(a => (
               <Link key={a.id} to={`/airdrops/${a.id}`}
-                className="flex items-center gap-3 p-3 rounded-xl border border-border bg-muted/20 hover:border-primary/30 hover:bg-primary/5 transition-all group min-w-0">
-                <div className="w-8 h-8 rounded-lg bg-muted/50 border border-border p-1 flex items-center justify-center shrink-0">
+                className="flex items-center gap-3 p-3 border-b border-border/30 hover:border-primary/30 hover:bg-primary/5 transition-all group min-w-0">
+                <div className="w-8 h-8 bg-muted/50 border border-border p-1 flex items-center justify-center shrink-0">
                   <img src={a.logo} alt={a.name} className="w-full h-full object-contain" onError={e => { (e.target as HTMLImageElement).style.display = "none"; }} />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -323,12 +323,12 @@ const AirdropDetail = () => {
         {/* Bottom nav buttons — always visible */}
         <div className="flex flex-col sm:flex-row gap-3 mt-6 sm:mt-8 pt-6 border-t border-border/50">
           <Link to="/airdrops"
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-border bg-muted/30 text-sm font-bold text-foreground hover:bg-muted/60 transition-all">
+            className="flex-1 flex items-center justify-center gap-2 py-3 border border-border bg-muted/30 text-sm font-bold text-foreground hover:bg-muted/60 transition-all">
             <ArrowLeft className="w-4 h-4 shrink-0" />
             All Airdrops
           </Link>
           <Link to="/my/scanner"
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-bold hover:opacity-90 transition-all">
+            className="flex-1 flex items-center justify-center gap-2 py-3 bg-primary text-primary-foreground text-sm font-bold hover:opacity-90 transition-all">
             <CheckCircle2 className="w-4 h-4 shrink-0" />
             Check Wallet Eligibility
           </Link>

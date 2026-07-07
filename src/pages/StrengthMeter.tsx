@@ -215,18 +215,18 @@ export default function StrengthMeter() {
               <span className="text-foreground">Strength Meter</span>
             </nav>
             <h1 className="text-2xl md:text-4xl font-display font-bold flex items-center gap-2.5">
-              <span className="p-2 rounded-xl bg-primary/15"><Zap className="w-6 h-6 text-primary" /></span>
+              <span className="p-2 bg-primary/15"><Zap className="w-6 h-6 text-primary" /></span>
               Crypto Strength Meter
             </h1>
             <h2 className="text-muted-foreground mt-2 text-base md:text-lg">Real-time strength rankings for 100+ cryptocurrencies</h2>
           </div>
           <div className="flex items-center gap-2">
-            <span className="flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-muted/40">
+            <span className="flex items-center gap-1.5 text-xs px-2.5 py-1 bg-muted/40">
               {isConnected ? <><Wifi className="w-3 h-3 text-success animate-pulse" /><span className="text-success">LIVE</span></> : <><WifiOff className="w-3 h-3 text-danger" /><span className="text-danger">Offline</span></>}
             </span>
             <span className="text-xs text-muted-foreground hidden sm:inline">Updated {minsAgo === 0 ? "just now" : `${minsAgo}m ago`}</span>
-            <button onClick={refresh} className="p-2 rounded-lg border border-border hover:text-primary hover:border-primary/40 transition-colors" aria-label="Refresh"><RefreshCw className={cn("w-4 h-4", isLoading && "animate-spin")} /></button>
-            <button onClick={shareTop} className="p-2 rounded-lg border border-border hover:text-primary hover:border-primary/40 transition-colors" aria-label="Share rankings"><Share2 className="w-4 h-4" /></button>
+            <button onClick={refresh} className="p-2 border border-border hover:text-primary hover:border-primary/40 transition-colors" aria-label="Refresh"><RefreshCw className={cn("w-4 h-4", isLoading && "animate-spin")} /></button>
+            <button onClick={shareTop} className="p-2 border border-border hover:text-primary hover:border-primary/40 transition-colors" aria-label="Share rankings"><Share2 className="w-4 h-4" /></button>
           </div>
         </section>
 
@@ -236,19 +236,19 @@ export default function StrengthMeter() {
         {/* Controls */}
         <section className="border-t border-border/30 pt-4 space-y-3">
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex bg-muted/40 rounded-lg p-0.5">
+            <div className="flex bg-muted/40 p-0.5">
               {(["assets", "chains"] as const).map((v) => (
-                <button key={v} onClick={() => setParam("view", v === "assets" ? null : v)} className={cn("px-3 py-1.5 rounded-md text-xs font-semibold capitalize transition-colors", view === v ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")}>{v}</button>
+                <button key={v} onClick={() => setParam("view", v === "assets" ? null : v)} className={cn("px-3 py-1.5 text-xs font-semibold capitalize transition-colors", view === v ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")}>{v}</button>
               ))}
             </div>
-            <div className="flex bg-muted/40 rounded-lg p-0.5">
+            <div className="flex bg-muted/40 p-0.5">
               {TIMEFRAMES.map((tf) => (
-                <button key={tf.value} onClick={() => setParam("tf", tf.value === "24h" ? null : tf.value)} className={cn("px-3 py-1.5 rounded-md text-xs font-semibold transition-colors", timeframe === tf.value ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")}>{tf.label}</button>
+                <button key={tf.value} onClick={() => setParam("tf", tf.value === "24h" ? null : tf.value)} className={cn("px-3 py-1.5 text-xs font-semibold transition-colors", timeframe === tf.value ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")}>{tf.label}</button>
               ))}
             </div>
             <div className="relative flex-1 min-w-[180px] max-w-xs ml-auto">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-              <input value={query} onChange={(e) => setParam("q", e.target.value || null)} placeholder="Search crypto… (e.g. BTC, Ethereum)" className="w-full h-9 pl-8 pr-8 rounded-lg bg-muted/40 border border-border text-xs focus:outline-none focus:border-primary" />
+              <input value={query} onChange={(e) => setParam("q", e.target.value || null)} placeholder="Search crypto… (e.g. BTC, Ethereum)" className="w-full h-9 pl-8 pr-8 bg-muted/40 border border-border text-xs focus:outline-none focus:border-primary" />
               {query && <button onClick={() => setParam("q", null)} className="absolute right-2.5 top-1/2 -translate-y-1/2"><X className="w-3.5 h-3.5 text-muted-foreground" /></button>}
             </div>
           </div>
@@ -256,7 +256,7 @@ export default function StrengthMeter() {
             {view === "assets" && (
               <div className="flex items-center gap-1.5 flex-wrap">
                 {categories.map((c) => (
-                  <button key={c} onClick={() => setParam("cat", c)} className={cn("px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors border", category === c ? "bg-primary/10 text-primary border-primary/30" : "border-border text-muted-foreground hover:text-foreground")}>{c}</button>
+                  <button key={c} onClick={() => setParam("cat", c)} className={cn("px-2.5 py-1 text-[11px] font-medium transition-colors border", category === c ? "bg-primary/10 text-primary border-primary/30" : "border-border text-muted-foreground hover:text-foreground")}>{c}</button>
                 ))}
               </div>
             )}
@@ -275,8 +275,8 @@ export default function StrengthMeter() {
               <div className="flex items-center gap-2.5 mb-1 flex-wrap">
                 <CoinImage symbol={selected.symbol} image={selected.logo} size={28} />
                 <h3 className="text-lg font-bold">{selected.name} <span className="text-muted-foreground font-mono text-sm">{selected.symbol}</span></h3>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full border" style={{ color: scoreColor(selected.strengthScore), borderColor: scoreColor(selected.strengthScore) + "55" }}>{scoreLabel(selected.strengthScore)}</span>
-                <span className={cn("ml-auto text-[10px] font-bold px-2 py-0.5 rounded border", signalOf(selected.strengthScore).cls)}>{signalOf(selected.strengthScore).label}</span>
+                <span className="text-xs font-semibold px-2 py-0.5 border" style={{ color: scoreColor(selected.strengthScore), borderColor: scoreColor(selected.strengthScore) + "55" }}>{scoreLabel(selected.strengthScore)}</span>
+                <span className={cn("ml-auto text-[10px] font-bold px-2 py-0.5 border", signalOf(selected.strengthScore).cls)}>{signalOf(selected.strengthScore).label}</span>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-3">
                 {[
@@ -298,9 +298,9 @@ export default function StrengthMeter() {
         {/* Tool tabs */}
         <Tabs value={tool} onValueChange={setTool} className="w-full">
           <div className="overflow-x-auto scrollbar-hide -mx-1 px-1">
-            <TabsList className="inline-flex w-auto bg-muted/30 border border-border/40 p-1 h-auto rounded-xl">
+            <TabsList className="inline-flex w-auto bg-muted/30 border border-border/40 p-1 h-auto">
               {toolTabs.map((t) => (
-                <TabsTrigger key={t.value} value={t.value} className="flex items-center gap-1.5 text-xs sm:text-sm whitespace-nowrap rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm px-3 py-1.5">
+                <TabsTrigger key={t.value} value={t.value} className="flex items-center gap-1.5 text-xs sm:text-sm whitespace-nowrap data-[state=active]:bg-background data-[state=active]:shadow-sm px-3 py-1.5">
                   <t.icon className="h-3.5 w-3.5" />{t.label}
                 </TabsTrigger>
               ))}
@@ -356,7 +356,7 @@ export default function StrengthMeter() {
                             <td className={cn("px-3 py-2.5 text-right font-mono", changeCls(r.volumeChange))}>{pct(r.volumeChange)}</td>
                             <td className={cn("px-3 py-2.5 text-right font-mono", changeCls(r.relativeStrengthVsBTC))}>{pct(r.relativeStrengthVsBTC)}</td>
                             <td className="px-3 py-2.5 text-center text-xs"><TrendIcon change={r.priceChange24h} /></td>
-                            <td className="px-3 py-2.5 text-right"><span className={cn("text-[10px] font-bold px-2 py-0.5 rounded border whitespace-nowrap", sig.cls)}>{sig.label}</span></td>
+                            <td className="px-3 py-2.5 text-right"><span className={cn("text-[10px] font-bold px-2 py-0.5 border whitespace-nowrap", sig.cls)}>{sig.label}</span></td>
                           </tr>
                         );
                       })
@@ -375,7 +375,7 @@ export default function StrengthMeter() {
               <span className="text-xs text-muted-foreground">Tap a card to expand its full breakdown</span>
             </div>
             {isLoading ? (
-              <div className="grid gap-3 sm:grid-cols-2">{Array.from({ length: 8 }).map((_, i) => <div key={i} className="h-24 rounded-xl bg-muted/30 animate-pulse" />)}</div>
+              <div className="grid gap-3 sm:grid-cols-2">{Array.from({ length: 8 }).map((_, i) => <div key={i} className="h-24 bg-muted/30 animate-pulse" />)}</div>
             ) : (
               <div className="grid gap-3 sm:grid-cols-2">
                 {rows.slice(0, 20).map((item, i) => <ExpandableStrengthCard key={item.id} data={item} rank={i + 1} />)}
@@ -422,7 +422,7 @@ export default function StrengthMeter() {
             <h2 className="text-xl font-display font-bold">How Is the Strength Score Calculated?</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">Oracle Bull's Strength Score is a weighted composite of seven real market signals, normalized and combined into one 0–100 number:</p>
             <div className="overflow-x-auto not-prose my-3">
-              <table className="w-full text-sm border border-border/50 rounded-lg">
+              <table className="w-full text-sm border border-border/50">
                 <thead className="bg-muted/30"><tr><th className="text-left p-2.5 text-xs font-semibold">Signal</th><th className="text-left p-2.5 text-xs font-semibold">Weight</th><th className="text-left p-2.5 text-xs font-semibold">What it measures</th></tr></thead>
                 <tbody className="text-muted-foreground">
                   {[
@@ -477,7 +477,7 @@ export default function StrengthMeter() {
                 { to: "/dashboard", label: "Crypto Dashboard", icon: Zap },
                 { to: "/tools", label: "All Tools", icon: ArrowRight },
               ].map((l) => (
-                <Link key={l.to} to={l.to} className="flex items-center gap-2 text-sm p-2.5 rounded-xl bg-primary/5 border border-border hover:border-primary/40 hover:text-primary transition-colors group">
+                <Link key={l.to} to={l.to} className="flex items-center gap-2 text-sm p-2.5 bg-primary/5 border border-border hover:border-primary/40 hover:text-primary transition-colors group">
                   <l.icon className="w-4 h-4 shrink-0" /><span className="truncate">{l.label}</span><ArrowRight className="w-3.5 h-3.5 ml-auto opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                 </Link>
               ))}

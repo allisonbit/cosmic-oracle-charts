@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { useCryptoFactory } from "@/hooks/useCryptoFactory";
-import { Card, CardContent } from "@/components/ui/card";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -189,7 +189,7 @@ export default function FactoryEvents() {
 
         {/* H1 Header */}
         <header className="mb-6">
-          <h1 className="text-3xl md:text-4xl font-display font-bold glow-text flex items-center gap-3">
+          <h1 className="text-3xl md:text-4xl font-display font-bold flex items-center gap-3">
             <Calendar className="w-10 h-10 text-primary" />
             Crypto Events Calendar
           </h1>
@@ -200,7 +200,7 @@ export default function FactoryEvents() {
         </header>
 
         {/* SEO Introduction */}
-        <section className="holo-card p-6 mb-6">
+        <section className="border-t border-border/30 pt-5 mb-6">
           <h2 className="text-xl font-semibold mb-3">What Are Crypto Market Events?</h2>
           <div className="prose max-w-none text-muted-foreground">
             <p className="mb-3">
@@ -209,15 +209,15 @@ export default function FactoryEvents() {
               trading opportunities. Oracle Bull tracks all major event types across top blockchain networks.
             </p>
             <div className="grid md:grid-cols-3 gap-4 mt-4">
-              <div className="p-3 rounded-lg bg-muted/30">
+              <div className="p-3 border-b border-border/20 pb-3">
                 <h3 className="font-semibold text-foreground mb-1">Token Unlocks</h3>
                 <p className="text-sm">Vesting releases that increase circulating supply, often causing sell pressure.</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/30">
+              <div className="p-3 border-b border-border/20 pb-3">
                 <h3 className="font-semibold text-foreground mb-1">Network Upgrades</h3>
                 <p className="text-sm">Protocol improvements that can boost confidence and adoption.</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/30">
+              <div className="p-3 border-b border-border/20 pb-3">
                 <h3 className="font-semibold text-foreground mb-1">Governance Votes</h3>
                 <p className="text-sm">Community decisions that shape protocol direction and tokenomics.</p>
               </div>
@@ -226,8 +226,8 @@ export default function FactoryEvents() {
         </section>
 
         {/* Filters */}
-        <Card className="pt-5 mb-6">
-          <CardContent className="p-4">
+        <div className="border-t border-border/30 pt-4 mb-6">
+          <div>
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -270,8 +270,8 @@ export default function FactoryEvents() {
                 Refresh
               </Button>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Events List */}
         <div className="grid lg:grid-cols-3 gap-6">
@@ -282,8 +282,7 @@ export default function FactoryEvents() {
                 <Clock className="w-5 h-5 text-primary" />
                 Upcoming Events ({upcomingEvents.length})
               </h2>
-              <Card className="pt-5">
-                <CardContent className="p-6">
+              <div className="border-t border-border/30 pt-4">
                   {isLoading ? (
                     <div className="space-y-4">
                       {Array.from({ length: 3 }).map((_, i) => (
@@ -299,8 +298,7 @@ export default function FactoryEvents() {
                       No upcoming events match your filters. Try adjusting your search criteria.
                     </p>
                   )}
-                </CardContent>
-              </Card>
+              </div>
             </section>
 
             {/* Recent Events */}
@@ -309,8 +307,7 @@ export default function FactoryEvents() {
                 <Calendar className="w-5 h-5 text-muted-foreground" />
                 Recent Events ({pastEvents.length})
               </h2>
-              <Card className="pt-5">
-                <CardContent className="p-6">
+              <div className="border-t border-border/30 pt-4">
                   {isLoading ? (
                     <div className="space-y-4">
                       {Array.from({ length: 3 }).map((_, i) => (
@@ -326,42 +323,38 @@ export default function FactoryEvents() {
                       No recent events to display.
                     </p>
                   )}
-                </CardContent>
-              </Card>
+              </div>
             </section>
           </div>
 
           {/* Sidebar */}
           <aside className="space-y-6">
             {/* Factory Navigation */}
-            <Card className="pt-5">
-              <CardContent className="p-4">
+            <div className="border-t border-border/30 pt-4">
                 <h3 className="font-semibold mb-3">Crypto Factory Sections</h3>
                 <nav className="space-y-2">
-                  <Link to="/factory/events" className="flex items-center gap-2 p-2 rounded bg-primary/10 text-primary">
+                  <Link to="/factory/events" className="flex items-center gap-2 p-2 bg-primary/10 text-primary">
                     <Calendar className="w-4 h-4" />
                     <span>Market Events</span>
                     <Badge variant="outline" className="ml-auto">{data?.events.length || 0}</Badge>
                   </Link>
-                  <Link to="/factory/onchain" className="flex items-center gap-2 p-2 rounded hover:bg-muted/50">
+                  <Link to="/factory/onchain" className="flex items-center gap-2 p-2 hover:bg-muted/50">
                     <Activity className="w-4 h-4" />
                     <span>On-Chain Activity</span>
                   </Link>
-                  <Link to="/factory/narratives" className="flex items-center gap-2 p-2 rounded hover:bg-muted/50">
+                  <Link to="/factory/narratives" className="flex items-center gap-2 p-2 hover:bg-muted/50">
                     <TrendingUp className="w-4 h-4" />
                     <span>Trending Narratives</span>
                   </Link>
-                  <Link to="/factory/news" className="flex items-center gap-2 p-2 rounded hover:bg-muted/50">
+                  <Link to="/factory/news" className="flex items-center gap-2 p-2 hover:bg-muted/50">
                     <Newspaper className="w-4 h-4" />
                     <span>Crypto News</span>
                   </Link>
                 </nav>
-              </CardContent>
-            </Card>
+            </div>
 
             {/* Related Links */}
-            <Card className="pt-5">
-              <CardContent className="p-4">
+            <div className="border-t border-border/30 pt-4">
                 <h3 className="font-semibold mb-3">Related Analysis</h3>
                 <div className="space-y-2 text-sm">
                   <Link to="/predictions" className="flex items-center gap-2 text-primary hover:text-primary/80">
@@ -377,15 +370,13 @@ export default function FactoryEvents() {
                     Sentiment Analysis
                   </Link>
                 </div>
-              </CardContent>
-            </Card>
+            </div>
 
             {/* Top Crypto Predictions */}
             <TopCryptoPredictionLinks />
 
             {/* How to Use */}
-            <Card className="pt-5">
-              <CardContent className="p-4">
+            <div className="border-t border-border/30 pt-4">
                 <h3 className="font-semibold mb-3">How to Use Event Data</h3>
                 <ul className="text-sm text-muted-foreground space-y-2">
                   <li>• <strong>High impact</strong> events often cause 5-15% price swings</li>
@@ -393,13 +384,12 @@ export default function FactoryEvents() {
                   <li>• Network upgrades can spark rallies if successful</li>
                   <li>• Monitor events 24-48 hours before occurrence</li>
                 </ul>
-              </CardContent>
-            </Card>
+            </div>
           </aside>
         </div>
 
         {/* FAQ Section */}
-        <section className="mt-8 holo-card p-6">
+        <section className="mt-8 border-t border-border/30 pt-5">
           <h2 className="text-xl font-semibold mb-4">Frequently Asked Questions</h2>
           <div className="space-y-4">
             <div>

@@ -26,7 +26,7 @@ const has = (n?: number) => typeof n === "number" && isFinite(n);
 
 function CoinColumn({ data, slug, isLoading }: { data?: CompareToken | null; slug: string; isLoading: boolean }) {
   if (isLoading) {
-    return <div className="space-y-3">{[...Array(8)].map((_, i) => <div key={i} className="h-12 bg-muted/40 rounded-lg animate-pulse" />)}</div>;
+    return <div className="space-y-3">{[...Array(8)].map((_, i) => <div key={i} className="h-12 bg-muted/40 animate-pulse" />)}</div>;
   }
   if (!data) {
     return (
@@ -53,7 +53,7 @@ function CoinColumn({ data, slug, isLoading }: { data?: CompareToken | null; slu
   const up = (data.change24h ?? 0) >= 0;
   return (
     <div className="space-y-3">
-      <div className="text-center p-4 rounded-xl bg-background/50 border border-border">
+      <div className="text-center p-4 border-t border-border/30 pt-4">
         <CoinImage symbol={data.symbol} image={data.image} size={56} className="mx-auto mb-2" />
         <div className="font-bold font-display text-xl">{data.name}</div>
         <div className="text-xs text-muted-foreground font-mono">{data.symbol}{data.chain ? ` · ${data.chain}` : ""}</div>
@@ -63,7 +63,7 @@ function CoinColumn({ data, slug, isLoading }: { data?: CompareToken | null; slu
         </div>
       </div>
       {rows.map((r) => (
-        <div key={r.label} className="px-3 py-2.5 rounded-lg bg-background/50 border border-border text-center">
+        <div key={r.label} className="px-3 py-2.5 border-b border-border/20 text-center">
           <div className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold mb-0.5">{r.label}</div>
           <div className={cn("font-bold text-sm", r.positive !== undefined ? (r.positive ? "text-success" : "text-danger") : "text-foreground")}>{r.value}</div>
         </div>
@@ -109,12 +109,12 @@ function AIVerdict({ a, b }: { a: CompareToken; b: CompareToken }) {
   const winnerPct = Math.max(pctA, pctB);
 
   return (
-    <div className="holo-card p-6 md:p-8">
+    <div className="border-t border-border/30 pt-6 md:pt-8">
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-3 bg-primary/10 rounded-xl"><Brain className="w-6 h-6 text-primary" /></div>
+        <div className="p-3 bg-primary/10"><Brain className="w-6 h-6 text-primary" /></div>
         <div><h2 className="font-bold font-display text-xl">Oracle AI Verdict</h2><p className="text-xs text-muted-foreground">Based on the live metrics available for both tokens</p></div>
       </div>
-      <div className="bg-primary/5 border border-primary/30 rounded-xl p-5 mb-6 text-center">
+      <div className="bg-primary/5 border border-primary/30 p-5 mb-6 text-center">
         <div className="text-xs text-primary font-bold uppercase tracking-widest mb-1">AI Leans Toward</div>
         <div className="text-3xl font-display font-black mb-1">{winner.name}</div>
         <div className="text-sm text-muted-foreground">Confidence: <span className="text-primary font-bold">{winnerPct}%</span>{usable.length < 3 && " · limited data for this pair"}</div>
@@ -133,10 +133,10 @@ function AIVerdict({ a, b }: { a: CompareToken; b: CompareToken }) {
         <p>Across {usable.length} comparable {usable.length === 1 ? "metric" : "metrics"}, <strong className="text-foreground">{winner.name}</strong> scores higher with a <strong className="text-primary">{winnerPct}% AI confidence rating</strong>. This is research, not financial advice.</p>
       </div>
       <div className="mt-6 pt-6 border-t border-border flex flex-wrap gap-3">
-        {a.coingeckoId && <Link to={`/price-prediction/${a.coingeckoId}`} className="inline-flex items-center gap-2 text-sm bg-background/50 border border-border px-4 py-2 rounded-lg hover:border-primary/50 hover:text-primary transition-colors"><BarChart3 className="w-4 h-4" /> {a.symbol} Prediction</Link>}
-        {b.coingeckoId && <Link to={`/price-prediction/${b.coingeckoId}`} className="inline-flex items-center gap-2 text-sm bg-background/50 border border-border px-4 py-2 rounded-lg hover:border-primary/50 hover:text-primary transition-colors"><BarChart3 className="w-4 h-4" /> {b.symbol} Prediction</Link>}
-        <Link to="/sentiment" className="inline-flex items-center gap-2 text-sm bg-background/50 border border-border px-4 py-2 rounded-lg hover:border-primary/50 hover:text-primary transition-colors"><Activity className="w-4 h-4" /> Market Sentiment</Link>
-        <Link to="/strength-meter" className="inline-flex items-center gap-2 text-sm bg-primary/10 border border-primary/30 text-primary px-4 py-2 rounded-lg hover:bg-primary/20 transition-colors"><Zap className="w-4 h-4" /> Strength Meter <ArrowRight className="w-3 h-3" /></Link>
+        {a.coingeckoId && <Link to={`/price-prediction/${a.coingeckoId}`} className="inline-flex items-center gap-2 text-sm bg-background/50 border border-border px-4 py-2 hover:border-primary/50 hover:text-primary transition-colors"><BarChart3 className="w-4 h-4" /> {a.symbol} Prediction</Link>}
+        {b.coingeckoId && <Link to={`/price-prediction/${b.coingeckoId}`} className="inline-flex items-center gap-2 text-sm bg-background/50 border border-border px-4 py-2 hover:border-primary/50 hover:text-primary transition-colors"><BarChart3 className="w-4 h-4" /> {b.symbol} Prediction</Link>}
+        <Link to="/sentiment" className="inline-flex items-center gap-2 text-sm bg-background/50 border border-border px-4 py-2 hover:border-primary/50 hover:text-primary transition-colors"><Activity className="w-4 h-4" /> Market Sentiment</Link>
+        <Link to="/strength-meter" className="inline-flex items-center gap-2 text-sm bg-primary/10 border border-primary/30 text-primary px-4 py-2 hover:bg-primary/20 transition-colors"><Zap className="w-4 h-4" /> Strength Meter <ArrowRight className="w-3 h-3" /></Link>
       </div>
     </div>
   );
@@ -189,10 +189,10 @@ export default function CoinComparison() {
           </nav>
 
           <div className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wider mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary text-xs font-semibold tracking-wider mb-4">
               <GitCompare className="w-4 h-4" /><span>LIVE AI COMPARISON</span>
             </div>
-            <h1 className="text-3xl md:text-5xl font-bold font-display mb-4 glow-text flex items-center justify-center gap-3 flex-wrap">
+            <h1 className="text-3xl md:text-5xl font-bold font-display mb-4 flex items-center justify-center gap-3 flex-wrap">
               {dataA && <CoinImage symbol={dataA.symbol} image={dataA.image} size={40} />}
               {nameA} <span className="text-muted-foreground text-xl">vs</span> {nameB}
               {dataB && <CoinImage symbol={dataB.symbol} image={dataB.image} size={40} />}
@@ -203,7 +203,7 @@ export default function CoinComparison() {
           <div className="grid md:grid-cols-[1fr_auto_1fr] gap-4 mb-8">
             <CoinColumn data={dataA} slug={slugA} isLoading={loadingA} />
             <div className="hidden md:flex flex-col items-center justify-center">
-              <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center sticky top-24"><span className="font-black text-primary text-xs">VS</span></div>
+              <div className="w-10 h-10 bg-primary/10 border border-primary/30 flex items-center justify-center sticky top-24"><span className="font-black text-primary text-xs">VS</span></div>
             </div>
             <CoinColumn data={dataB} slug={slugB} isLoading={loadingB} />
           </div>

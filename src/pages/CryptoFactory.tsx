@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { useCryptoFactory } from "@/hooks/useCryptoFactory";
-import { Card, CardContent } from "@/components/ui/card";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -44,10 +44,10 @@ const safeTime = (s?: string) => { try { return formatDistanceToNow(new Date(s |
 function FeedItem({ n, navigate }: { n: any; navigate: (p: string) => void }) {
   const high = (n.impactScore ?? 0) >= 75;
   return (
-    <Card className={cn("pt-5 group", high && "border-l-2 border-l-primary")}>
-      <CardContent className="p-4">
+    <div className={cn("border-b border-border/20 pb-4 group", high && "border-l-2 border-l-primary")}>
+      <div className="pt-1">
         <div className="flex items-start gap-3">
-          {n.imageUrl && <div className="w-16 h-14 rounded-lg overflow-hidden shrink-0 hidden sm:block bg-muted"><img src={n.imageUrl} alt="" loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} /></div>}
+          {n.imageUrl && <div className="w-16 h-14 overflow-hidden shrink-0 hidden sm:block bg-muted"><img src={n.imageUrl} alt="" loading="lazy" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} /></div>}
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-2">
               <a href={n.url} target="_blank" rel="noopener noreferrer" className="font-semibold text-sm leading-snug line-clamp-2 hover:text-primary transition-colors">{n.title}</a>
@@ -60,14 +60,14 @@ function FeedItem({ n, navigate }: { n: any; navigate: (p: string) => void }) {
               {high && <Badge variant="outline" className="text-[10px] bg-primary/10 text-primary border-primary/30">Impact {Math.round(n.impactScore)}</Badge>}
               <div className="ml-auto flex items-center gap-1">
                 {(n.relatedAssets || []).slice(0, 3).map((a: string) => (
-                  <button key={a} onClick={() => navigate(`/price-prediction/${a.toLowerCase()}/daily`)} className="text-[10px] font-mono px-1.5 py-0.5 rounded border border-border/40 hover:border-primary/40 hover:text-primary transition-colors">{a}</button>
+                  <button key={a} onClick={() => navigate(`/price-prediction/${a.toLowerCase()}/daily`)} className="text-[10px] font-mono px-1.5 py-0.5 border border-border/40 hover:border-primary/40 hover:text-primary transition-colors">{a}</button>
                 ))}
               </div>
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
 
@@ -84,7 +84,7 @@ function NarrativeRow({ n, navigate }: { n: any; navigate: (p: string) => void }
       <div className="flex items-center justify-between gap-2">
         <div className="flex flex-wrap gap-1">
           {(n.topAssets || []).slice(0, 4).map((a: string) => (
-            <button key={a} onClick={() => navigate(`/price-prediction/${a.toLowerCase()}/daily`)} className="text-[10px] font-mono px-1.5 py-0.5 rounded border border-border/40 hover:border-primary/40 hover:text-primary transition-colors">{a}</button>
+            <button key={a} onClick={() => navigate(`/price-prediction/${a.toLowerCase()}/daily`)} className="text-[10px] font-mono px-1.5 py-0.5 border border-border/40 hover:border-primary/40 hover:text-primary transition-colors">{a}</button>
           ))}
         </div>
         <span className="text-[10px] text-muted-foreground shrink-0">Momentum {Math.round(mom)}</span>
@@ -254,13 +254,13 @@ export default function CryptoFactory() {
             <nav aria-label="Breadcrumb" className="text-xs text-muted-foreground mb-2 flex items-center gap-1.5">
               <Link to="/" className="hover:text-primary">Home</Link><span>/</span><Link to="/tools" className="hover:text-primary">Tools</Link><span>/</span><span className="text-foreground">Crypto Factory</span>
             </nav>
-            <h1 className="font-display text-2xl md:text-4xl font-bold flex items-center gap-2.5"><span className="p-2 rounded-xl bg-primary/15"><Zap className="w-6 h-6 text-primary" /></span> Crypto Factory</h1>
+            <h1 className="font-display text-2xl md:text-4xl font-bold flex items-center gap-2.5"><span className="p-2 bg-primary/15"><Zap className="w-6 h-6 text-primary" /></span> Crypto Factory</h1>
             <h2 className="text-muted-foreground mt-2 text-sm md:text-base max-w-2xl">Real-time market intelligence. Events, narratives, on-chain flows and news from 50+ sources — all auto-updating.</h2>
           </div>
 
           {/* Global stats */}
           {data?.globalStats && (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2.5">
+            <div className="grid grid-cols-2 md:flex md:items-stretch md:divide-x md:divide-border/30 border-y border-border/30 py-4 gap-y-4">
               {[
                 { label: "Total MCap", value: formatCompact(data.globalStats.totalMarketCap), change: data.globalStats.marketCapChange24h, icon: BarChart3 },
                 { label: "24h Volume", value: formatCompact(data.globalStats.totalVolume), icon: Activity },
@@ -269,11 +269,11 @@ export default function CryptoFactory() {
                 { label: "Fear & Greed", value: `${fearGreed.value}`, icon: Gauge, color: fgColor },
                 { label: "Active Coins", value: `${(data.globalStats.activeCryptocurrencies || 0).toLocaleString()}`, icon: Eye },
               ].map((s) => (
-                <Card key={s.label} className="pt-5"><CardContent className="p-2.5">
+                <div key={s.label} className="md:px-5 md:first:pl-0">
                   <div className="flex items-center gap-1.5"><s.icon className={cn("w-3.5 h-3.5 text-muted-foreground", s.color)} /><span className="text-[10px] text-muted-foreground uppercase tracking-wider truncate">{s.label}</span></div>
                   <p className={cn("text-base font-bold font-mono mt-0.5", s.color)}>{s.value}</p>
                   {s.change !== undefined && <span className={cn("text-[11px] font-mono", s.change >= 0 ? "text-green-400" : "text-red-400")}>{s.change >= 0 ? "+" : ""}{(s.change ?? 0).toFixed(2)}%</span>}
-                </CardContent></Card>
+                </div>
               ))}
             </div>
           )}
@@ -285,7 +285,7 @@ export default function CryptoFactory() {
                 <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mr-1 shrink-0">Movers</span>
                 {topMovers.slice(0, 15).map((c: any) => {
                   const up = (c.change24h || 0) >= 0;
-                  return <button key={c.id} onClick={() => navigate(`/price-prediction/${c.id}/daily`)} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-border/30 hover:bg-muted/30 whitespace-nowrap">
+                  return <button key={c.id} onClick={() => navigate(`/price-prediction/${c.id}/daily`)} className="flex items-center gap-1.5 px-2.5 py-1.5 border border-border/30 hover:bg-muted/30 whitespace-nowrap">
                     {c.logo && <img src={c.logo} alt="" className="w-4 h-4 rounded-full" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />}
                     <span className="text-xs font-semibold">{c.symbol}</span>
                     <span className={cn("text-xs font-mono", up ? "text-green-400" : "text-red-400")}>{up ? "+" : ""}{(c.change24h || 0).toFixed(1)}%</span>
@@ -296,7 +296,8 @@ export default function CryptoFactory() {
           )}
 
           {/* Composite sentiment (real, from scored news + F&G) */}
-          <Card className="pt-5"><CardContent className="p-4">
+          <div className="border-t border-border/30 pt-4">
+            <div className="p-4">
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-sm font-semibold flex items-center gap-1.5"><Brain className="w-4 h-4 text-primary" /> Market Sentiment</h2>
               <span className={cn("text-sm font-bold", sentBreakdown.composite >= 60 ? "text-success" : sentBreakdown.composite >= 45 ? "text-warning" : "text-danger")}>{sentBreakdown.label} · {sentBreakdown.composite}/100</span>
@@ -312,12 +313,13 @@ export default function CryptoFactory() {
               <span className="text-danger">● {sentBreakdown.bearish} bearish</span>
               <Link to="/sentiment" className="ml-auto text-primary hover:underline inline-flex items-center gap-1">Full Fear &amp; Greed <ArrowRight className="w-3 h-3" /></Link>
             </div>
-          </CardContent></Card>
+            </div>
+          </div>
 
           {/* Mobile tab switch */}
           <div className="lg:hidden grid grid-cols-4 gap-1.5">
             {MOBILE_TABS.map((t) => (
-              <button key={t.id} onClick={() => setParam("tab", t.id)} className={cn("flex flex-col items-center gap-1 py-2 rounded-lg border text-[11px] font-medium transition-colors", mobileTab === t.id ? "bg-primary/10 text-primary border-primary/30" : "border-border/40 text-muted-foreground")}>
+              <button key={t.id} onClick={() => setParam("tab", t.id)} className={cn("flex flex-col items-center gap-1 py-2 border text-[11px] font-medium transition-colors", mobileTab === t.id ? "bg-primary/10 text-primary border-primary/30" : "border-border/40 text-muted-foreground")}>
                 <t.icon className="w-4 h-4" />{t.label}
               </button>
             ))}
@@ -339,24 +341,24 @@ export default function CryptoFactory() {
             {/* CENTER — Intel feed */}
             <Column id="feed" className="space-y-3 min-w-0">
               {/* Feed controls */}
-              <Card className="pt-5"><CardContent className="p-3 space-y-2.5">
+              <div className="border-t border-border/30 pt-4 space-y-2.5">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input placeholder="Filter feed by asset or keyword…" value={q} onChange={(e) => setParam("q", e.target.value)} className="pl-9 h-9 bg-background/50 border-border/40 text-sm" />
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <div className="flex bg-muted/40 rounded-lg p-0.5">
-                    {["all", "bullish", "bearish"].map((s) => <button key={s} onClick={() => setParam("sentiment", s)} className={cn("px-2.5 py-1 rounded-md text-[11px] font-medium capitalize", sentiment === s ? "bg-primary text-primary-foreground" : "text-muted-foreground")}>{s}</button>)}
+                  <div className="flex bg-muted/40 p-0.5">
+                    {["all", "bullish", "bearish"].map((s) => <button key={s} onClick={() => setParam("sentiment", s)} className={cn("px-2.5 py-1 text-[11px] font-medium capitalize", sentiment === s ? "bg-primary text-primary-foreground" : "text-muted-foreground")}>{s}</button>)}
                   </div>
-                  <div className="flex bg-muted/40 rounded-lg p-0.5">
-                    {[["latest", "Latest"], ["impact", "Top Impact"]].map(([v, l]) => <button key={v} onClick={() => setParam("sort", v)} className={cn("px-2.5 py-1 rounded-md text-[11px] font-medium", sort === v ? "bg-primary text-primary-foreground" : "text-muted-foreground")}>{l}</button>)}
+                  <div className="flex bg-muted/40 p-0.5">
+                    {[["latest", "Latest"], ["impact", "Top Impact"]].map(([v, l]) => <button key={v} onClick={() => setParam("sort", v)} className={cn("px-2.5 py-1 text-[11px] font-medium", sort === v ? "bg-primary text-primary-foreground" : "text-muted-foreground")}>{l}</button>)}
                   </div>
                   <div className="flex items-center gap-1.5 ml-auto">
                     <span className="text-[10px] text-muted-foreground whitespace-nowrap">Impact ≥ {minImpact}</span>
                     <input type="range" min={0} max={100} step={5} value={minImpact} onChange={(e) => setParam("min", e.target.value)} className="w-20 accent-primary" aria-label="Minimum impact" />
                   </div>
                 </div>
-              </CardContent></Card>
+              </div>
 
               <div className="flex items-center justify-between">
                 <h2 className="font-display font-bold text-base flex items-center gap-1.5"><Rss className="w-4 h-4 text-primary" /> Intel Feed</h2>
@@ -364,7 +366,7 @@ export default function CryptoFactory() {
               </div>
               {isLoading ? <div className="space-y-3">{Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-24 w-full" />)}</div>
                 : news.length ? <div className="space-y-3">{news.map((n) => <FeedItem key={n.id} n={n} navigate={navigate} />)}</div>
-                : <Card className="pt-5"><CardContent className="p-8 text-center text-muted-foreground text-sm">No items match your filters.</CardContent></Card>}
+                : <div className="p-8 text-center text-muted-foreground text-sm border-t border-border/30">No items match your filters.</div>}
             </Column>
 
             {/* RIGHT — On-chain + events */}
@@ -416,7 +418,7 @@ export default function CryptoFactory() {
                 { to: "/scanner", label: "Token Scanner", icon: Search },
                 { to: "/airdrops", label: "Airdrop Tracker", icon: Bell },
                 { to: "/dashboard", label: "Dashboard", icon: BarChart3 },
-              ].map((l) => <Link key={l.to} to={l.to} className="flex items-center gap-2 text-sm p-2.5 rounded-xl bg-primary/5 border border-border hover:border-primary/40 hover:text-primary transition-colors group"><l.icon className="w-4 h-4 shrink-0" /><span className="truncate">{l.label}</span><ArrowRight className="w-3.5 h-3.5 ml-auto opacity-0 group-hover:opacity-100 transition-opacity shrink-0" /></Link>)}
+              ].map((l) => <Link key={l.to} to={l.to} className="flex items-center gap-2 text-sm p-2.5 bg-primary/5 border border-border hover:border-primary/40 hover:text-primary transition-colors group"><l.icon className="w-4 h-4 shrink-0" /><span className="truncate">{l.label}</span><ArrowRight className="w-3.5 h-3.5 ml-auto opacity-0 group-hover:opacity-100 transition-opacity shrink-0" /></Link>)}
             </div>
           </article>
         </div>

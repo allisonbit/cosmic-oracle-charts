@@ -103,7 +103,7 @@ export default function Airdrops() {
           {/* At a glance table */}
           <h2>Tracked Airdrops at a Glance</h2>
           <div className="not-prose overflow-x-auto my-4">
-            <table className="w-full text-sm border border-border/50 rounded-lg">
+            <table className="w-full text-sm border border-border/50">
               <thead className="bg-muted/30 text-xs">
                 <tr>
                   <th className="text-left p-2.5 font-semibold">Project</th>
@@ -158,7 +158,7 @@ export default function Airdrops() {
           {candData?.candidates && candData.candidates.length > 0 && (
             <div className="not-prose flex items-center gap-1.5 flex-wrap my-3">
               {candChains.slice(0, 14).map((c) => (
-                <button key={c} onClick={() => setCandChain(c)} className={`px-2.5 py-1 rounded-full text-[11px] font-medium border transition-colors ${candChain === c ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground hover:text-foreground"}`}>{c}</button>
+                <button key={c} onClick={() => setCandChain(c)} className={`px-2.5 py-1 text-[11px] font-medium border transition-colors ${candChain === c ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground hover:text-foreground"}`}>{c}</button>
               ))}
             </div>
           )}
@@ -166,7 +166,7 @@ export default function Airdrops() {
             <p className="not-prose text-sm text-muted-foreground flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Loading live candidates from DefiLlama…</p>
           ) : candidates.length > 0 ? (
             <div className="not-prose overflow-x-auto my-4">
-              <table className="w-full text-sm border border-border/50 rounded-lg">
+              <table className="w-full text-sm border border-border/50">
                 <thead className="bg-muted/30 text-xs">
                   <tr>
                     <th className="text-left p-2.5 font-semibold">Protocol</th>
@@ -218,7 +218,7 @@ export default function Airdrops() {
           <h2>How Are Airdrop Values Estimated?</h2>
           <p>Estimates on this page blend three factors: <strong>comparable precedents</strong> (similar past airdrops and their per-wallet values), <strong>protocol metrics</strong> (TVL, active users, volume, time tokenless) and, where known, <strong>token supply &amp; allocation</strong>. All figures are ranges, not point estimates — the low end assumes minimal activity, the high end assumes early, sustained, multi-action participation. They are estimates, not guarantees.</p>
           <div className="not-prose overflow-x-auto my-4">
-            <table className="w-full text-sm border border-border/50 rounded-lg">
+            <table className="w-full text-sm border border-border/50">
               <thead className="bg-muted/30 text-xs"><tr><th className="text-left p-2.5 font-semibold">Difficulty</th><th className="text-left p-2.5 font-semibold">What it means</th></tr></thead>
               <tbody className="text-muted-foreground">
                 {[["Easy", "1–5 quick steps, minutes of work, low/no capital"], ["Medium", "Ongoing actions over days or weeks, modest capital"], ["Hard", "Complex multi-step, sustained time and/or capital >$500"]].map(([d, m]) => (
@@ -234,7 +234,7 @@ export default function Airdrops() {
           <h2>Largest Crypto Airdrops in History</h2>
           <p>Historical airdrop sizes help calibrate 2026 expectations — the biggest consistently came from protocols with high TVL or volume, strong backing and long tokenless periods.</p>
           <div className="not-prose overflow-x-auto my-4">
-            <table className="w-full text-sm border border-border/50 rounded-lg">
+            <table className="w-full text-sm border border-border/50">
               <thead className="bg-muted/30 text-xs"><tr><th className="text-left p-2.5 font-semibold">Project</th><th className="text-left p-2.5 font-semibold">Year</th><th className="text-left p-2.5 font-semibold">Type</th><th className="text-left p-2.5 font-semibold">Notable for</th></tr></thead>
               <tbody className="text-muted-foreground">
                 {LARGEST.map((r) => (
@@ -262,7 +262,7 @@ export default function Airdrops() {
               { to: "/scanner", label: "Token Scanner — find new tokens" },
               { to: "/dashboard", label: "Dashboard — full analytics hub" },
             ].map((l) => (
-              <li key={l.to}><Link to={l.to} className="flex items-center gap-2 text-sm p-2.5 rounded-lg border border-border hover:border-primary/40 hover:text-primary transition-colors group"><span className="truncate">{l.label}</span><ArrowRight className="w-3.5 h-3.5 ml-auto opacity-0 group-hover:opacity-100 transition-opacity shrink-0" /></Link></li>
+              <li key={l.to}><Link to={l.to} className="flex items-center gap-2 text-sm p-2.5 border border-border hover:border-primary/40 hover:text-primary transition-colors group"><span className="truncate">{l.label}</span><ArrowRight className="w-3.5 h-3.5 ml-auto opacity-0 group-hover:opacity-100 transition-opacity shrink-0" /></Link></li>
             ))}
           </ul>
 

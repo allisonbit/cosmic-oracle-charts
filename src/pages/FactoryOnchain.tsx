@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { useCryptoFactory } from "@/hooks/useCryptoFactory";
-import { Card, CardContent } from "@/components/ui/card";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -164,7 +164,7 @@ export default function FactoryOnchain() {
 
         {/* H1 Header */}
         <header className="mb-6">
-          <h1 className="text-3xl md:text-4xl font-display font-bold glow-text flex items-center gap-3">
+          <h1 className="text-3xl md:text-4xl font-display font-bold flex items-center gap-3">
             <Activity className="w-10 h-10 text-primary" />
             On-Chain Activity Feed
           </h1>
@@ -175,37 +175,29 @@ export default function FactoryOnchain() {
         </header>
 
         {/* Summary Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <Card className="pt-5">
-            <CardContent className="p-4 text-center">
-              <p className="text-sm text-muted-foreground">Total Activity</p>
-              <p className="text-2xl font-bold">{data?.onChainActivity.length || 0}</p>
-            </CardContent>
-          </Card>
-          <Card className="pt-5">
-            <CardContent className="p-4 text-center">
-              <p className="text-sm text-muted-foreground">Net Flow</p>
-              <p className={cn("text-2xl font-bold", totalInflowUSD > totalOutflowUSD ? "text-green-400" : "text-red-400")}>
-                ${((totalInflowUSD - totalOutflowUSD) / 1000000).toFixed(1)}M
-              </p>
-            </CardContent>
-          </Card>
-          <Card className="pt-5">
-            <CardContent className="p-4 text-center">
-              <p className="text-sm text-green-400">Total Inflows</p>
-              <p className="text-2xl font-bold text-green-400">${(totalInflowUSD / 1000000).toFixed(1)}M</p>
-            </CardContent>
-          </Card>
-          <Card className="pt-5">
-            <CardContent className="p-4 text-center">
-              <p className="text-sm text-red-400">Total Outflows</p>
-              <p className="text-2xl font-bold text-red-400">${(totalOutflowUSD / 1000000).toFixed(1)}M</p>
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-2 md:flex md:items-stretch md:divide-x md:divide-border/30 border-y border-border/30 py-4 mb-6 gap-y-4">
+          <div className="md:px-6 md:first:pl-0 text-center">
+            <p className="text-sm text-muted-foreground">Total Activity</p>
+            <p className="text-2xl font-bold">{data?.onChainActivity.length || 0}</p>
+          </div>
+          <div className="md:px-6 text-center">
+            <p className="text-sm text-muted-foreground">Net Flow</p>
+            <p className={cn("text-2xl font-bold", totalInflowUSD > totalOutflowUSD ? "text-green-400" : "text-red-400")}>
+              ${((totalInflowUSD - totalOutflowUSD) / 1000000).toFixed(1)}M
+            </p>
+          </div>
+          <div className="md:px-6 text-center">
+            <p className="text-sm text-green-400">Total Inflows</p>
+            <p className="text-2xl font-bold text-green-400">${(totalInflowUSD / 1000000).toFixed(1)}M</p>
+          </div>
+          <div className="md:px-6 text-center">
+            <p className="text-sm text-red-400">Total Outflows</p>
+            <p className="text-2xl font-bold text-red-400">${(totalOutflowUSD / 1000000).toFixed(1)}M</p>
+          </div>
         </div>
 
         {/* SEO Introduction */}
-        <section className="holo-card p-6 mb-6">
+        <section className="border-t border-border/30 pt-5 mb-6">
           <h2 className="text-xl font-semibold mb-3">What Is On-Chain Activity?</h2>
           <div className="prose max-w-none text-muted-foreground">
             <p className="mb-3">
@@ -214,14 +206,14 @@ export default function FactoryOnchain() {
               anticipate market movements before they reflect in price action.
             </p>
             <div className="grid md:grid-cols-2 gap-4 mt-4">
-              <div className="p-3 rounded-lg bg-muted/30">
+              <div className="p-3 border-b border-border/20 pb-3">
                 <h3 className="font-semibold text-foreground mb-1 flex items-center gap-2">
                   <ArrowDownRight className="w-4 h-4 text-green-400" />
                   Exchange Inflows
                 </h3>
                 <p className="text-sm">Tokens moving TO exchanges often signal selling intent. Large inflows may precede price drops.</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/30">
+              <div className="p-3 border-b border-border/20 pb-3">
                 <h3 className="font-semibold text-foreground mb-1 flex items-center gap-2">
                   <ArrowUpRight className="w-4 h-4 text-red-400" />
                   Exchange Outflows
@@ -233,8 +225,7 @@ export default function FactoryOnchain() {
         </section>
 
         {/* Filters */}
-        <Card className="pt-5 mb-6">
-          <CardContent className="p-4">
+        <div className="border-t border-border/30 pt-4 mb-6">
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -265,8 +256,7 @@ export default function FactoryOnchain() {
                 Refresh
               </Button>
             </div>
-          </CardContent>
-        </Card>
+        </div>
 
         {/* Activity List */}
         <div className="grid lg:grid-cols-3 gap-6">
@@ -276,8 +266,7 @@ export default function FactoryOnchain() {
                 <Activity className="w-5 h-5 text-primary" />
                 Live On-Chain Feed ({data?.onChainActivity.length || 0})
               </h2>
-              <Card className="pt-5">
-                <CardContent className="p-6">
+              <div className="border-t border-border/30 pt-4">
                   {isLoading ? (
                     <div className="space-y-4">
                       {Array.from({ length: 5 }).map((_, i) => (
@@ -293,42 +282,38 @@ export default function FactoryOnchain() {
                       No on-chain activity matches your filters.
                     </p>
                   )}
-                </CardContent>
-              </Card>
+              </div>
             </section>
           </div>
 
           {/* Sidebar */}
           <aside className="space-y-6">
             {/* Factory Navigation */}
-            <Card className="pt-5">
-              <CardContent className="p-4">
+            <div className="border-t border-border/30 pt-4">
                 <h3 className="font-semibold mb-3">Crypto Factory Sections</h3>
                 <nav className="space-y-2">
-                  <Link to="/factory/events" className="flex items-center gap-2 p-2 rounded hover:bg-muted/50">
+                  <Link to="/factory/events" className="flex items-center gap-2 p-2 hover:bg-muted/50">
                     <Calendar className="w-4 h-4" />
                     <span>Market Events</span>
                   </Link>
-                  <Link to="/factory/onchain" className="flex items-center gap-2 p-2 rounded bg-primary/10 text-primary">
+                  <Link to="/factory/onchain" className="flex items-center gap-2 p-2 bg-primary/10 text-primary">
                     <Activity className="w-4 h-4" />
                     <span>On-Chain Activity</span>
                     <Badge variant="outline" className="ml-auto">{data?.onChainActivity.length || 0}</Badge>
                   </Link>
-                  <Link to="/factory/narratives" className="flex items-center gap-2 p-2 rounded hover:bg-muted/50">
+                  <Link to="/factory/narratives" className="flex items-center gap-2 p-2 hover:bg-muted/50">
                     <TrendingUp className="w-4 h-4" />
                     <span>Trending Narratives</span>
                   </Link>
-                  <Link to="/factory/news" className="flex items-center gap-2 p-2 rounded hover:bg-muted/50">
+                  <Link to="/factory/news" className="flex items-center gap-2 p-2 hover:bg-muted/50">
                     <Newspaper className="w-4 h-4" />
                     <span>Crypto News</span>
                   </Link>
                 </nav>
-              </CardContent>
-            </Card>
+            </div>
 
             {/* Related Links */}
-            <Card className="pt-5">
-              <CardContent className="p-4">
+            <div className="border-t border-border/30 pt-4">
                 <h3 className="font-semibold mb-3">Related Analysis</h3>
                 <div className="space-y-2 text-sm">
                   <Link to="/scanner" className="flex items-center gap-2 text-primary hover:text-primary/80">
@@ -344,15 +329,13 @@ export default function FactoryOnchain() {
                     Sentiment Analysis
                   </Link>
                 </div>
-              </CardContent>
-            </Card>
+            </div>
 
             {/* Top Crypto Predictions */}
             <TopCryptoPredictionLinks />
 
             {/* Interpretation Guide */}
-            <Card className="pt-5">
-              <CardContent className="p-4">
+            <div className="border-t border-border/30 pt-4">
                 <h3 className="font-semibold mb-3">How to Interpret Flows</h3>
                 <ul className="text-sm text-muted-foreground space-y-2">
                   <li>• <strong className="text-green-400">Heavy inflows</strong> often precede sell-offs</li>
@@ -360,13 +343,12 @@ export default function FactoryOnchain() {
                   <li>• Whale movements can signal trend changes</li>
                   <li>• Bridge activity shows cross-chain trends</li>
                 </ul>
-              </CardContent>
-            </Card>
+            </div>
           </aside>
         </div>
 
         {/* FAQ Section */}
-        <section className="mt-8 holo-card p-6">
+        <section className="mt-8 border-t border-border/30 pt-5">
           <h2 className="text-xl font-semibold mb-4">On-Chain Analysis FAQ</h2>
           <div className="space-y-4">
             <div>

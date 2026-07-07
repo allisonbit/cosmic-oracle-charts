@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { useCryptoFactory } from "@/hooks/useCryptoFactory";
-import { Card, CardContent } from "@/components/ui/card";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -71,7 +71,7 @@ function NewsCard({ news }: { news: any }) {
       <div className="flex items-start gap-4">
         {/* News Image */}
         {news.imageUrl && (
-          <div className="relative w-32 h-24 rounded-lg overflow-hidden shrink-0 hidden sm:block">
+          <div className="relative w-32 h-24 overflow-hidden shrink-0 hidden sm:block">
             <img 
               src={news.imageUrl} 
               alt={news.title}
@@ -120,7 +120,7 @@ function NewsCard({ news }: { news: any }) {
           <p className="text-muted-foreground mb-3">{news.summary}</p>
           
           {/* SEO-friendly analysis */}
-          <div className="bg-muted/30 rounded-lg p-3 mb-3">
+          <div className="border-t border-border/20 pt-3 mb-3">
             <p className="text-sm text-muted-foreground">
               <strong>Market Impact:</strong> This {news.sentiment} news 
               {news.impactScore > 70 
@@ -222,7 +222,7 @@ export default function FactoryNews() {
 
         {/* H1 Header */}
         <header className="mb-6">
-          <h1 className="text-3xl md:text-4xl font-display font-bold glow-text flex items-center gap-3">
+          <h1 className="text-3xl md:text-4xl font-display font-bold flex items-center gap-3">
             <Newspaper className="w-10 h-10 text-primary" />
             Crypto News & Sentiment
           </h1>
@@ -233,35 +233,27 @@ export default function FactoryNews() {
         </header>
 
         {/* Summary Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <Card className="pt-5">
-            <CardContent className="p-4 text-center">
-              <p className="text-sm text-muted-foreground">Total Articles</p>
-              <p className="text-2xl font-bold">{filteredNews.length}</p>
-            </CardContent>
-          </Card>
-          <Card className="pt-5">
-            <CardContent className="p-4 text-center">
-              <p className="text-sm text-green-400">Bullish News</p>
-              <p className="text-2xl font-bold text-green-400">{bullishCount}</p>
-            </CardContent>
-          </Card>
-          <Card className="pt-5">
-            <CardContent className="p-4 text-center">
-              <p className="text-sm text-red-400">Bearish News</p>
-              <p className="text-2xl font-bold text-red-400">{bearishCount}</p>
-            </CardContent>
-          </Card>
-          <Card className="pt-5">
-            <CardContent className="p-4 text-center">
-              <p className="text-sm text-primary">High Impact</p>
-              <p className="text-2xl font-bold text-primary">{highImpactCount}</p>
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-2 md:flex md:items-stretch md:divide-x md:divide-border/30 border-y border-border/30 py-4 mb-6 gap-y-4">
+          <div className="md:px-6 md:first:pl-0 text-center">
+            <p className="text-sm text-muted-foreground">Total Articles</p>
+            <p className="text-2xl font-bold">{filteredNews.length}</p>
+          </div>
+          <div className="md:px-6 text-center">
+            <p className="text-sm text-green-400">Bullish News</p>
+            <p className="text-2xl font-bold text-green-400">{bullishCount}</p>
+          </div>
+          <div className="md:px-6 text-center">
+            <p className="text-sm text-red-400">Bearish News</p>
+            <p className="text-2xl font-bold text-red-400">{bearishCount}</p>
+          </div>
+          <div className="md:px-6 text-center">
+            <p className="text-sm text-primary">High Impact</p>
+            <p className="text-2xl font-bold text-primary">{highImpactCount}</p>
+          </div>
         </div>
 
         {/* SEO Introduction */}
-        <section className="holo-card p-6 mb-6">
+        <section className="border-t border-border/30 pt-5 mb-6">
           <h2 className="text-xl font-semibold mb-3">How We Analyze Crypto News</h2>
           <div className="prose max-w-none text-muted-foreground">
             <p className="mb-3">
@@ -270,15 +262,15 @@ export default function FactoryNews() {
               sentiment and assigned an impact score based on potential price influence.
             </p>
             <div className="grid md:grid-cols-3 gap-4 mt-4">
-              <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/30">
+              <div className="p-3 border border-green-500/30">
                 <h3 className="font-semibold text-green-400 mb-1">Bullish Sentiment</h3>
                 <p className="text-sm">News likely to drive prices higher—partnerships, adoption, positive regulation.</p>
               </div>
-              <div className="p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/30">
+              <div className="p-3 border border-yellow-500/30">
                 <h3 className="font-semibold text-yellow-400 mb-1">Neutral Sentiment</h3>
                 <p className="text-sm">Informational news with limited immediate price impact.</p>
               </div>
-              <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30">
+              <div className="p-3 border border-red-500/30">
                 <h3 className="font-semibold text-red-400 mb-1">Bearish Sentiment</h3>
                 <p className="text-sm">News that may cause selling pressure—hacks, bans, negative developments.</p>
               </div>
@@ -287,8 +279,7 @@ export default function FactoryNews() {
         </section>
 
         {/* Filters */}
-        <Card className="pt-5 mb-6">
-          <CardContent className="p-4">
+        <div className="border-t border-border/30 pt-4 mb-6">
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -321,8 +312,7 @@ export default function FactoryNews() {
                 Refresh
               </Button>
             </div>
-          </CardContent>
-        </Card>
+        </div>
 
         {/* News List */}
         <div className="grid lg:grid-cols-3 gap-6">
@@ -332,8 +322,7 @@ export default function FactoryNews() {
                 <Newspaper className="w-5 h-5 text-primary" />
                 Latest Crypto News ({filteredNews.length})
               </h2>
-              <Card className="pt-5">
-                <CardContent className="p-6">
+              <div className="border-t border-border/30 pt-4">
                   {isLoading ? (
                     <div className="space-y-6">
                       {Array.from({ length: 5 }).map((_, i) => (
@@ -349,42 +338,38 @@ export default function FactoryNews() {
                       No news matches your filters.
                     </p>
                   )}
-                </CardContent>
-              </Card>
+              </div>
             </section>
           </div>
 
           {/* Sidebar */}
           <aside className="space-y-6">
             {/* Factory Navigation */}
-            <Card className="pt-5">
-              <CardContent className="p-4">
+            <div className="border-t border-border/30 pt-4">
                 <h3 className="font-semibold mb-3">Crypto Factory Sections</h3>
                 <nav className="space-y-2">
-                  <Link to="/factory/events" className="flex items-center gap-2 p-2 rounded hover:bg-muted/50">
+                  <Link to="/factory/events" className="flex items-center gap-2 p-2 hover:bg-muted/50">
                     <Calendar className="w-4 h-4" />
                     <span>Market Events</span>
                   </Link>
-                  <Link to="/factory/onchain" className="flex items-center gap-2 p-2 rounded hover:bg-muted/50">
+                  <Link to="/factory/onchain" className="flex items-center gap-2 p-2 hover:bg-muted/50">
                     <Activity className="w-4 h-4" />
                     <span>On-Chain Activity</span>
                   </Link>
-                  <Link to="/factory/narratives" className="flex items-center gap-2 p-2 rounded hover:bg-muted/50">
+                  <Link to="/factory/narratives" className="flex items-center gap-2 p-2 hover:bg-muted/50">
                     <TrendingUp className="w-4 h-4" />
                     <span>Trending Narratives</span>
                   </Link>
-                  <Link to="/factory/news" className="flex items-center gap-2 p-2 rounded bg-primary/10 text-primary">
+                  <Link to="/factory/news" className="flex items-center gap-2 p-2 bg-primary/10 text-primary">
                     <Newspaper className="w-4 h-4" />
                     <span>Crypto News</span>
                     <Badge variant="outline" className="ml-auto">{filteredNews.length}</Badge>
                   </Link>
                 </nav>
-              </CardContent>
-            </Card>
+            </div>
 
             {/* Related Links */}
-            <Card className="pt-5">
-              <CardContent className="p-4">
+            <div className="border-t border-border/30 pt-4">
                 <h3 className="font-semibold mb-3">Related Analysis</h3>
                 <div className="space-y-2 text-sm">
                   <Link to="/sentiment" className="flex items-center gap-2 text-primary hover:text-primary/80">
@@ -404,15 +389,13 @@ export default function FactoryNews() {
                     AI Market Insights
                   </Link>
                 </div>
-              </CardContent>
-            </Card>
+            </div>
 
             {/* Top Crypto Predictions */}
             <TopCryptoPredictionLinks />
 
             {/* News Trading Tips */}
-            <Card className="pt-5">
-              <CardContent className="p-4">
+            <div className="border-t border-border/30 pt-4">
                 <h3 className="font-semibold mb-3">Trading on News</h3>
                 <ul className="text-sm text-muted-foreground space-y-2">
                   <li>• React quickly to <strong className="text-primary">high-impact</strong> news</li>
@@ -420,13 +403,12 @@ export default function FactoryNews() {
                   <li>• Consider sentiment against current trend</li>
                   <li>• Watch for overreaction opportunities</li>
                 </ul>
-              </CardContent>
-            </Card>
+            </div>
           </aside>
         </div>
 
         {/* FAQ Section */}
-        <section className="mt-8 holo-card p-6">
+        <section className="mt-8 border-t border-border/30 pt-5">
           <h2 className="text-xl font-semibold mb-4">Crypto News FAQ</h2>
           <div className="space-y-4">
             <div>
