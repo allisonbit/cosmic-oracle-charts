@@ -1,281 +1,433 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
+import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/hooks/useAuth";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useNewsFeed, timeAgo, sentimentStyle, type NewsArticleData } from "@/hooks/useNews";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/MainSEO";
 import { cn } from "@/lib/utils";
 import {
-  Newspaper, Bell, BellOff, TrendingUp, TrendingDown, AlertTriangle,
-  Flame, BarChart3, Zap, Eye, Globe, Clock, Bookmark, Activity,
-  ArrowUpRight, ArrowDownRight, Shield, RefreshCw
+  Newspaper, Clock, Search, Bookmark, RefreshCw, Loader2, X,
+  TrendingUp, TrendingDown, Zap, Brain, Eye, ChevronRight,
+  ArrowRight, AlertTriangle, Activity,
 } from "lucide-react";
 
-type FeedCategory = 'all' | 'watchlist' | 'market' | 'whale' | 'alerts';
+const READ_KEY = "oraclebull:my-news:read";
+const SAVED_KEY = "oraclebull:my-news:saved";
+const CAT_KEY = "oraclebull:my-news:category";
 
-interface FeedItem {
-  id: string;
-  type: 'price_move' | 'whale_alert' | 'market_news' | 'volume_spike' | 'trend_change';
-  title: string;
-  description: string;
-  symbol?: string;
-  change?: number;
-  value?: string;
-  timestamp: Date;
-  priority: 'high' | 'medium' | 'low';
-  read: boolean;
-  sentiment?: 'bullish' | 'bearish' | 'neutral';
+function readStorage<T>(key: string, fallback: T): T {
+  if (typeof window === "undefined") return fallback;
+  try { return JSON.parse(localStorage.getItem(key) || "null") ?? fallback; } catch { return fallback; }
+}
+function writeStorage(key: string, value: unknown) {
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* quota exceeded or private mode */ }
+}
+
+function usePersistentSet(key: string) {
+  const [ids, setIds] = useState<string[]>(() => readStorage<string[]>(key, []));
+  const toggle = useCallback((id: string) => {
+    setIds(prev => {
+      const next = prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id];
+      writeStorage(key, next);
+      return next;
+    });
+  }, [key]);
+  const has = useCallback((id: string) => ids.includes(id), [ids]);
+  const add = useCallback((id: string) => {
+    setIds(prev => {
+      if (prev.includes(id)) return prev;
+      const next = [...prev, id];
+      writeStorage(key, next);
+      return next;
+    });
+  }, [key]);
+  return { ids, toggle, has, add };
+}
+
+type FeedTab = "all" | "watchlist" | string;
+
+function LiveAlerts({ watchlist, className }: { watchlist: string[]; className?: string }) {
+  const { data } = useCryptoPrices();
+  const movers = useMemo(() => {
+    const prices = data?.prices || [];
+    return prices
+      .filter(c => Math.abs(c.change24h || 0) > 3 || (watchlist.length > 0 && watchlist.includes(c.symbol?.toUpperCase())))
+      .sort((a, b) => Math.abs(b.change24h || 0) - Math.abs(a.change24h || 0))
+      .slice(0, 12);
+  }, [data, watchlist]);
+
+  if (movers.length === 0) return null;
+
+  return (
+    <div className={cn("overflow-x-auto scrollbar-none", className)}>
+      <div className="flex gap-2 pb-1">
+        <span className="shrink-0 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-danger pr-2 border-r border-border mr-1">
+          <Zap className="w-3 h-3" /> Live
+        </span>
+        {movers.map(coin => {
+          const up = (coin.change24h || 0) >= 0;
+          return (
+            <Link key={coin.symbol} to={`/token/${coin.symbol?.toLowerCase()}`}
+              className="shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 bg-muted/50 hover:bg-muted transition-colors text-xs">
+              {coin.image && <img src={coin.image} alt="" className="w-4 h-4 rounded-full" />}
+              <span className="font-semibold">{coin.symbol}</span>
+              <span className={cn("font-mono font-bold", up ? "text-success" : "text-danger")}>
+                {up ? "+" : ""}{coin.change24h?.toFixed(1)}%
+              </span>
+            </Link>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function SentimentBar({ articles }: { articles: NewsArticleData[] }) {
+  const counts = useMemo(() => {
+    const c = { bullish: 0, bearish: 0, neutral: 0 };
+    for (const a of articles.slice(0, 40)) {
+      const k = a.sentiment as keyof typeof c;
+      if (k in c) c[k]++;
+    }
+    return c;
+  }, [articles]);
+
+  const total = counts.bullish + counts.bearish + counts.neutral || 1;
+  const bull = Math.round((counts.bullish / total) * 100);
+  const bear = Math.round((counts.bearish / total) * 100);
+  const neut = 100 - bull - bear;
+  const dominant = bull > bear + 10 ? "bullish" : bear > bull + 10 ? "bearish" : "mixed";
+
+  return (
+    <div className="flex items-center gap-3 text-xs">
+      <Brain className="w-3.5 h-3.5 text-primary shrink-0" />
+      <div className="h-2 flex-1 flex overflow-hidden max-w-48">
+        <div className="bg-success transition-all duration-700" style={{ width: `${bull}%` }} />
+        <div className="bg-warning transition-all duration-700" style={{ width: `${neut}%` }} />
+        <div className="bg-danger transition-all duration-700" style={{ width: `${bear}%` }} />
+      </div>
+      <span className="text-muted-foreground shrink-0">
+        <span className="text-success font-bold">{bull}%</span> bull
+        {" / "}
+        <span className="text-danger font-bold">{bear}%</span> bear
+      </span>
+      <span className="hidden sm:inline text-muted-foreground">
+        — {dominant === "bullish" ? "Positive flow" : dominant === "bearish" ? "Caution" : "Mixed signals"}
+      </span>
+    </div>
+  );
+}
+
+function ArticleRow({
+  article, isRead, isSaved, onRead, onToggleSave, large = false,
+}: {
+  article: NewsArticleData; isRead: boolean; isSaved: boolean;
+  onRead: () => void; onToggleSave: () => void; large?: boolean;
+}) {
+  const s = sentimentStyle(article.sentiment);
+  return (
+    <div className={cn(
+      "group flex gap-4 md:gap-6 border-b border-border/50 relative transition-all",
+      large ? "py-6 md:py-8" : "py-4 md:py-5",
+      isRead && "opacity-60",
+    )}>
+      <button
+        onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleSave(); }}
+        aria-label={isSaved ? "Remove bookmark" : "Bookmark"}
+        className={cn(
+          "absolute top-4 right-0 z-10 transition-all hover:text-primary",
+          isSaved ? "text-primary opacity-100" : "opacity-0 group-hover:opacity-100 text-muted-foreground",
+        )}
+      >
+        <Bookmark className={cn("w-4 h-4", isSaved && "fill-primary")} />
+      </button>
+
+      {article.imageUrl && (
+        <Link to={`/news/${article.slug}`} onClick={onRead}
+          className={cn("overflow-hidden shrink-0 bg-muted", large ? "w-44 md:w-64 h-28 md:h-40" : "w-28 md:w-44 h-20 md:h-28")}>
+          <img src={article.imageUrl} alt={article.title} loading="lazy"
+            className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-300"
+            onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+        </Link>
+      )}
+
+      <div className="flex-1 min-w-0 flex flex-col justify-between pr-6">
+        <div>
+          <div className="flex flex-wrap items-center gap-2 mb-1.5">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-primary">{article.category}</span>
+            <span className={cn("text-[10px] font-bold px-1.5 py-px border uppercase tracking-wider", s.className)}>{s.label}</span>
+            {isRead && <span className="text-[9px] text-muted-foreground">Read</span>}
+          </div>
+          <Link to={`/news/${article.slug}`} onClick={onRead}
+            className={cn(
+              "font-bold font-display leading-snug tracking-tight group-hover:text-primary transition-colors block mb-1.5",
+              large ? "text-lg md:text-xl line-clamp-3" : "text-sm md:text-base line-clamp-2",
+            )}>
+            {article.title}
+          </Link>
+          {large && (
+            <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2 mb-2">
+              {article.metaDescription}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
+          {article.sourceIcon && <img src={article.sourceIcon} alt="" className="w-3.5 h-3.5 rounded-sm" />}
+          <span className="font-semibold text-foreground">{article.sourceName}</span>
+          <span className="hidden sm:inline">·</span>
+          <span className="hidden sm:flex items-center gap-1"><Clock className="w-3 h-3" />{timeAgo(article.publishedAt)}</span>
+          <span className="hidden md:inline">·</span>
+          <span className="hidden md:inline">{article.readTime}</span>
+          {article.coins.slice(0, 3).map(c => (
+            <span key={c.id} className="text-muted-foreground/60 font-mono hidden sm:inline">${c.symbol}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FeedSkeleton() {
+  return (
+    <div className="space-y-0">
+      {Array.from({ length: 6 }, (_, i) => (
+        <div key={i} className="flex gap-5 py-5 border-b border-border/50 animate-pulse">
+          <div className="w-28 md:w-44 h-20 md:h-28 bg-muted shrink-0" />
+          <div className="flex-1 space-y-3">
+            <div className="flex gap-2">
+              <div className="h-3 bg-muted rounded w-16" />
+              <div className="h-3 bg-muted rounded w-12" />
+            </div>
+            <div className="h-5 bg-muted rounded w-full" />
+            <div className="h-5 bg-muted rounded w-3/4" />
+            <div className="h-3 bg-muted rounded w-40" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 export default function MyNewsFeed() {
   const { profile } = useAuth();
-  const { data: priceData } = useCryptoPrices();
-  const [category, setCategory] = useState<FeedCategory>('all');
-  const [showRead, setShowRead] = useState(true);
-  const [readItems, setReadItems] = useState<Set<string>>(new Set());
-  const [savedItems, setSavedItems] = useState<Set<string>>(new Set());
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
-
   const watchlist = useMemo(() => profile?.watchlist || [], [profile?.watchlist]);
 
-  const feedItems: FeedItem[] = useMemo(() => {
-    const items: FeedItem[] = [];
-    const prices = priceData?.prices || [];
-    const now = new Date();
+  const [category, setCategory] = useState<FeedTab>(() => readStorage<FeedTab>(CAT_KEY, "all"));
+  const [searchInput, setSearchInput] = useState("");
+  const [query, setQuery] = useState("");
+  const [visibleCount, setVisibleCount] = useState(16);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
 
-    prices.forEach((coin, idx) => {
-      const isWatchlisted = watchlist.includes(coin.symbol?.toUpperCase());
-      const absChange = Math.abs(coin.change24h || 0);
+  const readState = usePersistentSet(READ_KEY);
+  const savedState = usePersistentSet(SAVED_KEY);
 
-      if (absChange > 3 || isWatchlisted) {
-        const isBullish = (coin.change24h || 0) >= 0;
-        items.push({
-          id: `price-${coin.symbol}`,
-          type: 'price_move',
-          title: `${coin.name} ${isBullish ? '+' : '-'}${coin.change24h?.toFixed(2)}%`,
-          description: `${coin.name} is trading at $${coin.price?.toLocaleString()} with ${absChange > 5 ? 'significant' : 'moderate'} movement. 24h volume: $${(coin.volume24h / 1e6).toFixed(1)}M. Market cap: $${(coin.marketCap / 1e9).toFixed(1)}B. ${absChange > 5 ? 'This level of volatility may present trading opportunities.' : 'Monitor for continuation or reversal signals.'}`,
-          symbol: coin.symbol,
-          change: coin.change24h,
-          value: `$${coin.price?.toLocaleString()}`,
-          timestamp: new Date(now.getTime() - (idx * 300000 + 60000)),
-          priority: absChange > 5 ? 'high' : absChange > 2 ? 'medium' : 'low',
-          read: readItems.has(`price-${coin.symbol}`),
-          sentiment: isBullish ? 'bullish' : 'bearish',
-        });
-      }
+  useEffect(() => {
+    const t = setTimeout(() => { setQuery(searchInput.trim()); setVisibleCount(16); }, 350);
+    return () => clearTimeout(t);
+  }, [searchInput]);
 
-      if (coin.volume24h && coin.marketCap && (coin.volume24h / coin.marketCap) > 0.15) {
-        items.push({
-          id: `vol-${coin.symbol}`,
-          type: 'volume_spike',
-          title: `Volume Spike: ${coin.symbol} at ${((coin.volume24h / coin.marketCap) * 100).toFixed(0)}% of MCap`,
-          description: `Unusually high trading volume detected for ${coin.name}. Volume/MCap ratio is ${((coin.volume24h / coin.marketCap) * 100).toFixed(1)}%, which is significantly above average. This could indicate upcoming volatility, institutional interest, or a major narrative shift. Historical spikes of this magnitude often precede 5-15% moves.`,
-          symbol: coin.symbol,
-          value: `$${(coin.volume24h / 1e6).toFixed(0)}M vol`,
-          timestamp: new Date(now.getTime() - (idx * 300000 + 180000)),
-          priority: 'medium',
-          read: readItems.has(`vol-${coin.symbol}`),
-          sentiment: 'neutral',
-        });
-      }
-    });
+  const apiCategory = category === "all" || category === "watchlist" || category === "saved" ? "All" : category;
+  const { data, isLoading, isFetching, refetch } = useNewsFeed({ category: apiCategory, q: query, limit: 80 });
 
-    ['BTC', 'ETH', 'SOL'].forEach((sym, i) => {
-      const amount = (120 + i * 95).toString();
-      const usdVal = sym === 'BTC' ? parseInt(amount) * 97000 : sym === 'ETH' ? parseInt(amount) * 3400 : parseInt(amount) * 190;
-      items.push({
-        id: `whale-${sym}-${i}`,
-        type: 'whale_alert',
-        title: `Whale: ${amount} ${sym} ($${(usdVal / 1e6).toFixed(1)}M) transferred`,
-        description: `Large ${sym} transfer detected from exchange to unknown wallet. Transaction value: $${(usdVal / 1e6).toFixed(2)}M. This pattern is typically associated with accumulation — when whales move assets off exchanges, it reduces sell pressure and suggests long-term holding intent.`,
-        symbol: sym,
-        value: `$${(usdVal / 1e6).toFixed(1)}M`,
-        timestamp: new Date(now.getTime() - (i * 600000 + 1800000)),
-        priority: 'high',
-        read: readItems.has(`whale-${sym}-${i}`),
-        sentiment: 'bullish',
-      });
-    });
+  const allArticles = useMemo(() => data?.articles ?? [], [data?.articles]);
+  const categories = useMemo(() => data?.categories ?? [], [data?.categories]);
 
-    const newsItems = [
-      { title: 'Bitcoin Dominance Rises Above 56%', desc: 'BTC dominance continues to climb as altcoins face selling pressure. Historically, dominance peaks above 60% precede major altcoin rotation periods. Key altcoin sectors to watch: DeFi, L2s, and AI tokens.', sentiment: 'bearish' as const },
-      { title: 'SEC Announces New Crypto Framework Review', desc: 'The SEC has initiated a comprehensive review of crypto regulatory framework. This could impact DeFi protocols, stablecoins, and exchange-listed tokens. Market participants expect clarity on token classification within 90 days.', sentiment: 'neutral' as const },
-      { title: 'Ethereum L2 Activity Hits Record High', desc: 'Layer 2 networks now process more transactions than Ethereum mainnet. Arbitrum leads with 45% of L2 volume, followed by Base at 28% and Optimism at 15%. Gas fees on L2s average $0.01-0.05 vs $2-5 on mainnet.', sentiment: 'bullish' as const },
-      { title: 'Stablecoin Supply Reaches $190B ATH', desc: 'Total stablecoin supply hits new all-time high at $190B, up 15% in 30 days. USDT dominates at $120B, USDC at $45B. Rising stablecoin supply historically correlates with incoming buy pressure across crypto markets.', sentiment: 'bullish' as const },
-      { title: 'Bitcoin Mining Difficulty Hits Record', desc: 'Bitcoin mining difficulty increased 4.2% to a new all-time high. Hash rate exceeds 750 EH/s. Higher difficulty and hash rate signal growing network security and miner confidence in BTC price trajectory.', sentiment: 'bullish' as const },
-    ];
+  useEffect(() => {
+    if (data) setLastUpdated(new Date());
+  }, [data]);
 
-    newsItems.forEach((news, i) => {
-      items.push({
-        id: `news-${i}`, type: 'market_news', title: news.title, description: news.desc,
-        timestamp: new Date(now.getTime() - (i + 1) * 3600000),
-        priority: i === 0 ? 'high' : 'medium',
-        read: readItems.has(`news-${i}`),
-        sentiment: news.sentiment,
-      });
-    });
-
-    return items.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-  }, [priceData, watchlist, readItems]);
+  const handleCategoryChange = (c: FeedTab) => {
+    setCategory(c);
+    setVisibleCount(16);
+    writeStorage(CAT_KEY, c);
+  };
 
   const filtered = useMemo(() => {
-    let items = feedItems;
-    if (category === 'watchlist') items = items.filter(i => i.symbol && watchlist.includes(i.symbol.toUpperCase()));
-    else if (category === 'whale') items = items.filter(i => i.type === 'whale_alert');
-    else if (category === 'market') items = items.filter(i => i.type === 'market_news');
-    else if (category === 'alerts') items = items.filter(i => i.priority === 'high');
-    if (!showRead) items = items.filter(i => !i.read);
-    return items;
-  }, [feedItems, category, showRead, watchlist]);
-
-  const markRead = (id: string) => setReadItems(prev => new Set([...prev, id]));
-  const toggleSave = (id: string) => setSavedItems(prev => { 
-    const s = new Set(prev); 
-    if (s.has(id)) { s.delete(id); } else { s.add(id); } 
-    return s; 
-  });
-  const toggleExpand = (id: string) => setExpandedItems(prev => { 
-    const s = new Set(prev); 
-    if (s.has(id)) { s.delete(id); } else { s.add(id); } 
-    return s; 
-  });
-  const unreadCount = feedItems.filter(i => !i.read).length;
-  const highPriorityCount = feedItems.filter(i => i.priority === 'high' && !i.read).length;
-  const bullishCount = feedItems.filter(i => i.sentiment === 'bullish').length;
-  const bearishCount = feedItems.filter(i => i.sentiment === 'bearish').length;
-
-  const typeIcon = (type: string) => {
-    switch (type) {
-      case 'price_move': return <TrendingUp className="w-4 h-4" />;
-      case 'whale_alert': return <AlertTriangle className="w-4 h-4" />;
-      case 'market_news': return <Globe className="w-4 h-4" />;
-      case 'volume_spike': return <BarChart3 className="w-4 h-4" />;
-      default: return <Zap className="w-4 h-4" />;
+    let items = allArticles;
+    if (category === "watchlist") {
+      const wl = new Set(watchlist.map(s => s.toLowerCase()));
+      items = items.filter(a =>
+        a.coins.some(c => wl.has(c.symbol.toLowerCase()) || wl.has(c.name.toLowerCase()))
+      );
+    } else if (category === "saved") {
+      items = items.filter(a => savedState.has(a.id));
     }
-  };
+    return items;
+  }, [allArticles, category, watchlist, savedState]);
 
-  const sentimentBadge = (s?: string) => {
-    if (s === 'bullish') return <Badge className="text-[8px] bg-success/15 text-success border-success/20">Bullish</Badge>;
-    if (s === 'bearish') return <Badge className="text-[8px] bg-danger/15 text-danger border-danger/20">Bearish</Badge>;
-    return <Badge className="text-[8px] bg-muted text-muted-foreground">Neutral</Badge>;
-  };
+  const unreadCount = useMemo(() => filtered.filter(a => !readState.has(a.id)).length, [filtered, readState]);
+
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el || visibleCount >= filtered.length) return;
+    const io = new IntersectionObserver(entries => {
+      if (entries.some(e => e.isIntersecting)) setVisibleCount(p => Math.min(p + 10, filtered.length));
+    }, { rootMargin: "800px 0px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [filtered.length, visibleCount]);
+
+  const tabs: { id: FeedTab; label: string; count?: number }[] = [
+    { id: "all", label: "All" },
+    { id: "watchlist", label: "Watchlist" },
+    { id: "saved", label: "Saved", count: savedState.ids.length },
+    ...categories.map(c => ({ id: c as FeedTab, label: c })),
+  ];
 
   return (
     <ProtectedRoute>
       <Layout>
-        <SEO title="News Feed – Personalized Crypto Intelligence" description="Your personalized crypto news feed with price alerts, whale movements, sentiment analysis, and market updates." />
-        <div className="container mx-auto px-4 py-6 space-y-6 max-w-5xl">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="p-2 sm:p-2.5 rounded-xl bg-primary/15 border border-primary/20"><Newspaper className="w-5 h-5 sm:w-6 sm:h-6 text-primary" /></div>
+        <SEO title="My News Feed -- Personalized Crypto Intelligence" description="Your personalized crypto news feed with real-time articles from CoinDesk, Cointelegraph, Decrypt and more. Live price alerts, sentiment analysis, and bookmark tracking." />
+        <div className="container mx-auto px-4 py-6 max-w-5xl">
+
+          {/* Header */}
+          <div className="border-b-2 border-foreground pb-4 mb-0">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
               <div>
-                <h1 className="text-xl sm:text-2xl font-bold">News Feed</h1>
-                <p className="text-xs sm:text-sm text-muted-foreground">
-                  {unreadCount > 0 ? `${unreadCount} unread` : 'All caught up!'} · {highPriorityCount > 0 && <span className="text-danger">{highPriorityCount} urgent · </span>}Personalized
-                </p>
+                <div className="flex items-center gap-3 mb-1">
+                  <span className="w-2 h-2 rounded-full bg-danger animate-pulse" />
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-danger">Live</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">· My News Feed</span>
+                  {isFetching ? (
+                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <Loader2 className="w-3 h-3 animate-spin" /> Refreshing...
+                    </span>
+                  ) : lastUpdated ? (
+                    <span className="text-xs text-muted-foreground">· Updated {timeAgo(lastUpdated.toISOString())}</span>
+                  ) : null}
+                </div>
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-display tracking-tighter leading-none">
+                  My News Feed
+                </h1>
+                {unreadCount > 0 && (
+                  <p className="text-sm text-muted-foreground mt-1">{unreadCount} unread article{unreadCount !== 1 ? "s" : ""}</p>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <div className="relative flex-1 sm:w-56">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <input
+                    type="search" value={searchInput} onChange={e => setSearchInput(e.target.value)}
+                    placeholder="Search stories..." aria-label="Search news"
+                    className="w-full bg-background border border-border pl-9 pr-8 py-2 text-sm focus:outline-none focus:border-primary transition-all"
+                  />
+                  {searchInput && (
+                    <button onClick={() => setSearchInput("")} aria-label="Clear"
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+                <Button variant="ghost" size="icon" onClick={() => refetch()} aria-label="Refresh">
+                  <RefreshCw className={cn("w-4 h-4", isFetching && "animate-spin")} />
+                </Button>
               </div>
             </div>
-            <Button variant="outline" size="sm" onClick={() => setShowRead(!showRead)} className="gap-2 text-xs w-full sm:w-auto">
-              {showRead ? <BellOff className="w-3 h-3" /> : <Bell className="w-3 h-3" />}
-              {showRead ? 'Hide Read' : 'Show All'}
-            </Button>
+
+            {/* Category tabs */}
+            <div className="flex items-end gap-0 overflow-x-auto scrollbar-none -mb-px">
+              {tabs.map(tab => (
+                <button key={tab.id} onClick={() => handleCategoryChange(tab.id)}
+                  className={cn(
+                    "px-3 sm:px-4 py-2 text-sm font-bold whitespace-nowrap transition-all shrink-0 border-b-2",
+                    category === tab.id
+                      ? "border-foreground text-foreground"
+                      : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground/40",
+                  )}>
+                  {tab.label}
+                  {tab.count !== undefined && tab.count > 0 && (
+                    <span className="ml-1.5 text-[10px] font-mono bg-primary/15 text-primary px-1.5 py-0.5">{tab.count}</span>
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* Market Sentiment Summary */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <Card><CardContent className="p-3">
-              <p className="text-[10px] text-muted-foreground uppercase">Total Updates</p>
-              <p className="text-lg font-bold">{feedItems.length}</p>
-            </CardContent></Card>
-            <Card><CardContent className="p-3">
-              <p className="text-[10px] text-muted-foreground uppercase">Urgent</p>
-              <p className="text-lg font-bold text-danger">{highPriorityCount}</p>
-            </CardContent></Card>
-            <Card><CardContent className="p-3">
-              <p className="text-[10px] text-muted-foreground uppercase">Bullish Signals</p>
-              <p className="text-lg font-bold text-success">{bullishCount}</p>
-            </CardContent></Card>
-            <Card><CardContent className="p-3">
-              <p className="text-[10px] text-muted-foreground uppercase">Bearish Signals</p>
-              <p className="text-lg font-bold text-danger">{bearishCount}</p>
-            </CardContent></Card>
-          </div>
+          {/* Live price alerts */}
+          <LiveAlerts watchlist={watchlist} className="py-3 border-b border-border/50" />
 
-          {/* Category Filters */}
-          <div className="flex gap-2 flex-wrap">
-            {([
-              { id: 'all', label: 'All Updates', icon: Flame, count: feedItems.length },
-              { id: 'watchlist', label: 'Watchlist', icon: Eye, count: feedItems.filter(i => i.symbol && watchlist.includes(i.symbol.toUpperCase())).length },
-              { id: 'alerts', label: 'Urgent', icon: AlertTriangle, count: feedItems.filter(i => i.priority === 'high').length },
-              { id: 'whale', label: 'Whale Alerts', icon: Zap, count: feedItems.filter(i => i.type === 'whale_alert').length },
-              { id: 'market', label: 'Market News', icon: Globe, count: feedItems.filter(i => i.type === 'market_news').length },
-            ] as const).map(cat => (
-              <Button key={cat.id} size="sm" variant={category === cat.id ? 'default' : 'ghost'}
-                onClick={() => setCategory(cat.id)} className="text-xs gap-1.5">
-                <cat.icon className="w-3 h-3" /> {cat.label} ({cat.count})
+          {/* Sentiment bar */}
+          {filtered.length > 0 && (
+            <div className="py-3 border-b border-border/50">
+              <SentimentBar articles={filtered} />
+            </div>
+          )}
+
+          {/* Search results info */}
+          {query && (
+            <p className="text-sm text-muted-foreground mt-4 mb-2">
+              {filtered.length > 0
+                ? <><span className="text-foreground font-semibold">{filtered.length}</span> results for <span className="text-foreground font-semibold">"{query}"</span></>
+                : <>No results for <span className="text-foreground font-semibold">"{query}"</span></>}
+            </p>
+          )}
+
+          {/* Watchlist empty state */}
+          {category === "watchlist" && watchlist.length === 0 && !isLoading && (
+            <div className="text-center py-20">
+              <Eye className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
+              <h3 className="text-lg font-bold font-display mb-2">No coins in your watchlist</h3>
+              <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">Add coins to your watchlist to see personalized news filtered to your portfolio.</p>
+              <Button asChild variant="outline" size="sm">
+                <Link to="/dashboard">Go to Dashboard</Link>
               </Button>
-            ))}
-          </div>
+            </div>
+          )}
 
-          {/* Feed Items */}
-          <div className="space-y-2">
-            {filtered.length === 0 ? (
-              <Card><CardContent className="p-10 text-center text-muted-foreground">
-                <Newspaper className="w-12 h-12 mx-auto mb-3 opacity-20" />
-                <h3 className="font-semibold text-foreground mb-1">No Updates</h3>
-                <p className="text-sm">{watchlist.length === 0 && category === 'watchlist' ? 'Add coins to your watchlist first!' : 'No updates in this category.'}</p>
-              </CardContent></Card>
-            ) : (
-              filtered.map(item => {
-                const isExpanded = expandedItems.has(item.id);
-                return (
-                  <Card key={item.id} className={cn(
-                    "border-l-2 transition-all cursor-pointer",
-                    item.priority === 'high' ? "border-l-danger" : item.priority === 'medium' ? "border-l-warning" : "border-l-muted",
-                    item.read && "opacity-60"
-                  )} onClick={() => { markRead(item.id); toggleExpand(item.id); }}>
-                    <CardContent className="p-3">
-                      <div className="flex items-start gap-3">
-                        <div className={cn("p-1.5 rounded-lg mt-0.5 shrink-0",
-                          item.type === 'whale_alert' ? "bg-warning/10 text-warning" :
-                          item.type === 'price_move' ? (item.change || 0) >= 0 ? "bg-success/10 text-success" : "bg-danger/10 text-danger" :
-                          item.type === 'volume_spike' ? "bg-primary/10 text-primary" :
-                          "bg-muted text-muted-foreground"
-                        )}>
-                          {typeIcon(item.type)}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                            <p className="text-sm font-semibold">{item.title}</p>
-                            {item.symbol && <Badge variant="outline" className="text-[9px] shrink-0">{item.symbol}</Badge>}
-                            {item.priority === 'high' && <Badge className="text-[8px] bg-danger/15 text-danger border-danger/20 shrink-0">URGENT</Badge>}
-                            {item.value && <Badge variant="outline" className="text-[8px] shrink-0">{item.value}</Badge>}
-                            {sentimentBadge(item.sentiment)}
-                          </div>
-                          <p className={cn("text-xs text-muted-foreground", isExpanded ? "" : "line-clamp-2")}>{item.description}</p>
-                          <div className="flex items-center gap-3 mt-1.5">
-                            <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
-                              {item.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                            </span>
-                            <button onClick={e => { e.stopPropagation(); toggleSave(item.id); }}
-                              className={cn("text-[10px] flex items-center gap-0.5", savedItems.has(item.id) ? "text-primary" : "text-muted-foreground hover:text-foreground")}>
-                              <Bookmark className={cn("w-3 h-3", savedItems.has(item.id) && "fill-current")} />
-                              {savedItems.has(item.id) ? 'Saved' : 'Save'}
-                            </button>
-                            <span className="text-[10px] text-muted-foreground">{isExpanded ? '▲ Less' : '▼ More'}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })
-            )}
-          </div>
+          {/* Saved empty state */}
+          {category === "saved" && savedState.ids.length === 0 && !isLoading && (
+            <div className="text-center py-20">
+              <Bookmark className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
+              <h3 className="text-lg font-bold font-display mb-2">No saved articles</h3>
+              <p className="text-sm text-muted-foreground max-w-sm mx-auto">Bookmark articles to save them here for later reading.</p>
+            </div>
+          )}
+
+          {/* Main feed */}
+          {isLoading ? (
+            <FeedSkeleton />
+          ) : filtered.length > 0 ? (
+            <div>
+              {filtered.slice(0, visibleCount).map((article, i) => (
+                <ArticleRow
+                  key={article.id}
+                  article={article}
+                  large={i === 0 || i % 7 === 0}
+                  isRead={readState.has(article.id)}
+                  isSaved={savedState.has(article.id)}
+                  onRead={() => readState.add(article.id)}
+                  onToggleSave={() => savedState.toggle(article.id)}
+                />
+              ))}
+
+              {visibleCount < filtered.length && (
+                <>
+                  <div ref={sentinelRef} aria-hidden className="h-1" />
+                  <div className="py-8 text-center">
+                    <button onClick={() => setVisibleCount(p => Math.min(p + 10, filtered.length))}
+                      className="inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline">
+                      <Loader2 className="w-4 h-4 animate-spin" /> Loading more...
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          ) : !query && category !== "watchlist" && category !== "saved" ? (
+            <div className="text-center py-20">
+              <Newspaper className="w-14 h-14 text-muted-foreground/30 mx-auto mb-4" />
+              <h3 className="text-xl font-bold font-display mb-2">No stories yet</h3>
+              <p className="text-muted-foreground text-sm mb-6">The feed refreshes every 5 minutes with news from 8+ crypto publications.</p>
+              <button onClick={() => refetch()} className="text-primary font-bold hover:underline inline-flex items-center gap-2 text-sm">
+                <RefreshCw className="w-4 h-4" /> Refresh Feed
+              </button>
+            </div>
+          ) : null}
         </div>
       </Layout>
     </ProtectedRoute>
