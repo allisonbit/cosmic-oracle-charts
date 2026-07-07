@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/">
+  <channel>
+    <title>Oracle Bull — AI Crypto Predictions &amp; Market Analysis</title>
+    <link>https://oraclebull.com</link>
+    <description>Daily AI-powered cryptocurrency market recaps, price predictions, and analysis for Bitcoin, Ethereum, Solana, and 300+ tokens.</description>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 07 Jul 2026 00:00:00 GMT</lastBuildDate>
+    <atom:link href="https://oraclebull.com/feed.xml" rel="self" type="application/rss+xml"/>
+    <image>
+      <url>https://oraclebull.com/oracle-bot-mascot.jpg</url>
+      <title>Oracle Bull</title>
+      <link>https://oraclebull.com</link>
+    </image>
+    <category>Cryptocurrency</category>
+    <category>Finance</category>
+    <category>Technology</category>
+    <managingEditor>contact@oraclebull.com (Oracle Bull)</managingEditor>
+    <webMaster>contact@oraclebull.com (Oracle Bull)</webMaster>
+    <ttl>60</ttl>
+
+    <item>
+      <title>Crypto Market Recap — Daily Summary</title>
+      <link>https://oraclebull.com/market-recap</link>
+      <guid isPermaLink="true">https://oraclebull.com/market-recap</guid>
+      <description>Daily crypto market summary with total market cap, BTC dominance, top gainers and losers, Fear &amp; Greed Index, and AI-powered analysis. Updated every day.</description>
+      <category>Market Analysis</category>
+      <pubDate>Mon, 07 Jul 2026 06:00:00 GMT</pubDate>
+    </item>
+
+    <item>
+      <title>What Happened to Bitcoin Today — Daily Update</title>
+      <link>https://oraclebull.com/today/bitcoin</link>
+      <guid isPermaLink="true">https://oraclebull.com/today/bitcoin</guid>
+      <description>Live Bitcoin (BTC) daily update with AI price prediction, support and resistance levels, trading setup, and market analysis.</description>
+      <category>Bitcoin</category>
+      <pubDate>Mon, 07 Jul 2026 06:00:00 GMT</pubDate>
+    </item>
+
+    <item>
+      <title>What Happened to Ethereum Today — Daily Update</title>
+      <link>https://oraclebull.com/today/ethereum</link>
+      <guid isPermaLink="true">https://oraclebull.com/today/ethereum</guid>
+      <description>Live Ethereum (ETH) daily update with AI price prediction, support and resistance levels, trading setup, and market analysis.</description>
+      <category>Ethereum</category>
+      <pubDate>Mon, 07 Jul 2026 06:00:00 GMT</pubDate>
+    </item>
+
+    <item>
+      <title>What Happened to Solana Today — Daily Update</title>
+      <link>https://oraclebull.com/today/solana</link>
+      <guid isPermaLink="true">https://oraclebull.com/today/solana</guid>
+      <description>Live Solana (SOL) daily update with AI price prediction, support and resistance levels, trading setup, and market analysis.</description>
+      <category>Solana</category>
+      <pubDate>Mon, 07 Jul 2026 06:00:00 GMT</pubDate>
+    </item>
+
+    <item>
+      <title>What Happened to XRP Today — Daily Update</title>
+      <link>https://oraclebull.com/today/ripple</link>
+      <guid isPermaLink="true">https://oraclebull.com/today/ripple</guid>
+      <description>Live XRP daily update with AI price prediction, support and resistance levels, trading setup, and market analysis.</description>
+      <category>XRP</category>
+      <pubDate>Mon, 07 Jul 2026 06:00:00 GMT</pubDate>
+    </item>
+
+    <item>
+      <title>What Happened to BNB Today — Daily Update</title>
+      <link>https://oraclebull.com/today/binancecoin</link>
+      <guid isPermaLink="true">https://oraclebull.com/today/binancecoin</guid>
+      <description>Live BNB daily update with AI price prediction, support and resistance levels, trading setup, and market analysis.</description>
+      <category>BNB</category>
+      <pubDate>Mon, 07 Jul 2026 06:00:00 GMT</pubDate>
+    </item>
+
+    <item>
+      <title>What Happened to Cardano Today — Daily Update</title>
+      <link>https://oraclebull.com/today/cardano</link>
+      <guid isPermaLink="true">https://oraclebull.com/today/cardano</guid>
+      <description>Live Cardano (ADA) daily update with AI price prediction, support and resistance levels, trading setup, and market analysis.</description>
+      <category>Cardano</category>
+      <pubDate>Mon, 07 Jul 2026 06:00:00 GMT</pubDate>
+    </item>
+
+    <item>
+      <title>What Happened to Dogecoin Today — Daily Update</title>
+      <link>https://oraclebull.com/today/dogecoin</link>
+      <guid isPermaLink="true">https://oraclebull.com/today/dogecoin</guid>
+      <description>Live Dogecoin (DOGE) daily update with AI price prediction, support and resistance levels, trading setup, and market analysis.</description>
+      <category>Dogecoin</category>
+      <pubDate>Mon, 07 Jul 2026 06:00:00 GMT</pubDate>
+    </item>
+
+    <item>
+      <title>What Happened to Avalanche Today — Daily Update</title>
+      <link>https://oraclebull.com/today/avalanche-2</link>
+      <guid isPermaLink="true">https://oraclebull.com/today/avalanche-2</guid>
+      <description>Live Avalanche (AVAX) daily update with AI price prediction, support and resistance levels, trading setup, and market analysis.</description>
+      <category>Avalanche</category>
+      <pubDate>Mon, 07 Jul 2026 06:00:00 GMT</pubDate>
+    </item>
+
+    <item>
+      <title>What Happened to Polkadot Today — Daily Update</title>
+      <link>https://oraclebull.com/today/polkadot</link>
+      <guid isPermaLink="true">https://oraclebull.com/today/polkadot</guid>
+      <description>Live Polkadot (DOT) daily update with AI price prediction, support and resistance levels, trading setup, and market analysis.</description>
+      <category>Polkadot</category>
+      <pubDate>Mon, 07 Jul 2026 06:00:00 GMT</pubDate>
+    </item>
+
+    <item>
+      <title>What Happened to Chainlink Today — Daily Update</title>
+      <link>https://oraclebull.com/today/chainlink</link>
+      <guid isPermaLink="true">https://oraclebull.com/today/chainlink</guid>
+      <description>Live Chainlink (LINK) daily update with AI price prediction, support and resistance levels, trading setup, and market analysis.</description>
+      <category>Chainlink</category>
+      <pubDate>Mon, 07 Jul 2026 06:00:00 GMT</pubDate>
+    </item>
+
+    <item>
+      <title>What Happened to Polygon Today — Daily Update</title>
+      <link>https://oraclebull.com/today/matic-network</link>
+      <guid isPermaLink="true">https://oraclebull.com/today/matic-network</guid>
+      <description>Live Polygon (MATIC) daily update with AI price prediction, support and resistance levels, trading setup, and market analysis.</description>
+      <category>Polygon</category>
+      <pubDate>Mon, 07 Jul 2026 06:00:00 GMT</pubDate>
+    </item>
+
+    <item>
+      <title>What Happened to Litecoin Today — Daily Update</title>
+      <link>https://oraclebull.com/today/litecoin</link>
+      <guid isPermaLink="true">https://oraclebull.com/today/litecoin</guid>
+      <description>Live Litecoin (LTC) daily update with AI price prediction, support and resistance levels, trading setup, and market analysis.</description>
+      <category>Litecoin</category>
+      <pubDate>Mon, 07 Jul 2026 06:00:00 GMT</pubDate>
+    </item>
+
+    <item>
+      <title>What Happened to Shiba Inu Today — Daily Update</title>
+      <link>https://oraclebull.com/today/shiba-inu</link>
+      <guid isPermaLink="true">https://oraclebull.com/today/shiba-inu</guid>
+      <description>Live Shiba Inu (SHIB) daily update with AI price prediction, support and resistance levels, trading setup, and market analysis.</description>
+      <category>Shiba Inu</category>
+      <pubDate>Mon, 07 Jul 2026 06:00:00 GMT</pubDate>
+    </item>
+
+    <item>
+      <title>What Happened to Uniswap Today — Daily Update</title>
+      <link>https://oraclebull.com/today/uniswap</link>
+      <guid isPermaLink="true">https://oraclebull.com/today/uniswap</guid>
+      <description>Live Uniswap (UNI) daily update with AI price prediction, support and resistance levels, trading setup, and market analysis.</description>
+      <category>Uniswap</category>
+      <pubDate>Mon, 07 Jul 2026 06:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>

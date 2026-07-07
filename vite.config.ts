@@ -94,6 +94,16 @@ export default defineConfig(({ mode, command }) => {
       minify: true,
       sourcemap: false,
       cssCodeSplit: true,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+            'vendor-query': ['@tanstack/react-query'],
+            'vendor-charts': ['recharts'],
+            'vendor-html2canvas': ['html2canvas'],
+          },
+        },
+      },
     },
   };
 });
