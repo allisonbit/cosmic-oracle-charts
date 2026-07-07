@@ -19,6 +19,7 @@ import { AdsterraBanner320 } from "@/components/ads/AdsterraBanner320";
 import { AdsterraSmartlink } from "@/components/ads/AdsterraSmartlink";
 
 import { AdBreak } from "@/components/ads/AdBreak";
+import { AdsterraStickyBanner } from "@/components/ads/AdsterraStickyBanner";
 import { useMarketData } from "@/hooks/useMarketData";
 import type { TopCoin } from "@/hooks/useMarketData";
 
@@ -397,6 +398,7 @@ export default function MarketRecap() {
       <AdUnit format="horizontal" className="mt-6 mb-2 max-w-5xl mx-auto px-4" />
       <Footer />
       <MobileBottomNav />
+      <AdsterraStickyBanner />
 
       <div className="h-20 md:hidden" aria-hidden="true" />
     </div>

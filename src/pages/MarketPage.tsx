@@ -9,6 +9,7 @@ import { AdsterraBanner320 } from "@/components/ads/AdsterraBanner320";
 import { AdsterraSmartlink } from "@/components/ads/AdsterraSmartlink";
 
 import { AdBreak } from "@/components/ads/AdBreak";
+import { AdsterraStickyBanner } from "@/components/ads/AdsterraStickyBanner";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Helmet } from "react-helmet-async";
 import { TrendingUp, Star, Shield, Zap, BarChart3, ChevronRight, ArrowRight } from "lucide-react";
@@ -675,6 +676,7 @@ export default function MarketPage() {
       <AdUnit format="horizontal" className="mt-6 mb-2 max-w-5xl mx-auto px-4" />
       <Footer />
       <MobileBottomNav />
+      <AdsterraStickyBanner />
 
     </div>
   );

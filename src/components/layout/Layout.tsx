@@ -11,6 +11,7 @@ import { AdsterraBanner } from "../ads/AdsterraBanner";
 import { AdsterraBanner300 } from "../ads/AdsterraBanner300";
 import { AdsterraBanner320 } from "../ads/AdsterraBanner320";
 import { AdsterraSmartlink } from "../ads/AdsterraSmartlink";
+import { AdsterraStickyBanner } from "../ads/AdsterraStickyBanner";
 
 import { Loader2 } from "lucide-react";
 
@@ -75,6 +76,7 @@ export function Layout({ children, showTicker = true }: LayoutProps) {
 
       <Footer />
       <MobileBottomNav />
+      <AdsterraStickyBanner />
 
       <CookieBanner />
     </div>
