@@ -4,7 +4,6 @@ import { Helmet } from "react-helmet-async";
 import DOMPurify from "dompurify";
 import { Layout } from "@/components/layout/Layout";
 import { useInsights } from "@/hooks/useInsights";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -140,7 +139,7 @@ export default function InsightArticle() {
       <Layout>
         <div className="min-h-screen pt-20 pb-12 flex items-center justify-center">
           <div className="text-center">
-            <div className="w-16 h-16 rounded-2xl bg-muted/30 flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-muted/30 flex items-center justify-center mx-auto mb-4">
               <BookOpen className="h-7 w-7 text-muted-foreground" />
             </div>
             <h1 className="text-2xl font-display font-bold mb-2">Article Not Found</h1>
@@ -242,9 +241,8 @@ export default function InsightArticle() {
 
           {/* Key Takeaways */}
           {article.takeaways?.length > 0 && (
-            <Card className="mb-8">
-              <CardContent className="p-5 sm:p-6">
-                <h2 className="text-lg font-display font-bold mb-4 flex items-center gap-2">
+            <div className="border-t border-border/30 pt-5 mb-8">
+              <h2 className="text-lg font-display font-bold mb-4 flex items-center gap-2">
                   <TrendingUp className="h-5 w-5 text-primary" />
                   Key Takeaways
                 </h2>
@@ -258,15 +256,13 @@ export default function InsightArticle() {
                     </li>
                   ))}
                 </ul>
-              </CardContent>
-            </Card>
+            </div>
           )}
 
           {/* FAQs */}
           {article.faqs && article.faqs.length > 0 && (
-            <Card className="mb-8">
-              <CardContent className="p-5 sm:p-6">
-                <h2 className="text-lg font-display font-bold mb-4 flex items-center gap-2">
+            <div className="border-t border-border/30 pt-5 mb-8">
+              <h2 className="text-lg font-display font-bold mb-4 flex items-center gap-2">
                   <HelpCircle className="h-5 w-5 text-primary" />
                   Frequently Asked Questions
                 </h2>
@@ -282,14 +278,12 @@ export default function InsightArticle() {
                     </AccordionItem>
                   ))}
                 </Accordion>
-              </CardContent>
-            </Card>
+            </div>
           )}
 
           {/* Explore Tools CTA */}
-          <Card className="mb-8">
-            <CardContent className="p-5 sm:p-6">
-              <h2 className="text-base font-display font-bold mb-4">Explore More Tools</h2>
+          <div className="border-t border-border/30 pt-5 mb-8">
+            <h2 className="text-base font-display font-bold mb-4">Explore More Tools</h2>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 {[
                   { to: "/dashboard", icon: BarChart3, label: "Dashboard" },
@@ -297,15 +291,14 @@ export default function InsightArticle() {
                   { to: "/factory", icon: TrendingUp, label: "Crypto Factory" },
                   { to: "/scanner", icon: Wallet, label: "Token Scanner" },
                 ].map(item => (
-                  <Link key={item.to} to={item.to} className="flex items-center gap-2 p-2.5 rounded-lg bg-background/60 hover:bg-primary/10 transition-colors text-sm group">
+                  <Link key={item.to} to={item.to} className="flex items-center gap-2 p-2.5 bg-background/60 hover:bg-primary/10 transition-colors text-sm group">
                     <item.icon className="h-4 w-4 text-primary shrink-0" />
                     <span className="truncate">{item.label}</span>
                     <ArrowRight className="h-3 w-3 text-primary ml-auto opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                   </Link>
                 ))}
               </div>
-            </CardContent>
-          </Card>
+          </div>
 
           {/* Disclaimer */}
           <p className="text-[11px] text-muted-foreground/70 text-center border-t border-border/30 pt-6 mb-10 leading-relaxed max-w-lg mx-auto">
@@ -320,8 +313,7 @@ export default function InsightArticle() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {relatedArticles.map((post) => (
                   <Link key={post.id} to={`/insights/${post.slug}`} className="group">
-                    <Card className="h-full transition-all duration-200">
-                      <CardContent className="p-4 flex gap-3">
+                    <div className="h-full border-b border-border/30 pb-4 flex gap-3">
                         <div className="flex-1 min-w-0">
                           <Badge variant="outline" className="text-[10px] mb-2">{post.category}</Badge>
                           <h3 className="font-semibold text-sm line-clamp-2 mb-1.5 group-hover:text-primary transition-colors leading-snug">
@@ -332,8 +324,7 @@ export default function InsightArticle() {
                           </div>
                         </div>
                         <ArrowRight className="h-4 w-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity shrink-0 mt-1" />
-                      </CardContent>
-                    </Card>
+                    </div>
                   </Link>
                 ))}
               </div>
@@ -346,7 +337,7 @@ export default function InsightArticle() {
       {showBackToTop && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-6 right-6 z-50 w-10 h-10 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
+          className="fixed bottom-6 right-6 z-50 w-10 h-10 bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
           aria-label="Back to top"
         >
           <ChevronUp className="h-5 w-5" />

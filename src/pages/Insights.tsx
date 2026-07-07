@@ -27,7 +27,6 @@ const INSIGHTS_FAQS = [
 ];
 import { Layout } from "@/components/layout/Layout";
 import { useInsights } from "@/hooks/useInsights";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -61,38 +60,34 @@ const categories = [
 
 function ArticleCardSkeleton() {
   return (
-    <Card className="overflow-hidden">
-      <CardContent className="p-0">
-        <Skeleton className="h-40 w-full" />
-        <div className="p-4 space-y-3">
-          <Skeleton className="h-3 w-20" />
-          <Skeleton className="h-5 w-full" />
-          <Skeleton className="h-5 w-3/4" />
-          <Skeleton className="h-4 w-full" />
-          <div className="flex gap-2 pt-2">
-            <Skeleton className="h-3 w-16" />
-            <Skeleton className="h-3 w-16" />
-          </div>
+    <div className="border-b border-border/30 pb-4">
+      <Skeleton className="h-40 w-full" />
+      <div className="pt-4 space-y-3">
+        <Skeleton className="h-3 w-20" />
+        <Skeleton className="h-5 w-full" />
+        <Skeleton className="h-5 w-3/4" />
+        <Skeleton className="h-4 w-full" />
+        <div className="flex gap-2 pt-2">
+          <Skeleton className="h-3 w-16" />
+          <Skeleton className="h-3 w-16" />
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
 
 function FeaturedSkeleton() {
   return (
-    <Card className="overflow-hidden">
-      <CardContent className="p-0">
-        <Skeleton className="h-56 w-full" />
-        <div className="p-5 space-y-3">
-          <Skeleton className="h-3 w-20" />
-          <Skeleton className="h-6 w-full" />
-          <Skeleton className="h-6 w-2/3" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-3/4" />
-        </div>
-      </CardContent>
-    </Card>
+    <div className="border-b border-border/30 pb-4">
+      <Skeleton className="h-56 w-full" />
+      <div className="pt-5 space-y-3">
+        <Skeleton className="h-3 w-20" />
+        <Skeleton className="h-6 w-full" />
+        <Skeleton className="h-6 w-2/3" />
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-3/4" />
+      </div>
+    </div>
   );
 }
 
@@ -224,7 +219,7 @@ export default function Insights() {
                   placeholder="Search articles..."
                   value={searchQuery}
                   onChange={handleSearch}
-                  className="pl-9 pr-8 bg-card border-border/50 h-10 text-sm rounded-lg"
+                  className="pl-9 pr-8 bg-card border-border/50 h-10 text-sm"
                 />
                 {searchQuery && (
                   <button
@@ -236,7 +231,7 @@ export default function Insights() {
                 )}
               </div>
               <Select value={selectedDate} onValueChange={handleDateChange}>
-                <SelectTrigger className="w-full sm:w-[150px] h-10 bg-card border-border/50 text-sm rounded-lg">
+                <SelectTrigger className="w-full sm:w-[150px] h-10 bg-card border-border/50 text-sm">
                   <Calendar className="w-3.5 h-3.5 mr-1.5 text-muted-foreground shrink-0" />
                   <SelectValue placeholder="Date" />
                 </SelectTrigger>
@@ -260,7 +255,7 @@ export default function Insights() {
                       key={cat.id}
                       onClick={() => handleCategoryChange(cat.id)}
                       className={cn(
-                        "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap",
+                        "flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium whitespace-nowrap",
                         isActive
                           ? "bg-primary text-primary-foreground shadow-sm"
                           : "bg-muted/40 text-muted-foreground hover:bg-muted/70 hover:text-foreground"
@@ -303,16 +298,15 @@ export default function Insights() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Main featured */}
                 <Link to={`/insights/${featuredArticles[0].slug}`} className="group md:col-span-2">
-                  <Card className="h-full overflow-hidden">
-                    <CardContent className="p-0">
-                      <div className="h-40 sm:h-56 bg-gradient-to-br from-primary/15 via-primary/5 to-transparent relative overflow-hidden">
+                  <div className="h-full overflow-hidden border-b border-border/30 pb-4">
+                    <div className="h-40 sm:h-56 bg-gradient-to-br from-primary/15 via-primary/5 to-transparent relative overflow-hidden">
                         {featuredArticles[0].imageUrl && (
-                          <img src={featuredArticles[0].imageUrl} alt={featuredArticles[0].title} className="absolute inset-0 w-full h-full object-cover opacity-25 group-hover:opacity-35 group-hover:scale-105 transition-all duration-500" loading="lazy" />
+                          <img src={featuredArticles[0].imageUrl} alt={featuredArticles[0].title} className="absolute inset-0 w-full h-full object-cover opacity-25 group-hover:opacity-35 transition-all duration-500" loading="lazy" />
                         )}
-                        <div className="absolute bottom-0 inset-x-0 h-20 bg-gradient-to-t from-card to-transparent" />
+                        <div className="absolute bottom-0 inset-x-0 h-20 bg-gradient-to-t from-background to-transparent" />
                         <Badge variant="secondary" className="absolute top-3 left-3 text-[10px] backdrop-blur-sm bg-background/70">{featuredArticles[0].category}</Badge>
                       </div>
-                      <div className="p-4 sm:p-5">
+                      <div className="pt-4 sm:pt-5">
                         <h3 className="font-display font-bold text-base sm:text-xl line-clamp-2 group-hover:text-primary transition-colors leading-snug">
                           {featuredArticles[0].title}
                         </h3>
@@ -325,23 +319,21 @@ export default function Insights() {
                           <ArrowRight className="h-3.5 w-3.5 text-primary ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
+                  </div>
                 </Link>
 
                 {/* Side featured */}
                 <div className="flex flex-col gap-4">
                   {featuredArticles.slice(1, 3).map((article) => (
                     <Link key={article.id} to={`/insights/${article.slug}`} className="group flex-1">
-                      <Card className="h-full overflow-hidden">
-                        <CardContent className="p-0">
-                          <div className="h-24 sm:h-28 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent relative overflow-hidden">
+                      <div className="h-full overflow-hidden border-b border-border/30 pb-4">
+                        <div className="h-24 sm:h-28 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent relative overflow-hidden">
                             {article.imageUrl && (
                               <img src={article.imageUrl} alt={article.title} className="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-30 transition-opacity duration-300" loading="lazy" />
                             )}
                             <Badge variant="secondary" className="absolute top-2.5 left-2.5 text-[10px] backdrop-blur-sm bg-background/70">{article.category}</Badge>
                           </div>
-                          <div className="p-3 sm:p-4">
+                          <div className="pt-3 sm:pt-4">
                             <h3 className="font-display font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors leading-snug">
                               {article.title}
                             </h3>
@@ -349,8 +341,7 @@ export default function Insights() {
                               <Clock className="h-2.5 w-2.5" /> {article.readTime}
                             </div>
                           </div>
-                        </CardContent>
-                      </Card>
+                      </div>
                     </Link>
                   ))}
                 </div>
@@ -370,22 +361,20 @@ export default function Insights() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {paginatedArticles.map((post) => (
                     <Link key={post.id} to={`/insights/${post.slug}`} className="group">
-                      <Card className="h-full overflow-hidden">
-                        <CardContent className="p-0">
-                          {/* Image header */}
-                          <div className="h-32 sm:h-40 relative overflow-hidden bg-gradient-to-br from-muted/30 to-muted/10">
+                      <div className="h-full overflow-hidden border-b border-border/30 pb-4">
+                        <div className="h-32 sm:h-40 relative overflow-hidden bg-gradient-to-br from-muted/30 to-muted/10">
                             {post.imageUrl && (
-                              <img src={post.imageUrl} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-40 group-hover:scale-105 transition-all duration-500" loading="lazy" />
+                              <img src={post.imageUrl} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-40 transition-all duration-500" loading="lazy" />
                             )}
                             <div className="absolute top-2.5 left-2.5">
                               <Badge variant="secondary" className="text-[10px] backdrop-blur-sm bg-background/70 shadow-sm">
                                 {post.category}
                               </Badge>
                             </div>
-                            <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-card to-transparent" />
+                            <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-background to-transparent" />
                           </div>
 
-                          <div className="p-4 space-y-2.5">
+                          <div className="pt-4 space-y-2.5">
                             <h3 className="font-display font-semibold text-sm sm:text-[15px] line-clamp-2 group-hover:text-primary transition-colors leading-snug">
                               {post.title}
                             </h3>
@@ -403,8 +392,7 @@ export default function Insights() {
                               <ArrowRight className="h-3.5 w-3.5 text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
                             </div>
                           </div>
-                        </CardContent>
-                      </Card>
+                      </div>
                     </Link>
                   ))}
                 </div>
@@ -413,7 +401,7 @@ export default function Insights() {
               {/* Empty state */}
               {paginatedArticles.length === 0 && (
                 <div className="text-center py-16 sm:py-20">
-                  <div className="w-16 h-16 rounded-2xl bg-muted/30 flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-muted/30 flex items-center justify-center mx-auto mb-4">
                     <FileText className="h-7 w-7 text-muted-foreground" />
                   </div>
                   <h3 className="text-lg font-display font-semibold mb-2">No articles found</h3>
@@ -453,7 +441,7 @@ export default function Insights() {
                           size="sm"
                           onClick={() => setCurrentPage(pageNum)}
                           className={cn(
-                            "w-9 h-9 text-xs p-0 rounded-lg",
+                            "w-9 h-9 text-xs p-0",
                             currentPage === pageNum && "shadow-sm"
                           )}
                         >

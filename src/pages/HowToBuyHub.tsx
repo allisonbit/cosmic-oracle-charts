@@ -74,17 +74,17 @@ export default function HowToBuyHub() {
 
           {/* Hero */}
           <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wider mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary text-xs font-semibold tracking-wider mb-4">
               <BookOpen className="w-4 h-4" />
               <span>STEP-BY-STEP BUYING GUIDES</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold font-display mb-4 glow-text">
+            <h1 className="text-4xl md:text-5xl font-bold font-display mb-4">
               How to Buy Crypto
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">
               Simple, accurate, up-to-date guides for buying any cryptocurrency safely - with AI-powered tips on <em>when</em> to buy, not just <em>how</em>.
             </p>
-            <div className="inline-block px-4 py-2 bg-background/50 border border-border rounded-lg text-xs text-muted-foreground/80 max-w-2xl mx-auto">
+            <div className="inline-block px-4 py-2 bg-background/50 border border-border text-xs text-muted-foreground/80 max-w-2xl mx-auto">
               <strong>Advertiser Disclosure:</strong> Oracle Bull is an independent platform. We may receive compensation from the cryptocurrency exchanges or brokers recommended in these guides at no additional cost to you. This compensation does not impact our AI-driven market analysis or ratings.
             </div>
           </div>
@@ -96,8 +96,8 @@ export default function HowToBuyHub() {
               { icon: Zap, label: "AI Buy Timing", desc: "Each guide links to live AI signals for entry points" },
               { icon: TrendingUp, label: "Always Updated", desc: "Guides are refreshed with current fee and rate data" },
             ].map(({ icon: Icon, label, desc }) => (
-              <div key={label} className="holo-card p-4 text-center">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
+              <div key={label} className="border-t border-border/30 pt-4 text-center">
+                <div className="w-10 h-10 bg-primary/10 flex items-center justify-center mx-auto mb-3">
                   <Icon className="w-5 h-5 text-primary" />
                 </div>
                 <div className="font-bold text-sm mb-1">{label}</div>
@@ -116,7 +116,7 @@ export default function HowToBuyHub() {
               <Link
                 key={guide.id}
                 to={`/how-to-buy/${guide.id}`}
-                className="holo-card p-5 group transition-all hover:scale-[1.02]"
+                className="border-t border-border/30 pt-5 group transition-all"
               >
                 <div className="flex justify-between items-start mb-3">
                   <div>
@@ -125,7 +125,7 @@ export default function HowToBuyHub() {
                     </div>
                     <div className="text-xs text-muted-foreground font-mono">{guide.ticker}</div>
                   </div>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${difficultyColor[guide.difficulty]}`}>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 border ${difficultyColor[guide.difficulty]}`}>
                     {guide.difficulty}
                   </span>
                 </div>

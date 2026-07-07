@@ -164,17 +164,17 @@ export default function HowToBuyCoin() {
 
           {/* Hero */}
           <div className="mb-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wider mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary text-xs font-semibold tracking-wider mb-4">
               <BookOpen className="w-4 h-4" />
               <span>STEP-BY-STEP GUIDE - UPDATED 2025</span>
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold font-display mb-3 glow-text">
+            <h1 className="text-3xl md:text-4xl font-bold font-display mb-3">
               How to Buy {meta.name} ({meta.ticker})
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mb-4">
               {meta.tagline} Follow our complete guide to buy {meta.ticker} safely today.
             </p>
-            <div className="inline-block px-4 py-2 bg-background/50 border border-border rounded-lg text-xs text-muted-foreground/80 max-w-2xl">
+            <div className="inline-block px-4 py-2 bg-background/50 border border-border text-xs text-muted-foreground/80 max-w-2xl">
               <strong>Advertiser Disclosure:</strong> Oracle Bull is an independent platform. We may receive compensation from the cryptocurrency exchanges or brokers recommended in this guide at no additional cost to you. This compensation does not impact our AI-driven market analysis or ratings.
             </div>
           </div>
@@ -208,9 +208,9 @@ export default function HowToBuyCoin() {
           </div>
 
           {/* AI Timing Box */}
-          <div className="bg-primary/5 border border-primary/30 rounded-2xl p-6 mb-10">
+          <div className="bg-primary/5 border border-primary/30 p-6 mb-10">
             <div className="flex items-start gap-4">
-              <div className="p-3 bg-primary/10 rounded-xl shrink-0">
+              <div className="p-3 bg-primary/10 shrink-0">
                 <Brain className="w-6 h-6 text-primary" />
               </div>
               <div>
@@ -221,7 +221,7 @@ export default function HowToBuyCoin() {
                 <div className="flex flex-wrap gap-3">
                   <Link
                     to={`/price-prediction/${id}`}
-                    className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 rounded-lg font-bold text-sm hover:bg-primary/90 transition-all hover:scale-105"
+                    className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 font-bold text-sm hover:bg-primary/90 transition-all"
                   >
                     <Zap className="w-4 h-4" />
                     View AI {meta.ticker} Price Prediction
@@ -229,7 +229,7 @@ export default function HowToBuyCoin() {
                   </Link>
                   <Link
                     to="/sentiment"
-                    className="inline-flex items-center gap-2 bg-background/50 border border-border px-5 py-2.5 rounded-lg font-medium text-sm hover:border-primary/50 transition-colors"
+                    className="inline-flex items-center gap-2 bg-background/50 border border-border px-5 py-2.5 font-medium text-sm hover:border-primary/50 transition-colors"
                   >
                     <Activity className="w-4 h-4" />
                     Market Sentiment
@@ -244,7 +244,7 @@ export default function HowToBuyCoin() {
           <div className="space-y-4 mb-12">
             {STEPS.map((step) => (
               <div key={step.num} className="border-t border-border/30 pt-5 flex gap-5">
-                <div className="shrink-0 w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center font-black text-primary text-sm">
+                <div className="shrink-0 w-10 h-10 bg-primary/10 border border-primary/20 flex items-center justify-center font-black text-primary text-sm">
                   {step.num}
                 </div>
                 <div>
@@ -262,14 +262,14 @@ export default function HowToBuyCoin() {
             {EXCHANGES.map((ex, i) => (
               <div key={ex.name} className="border-t border-border/30 pt-5 flex flex-col md:flex-row md:items-center gap-4">
                 <div className="flex items-center gap-4 flex-1">
-                  <div className="w-10 h-10 rounded-xl bg-muted/50 border border-border flex items-center justify-center font-bold text-sm shrink-0">
+                  <div className="w-10 h-10 bg-muted/50 border border-border flex items-center justify-center font-bold text-sm shrink-0">
                     {i + 1}
                   </div>
                   <div>
                     <div className="font-bold text-base flex items-center gap-2">
                       {ex.flag} {ex.name}
                       {ex.regulated && (
-                        <span className="text-[10px] text-success border border-success/30 bg-success/10 px-1.5 py-0.5 rounded-full font-semibold">Regulated</span>
+                        <span className="text-[10px] text-success border border-success/30 bg-success/10 px-1.5 py-0.5 font-semibold">Regulated</span>
                       )}
                     </div>
                     <div className="text-xs text-muted-foreground">Best for: {ex.best}</div>
@@ -290,7 +290,7 @@ export default function HowToBuyCoin() {
                     href={ex.url}
                     target="_blank"
                     rel="noopener noreferrer sponsored"
-                    className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/30 text-primary px-4 py-2 rounded-lg text-sm font-bold hover:bg-primary/20 transition-colors"
+                    className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/30 text-primary px-4 py-2 text-sm font-bold hover:bg-primary/20 transition-colors"
                   >
                     Visit {ex.name} <ArrowRight className="w-3.5 h-3.5" />
                   </a>
@@ -305,7 +305,7 @@ export default function HowToBuyCoin() {
             {PAYMENT_METHODS.map(({ icon: Icon, label, speed, fee, note }) => (
               <div key={label} className="border-t border-border/30 pt-5">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                  <div className="w-9 h-9 bg-primary/10 flex items-center justify-center shrink-0">
                     <Icon className="w-4 h-4 text-primary" />
                   </div>
                   <div className="font-bold text-sm">{label}</div>
@@ -382,32 +382,32 @@ export default function HowToBuyCoin() {
               Don't just hold and hope. Use Oracle Bull's full suite of AI tools to maximise your investment and know exactly when to take profit.
             </p>
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
-              <Link to={`/price-prediction/${id}`} className="bg-background/50 border border-border rounded-xl p-4 hover:border-primary/50 hover:text-primary transition-all group">
+              <Link to={`/price-prediction/${id}`} className="bg-background/50 border border-border p-4 hover:border-primary/50 hover:text-primary transition-all group">
                 <BarChart3 className="w-5 h-5 mb-2 text-primary" />
                 <div className="font-bold text-sm">{meta.ticker} AI Price Prediction</div>
                 <div className="text-xs text-muted-foreground mt-1">See where AI thinks {meta.name} is heading</div>
               </Link>
-              <Link to="/tools/profit-calculator" className="bg-background/50 border border-border rounded-xl p-4 hover:border-primary/50 hover:text-primary transition-all group">
+              <Link to="/tools/profit-calculator" className="bg-background/50 border border-border p-4 hover:border-primary/50 hover:text-primary transition-all group">
                 <DollarSign className="w-5 h-5 mb-2 text-success" />
                 <div className="font-bold text-sm">Calculate Your Profit</div>
                 <div className="text-xs text-muted-foreground mt-1">Set a target and calculate exact returns</div>
               </Link>
-              <Link to="/tools/dca-calculator" className="bg-background/50 border border-border rounded-xl p-4 hover:border-primary/50 hover:text-primary transition-all group">
+              <Link to="/tools/dca-calculator" className="bg-background/50 border border-border p-4 hover:border-primary/50 hover:text-primary transition-all group">
                 <Clock className="w-5 h-5 mb-2 text-warning" />
                 <div className="font-bold text-sm">DCA Simulator</div>
                 <div className="text-xs text-muted-foreground mt-1">Simulate recurring buys to lower your average</div>
               </Link>
-              <Link to="/sentiment" className="bg-background/50 border border-border rounded-xl p-4 hover:border-primary/50 hover:text-primary transition-all group">
+              <Link to="/sentiment" className="bg-background/50 border border-border p-4 hover:border-primary/50 hover:text-primary transition-all group">
                 <Activity className="w-5 h-5 mb-2 text-purple-400" />
                 <div className="font-bold text-sm">Market Sentiment</div>
                 <div className="text-xs text-muted-foreground mt-1">Track Fear & Greed in real time</div>
               </Link>
-              <Link to="/airdrops" className="bg-background/50 border border-border rounded-xl p-4 hover:border-primary/50 hover:text-primary transition-all group">
+              <Link to="/airdrops" className="bg-background/50 border border-border p-4 hover:border-primary/50 hover:text-primary transition-all group">
                 <Zap className="w-5 h-5 mb-2 text-primary" />
                 <div className="font-bold text-sm">Airdrop Tracker</div>
                 <div className="text-xs text-muted-foreground mt-1">Earn free tokens alongside your holdings</div>
               </Link>
-              <Link to="/compare" className="bg-background/50 border border-border rounded-xl p-4 hover:border-primary/50 hover:text-primary transition-all group">
+              <Link to="/compare" className="bg-background/50 border border-border p-4 hover:border-primary/50 hover:text-primary transition-all group">
                 <Brain className="w-5 h-5 mb-2 text-primary" />
                 <div className="font-bold text-sm">Compare Coins</div>
                 <div className="text-xs text-muted-foreground mt-1">See how {meta.ticker} stacks up vs rivals</div>
