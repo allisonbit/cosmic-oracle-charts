@@ -146,17 +146,75 @@ export default function VsCompare() {
 
         <Section title={`${a.name} Overview`}>
           <p>
-            {a.name} ({a.ticker}) currently ranks #{mA?.market_cap_rank ?? "—"} by market capitalisation. Its 24-hour
-            trading volume of {fmtMarketCap(mA?.total_volume)} reflects the liquidity available to traders. View the live
+            {a.name} ({a.ticker}) currently ranks #{mA?.market_cap_rank ?? "—"} by market capitalisation with a total market cap of {fmtMarketCap(mA?.market_cap)}. Its 24-hour
+            trading volume of {fmtMarketCap(mA?.total_volume)} reflects the liquidity available to traders.
+            {mA?.price_change_percentage_24h !== undefined && (
+              <> Over the past 24 hours, {a.ticker} has {mA.price_change_percentage_24h >= 0 ? "gained" : "lost"} {Math.abs(mA.price_change_percentage_24h).toFixed(2)}%.</>
+            )}
+            {mA?.ath_change_percentage !== undefined && (
+              <> It is currently {Math.abs(mA.ath_change_percentage).toFixed(0)}% below its all-time high of ${fmtPrice(mA?.ath ?? 0)}.</>
+            )}
+            {" "}View the live
             <Link to={`/price-prediction/${a.slug}`} className="text-blue-600 hover:underline"> {a.name} prediction</Link> for AI-driven price targets.
           </p>
         </Section>
 
         <Section title={`${b.name} Overview`}>
           <p>
-            {b.name} ({b.ticker}) currently ranks #{mB?.market_cap_rank ?? "—"} by market capitalisation. Its 24-hour
-            trading volume of {fmtMarketCap(mB?.total_volume)} reflects the liquidity available to traders. View the live
+            {b.name} ({b.ticker}) currently ranks #{mB?.market_cap_rank ?? "—"} by market capitalisation with a total market cap of {fmtMarketCap(mB?.market_cap)}. Its 24-hour
+            trading volume of {fmtMarketCap(mB?.total_volume)} reflects the liquidity available to traders.
+            {mB?.price_change_percentage_24h !== undefined && (
+              <> Over the past 24 hours, {b.ticker} has {mB.price_change_percentage_24h >= 0 ? "gained" : "lost"} {Math.abs(mB.price_change_percentage_24h).toFixed(2)}%.</>
+            )}
+            {mB?.ath_change_percentage !== undefined && (
+              <> It is currently {Math.abs(mB.ath_change_percentage).toFixed(0)}% below its all-time high of ${fmtPrice(mB?.ath ?? 0)}.</>
+            )}
+            {" "}View the live
             <Link to={`/price-prediction/${b.slug}`} className="text-blue-600 hover:underline"> {b.name} prediction</Link> for AI-driven price targets.
+          </p>
+        </Section>
+
+        <Section title={`${a.name} vs ${b.name}: Momentum Comparison`}>
+          <p>
+            {(() => {
+              const a30 = mA?.price_change_percentage_30d_in_currency ?? 0;
+              const b30 = mB?.price_change_percentage_30d_in_currency ?? 0;
+              const a1y = mA?.price_change_percentage_1y_in_currency ?? 0;
+              const b1y = mB?.price_change_percentage_1y_in_currency ?? 0;
+              const shortLeader = a30 > b30 ? a : b;
+              const longLeader = a1y > b1y ? a : b;
+              return <>
+                Over the past 30 days, {shortLeader.name} has outperformed with a {pct(shortLeader.slug === a.slug ? a30 : b30)} return
+                compared to {pct(shortLeader.slug === a.slug ? b30 : a30)} for {shortLeader.slug === a.slug ? b.name : a.name}.
+                {" "}On a 1-year basis, {longLeader.name} leads with {pct(longLeader.slug === a.slug ? a1y : b1y)} versus {pct(longLeader.slug === a.slug ? b1y : a1y)}.
+                {shortLeader.slug !== longLeader.slug
+                  ? ` The divergence between short and long-term leaders suggests a recent momentum shift — ${shortLeader.name} is gaining ground while ${longLeader.name} has the stronger long-term track record.`
+                  : ` ${longLeader.name} dominates both timeframes, indicating sustained strength relative to ${longLeader.slug === a.slug ? b.name : a.name}.`
+                }
+              </>;
+            })()}
+          </p>
+        </Section>
+
+        <Section title={`Market Cap and Volume Analysis`}>
+          <p>
+            {(() => {
+              const mcA = mA?.market_cap ?? 0;
+              const mcB = mB?.market_cap ?? 0;
+              if (mcA === 0 || mcB === 0) return `Loading market data...`;
+              const ratio = mcA > mcB ? mcA / mcB : mcB / mcA;
+              const larger = mcA > mcB ? a : b;
+              const smaller = mcA > mcB ? b : a;
+              return <>
+                {larger.name}&apos;s market cap is {ratio.toFixed(1)}x larger than {smaller.name}&apos;s.
+                {ratio > 10
+                  ? ` This significant size gap means ${smaller.name} has more room for percentage growth but also carries higher risk. A ${larger.name}-sized market cap for ${smaller.name} would imply a ${ratio.toFixed(0)}x price increase.`
+                  : ratio > 3
+                    ? ` ${smaller.name} is significantly smaller, offering higher upside potential but with correspondingly higher volatility and risk.`
+                    : ` The two are in a similar market cap tier, making this a close contest of fundamentals and momentum.`
+                }
+              </>;
+            })()}
           </p>
         </Section>
 

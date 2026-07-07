@@ -88,6 +88,8 @@ const BitcoinLiquidationHeatmap = lazy(() => import("./pages/BitcoinLiquidationH
 const PredictTarget = lazy(() => import("./pages/programmatic/PredictTarget"));
 const VsCompare = lazy(() => import("./pages/programmatic/VsCompare"));
 const Convert = lazy(() => import("./pages/programmatic/Convert"));
+const CoinToday = lazy(() => import("./pages/CoinToday"));
+const MarketRecap = lazy(() => import("./pages/MarketRecap"));
 const Accuracy = lazy(() => import("./pages/Accuracy"));
 const Connect = lazy(() => import("./pages/Connect"));
 // Loading fallback component
@@ -240,6 +242,8 @@ const App = () => (
                 <Route path="/predict/:coin/:target/:year" element={B(<PredictTarget />)} />
                 <Route path="/vs/:coinA/:coinB" element={B(<VsCompare />)} />
                 <Route path="/convert/:coin/:fiat" element={B(<Convert />)} />
+                <Route path="/today/:coinId" element={B(<CoinToday />)} />
+                <Route path="/market-recap" element={B(<MarketRecap />)} />
                 <Route path="/accuracy" element={B(<Accuracy />)} />
                 {/* Legal & About pages */}
                 <Route path="/about" element={B(<About />)} />

@@ -13,6 +13,7 @@ import { InvestorActionSummary } from "@/components/prediction/InvestorActionSum
 import { EnhancedFAQ } from "@/components/prediction/EnhancedFAQ";
 import { MarketQuestionsLinks, RelatedToolsLinks, TimeframeCrossLinks, HighIntentCTA } from "@/components/prediction/HighIntentLinks";
 import { MarketDataPanel } from "@/components/prediction/MarketDataPanel";
+import { ShareablePredictionCard } from "@/components/predictions/ShareablePredictionCard";
 import { SignalChart } from "@/components/prediction/SignalChart";
 import { TradeSetupCard } from "@/components/prediction/TradeSetupCard";
 import { SetupTrackRecord } from "@/components/prediction/SetupTrackRecord";
@@ -263,6 +264,23 @@ export default function PricePrediction() {
                 />
                 
                 <Methodology coinName={crypto.name} />
+
+                {/* Shareable Card */}
+                <section className="border-t border-border/30 pt-6 mb-6">
+                  <h3 className="section-label mb-3">Share This Prediction</h3>
+                  <ShareablePredictionCard
+                    coinName={crypto.name}
+                    ticker={crypto.symbol.toUpperCase()}
+                    currentPrice={`$${data.currentPrice?.toLocaleString() ?? '—'}`}
+                    bias={data.bias}
+                    confidence={data.confidence}
+                    bullTarget={`$${data.bullScenario?.target?.toLocaleString() ?? '—'}`}
+                    bearTarget={`$${data.bearScenario?.target?.toLocaleString() ?? '—'}`}
+                    keyFactor={data.keyFactors?.[0]}
+                    pageUrl={`https://oraclebull.com/price-prediction/${crypto.id}/${validTimeframe}`}
+                  />
+                </section>
+
                 <Disclaimer coinName={crypto.name} />
               </>
             ) : null}

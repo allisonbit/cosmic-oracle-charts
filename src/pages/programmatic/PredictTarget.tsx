@@ -187,6 +187,55 @@ export default function PredictTarget() {
           </ul>
         </Section>
 
+        <Section title={`${coinDef.name} Price Analysis — Current Market Position`}>
+          <p>
+            {coinDef.name} ({coinDef.ticker}) is currently {md?.market_cap_rank ? `ranked #${md.market_cap_rank} by market capitalisation` : "one of the most watched digital assets"}.
+            {" "}At a price of ${fmtPrice(currentPrice)}, {coinDef.ticker} is trading{" "}
+            {ath > 0 ? `${((1 - currentPrice / ath) * 100).toFixed(0)}% below its all-time high of $${fmtPrice(ath)}` : "near notable levels"}.
+            {" "}{change30d > 0
+              ? `The 30-day momentum is positive at +${change30d.toFixed(1)}%, suggesting buyers are in control of the current trend.`
+              : change30d < -10
+                ? `The 30-day trend shows a ${change30d.toFixed(1)}% decline, indicating selling pressure that would need to reverse before a move toward $${fmtPrice(target)}.`
+                : `The 30-day change of ${change30d.toFixed(1)}% reflects a period of consolidation.`
+            }
+          </p>
+          <p>
+            {requiredMove > 0 && requiredMove < 50
+              ? `A ${requiredMove.toFixed(0)}% move to $${fmtPrice(target)} is within a single strong rally. ${coinDef.name} has historically delivered moves of this magnitude within weeks during bullish phases.`
+              : requiredMove > 0 && requiredMove < 200
+                ? `The ${requiredMove.toFixed(0)}% appreciation needed is significant but not unprecedented for crypto assets. It would require a sustained uptrend lasting several months with strong volume support.`
+                : requiredMove > 200
+                  ? `A ${requiredMove.toFixed(0)}% gain is a multi-cycle target. Historically, moves of this size require a full bull market cycle with major catalysts — institutional adoption, protocol upgrades, or a broader macro shift.`
+                  : `${coinDef.name} has already exceeded $${fmtPrice(target)}, making this target a support level rather than resistance.`
+            }
+          </p>
+        </Section>
+
+        <Section title={`${year} Timeline: Key Factors for ${coinDef.ticker}`}>
+          <p>
+            {year <= new Date().getFullYear()
+              ? `With ${year} already underway, ${coinDef.name} has limited time to reach this target. Any breakout would need to happen within the current market cycle.`
+              : year - new Date().getFullYear() === 1
+                ? `${year} is approximately ${monthsAway} months away, giving ${coinDef.name} a moderate runway. The next Bitcoin halving cycle and macro interest rate decisions will be the dominant catalysts.`
+                : `With ${monthsAway} months until ${year}, ${coinDef.name} has multiple market cycles to work with. Long-horizon targets benefit from compound growth but carry greater uncertainty.`
+            }
+          </p>
+          <p>
+            {ath > target
+              ? `Since ${coinDef.name} has previously traded above $${fmtPrice(target)} (ATH: $${fmtPrice(ath)}), the market has already proven this level is achievable. The question is whether macro conditions and adoption trends can propel it back to and beyond this price.`
+              : ath > 0
+                ? `The target of $${fmtPrice(target)} would represent a new all-time high for ${coinDef.name}, currently ${((target / ath - 1) * 100).toFixed(0)}% above its previous peak. New ATH territory typically requires strong narrative momentum and broad market participation.`
+                : `Reaching $${fmtPrice(target)} would be a significant milestone for ${coinDef.name}, requiring both retail and institutional conviction.`
+            }
+          </p>
+          <p>
+            Investors tracking this target should monitor{" "}
+            <Link to={`/price-prediction/${coin}/daily`} className="text-blue-600 hover:underline">daily {coinDef.name} signals</Link>,{" "}
+            <Link to={`/q/is-${coin}-bullish-today`} className="text-blue-600 hover:underline">bullish/bearish indicators</Link>, and{" "}
+            <Link to="/sentiment" className="text-blue-600 hover:underline">market-wide sentiment</Link> for early trend confirmation.
+          </p>
+        </Section>
+
         <Section title="Frequently Asked Questions">
           <div className="space-y-5">
             {faq.map((f) => (

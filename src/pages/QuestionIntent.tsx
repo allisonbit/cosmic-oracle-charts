@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { usePricePrediction, getQuestionIntent, TOP_CRYPTOS, QUESTION_INTENTS } from "@/hooks/usePricePrediction";
 import { useCanonicalSetup } from "@/hooks/useCanonicalSetup";
+import { ShareablePredictionCard } from "@/components/predictions/ShareablePredictionCard";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function QuestionIntent() {
@@ -415,6 +416,201 @@ export default function QuestionIntent() {
                   </p>
                 )}
               </div>
+            </section>
+          )}
+
+          {/* Deep Dive — computed content unique per coin/question/timeframe */}
+          {prediction && (
+            <section className="holo-card p-6 md:p-8 mb-8">
+              <h2 className="text-lg font-display font-bold mb-4">
+                {questionType === 'will-go-up'
+                  ? `${crypto.name} Price Direction — Technical Breakdown`
+                  : questionType === 'should-buy'
+                  ? `${crypto.name} Buy Analysis — Risk vs Reward`
+                  : questionType === 'investment'
+                  ? `${crypto.name} Investment Outlook — Key Metrics`
+                  : questionType === 'price-prediction'
+                  ? `${crypto.name} Forecast Model — Indicator Summary`
+                  : `${crypto.name} Market Position — Current Snapshot`}
+              </h2>
+              <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground space-y-3">
+                {/* Price context paragraph — all question types */}
+                <p>
+                  {crypto.name} ({crypto.symbol.toUpperCase()}) is trading at {formatPrice(prediction.currentPrice)} as of {currentDate}.
+                  {' '}The RSI reads {prediction.technicalIndicators.rsi.toFixed(1)} ({prediction.technicalIndicators.rsiSignal}),
+                  {prediction.technicalIndicators.rsi > 70
+                    ? ` which places ${crypto.symbol.toUpperCase()} in overbought territory — historically a signal that momentum may cool in the near term.`
+                    : prediction.technicalIndicators.rsi < 30
+                    ? ` indicating oversold conditions that have historically preceded short-term bounces.`
+                    : prediction.technicalIndicators.rsi > 55
+                    ? ` showing moderate bullish momentum without hitting overbought extremes.`
+                    : prediction.technicalIndicators.rsi < 45
+                    ? ` reflecting weak momentum with sellers maintaining pressure.`
+                    : ` sitting in neutral territory where neither buyers nor sellers have a decisive edge.`
+                  }
+                  {' '}The MACD trend is {prediction.technicalIndicators.macd.trend}, which
+                  {prediction.technicalIndicators.macd.trend === 'bullish'
+                    ? ` supports the case for further upside if volume confirms.`
+                    : prediction.technicalIndicators.macd.trend === 'bearish'
+                    ? ` warns of continued downward pressure in the ${timeframe} window.`
+                    : ` suggests a potential trend reversal is developing.`
+                  }
+                </p>
+
+                {/* Question-type-specific deep analysis */}
+                {questionType === 'will-go-up' && (
+                  <>
+                    <p>
+                      For {crypto.symbol.toUpperCase()} to move higher {timeframeLabel}, it needs to clear resistance at {formatPrice(prediction.resistanceLevels[0])}.
+                      {prediction.currentPrice > prediction.supportLevels[0]
+                        ? ` The current price sits above the key support of ${formatPrice(prediction.supportLevels[0])}, which is constructive — as long as this level holds, the path of least resistance is upward.`
+                        : ` However, ${crypto.symbol.toUpperCase()} is testing support near ${formatPrice(prediction.supportLevels[0])}, and a break below would shift the short-term bias to bearish.`
+                      }
+                      {' '}Our model assigns a {prediction.bullScenario.probability}% probability of reaching the bull target of {formatPrice(prediction.bullScenario.target)} versus
+                      a {prediction.bearScenario.probability}% probability of sliding to {formatPrice(prediction.bearScenario.target)}.
+                    </p>
+                    <p>
+                      {prediction.confidence >= 70
+                        ? `With ${prediction.confidence}% confidence in the ${prediction.bias} outlook, the signal quality is strong. High-confidence readings have historically correlated with follow-through in the predicted direction within the ${timeframe} window.`
+                        : prediction.confidence >= 50
+                        ? `The ${prediction.confidence}% confidence level is moderate, meaning the directional bias is present but could be invalidated by a catalyst — a whale sell-off, macro news, or a sudden shift in Bitcoin dominance.`
+                        : `At ${prediction.confidence}% confidence, the signal is weak. In low-confidence environments, range-bound trading between ${formatPrice(prediction.supportLevels[0])} and ${formatPrice(prediction.resistanceLevels[0])} is the higher-probability scenario.`
+                      }
+                    </p>
+                  </>
+                )}
+
+                {questionType === 'should-buy' && (
+                  <>
+                    <p>
+                      The AI-generated trading setup identifies an entry zone between {formatPrice(setup.entryLow)} and {formatPrice(setup.entryHigh)}.
+                      {prediction.currentPrice > setup.entryHigh
+                        ? ` ${crypto.symbol.toUpperCase()} is currently trading above this zone at ${formatPrice(prediction.currentPrice)}, meaning the optimal entry window may have passed. Chasing an extended move increases the risk of buying near a local top.`
+                        : prediction.currentPrice < setup.entryLow
+                        ? ` ${crypto.symbol.toUpperCase()} is trading below the entry zone, suggesting a dip-buy opportunity if support at ${formatPrice(prediction.supportLevels[0])} holds. However, a break below support would invalidate the setup.`
+                        : ` ${crypto.symbol.toUpperCase()} is currently inside the entry zone, making this an actionable signal for traders aligned with the ${prediction.bias} thesis.`
+                      }
+                    </p>
+                    <p>
+                      Risk management is critical: the stop-loss sits at {formatPrice(setup.stopLoss)}, which
+                      represents a {((1 - setup.stopLoss / prediction.currentPrice) * 100).toFixed(1)}% downside from the current price.
+                      The first take-profit target at {formatPrice(setup.tp1)} offers
+                      a {((setup.tp1 / prediction.currentPrice - 1) * 100).toFixed(1)}% potential gain, giving a
+                      risk-reward ratio of approximately {(Math.abs(setup.tp1 / prediction.currentPrice - 1) / Math.abs(1 - setup.stopLoss / prediction.currentPrice)).toFixed(1)}:1.
+                      {(Math.abs(setup.tp1 / prediction.currentPrice - 1) / Math.abs(1 - setup.stopLoss / prediction.currentPrice)) >= 2
+                        ? ' This is a favourable risk-reward profile — above the 2:1 minimum that disciplined traders look for.'
+                        : ' Traders may want to wait for a tighter entry or wider take-profit for a better risk-reward ratio.'}
+                    </p>
+                  </>
+                )}
+
+                {questionType === 'investment' && (
+                  <>
+                    <p>
+                      From an investment perspective, the {timeframe} outlook for {crypto.name} is {prediction.bias} with {prediction.confidence}% model confidence.
+                      The bull scenario projects a move toward {formatPrice(prediction.bullScenario.target)} ({prediction.bullScenario.probability}% probability),
+                      while the downside risk extends to {formatPrice(prediction.bearScenario.target)} ({prediction.bearScenario.probability}% probability).
+                      {prediction.bullScenario.probability > prediction.bearScenario.probability
+                        ? ` The skew favours the upside, suggesting that the expected value of a position entered ${timeframeLabel} is positive on a risk-adjusted basis.`
+                        : prediction.bullScenario.probability < prediction.bearScenario.probability
+                        ? ` The probability distribution leans bearish, indicating that patience may be rewarded with a better entry point in coming sessions.`
+                        : ` Probabilities are balanced, making dollar-cost averaging a more prudent approach than a single lump-sum entry.`
+                      }
+                    </p>
+                    <p>
+                      Key support at {formatPrice(prediction.supportLevels[0])} serves as the invalidation level — a sustained break below
+                      would shift the medium-term structure bearish. Conversely, clearing {formatPrice(prediction.resistanceLevels[0])} on volume
+                      would confirm renewed momentum. Investors should weigh these levels against their portfolio allocation and overall
+                      exposure to crypto assets. Track this live on the{' '}
+                      <Link to={`/price-prediction/${crypto.id}/${timeframe}`} className="text-primary hover:underline">
+                        {crypto.name} {timeframe} prediction page
+                      </Link>.
+                    </p>
+                  </>
+                )}
+
+                {questionType === 'price-prediction' && (
+                  <>
+                    <p>
+                      Our {timeframe} model for {crypto.name} produces a three-tier price range.
+                      The conservative scenario spans {formatPrice(prediction.priceTargets.conservative.low)} to {formatPrice(prediction.priceTargets.conservative.high)},
+                      the moderate range is {formatPrice(prediction.priceTargets.moderate.low)} to {formatPrice(prediction.priceTargets.moderate.high)},
+                      and the aggressive scenario extends from {formatPrice(prediction.priceTargets.aggressive.low)} to {formatPrice(prediction.priceTargets.aggressive.high)}.
+                      {prediction.currentPrice >= prediction.priceTargets.moderate.low && prediction.currentPrice <= prediction.priceTargets.moderate.high
+                        ? ` The current price of ${formatPrice(prediction.currentPrice)} falls within the moderate range, consistent with a market in equilibrium relative to our model.`
+                        : prediction.currentPrice < prediction.priceTargets.moderate.low
+                        ? ` At ${formatPrice(prediction.currentPrice)}, ${crypto.symbol.toUpperCase()} is trading below the moderate range, suggesting potential undervaluation if the current ${prediction.bias} signal holds.`
+                        : ` At ${formatPrice(prediction.currentPrice)}, ${crypto.symbol.toUpperCase()} is already near or above the moderate range — aggressive targets would require exceptional momentum.`
+                      }
+                    </p>
+                    <p>
+                      The model's indicator stack shows RSI at {prediction.technicalIndicators.rsi.toFixed(1)} ({prediction.technicalIndicators.rsiSignal})
+                      and MACD trending {prediction.technicalIndicators.macd.trend}. When these two indicators align in the same direction,
+                      the model's historical hit rate increases significantly. Currently they are
+                      {prediction.technicalIndicators.rsiSignal === 'bullish' && prediction.technicalIndicators.macd.trend === 'bullish'
+                        ? ' both bullish — a confluence that strengthens the upside thesis.'
+                        : prediction.technicalIndicators.rsiSignal === 'bearish' && prediction.technicalIndicators.macd.trend === 'bearish'
+                        ? ' both bearish — a double confirmation of downside pressure.'
+                        : ' divergent, which typically precedes a consolidation phase rather than a decisive move in either direction.'
+                      }
+                    </p>
+                  </>
+                )}
+
+                {questionType === 'general' && (
+                  <>
+                    <p>
+                      {crypto.name} is showing a {prediction.bias} bias with {prediction.confidence}% confidence from our AI model.
+                      The bull case targets {formatPrice(prediction.bullScenario.target)} with a {prediction.bullScenario.probability}% probability,
+                      while the bear scenario projects {formatPrice(prediction.bearScenario.target)} at {prediction.bearScenario.probability}% probability.
+                      {prediction.confidence >= 65
+                        ? ` This is a high-conviction reading — our model's historical performance improves when confidence exceeds 65%.`
+                        : ` The moderate confidence suggests waiting for a clearer signal or using reduced position sizing.`
+                      }
+                    </p>
+                    <p>
+                      The critical levels to watch are support at {formatPrice(prediction.supportLevels[0])} and resistance at {formatPrice(prediction.resistanceLevels[0])}.
+                      {prediction.currentPrice > (prediction.supportLevels[0] + prediction.resistanceLevels[0]) / 2
+                        ? ` ${crypto.symbol.toUpperCase()} is trading in the upper half of this range, closer to resistance — a breakout above ${formatPrice(prediction.resistanceLevels[0])} could accelerate gains.`
+                        : ` ${crypto.symbol.toUpperCase()} is trading in the lower half of this range, closer to support — this is either a buy-the-dip zone or a warning of further downside if ${formatPrice(prediction.supportLevels[0])} breaks.`
+                      }
+                      {' '}For a full technical breakdown, see the{' '}
+                      <Link to={`/price-prediction/${crypto.id}/${timeframe}`} className="text-primary hover:underline">
+                        {crypto.name} {timeframe} analysis
+                      </Link>.
+                    </p>
+                  </>
+                )}
+
+                {/* Cross-linking paragraph — all types */}
+                <p>
+                  Explore more {crypto.name} analysis:{' '}
+                  <Link to={`/price-prediction/${crypto.id}`} className="text-primary hover:underline">all timeframes</Link>{' | '}
+                  <Link to={`/how-to-buy/${crypto.id}`} className="text-primary hover:underline">how to buy {crypto.symbol.toUpperCase()}</Link>{' | '}
+                  <Link to={`/vs/${crypto.id}/${crypto.id === 'bitcoin' ? 'ethereum' : 'bitcoin'}`} className="text-primary hover:underline">
+                    {crypto.name} vs {crypto.id === 'bitcoin' ? 'Ethereum' : 'Bitcoin'}
+                  </Link>{' | '}
+                  <Link to="/sentiment" className="text-primary hover:underline">market sentiment</Link>
+                </p>
+              </div>
+            </section>
+          )}
+
+          {/* Shareable Card */}
+          {prediction && (
+            <section className="mb-8">
+              <h3 className="font-display text-lg font-bold mb-3">Share This Prediction</h3>
+              <ShareablePredictionCard
+                coinName={crypto.name}
+                ticker={crypto.symbol.toUpperCase()}
+                currentPrice={formatPrice(prediction.currentPrice)}
+                bias={prediction.bias}
+                confidence={prediction.confidence}
+                bullTarget={formatPrice(prediction.bullScenario.target)}
+                bearTarget={formatPrice(prediction.bearScenario.target)}
+                keyFactor={prediction.keyFactors?.[0]}
+                pageUrl={`https://oraclebull.com/q/${slug}`}
+              />
             </section>
           )}
 

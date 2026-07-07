@@ -2250,4 +2250,56 @@
   <url><loc>https://oraclebull.com/predict/floki/0.01/2027</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
   <url><loc>https://oraclebull.com/predict/floki/0.01/2028</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
   <url><loc>https://oraclebull.com/predict/floki/0.01/2030</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <!-- /market-recap daily overview -->
+  <url><loc>https://oraclebull.com/market-recap</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <!-- /today/:coin daily overview pages -->
+  <url><loc>https://oraclebull.com/today/bitcoin</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/today/ethereum</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/today/solana</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/today/ripple</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/today/binancecoin</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/today/cardano</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/today/dogecoin</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/today/avalanche-2</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/today/polkadot</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/today/chainlink</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/today/matic-network</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/today/litecoin</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/today/shiba-inu</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/today/uniswap</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/today/near</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/today/arbitrum</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/today/optimism</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/today/aptos</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/today/sui</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/today/pepe</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://oraclebull.com/today/dogwifcoin</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/render-token</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/fetch-ai</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/bittensor</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/injective-protocol</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/the-graph</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/aave</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/kaspa</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/hedera-hashgraph</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/immutable-x</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/tron</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/stacks</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/mantle</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/stellar</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/cosmos</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/filecoin</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/internet-computer</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/vechain</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/algorand</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/eos</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/fantom</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/theta-token</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/monero</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/maker</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/lido-dao</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/worldcoin-wld</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/bonk</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/floki</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/today/sei-network</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
 </urlset>
