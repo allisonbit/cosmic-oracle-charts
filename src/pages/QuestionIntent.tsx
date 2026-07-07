@@ -547,10 +547,10 @@ export default function QuestionIntent() {
                       The model's indicator stack shows RSI at {prediction.technicalIndicators.rsi.toFixed(1)} ({prediction.technicalIndicators.rsiSignal})
                       and MACD trending {prediction.technicalIndicators.macd.trend}. When these two indicators align in the same direction,
                       the model's historical hit rate increases significantly. Currently they are
-                      {prediction.technicalIndicators.rsiSignal === 'bullish' && prediction.technicalIndicators.macd.trend === 'bullish'
-                        ? ' both bullish — a confluence that strengthens the upside thesis.'
-                        : prediction.technicalIndicators.rsiSignal === 'bearish' && prediction.technicalIndicators.macd.trend === 'bearish'
-                        ? ' both bearish — a double confirmation of downside pressure.'
+                      {prediction.technicalIndicators.rsiSignal === 'overbought' && prediction.technicalIndicators.macd.trend === 'bullish'
+                        ? ' both pointing upward — a confluence that strengthens the upside thesis.'
+                        : prediction.technicalIndicators.rsiSignal === 'oversold' && prediction.technicalIndicators.macd.trend === 'bearish'
+                        ? ' both pointing downward — a double confirmation of downside pressure.'
                         : ' divergent, which typically precedes a consolidation phase rather than a decisive move in either direction.'
                       }
                     </p>

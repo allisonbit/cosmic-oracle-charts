@@ -385,9 +385,10 @@ export default function MarketRecap() {
 }
 
 function CoinRow({ coin }: { coin: TopCoin }) {
-  const id = coin.id || coin.name.toLowerCase().replace(/\s+/g, "-");
+  const id = coin.id || coin.symbol.toLowerCase();
+  const linkTo = coin.id ? `/today/${id}` : `/price-prediction/${id}`;
   return (
-    <Link to={`/today/${id}`} className="flex items-center justify-between py-2 group">
+    <Link to={linkTo} className="flex items-center justify-between py-2 group">
       <div className="flex items-center gap-3">
         <span className="text-xs text-muted-foreground w-6">#{coin.rank}</span>
         <div>
