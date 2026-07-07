@@ -570,6 +570,8 @@ export default function MarketPage() {
             </div>
           </section>
 
+          <AdBreak variant="compact" />
+
           {/* Methodology */}
           {config && (
             <section className="mb-12 border-t border-border/30 pt-6">

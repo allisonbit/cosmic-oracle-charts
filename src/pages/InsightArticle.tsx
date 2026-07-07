@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import DOMPurify from "dompurify";
 import { Layout } from "@/components/layout/Layout";
+import { AdBreak } from "@/components/ads/AdBreak";
 import { useInsights } from "@/hooks/useInsights";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -237,7 +238,8 @@ export default function InsightArticle() {
             className="prose prose-neutral dark:prose-invert max-w-none mb-10 [&_h2]:scroll-mt-20 [&_h3]:scroll-mt-20"
             dangerouslySetInnerHTML={{ __html: processedContent }}
           />
-          
+
+          <AdBreak variant="full" />
 
           {/* Key Takeaways */}
           {article.takeaways?.length > 0 && (

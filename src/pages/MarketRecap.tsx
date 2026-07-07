@@ -227,6 +227,8 @@ export default function MarketRecap() {
                 </div>
               </section>
 
+              <AdBreak variant="compact" />
+
               {/* Gainers & Losers */}
               <div className="grid md:grid-cols-2 gap-6 mb-8">
                 <section className="holo-card p-6">
@@ -320,6 +322,8 @@ export default function MarketRecap() {
                   </p>
                 </div>
               </section>
+
+              <AdBreak variant="full" />
 
               {/* Share */}
               <div className="mb-8">

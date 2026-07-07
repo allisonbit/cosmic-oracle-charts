@@ -1,4 +1,5 @@
 import { Layout } from "@/components/layout/Layout";
+import { AdBreak } from "@/components/ads/AdBreak";
 import { Helmet } from "react-helmet-async";
 import { useParams, Link, Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -246,6 +247,8 @@ export default function VsCompare() {
             <Link to={`/vs/${b.slug}/ethereum`} className="text-blue-600 hover:underline flex items-center gap-1">{b.name} vs Ethereum <ArrowRight className="w-3 h-3" /></Link>
           </div>
         </div>
+
+        <AdBreak variant="full" />
 
         <p className="mt-10 text-xs text-slate-500 italic">
           Not financial advice. See our <Link to="/risk-disclaimer" className="underline">Risk Disclaimer</Link>.

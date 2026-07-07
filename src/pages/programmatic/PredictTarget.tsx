@@ -1,4 +1,5 @@
 import { Layout } from "@/components/layout/Layout";
+import { AdBreak } from "@/components/ads/AdBreak";
 import { Helmet } from "react-helmet-async";
 import { useParams, Link, Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -264,6 +265,8 @@ export default function PredictTarget() {
             </Link>
           </div>
         </div>
+
+        <AdBreak variant="full" />
 
         <p className="mt-10 text-xs text-slate-500 italic">
           Not financial advice. Cryptocurrency markets are volatile and you can lose your entire investment.

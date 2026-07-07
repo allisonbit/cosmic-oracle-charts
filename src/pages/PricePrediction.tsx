@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import { Layout } from "@/components/layout/Layout";
+import { AdBreak } from "@/components/ads/AdBreak";
 import { usePricePrediction, getCryptoBySlug, TOP_CRYPTOS } from "@/hooks/usePricePrediction";
 import { useResolvedCoin } from "@/hooks/useResolvedCoin";
 
@@ -280,6 +281,8 @@ export default function PricePrediction() {
                     pageUrl={`https://oraclebull.com/price-prediction/${crypto.id}/${validTimeframe}`}
                   />
                 </section>
+
+                <AdBreak variant="full" />
 
                 <Disclaimer coinName={crypto.name} />
               </>

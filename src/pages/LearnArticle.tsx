@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import DOMPurify from "dompurify";
 import { SITE_URL } from "@/lib/siteConfig";
+import { AdBreak } from "@/components/ads/AdBreak";
 import { Layout } from "@/components/layout/Layout";
 import { useEducationalArticles } from "@/hooks/useEducationalArticles";
 import { Card, CardContent } from "@/components/ui/card";
@@ -213,6 +214,8 @@ export default function LearnArticle() {
             className="prose prose-neutral dark:prose-invert max-w-none mb-10 [&_h2]:scroll-mt-20 [&_h3]:scroll-mt-20"
             dangerouslySetInnerHTML={{ __html: processedContent }}
           />
+
+          <AdBreak variant="full" />
 
 
           {/* FAQs */}

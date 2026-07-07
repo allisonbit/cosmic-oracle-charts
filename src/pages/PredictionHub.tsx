@@ -318,6 +318,7 @@ export default function PredictionHub() {
           ))}
         </section>
 
+        <AdBreak variant="compact" />
 
         {/* === LEADERBOARD === */}
         <section className="mb-8">
@@ -586,6 +587,8 @@ export default function PredictionHub() {
             </div>
           )}
         </section>
+
+        <AdBreak variant="full" />
 
         <div className="container mx-auto px-4 mb-8">
         </div>
