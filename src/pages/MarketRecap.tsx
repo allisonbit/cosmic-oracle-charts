@@ -11,6 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SocialShare } from "@/components/ui/social-share";
+import { AdsterraNative } from "@/components/ads/AdsterraNative";
 import { useMarketData } from "@/hooks/useMarketData";
 import type { TopCoin } from "@/hooks/useMarketData";
 
@@ -377,6 +378,7 @@ export default function MarketRecap() {
         </div>
       </main>
 
+      <AdsterraNative className="my-4 max-w-5xl mx-auto px-4" />
       <Footer />
       <MobileBottomNav />
       <div className="h-20 md:hidden" aria-hidden="true" />

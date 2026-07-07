@@ -7,6 +7,7 @@ import { CryptoTicker } from "@/components/layout/CryptoTicker";
 import { HeroSection } from "@/components/home/HeroSection";
 import { QuickAccessBar } from "@/components/home/QuickAccessBar";
 import { Footer } from "@/components/layout/Footer";
+import { AdsterraNative } from "@/components/ads/AdsterraNative";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SEO } from "@/components/MainSEO";
@@ -184,6 +185,7 @@ const Index = () => {
         </ViewportSection>
       </main>
 
+      <AdsterraNative className="my-4 max-w-5xl mx-auto px-4" />
       <Footer />
       <MobileBottomNav />
       {/* Bottom padding for mobile nav */}

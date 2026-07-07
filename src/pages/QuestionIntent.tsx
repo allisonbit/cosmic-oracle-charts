@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { usePricePrediction, getQuestionIntent, TOP_CRYPTOS, QUESTION_INTENTS } from "@/hooks/usePricePrediction";
 import { useCanonicalSetup } from "@/hooks/useCanonicalSetup";
 import { ShareablePredictionCard } from "@/components/predictions/ShareablePredictionCard";
+import { AdsterraNative } from "@/components/ads/AdsterraNative";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function QuestionIntent() {
@@ -852,6 +853,7 @@ export default function QuestionIntent() {
         </div>
       </main>
 
+      <AdsterraNative className="my-4 max-w-5xl mx-auto px-4" />
       <Footer />
       <MobileBottomNav />
       <div className="h-20 md:hidden" aria-hidden="true" />

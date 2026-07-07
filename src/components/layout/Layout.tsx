@@ -6,6 +6,7 @@ import { MobileBottomNav } from "./MobileBottomNav";
 import { BreadcrumbNav } from "./BreadcrumbNav";
 import { CookieBanner } from "../legal/CookieBanner";
 import { AdUnit } from "../ads/AdUnit";
+import { AdsterraNative } from "../ads/AdsterraNative";
 import { Loader2 } from "lucide-react";
 
 interface LayoutProps {
@@ -42,6 +43,7 @@ export function Layout({ children, showTicker = true }: LayoutProps) {
         <Suspense fallback={<LoadingFallback />}>
           {children}
         </Suspense>
+        <AdsterraNative className="my-4 max-w-5xl mx-auto px-4" />
         <AdUnit format="horizontal" className="mt-6 mb-2 max-w-5xl mx-auto px-4" />
       </main>
       

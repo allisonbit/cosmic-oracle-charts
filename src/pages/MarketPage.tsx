@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { AdsterraNative } from "@/components/ads/AdsterraNative";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Helmet } from "react-helmet-async";
 import { TrendingUp, Star, Shield, Zap, BarChart3, ChevronRight, ArrowRight } from "lucide-react";
@@ -655,6 +656,7 @@ export default function MarketPage() {
         </div>
       </main>
 
+      <AdsterraNative className="my-4 max-w-5xl mx-auto px-4" />
       <Footer />
       <MobileBottomNav />
     </div>

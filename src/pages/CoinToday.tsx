@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SocialShare } from "@/components/ui/social-share";
 import { ShareablePredictionCard } from "@/components/predictions/ShareablePredictionCard";
+import { AdsterraNative } from "@/components/ads/AdsterraNative";
 import { usePricePrediction, TOP_CRYPTOS, ALL_CRYPTOS } from "@/hooks/usePricePrediction";
 import { useCanonicalSetup } from "@/hooks/useCanonicalSetup";
 
@@ -470,6 +471,7 @@ export default function CoinToday() {
         </div>
       </main>
 
+      <AdsterraNative className="my-4 max-w-5xl mx-auto px-4" />
       <Footer />
       <MobileBottomNav />
       <div className="h-20 md:hidden" aria-hidden="true" />

@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { AdsterraNative } from "@/components/ads/AdsterraNative";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -605,6 +606,7 @@ export default function PredictionHub() {
         </div>
       </main>
 
+      <AdsterraNative className="my-4 max-w-5xl mx-auto px-4" />
       <Footer />
       <MobileBottomNav />
     </div>
