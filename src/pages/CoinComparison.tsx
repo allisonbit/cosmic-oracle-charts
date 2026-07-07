@@ -136,7 +136,7 @@ function AIVerdict({ a, b }: { a: CompareToken; b: CompareToken }) {
         {a.coingeckoId && <Link to={`/price-prediction/${a.coingeckoId}`} className="inline-flex items-center gap-2 text-sm bg-background/50 border border-border px-4 py-2 hover:border-primary/50 hover:text-primary transition-colors"><BarChart3 className="w-4 h-4" /> {a.symbol} Prediction</Link>}
         {b.coingeckoId && <Link to={`/price-prediction/${b.coingeckoId}`} className="inline-flex items-center gap-2 text-sm bg-background/50 border border-border px-4 py-2 hover:border-primary/50 hover:text-primary transition-colors"><BarChart3 className="w-4 h-4" /> {b.symbol} Prediction</Link>}
         <Link to="/sentiment" className="inline-flex items-center gap-2 text-sm bg-background/50 border border-border px-4 py-2 hover:border-primary/50 hover:text-primary transition-colors"><Activity className="w-4 h-4" /> Market Sentiment</Link>
-        <Link to="/strength-meter" className="inline-flex items-center gap-2 text-sm bg-primary/10 border border-primary/30 text-primary px-4 py-2 hover:bg-primary/20 transition-colors"><Zap className="w-4 h-4" /> Strength Meter <ArrowRight className="w-3 h-3" /></Link>
+        <Link to="/crypto-strength-meter" className="inline-flex items-center gap-2 text-sm bg-primary/10 border border-primary/30 text-primary px-4 py-2 hover:bg-primary/20 transition-colors"><Zap className="w-4 h-4" /> Strength Meter <ArrowRight className="w-3 h-3" /></Link>
       </div>
     </div>
   );
@@ -220,17 +220,61 @@ export default function CoinComparison() {
             <p className="text-sm text-muted-foreground leading-relaxed">
               When choosing between <strong>{nameA} ({tickA})</strong> and <strong>{nameB} ({tickB})</strong>, weigh market capitalization and rank,
               trading volume and liquidity, short- and long-term price momentum, and project fundamentals. The live data above pulls from DexScreener,
-              CoinGecko and on-chain sources so it works for major coins and newer DEX tokens alike.
+              CoinGecko and on-chain sources so it works for major coins and newer DEX tokens alike. A thorough comparison goes beyond
+              headline price action — it examines the tokenomics, ecosystem health, developer traction and risk profile of each asset so
+              you can make a more informed allocation decision.
             </p>
             <h3>Market Cap, Liquidity & Volume</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              A larger market cap and deeper liquidity generally mean lower volatility and easier entries and exits. Explore both tokens further in the{" "}
+              A larger market cap and deeper liquidity generally mean lower volatility and easier entries and exits. High 24-hour volume
+              relative to market cap signals active trading interest and tighter spreads, which reduces slippage on larger orders.
+              Conversely, a token with a high market cap but thin volume may be difficult to exit quickly during sell-offs. Explore both
+              tokens further in the{" "}
               <Link to="/explorer" className="text-primary">Token Explorer</Link> for holder and on-chain detail.
+            </p>
+            <h3>Tokenomics: Supply, Inflation & Distribution</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Tokenomics shape long-term value. Key factors include total and circulating supply, emission schedule (inflationary vs
+              deflationary or fixed-cap), and how tokens are distributed among founders, the community, and the treasury. A coin with
+              aggressive unlock schedules may face sustained sell pressure as vested tokens hit the market, while a fully-circulated,
+              capped-supply asset removes that overhang. Comparing the fully-diluted valuation (FDV) to the current market cap reveals
+              how much potential dilution remains. When two assets trade at similar market caps but one has a much higher FDV, the
+              lower-FDV token typically carries less dilution risk.
+            </p>
+            <h3>Ecosystem & Developer Activity</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              A thriving developer ecosystem is one of the strongest predictors of long-term protocol success. Compare GitHub commit
+              frequency, the number of active contributors, and the breadth of dApps or integrations built on each network. Layer-1
+              chains with vibrant DeFi, NFT and gaming ecosystems tend to sustain demand for the native token through gas fees and
+              staking. Smaller or newer tokens may show explosive short-term growth but lack the developer base needed to maintain
+              momentum. Reviewing the project roadmap, recent partnerships and grant programs can help you gauge whether ecosystem
+              growth is accelerating or plateauing.
+            </p>
+            <h3>Risk Profile Comparison</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Every crypto carries risk, but the type and magnitude differ. Established assets like Bitcoin tend to have lower
+              drawdowns from all-time highs and faster recoveries, while mid- and small-cap tokens can drop 80-90% in bear markets
+              and may never recover. Assess each token's distance from its all-time high, its historical max drawdown, and its
+              correlation with Bitcoin. Higher correlation means the token moves largely in step with BTC; lower correlation may
+              offer diversification but also idiosyncratic risk. Regulatory exposure matters too — tokens classified as securities
+              in major jurisdictions face listing and liquidity risk that can dominate all other factors.
+            </p>
+            <h3>When Each Type of Crypto Might Be the Better Investment</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Large-cap, established tokens suit investors seeking lower relative volatility and long-term compounding through
+              staking or yield. Smaller, high-growth tokens may appeal to traders willing to accept larger drawdowns in exchange
+              for outsized upside during bull cycles. If you value capital preservation, lean toward the asset with the higher
+              liquidity score, larger market cap and lower distance from ATH. If you are looking for asymmetric upside and can
+              tolerate extended drawdowns, the smaller-cap asset may offer a better risk-reward ratio — provided its ecosystem
+              and developer activity justify the premium in volatility.
             </p>
             <h3>Momentum & Timing</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
               24-hour and weekly performance show where momentum is right now. The{" "}
-              <Link to="/strength-meter" className="text-primary">Crypto Strength Meter</Link> ranks 100+ assets live so you can confirm which side has the edge.
+              <Link to="/crypto-strength-meter" className="text-primary">Crypto Strength Meter</Link> ranks 100+ assets live so you can confirm which side has the edge.
+              Combining the strength meter with this comparison page gives you both the relative and absolute picture — which
+              token is stronger right now, and how each stacks up on fundamentals. For a track record of our AI signals, visit
+              our <Link to="/accuracy" className="text-primary">prediction accuracy</Link> page.
             </p>
             {(dataA?.coingeckoId || dataB?.coingeckoId) && (
               <>

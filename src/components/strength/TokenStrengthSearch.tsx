@@ -194,7 +194,7 @@ export function TokenStrengthSearch({ allAssets }: TokenStrengthSearchProps) {
                 <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
                   <img 
                     src={result.logo} 
-                    alt={result.symbol}
+                    alt={`${result.name} (${result.symbol}) logo`}
                     className="w-8 h-8 rounded-full"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = 'https://via.placeholder.com/32';

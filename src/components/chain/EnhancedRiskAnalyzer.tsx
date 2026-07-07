@@ -375,7 +375,7 @@ export function EnhancedRiskAnalyzer({ chain }: EnhancedRiskAnalyzerProps) {
                                   <div className="flex items-center justify-between mb-2">
                                     <div className="flex items-center gap-2">
                                       {token.logo && (
-                                        <img src={token.logo} alt={token.symbol} className="w-6 h-6 rounded-full" />
+                                        <img src={token.logo} alt={`${token.name || token.symbol} logo`} className="w-6 h-6 rounded-full" />
                                       )}
                                       <div>
                                         <span className="text-sm font-semibold text-foreground">{token.symbol}</span>
@@ -493,7 +493,7 @@ export function EnhancedRiskAnalyzer({ chain }: EnhancedRiskAnalyzerProps) {
                     <div className="flex items-center gap-3">
                       <Skull className="h-5 w-5 text-danger" />
                       <div className="flex items-center gap-2">
-                        {token.logo && <img src={token.logo} alt={token.symbol} className="w-6 h-6 rounded-full" />}
+                        {token.logo && <img src={token.logo} alt={`${token.name || token.symbol} logo`} className="w-6 h-6 rounded-full" />}
                         <span className="font-semibold text-foreground">{token.symbol}</span>
                       </div>
                     </div>

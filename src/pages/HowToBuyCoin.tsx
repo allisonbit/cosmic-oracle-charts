@@ -116,8 +116,9 @@ export default function HowToBuyCoin() {
   const rank = liveData?.market_data?.market_cap_rank;
   const sentiment = liveData?.sentiment_votes_up_percentage ?? 60;
 
-  const pageTitle = `How to Buy ${meta.name} (${meta.ticker}) in 2025 - Step-by-Step Guide | Oracle Bull`;
-  const pageDesc = `Learn exactly how to buy ${meta.name} (${meta.ticker}) safely in 2025. Compare the best exchanges, payment methods, and fees. Get AI-powered tips on the best time to buy ${meta.ticker}.`;
+  const currentYear = new Date().getFullYear();
+  const pageTitle = `How to Buy ${meta.name} (${meta.ticker}) in ${currentYear} - Step-by-Step Guide | Oracle Bull`;
+  const pageDesc = `Learn exactly how to buy ${meta.name} (${meta.ticker}) safely in ${currentYear}. Compare the best exchanges, payment methods, and fees. Get AI-powered tips on the best time to buy ${meta.ticker}.`;
   const canonical = `https://oraclebull.com/how-to-buy/${id}`;
 
   const structuredData = {
@@ -166,7 +167,7 @@ export default function HowToBuyCoin() {
           <div className="mb-10">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary text-xs font-semibold tracking-wider mb-4">
               <BookOpen className="w-4 h-4" />
-              <span>STEP-BY-STEP GUIDE - UPDATED 2025</span>
+              <span>STEP-BY-STEP GUIDE - UPDATED {currentYear}</span>
             </div>
             <h1 className="text-3xl md:text-4xl font-bold font-display mb-3">
               How to Buy {meta.name} ({meta.ticker})

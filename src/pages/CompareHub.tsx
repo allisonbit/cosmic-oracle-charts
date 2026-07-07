@@ -2,7 +2,7 @@ import { Layout } from "@/components/layout/Layout";
 import { Helmet } from "react-helmet-async";
 import { useState, useMemo } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { GitCompare, TrendingUp, Zap, ArrowRight, Search, X, Loader2, Globe, Sparkles } from "lucide-react";
+import { GitCompare, TrendingUp, Zap, ArrowRight, Search, X, Loader2, Globe, Sparkles, ChevronDown } from "lucide-react";
 import { CoinImage } from "@/components/ui/CoinImage";
 import { useLiveTokenSearch, type LiveToken } from "@/hooks/useLiveTokenSearch";
 import { tokenToSlug, useCoinList, searchCoinList } from "@/hooks/useCompareToken";
@@ -192,8 +192,69 @@ export default function CompareHub() {
             </p>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Pick two tokens above to start, jump into a trending battle, or open the <Link to="/explorer" className="text-primary">Token Explorer</Link> and
-              <Link to="/strength-meter" className="text-primary"> Strength Meter</Link> for deeper analysis. Comparisons are for research only and are not financial advice.
+              <Link to="/crypto-strength-meter" className="text-primary"> Strength Meter</Link> for deeper analysis. Comparisons are for research only and are not financial advice.
             </p>
+          </section>
+
+          {/* How to Compare Cryptocurrencies */}
+          <section className="border-t border-border/30 pt-6 mt-8">
+            <h2 className="text-lg font-display font-bold mb-4">How to Compare Cryptocurrencies</h2>
+            <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground space-y-3">
+              <p className="leading-relaxed">
+                Comparing cryptocurrencies side by side is one of the most effective ways to make informed investment decisions. When two assets compete within the same sector — layer-1 blockchains, DeFi protocols, or meme coins — raw price alone tells you very little. A structured comparison reveals which project has stronger fundamentals, better momentum, and more favorable risk-reward characteristics before you commit capital.
+              </p>
+              <p className="leading-relaxed">
+                The key metrics to evaluate when comparing any two cryptocurrencies include <strong>market capitalization</strong> (total network value and room for growth), <strong>24-hour and weekly trading volume</strong> (liquidity and ease of entry/exit), <strong>price momentum</strong> (short-term trend direction and strength), and <strong>developer activity</strong> (ongoing protocol development and ecosystem health). Each metric paints a different part of the picture, and no single number should drive your decision alone.
+              </p>
+              <p className="leading-relaxed">
+                Oracle Bull's AI verdict analyzes all of these data points simultaneously. The model weighs relative market cap positioning, volume trends, momentum divergences, and liquidity depth to produce a clear recommendation on which token currently looks stronger. This is not a price prediction — it is a comparative strength assessment designed to help you choose between two assets you are already considering. Check our <Link to="/predictions" className="text-primary hover:underline">AI price predictions</Link> for directional forecasts on individual coins.
+              </p>
+              <p className="leading-relaxed">
+                Comparison is most useful when you are deciding between similar assets in the same category. Choosing between Solana and Avalanche as your layer-1 bet, or between DOGE and SHIB as a meme coin position, is exactly where side-by-side analysis shines. Pair this tool with the <Link to="/crypto-strength-meter" className="text-primary hover:underline">Crypto Strength Meter</Link> for absolute rankings and the <Link to="/sentiment" className="text-primary hover:underline">Fear &amp; Greed Index</Link> for broader market context to build a complete thesis before you trade.
+              </p>
+            </div>
+          </section>
+
+          {/* FAQ */}
+          <section className="border-t border-border/30 pt-6 mt-8">
+            <h2 className="text-lg font-display font-bold mb-4">Frequently Asked Questions</h2>
+            <div className="max-w-none">
+              <details className="group border-b border-border/20 py-3">
+                <summary className="font-medium text-sm cursor-pointer list-none flex items-center justify-between">
+                  What metrics should I compare between cryptocurrencies?
+                  <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                </summary>
+                <p className="text-sm text-muted-foreground mt-2 leading-relaxed">The most important metrics to compare are market capitalization, 24-hour trading volume, price momentum (daily and weekly percentage changes), liquidity depth, and developer activity. Market cap shows relative size and growth potential, while volume and liquidity indicate how easily you can enter and exit a position without slippage.</p>
+              </details>
+              <details className="group border-b border-border/20 py-3">
+                <summary className="font-medium text-sm cursor-pointer list-none flex items-center justify-between">
+                  How does Oracle Bull's AI verdict work?
+                  <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                </summary>
+                <p className="text-sm text-muted-foreground mt-2 leading-relaxed">The AI verdict analyzes multiple data points for both tokens — including price action, volume trends, market cap positioning, momentum indicators, and liquidity — then produces a comparative assessment of which asset currently looks stronger. It is a relative strength analysis, not a price prediction or financial advice.</p>
+              </details>
+              <details className="group border-b border-border/20 py-3">
+                <summary className="font-medium text-sm cursor-pointer list-none flex items-center justify-between">
+                  Can I compare any two cryptocurrencies?
+                  <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                </summary>
+                <p className="text-sm text-muted-foreground mt-2 leading-relaxed">Yes. Oracle Bull supports over 17,000 tokens across all major blockchains including Ethereum, Solana, BNB Chain, Base, Arbitrum, and Polygon. You can search by name, ticker symbol, or paste a contract address directly to find any token with live market data.</p>
+              </details>
+              <details className="group border-b border-border/20 py-3">
+                <summary className="font-medium text-sm cursor-pointer list-none flex items-center justify-between">
+                  What is the best crypto to invest in right now?
+                  <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                </summary>
+                <p className="text-sm text-muted-foreground mt-2 leading-relaxed">There is no single "best" cryptocurrency — it depends on your risk tolerance, time horizon, and investment thesis. Use the comparison tool to evaluate candidates side by side, then check Oracle Bull's AI predictions and strength meter for additional context. Always do your own research before investing.</p>
+              </details>
+              <details className="group border-b border-border/20 py-3">
+                <summary className="font-medium text-sm cursor-pointer list-none flex items-center justify-between">
+                  How often is comparison data updated?
+                  <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                </summary>
+                <p className="text-sm text-muted-foreground mt-2 leading-relaxed">Comparison data is pulled live from DexScreener, CoinGecko, and on-chain sources each time you load a comparison. Prices, volumes, and momentum figures reflect the latest available market data, typically updated within minutes of the most recent trades.</p>
+              </details>
+            </div>
           </section>
         </div>
       </div>

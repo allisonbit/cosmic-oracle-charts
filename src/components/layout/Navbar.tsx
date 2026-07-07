@@ -23,7 +23,7 @@ const MORE_GROUPS = [
     items: [
       { path: "/explorer",       label: "Explorer" },
       { path: "/scanner",        label: "Scanner" },
-      { path: "/strength",       label: "Strength" },
+      { path: "/crypto-strength-meter",       label: "Strength" },
       { path: "/compare",        label: "Compare" },
     ],
   },
@@ -57,7 +57,7 @@ const MOBILE_GROUPS = [
   { label: "Markets", items: [
     { path: "/explorer",       label: "Explorer",  icon: Globe },
     { path: "/scanner",        label: "Scanner",   icon: Search },
-    { path: "/strength",       label: "Strength",  icon: Zap },
+    { path: "/crypto-strength-meter",       label: "Strength",  icon: Zap },
     { path: "/compare",        label: "Compare",   icon: ArrowRightLeft },
   ]},
   { label: "Crypto",  items: [

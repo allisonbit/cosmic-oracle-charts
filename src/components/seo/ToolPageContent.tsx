@@ -413,7 +413,7 @@ export function PredictionsDataMeaning() {
           <span className="text-sm">Sentiment Data</span>
           <ChevronRight className="w-4 h-4 ml-auto" />
         </Link>
-        <Link to="/strength" className="p-3 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors flex items-center gap-2">
+        <Link to="/crypto-strength-meter" className="p-3 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors flex items-center gap-2">
           <Zap className="w-4 h-4 text-primary" />
           <span className="text-sm">Strength Meter</span>
           <ChevronRight className="w-4 h-4 ml-auto" />

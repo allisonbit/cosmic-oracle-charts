@@ -78,7 +78,7 @@ export function DashboardSEOContent() {
       <div className="mt-4 flex flex-wrap gap-2">
         <Link to="/predictions" className="text-xs text-primary hover:underline">AI Predictions →</Link>
         <Link to="/sentiment" className="text-xs text-primary hover:underline">Sentiment Analysis →</Link>
-        <Link to="/strength-meter" className="text-xs text-primary hover:underline">Strength Meter →</Link>
+        <Link to="/crypto-strength-meter" className="text-xs text-primary hover:underline">Strength Meter →</Link>
       </div>
     </section>
   );

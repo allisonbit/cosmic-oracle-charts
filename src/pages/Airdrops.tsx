@@ -181,7 +181,7 @@ export default function Airdrops() {
                 <tbody>
                   {candidates.map((c) => (
                     <tr key={c.slug} className="border-t border-border/40">
-                      <td className="p-2.5 font-medium text-foreground"><span className="inline-flex items-center gap-2">{c.logo && <img src={c.logo} alt="" className="w-4 h-4 rounded-full" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />}{c.name}</span></td>
+                      <td className="p-2.5 font-medium text-foreground"><span className="inline-flex items-center gap-2">{c.logo && <img src={c.logo} alt={`${c.name} logo`} className="w-4 h-4 rounded-full" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />}{c.name}</span></td>
                       <td className="p-2.5 text-muted-foreground">{c.category}</td>
                       <td className="p-2.5 text-muted-foreground hidden sm:table-cell">{c.chains.slice(0, 3).join(", ")}</td>
                       <td className="p-2.5 text-right font-mono">{fmtTvl(c.tvl)}</td>

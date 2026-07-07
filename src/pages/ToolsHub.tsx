@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import {
   Calculator, TrendingDown, Gauge, Search, Zap, Activity,
   GitCompare, Flame, BarChart3, ArrowRight, Newspaper, Brain,
-  TrendingUp, Target, Shield, ChevronRight,
+  TrendingUp, Target, Shield, ChevronRight, ChevronDown,
 } from "lucide-react";
 import { SITE_URL } from "@/lib/siteConfig";
 
@@ -125,7 +125,7 @@ export default function ToolsHub() {
                 <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">· No signup required</span>
               </div>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-display tracking-tighter leading-none">
-                Crypto Toolkit
+                Free Crypto Tools &amp; Calculators
               </h1>
               <p className="text-sm text-muted-foreground mt-2 max-w-xl">
                 Calculators, scanners and live market analysis — every tool runs on real data. Pick one to get started.
@@ -241,6 +241,67 @@ export default function ToolsHub() {
                 free, requires no signup, and runs on live market data.
               </p>
             </div>
+
+            {/* Why Use Crypto Trading Tools? */}
+            <section className="border-t border-border/30 pt-6 mt-8">
+              <h2 className="text-lg font-display font-bold mb-4">Why Use Crypto Trading Tools?</h2>
+              <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground space-y-3">
+                <p className="leading-relaxed">
+                  Cryptocurrency markets move fast and punish sloppy math. A single miscalculated position size or ignored fee structure can turn a winning trade into a loss. Trading tools remove the guesswork by giving you exact numbers — profit after fees, optimal DCA schedules, risk-adjusted position sizes — so you can make decisions based on data rather than gut feeling.
+                </p>
+                <p className="leading-relaxed">
+                  <strong>Position sizing and dollar-cost averaging</strong> are two of the most important risk management techniques in volatile markets. The position size calculator ensures you never risk more than a set percentage of your portfolio on a single trade, while the DCA calculator helps you plan a consistent buying schedule that smooths out volatility over time. Together, they form the foundation of a disciplined trading strategy.
+                </p>
+                <p className="leading-relaxed">
+                  These calculators are most powerful when combined with Oracle Bull's analytical tools. Use <Link to="/predictions" className="text-primary hover:underline">AI predictions</Link> to identify directional opportunities, verify the signal strength on the <Link to="/accuracy" className="text-primary hover:underline">accuracy tracker</Link>, and gauge overall market mood with the <Link to="/sentiment" className="text-primary hover:underline">Fear &amp; Greed Index</Link> — then size your trade appropriately with the calculators on this page.
+                </p>
+                <p className="leading-relaxed">
+                  Oracle Bull's toolkit spans three categories: <strong>calculators</strong> for profit, DCA, and position sizing; <strong>research tools</strong> like the token scanner and comparison engine; and <strong>live analysis</strong> including the strength meter, sentiment index, and market dashboard. Every tool runs on live data, requires no account, and is completely free to use.
+                </p>
+              </div>
+            </section>
+
+            {/* FAQ */}
+            <section className="border-t border-border/30 pt-6 mt-8">
+              <h2 className="text-lg font-display font-bold mb-4">Frequently Asked Questions</h2>
+              <div className="max-w-none">
+                <details className="group border-b border-border/20 py-3">
+                  <summary className="font-medium text-sm cursor-pointer list-none flex items-center justify-between">
+                    What crypto tools does Oracle Bull offer?
+                    <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                  </summary>
+                  <p className="text-sm text-muted-foreground mt-2 leading-relaxed">Oracle Bull offers a profit calculator, DCA calculator, position size calculator, token scanner, crypto strength meter, Fear &amp; Greed Index, token comparison tool, Polymarket signals analyzer, Crypto Factory intelligence feed, and a real-time market dashboard. All tools use live market data and are free with no signup.</p>
+                </details>
+                <details className="group border-b border-border/20 py-3">
+                  <summary className="font-medium text-sm cursor-pointer list-none flex items-center justify-between">
+                    Are these crypto tools free to use?
+                    <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                  </summary>
+                  <p className="text-sm text-muted-foreground mt-2 leading-relaxed">Yes, every tool on Oracle Bull is completely free to use with no signup or account required. There are no paywalls, trial limits, or premium tiers for the calculators, scanners, and analysis tools. Just open any tool and start using it immediately.</p>
+                </details>
+                <details className="group border-b border-border/20 py-3">
+                  <summary className="font-medium text-sm cursor-pointer list-none flex items-center justify-between">
+                    How accurate are the calculators?
+                    <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                  </summary>
+                  <p className="text-sm text-muted-foreground mt-2 leading-relaxed">The calculators use standard financial formulas and produce exact results based on the inputs you provide. Profit calculations account for buy-side and sell-side exchange fees. DCA projections use your specified parameters to model outcomes. Results are as accurate as the inputs — always double-check your numbers before making trading decisions.</p>
+                </details>
+                <details className="group border-b border-border/20 py-3">
+                  <summary className="font-medium text-sm cursor-pointer list-none flex items-center justify-between">
+                    Do I need trading experience to use these tools?
+                    <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                  </summary>
+                  <p className="text-sm text-muted-foreground mt-2 leading-relaxed">No. Each tool is designed to be intuitive for beginners while remaining useful for experienced traders. Input fields include clear labels, and results are displayed in plain language. The profit calculator and DCA calculator are great starting points if you are new to crypto trading.</p>
+                </details>
+                <details className="group border-b border-border/20 py-3">
+                  <summary className="font-medium text-sm cursor-pointer list-none flex items-center justify-between">
+                    Can I use these tools on mobile?
+                    <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                  </summary>
+                  <p className="text-sm text-muted-foreground mt-2 leading-relaxed">Yes, all Oracle Bull tools are fully responsive and work on any device — phone, tablet, or desktop. The interface adapts to your screen size automatically. No app download is needed; just open oraclebull.com in your mobile browser and access any tool directly.</p>
+                </details>
+              </div>
+            </section>
           </div>
 
           {/* Sidebar */}

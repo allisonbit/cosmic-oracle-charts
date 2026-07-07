@@ -114,7 +114,7 @@ export function DailyStrengthReport({ assets, chains }: DailyStrengthReportProps
           </div>
           <div className="p-3 rounded-lg bg-muted/30 text-center">
             <div className="flex items-center justify-center gap-1">
-              <img src={report.topChain?.logo} alt="" className="w-5 h-5 rounded-full" />
+              <img src={report.topChain?.logo} alt={report.topChain?.name ?? "Top chain logo"} className="w-5 h-5 rounded-full" />
               <p className="text-lg font-bold">{report.topChain?.symbol}</p>
             </div>
             <p className="text-xs text-muted-foreground">Top Chain</p>

@@ -380,7 +380,7 @@ export default function FactoryNews() {
                     <Target className="w-4 h-4" />
                     Price Predictions Hub
                   </Link>
-                  <Link to="/strength-meter" className="flex items-center gap-2 text-primary hover:text-primary/80">
+                  <Link to="/crypto-strength-meter" className="flex items-center gap-2 text-primary hover:text-primary/80">
                     <Zap className="w-4 h-4" />
                     Crypto Strength Meter
                   </Link>

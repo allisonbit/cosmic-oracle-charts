@@ -84,7 +84,7 @@ export function Footer() {
             <ul className="space-y-2">
               <li><Link to="/predictions" className="block text-sm text-muted-foreground hover:text-primary transition-colors">AI Price Predictions</Link></li>
               <li><Link to="/sentiment" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Sentiment Analysis</Link></li>
-              <li><Link to="/strength-meter" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Crypto Strength Meter</Link></li>
+              <li><Link to="/crypto-strength-meter" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Crypto Strength Meter</Link></li>
               <li><Link to="/factory" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Crypto Factory</Link></li>
               <li><Link to="/factory/events" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Market Events</Link></li>
               <li><Link to="/factory/onchain" className="block text-sm text-muted-foreground hover:text-primary transition-colors">On-Chain Intelligence</Link></li>

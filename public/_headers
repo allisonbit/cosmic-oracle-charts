@@ -24,3 +24,10 @@
 
 /manifest.webmanifest
   Cache-Control: public, max-age=3600
+
+# Sitemap and robots — revalidate frequently so changes propagate to crawlers.
+/sitemap.xml
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/robots.txt
+  Cache-Control: public, max-age=86400, must-revalidate

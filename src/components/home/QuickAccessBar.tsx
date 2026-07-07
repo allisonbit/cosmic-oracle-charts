@@ -32,7 +32,7 @@ const quickLinks = [
   },
   {
     label: "Strength",
-    href: "/strength",
+    href: "/crypto-strength-meter",
     icon: <Zap className="w-3.5 h-3.5" />,
     bgColor: "bg-warning/20",
     textColor: "text-warning",

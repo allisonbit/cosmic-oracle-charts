@@ -42,7 +42,7 @@ export function HomeNews() {
                 <div className="aspect-[16/7] mb-4 overflow-hidden rounded-sm">
                   <img
                     src={hero.imageUrl}
-                    alt=""
+                    alt={hero.title}
                     loading="eager"
                     width={800}
                     height={350}
@@ -95,7 +95,7 @@ export function HomeNews() {
                     <div className="w-20 h-14 sm:w-24 sm:h-16 flex-shrink-0 overflow-hidden rounded-sm">
                       <img
                         src={a.imageUrl}
-                        alt=""
+                        alt={a.title}
                         loading="lazy"
                         width={96}
                         height={64}

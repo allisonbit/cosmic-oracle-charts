@@ -364,7 +364,7 @@ export default function Insights() {
                       <div className="h-full overflow-hidden border-b border-border/30 pb-4">
                         <div className="h-32 sm:h-40 relative overflow-hidden bg-gradient-to-br from-muted/30 to-muted/10">
                             {post.imageUrl && (
-                              <img src={post.imageUrl} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-40 transition-all duration-500" loading="lazy" />
+                              <img src={post.imageUrl} alt={post.title} className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-40 transition-all duration-500" loading="lazy" />
                             )}
                             <div className="absolute top-2.5 left-2.5">
                               <Badge variant="secondary" className="text-[10px] backdrop-blur-sm bg-background/70 shadow-sm">

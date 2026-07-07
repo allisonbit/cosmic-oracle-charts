@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { LiquidationHeatmap } from "@/components/dashboard/LiquidationHeatmap";
 import { SITE_URL } from "@/lib/siteConfig";
@@ -144,10 +145,10 @@ export default function BitcoinLiquidationHeatmap() {
             The strongest reversal setups occur when Bitcoin price taps a major long or short
             liquidation cluster and immediately rejects with rising volume. Combine the heatmap
             with funding rates, open interest changes, and our{" "}
-            <a href="/strength-meter" className="text-primary hover:underline">Crypto Strength Meter</a>{" "}
+            <Link to="/crypto-strength-meter" className="text-primary hover:underline">Crypto Strength Meter</Link>{" "}
             to confirm momentum shifts. For broader market context, see live{" "}
-            <a href="/sentiment" className="text-primary hover:underline">crypto sentiment</a> and{" "}
-            <a href="/dashboard" className="text-primary hover:underline">market dashboard</a>.
+            <Link to="/sentiment" className="text-primary hover:underline">crypto sentiment</Link> and{" "}
+            <Link to="/dashboard" className="text-primary hover:underline">market dashboard</Link>.
           </p>
 
           <h2 className="text-2xl font-bold mt-8 mb-4 flex items-center gap-2">
@@ -179,12 +180,12 @@ export default function BitcoinLiquidationHeatmap() {
         <section className="holo-card p-6">
           <h2 className="text-xl font-bold mb-3">Related Bitcoin Tools</h2>
           <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-            <li><a href="/price-prediction/bitcoin/daily" className="text-primary hover:underline">Bitcoin Price Prediction</a></li>
-            <li><a href="/market/bitcoin" className="text-primary hover:underline">Bitcoin Market Overview</a></li>
-            <li><a href="/sentiment" className="text-primary hover:underline">Crypto Sentiment Tracker</a></li>
-            <li><a href="/strength-meter" className="text-primary hover:underline">Crypto Strength Meter</a></li>
-            <li><a href="/dashboard" className="text-primary hover:underline">Live Crypto Dashboard</a></li>
-            <li><a href="/scanner" className="text-primary hover:underline">Crypto Scanner</a></li>
+            <li><Link to="/price-prediction/bitcoin/daily" className="text-primary hover:underline">Bitcoin Price Prediction</Link></li>
+            <li><Link to="/market/bitcoin" className="text-primary hover:underline">Bitcoin Market Overview</Link></li>
+            <li><Link to="/sentiment" className="text-primary hover:underline">Crypto Sentiment Tracker</Link></li>
+            <li><Link to="/crypto-strength-meter" className="text-primary hover:underline">Crypto Strength Meter</Link></li>
+            <li><Link to="/dashboard" className="text-primary hover:underline">Live Crypto Dashboard</Link></li>
+            <li><Link to="/scanner" className="text-primary hover:underline">Crypto Scanner</Link></li>
           </ul>
         </section>
       </div>

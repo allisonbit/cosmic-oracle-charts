@@ -141,7 +141,7 @@ function NarrativeCard({ narrative }: { narrative: any }) {
       {/* Action Links */}
       <div className="flex items-center gap-4 text-sm pt-3 border-t border-border/50">
         <Link 
-          to="/strength-meter"
+          to="/crypto-strength-meter"
           className="text-primary hover:text-primary/80 flex items-center gap-1"
         >
           Strength Meter <ChevronRight className="w-4 h-4" />
@@ -325,7 +325,7 @@ export default function FactoryNarratives() {
                     <Target className="w-4 h-4" />
                     Price Predictions Hub
                   </Link>
-                  <Link to="/strength-meter" className="flex items-center gap-2 text-primary hover:text-primary/80">
+                  <Link to="/crypto-strength-meter" className="flex items-center gap-2 text-primary hover:text-primary/80">
                     <Zap className="w-4 h-4" />
                     Crypto Strength Meter
                   </Link>

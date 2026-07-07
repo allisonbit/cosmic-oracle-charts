@@ -99,7 +99,7 @@ export function CryptoFactorySEOContent() {
       </div>
       
       <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <Link to="/strength-meter" className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 p-2 rounded-lg bg-primary/5 hover:bg-primary/10">
+        <Link to="/crypto-strength-meter" className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 p-2 rounded-lg bg-primary/5 hover:bg-primary/10">
           <Zap className="w-4 h-4" />
           <span>Strength Meter</span>
         </Link>

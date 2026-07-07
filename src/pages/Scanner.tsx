@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
   Search, RefreshCw, Wifi, TrendingUp, TrendingDown, Zap, Shield, Activity,
   BarChart3, ArrowUpRight, ArrowDownRight, Flame, Filter, ScanLine,
@@ -362,7 +362,7 @@ export default function Scanner() {
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <div className="p-2 rounded-xl bg-primary/20"><ScanLine className="w-6 h-6 text-primary" /></div>
-                <h1 className="font-display text-2xl md:text-3xl font-bold">Token Scanner</h1>
+                <h1 className="font-display text-2xl md:text-3xl font-bold">Crypto Token Scanner</h1>
               </div>
               <p className="text-muted-foreground text-sm max-w-2xl">
                 Scan <span className="text-foreground font-medium">every token in the world</span> — CEX and DEX, across all chains.
@@ -482,6 +482,123 @@ export default function Scanner() {
             <p className="text-xs text-muted-foreground">
               Data is for research and information only and is not financial advice. Always verify contract addresses and do your own research.
             </p>
+          </div>
+
+          {/* How the Token Scanner Works */}
+          <div className="border-t border-border/30 pt-8 mt-8">
+            <div className="prose prose-sm dark:prose-invert max-w-none">
+              <h2 className="font-display text-xl font-bold mb-4">How the Token Scanner Works</h2>
+              <p>
+                The Oracle Bull Token Scanner is a real-time market intelligence tool that aggregates cryptocurrency
+                data from multiple sources into a single, actionable view. It is designed for traders, researchers
+                and enthusiasts who need to monitor token performance across every major blockchain without switching
+                between half a dozen tabs.
+              </p>
+
+              <h3 className="font-display text-lg font-bold mt-6 mb-3">Strength Score Explained</h3>
+              <p>
+                Every token listed in the scanner receives a <strong>composite Strength Score from 0 to 100</strong>.
+                The score is calculated from five weighted factors: <strong>price momentum</strong> (30%) measures
+                recent directional movement; <strong>volume intensity</strong> (20%) compares 24-hour trading volume
+                to market cap to gauge conviction; <strong>relative performance vs Bitcoin</strong> (20%) shows
+                whether a token is outperforming or lagging the market benchmark; <strong>buy pressure</strong> (15%)
+                uses the ratio of buy to sell transactions to detect accumulation or distribution; and
+                <strong> liquidity depth</strong> (15%) evaluates the available trading liquidity against a
+                baseline threshold. A score above 70 signals strong momentum, 45-70 is neutral, and below 45
+                indicates weakness.
+              </p>
+
+              <h3 className="font-display text-lg font-bold mt-6 mb-3">Scan Presets</h3>
+              <p>
+                Rather than manually sorting columns, the scanner offers one-click presets that instantly re-rank
+                the entire token list. <em>Strongest</em> surfaces tokens with the highest composite Strength Score.
+                <em> Top Gainers</em> and <em>Top Losers</em> sort by 24-hour price change. <em>High Volume</em>
+                highlights tokens with the most trading activity, <em>Most Liquid</em> ranks by on-chain liquidity
+                depth, and <em>New Pairs</em> isolates freshly launched tokens under seven days old. Each preset
+                can be combined with a specific blockchain filter for targeted research.
+              </p>
+
+              <h3 className="font-display text-lg font-bold mt-6 mb-3">Multi-Source Data Fusion</h3>
+              <p>
+                The scanner fuses data from three complementary sources. <strong>DexScreener</strong> provides
+                real-time DEX pair data including price, liquidity, buy/sell counts and pair age across all
+                supported chains. <strong>CoinGecko</strong> supplies centralised-exchange listings, global
+                market caps, 7-day sparkline histories and verified metadata. <strong>Alchemy</strong> adds
+                direct on-chain contract lookups for tokens that do not yet appear on aggregator APIs. The
+                result is a unified feed that covers both well-established coins and freshly deployed contracts.
+              </p>
+            </div>
+          </div>
+
+          {/* FAQ Section */}
+          <div className="border-t border-border/30 pt-8 mt-8">
+            <div className="prose prose-sm dark:prose-invert max-w-none">
+              <h2 className="font-display text-xl font-bold mb-4">Frequently Asked Questions</h2>
+              <div className="space-y-3 not-prose">
+                <details className="group border border-border/40 rounded-lg">
+                  <summary className="flex items-center justify-between cursor-pointer px-4 py-3 text-sm font-medium hover:text-primary transition-colors">
+                    What is a crypto token scanner?
+                    <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                  </summary>
+                  <div className="px-4 pb-3 text-sm text-muted-foreground">
+                    A crypto token scanner is a tool that monitors thousands of tokens across multiple blockchains in real time, ranking them by metrics like price change, volume, liquidity and momentum. It helps traders quickly identify opportunities without manually checking each token or chain individually.
+                  </div>
+                </details>
+
+                <details className="group border border-border/40 rounded-lg">
+                  <summary className="flex items-center justify-between cursor-pointer px-4 py-3 text-sm font-medium hover:text-primary transition-colors">
+                    How does the strength score work?
+                    <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                  </summary>
+                  <div className="px-4 pb-3 text-sm text-muted-foreground">
+                    The strength score is a composite metric from 0 to 100 built from five weighted factors: price momentum (30%), volume intensity relative to market cap (20%), performance vs Bitcoin (20%), buy/sell pressure ratio (15%), and liquidity depth (15%). Scores above 70 indicate strong tokens; below 45 signals weakness.
+                  </div>
+                </details>
+
+                <details className="group border border-border/40 rounded-lg">
+                  <summary className="flex items-center justify-between cursor-pointer px-4 py-3 text-sm font-medium hover:text-primary transition-colors">
+                    Which blockchains does the scanner cover?
+                    <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                  </summary>
+                  <div className="px-4 pb-3 text-sm text-muted-foreground">
+                    The scanner covers Ethereum, Solana, BNB Chain (BSC), Arbitrum, Base, Polygon, Optimism and Avalanche. You can filter by a specific chain or view tokens from all chains simultaneously using the chain selector.
+                  </div>
+                </details>
+
+                <details className="group border border-border/40 rounded-lg">
+                  <summary className="flex items-center justify-between cursor-pointer px-4 py-3 text-sm font-medium hover:text-primary transition-colors">
+                    How often is scanner data updated?
+                    <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                  </summary>
+                  <div className="px-4 pb-3 text-sm text-muted-foreground">
+                    Scanner data refreshes automatically every 60 seconds with live feeds from DexScreener, CoinGecko and Alchemy. You can also trigger a manual refresh at any time using the Refresh button in the status bar.
+                  </div>
+                </details>
+
+                <details className="group border border-border/40 rounded-lg">
+                  <summary className="flex items-center justify-between cursor-pointer px-4 py-3 text-sm font-medium hover:text-primary transition-colors">
+                    Is the token scanner free to use?
+                    <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                  </summary>
+                  <div className="px-4 pb-3 text-sm text-muted-foreground">
+                    Yes, the Oracle Bull Token Scanner is completely free. All scan presets, chain filters, strength scores and expanded token details are available without creating an account or paying a subscription.
+                  </div>
+                </details>
+              </div>
+            </div>
+          </div>
+
+          {/* Related Tools */}
+          <div className="border-t border-border/30 pt-8 mt-8 mb-4">
+            <h2 className="font-display text-lg font-bold mb-3">Related Tools</h2>
+            <div className="flex flex-wrap gap-2">
+              <Link to="/explorer" className="text-xs px-3 py-1.5 rounded-lg bg-primary/5 border border-border hover:border-primary/40 hover:text-primary transition-colors">Token Explorer</Link>
+              <Link to="/predictions" className="text-xs px-3 py-1.5 rounded-lg bg-primary/5 border border-border hover:border-primary/40 hover:text-primary transition-colors">AI Price Predictions</Link>
+              <Link to="/sentiment" className="text-xs px-3 py-1.5 rounded-lg bg-primary/5 border border-border hover:border-primary/40 hover:text-primary transition-colors">Market Sentiment</Link>
+              <Link to="/crypto-strength-meter" className="text-xs px-3 py-1.5 rounded-lg bg-primary/5 border border-border hover:border-primary/40 hover:text-primary transition-colors">Strength Meter</Link>
+              <Link to="/dashboard" className="text-xs px-3 py-1.5 rounded-lg bg-primary/5 border border-border hover:border-primary/40 hover:text-primary transition-colors">Market Dashboard</Link>
+              <Link to="/factory" className="text-xs px-3 py-1.5 rounded-lg bg-primary/5 border border-border hover:border-primary/40 hover:text-primary transition-colors">Crypto Factory</Link>
+            </div>
           </div>
         </div>
       </div>

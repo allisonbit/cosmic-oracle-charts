@@ -25,7 +25,7 @@ const MARKET_QUESTIONS = [
 
 // Related tools for cross-linking
 const RELATED_TOOLS = [
-  { path: '/strength', label: 'Crypto Strength Meter', icon: Activity, description: 'Real-time asset rankings' },
+  { path: '/crypto-strength-meter', label: 'Crypto Strength Meter', icon: Activity, description: 'Real-time asset rankings' },
   { path: '/factory', label: 'Crypto Factory', icon: Calendar, description: 'Market events & signals' },
   { path: '/dashboard', label: 'Market Dashboard', icon: BarChart3, description: 'Live market overview' },
   { path: '/sentiment', label: 'Sentiment Analysis', icon: LineChart, description: 'Social & whale tracking' },
@@ -203,7 +203,7 @@ export function HighIntentCTA({ coinName, symbol }: { coinName: string; symbol: 
       </p>
       <div className="flex flex-wrap gap-2">
         <Link
-          to={`/strength?coin=${symbol.toLowerCase()}`}
+          to={`/crypto-strength-meter?coin=${symbol.toLowerCase()}`}
           className="text-sm px-4 py-2 bg-primary/20 hover:bg-primary/30 rounded-lg transition-colors"
         >
           Check {symbol} Strength

@@ -120,7 +120,7 @@ export function TokenDetailModal({ open, onOpenChange, token }: TokenDetailModal
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
             {token.logo && (
-              <img src={token.logo} alt={token.symbol} className="w-10 h-10 rounded-full" />
+              <img src={token.logo} alt={`${token.name} (${token.symbol}) logo`} className="w-10 h-10 rounded-full" />
             )}
             <div>
               <div className="flex items-center gap-2">

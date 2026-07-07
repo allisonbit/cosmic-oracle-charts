@@ -54,7 +54,7 @@ export function StrengthComparisonGauge({ assets, chains }: StrengthComparisonGa
         <div className="flex flex-wrap gap-2 mb-6">
           {selectedData.map(asset => (
             <Badge key={asset.id} variant="secondary" className="gap-1 px-3 py-1.5">
-              <img src={asset.logo} alt={asset.symbol} className="w-4 h-4 rounded-full" />
+              <img src={asset.logo} alt={`${asset.name || asset.symbol} logo`} className="w-4 h-4 rounded-full" />
               {asset.symbol}
               <button onClick={() => removeAsset(asset.id)} className="ml-1 hover:text-danger">
                 <X className="w-3 h-3" />
@@ -70,7 +70,7 @@ export function StrengthComparisonGauge({ assets, chains }: StrengthComparisonGa
                 {allData.filter(d => !selectedAssets.includes(d.id)).slice(0, 15).map(d => (
                   <SelectItem key={d.id} value={d.id}>
                     <div className="flex items-center gap-2">
-                      <img src={d.logo} alt={d.symbol} className="w-4 h-4 rounded-full" />
+                      <img src={d.logo} alt={`${d.name || d.symbol} logo`} className="w-4 h-4 rounded-full" />
                       {d.symbol}
                     </div>
                   </SelectItem>
@@ -104,7 +104,7 @@ export function StrengthComparisonGauge({ assets, chains }: StrengthComparisonGa
               {/* Asset Info */}
               <div className="mt-3 text-center">
                 <div className="flex items-center justify-center gap-2">
-                  <img src={asset.logo} alt={asset.symbol} className="w-5 h-5 rounded-full" />
+                  <img src={asset.logo} alt={`${asset.name || asset.symbol} logo`} className="w-5 h-5 rounded-full" />
                   <span className="font-semibold">{asset.symbol}</span>
                 </div>
                 <div className="flex items-center justify-center gap-1 mt-1">

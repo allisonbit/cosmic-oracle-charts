@@ -167,7 +167,7 @@ export function EnhancedTokenDiscoveryEngine({ chain }: EnhancedTokenDiscoveryEn
       <button onClick={() => handleTokenClick(token)} className="w-full">
         <div className="flex items-start gap-3">
           {token.logo && (
-           <img src={token.logo} alt={token.symbol} width={32} height={32} loading="lazy" decoding="async" className="w-8 h-8 rounded-full" />
+           <img src={token.logo} alt={`${token.name} (${token.symbol}) logo`} width={32} height={32} loading="lazy" decoding="async" className="w-8 h-8 rounded-full" />
           )}
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between gap-2">

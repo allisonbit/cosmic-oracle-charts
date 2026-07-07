@@ -388,7 +388,7 @@ export default function Chain() {
                 { to: predictionHref, label: `${chain.symbol} Prediction`, icon: Target },
                 { to: "/sentiment", label: "Market Sentiment", icon: Activity },
                 { to: "/scanner", label: "Token Scanner", icon: Flame },
-                { to: "/strength-meter", label: "Strength Meter", icon: Zap },
+                { to: "/crypto-strength-meter", label: "Strength Meter", icon: Zap },
               ].map(l => (
                 <Link key={l.label} to={l.to} className="flex items-center gap-2 text-sm p-2.5 rounded-xl bg-background/60 border border-border/40 hover:border-primary/40 hover:text-primary transition-colors group">
                   <l.icon className="h-4 w-4 shrink-0" /><span className="truncate">{l.label}</span><ArrowRight className="h-3.5 w-3.5 ml-auto opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />

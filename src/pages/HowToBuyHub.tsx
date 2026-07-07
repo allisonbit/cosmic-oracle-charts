@@ -1,7 +1,7 @@
 import { Layout } from "@/components/layout/Layout";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { BookOpen, ArrowRight, TrendingUp, ShieldCheck, Zap, Star } from "lucide-react";
+import { BookOpen, ArrowRight, TrendingUp, ShieldCheck, Zap, Star, ChevronDown } from "lucide-react";
 import { COIN_META } from "./HowToBuyCoin";
 
 // Search-volume + difficulty hints for the most popular coins. Anything not
@@ -136,6 +136,76 @@ export default function HowToBuyHub() {
               </Link>
             ))}
           </div>
+
+          {/* How to Buy Cryptocurrency: A Beginner's Guide */}
+          <section className="border-t border-border/30 pt-6 mt-8">
+            <h2 className="text-lg font-display font-bold mb-4">How to Buy Cryptocurrency: A Beginner's Guide</h2>
+            <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground space-y-3">
+              <p className="leading-relaxed">
+                Buying cryptocurrency for the first time can feel overwhelming, but the process is straightforward once you understand the steps. Whether you want to buy Bitcoin, Ethereum, Solana, or any of the thousands of altcoins available, the fundamentals are the same. Here is a step-by-step walkthrough to get you from zero to your first crypto purchase safely.
+              </p>
+              <p className="leading-relaxed">
+                <strong>Step 1: Choose a reliable exchange.</strong> You have two main options — centralized exchanges (CEX) like Coinbase, Binance, and Kraken, which work similarly to traditional stock brokers, or decentralized exchanges (DEX) like Uniswap and Raydium, which let you swap tokens directly from a wallet. Beginners should start with a regulated CEX for the simplest experience and strongest buyer protections.
+              </p>
+              <p className="leading-relaxed">
+                <strong>Step 2: Complete identity verification (KYC).</strong> Regulated exchanges require government-issued ID and sometimes a selfie or proof of address. This is a legal requirement in most jurisdictions and protects both you and the platform. Verification typically takes minutes but can take up to 48 hours during high-demand periods.
+              </p>
+              <p className="leading-relaxed">
+                <strong>Step 3: Fund your account.</strong> Most exchanges accept bank transfers (ACH, SEPA, wire), debit and credit cards, and sometimes Apple Pay or Google Pay. Bank transfers usually have the lowest fees. Some platforms also let you deposit other cryptocurrencies if you already hold some.
+              </p>
+              <p className="leading-relaxed">
+                <strong>Step 4: Place your first order.</strong> A <em>market order</em> buys at the current price instantly — best for beginners who want simplicity. A <em>limit order</em> lets you set the exact price you want to pay — better for experienced traders looking to enter at a specific level. Start small until you are comfortable with the process.
+              </p>
+              <p className="leading-relaxed">
+                <strong>Step 5: Secure your crypto.</strong> Enable two-factor authentication (2FA) on your exchange account immediately. For larger holdings, consider moving your crypto to a hardware wallet like Ledger or Trezor, which keeps your private keys offline and safe from online threats. Never share your seed phrase with anyone.
+              </p>
+              <p className="leading-relaxed">
+                <strong>Common mistakes beginners make:</strong> buying based on social media hype without research, investing more than they can afford to lose, ignoring fees that eat into small purchases, and leaving large amounts on exchanges without proper security. Use the <Link to="/tools/profit-calculator" className="text-primary hover:underline">profit calculator</Link> to understand fee impact, the <Link to="/tools/dca-calculator" className="text-primary hover:underline">DCA calculator</Link> to plan a consistent buying strategy, and check <Link to="/predictions" className="text-primary hover:underline">AI predictions</Link> for data-driven entry timing rather than guessing.
+              </p>
+            </div>
+          </section>
+
+          {/* FAQ */}
+          <section className="border-t border-border/30 pt-6 mt-8">
+            <h2 className="text-lg font-display font-bold mb-4">Frequently Asked Questions</h2>
+            <div className="max-w-none">
+              <details className="group border-b border-border/20 py-3">
+                <summary className="font-medium text-sm cursor-pointer list-none flex items-center justify-between">
+                  What is the safest way to buy crypto?
+                  <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                </summary>
+                <p className="text-sm text-muted-foreground mt-2 leading-relaxed">The safest way is to use a regulated, well-established exchange like Coinbase, Kraken, or Binance, enable two-factor authentication, and transfer larger holdings to a hardware wallet. Avoid buying crypto through social media links, unverified apps, or peer-to-peer trades unless you fully understand the risks.</p>
+              </details>
+              <details className="group border-b border-border/20 py-3">
+                <summary className="font-medium text-sm cursor-pointer list-none flex items-center justify-between">
+                  How much money do I need to start?
+                  <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                </summary>
+                <p className="text-sm text-muted-foreground mt-2 leading-relaxed">Most exchanges let you start with as little as $1 to $10. There is no minimum investment required to buy cryptocurrency — you can purchase fractional amounts of any coin. Start with an amount you are comfortable losing while you learn how the market works.</p>
+              </details>
+              <details className="group border-b border-border/20 py-3">
+                <summary className="font-medium text-sm cursor-pointer list-none flex items-center justify-between">
+                  Which exchange should I use?
+                  <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                </summary>
+                <p className="text-sm text-muted-foreground mt-2 leading-relaxed">It depends on your location and experience level. Coinbase is the most beginner-friendly option in the US and Europe. Binance offers the widest selection of tokens and lowest fees globally. Kraken is known for strong security and competitive fees. Each guide above includes exchange recommendations specific to that coin.</p>
+              </details>
+              <details className="group border-b border-border/20 py-3">
+                <summary className="font-medium text-sm cursor-pointer list-none flex items-center justify-between">
+                  Should I buy Bitcoin or altcoins first?
+                  <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                </summary>
+                <p className="text-sm text-muted-foreground mt-2 leading-relaxed">Most experienced investors recommend starting with Bitcoin or Ethereum because they are the most established and liquid cryptocurrencies. Once you understand how the market works, you can research altcoins that align with your investment thesis. Diversifying across a few well-researched assets is generally safer than concentrating everything in one small-cap coin.</p>
+              </details>
+              <details className="group border-b border-border/20 py-3">
+                <summary className="font-medium text-sm cursor-pointer list-none flex items-center justify-between">
+                  How do I store my cryptocurrency safely?
+                  <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                </summary>
+                <p className="text-sm text-muted-foreground mt-2 leading-relaxed">For small amounts, keeping crypto on a reputable exchange with 2FA enabled is acceptable. For larger holdings, use a hardware wallet (Ledger, Trezor) that stores your private keys offline. Always back up your recovery seed phrase on paper and store it in a secure physical location — never digitally. Never share your seed phrase or private keys with anyone.</p>
+              </details>
+            </div>
+          </section>
 
         </div>
       </div>

@@ -166,7 +166,7 @@ export default function FactoryOnchain() {
         <header className="mb-6">
           <h1 className="text-3xl md:text-4xl font-display font-bold flex items-center gap-3">
             <Activity className="w-10 h-10 text-primary" />
-            On-Chain Activity Feed
+            On-Chain Intel &amp; Whale Tracking
           </h1>
           <p className="text-lg text-muted-foreground mt-2 max-w-3xl">
             Track whale movements, exchange flows, and large transactions in real-time. 
@@ -320,7 +320,7 @@ export default function FactoryOnchain() {
                     <Wallet className="w-4 h-4" />
                     Wallet Scanner
                   </Link>
-                  <Link to="/strength-meter" className="flex items-center gap-2 text-primary hover:text-primary/80">
+                  <Link to="/crypto-strength-meter" className="flex items-center gap-2 text-primary hover:text-primary/80">
                     <Zap className="w-4 h-4" />
                     Crypto Strength Meter
                   </Link>

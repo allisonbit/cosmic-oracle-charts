@@ -12,7 +12,8 @@ import { NewsPanel } from "@/components/sentiment/NewsPanel";
 import { GoogleTrendsPanel } from "@/components/sentiment/GoogleTrendsPanel";
 import { GitHubActivityPanel } from "@/components/sentiment/GitHubActivityPanel";
 import { SentimentSchema, SentimentSEOContent, SentimentHowItWorks, SentimentDataMeaning } from "@/components/seo/index";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { ChevronDown } from "lucide-react";
 
 // New enhanced components
 import { SentimentContextBar } from "@/components/sentiment/SentimentContextBar";
@@ -107,7 +108,7 @@ const SentimentPage = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold">
-              <span>SENTIMENT</span> <span className="text-foreground">INTELLIGENCE</span>
+              Crypto Fear &amp; Greed Index
             </h1>
             <p className="text-muted-foreground text-xs sm:text-sm flex items-center gap-2 mt-1">
               <Clock className="w-3 h-3" />
@@ -213,8 +214,6 @@ const SentimentPage = () => {
         {/* Overview Tab */}
         {activeTab === "overview" && (
           <div className="space-y-6">
-            <SentimentSEOContent />
-            
             <MultiDimensionalSentiment
               fearGreedIndex={fearGreedIndex}
               socialSentiment={socialSentiment}
@@ -225,7 +224,6 @@ const SentimentPage = () => {
 
             <SectorHeatmap coins={topCoins} />
             <DivergenceScanner coins={topCoins} />
-            <SentimentHowItWorks />
           </div>
         )}
 
@@ -268,6 +266,72 @@ const SentimentPage = () => {
         {activeTab === "signals" && (
           <LiveAlertsFeed whaleData={whaleData} coins={topCoins} />
         )}
+
+        {/* SEO Content — always rendered outside tabs for crawlers */}
+        <SentimentSEOContent />
+        <SentimentHowItWorks />
+        <SentimentDataMeaning />
+
+        {/* Sentiment FAQ Section */}
+        <section className="border-t border-border/30 pt-8 mt-8 mb-8">
+          <h2 className="text-2xl md:text-3xl font-display font-bold mb-6">Sentiment FAQ</h2>
+          <div className="space-y-3 max-w-3xl">
+            <details className="group border border-border/30 rounded-lg">
+              <summary className="cursor-pointer px-5 py-4 font-semibold text-sm flex items-center justify-between hover:text-primary transition-colors">
+                What is the Crypto Fear &amp; Greed Index?
+                <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+              </summary>
+              <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
+                The Crypto Fear &amp; Greed Index is a market sentiment indicator that scores overall investor emotion on a scale from 0 (Extreme Fear) to 100 (Extreme Greed). It aggregates data from multiple sources including price volatility, trading volume, social media mentions, Bitcoin dominance, and Google Trends search data. Oracle Bull displays this index alongside AI analysis to give you a comprehensive view of the market mood. Pair it with our{" "}
+                <Link to="/predictions" className="text-primary hover:underline">AI price predictions</Link> for a fuller picture.
+              </div>
+            </details>
+
+            <details className="group border border-border/30 rounded-lg">
+              <summary className="cursor-pointer px-5 py-4 font-semibold text-sm flex items-center justify-between hover:text-primary transition-colors">
+                How is market sentiment measured?
+                <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+              </summary>
+              <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
+                Oracle Bull measures sentiment across multiple dimensions: social media buzz and sentiment analysis, news headline classification (bullish/bearish/neutral), whale wallet movements and exchange netflows, price volatility, on-chain activity, and Google search trends. These signals are combined into our multi-dimensional sentiment dashboard. Visit our{" "}
+                <Link to="/crypto-strength-meter" className="text-primary hover:underline">Crypto Strength Meter</Link> to see how individual tokens compare on technical strength.
+              </div>
+            </details>
+
+            <details className="group border border-border/30 rounded-lg">
+              <summary className="cursor-pointer px-5 py-4 font-semibold text-sm flex items-center justify-between hover:text-primary transition-colors">
+                What does "Extreme Fear" mean for crypto?
+                <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+              </summary>
+              <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
+                An "Extreme Fear" reading (0-20) on the Fear &amp; Greed Index indicates that investors are deeply worried and selling pressure is high. Historically, extreme fear periods have preceded significant price recoveries, making them potential accumulation opportunities for long-term investors. However, fear can persist or deepen during bear markets, so always cross-reference with our{" "}
+                <Link to="/dashboard" className="text-primary hover:underline">Market Dashboard</Link> and{" "}
+                <Link to="/explorer" className="text-primary hover:underline">Token Explorer</Link> before making decisions.
+              </div>
+            </details>
+
+            <details className="group border border-border/30 rounded-lg">
+              <summary className="cursor-pointer px-5 py-4 font-semibold text-sm flex items-center justify-between hover:text-primary transition-colors">
+                Should I buy when the index shows fear?
+                <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+              </summary>
+              <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
+                The famous investing adage "be greedy when others are fearful" has historically held some truth in crypto markets. Periods of extreme fear have often been followed by recoveries. However, the Fear &amp; Greed Index is one of many tools and should not be used as a sole buy/sell signal. Combine it with our{" "}
+                <Link to="/predictions" className="text-primary hover:underline">AI predictions</Link>, whale tracker data, and technical analysis. Oracle Bull does not provide financial advice — always do your own research.
+              </div>
+            </details>
+
+            <details className="group border border-border/30 rounded-lg">
+              <summary className="cursor-pointer px-5 py-4 font-semibold text-sm flex items-center justify-between hover:text-primary transition-colors">
+                How often is sentiment data updated?
+                <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+              </summary>
+              <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
+                Sentiment data updates continuously throughout the day. The Fear &amp; Greed Index updates once daily, while social sentiment, whale movements, and news sentiment update in near real-time. Price data and volume metrics refresh every few minutes. The timestamp at the top of the page shows when the most recent data pull occurred.
+              </div>
+            </details>
+          </div>
+        </section>
       </div>
 
     </Layout>

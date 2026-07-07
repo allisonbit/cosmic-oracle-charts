@@ -261,6 +261,72 @@ const Dashboard = () => {
             
             {/* Educational How It Works Section */}
             <DashboardHowItWorks />
+
+            {/* Dashboard FAQ Section */}
+            <section className="border-t border-border/30 pt-8 mt-8 mb-8">
+              <h2 className="text-2xl md:text-3xl font-display font-bold mb-6">Dashboard FAQ</h2>
+              <div className="space-y-3 max-w-3xl">
+                <details className="group border border-border/30 rounded-lg">
+                  <summary className="cursor-pointer px-5 py-4 font-semibold text-sm flex items-center justify-between hover:text-primary transition-colors">
+                    What does the crypto dashboard show?
+                    <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                  </summary>
+                  <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
+                    The Oracle Bull dashboard provides a real-time overview of the entire cryptocurrency market. You can see live prices, 24-hour price changes, trading volume leaders, market dominance charts, AI-powered trade signals, and the Fear &amp; Greed Index. It also includes advanced analytics like order book depth, funding rates, whale activity, and liquidation heatmaps. For deeper analysis, visit our{" "}
+                    <Link to="/explorer" className="text-primary hover:underline">Token Explorer</Link> or the{" "}
+                    <Link to="/crypto-strength-meter" className="text-primary hover:underline">Crypto Strength Meter</Link>.
+                  </div>
+                </details>
+
+                <details className="group border border-border/30 rounded-lg">
+                  <summary className="cursor-pointer px-5 py-4 font-semibold text-sm flex items-center justify-between hover:text-primary transition-colors">
+                    How often is dashboard data updated?
+                    <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                  </summary>
+                  <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
+                    Dashboard data refreshes automatically every few minutes using live feeds from CoinGecko and other market data providers. Prices, volumes, and market cap figures update in near real-time. AI{" "}
+                    <Link to="/predictions" className="text-primary hover:underline">price predictions</Link> are recalculated on each visit, and the{" "}
+                    <Link to="/sentiment" className="text-primary hover:underline">Fear &amp; Greed Index</Link> updates daily based on multiple market indicators.
+                  </div>
+                </details>
+
+                <details className="group border border-border/30 rounded-lg">
+                  <summary className="cursor-pointer px-5 py-4 font-semibold text-sm flex items-center justify-between hover:text-primary transition-colors">
+                    What is the Fear &amp; Greed Index?
+                    <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                  </summary>
+                  <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
+                    The Fear &amp; Greed Index is a composite score from 0 to 100 that measures overall crypto market sentiment. It factors in volatility, trading volume, social media activity, Bitcoin dominance, and Google Trends data. Scores below 25 indicate "Extreme Fear" (historically a buying opportunity), while scores above 75 indicate "Extreme Greed" (a signal to consider taking profits). Explore the full breakdown on our{" "}
+                    <Link to="/sentiment" className="text-primary hover:underline">Sentiment Analysis page</Link>.
+                  </div>
+                </details>
+
+                <details className="group border border-border/30 rounded-lg">
+                  <summary className="cursor-pointer px-5 py-4 font-semibold text-sm flex items-center justify-between hover:text-primary transition-colors">
+                    How do I read the market momentum indicator?
+                    <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                  </summary>
+                  <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
+                    The market momentum indicator shows whether the majority of top cryptocurrencies are trending up (bullish) or down (bearish) over the last 24 hours. A "BULLISH" reading means more coins are gaining than losing, while "BEARISH" indicates broader selling pressure. Combine this with our{" "}
+                    <Link to="/crypto-strength-meter" className="text-primary hover:underline">Crypto Strength Meter</Link> to identify which specific tokens have the strongest relative momentum, and check individual{" "}
+                    <Link to="/predictions" className="text-primary hover:underline">AI predictions</Link> for directional guidance.
+                  </div>
+                </details>
+
+                <details className="group border border-border/30 rounded-lg">
+                  <summary className="cursor-pointer px-5 py-4 font-semibold text-sm flex items-center justify-between hover:text-primary transition-colors">
+                    Is the dashboard free to use?
+                    <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+                  </summary>
+                  <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
+                    Yes, the Oracle Bull dashboard and all of its tools are 100% free with no registration required. There are no premium tiers or paywalled features. You can access the full dashboard, live{" "}
+                    <Link to="/predictions" className="text-primary hover:underline">AI predictions</Link>,{" "}
+                    <Link to="/sentiment" className="text-primary hover:underline">sentiment analysis</Link>,{" "}
+                    <Link to="/explorer" className="text-primary hover:underline">token explorer</Link>, and all other tools without creating an account.
+                  </div>
+                </details>
+              </div>
+            </section>
           </>
         )}
       </div>

@@ -1,6 +1,7 @@
 import { Layout } from "@/components/layout/Layout";
-import { Mail, MessageCircle, Twitter, MapPin, Clock, Send } from "lucide-react";
+import { Mail, MessageCircle, Twitter, MapPin, Clock, Send, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import { SEO } from "@/components/MainSEO";
 import { ContactSEOContent } from "@/components/seo/index";
 
@@ -16,7 +17,7 @@ const ContactPage = () => {
         {/* Header */}
         <header className="text-center mb-12">
           <h1 className="text-3xl md:text-5xl font-display font-bold mb-4">
-            Contact <span className="text-gradient-cosmic">Oracle Bull</span>
+            Contact <span className="text-gradient-cosmic">Oracle Bull</span> Support
           </h1>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
             Have a question, feedback, or partnership inquiry? We'd love to hear from you.
@@ -113,10 +114,74 @@ const ContactPage = () => {
             <div className="holo-card p-6">
               <h3 className="font-bold text-foreground mb-2">Are you open to partnerships?</h3>
               <p className="text-sm text-muted-foreground">
-                Yes! We welcome partnerships with data providers, educational platforms, and crypto 
+                Yes! We welcome partnerships with data providers, educational platforms, and crypto
                 projects. Reach out via email with your proposal and we'll get back to you promptly.
               </p>
             </div>
+            <div className="holo-card p-6">
+              <h3 className="font-bold text-foreground mb-2">What tools does Oracle Bull offer?</h3>
+              <p className="text-sm text-muted-foreground">
+                Oracle Bull provides AI-powered price predictions across daily, weekly, and monthly timeframes, a real-time
+                Fear &amp; Greed Index, whale activity tracking, a crypto strength meter, a token explorer, portfolio
+                scanner, and educational content. All tools are accessible from the{" "}
+                <Link to="/tools" className="text-primary hover:underline">Tools page</Link>.
+              </p>
+            </div>
+            <div className="holo-card p-6">
+              <h3 className="font-bold text-foreground mb-2">Is Oracle Bull free to use?</h3>
+              <p className="text-sm text-muted-foreground">
+                Yes, every feature on Oracle Bull is completely free with no registration required. There are no premium
+                tiers, no paywalled content, and no hidden fees. The platform is ad-supported so that all users get
+                full access to every tool, including{" "}
+                <Link to="/predictions" className="text-primary hover:underline">AI predictions</Link> and{" "}
+                <Link to="/sentiment" className="text-primary hover:underline">sentiment analysis</Link>.
+              </p>
+            </div>
+            <div className="holo-card p-6">
+              <h3 className="font-bold text-foreground mb-2">How do I report a bug?</h3>
+              <p className="text-sm text-muted-foreground">
+                Send an email to contact@oraclebull.com with a clear description of the issue, the page URL where
+                the bug occurs, what you expected to happen, and what actually happened. Screenshots or screen recordings
+                are very helpful. You can also report issues through our Telegram community for faster triage.
+              </p>
+            </div>
+            <div className="holo-card p-6">
+              <h3 className="font-bold text-foreground mb-2">Can I suggest a new feature?</h3>
+              <p className="text-sm text-muted-foreground">
+                Absolutely! We love hearing from our users. Send your feature ideas to contact@oraclebull.com
+                or post them in our Telegram group. Many of the tools on Oracle Bull — like the{" "}
+                <Link to="/crypto-strength-meter" className="text-primary hover:underline">Strength Meter</Link> and{" "}
+                <Link to="/explorer" className="text-primary hover:underline">Token Explorer</Link> — were built based on
+                community requests.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Quick Links */}
+        <section className="max-w-3xl mx-auto mb-16 border-t border-border/30 pt-8">
+          <h2 className="text-2xl md:text-3xl font-display font-bold text-center mb-6">Quick Links</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <Link to="/dashboard" className="holo-card p-4 text-center hover:border-primary/50 transition-colors group">
+              <span className="font-bold text-sm group-hover:text-primary transition-colors flex items-center justify-center gap-2">
+                Market Dashboard <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </span>
+            </Link>
+            <Link to="/predictions" className="holo-card p-4 text-center hover:border-primary/50 transition-colors group">
+              <span className="font-bold text-sm group-hover:text-primary transition-colors flex items-center justify-center gap-2">
+                AI Predictions <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </span>
+            </Link>
+            <Link to="/learn" className="holo-card p-4 text-center hover:border-primary/50 transition-colors group">
+              <span className="font-bold text-sm group-hover:text-primary transition-colors flex items-center justify-center gap-2">
+                Learn Hub <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </span>
+            </Link>
+            <Link to="/tools" className="holo-card p-4 text-center hover:border-primary/50 transition-colors group">
+              <span className="font-bold text-sm group-hover:text-primary transition-colors flex items-center justify-center gap-2">
+                All Tools <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </span>
+            </Link>
           </div>
         </section>
 

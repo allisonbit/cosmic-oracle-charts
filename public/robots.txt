@@ -1,0 +1,20 @@
+# Oracle Bull - robots.txt
+# https://oraclebull.com
+
+User-agent: *
+Allow: /
+
+# Private / authenticated pages
+Disallow: /my/
+Disallow: /my
+Disallow: /admin/
+Disallow: /admin
+Disallow: /connect
+
+# API and system routes
+Disallow: /api/
+Disallow: /sw.js
+Disallow: /workbox-*
+
+# Sitemap
+Sitemap: https://oraclebull.com/sitemap.xml

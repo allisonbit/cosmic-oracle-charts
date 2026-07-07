@@ -563,7 +563,7 @@ export default function NewsHub() {
                         <Link to="/sentiment" className="editorial-row items-center gap-3 text-sm text-foreground">
                           <Activity className="w-4 h-4 text-primary shrink-0" /> Fear &amp; Greed Index
                         </Link>
-                        <Link to="/strength-meter" className="editorial-row items-center gap-3 text-sm text-foreground">
+                        <Link to="/crypto-strength-meter" className="editorial-row items-center gap-3 text-sm text-foreground">
                           <Zap className="w-4 h-4 text-primary shrink-0" /> Crypto Strength Meter
                         </Link>
                         <Link to="/scanner" className="editorial-row items-center gap-3 text-sm text-foreground">
@@ -614,18 +614,89 @@ export default function NewsHub() {
             <div className="space-y-4 text-muted-foreground leading-loose">
               <p>
                 Oracle Bull aggregates breaking cryptocurrency news from 50+ trusted publications — CoinDesk,
-                Cointelegraph, Decrypt, The Block — and rates every headline{" "}
+                Cointelegraph, Decrypt, The Block, and dozens more — and rates every headline{" "}
                 <span className="text-success font-semibold">Bullish</span>,{" "}
                 <span className="text-danger font-semibold">Bearish</span> or{" "}
-                <span className="text-warning font-semibold">Neutral</span> using Oracle AI.
+                <span className="text-warning font-semibold">Neutral</span> using Oracle AI. Our sentiment engine
+                reads each article's content, not just the headline, to deliver accurate directional ratings that
+                help you understand the market impact at a glance.
               </p>
               <p>
-                Jump from any headline straight to a live{" "}
-                <Link to="/predictions" className="text-primary hover:underline">AI price prediction</Link>,
-                the <Link to="/sentiment" className="text-primary hover:underline">Fear &amp; Greed Index</Link>, or the{" "}
-                <Link to="/strength-meter" className="text-primary hover:underline">Crypto Strength Meter</Link>.
-                Your selected category is remembered, and the feed auto-refreshes every 5 minutes.
+                Unlike traditional aggregators that simply list headlines, Oracle Bull uses AI sentiment tagging
+                to classify every story as bullish, bearish, or neutral. This lets you instantly filter for the
+                news that matters to your portfolio. Whether you are tracking Bitcoin regulation updates, Ethereum
+                DeFi developments, or emerging altcoin narratives, the sentiment tags reveal market consensus
+                before prices react.
               </p>
+              <p>
+                The news feed auto-refreshes every 5 minutes, ensuring you never miss a breaking story during
+                fast-moving markets. Your selected category is remembered between sessions, and the infinite-scroll
+                design loads older stories seamlessly as you scroll. Use the search bar to find coverage of any
+                specific coin, protocol, or event across our entire article archive.
+              </p>
+              <p>
+                To turn headlines into actionable insight, pair the news feed with Oracle Bull's other tools.
+                Jump from any headline straight to a live{" "}
+                <Link to="/predictions" className="text-primary hover:underline">AI price prediction</Link> to see
+                how the AI is interpreting current conditions, check the{" "}
+                <Link to="/sentiment" className="text-primary hover:underline">Fear &amp; Greed Index</Link> to
+                gauge overall market emotion, or use the{" "}
+                <Link to="/factory" className="text-primary hover:underline">Crypto Factory</Link> to create
+                custom token comparisons. Experienced traders cross-reference bullish news clusters with whale
+                accumulation patterns and technical strength signals before entering positions.
+              </p>
+              <p>
+                Whether you are a day trader scanning for momentum catalysts, a long-term investor monitoring
+                macro developments, or a researcher tracking regulatory shifts, Oracle Bull's AI-curated news
+                feed gives you a structured, sentiment-aware view of the crypto information landscape — updated
+                around the clock, completely free, and without any registration.
+              </p>
+            </div>
+          </section>
+
+          {/* News FAQ Section */}
+          <section className="border-t border-border/30 pt-8 mt-10 mb-8 max-w-3xl">
+            <h2 className="text-xl font-bold font-display mb-6">News Hub FAQ</h2>
+            <div className="space-y-3">
+              <details className="group border border-border/30 rounded-lg">
+                <summary className="cursor-pointer px-5 py-4 font-semibold text-sm flex items-center justify-between hover:text-primary transition-colors">
+                  How does Oracle Bull aggregate crypto news?
+                  <ChevronRight className="w-4 h-4 text-muted-foreground group-open:rotate-90 transition-transform" />
+                </summary>
+                <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
+                  Oracle Bull continuously monitors 50+ trusted crypto publications including CoinDesk, Cointelegraph, Decrypt, The Block, and more. Our system fetches new articles every few minutes, deduplicates overlapping coverage, and categorizes each story by topic (Bitcoin, Ethereum, DeFi, Regulation, NFTs, etc.). Every article is then run through our AI sentiment engine, which analyzes the full text to assign a bullish, bearish, or neutral rating.
+                </div>
+              </details>
+
+              <details className="group border border-border/30 rounded-lg">
+                <summary className="cursor-pointer px-5 py-4 font-semibold text-sm flex items-center justify-between hover:text-primary transition-colors">
+                  What does the sentiment tag mean?
+                  <ChevronRight className="w-4 h-4 text-muted-foreground group-open:rotate-90 transition-transform" />
+                </summary>
+                <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
+                  Each article receives an AI-generated sentiment tag: <span className="text-success font-semibold">Bullish</span> (positive market impact expected), <span className="text-danger font-semibold">Bearish</span> (negative market impact expected), or <span className="text-warning font-semibold">Neutral</span> (informational with no clear directional bias). The AI reads the full article content, not just the headline, to make this determination. Use the sidebar sentiment meter to see the overall ratio of bullish vs bearish coverage in the current news cycle.
+                </div>
+              </details>
+
+              <details className="group border border-border/30 rounded-lg">
+                <summary className="cursor-pointer px-5 py-4 font-semibold text-sm flex items-center justify-between hover:text-primary transition-colors">
+                  How often is news updated?
+                  <ChevronRight className="w-4 h-4 text-muted-foreground group-open:rotate-90 transition-transform" />
+                </summary>
+                <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
+                  The news feed auto-refreshes every 5 minutes, and you can trigger a manual refresh at any time using the refresh button in the top navigation bar. Breaking stories typically appear within minutes of publication. The "Updated" timestamp at the top of the page shows when the last refresh occurred.
+                </div>
+              </details>
+
+              <details className="group border border-border/30 rounded-lg">
+                <summary className="cursor-pointer px-5 py-4 font-semibold text-sm flex items-center justify-between hover:text-primary transition-colors">
+                  Can I filter news by topic?
+                  <ChevronRight className="w-4 h-4 text-muted-foreground group-open:rotate-90 transition-transform" />
+                </summary>
+                <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
+                  Yes. Use the category tabs at the top of the page to filter by topic (Bitcoin, Ethereum, DeFi, Regulation, NFTs, and more). You can also use the search bar to find articles mentioning specific coins, protocols, or keywords. Your selected category is saved between sessions so the feed remembers your preference.
+                </div>
+              </details>
             </div>
           </section>
         </div>

@@ -229,6 +229,88 @@ export default function ProfitCalculator() {
                 </p>
               </div>
             </div>
+
+            <section className="border-t border-border/30 pt-6 mt-8">
+              <h2 className="text-lg font-display font-bold mb-4">Understanding Crypto Profit & ROI</h2>
+              <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground space-y-3">
+                <p>
+                  Return on investment (ROI) is the most fundamental metric in crypto trading. It measures the percentage gain or loss relative to your initial investment, giving you a standardized way to compare trades regardless of position size. A $100 profit on a $1,000 trade is a 10% ROI, while the same $100 profit on a $10,000 trade is only 1% — the distinction matters when evaluating your trading performance over time.
+                </p>
+                <p>
+                  Exchange fees have a larger impact on real profit than most traders realize. Maker fees (limit orders) are typically lower than taker fees (market orders), and the difference compounds because you pay fees on both the buy and sell side. On a round-trip trade with 0.1% fees on each side, you need the price to move at least 0.2% just to break even. At higher fee tiers like Coinbase's 0.6%, that break-even threshold climbs to over 1.2%.
+                </p>
+                <p>
+                  It is important to understand the difference between realized and unrealized gains. Unrealized gains exist only on paper — they represent the profit you would earn if you sold right now. Realized gains are locked in once you execute the sell order. Many traders watch unrealized profits grow only to see them evaporate because they never set a concrete exit target. This calculator helps you plan both sides of the trade before you enter.
+                </p>
+                <p>
+                  Crypto profits are taxable events in most jurisdictions. In the United States, selling crypto for a profit triggers capital gains tax — short-term rates if held under a year, long-term rates if held longer. Always track your cost basis and consult a tax professional. For building long-term positions with less timing pressure, try our <Link to="/tools/dca-calculator" className="text-primary hover:underline">DCA Calculator for long-term strategies</Link>.
+                </p>
+              </div>
+            </section>
+
+            <section className="border-t border-border/30 pt-6 mt-8">
+              <h2 className="text-lg font-display font-bold mb-4">Frequently Asked Questions</h2>
+              <div className="space-y-2">
+                <details className="group">
+                  <summary className="cursor-pointer text-sm font-medium text-foreground hover:text-primary transition-colors py-2">
+                    How do I calculate crypto profit?
+                  </summary>
+                  <p className="text-xs text-muted-foreground leading-relaxed pb-3 pl-4">
+                    Crypto profit is calculated by subtracting your total cost (investment amount plus fees) from your total return (sell value minus fees). The formula is: Profit = (Coins x Sell Price x (1 - Fee%)) - (Investment x (1 + Fee%)). This calculator handles the math automatically, including the fees on both sides of the trade.
+                  </p>
+                </details>
+                <details className="group">
+                  <summary className="cursor-pointer text-sm font-medium text-foreground hover:text-primary transition-colors py-2">
+                    What fees should I account for?
+                  </summary>
+                  <p className="text-xs text-muted-foreground leading-relaxed pb-3 pl-4">
+                    You should account for exchange trading fees (maker and taker), network gas fees for on-chain transactions, and potential withdrawal fees. Trading fees typically range from 0.1% on Binance to 0.6% on Coinbase. Gas fees vary by blockchain — Ethereum can cost several dollars per transaction while Solana costs fractions of a cent.
+                  </p>
+                </details>
+                <details className="group">
+                  <summary className="cursor-pointer text-sm font-medium text-foreground hover:text-primary transition-colors py-2">
+                    How is ROI different from absolute profit?
+                  </summary>
+                  <p className="text-xs text-muted-foreground leading-relaxed pb-3 pl-4">
+                    Absolute profit is the raw dollar amount you earned (e.g., +$500), while ROI is the percentage return relative to your investment (e.g., +50%). ROI lets you compare the efficiency of different trades — a $500 profit on a $1,000 investment (50% ROI) is far better performance than $500 on a $50,000 investment (1% ROI).
+                  </p>
+                </details>
+                <details className="group">
+                  <summary className="cursor-pointer text-sm font-medium text-foreground hover:text-primary transition-colors py-2">
+                    Do I need to pay taxes on crypto profits?
+                  </summary>
+                  <p className="text-xs text-muted-foreground leading-relaxed pb-3 pl-4">
+                    In most countries, yes. Selling cryptocurrency for a profit is a taxable event. In the U.S., short-term capital gains (assets held under one year) are taxed at your ordinary income rate, while long-term gains receive lower rates. Always keep records of your buy price, sell price, and dates, and consult a tax professional for your jurisdiction.
+                  </p>
+                </details>
+                <details className="group">
+                  <summary className="cursor-pointer text-sm font-medium text-foreground hover:text-primary transition-colors py-2">
+                    What is a good ROI in crypto?
+                  </summary>
+                  <p className="text-xs text-muted-foreground leading-relaxed pb-3 pl-4">
+                    There is no universal benchmark, but context helps. Traditional markets average 8-10% annually. In crypto, bull market returns can reach 100%+ while bear markets often see -50% or worse. A consistently profitable trader might target 2-5% per trade with strict risk management. Focus on risk-adjusted returns rather than chasing the highest possible ROI.
+                  </p>
+                </details>
+              </div>
+            </section>
+
+            <section className="border-t border-border/30 pt-6 mt-8">
+              <h2 className="text-lg font-display font-bold mb-4">Related Tools</h2>
+              <div className="grid sm:grid-cols-2 gap-3">
+                <Link to="/tools/dca-calculator" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors py-2">
+                  <ArrowRight className="w-3.5 h-3.5" /> DCA Calculator
+                </Link>
+                <Link to="/tools/position-size-calculator" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors py-2">
+                  <ArrowRight className="w-3.5 h-3.5" /> Position Size Calculator
+                </Link>
+                <Link to="/predictions" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors py-2">
+                  <ArrowRight className="w-3.5 h-3.5" /> AI Price Predictions
+                </Link>
+                <Link to="/sentiment" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors py-2">
+                  <ArrowRight className="w-3.5 h-3.5" /> Market Sentiment
+                </Link>
+              </div>
+            </section>
           </div>
         </div>
       </div>

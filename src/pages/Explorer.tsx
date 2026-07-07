@@ -11,7 +11,7 @@ import { useInView } from "react-intersection-observer";
 import { useTokenDiscovery, DiscoveryToken } from "@/hooks/useTokenDiscovery";
 import { ALL_CHAINS, getChainById } from "@/lib/explorerChains";
 import { SITE_URL } from "@/lib/siteConfig";
-import { ExplorerSchema, ExplorerSEOContent } from "@/components/seo/index";
+import { ExplorerSchema, ExplorerSEOContent, ExplorerHowItWorks, ExplorerDataMeaning } from "@/components/seo/index";
 import { toast } from "sonner";
 import { SEO } from "@/components/MainSEO";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -474,6 +474,57 @@ const ExplorerPage = () => {
                 <Link to="/dashboard" className="text-xs px-3 py-1.5 rounded-lg bg-primary/5 border border-border hover:border-primary/40 hover:text-primary transition-colors">Dashboard</Link>
               </div>
               <div className="mt-6"><ExplorerSEOContent /></div>
+              <div className="mt-6"><ExplorerHowItWorks /></div>
+              <div className="mt-6"><ExplorerDataMeaning /></div>
+              <div className="mt-8">
+                <h2 className="font-display text-lg font-bold mb-4">Frequently Asked Questions</h2>
+                <div className="space-y-3">
+                  <details className="group border border-border/40 rounded-lg">
+                    <summary className="flex items-center justify-between cursor-pointer px-4 py-3 text-sm font-medium hover:text-primary transition-colors">
+                      What is a crypto token explorer?
+                    </summary>
+                    <div className="px-4 pb-3 text-sm text-muted-foreground">
+                      A crypto token explorer is a tool that lets you search, browse and analyze any cryptocurrency across multiple blockchains. It aggregates live market data such as price, volume, liquidity, holder metrics and trading activity into a single interface so you can research tokens without visiting multiple sites.
+                    </div>
+                  </details>
+
+                  <details className="group border border-border/40 rounded-lg">
+                    <summary className="flex items-center justify-between cursor-pointer px-4 py-3 text-sm font-medium hover:text-primary transition-colors">
+                      How many blockchains does the explorer support?
+                    </summary>
+                    <div className="px-4 pb-3 text-sm text-muted-foreground">
+                      The Oracle Bull Token Explorer supports over 30 blockchains including Ethereum, Solana, BNB Chain, Arbitrum, Base, Polygon, Optimism, Avalanche, Cosmos-ecosystem chains, Sui, Aptos and more. New chains are added regularly as they gain adoption.
+                    </div>
+                  </details>
+
+                  <details className="group border border-border/40 rounded-lg">
+                    <summary className="flex items-center justify-between cursor-pointer px-4 py-3 text-sm font-medium hover:text-primary transition-colors">
+                      Can I search by contract address?
+                    </summary>
+                    <div className="px-4 pb-3 text-sm text-muted-foreground">
+                      Yes. Paste any contract address into the search bar and the explorer will automatically identify the correct blockchain and display the token's full data page including price, chart, liquidity, holder analysis and AI-powered insights.
+                    </div>
+                  </details>
+
+                  <details className="group border border-border/40 rounded-lg">
+                    <summary className="flex items-center justify-between cursor-pointer px-4 py-3 text-sm font-medium hover:text-primary transition-colors">
+                      How is token data sourced?
+                    </summary>
+                    <div className="px-4 pb-3 text-sm text-muted-foreground">
+                      Token data is aggregated from DexScreener for real-time DEX pair data, CoinGecko for centralised exchange listings and market metadata, and direct on-chain queries for contract-level information. This multi-source approach ensures comprehensive and up-to-date coverage.
+                    </div>
+                  </details>
+
+                  <details className="group border border-border/40 rounded-lg">
+                    <summary className="flex items-center justify-between cursor-pointer px-4 py-3 text-sm font-medium hover:text-primary transition-colors">
+                      Is the token explorer free?
+                    </summary>
+                    <div className="px-4 pb-3 text-sm text-muted-foreground">
+                      Yes, the Oracle Bull Token Explorer is entirely free to use. All search, filtering, sorting and token detail features are available without registration or payment.
+                    </div>
+                  </details>
+                </div>
+              </div>
             </div>
           </div>
         </div>

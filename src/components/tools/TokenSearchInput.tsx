@@ -132,7 +132,7 @@ export function TokenSearchInput({
           onClick={() => { setOpen(true); setTimeout(() => inputRef.current?.focus(), 50); }}
           className="w-full flex items-center gap-3 border border-border p-3 hover:border-primary/50 transition-all text-left"
         >
-          {selected.thumb && <img src={selected.thumb} alt="" className="w-6 h-6" />}
+          {selected.thumb && <img src={selected.thumb} alt={`${selected.name} logo`} className="w-6 h-6" />}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <span className="font-bold text-sm">{selected.name}</span>
@@ -180,7 +180,7 @@ export function TokenSearchInput({
               onClick={() => handleSelect(r)}
               className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-muted/50 transition-colors text-left border-b border-border/30 last:border-0"
             >
-              {r.thumb && <img src={r.thumb} alt="" className="w-5 h-5" />}
+              {r.thumb && <img src={r.thumb} alt={`${r.name} logo`} className="w-5 h-5" />}
               <div className="flex-1 min-w-0">
                 <span className="font-bold text-sm">{r.name}</span>
                 <span className="text-xs text-muted-foreground ml-1.5">{r.symbol}</span>

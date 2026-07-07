@@ -47,7 +47,7 @@ function FeedItem({ n, navigate }: { n: any; navigate: (p: string) => void }) {
     <div className={cn("border-b border-border/20 pb-4 group", high && "border-l-2 border-l-primary")}>
       <div className="pt-1">
         <div className="flex items-start gap-3">
-          {n.imageUrl && <div className="w-16 h-14 overflow-hidden shrink-0 hidden sm:block bg-muted"><img src={n.imageUrl} alt="" loading="lazy" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} /></div>}
+          {n.imageUrl && <div className="w-16 h-14 overflow-hidden shrink-0 hidden sm:block bg-muted"><img src={n.imageUrl} alt={n.title} loading="lazy" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} /></div>}
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-2">
               <a href={n.url} target="_blank" rel="noopener noreferrer" className="font-semibold text-sm leading-snug line-clamp-2 hover:text-primary transition-colors">{n.title}</a>
@@ -254,7 +254,7 @@ export default function CryptoFactory() {
             <nav aria-label="Breadcrumb" className="text-xs text-muted-foreground mb-2 flex items-center gap-1.5">
               <Link to="/" className="hover:text-primary">Home</Link><span>/</span><Link to="/tools" className="hover:text-primary">Tools</Link><span>/</span><span className="text-foreground">Crypto Factory</span>
             </nav>
-            <h1 className="font-display text-2xl md:text-4xl font-bold flex items-center gap-2.5"><span className="p-2 bg-primary/15"><Zap className="w-6 h-6 text-primary" /></span> Crypto Factory</h1>
+            <h1 className="font-display text-2xl md:text-4xl font-bold flex items-center gap-2.5"><span className="p-2 bg-primary/15"><Zap className="w-6 h-6 text-primary" /></span> Crypto Market Intelligence Hub</h1>
             <h2 className="text-muted-foreground mt-2 text-sm md:text-base max-w-2xl">Real-time market intelligence. Events, narratives, on-chain flows and news from 50+ sources — all auto-updating.</h2>
           </div>
 
@@ -286,7 +286,7 @@ export default function CryptoFactory() {
                 {topMovers.slice(0, 15).map((c: any) => {
                   const up = (c.change24h || 0) >= 0;
                   return <button key={c.id} onClick={() => navigate(`/price-prediction/${c.id}/daily`)} className="flex items-center gap-1.5 px-2.5 py-1.5 border border-border/30 hover:bg-muted/30 whitespace-nowrap">
-                    {c.logo && <img src={c.logo} alt="" className="w-4 h-4 rounded-full" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />}
+                    {c.logo && <img src={c.logo} alt={`${c.name || c.symbol} logo`} className="w-4 h-4 rounded-full" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />}
                     <span className="text-xs font-semibold">{c.symbol}</span>
                     <span className={cn("text-xs font-mono", up ? "text-green-400" : "text-red-400")}>{up ? "+" : ""}{(c.change24h || 0).toFixed(1)}%</span>
                   </button>;

@@ -200,7 +200,7 @@ export default function YearPrediction() {
         <nav className="flex items-center gap-1.5 text-xs text-muted-foreground mb-6" aria-label="Breadcrumb">
           <Link to="/" className="hover:text-primary">Home</Link>
           <ChevronRight className="w-3 h-3" />
-          <Link to="/price-prediction" className="hover:text-primary">Price Predictions</Link>
+          <Link to="/predictions" className="hover:text-primary">Price Predictions</Link>
           <ChevronRight className="w-3 h-3" />
           <Link to={`/price-prediction/${coinId}`} className="hover:text-primary">{coinName}</Link>
           <ChevronRight className="w-3 h-3" />

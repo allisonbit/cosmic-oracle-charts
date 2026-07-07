@@ -150,7 +150,7 @@ export function QuickTradeModal() {
       <DialogContent className="sm:max-w-md bg-background/95 backdrop-blur-xl border-border/50 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            {target?.logo && <img src={target.logo} alt={target.symbol} className="w-6 h-6 rounded-full" />}
+            {target?.logo && <img src={target.logo} alt={`${target.name || target.symbol} logo`} className="w-6 h-6 rounded-full" />}
             <span>Trade {target?.symbol || "Tokens"}</span>
             {target?.name && <span className="text-sm text-muted-foreground font-normal">({target.name})</span>}
           </DialogTitle>

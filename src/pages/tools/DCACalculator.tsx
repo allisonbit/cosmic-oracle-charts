@@ -272,6 +272,88 @@ export default function DCACalculator() {
                 </p>
               </div>
             </div>
+
+            <section className="border-t border-border/30 pt-6 mt-8">
+              <h2 className="text-lg font-display font-bold mb-4">DCA vs Lump Sum Investing</h2>
+              <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground space-y-3">
+                <p>
+                  The debate between dollar-cost averaging and lump sum investing comes down to one question: do you value maximizing expected returns or minimizing regret? Academic research shows that lump sum investing outperforms DCA roughly two-thirds of the time in traditional markets because assets trend upward over long periods. However, crypto markets are not traditional — their extreme volatility changes the calculus significantly.
+                </p>
+                <p>
+                  DCA tends to outperform lump sum during periods of high uncertainty and elevated volatility. If you invest a lump sum right before a 50% crash, your portfolio takes years to recover. A DCA approach would have bought heavily at the lower prices, averaging your cost basis down and recovering much faster. During the 2022 bear market, traders who DCA'd into Bitcoin weekly saw their average cost basis settle well below those who bought the top in late 2021.
+                </p>
+                <p>
+                  Historically, a four-year DCA into Bitcoin has been profitable regardless of when you started — even if you began buying at an all-time high. This is because crypto markets operate on roughly four-year cycles tied to the Bitcoin halving, and consistent buying through a full cycle captures both the lows and the recovery. Lump sum investing only wins when you have strong conviction and the timing is favorable, such as during a confirmed bear market bottom or the early stages of a bull trend.
+                </p>
+                <p>
+                  The best DCA frequency depends on your budget and commitment. Daily DCA provides the smoothest cost averaging but involves more transactions and fees. Weekly DCA is the most popular choice — it balances cost smoothing with convenience. Monthly DCA works well for larger amounts and longer time horizons. Whichever frequency you choose, consistency matters more than timing. Use our <Link to="/tools/profit-calculator" className="text-primary hover:underline">Profit Calculator to estimate your potential returns</Link> at different exit prices.
+                </p>
+              </div>
+            </section>
+
+            <section className="border-t border-border/30 pt-6 mt-8">
+              <h2 className="text-lg font-display font-bold mb-4">Frequently Asked Questions</h2>
+              <div className="space-y-2">
+                <details className="group">
+                  <summary className="cursor-pointer text-sm font-medium text-foreground hover:text-primary transition-colors py-2">
+                    What is the best DCA frequency for crypto?
+                  </summary>
+                  <p className="text-xs text-muted-foreground leading-relaxed pb-3 pl-4">
+                    Weekly DCA is the most popular and practical frequency for most investors. It provides good cost averaging without excessive transaction fees. Daily DCA offers slightly smoother averaging but the improvement is marginal compared to weekly, and the additional fees can add up on higher-cost exchanges.
+                  </p>
+                </details>
+                <details className="group">
+                  <summary className="cursor-pointer text-sm font-medium text-foreground hover:text-primary transition-colors py-2">
+                    Does DCA work in a bear market?
+                  </summary>
+                  <p className="text-xs text-muted-foreground leading-relaxed pb-3 pl-4">
+                    Bear markets are actually where DCA shines the most. By continuing to buy at lower prices, you dramatically reduce your average cost basis. When the market eventually recovers, your position is profitable much sooner than if you had bought a lump sum before the downturn. The key is choosing fundamentally strong assets that are likely to survive the bear cycle.
+                  </p>
+                </details>
+                <details className="group">
+                  <summary className="cursor-pointer text-sm font-medium text-foreground hover:text-primary transition-colors py-2">
+                    How much should I DCA into crypto?
+                  </summary>
+                  <p className="text-xs text-muted-foreground leading-relaxed pb-3 pl-4">
+                    Only invest what you can afford to lose entirely. A common guideline is to allocate 5-15% of your investment portfolio to crypto, then DCA that amount over your chosen time period. For example, if you want $6,000 in crypto exposure over a year, that works out to $500 per month or about $115 per week.
+                  </p>
+                </details>
+                <details className="group">
+                  <summary className="cursor-pointer text-sm font-medium text-foreground hover:text-primary transition-colors py-2">
+                    Can I automate my DCA strategy?
+                  </summary>
+                  <p className="text-xs text-muted-foreground leading-relaxed pb-3 pl-4">
+                    Yes. Most major exchanges offer recurring buy features that automate DCA. Coinbase, Kraken, and Gemini all support scheduled purchases at daily, weekly, or monthly intervals. Automation removes emotional decision-making and ensures you stick to the plan even during scary market dips.
+                  </p>
+                </details>
+                <details className="group">
+                  <summary className="cursor-pointer text-sm font-medium text-foreground hover:text-primary transition-colors py-2">
+                    What are the disadvantages of DCA?
+                  </summary>
+                  <p className="text-xs text-muted-foreground leading-relaxed pb-3 pl-4">
+                    The main downside is opportunity cost — in a strong bull market, DCA will underperform a well-timed lump sum investment because you are buying at progressively higher prices. DCA also requires discipline over long periods and can accumulate more in transaction fees than a single purchase. It works best for investors who prioritize risk reduction over maximum returns.
+                  </p>
+                </details>
+              </div>
+            </section>
+
+            <section className="border-t border-border/30 pt-6 mt-8">
+              <h2 className="text-lg font-display font-bold mb-4">Related Tools</h2>
+              <div className="grid sm:grid-cols-2 gap-3">
+                <Link to="/tools/profit-calculator" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors py-2">
+                  <ArrowRight className="w-3.5 h-3.5" /> Profit Calculator
+                </Link>
+                <Link to="/tools/position-size-calculator" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors py-2">
+                  <ArrowRight className="w-3.5 h-3.5" /> Position Size Calculator
+                </Link>
+                <Link to="/predictions" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors py-2">
+                  <ArrowRight className="w-3.5 h-3.5" /> AI Price Predictions
+                </Link>
+                <Link to="/crypto-strength-meter" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors py-2">
+                  <ArrowRight className="w-3.5 h-3.5" /> Crypto Strength Meter
+                </Link>
+              </div>
+            </section>
           </div>
         </div>
       </div>

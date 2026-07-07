@@ -142,7 +142,7 @@ export function WeightingPlayground({ assets }: WeightingPlaygroundProps) {
                   )}>
                     {idx + 1}
                   </span>
-                  <img src={asset.logo} alt={asset.symbol} className="w-5 h-5 rounded-full" />
+                  <img src={asset.logo} alt={`${asset.name || asset.symbol} logo`} className="w-5 h-5 rounded-full" />
                   <span className="text-sm font-medium flex-1">{asset.symbol}</span>
                   <span className={cn(
                     "text-sm font-bold",

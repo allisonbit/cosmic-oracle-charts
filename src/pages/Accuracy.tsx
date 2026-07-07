@@ -215,6 +215,94 @@ export default function Accuracy() {
             See our <Link to="/risk-disclaimer" className="underline">Risk Disclaimer</Link>.
           </p>
         </section>
+
+        {/* FAQ Section */}
+        <section className="mt-12 border-t border-border/30 pt-8">
+          <h2 className="text-2xl font-bold text-slate-900 mb-6">Accuracy FAQ</h2>
+          <div className="space-y-3 max-w-3xl">
+            <details className="group border border-slate-200 rounded-lg">
+              <summary className="cursor-pointer px-5 py-4 font-semibold text-sm flex items-center justify-between hover:text-blue-600 transition-colors">
+                How accurate are Oracle Bull's AI predictions?
+                <ArrowUpDown className="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform" />
+              </summary>
+              <div className="px-5 pb-4 text-sm text-slate-600 leading-relaxed">
+                Accuracy varies by coin, timeframe, and market conditions. The leaderboard above shows per-coin hit rates calculated from every resolved prediction. Overall hit rates typically range from 55% to 75% depending on the period. We publish every outcome transparently so you can evaluate performance yourself. Check the <Link to="/predictions" className="text-blue-600 hover:underline">Predictions page</Link> for current signals.
+              </div>
+            </details>
+
+            <details className="group border border-slate-200 rounded-lg">
+              <summary className="cursor-pointer px-5 py-4 font-semibold text-sm flex items-center justify-between hover:text-blue-600 transition-colors">
+                How are predictions scored?
+                <ArrowUpDown className="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform" />
+              </summary>
+              <div className="px-5 pb-4 text-sm text-slate-600 leading-relaxed">
+                Each prediction has a directional bias (bullish, bearish, or neutral) and a target price band. When the prediction's timeframe expires, our resolver fetches the actual market price. A bullish call is a "hit" if the price reached the upper target; a bearish call hits if the price reached the lower target; neutral calls hit if the price stayed within the predicted band. No prediction is ever deleted or modified after publication.
+              </div>
+            </details>
+
+            <details className="group border border-slate-200 rounded-lg">
+              <summary className="cursor-pointer px-5 py-4 font-semibold text-sm flex items-center justify-between hover:text-blue-600 transition-colors">
+                What timeframes are predictions tracked?
+                <ArrowUpDown className="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform" />
+              </summary>
+              <div className="px-5 pb-4 text-sm text-slate-600 leading-relaxed">
+                Oracle Bull generates predictions across daily, weekly, and monthly timeframes. Each prediction resolves once its horizon elapses. You can filter the leaderboard by timeframe using the buttons above to see how accuracy differs across short-term and longer-term forecasts.
+              </div>
+            </details>
+
+            <details className="group border border-slate-200 rounded-lg">
+              <summary className="cursor-pointer px-5 py-4 font-semibold text-sm flex items-center justify-between hover:text-blue-600 transition-colors">
+                How often is accuracy data updated?
+                <ArrowUpDown className="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform" />
+              </summary>
+              <div className="px-5 pb-4 text-sm text-slate-600 leading-relaxed">
+                The accuracy leaderboard updates within an hour of each prediction expiring. An automated resolver job runs continuously, fetching live prices from CoinGecko and comparing them against the original prediction targets. You can also check the <Link to="/dashboard" className="text-blue-600 hover:underline">Market Dashboard</Link> for current market conditions.
+              </div>
+            </details>
+
+            <details className="group border border-slate-200 rounded-lg">
+              <summary className="cursor-pointer px-5 py-4 font-semibold text-sm flex items-center justify-between hover:text-blue-600 transition-colors">
+                Can I see individual coin accuracy?
+                <ArrowUpDown className="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform" />
+              </summary>
+              <div className="px-5 pb-4 text-sm text-slate-600 leading-relaxed">
+                Yes. The leaderboard table shows hit rate, sample size, and average confidence for every coin we track. Click on any coin symbol to visit its dedicated prediction page with full details. You can also sort the table by hit rate, sample size, or confidence to find the coins where our AI performs best. Explore all tokens on the <Link to="/explorer" className="text-blue-600 hover:underline">Token Explorer</Link>.
+              </div>
+            </details>
+          </div>
+        </section>
+
+        {/* Explore Our Predictions CTA */}
+        <section className="mt-12 border-t border-border/30 pt-8">
+          <h2 className="text-2xl font-bold text-slate-900 mb-3">Explore Our Predictions</h2>
+          <p className="text-slate-600 mb-6">See how Oracle Bull's AI analyzes the market right now. Explore live predictions, sentiment data, and market analytics.</p>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <Link to="/price-prediction/bitcoin/daily" className="flex items-center gap-3 px-4 py-3 bg-white border border-slate-200 rounded-lg hover:border-blue-400 hover:bg-blue-50/50 transition-all group">
+              <TrendingUp className="w-4 h-4 text-blue-600" />
+              <span className="font-medium text-sm text-slate-900 group-hover:text-blue-700">Bitcoin Prediction</span>
+            </Link>
+            <Link to="/price-prediction/ethereum/daily" className="flex items-center gap-3 px-4 py-3 bg-white border border-slate-200 rounded-lg hover:border-blue-400 hover:bg-blue-50/50 transition-all group">
+              <TrendingUp className="w-4 h-4 text-blue-600" />
+              <span className="font-medium text-sm text-slate-900 group-hover:text-blue-700">Ethereum Prediction</span>
+            </Link>
+            <Link to="/price-prediction/solana/daily" className="flex items-center gap-3 px-4 py-3 bg-white border border-slate-200 rounded-lg hover:border-blue-400 hover:bg-blue-50/50 transition-all group">
+              <TrendingUp className="w-4 h-4 text-blue-600" />
+              <span className="font-medium text-sm text-slate-900 group-hover:text-blue-700">Solana Prediction</span>
+            </Link>
+            <Link to="/predictions" className="flex items-center gap-3 px-4 py-3 bg-white border border-slate-200 rounded-lg hover:border-blue-400 hover:bg-blue-50/50 transition-all group">
+              <Target className="w-4 h-4 text-blue-600" />
+              <span className="font-medium text-sm text-slate-900 group-hover:text-blue-700">All Predictions</span>
+            </Link>
+            <Link to="/sentiment" className="flex items-center gap-3 px-4 py-3 bg-white border border-slate-200 rounded-lg hover:border-blue-400 hover:bg-blue-50/50 transition-all group">
+              <Trophy className="w-4 h-4 text-blue-600" />
+              <span className="font-medium text-sm text-slate-900 group-hover:text-blue-700">Market Sentiment</span>
+            </Link>
+            <Link to="/dashboard" className="flex items-center gap-3 px-4 py-3 bg-white border border-slate-200 rounded-lg hover:border-blue-400 hover:bg-blue-50/50 transition-all group">
+              <Clock className="w-4 h-4 text-blue-600" />
+              <span className="font-medium text-sm text-slate-900 group-hover:text-blue-700">Market Dashboard</span>
+            </Link>
+          </div>
+        </section>
       </main>
     </Layout>
   );

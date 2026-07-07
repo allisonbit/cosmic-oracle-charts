@@ -6,7 +6,7 @@ export function DashboardHeader({ lastUpdate }: { lastUpdate: Date }) {
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 sm:mb-6 md:mb-8">
       <div>
         <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-display font-bold">
-          <span className="glow-text">ORACLE</span> <span className="text-gradient-cosmic">DASHBOARD</span>
+          Live Crypto Dashboard
         </h1>
         <p className="text-muted-foreground text-[10px] sm:text-xs flex items-center gap-1.5 mt-1">
           <Clock className="w-3 h-3" />

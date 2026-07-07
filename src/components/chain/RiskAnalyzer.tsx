@@ -319,7 +319,7 @@ export function RiskAnalyzer({ chain }: RiskAnalyzerProps) {
                                     {token.logo && (
                                       <img 
                                         src={token.logo} 
-                                        alt={token.symbol}
+                                        alt={`${token.name || token.symbol} logo`}
                                         className="w-5 h-5 rounded-full"
                                         onError={(e) => {
                                           (e.target as HTMLImageElement).style.display = 'none';

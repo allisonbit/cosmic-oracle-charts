@@ -40,7 +40,7 @@ export function StrengthMeterWidget() {
           >
             <RefreshCw className="w-3 h-3 text-muted-foreground" />
           </button>
-          <Link to="/strength-meter" className="text-primary hover:text-primary/80 transition-colors">
+          <Link to="/crypto-strength-meter" className="text-primary hover:text-primary/80 transition-colors">
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -53,7 +53,7 @@ export function StrengthMeterWidget() {
           <div key={asset.id} className="flex items-center gap-2">
             <span className="text-[10px] text-muted-foreground w-3">{idx + 1}</span>
             <div className="w-5 h-5 rounded-full bg-muted/50 flex items-center justify-center overflow-hidden">
-              <img src={asset.logo} alt={asset.symbol} className="w-4 h-4" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+              <img src={asset.logo} alt={`${asset.name || asset.symbol} logo`} className="w-4 h-4" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
             </div>
             <span className="text-[10px] sm:text-xs font-medium flex-1 truncate">{asset.symbol}</span>
             <div className="flex-1 max-w-[60px] sm:max-w-[80px] h-1.5 bg-muted/50 rounded-full overflow-hidden">
@@ -85,7 +85,7 @@ export function StrengthMeterWidget() {
               className="flex items-center gap-1.5 p-1.5 sm:p-2 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
             >
               <div className="w-4 h-4 rounded-full bg-muted/50 flex items-center justify-center overflow-hidden">
-                <img src={chain.logo} alt={chain.symbol} className="w-3 h-3" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                <img src={chain.logo} alt={`${chain.name || chain.symbol} logo`} className="w-3 h-3" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
               </div>
               <span className="text-[9px] sm:text-[10px] font-medium truncate flex-1">{chain.symbol}</span>
               <span className={cn("text-[9px] sm:text-[10px] font-bold", getStrengthColor(chain.strengthScore))}>

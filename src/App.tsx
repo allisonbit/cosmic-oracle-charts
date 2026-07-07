@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense, memo, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { AuthProvider } from "@/hooks/useAuth";
@@ -199,11 +199,11 @@ const App = () => (
                 <Route path="/learn/:slug" element={B(<LearnArticle />)} />
                 <Route path="/contact" element={B(<Contact />)} />
                 <Route path="/chain/:chainId" element={B(<Chain />)} />
-                <Route path="/strength" element={B(<StrengthMeter />)} />
-                <Route path="/strength-meter" element={B(<StrengthMeter />)} />
+                <Route path="/strength" element={<Navigate to="/crypto-strength-meter" replace />} />
+                <Route path="/strength-meter" element={<Navigate to="/crypto-strength-meter" replace />} />
                 <Route path="/crypto-strength-meter" element={B(<StrengthMeter />)} />
                 <Route path="/factory" element={B(<CryptoFactory />)} />
-                <Route path="/crypto-factory" element={B(<CryptoFactory />)} />
+                <Route path="/crypto-factory" element={<Navigate to="/factory" replace />} />
                 <Route path="/factory/events" element={B(<FactoryEvents />)} />
                 <Route path="/factory/onchain" element={B(<FactoryOnchain />)} />
                 <Route path="/factory/narratives" element={B(<FactoryNarratives />)} />
@@ -211,7 +211,7 @@ const App = () => (
                 <Route path="/insights" element={B(<Insights />)} />
                 <Route path="/insights/:slug" element={B(<InsightArticle />)} />
                 <Route path="/predictions" element={B(<PredictionHub />)} />
-                <Route path="/price-prediction" element={B(<PredictionHub />)} />
+                <Route path="/price-prediction" element={<Navigate to="/predictions" replace />} />
                 <Route path="/price-prediction/:coinId" element={B(<PricePrediction />)} />
                 <Route path="/price-prediction/:coinId/2026" element={B(<YearPrediction />)} />
                 <Route path="/price-prediction/:coinId/2027" element={B(<YearPrediction />)} />

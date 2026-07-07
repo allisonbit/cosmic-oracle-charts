@@ -73,7 +73,7 @@ function LiveAlerts({ watchlist, className }: { watchlist: string[]; className?:
           return (
             <Link key={coin.symbol} to={`/token/${coin.symbol?.toLowerCase()}`}
               className="shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 bg-muted/50 hover:bg-muted transition-colors text-xs">
-              {coin.image && <img src={coin.image} alt="" className="w-4 h-4 rounded-full" />}
+              {coin.image && <img src={coin.image} alt={`${coin.symbol} logo`} className="w-4 h-4 rounded-full" />}
               <span className="font-semibold">{coin.symbol}</span>
               <span className={cn("font-mono font-bold", up ? "text-success" : "text-danger")}>
                 {up ? "+" : ""}{coin.change24h?.toFixed(1)}%

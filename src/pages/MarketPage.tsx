@@ -402,17 +402,46 @@ export default function MarketPage() {
   const coins = config?.coins ?? ["bitcoin","ethereum","solana","binancecoin","ripple","cardano","dogecoin","polkadot","toncoin","chainlink"];
   const relatedMarkets = config?.relatedMarkets ?? [];
 
+  const additionalFaqs = config ? [
+    {
+      q: `How does Oracle Bull pick the ${config.title}?`,
+      a: `Oracle Bull uses a proprietary AI engine that analyzes over 1,000 tokens across 150+ technical, on-chain, and sentiment indicators. Each coin is scored and ranked using machine learning models trained on years of historical crypto market data. The result is an objective, data-driven ranking updated continuously.`,
+    },
+    {
+      q: "How often is this list updated?",
+      a: "This ranking is updated hourly with fresh market data. Our AI ingests real-time price feeds, volume changes, social sentiment shifts, and on-chain transaction flows to ensure you always see the most current analysis.",
+    },
+    {
+      q: "Should I invest in these cryptocurrencies?",
+      a: "This page is for informational and educational purposes only and does not constitute financial advice. Always do your own research (DYOR), consider your risk tolerance, and consult a licensed financial advisor before making any investment decisions. Cryptocurrency markets are highly volatile.",
+    },
+    {
+      q: "Can I get alerts for changes in these rankings?",
+      a: "Yes. Oracle Bull offers real-time AI prediction alerts and market updates. Visit the Predictions Hub to follow specific coins and receive notifications when our AI detects significant ranking changes or new trading opportunities.",
+    },
+  ] : [];
+
   const faqSchema = config ? {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "mainEntity": [{
-      "@type": "Question",
-      "name": config.faqQ,
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": config.faqA,
-      }
-    }],
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": config.faqQ,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": config.faqA,
+        }
+      },
+      ...additionalFaqs.map(f => ({
+        "@type": "Question" as const,
+        "name": f.q,
+        "acceptedAnswer": {
+          "@type": "Answer" as const,
+          "text": f.a,
+        }
+      })),
+    ],
     "dateModified": new Date().toISOString(),
   } : null;
 
@@ -504,6 +533,13 @@ export default function MarketPage() {
                       <div>
                         <p className="font-bold group-hover:text-primary transition-colors">{coin.name}</p>
                         <p className="text-sm text-muted-foreground">{coin.symbol}</p>
+                        <p className="text-xs text-muted-foreground/80 mt-1 max-w-md">
+                          {isTop3
+                            ? `${coin.name} ranks #${rank} with strong momentum across key indicators. AI analysis shows high conviction for this pick based on volume trends and on-chain signals.`
+                            : rank <= 7
+                            ? `${coin.name} shows promising technical structure. Our AI flags improving sentiment and accumulation patterns worth monitoring.`
+                            : `${coin.name} rounds out the top picks with developing catalysts. Watch for breakout signals as market conditions evolve.`}
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
@@ -521,16 +557,48 @@ export default function MarketPage() {
             </div>
           </section>
 
+          {/* Methodology */}
+          {config && (
+            <section className="mb-12 border-t border-border/30 pt-6">
+              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <BarChart3 className="h-5 w-5 text-primary" />
+                How We Select {config.title}
+              </h2>
+              <div className="text-muted-foreground leading-relaxed space-y-3">
+                <p>
+                  Oracle Bull's AI engine continuously scans over 1,000 cryptocurrency tokens to produce these rankings.
+                  Each coin is evaluated across multiple dimensions including technical indicators (RSI, MACD, Bollinger Bands,
+                  moving average crossovers), on-chain data (whale wallet movements, exchange inflows and outflows, active
+                  addresses), and real-time sentiment analysis from social media, news outlets, and community forums.
+                </p>
+                <p>
+                  Rankings are refreshed hourly with the latest market data so you never act on stale information.
+                  Our machine learning models are trained on years of historical crypto market cycles and continuously
+                  refined to adapt to changing market conditions. For a full breakdown of our prediction track record,
+                  visit our <Link to="/accuracy" className="text-primary hover:underline font-medium">Prediction Accuracy</Link> page.
+                </p>
+              </div>
+            </section>
+          )}
+
           {/* FAQ */}
           {config && (
             <section className="mb-12 border-t border-border/30 pt-6">
               <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
                 <Zap className="h-5 w-5 text-yellow-500" />
-                Frequently Asked Question
+                Frequently Asked Questions
               </h2>
-              <div>
-                <h3 className="font-semibold text-base mb-2">{config.faqQ}</h3>
-                <p className="text-muted-foreground leading-relaxed">{config.faqA}</p>
+              <div className="space-y-6">
+                <div>
+                  <h3 className="font-semibold text-base mb-2">{config.faqQ}</h3>
+                  <p className="text-muted-foreground leading-relaxed">{config.faqA}</p>
+                </div>
+                {additionalFaqs.map((faq, i) => (
+                  <div key={i}>
+                    <h3 className="font-semibold text-base mb-2">{faq.q}</h3>
+                    <p className="text-muted-foreground leading-relaxed">{faq.a}</p>
+                  </div>
+                ))}
               </div>
             </section>
           )}
@@ -552,10 +620,16 @@ export default function MarketPage() {
                 <Link to="/sentiment">Sentiment Analysis</Link>
               </Button>
               <Button asChild size="sm" variant="outline">
-                <Link to="/strength">Strength Meter</Link>
+                <Link to="/crypto-strength-meter">Strength Meter</Link>
               </Button>
               <Button asChild size="sm" variant="outline">
                 <Link to="/factory">Crypto Factory</Link>
+              </Button>
+              <Button asChild size="sm" variant="outline">
+                <Link to="/explorer">Token Explorer</Link>
+              </Button>
+              <Button asChild size="sm" variant="outline">
+                <Link to="/accuracy">Prediction Accuracy</Link>
               </Button>
             </div>
           </section>

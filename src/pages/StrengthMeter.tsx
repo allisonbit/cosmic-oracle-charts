@@ -218,7 +218,7 @@ export default function StrengthMeter() {
               <span className="p-2 bg-primary/15"><Zap className="w-6 h-6 text-primary" /></span>
               Crypto Strength Meter
             </h1>
-            <h2 className="text-muted-foreground mt-2 text-base md:text-lg">Real-time strength rankings for 100+ cryptocurrencies</h2>
+            <p className="text-muted-foreground mt-2 text-base md:text-lg">Real-time strength rankings for 100+ cryptocurrencies</p>
           </div>
           <div className="flex items-center gap-2">
             <span className="flex items-center gap-1.5 text-xs px-2.5 py-1 bg-muted/40">

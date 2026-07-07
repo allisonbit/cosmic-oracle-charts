@@ -61,7 +61,7 @@ export function CoinDetailModal({ open, onOpenChange, coin }: CoinDetailModalPro
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
             {coin.image && (
-              <img src={coin.image} alt={coin.symbol} className="w-10 h-10 rounded-full" />
+              <img src={coin.image} alt={`${coin.name} (${coin.symbol}) logo`} className="w-10 h-10 rounded-full" />
             )}
             <div>
               <div className="flex items-center gap-2">

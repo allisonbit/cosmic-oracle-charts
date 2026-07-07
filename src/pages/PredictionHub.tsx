@@ -231,7 +231,7 @@ export default function PredictionHub() {
         <section className="mb-10">
           <div className="mb-6">
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
-              AI Prediction Terminal
+              AI Crypto Price Predictions
             </h1>
             <p className="text-muted-foreground mt-1 max-w-lg">
               Real-time AI analysis for <strong>every token on DexScreener</strong>. Search by name, symbol, or contract address.

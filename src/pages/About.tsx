@@ -62,7 +62,7 @@ const About = () => {
         {/* Hero Section */}
         <header className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6">
-            About <span className="text-gradient-cosmic">Oracle Bull</span>
+            About <span className="text-gradient-cosmic">Oracle Bull</span> — AI Crypto Analytics
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Oracle Bull is a Market Intelligence & Analytics Platform that combines advanced AI algorithms
@@ -94,8 +94,10 @@ const About = () => {
               </div>
               <h3 className="font-display font-bold text-lg mb-3">AI-Driven Analysis</h3>
               <p className="text-muted-foreground text-sm">
-                Our proprietary AI models analyze historical patterns, market cycles, sentiment data, 
-                and on-chain metrics to provide comprehensive market analysis and trend identification.
+                Our proprietary AI models analyze historical patterns, market cycles, sentiment data,
+                and on-chain metrics to provide comprehensive market analysis and trend identification. Explore our live{" "}
+                <Link to="/predictions" className="text-primary hover:underline">AI price predictions</Link> and track their{" "}
+                <Link to="/accuracy" className="text-primary hover:underline">historical accuracy</Link>.
               </p>
             </article>
 
@@ -105,8 +107,9 @@ const About = () => {
               </div>
               <h3 className="font-display font-bold text-lg mb-3">Sentiment Tracking</h3>
               <p className="text-muted-foreground text-sm">
-                Real-time monitoring of market sentiment across social media, news sources, and 
-                community discussions to gauge market psychology and potential trend shifts.
+                Real-time monitoring of market sentiment across social media, news sources, and
+                community discussions to gauge market psychology and potential trend shifts. See the latest readings on our{" "}
+                <Link to="/sentiment" className="text-primary hover:underline">Fear &amp; Greed Index</Link> page.
               </p>
             </article>
 
@@ -116,8 +119,10 @@ const About = () => {
               </div>
               <h3 className="font-display font-bold text-lg mb-3">Multi-Chain Analytics</h3>
               <p className="text-muted-foreground text-sm">
-                Comprehensive blockchain analytics across Ethereum, Solana, Base, Arbitrum, and more. 
-                Track DeFi metrics, transaction volumes, and ecosystem health indicators.
+                Comprehensive blockchain analytics across Ethereum, Solana, Base, Arbitrum, and more.
+                Track DeFi metrics, transaction volumes, and ecosystem health indicators. Dive deeper with our{" "}
+                <Link to="/explorer" className="text-primary hover:underline">Token Explorer</Link> and{" "}
+                <Link to="/crypto-strength-meter" className="text-primary hover:underline">Crypto Strength Meter</Link>.
               </p>
             </article>
 
@@ -127,8 +132,9 @@ const About = () => {
               </div>
               <h3 className="font-display font-bold text-lg mb-3">Market Intelligence</h3>
               <p className="text-muted-foreground text-sm">
-                Curated market insights, trend analysis, and educational content to help you 
-                understand market dynamics and make informed decisions.
+                Curated market insights, trend analysis, and educational content to help you
+                understand market dynamics and make informed decisions. Browse all analytics on the{" "}
+                <Link to="/tools" className="text-primary hover:underline">Tools page</Link>.
               </p>
             </article>
 
@@ -138,8 +144,9 @@ const About = () => {
               </div>
               <h3 className="font-display font-bold text-lg mb-3">Whale Activity Monitoring</h3>
               <p className="text-muted-foreground text-sm">
-                Track large wallet movements and smart money flows. Understand how institutional 
-                players are positioning themselves in various markets.
+                Track large wallet movements and smart money flows. Understand how institutional
+                players are positioning themselves in various markets. The whale tracker is available on our{" "}
+                <Link to="/sentiment" className="text-primary hover:underline">Sentiment page</Link>.
               </p>
             </article>
 
@@ -149,8 +156,9 @@ const About = () => {
               </div>
               <h3 className="font-display font-bold text-lg mb-3">Educational Resources</h3>
               <p className="text-muted-foreground text-sm">
-                Comprehensive learning materials covering market analysis techniques, risk management 
-                principles, and understanding market indicators.
+                Comprehensive learning materials covering market analysis techniques, risk management
+                principles, and understanding market indicators. Start with our{" "}
+                <Link to="/learn" className="text-primary hover:underline">Learn hub</Link>.
               </p>
             </article>
           </div>
@@ -168,7 +176,7 @@ const About = () => {
               </div>
               <h3 className="font-display font-bold text-xl mb-3">Free Access</h3>
               <p className="text-muted-foreground">
-                All our tools and analysis are completely free. No registration, no hidden fees, 
+                All our <Link to="/tools" className="text-primary hover:underline">tools</Link> and analysis are completely free. No registration, no hidden fees,
                 no premium tiers. Quality market intelligence for everyone.
               </p>
             </div>
@@ -190,8 +198,9 @@ const About = () => {
               </div>
               <h3 className="font-display font-bold text-xl mb-3">Data Transparency</h3>
               <p className="text-muted-foreground">
-                We clearly explain our methodologies and data sources. Understand exactly how 
-                our analysis is generated and what it represents.
+                We clearly explain our methodologies and data sources. Understand exactly how
+                our analysis is generated and what it represents. See our{" "}
+                <Link to="/accuracy" className="text-primary hover:underline">Accuracy Leaderboard</Link> for verifiable results.
               </p>
             </div>
           </div>
@@ -209,7 +218,9 @@ const About = () => {
                 <div>
                   <h4 className="font-bold mb-1">Retail Investors</h4>
                   <p className="text-sm text-muted-foreground">
-                    Individual investors seeking to understand market trends and make informed decisions.
+                    Individual investors seeking to understand market trends and make informed decisions using our{" "}
+                    <Link to="/predictions" className="text-primary hover:underline">AI predictions</Link> and{" "}
+                    <Link to="/sentiment" className="text-primary hover:underline">sentiment tools</Link>.
                   </p>
                 </div>
               </div>
@@ -236,7 +247,7 @@ const About = () => {
                 <div>
                   <h4 className="font-bold mb-1">Learners</h4>
                   <p className="text-sm text-muted-foreground">
-                    Anyone wanting to learn about crypto, forex, and market analysis techniques.
+                    Anyone wanting to <Link to="/learn" className="text-primary hover:underline">learn about crypto</Link>, forex, and market analysis techniques.
                   </p>
                 </div>
               </div>

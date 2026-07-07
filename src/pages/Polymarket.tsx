@@ -51,7 +51,7 @@ function MarketCard({ m }: { m: PolymarketMarket }) {
     <a href={m.url} target="_blank" rel="noopener noreferrer" className="group block border-t border-border/20 pt-4 hover:bg-muted/20 transition-all overflow-hidden">
       <div className="p-4 space-y-3">
         <div className="flex items-start gap-3">
-          {m.image && <img src={m.image} alt="" loading="lazy" className="w-11 h-11 rounded-lg object-cover shrink-0 bg-muted" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />}
+          {m.image && <img src={m.image} alt={m.title || m.question} loading="lazy" className="w-11 h-11 rounded-lg object-cover shrink-0 bg-muted" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />}
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5 mb-1">
               <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-primary/10 text-primary">{m.category}</span>
@@ -161,8 +161,8 @@ export default function Polymarket() {
           </nav>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div>
-              <h1 className="text-3xl md:text-4xl font-display font-bold flex items-center gap-2.5"><span className="p-2 rounded-xl bg-primary/15"><Gauge className="w-6 h-6 text-primary" /></span> Polymarket Signals</h1>
-              <h2 className="text-muted-foreground mt-2 text-base max-w-2xl">Analyze any Polymarket market in real time — implied probability, the favored outcome, a risk rating and 24h momentum. Search any market or browse by theme.</h2>
+              <h1 className="text-3xl md:text-4xl font-display font-bold flex items-center gap-2.5"><span className="p-2 rounded-xl bg-primary/15"><Gauge className="w-6 h-6 text-primary" /></span> Polymarket Crypto Predictions</h1>
+              <p className="text-muted-foreground mt-2 text-base max-w-2xl">Analyze any Polymarket market in real time — implied probability, the favored outcome, a risk rating and 24h momentum. Search any market or browse by theme.</p>
             </div>
             <button onClick={() => refetch()} className="self-start inline-flex items-center gap-1.5 text-xs px-3 py-2 rounded-lg border border-border hover:text-primary hover:border-primary/40 transition-colors">
               <RefreshCw className={cn("w-3.5 h-3.5", isFetching && "animate-spin")} /> Refresh

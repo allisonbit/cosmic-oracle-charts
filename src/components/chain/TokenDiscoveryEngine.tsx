@@ -173,7 +173,7 @@ export function TokenDiscoveryEngine({ chain }: TokenDiscoveryEngineProps) {
       >
         <div className="flex items-start gap-3">
           {token.logo && (
-            <img src={token.logo} alt={token.symbol} className="w-8 h-8 rounded-full" />
+            <img src={token.logo} alt={`${token.name} (${token.symbol}) logo`} className="w-8 h-8 rounded-full" />
           )}
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between gap-2">

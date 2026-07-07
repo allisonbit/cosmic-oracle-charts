@@ -83,7 +83,7 @@ export default function PositionSizeCalculator() {
             <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">· Position Sizing</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold font-display tracking-tighter leading-none">
-            Position Size Calculator
+            Crypto Position Size Calculator
           </h1>
           <p className="text-sm text-muted-foreground mt-2 max-w-xl">
             Enter your account size, risk tolerance, and stop loss — get the exact position size and take-profit targets.
@@ -323,6 +323,88 @@ export default function PositionSizeCalculator() {
                 </p>
               </div>
             </div>
+
+            <section className="border-t border-border/30 pt-6 mt-8">
+              <h2 className="text-lg font-display font-bold mb-4">Position Sizing Strategies</h2>
+              <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground space-y-3">
+                <p>
+                  The 1-2% rule is the foundation of professional risk management, but understanding why it works matters as much as following it. If you risk 2% per trade and hit a streak of ten consecutive losses — which happens more often than most traders expect — you lose roughly 18% of your account. That is recoverable. Risk 10% per trade and that same losing streak wipes out 65% of your capital, requiring a 186% gain just to break even. Position sizing is not about individual trades — it is about surviving long enough for your edge to play out.
+                </p>
+                <p>
+                  Risk-reward ratios determine whether your strategy is profitable over time. A trader who wins only 40% of their trades can still be highly profitable if their average winner is three times their average loser (a 3:1 risk-reward ratio). Before entering any trade, calculate the distance from your entry to your stop loss (your risk) and from your entry to your target (your reward). If the reward is not at least twice the risk, the trade is likely not worth taking regardless of how confident you feel about the setup.
+                </p>
+                <p>
+                  Position sizing should adapt to market conditions. In spot trading, your maximum loss is limited to your position value, so standard percentage-based sizing works well. In futures and leveraged trading, your effective risk is amplified — a 5x leveraged position with a 2% account risk means your actual position is ten times larger than it would be in spot. This calculator accounts for effective leverage, showing you exactly how exposed you are relative to your account size. Scale position sizes down during high-volatility periods and up during calmer markets.
+                </p>
+                <p>
+                  The Kelly Criterion offers a mathematically optimal approach to position sizing. It calculates the ideal percentage of your bankroll to risk based on your win rate and average win/loss ratio: Kelly % = W - (1 - W) / R, where W is your win rate and R is the ratio of average win to average loss. Most professional traders use a "fractional Kelly" approach — typically half or quarter Kelly — to account for estimation errors and reduce drawdowns. For AI-powered entry and exit levels to refine your setups, check our <Link to="/predictions" className="text-primary hover:underline">price predictions</Link>.
+                </p>
+              </div>
+            </section>
+
+            <section className="border-t border-border/30 pt-6 mt-8">
+              <h2 className="text-lg font-display font-bold mb-4">Frequently Asked Questions</h2>
+              <div className="space-y-2">
+                <details className="group">
+                  <summary className="cursor-pointer text-sm font-medium text-foreground hover:text-primary transition-colors py-2">
+                    What is the 1% rule in crypto trading?
+                  </summary>
+                  <p className="text-xs text-muted-foreground leading-relaxed pb-3 pl-4">
+                    The 1% rule means you never risk more than 1% of your total trading account on a single trade. If your account is $10,000, you set your stop loss so that the maximum you can lose is $100. This protects your capital from catastrophic drawdowns and ensures you can survive a long streak of losing trades without blowing your account.
+                  </p>
+                </details>
+                <details className="group">
+                  <summary className="cursor-pointer text-sm font-medium text-foreground hover:text-primary transition-colors py-2">
+                    How do I determine my stop-loss level?
+                  </summary>
+                  <p className="text-xs text-muted-foreground leading-relaxed pb-3 pl-4">
+                    Place your stop loss at a level where your trade thesis is invalidated — typically below a key support level for longs or above resistance for shorts. Avoid placing stops at round numbers or obvious levels where they can be hunted. The distance between your entry and stop loss, combined with your risk percentage, determines your position size.
+                  </p>
+                </details>
+                <details className="group">
+                  <summary className="cursor-pointer text-sm font-medium text-foreground hover:text-primary transition-colors py-2">
+                    What position size should beginners use?
+                  </summary>
+                  <p className="text-xs text-muted-foreground leading-relaxed pb-3 pl-4">
+                    Beginners should start with 0.5-1% risk per trade until they have a proven track record. This conservative approach means even a string of bad trades will not significantly damage your account while you learn. As you develop a consistent strategy with positive expectancy, you can gradually increase to the standard 1-2% range.
+                  </p>
+                </details>
+                <details className="group">
+                  <summary className="cursor-pointer text-sm font-medium text-foreground hover:text-primary transition-colors py-2">
+                    How does leverage affect position sizing?
+                  </summary>
+                  <p className="text-xs text-muted-foreground leading-relaxed pb-3 pl-4">
+                    Leverage amplifies both gains and losses, so your position size must shrink proportionally. With 10x leverage, a 10% price move against you wipes out your entire position. The position size calculator accounts for this by showing your effective leverage — if it exceeds 1x, you are trading with borrowed exposure and need to be especially disciplined with stop losses.
+                  </p>
+                </details>
+                <details className="group">
+                  <summary className="cursor-pointer text-sm font-medium text-foreground hover:text-primary transition-colors py-2">
+                    What is risk-reward ratio?
+                  </summary>
+                  <p className="text-xs text-muted-foreground leading-relaxed pb-3 pl-4">
+                    Risk-reward ratio compares your potential loss (distance to stop loss) against your potential gain (distance to take profit target). A 2:1 ratio means you stand to make twice what you risk. Professional traders generally refuse trades below 2:1 because even with a 50% win rate, a 2:1 ratio produces consistent profits over time.
+                  </p>
+                </details>
+              </div>
+            </section>
+
+            <section className="border-t border-border/30 pt-6 mt-8">
+              <h2 className="text-lg font-display font-bold mb-4">Related Tools</h2>
+              <div className="grid sm:grid-cols-2 gap-3">
+                <Link to="/tools/profit-calculator" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors py-2">
+                  <ArrowRight className="w-3.5 h-3.5" /> Profit Calculator
+                </Link>
+                <Link to="/tools/dca-calculator" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors py-2">
+                  <ArrowRight className="w-3.5 h-3.5" /> DCA Calculator
+                </Link>
+                <Link to="/crypto-strength-meter" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors py-2">
+                  <ArrowRight className="w-3.5 h-3.5" /> Crypto Strength Meter
+                </Link>
+                <Link to="/sentiment" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors py-2">
+                  <ArrowRight className="w-3.5 h-3.5" /> Market Sentiment
+                </Link>
+              </div>
+            </section>
           </div>
         </div>
       </div>

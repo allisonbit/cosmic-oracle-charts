@@ -63,8 +63,8 @@ export default function InsightArticle() {
       .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-primary hover:underline font-medium">$1</a>');
     const raw = `<p class="mb-5 text-muted-foreground leading-relaxed text-[15px]">${content}</p>`;
     return DOMPurify.sanitize(raw, {
-      ALLOWED_TAGS: ['p', 'h2', 'h3', 'h4', 'strong', 'em', 'li', 'ul', 'ol', 'a', 'br', 'span'],
-      ALLOWED_ATTR: ['href', 'class'],
+      ALLOWED_TAGS: ['p', 'h2', 'h3', 'h4', 'strong', 'em', 'li', 'ul', 'ol', 'a', 'br', 'span', 'img'],
+      ALLOWED_ATTR: ['href', 'class', 'src', 'alt', 'width', 'height', 'loading'],
       ALLOW_DATA_ATTR: false,
     });
   }, [article?.content]);
@@ -287,7 +287,7 @@ export default function InsightArticle() {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 {[
                   { to: "/dashboard", icon: BarChart3, label: "Dashboard" },
-                  { to: "/strength", icon: Activity, label: "Strength Meter" },
+                  { to: "/crypto-strength-meter", icon: Activity, label: "Strength Meter" },
                   { to: "/factory", icon: TrendingUp, label: "Crypto Factory" },
                   { to: "/scanner", icon: Wallet, label: "Token Scanner" },
                 ].map(item => (
