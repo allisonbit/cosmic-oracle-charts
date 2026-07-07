@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SocialShare } from "@/components/ui/social-share";
 import { AdsterraNative } from "@/components/ads/AdsterraNative";
+import { AdUnit } from "@/components/ads/AdUnit";
 import { useMarketData } from "@/hooks/useMarketData";
 import type { TopCoin } from "@/hooks/useMarketData";
 
@@ -105,6 +106,7 @@ export default function MarketRecap() {
       </header>
 
       <main className="flex-1 container mx-auto px-4 py-24 md:py-32">
+        <AdUnit format="horizontal" className="my-2 max-w-5xl mx-auto" />
         <div className="max-w-4xl mx-auto">
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
@@ -379,6 +381,7 @@ export default function MarketRecap() {
       </main>
 
       <AdsterraNative className="my-4 max-w-5xl mx-auto px-4" />
+      <AdUnit format="horizontal" className="mt-6 mb-2 max-w-5xl mx-auto px-4" />
       <Footer />
       <MobileBottomNav />
       <div className="h-20 md:hidden" aria-hidden="true" />

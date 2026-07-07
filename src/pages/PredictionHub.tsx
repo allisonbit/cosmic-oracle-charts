@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { AdsterraNative } from "@/components/ads/AdsterraNative";
+import { AdUnit } from "@/components/ads/AdUnit";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -179,6 +180,7 @@ export default function PredictionHub() {
       <header><Navbar /></header>
 
       <main className="flex-1 container mx-auto px-4 py-20 md:py-28">
+        <AdUnit format="horizontal" className="my-2 max-w-5xl mx-auto" />
 
         <div className="flex justify-center mb-5">
         </div>
@@ -607,6 +609,7 @@ export default function PredictionHub() {
       </main>
 
       <AdsterraNative className="my-4 max-w-5xl mx-auto px-4" />
+      <AdUnit format="horizontal" className="mt-6 mb-2 max-w-5xl mx-auto px-4" />
       <Footer />
       <MobileBottomNav />
     </div>
