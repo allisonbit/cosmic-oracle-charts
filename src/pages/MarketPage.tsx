@@ -5,6 +5,7 @@ import { AdsterraNative } from "@/components/ads/AdsterraNative";
 import { AdUnit } from "@/components/ads/AdUnit";
 import { AdsterraBanner } from "@/components/ads/AdsterraBanner";
 import { AdsterraBanner300 } from "@/components/ads/AdsterraBanner300";
+import { AdsterraSmartlink } from "@/components/ads/AdsterraSmartlink";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Helmet } from "react-helmet-async";
 import { TrendingUp, Star, Shield, Zap, BarChart3, ChevronRight, ArrowRight } from "lucide-react";
@@ -472,6 +473,7 @@ export default function MarketPage() {
 
       <main className="flex-1 container mx-auto px-4 py-24 md:py-32">
         <AdUnit format="horizontal" className="my-2 max-w-5xl mx-auto" />
+        <AdsterraSmartlink variant="banner" className="my-3 max-w-5xl mx-auto" />
         <div className="container mx-auto">
 
           {/* Breadcrumb */}
@@ -663,6 +665,7 @@ export default function MarketPage() {
       <AdsterraNative className="my-4 max-w-5xl mx-auto px-4" />
       <AdsterraBanner className="my-4" />
       <AdsterraBanner300 className="my-4" />
+      <AdsterraSmartlink variant="button" className="my-4" />
       <AdUnit format="horizontal" className="mt-6 mb-2 max-w-5xl mx-auto px-4" />
       <Footer />
       <MobileBottomNav />

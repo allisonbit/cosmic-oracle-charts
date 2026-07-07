@@ -11,6 +11,7 @@ import { AdsterraNative } from "@/components/ads/AdsterraNative";
 import { AdUnit } from "@/components/ads/AdUnit";
 import { AdsterraBanner } from "@/components/ads/AdsterraBanner";
 import { AdsterraBanner300 } from "@/components/ads/AdsterraBanner300";
+import { AdsterraSmartlink } from "@/components/ads/AdsterraSmartlink";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SEO } from "@/components/MainSEO";
@@ -99,6 +100,7 @@ const Index = () => {
 
       <main id="main-content">
         <AdUnit format="horizontal" className="my-2 max-w-5xl mx-auto px-4" />
+        <AdsterraSmartlink variant="banner" className="my-3 max-w-5xl mx-auto px-4" />
         {/* Lean editorial masthead — compact identity, search, live chips */}
         <HeroSection />
 
@@ -192,6 +194,7 @@ const Index = () => {
       <AdsterraNative className="my-4 max-w-5xl mx-auto px-4" />
       <AdsterraBanner className="my-4" />
       <AdsterraBanner300 className="my-4" />
+      <AdsterraSmartlink variant="button" className="my-4" />
       <AdUnit format="horizontal" className="mt-6 mb-2 max-w-5xl mx-auto px-4" />
       <Footer />
       <MobileBottomNav />
