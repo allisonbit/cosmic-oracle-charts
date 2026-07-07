@@ -12,7 +12,7 @@ const CookiePolicy = () => {
 
       <div className="container mx-auto px-4 py-12 max-w-4xl">
         <div
-          className="termly-policy prose-invert"
+          className="policy-content prose-invert"
           dangerouslySetInnerHTML={{ __html: policyHtml }}
         />
       </div>
