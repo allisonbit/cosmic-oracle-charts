@@ -71,7 +71,7 @@ export default function BitcoinLiquidationHeatmap() {
         
       </Helmet>
 
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
+      <div className="container mx-auto px-4 py-8">
         <header className="mb-8">
           <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
             <Flame className="w-3.5 h-3.5 text-warning" />

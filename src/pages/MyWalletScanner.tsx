@@ -207,7 +207,7 @@ function ScannerContent() {
   return (
     <Layout>
       <SEO title="Wallet Scanner – Analyze Any Crypto Wallet Across All Chains" description="Deep-scan any wallet across Ethereum, Polygon, Arbitrum, Base and Solana. Holdings, per-token risk & AI recommendations, chain allocation, portfolio risk score and warnings." />
-      <div className="container mx-auto px-4 py-6 space-y-6 max-w-6xl">
+      <div className="container mx-auto px-4 py-6 space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           <div className="flex items-center gap-3">

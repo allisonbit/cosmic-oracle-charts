@@ -182,7 +182,7 @@ export default function MyTradeJournal() {
     <ProtectedRoute>
       <Layout>
         <SEO title="Trade Journal – Log & Analyze Trades" description="Professional trade journal with P&L tracking, win rate, cumulative equity curve, and performance analytics." />
-        <div className="container mx-auto px-4 py-6 space-y-6 max-w-6xl">
+        <div className="container mx-auto px-4 py-6 space-y-6">
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">

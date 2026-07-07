@@ -181,7 +181,7 @@ export default function CoinComparison() {
       </Helmet>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="max-w-5xl mx-auto">
+        <div className="container mx-auto">
           <nav aria-label="Breadcrumb" className="text-xs text-muted-foreground mb-6 flex items-center gap-2">
             <Link to="/" className="hover:text-primary">Home</Link><span>/</span>
             <Link to="/compare" className="hover:text-primary">Compare</Link><span>/</span>

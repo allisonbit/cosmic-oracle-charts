@@ -171,7 +171,7 @@ function TrackerContent() {
   return (
     <Layout>
       <SEO title="Portfolio Tracker – Track Crypto P&L" description="Track your crypto portfolio with real-time P&L, allocation charts, and performance analytics." />
-      <div className="container mx-auto px-4 py-6 space-y-6 max-w-6xl">
+      <div className="container mx-auto px-4 py-6 space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">

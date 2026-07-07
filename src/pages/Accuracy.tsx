@@ -97,7 +97,7 @@ export default function Accuracy() {
         
       </Helmet>
 
-      <main className="max-w-5xl mx-auto px-4 py-10">
+      <main className="container mx-auto px-4 py-10">
         <nav className="text-sm text-slate-500 mb-4">
           <Link to="/" className="hover:underline">Home</Link> / Accuracy
         </nav>

@@ -101,10 +101,10 @@ function HeroGrid({ articles }: { articles: NewsArticleData[] }) {
         </div>
 
         <span className="section-label text-primary mb-2 block">{main.category}</span>
-        <h2 className="font-bold font-display text-2xl md:text-3xl lg:text-4xl leading-tight tracking-tight mb-3 group-hover:text-primary transition-colors">
+        <h2 className="font-bold font-display text-xl sm:text-2xl md:text-3xl leading-tight tracking-tight mb-3 group-hover:text-primary transition-colors">
           {main.title}
         </h2>
-        <p className="text-base md:text-lg text-muted-foreground leading-relaxed line-clamp-3 mb-4">
+        <p className="text-sm md:text-base text-muted-foreground leading-relaxed line-clamp-3 mb-4">
           {main.metaDescription}
         </p>
         <div className="flex items-center gap-3 text-sm">
@@ -226,7 +226,7 @@ function NewsCard({ article, large = false }: { article: NewsArticleData; large?
       </button>
 
       {/* Thumbnail */}
-      <div className={`overflow-hidden shrink-0 bg-muted ${large ? "w-52 md:w-72 h-36 md:h-48" : "w-36 md:w-52 h-24 md:h-36"}`}>
+      <div className={`overflow-hidden shrink-0 bg-muted ${large ? "w-32 sm:w-52 md:w-72 h-24 sm:h-36 md:h-48" : "w-24 sm:w-36 md:w-52 h-16 sm:h-24 md:h-36"}`}>
         {article.imageUrl && (
           <img src={article.imageUrl} alt={article.title} loading="lazy"
             className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-300"
@@ -241,7 +241,7 @@ function NewsCard({ article, large = false }: { article: NewsArticleData; large?
             <span className="section-label text-primary">{article.category}</span>
             <span className={`text-[10px] font-bold px-1.5 py-px border uppercase tracking-wider ${s.className}`}>{s.label}</span>
           </div>
-          <h3 className={`font-bold font-display leading-snug tracking-tight group-hover:text-primary transition-colors mb-2 ${large ? "text-xl md:text-2xl line-clamp-3" : "text-base md:text-xl line-clamp-2"}`}>
+          <h3 className={`font-bold font-display leading-snug tracking-tight group-hover:text-primary transition-colors mb-2 ${large ? "text-base sm:text-lg md:text-xl line-clamp-3" : "text-sm md:text-base line-clamp-2"}`}>
             {article.title}
           </h3>
           {large && (
@@ -382,7 +382,7 @@ export default function NewsHub() {
       </Helmet>
 
       <div className="container mx-auto px-4 py-6">
-        <div className="max-w-7xl mx-auto">
+        <div>
 
           {/* Masthead */}
           <div className="border-b-2 border-foreground pb-4 mb-0">
@@ -400,7 +400,7 @@ export default function NewsHub() {
                     <span className="text-xs text-muted-foreground">· Updated {timeAgo(lastUpdated.toISOString())}</span>
                   ) : null}
                 </div>
-                <h1 className="text-5xl md:text-7xl font-bold font-display tracking-tighter leading-none">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-display tracking-tighter leading-none">
                   Crypto News
                 </h1>
               </div>
@@ -597,10 +597,10 @@ export default function NewsHub() {
               <h3 className="text-2xl font-bold mb-3 font-display">
                 {searching ? "No stories match your search" : "No stories yet"}
               </h3>
-              <p className="text-muted-foreground max-w-sm mx-auto mb-8 text-lg leading-relaxed">
+              <p className="text-muted-foreground max-w-sm mx-auto mb-8 text-sm leading-relaxed">
                 {searching ? "Try a different keyword or browse a category above." : "The feed refreshes every 5 minutes."}
               </p>
-              <button onClick={() => refetch()} className="text-primary font-bold hover:underline inline-flex items-center gap-2 text-lg">
+              <button onClick={() => refetch()} className="text-primary font-bold hover:underline inline-flex items-center gap-2 text-sm">
                 <RefreshCw className="w-5 h-5" /> Refresh Feed
               </button>
             </div>

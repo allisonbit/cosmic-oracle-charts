@@ -470,7 +470,7 @@ export default function PredictionHub() {
           )}
         </section>
 
-        <div className="container mx-auto px-4 max-w-5xl mb-8">
+        <div className="container mx-auto px-4 mb-8">
         </div>
 
         {/* === SEO CONTENT === */}

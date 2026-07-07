@@ -205,7 +205,7 @@ export default function StrengthMeter() {
         
       </Helmet>
 
-      <main className="container mx-auto px-4 py-6 space-y-6 max-w-6xl">
+      <main className="container mx-auto px-4 py-6 space-y-6">
         {/* Hero */}
         <section className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
           <div>

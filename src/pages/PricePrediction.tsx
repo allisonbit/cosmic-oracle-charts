@@ -69,7 +69,7 @@ export default function PricePrediction() {
   if (isLoadingToken) {
     return (
       <Layout>
-        <div className="container mx-auto px-4 py-8 max-w-6xl">
+        <div className="container mx-auto px-4 py-8">
           <div className="space-y-4">
             <Skeleton className="h-10 w-2/3" />
             <Skeleton className="h-64 w-full rounded-xl" />

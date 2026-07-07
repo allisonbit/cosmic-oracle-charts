@@ -153,7 +153,7 @@ export default function Polymarket() {
         
       </Helmet>
 
-      <div className="container mx-auto px-4 py-6 space-y-6 max-w-6xl">
+      <div className="container mx-auto px-4 py-6 space-y-6">
         {/* Hero */}
         <div>
           <nav aria-label="Breadcrumb" className="text-xs text-muted-foreground mb-2 flex items-center gap-1.5">

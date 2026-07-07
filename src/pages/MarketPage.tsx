@@ -438,7 +438,7 @@ export default function MarketPage() {
       </header>
 
       <main className="flex-1 container mx-auto px-4 py-24 md:py-32">
-        <div className="max-w-5xl mx-auto">
+        <div className="container mx-auto">
 
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-6" aria-label="Breadcrumb">

@@ -166,7 +166,7 @@ export default function MyCopyTrading() {
     <ProtectedRoute>
       <Layout>
         <SEO title="Copy Trading – Follow Top Traders" description="Discover top crypto traders, see their predictions, win rates, and follow their strategies." />
-        <div className="container mx-auto px-4 py-6 space-y-6 max-w-6xl">
+        <div className="container mx-auto px-4 py-6 space-y-6">
           <div className="flex items-center gap-3">
             <div className="p-2 sm:p-2.5 rounded-xl bg-accent/15 border border-accent/20"><Users className="w-5 h-5 sm:w-6 sm:h-6 text-accent" /></div>
             <div>

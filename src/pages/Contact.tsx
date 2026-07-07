@@ -25,7 +25,7 @@ const ContactPage = () => {
         </header>
 
         {/* Contact Methods */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto mb-16">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 container mx-auto mb-16">
           {/* Email */}
           <div className="holo-card p-6 text-center space-y-4">
             <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center mx-auto">

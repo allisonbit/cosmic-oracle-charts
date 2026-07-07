@@ -194,7 +194,7 @@ export default function YearPrediction() {
         
       </Helmet>
 
-      <div className="container mx-auto px-4 py-8 max-w-5xl">
+      <div className="container mx-auto px-4 py-8">
 
         {/* Breadcrumb */}
         <nav className="flex items-center gap-1.5 text-xs text-muted-foreground mb-6" aria-label="Breadcrumb">

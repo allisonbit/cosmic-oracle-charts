@@ -70,7 +70,7 @@ export default function HowToBuyHub() {
       </Helmet>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="max-w-5xl mx-auto">
+        <div className="container mx-auto">
 
           {/* Hero */}
           <div className="text-center mb-12">

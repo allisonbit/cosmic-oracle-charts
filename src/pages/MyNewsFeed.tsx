@@ -283,7 +283,7 @@ export default function MyNewsFeed() {
     <ProtectedRoute>
       <Layout>
         <SEO title="My News Feed -- Personalized Crypto Intelligence" description="Your personalized crypto news feed with real-time articles from CoinDesk, Cointelegraph, Decrypt and more. Live price alerts, sentiment analysis, and bookmark tracking." />
-        <div className="container mx-auto px-4 py-6 max-w-5xl">
+        <div className="container mx-auto px-4 py-6">
 
           {/* Header */}
           <div className="border-b-2 border-foreground pb-4 mb-0">

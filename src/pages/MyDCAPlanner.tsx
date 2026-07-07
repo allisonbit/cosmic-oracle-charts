@@ -173,7 +173,7 @@ export default function MyDCAPlanner() {
     <ProtectedRoute>
       <Layout>
         <SEO title="DCA Planner – Dollar Cost Average Strategy" description="Plan and track DCA strategies with projections, buy recording, and performance analytics." />
-        <div className="container mx-auto px-4 py-6 space-y-6 max-w-6xl">
+        <div className="container mx-auto px-4 py-6 space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="p-2 sm:p-2.5 rounded-xl bg-primary/15 border border-primary/20"><Repeat className="w-5 h-5 sm:w-6 sm:h-6 text-primary" /></div>
