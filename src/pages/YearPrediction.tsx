@@ -105,7 +105,7 @@ const formatMarketCap = (mc: number) => {
 export default function YearPrediction() {
   const { coinId = "bitcoin", year = "2025" } = useParams<{ coinId: string; year: string }>();
 
-  const isInvalidYear = !VALID_YEARS.includes(year);
+  const isInvalidYear = !(VALID_YEARS as readonly string[]).includes(year);
   const safeYear = isInvalidYear ? "2026" : year;
 
   const crypto = getCryptoBySlug(coinId) || TOP_CRYPTOS[0];
