@@ -15,15 +15,15 @@ export function AdBreak({ variant = "compact", className = "" }: AdBreakProps) {
   if (variant === "full") {
     return (
       <LazyAd className={`py-1 space-y-1 ${className}`}>
-        <AdsterraNative className="max-w-5xl mx-auto px-4" />
+        <AdsterraBanner300 />
+        <AdsterraSmartlink variant="banner" className="max-w-5xl mx-auto px-4" />
         <div className="hidden md:block">
           <AdsterraBanner />
         </div>
         <div className="block md:hidden">
           <AdsterraBanner320 />
         </div>
-        <AdsterraBanner300 />
-        <AdsterraSmartlink variant="banner" className="max-w-5xl mx-auto px-4" />
+        <AdsterraNative className="max-w-5xl mx-auto px-4" />
         <AdUnit format="horizontal" className="max-w-5xl mx-auto px-4" />
       </LazyAd>
     );
@@ -31,12 +31,7 @@ export function AdBreak({ variant = "compact", className = "" }: AdBreakProps) {
 
   return (
     <LazyAd className={`py-1 space-y-1 ${className}`}>
-      <div className="hidden md:block">
-        <AdsterraBanner />
-      </div>
-      <div className="block md:hidden">
-        <AdsterraBanner320 />
-      </div>
+      <AdsterraBanner300 />
       <AdUnit format="horizontal" className="max-w-5xl mx-auto px-4" />
     </LazyAd>
   );

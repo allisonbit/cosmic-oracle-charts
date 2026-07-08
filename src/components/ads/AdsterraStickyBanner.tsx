@@ -54,7 +54,7 @@ export function AdsterraStickyBanner() {
     <div
       style={{
         position: "fixed",
-        bottom: isMobileView ? 56 : 0,
+        bottom: isMobileView ? 120 : 40,
         left: 0,
         right: 0,
         zIndex: 99999,
