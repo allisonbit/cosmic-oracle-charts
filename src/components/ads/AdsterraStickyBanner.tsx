@@ -48,11 +48,13 @@ export function AdsterraStickyBanner() {
     };
   }, []);
 
+  const isMobileView = typeof window !== "undefined" && window.innerWidth < 768;
+
   return (
     <div
       style={{
         position: "fixed",
-        bottom: 56,
+        bottom: isMobileView ? 56 : 0,
         left: 0,
         right: 0,
         zIndex: 99999,
