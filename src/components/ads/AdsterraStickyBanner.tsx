@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 
 export function AdsterraStickyBanner() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const wrapperRef = useRef<HTMLDivElement>(null);
   const loaded = useRef(false);
   const [hasAd, setHasAd] = useState(false);
 
@@ -49,37 +48,20 @@ export function AdsterraStickyBanner() {
     };
   }, []);
 
-  const isMobileView = typeof window !== "undefined" && window.innerWidth < 768;
-
   return (
     <div
-      ref={wrapperRef}
       style={{
         position: "fixed",
-        bottom: isMobileView ? 56 : 0,
+        bottom: 56,
         left: 0,
         right: 0,
         zIndex: 99999,
-        backgroundColor: "rgba(0, 0, 0, 0.95)",
-        borderTop: "2px solid rgba(255, 255, 255, 0.15)",
-        boxShadow: "0 -4px 20px rgba(0, 0, 0, 0.5)",
-        display: hasAd ? "flex" : "none",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: "6px 0",
-        overflow: "hidden",
+        display: hasAd ? "block" : "none",
+        textAlign: "center",
+        backgroundColor: "#000",
       }}
     >
-      <div
-        ref={containerRef}
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          overflow: "hidden",
-          maxHeight: isMobileView ? 60 : 100,
-        }}
-      />
+      <div ref={containerRef} />
     </div>
   );
 }
