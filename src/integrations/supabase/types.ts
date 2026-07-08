@@ -206,6 +206,21 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_visits: {
+        Row: {
+          count: number
+          visit_date: string
+        }
+        Insert: {
+          count?: number
+          visit_date?: string
+        }
+        Update: {
+          count?: number
+          visit_date?: string
+        }
+        Relationships: []
+      }
       dca_entries: {
         Row: {
           amount: number
@@ -818,6 +833,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_daily_visits: { Args: never; Returns: undefined }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
