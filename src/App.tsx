@@ -2,8 +2,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { lazy, Suspense, memo, useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { lazy, Suspense, memo, useEffect, type ReactNode } from "react";
 import { Loader2 } from "lucide-react";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
@@ -90,8 +90,16 @@ const PredictTarget = lazy(() => import("./pages/programmatic/PredictTarget"));
 const VsCompare = lazy(() => import("./pages/programmatic/VsCompare"));
 const Convert = lazy(() => import("./pages/programmatic/Convert"));
 const CoinToday = lazy(() => import("./pages/CoinToday"));
+// Embeddable widgets — minimal, no nav/footer, frameable
+const EmbedIndex = lazy(() => import("./pages/embed/EmbedIndex"));
+const EmbedPrice = lazy(() => import("./pages/embed/EmbedPrice"));
+const EmbedFearGreed = lazy(() => import("./pages/embed/EmbedFearGreed"));
+const EmbedPrediction = lazy(() => import("./pages/embed/EmbedPrediction"));
+const EmbedStrength = lazy(() => import("./pages/embed/EmbedStrength"));
 const MarketRecap = lazy(() => import("./pages/MarketRecap"));
 const Accuracy = lazy(() => import("./pages/Accuracy"));
+const ReportsIndex = lazy(() => import("./pages/reports/ReportsIndex"));
+const WeeklyReport = lazy(() => import("./pages/reports/WeeklyReport"));
 const Connect = lazy(() => import("./pages/Connect"));
 // Loading fallback component
 const PageLoader = memo(function PageLoader() {
@@ -178,6 +186,12 @@ const ChunkLoadRecovery = memo(function ChunkLoadRecovery() {
   return null;
 });
 
+function HideOnEmbed({ children }: { children: ReactNode }) {
+  const { pathname } = useLocation();
+  if (pathname.startsWith("/embed")) return null;
+  return <>{children}</>;
+}
+
 const App = () => (
     <QueryClientProvider client={queryClient}>
     <ThemeProvider>
@@ -187,9 +201,11 @@ const App = () => (
         <Sonner position="top-right" closeButton richColors />
         <AppErrorBoundary>
           <BrowserRouter>
-            <ScrollToTop />
             <ChunkLoadRecovery />
-            <AdRefresh />
+            <HideOnEmbed>
+              <ScrollToTop />
+              <AdRefresh />
+            </HideOnEmbed>
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route path="/" element={B(<Index />)} />
@@ -245,8 +261,16 @@ const App = () => (
                 <Route path="/vs/:coinA/:coinB" element={B(<VsCompare />)} />
                 <Route path="/convert/:coin/:fiat" element={B(<Convert />)} />
                 <Route path="/today/:coinId" element={B(<CoinToday />)} />
+                {/* Embeddable widgets — standalone, no nav/footer */}
+                <Route path="/embed" element={B(<EmbedIndex />)} />
+                <Route path="/embed/price/:coin" element={B(<EmbedPrice />)} />
+                <Route path="/embed/fear-greed" element={B(<EmbedFearGreed />)} />
+                <Route path="/embed/prediction/:coin" element={B(<EmbedPrediction />)} />
+                <Route path="/embed/strength/:coin" element={B(<EmbedStrength />)} />
                 <Route path="/market-recap" element={B(<MarketRecap />)} />
                 <Route path="/accuracy" element={B(<Accuracy />)} />
+                <Route path="/reports" element={B(<ReportsIndex />)} />
+                <Route path="/reports/:slug" element={B(<WeeklyReport />)} />
                 {/* Legal & About pages */}
                 <Route path="/about" element={B(<About />)} />
                 <Route path="/privacy-policy" element={B(<PrivacyPolicy />)} />
@@ -273,11 +297,13 @@ const App = () => (
                 <Route path="*" element={B(<NotFound />)} />
               </Routes>
             </Suspense>
-            <AIChatBubble />
-            <QuickTradeModal />
-            <Suspense fallback={null}>
-              <LiveVisitorCounter />
-            </Suspense>
+            <HideOnEmbed>
+              <AIChatBubble />
+              <QuickTradeModal />
+              <Suspense fallback={null}>
+                <LiveVisitorCounter />
+              </Suspense>
+            </HideOnEmbed>
           </BrowserRouter>
         </AppErrorBoundary>
       </TooltipProvider>

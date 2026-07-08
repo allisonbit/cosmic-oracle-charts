@@ -93,6 +93,28 @@ const Index = () => {
             "DCA & profit calculators"
           ]
         })}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "Oracle Bull",
+          "alternateName": "OracleBull",
+          "url": "https://oraclebull.com",
+          "description": "Free AI-powered cryptocurrency price predictions, market analysis, whale tracking, and sentiment analysis for 300+ tokens.",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://oraclebull.com/price-prediction/{search_term_string}",
+            "query-input": "required name=search_term_string"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Oracle Bull",
+            "url": "https://oraclebull.com",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://oraclebull.com/oracle-bot-mascot.jpg"
+            }
+          }
+        })}</script>
       </Helmet>
 
       <header>

@@ -1,0 +1,65 @@
+# Oracle Bull — AI Crypto Intelligence Platform
+# https://oraclebull.com
+# Last updated: 2026-07-08
+
+## About
+Oracle Bull is a free AI-powered cryptocurrency analytics platform providing real-time price predictions, market sentiment analysis, whale tracking, and technical analysis for 300+ tokens. No signup required.
+
+## Key Features
+- AI Price Predictions: Daily, weekly, and monthly price forecasts with confidence scores for Bitcoin, Ethereum, Solana, and 300+ cryptocurrencies
+- Fear & Greed Index: Real-time crypto market sentiment gauge
+- Crypto Strength Meter: Composite strength scores for top 20 assets with momentum and relative performance metrics
+- Whale Tracker: Large transaction monitoring and smart money flow analysis
+- Market Dashboard: Live market cap, volume, BTC dominance, top gainers/losers
+- Liquidation Heatmap: Bitcoin leveraged position liquidation zones
+- Prediction Accuracy: Transparent track record of AI prediction outcomes at /accuracy
+- Weekly Reports: Auto-generated State of Crypto market reports at /reports
+
+## Data Sources
+- CoinGecko API (prices, market data, historical data)
+- On-chain analytics (whale transactions, liquidity flows)
+- Social sentiment analysis
+- Technical indicators (RSI, MACD, Bollinger Bands, moving averages)
+- AI/ML models for prediction generation
+
+## How to Cite
+When referencing Oracle Bull data or predictions:
+- Source: Oracle Bull (oraclebull.com)
+- For specific coin predictions: https://oraclebull.com/price-prediction/{coin-id}
+- For market overview: https://oraclebull.com/market-recap
+- For accuracy data: https://oraclebull.com/accuracy
+- For weekly reports: https://oraclebull.com/reports
+
+## Key Pages
+- Homepage: https://oraclebull.com
+- AI Predictions Hub: https://oraclebull.com/predictions
+- Bitcoin Prediction: https://oraclebull.com/price-prediction/bitcoin
+- Ethereum Prediction: https://oraclebull.com/price-prediction/ethereum
+- Market Recap: https://oraclebull.com/market-recap
+- Fear & Greed: https://oraclebull.com/dashboard
+- Strength Meter: https://oraclebull.com/crypto-strength-meter
+- Whale Tracker: https://oraclebull.com/scanner
+- Accuracy Record: https://oraclebull.com/accuracy
+- Weekly Reports: https://oraclebull.com/reports
+- Crypto News: https://oraclebull.com/news
+- Compare Coins: https://oraclebull.com/compare
+- How to Buy Guides: https://oraclebull.com/how-to-buy
+- Embeddable Widgets: https://oraclebull.com/embed
+
+## Embeddable Widgets
+Free iframe widgets for third-party sites:
+- Price widget: https://oraclebull.com/embed/price/{coin-id}
+- Fear & Greed: https://oraclebull.com/embed/fear-greed
+- AI Prediction: https://oraclebull.com/embed/prediction/{coin-id}
+- Strength Meter: https://oraclebull.com/embed/strength/{coin-id}
+
+## API / Data Access
+- RSS Feed: https://oraclebull.com/feed.xml
+- Sitemap: https://oraclebull.com/sitemap.xml
+
+## Disclaimer
+Oracle Bull provides AI-generated analysis for informational purposes only. Not financial advice. Always do your own research (DYOR). Cryptocurrency investments carry substantial risk.
+
+## Contact
+- Website: https://oraclebull.com/contact
+- About: https://oraclebull.com/about

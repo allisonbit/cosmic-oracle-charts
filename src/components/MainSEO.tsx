@@ -320,6 +320,21 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
     description: `Rankings of the best AI-focused cryptocurrency projects by market cap, utility, and ecosystem growth. Track the AI crypto narrative in real time.`,
     keywords: "top AI crypto, best AI tokens, artificial intelligence crypto, AI blockchain projects, AI coins to buy"
   },
+  "/market-recap": {
+    title: `Crypto Market Recap Today | Daily Summary | Oracle Bull`,
+    description: `Daily crypto market summary with total market cap, BTC dominance, top gainers/losers, Fear & Greed Index, and AI analysis. Updated every day.`,
+    keywords: "crypto market recap, crypto market today, daily crypto summary, market cap today, bitcoin market recap"
+  },
+  "/reports": {
+    title: `Weekly Crypto Reports — State of the Market | Oracle Bull`,
+    description: `Weekly auto-generated crypto market reports with top gainers, losers, strength analysis, and AI prediction accuracy. Free, updated every Monday.`,
+    keywords: "weekly crypto report, state of crypto, crypto market report, weekly crypto analysis, crypto weekly summary"
+  },
+  "/embed": {
+    title: `Free Crypto Widgets | Embeddable Charts & Data | Oracle Bull`,
+    description: `Free embeddable crypto widgets for your website. Live prices, Fear & Greed Index, AI predictions, and strength meters. Copy one line of iframe code.`,
+    keywords: "crypto widget, embeddable crypto chart, free crypto widget, crypto iframe, crypto price widget"
+  },
 };
 
 export function SEO({ title, description, keywords, image, type = "website", canonicalPath, noindex = false }: SEOProps) {
