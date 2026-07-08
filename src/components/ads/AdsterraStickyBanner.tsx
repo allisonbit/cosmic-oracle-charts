@@ -49,26 +49,37 @@ export function AdsterraStickyBanner() {
     };
   }, []);
 
+  const isMobileView = typeof window !== "undefined" && window.innerWidth < 768;
+
   return (
     <div
       ref={wrapperRef}
       style={{
         position: "fixed",
-        bottom: 0,
+        bottom: isMobileView ? 56 : 0,
         left: 0,
         right: 0,
         zIndex: 99999,
         backgroundColor: "rgba(0, 0, 0, 0.95)",
-        borderTop: "3px solid rgba(255, 255, 255, 0.2)",
-        boxShadow: "0 -8px 30px rgba(0, 0, 0, 0.6)",
+        borderTop: "2px solid rgba(255, 255, 255, 0.15)",
+        boxShadow: "0 -4px 20px rgba(0, 0, 0, 0.5)",
         display: hasAd ? "flex" : "none",
         justifyContent: "center",
         alignItems: "center",
-        padding: "12px 0",
-        minHeight: "80px",
+        padding: "6px 0",
+        overflow: "hidden",
       }}
     >
-      <div ref={containerRef} style={{ display: "flex", justifyContent: "center", alignItems: "center" }} />
+      <div
+        ref={containerRef}
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          overflow: "hidden",
+          maxHeight: isMobileView ? 60 : 100,
+        }}
+      />
     </div>
   );
 }
