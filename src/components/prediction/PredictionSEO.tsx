@@ -165,26 +165,38 @@ export function PredictionSEO({ coinName, symbol, timeframe, currentPrice, bias,
     <Helmet>
       <title>{title}</title>
       <meta name="description" content={description} />
-      
-      {/* Robots directives */}
-      
+
+      {/* Robots — allow indexing */}
+      <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+
+      {/* Canonical — consolidate bare /coin and /coin/daily to a single URL */}
+      <link rel="canonical" href={canonicalUrl} />
+
       {/* Open Graph */}
+      <meta property="og:type" content="article" />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:url" content={canonicalUrl} />
+      <meta property="og:site_name" content="Oracle Bull" />
+      <meta property="og:image" content={`${baseUrl}/oracle-bull-logo.jpg`} />
       <meta property="article:published_time" content={dateStr} />
       <meta property="article:modified_time" content={dateStr} />
       <meta property="article:section" content="Cryptocurrency" />
-      
+
       {/* Twitter */}
-      
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={`${baseUrl}/oracle-bull-logo.jpg`} />
+
       {/* AI Search Optimization */}
       <meta name="ai-summary" content={`${coinName} ${timeframe} price prediction with ${bias || 'neutral'} outlook. Technical analysis includes RSI, MACD, moving averages, support/resistance levels. Current price: ${currentPrice ? `$${(currentPrice ?? 0).toLocaleString()}` : 'Loading'}.`} />
-      
-      {/* Canonical */}
-      
+
       {/* Structured Data */}
-      
-      
-      
-      
+      <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+      <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
+      <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
+      <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
     </Helmet>
   );
 }
