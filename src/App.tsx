@@ -102,6 +102,8 @@ const ReportsIndex = lazy(() => import("./pages/reports/ReportsIndex"));
 const WeeklyReport = lazy(() => import("./pages/reports/WeeklyReport"));
 const Connect = lazy(() => import("./pages/Connect"));
 const TutorialPage = lazy(() => import("./pages/TutorialPage"));
+const InteractiveTutorial = lazy(() => import("./pages/InteractiveTutorial"));
+const ApiDocs = lazy(() => import("./pages/ApiDocs"));
 const MobileDashboard = lazy(() => import("./pages/MobileDashboard"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 // Loading fallback component
