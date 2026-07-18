@@ -293,6 +293,8 @@ const App = () => (
                 <Route path="/unsubscribe" element={B(<Unsubscribe />)} />
                 <Route path="/admin" element={B(<ProtectedRoute><AdminRoute><Admin /></AdminRoute></ProtectedRoute>)} />
                 <Route path="/admin/backlinks" element={B(<ProtectedRoute><AdminRoute><BacklinkOutreach /></AdminRoute></ProtectedRoute>)} />
+                <Route path="/admin/digest-preview" element={B(<ProtectedRoute><AdminRoute><DigestPreview /></AdminRoute></ProtectedRoute>)} />
+                <Route path="/admin/email-status" element={B(<ProtectedRoute><AdminRoute><EmailStatus /></AdminRoute></ProtectedRoute>)} />
                 <Route path="/my" element={B(<MyHub />)} />
                 <Route path="/my/watchlist" element={B(<MyWatchlistPage />)} />
                 <Route path="/my/portfolio" element={B(<MyPortfolioPage />)} />
