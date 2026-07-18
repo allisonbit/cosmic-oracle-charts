@@ -496,7 +496,25 @@ export function SEO({ title, description, keywords, image, type = "website", can
     };
     const t1 = setTimeout(dedupeAll, 0);
     const t2 = setTimeout(dedupeAll, 300);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
+
+    // Durable dedup: some routes wrap content in <Helmet> which keeps
+    // re-inserting its own tags. Watch <head> and prune duplicates so
+    // there's always exactly one <meta name="description"> and one
+    // <link rel="canonical"> visible to crawlers.
+    const observer = new MutationObserver(() => {
+      const descs = document.querySelectorAll('meta[name="description"]');
+      if (descs.length > 1) {
+        // Keep the last one (Helmet's per-page value wins).
+        for (let i = 0; i < descs.length - 1; i++) descs[i].parentNode?.removeChild(descs[i]);
+      }
+      const canons = document.querySelectorAll('link[rel="canonical"]');
+      if (canons.length > 1) {
+        for (let i = 0; i < canons.length - 1; i++) canons[i].parentNode?.removeChild(canons[i]);
+      }
+    });
+    observer.observe(document.head, { childList: true, subtree: false });
+
+    return () => { clearTimeout(t1); clearTimeout(t2); observer.disconnect(); };
   }, [finalTitle, finalDescription, finalKeywords, finalImage, canonicalUrl, type, noindex, currentPath]);
 
   return null;
