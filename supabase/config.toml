@@ -200,3 +200,6 @@ verify_jwt = false
 [functions.accuracy-feed.rate_limit]
 requests = 600
 per = 3600
+
+[functions.process-email-queue]
+verify_jwt = true
