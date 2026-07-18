@@ -138,7 +138,7 @@ export default function Accuracy() {
           ))}
         </div>
 
-        <div className="overflow-x-auto -mx-4 px-4">
+        <div className="overflow-x-auto -mx-4 px-4 min-h-[600px]">
           <table className="w-full bg-white border border-slate-200 rounded-xl text-sm">
             <thead className="bg-slate-50 text-slate-700">
               <tr>
