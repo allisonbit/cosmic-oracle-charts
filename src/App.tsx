@@ -101,6 +101,9 @@ const Accuracy = lazy(() => import("./pages/Accuracy"));
 const ReportsIndex = lazy(() => import("./pages/reports/ReportsIndex"));
 const WeeklyReport = lazy(() => import("./pages/reports/WeeklyReport"));
 const Connect = lazy(() => import("./pages/Connect"));
+const TutorialPage = lazy(() => import("./pages/TutorialPage"));
+const MobileDashboard = lazy(() => import("./pages/MobileDashboard"));
+const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 // Loading fallback component
 const PageLoader = memo(function PageLoader() {
   return (
@@ -279,6 +282,9 @@ const App = () => (
                 <Route path="/risk-disclaimer" element={B(<RiskDisclaimer />)} />
                 <Route path="/editorial-policy" element={B(<EditorialPolicy />)} />
                 <Route path="/connect" element={B(<Connect />)} />
+                <Route path="/how-to-read-predictions" element={B(<TutorialPage />)} />
+                <Route path="/m" element={B(<MobileDashboard />)} />
+                <Route path="/unsubscribe" element={B(<Unsubscribe />)} />
                 <Route path="/admin" element={B(<ProtectedRoute><AdminRoute><Admin /></AdminRoute></ProtectedRoute>)} />
                 <Route path="/admin/backlinks" element={B(<ProtectedRoute><AdminRoute><BacklinkOutreach /></AdminRoute></ProtectedRoute>)} />
                 <Route path="/my" element={B(<MyHub />)} />

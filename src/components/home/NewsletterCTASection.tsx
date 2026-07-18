@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Zap, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DigestSignup } from "@/components/digest/DigestSignup";
 
 export function NewsletterCTASection() {
   return (
@@ -45,6 +46,14 @@ export function NewsletterCTASection() {
         <p className="text-muted-foreground/50 text-xs mt-8">
           No signup · No credit card · 100% free forever
         </p>
+
+        {/* Daily digest opt-in */}
+        <div className="mt-10 pt-10 border-t border-border/30">
+          <p className="text-sm font-semibold mb-3">Or get the free daily digest — top movers & AI picks in your inbox at 08:00 UTC.</p>
+          <div className="flex justify-center">
+            <DigestSignup />
+          </div>
+        </div>
       </div>
     </section>
   );

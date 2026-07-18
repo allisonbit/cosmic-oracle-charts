@@ -10,3 +10,6 @@
 # Supabase function instead of proxying it, and works on both Cloudflare and
 # Netlify.
 /accuracy.json    https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/accuracy-feed   302
+
+# Public REST API — proxy all /api/v1/* traffic to the public-api edge function.
+/api/v1/*         https://qynszkirmcrldqmiplwh.supabase.co/functions/v1/public-api/:splat   302

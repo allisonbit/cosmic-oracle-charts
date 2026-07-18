@@ -316,6 +316,33 @@ export type Database = {
         }
         Relationships: []
       }
+      digest_subscribers: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          is_active: boolean
+          last_sent_at: string | null
+          unsubscribe_token: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          is_active?: boolean
+          last_sent_at?: string | null
+          unsubscribe_token?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          is_active?: boolean
+          last_sent_at?: string | null
+          unsubscribe_token?: string
+        }
+        Relationships: []
+      }
       performance_metrics: {
         Row: {
           avg_time_on_page: number | null
