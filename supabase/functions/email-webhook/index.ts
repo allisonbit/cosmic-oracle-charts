@@ -120,11 +120,12 @@ Deno.serve(async (req) => {
   });
 
   if (status === "bounced" || status === "complained") {
+    const suppressionReason = status === "bounced" ? "bounce" : "complaint";
     await supabase
       .from("suppressed_emails")
       .upsert({
         email: target.toLowerCase(),
-        reason: status,
+        reason: suppressionReason,
         metadata: { message_id: messageId, raw_event: rawEvent, note: reason ?? null },
       }, { onConflict: "email" });
   }
