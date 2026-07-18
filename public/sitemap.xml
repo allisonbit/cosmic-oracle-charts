@@ -24,16 +24,11 @@
   <url><loc>https://oraclebull.com/factory/onchain</loc><changefreq>hourly</changefreq><priority>0.7</priority></url>
   <url><loc>https://oraclebull.com/factory/narratives</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
   <url><loc>https://oraclebull.com/factory/news</loc><changefreq>hourly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/portfolio</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
   <url><loc>https://oraclebull.com/learn</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://oraclebull.com/trade</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
   <url><loc>https://oraclebull.com/how-to-buy</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://oraclebull.com/liquidations/bitcoin-heatmap</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/markets</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://oraclebull.com/forex</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
   <url><loc>https://oraclebull.com/about</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://oraclebull.com/contact</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://oraclebull.com/sitemap</loc><changefreq>weekly</changefreq><priority>0.4</priority></url>
   <url><loc>https://oraclebull.com/privacy-policy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://oraclebull.com/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://oraclebull.com/cookie-policy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
@@ -2778,4 +2773,7 @@
   <url><loc>https://oraclebull.com/q/should-i-buy-api3-today</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
   <url><loc>https://oraclebull.com/q/is-api3-a-good-investment</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
   <url><loc>https://oraclebull.com/q/api3-price-prediction-today</loc><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://oraclebull.com/strength</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/strength-meter</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://oraclebull.com/price-prediction</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
 </urlset>

@@ -274,7 +274,7 @@ export default function StrengthMeter() {
             <div className="flex-1 w-full min-w-0">
               <div className="flex items-center gap-2.5 mb-1 flex-wrap">
                 <CoinImage symbol={selected.symbol} image={selected.logo} size={28} />
-                <h3 className="text-lg font-bold">{selected.name} <span className="text-muted-foreground font-mono text-sm">{selected.symbol}</span></h3>
+                <h2 className="text-lg font-bold">{selected.name} <span className="text-muted-foreground font-mono text-sm">{selected.symbol}</span></h2>
                 <span className="text-xs font-semibold px-2 py-0.5 border" style={{ color: scoreColor(selected.strengthScore), borderColor: scoreColor(selected.strengthScore) + "55" }}>{scoreLabel(selected.strengthScore)}</span>
                 <span className={cn("ml-auto text-[10px] font-bold px-2 py-0.5 border", signalOf(selected.strengthScore).cls)}>{signalOf(selected.strengthScore).label}</span>
               </div>

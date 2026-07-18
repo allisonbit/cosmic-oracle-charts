@@ -433,7 +433,11 @@ export function SEO({ title, description, keywords, image, type = "website", can
 
     const setMeta = (name: string, content: string, property = false) => {
       const attr = property ? "property" : "name";
-      let meta = document.querySelector(`meta[${attr}="${name}"]`) as HTMLMetaElement;
+      // Remove ALL existing matches (react-helmet-async and other libs can add
+      // duplicates that confuse crawlers) and then insert a single fresh tag.
+      const existing = document.querySelectorAll(`meta[${attr}="${name}"]`);
+      existing.forEach((el, i) => { if (i > 0) el.parentNode?.removeChild(el); });
+      let meta = existing[0] as HTMLMetaElement | undefined;
       if (!meta) {
         meta = document.createElement("meta");
         meta.setAttribute(attr, name);
@@ -443,7 +447,10 @@ export function SEO({ title, description, keywords, image, type = "website", can
     };
 
     const setLink = (rel: string, href: string) => {
-      let link = document.querySelector(`link[rel="${rel}"]`) as HTMLLinkElement;
+      // Same dedup story — one canonical only, always.
+      const existing = document.querySelectorAll(`link[rel="${rel}"]`);
+      existing.forEach((el, i) => { if (i > 0) el.parentNode?.removeChild(el); });
+      let link = existing[0] as HTMLLinkElement | undefined;
       if (!link) {
         link = document.createElement("link");
         link.rel = rel;
