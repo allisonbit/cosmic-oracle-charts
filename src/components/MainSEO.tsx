@@ -484,6 +484,19 @@ export function SEO({ title, description, keywords, image, type = "website", can
     // Canonical URL
     setLink("canonical", canonicalUrl);
 
+    // react-helmet-async flushes its mutations asynchronously (after this
+    // effect commits), so it can re-insert duplicate <meta name="description">
+    // or <link rel="canonical"> tags moments later. Re-run the dedup on the
+    // next microtask AND after ~300ms to catch both sync and delayed flushes.
+    const dedupeAll = () => {
+      setMeta("description", finalDescription);
+      setMeta("og:description", finalDescription, true);
+      setMeta("twitter:description", finalDescription);
+      setLink("canonical", canonicalUrl);
+    };
+    const t1 = setTimeout(dedupeAll, 0);
+    const t2 = setTimeout(dedupeAll, 300);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [finalTitle, finalDescription, finalKeywords, finalImage, canonicalUrl, type, noindex, currentPath]);
 
   return null;
