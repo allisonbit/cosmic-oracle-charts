@@ -93,7 +93,33 @@ export default function VsCompare() {
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
-        
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faq.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
+        })}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: title,
+          description,
+          url: canonical,
+          author: { "@type": "Organization", name: "Oracle Bull" },
+          publisher: { "@type": "Organization", name: "Oracle Bull" },
+          dateModified: new Date().toISOString(),
+        })}</script>
       </Helmet>
 
       <main className="max-w-4xl mx-auto px-4 py-10">
