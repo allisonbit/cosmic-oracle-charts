@@ -113,6 +113,13 @@ supabase/functions/accuracy-feed/index.ts
     - `accuracy-feed` edge function + `/accuracy.json` rewrite for partners.
     - `/accuracy` added to `sitemap.xml`.
 - [ ] Step 3 — Embed widgets.
-- [ ] Step 4 — Weekly report cron.
+- [x] Step 3 — Embed widgets shipped (`/embed/price/:coin`, `/embed/fear-greed`,
+  `/embed/prediction/:coin`, `/embed/strength/:coin`, `/embed` directory).
+- [x] **Step 4 done.** `weekly_reports` table (public read, service-role write),
+  `weekly-report` edge function that snapshots CoinGecko markets + global stats
+  + Fear & Greed + last-7d prediction accuracy into a jsonb payload keyed by
+  ISO week slug (idempotent UPSERT). pg_cron `weekly-report-monday` runs it
+  every Monday 00:05 UTC. Verified: first run wrote slug `2026-w29` with 30
+  coins.
 
 Approve and I'll start with step 1.

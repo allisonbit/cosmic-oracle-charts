@@ -820,6 +820,33 @@ export type Database = {
         }
         Relationships: []
       }
+      weekly_reports: {
+        Row: {
+          content: Json
+          created_at: string
+          id: string
+          published_at: string
+          slug: string
+          week_iso: string
+        }
+        Insert: {
+          content: Json
+          created_at?: string
+          id?: string
+          published_at?: string
+          slug: string
+          week_iso: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          id?: string
+          published_at?: string
+          slug?: string
+          week_iso?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
