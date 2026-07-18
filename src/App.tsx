@@ -293,10 +293,10 @@ const App = () => (
                 <Route path="/m" element={B(<MobileDashboard />)} />
                 <Route path="/unsubscribe" element={B(<Unsubscribe />)} />
                 <Route path="/email-unsubscribe" element={B(<EmailUnsubscribe />)} />
-                <Route path="/admin" element={B(<ProtectedRoute><AdminRoute><Admin /></AdminRoute></ProtectedRoute>)} />
-                <Route path="/admin/backlinks" element={B(<ProtectedRoute><AdminRoute><BacklinkOutreach /></AdminRoute></ProtectedRoute>)} />
-                <Route path="/admin/digest-preview" element={B(<ProtectedRoute><AdminRoute><DigestPreview /></AdminRoute></ProtectedRoute>)} />
-                <Route path="/admin/email-status" element={B(<ProtectedRoute><AdminRoute><EmailStatus /></AdminRoute></ProtectedRoute>)} />
+                <Route path="/admin" element={B(<AdminRoute><Admin /></AdminRoute>)} />
+                <Route path="/admin/backlinks" element={B(<AdminRoute><BacklinkOutreach /></AdminRoute>)} />
+                <Route path="/admin/digest-preview" element={B(<AdminRoute><DigestPreview /></AdminRoute>)} />
+                <Route path="/admin/email-status" element={B(<AdminRoute><EmailStatus /></AdminRoute>)} />
                 <Route path="/my" element={B(<MyHub />)} />
                 <Route path="/my/watchlist" element={B(<MyWatchlistPage />)} />
                 <Route path="/my/portfolio" element={B(<MyPortfolioPage />)} />
