@@ -285,6 +285,8 @@ const App = () => (
                 <Route path="/editorial-policy" element={B(<EditorialPolicy />)} />
                 <Route path="/connect" element={B(<Connect />)} />
                 <Route path="/how-to-read-predictions" element={B(<TutorialPage />)} />
+                <Route path="/tutorial/interactive" element={B(<InteractiveTutorial />)} />
+                <Route path="/api-docs" element={B(<ApiDocs />)} />
                 <Route path="/m" element={B(<MobileDashboard />)} />
                 <Route path="/unsubscribe" element={B(<Unsubscribe />)} />
                 <Route path="/admin" element={B(<ProtectedRoute><AdminRoute><Admin /></AdminRoute></ProtectedRoute>)} />
