@@ -60,6 +60,7 @@ const Admin = lazy(() => import("./pages/Admin"));
 const BacklinkOutreach = lazy(() => import("./pages/admin/BacklinkOutreach"));
 const DigestPreview = lazy(() => import("./pages/admin/DigestPreview"));
 const EmailStatus = lazy(() => import("./pages/admin/EmailStatus"));
+const GSCDashboard = lazy(() => import("./pages/admin/GSCDashboard"));
 const MyHub = lazy(() => import("./pages/MyHub"));
 const MyWatchlistPage = lazy(() => import("./pages/MyWatchlist"));
 const MyPortfolioPage = lazy(() => import("./pages/MyPortfolio"));
@@ -305,6 +306,7 @@ const App = () => (
                 <Route path="/admin/backlinks" element={B(<AdminRoute><BacklinkOutreach /></AdminRoute>)} />
                 <Route path="/admin/digest-preview" element={B(<AdminRoute><DigestPreview /></AdminRoute>)} />
                 <Route path="/admin/email-status" element={B(<AdminRoute><EmailStatus /></AdminRoute>)} />
+                <Route path="/admin/gsc" element={B(<AdminRoute><GSCDashboard /></AdminRoute>)} />
                 <Route path="/my" element={B(<MyHub />)} />
                 <Route path="/my/watchlist" element={B(<MyWatchlistPage />)} />
                 <Route path="/my/portfolio" element={B(<MyPortfolioPage />)} />
