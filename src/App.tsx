@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-route
 import { lazy, Suspense, memo, useEffect, type ReactNode } from "react";
 import { Loader2 } from "lucide-react";
 import { AuthProvider } from "@/hooks/useAuth";
+import { FirstConnectRedirect } from "@/components/system/FirstConnectRedirect";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { AppErrorBoundary } from "@/components/system/AppErrorBoundary";
 import { RouteErrorBoundary } from "@/components/system/RouteErrorBoundary";
