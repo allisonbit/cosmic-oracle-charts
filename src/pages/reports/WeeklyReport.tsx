@@ -55,7 +55,7 @@ export default function WeeklyReport() {
   const { data: stored } = useQuery({
     queryKey: ["weekly-report", currentSlug],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("weekly_reports")
         .select("*")
         .eq("slug", currentSlug)
