@@ -100,6 +100,9 @@ const EmbedPrediction = lazy(() => import("./pages/embed/EmbedPrediction"));
 const EmbedStrength = lazy(() => import("./pages/embed/EmbedStrength"));
 const MarketRecap = lazy(() => import("./pages/MarketRecap"));
 const Accuracy = lazy(() => import("./pages/Accuracy"));
+const AccuracyCoin = lazy(() => import("./pages/AccuracyCoin"));
+const Welcome = lazy(() => import("./pages/Welcome"));
+const Launch = lazy(() => import("./pages/Launch"));
 const ReportsIndex = lazy(() => import("./pages/reports/ReportsIndex"));
 const WeeklyReport = lazy(() => import("./pages/reports/WeeklyReport"));
 const Connect = lazy(() => import("./pages/Connect"));
@@ -277,6 +280,9 @@ const App = () => (
                 <Route path="/embed/strength/:coin" element={B(<EmbedStrength />)} />
                 <Route path="/market-recap" element={B(<MarketRecap />)} />
                 <Route path="/accuracy" element={B(<Accuracy />)} />
+                <Route path="/accuracy/:coinId" element={B(<AccuracyCoin />)} />
+                <Route path="/welcome" element={B(<Welcome />)} />
+                <Route path="/launch" element={B(<Launch />)} />
                 <Route path="/reports" element={B(<ReportsIndex />)} />
                 <Route path="/reports/:slug" element={B(<WeeklyReport />)} />
                 {/* Legal & About pages */}
