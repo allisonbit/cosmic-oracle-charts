@@ -108,6 +108,7 @@ const InteractiveTutorial = lazy(() => import("./pages/InteractiveTutorial"));
 const ApiDocs = lazy(() => import("./pages/ApiDocs"));
 const MobileDashboard = lazy(() => import("./pages/MobileDashboard"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
+const EmailUnsubscribe = lazy(() => import("./pages/EmailUnsubscribe"));
 // Loading fallback component
 const PageLoader = memo(function PageLoader() {
   return (
@@ -291,6 +292,7 @@ const App = () => (
                 <Route path="/api-docs" element={B(<ApiDocs />)} />
                 <Route path="/m" element={B(<MobileDashboard />)} />
                 <Route path="/unsubscribe" element={B(<Unsubscribe />)} />
+                <Route path="/email-unsubscribe" element={B(<EmailUnsubscribe />)} />
                 <Route path="/admin" element={B(<ProtectedRoute><AdminRoute><Admin /></AdminRoute></ProtectedRoute>)} />
                 <Route path="/admin/backlinks" element={B(<ProtectedRoute><AdminRoute><BacklinkOutreach /></AdminRoute></ProtectedRoute>)} />
                 <Route path="/admin/digest-preview" element={B(<ProtectedRoute><AdminRoute><DigestPreview /></AdminRoute></ProtectedRoute>)} />
