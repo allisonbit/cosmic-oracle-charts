@@ -78,6 +78,9 @@ export default function TutorialPage() {
           <p className="text-lg text-muted-foreground max-w-3xl">
             Every card on Oracle Bull condenses dozens of technical signals into a simple bias, confidence score, and price zones. Here's exactly what each element means and how to use it.
           </p>
+          <Link to="/tutorial/interactive" className="inline-flex items-center mt-4 text-primary font-semibold hover:underline">
+            Prefer clicking through a live chart? Try the interactive tutorial <ArrowRight className="w-4 h-4 ml-1" />
+          </Link>
         </header>
 
         <div className="grid md:grid-cols-[220px_1fr] gap-8">

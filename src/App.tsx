@@ -102,6 +102,8 @@ const ReportsIndex = lazy(() => import("./pages/reports/ReportsIndex"));
 const WeeklyReport = lazy(() => import("./pages/reports/WeeklyReport"));
 const Connect = lazy(() => import("./pages/Connect"));
 const TutorialPage = lazy(() => import("./pages/TutorialPage"));
+const InteractiveTutorial = lazy(() => import("./pages/InteractiveTutorial"));
+const ApiDocs = lazy(() => import("./pages/ApiDocs"));
 const MobileDashboard = lazy(() => import("./pages/MobileDashboard"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 // Loading fallback component
@@ -283,6 +285,8 @@ const App = () => (
                 <Route path="/editorial-policy" element={B(<EditorialPolicy />)} />
                 <Route path="/connect" element={B(<Connect />)} />
                 <Route path="/how-to-read-predictions" element={B(<TutorialPage />)} />
+                <Route path="/tutorial/interactive" element={B(<InteractiveTutorial />)} />
+                <Route path="/api-docs" element={B(<ApiDocs />)} />
                 <Route path="/m" element={B(<MobileDashboard />)} />
                 <Route path="/unsubscribe" element={B(<Unsubscribe />)} />
                 <Route path="/admin" element={B(<ProtectedRoute><AdminRoute><Admin /></AdminRoute></ProtectedRoute>)} />
