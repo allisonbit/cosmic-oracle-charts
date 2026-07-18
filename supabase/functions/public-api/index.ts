@@ -20,23 +20,36 @@ const RATE_LIMIT = 60;
 const WINDOW_MS = 60_000;
 const hits = new Map<string, { count: number; reset: number }>();
 
-function checkRate(ip: string): { ok: boolean; remaining: number } {
+function checkRate(ip: string): { ok: boolean; remaining: number; reset: number } {
   const now = Date.now();
   const entry = hits.get(ip);
   if (!entry || entry.reset < now) {
-    hits.set(ip, { count: 1, reset: now + WINDOW_MS });
-    return { ok: true, remaining: RATE_LIMIT - 1 };
+    const reset = now + WINDOW_MS;
+    hits.set(ip, { count: 1, reset });
+    return { ok: true, remaining: RATE_LIMIT - 1, reset };
   }
   entry.count++;
-  return { ok: entry.count <= RATE_LIMIT, remaining: Math.max(0, RATE_LIMIT - entry.count) };
+  return { ok: entry.count <= RATE_LIMIT, remaining: Math.max(0, RATE_LIMIT - entry.count), reset: entry.reset };
 }
 
-function json(body: unknown, init: ResponseInit = {}) {
+// Simple per-URL response cache (warm-instance only).
+const respCache = new Map<string, { body: string; status: number; expires: number }>();
+function cacheGet(key: string) {
+  const e = respCache.get(key);
+  if (!e || e.expires < Date.now()) return null;
+  return e;
+}
+function cacheSet(key: string, body: string, status: number, ttlMs: number) {
+  respCache.set(key, { body, status, expires: Date.now() + ttlMs });
+  if (respCache.size > 500) respCache.delete(respCache.keys().next().value);
+}
+
+function json(body: unknown, init: ResponseInit = {}, ttlSec = 30) {
   return new Response(JSON.stringify(body), {
     ...init,
     headers: {
       "Content-Type": "application/json",
-      "Cache-Control": "public, max-age=30",
+      "Cache-Control": `public, max-age=${ttlSec}, stale-while-revalidate=${ttlSec * 4}`,
       ...corsHeaders,
       ...(init.headers ?? {}),
     },
@@ -61,8 +74,18 @@ Deno.serve(async (req) => {
     ?? req.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
     ?? "anon";
   const rate = checkRate(ip);
+  const rateHeaders: Record<string, string> = {
+    "X-RateLimit-Limit": String(RATE_LIMIT),
+    "X-RateLimit-Remaining": String(rate.remaining),
+    "X-RateLimit-Reset": String(Math.ceil(rate.reset / 1000)),
+  };
   if (!rate.ok) {
-    return json({ error: "rate_limited", limit: RATE_LIMIT, window: "1m" }, { status: 429 });
+    const retryAfter = Math.max(1, Math.ceil((rate.reset - Date.now()) / 1000));
+    return json(
+      { error: "rate_limited", limit: RATE_LIMIT, window: "1m", retry_after_seconds: retryAfter },
+      { status: 429, headers: { ...rateHeaders, "Retry-After": String(retryAfter) } },
+      0,
+    );
   }
 
   const url = new URL(req.url);
@@ -73,10 +96,33 @@ Deno.serve(async (req) => {
     .replace(/^\/+/, "");
   const parts = path.split("/").filter(Boolean);
 
+  // Serve from cache if fresh.
+  const cacheKey = `${path}?${url.searchParams.toString()}`;
+  const cached = cacheGet(cacheKey);
+  if (cached) {
+    return new Response(cached.body, {
+      status: cached.status,
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "public, max-age=30, stale-while-revalidate=120",
+        "X-Cache": "HIT",
+        ...corsHeaders,
+        ...rateHeaders,
+      },
+    });
+  }
+
+  const wrap = (r: Response, ttlMs: number) => {
+    r.headers.set("X-Cache", "MISS");
+    for (const [k, v] of Object.entries(rateHeaders)) r.headers.set(k, v);
+    r.clone().text().then((t) => cacheSet(cacheKey, t, r.status, ttlMs)).catch(() => {});
+    return r;
+  };
+
   try {
     // /
     if (parts.length === 0) {
-      return json({
+      return wrap(json({
         name: "Oracle Bull Public API",
         version: "v1",
         endpoints: [
@@ -85,8 +131,8 @@ Deno.serve(async (req) => {
           "GET /api/v1/prediction/:coin/:timeframe",
         ],
         rate_limit: `${RATE_LIMIT} req/min`,
-        docs: "https://oraclebull.com/connect",
-      });
+        docs: "https://oraclebull.com/api-docs",
+      }, {}, 300), 300_000);
     }
 
     // /price/:coin
@@ -96,13 +142,13 @@ Deno.serve(async (req) => {
         `https://api.coingecko.com/api/v3/simple/price?ids=${coin}&vs_currencies=usd&include_24hr_change=true&include_market_cap=true&include_last_updated_at=true`,
       );
       if (!data || !data[coin]) return json({ error: "coin_not_found", coin }, { status: 404 });
-      return json({
+      return wrap(json({
         coin,
         price_usd: data[coin].usd,
         change_24h_pct: data[coin].usd_24h_change,
         market_cap_usd: data[coin].usd_market_cap,
         updated_at: new Date((data[coin].last_updated_at ?? 0) * 1000).toISOString(),
-      });
+      }, {}, 30), 30_000);
     }
 
     // /trending
@@ -112,7 +158,7 @@ Deno.serve(async (req) => {
       );
       if (!data) return json({ error: "upstream_unavailable" }, { status: 502 });
       const sorted = [...data].sort((a, b) => Math.abs(b.price_change_percentage_24h ?? 0) - Math.abs(a.price_change_percentage_24h ?? 0));
-      return json({
+      return wrap(json({
         updated_at: new Date().toISOString(),
         gainers: sorted.filter((c) => (c.price_change_percentage_24h ?? 0) > 0).slice(0, 10).map((c) => ({
           id: c.id, symbol: c.symbol, name: c.name, price: c.current_price, change_24h_pct: c.price_change_percentage_24h,
@@ -120,7 +166,7 @@ Deno.serve(async (req) => {
         losers: sorted.filter((c) => (c.price_change_percentage_24h ?? 0) < 0).slice(0, 10).map((c) => ({
           id: c.id, symbol: c.symbol, name: c.name, price: c.current_price, change_24h_pct: c.price_change_percentage_24h,
         })),
-      });
+      }, {}, 60), 60_000);
     }
 
     // /prediction/:coin/:timeframe
@@ -144,7 +190,7 @@ Deno.serve(async (req) => {
         .limit(1)
         .maybeSingle();
       if (!data) return json({ error: "no_active_prediction", coin, timeframe }, { status: 404 });
-      return json({ ...data, source: "oraclebull.com" });
+      return wrap(json({ ...data, source: "oraclebull.com" }, {}, 120), 120_000);
     }
 
     return json({ error: "not_found", path }, { status: 404 });
