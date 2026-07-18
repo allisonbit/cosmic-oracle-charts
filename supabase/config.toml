@@ -228,3 +228,6 @@ verify_jwt = false
 
 [functions.handle-email-suppression]
 verify_jwt = false
+
+[functions.gsc-dashboard]
+verify_jwt = false
