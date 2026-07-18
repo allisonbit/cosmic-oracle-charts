@@ -216,6 +216,7 @@ const App = () => (
             <HideOnEmbed>
               <ScrollToTop />
               <AdRefresh />
+              <FirstConnectRedirect />
             </HideOnEmbed>
             <Suspense fallback={<PageLoader />}>
               <Routes>
