@@ -1,7 +1,9 @@
+import { useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, BarChart, Bar } from "recharts";
 import { formatPrice, formatCompact } from "@/lib/formatters";
+import { ChartExportButton } from "@/components/charts/ChartExportButton";
 
 interface TokenChartTabProps {
   chartData: any[];
@@ -11,20 +13,22 @@ interface TokenChartTabProps {
 }
 
 export function TokenChartTab({ chartData, chartTimeframe, setChartTimeframe, isPositive }: TokenChartTabProps) {
+  const chartRef = useRef<HTMLDivElement>(null);
   return (
     <Card>
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
         <CardTitle className="text-sm">Price Chart</CardTitle>
-        <div className="flex gap-1">
+        <div className="flex gap-1 items-center">
           {(['1h', '24h', '7d', '30d'] as const).map(tf => (
             <Button key={tf} variant={chartTimeframe === tf ? 'default' : 'ghost'} size="sm"
               className="text-xs h-7 px-2" onClick={() => setChartTimeframe(tf)}>
               {tf}
             </Button>
           ))}
+          <ChartExportButton targetRef={chartRef} filename={`oraclebull-chart-${chartTimeframe}`} />
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent ref={chartRef}>
         <div className="h-[350px]">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData}>
