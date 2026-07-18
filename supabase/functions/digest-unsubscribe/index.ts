@@ -24,7 +24,7 @@ Deno.serve(async (req) => {
       .from("digest_subscribers")
       .update({ is_active: false })
       .eq("unsubscribe_token", token)
-      .select("id")
+      .select("id, email")
       .maybeSingle();
 
     if (error || !data) {
@@ -33,6 +33,11 @@ Deno.serve(async (req) => {
         headers: { "Content-Type": "application/json", ...corsHeaders },
       });
     }
+    // Also add to global suppression so no other queue path can email them
+    await supabase.from("suppressed_emails").upsert(
+      { email: (data as any).email.toLowerCase(), reason: "unsubscribe", metadata: { source: "digest-unsubscribe" } },
+      { onConflict: "email" },
+    );
     return new Response(JSON.stringify({ ok: true }), {
       headers: { "Content-Type": "application/json", ...corsHeaders },
     });

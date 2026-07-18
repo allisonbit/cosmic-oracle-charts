@@ -1,76 +1,86 @@
-# Cosmic Oracle: 5-Feature Rollout Plan
+# Daily Digest Email — Implementation Plan
 
-Ship in this exact order. Each step is independently deployable so nothing blocks the next.
-
----
-
-## Step 1 — Daily Digest Email
-
-**What:** Users subscribe an email; every morning (08:00 UTC) they get top 5 gainers, top 5 losers, and 3 highest-confidence AI forecasts.
-
-**Build:**
-- New table `digest_subscribers` (email, is_active, unsubscribe_token, created_at) with RLS: anonymous can INSERT, only service_role can SELECT/UPDATE.
-- Edge function `send-daily-digest`: pulls movers from CoinGecko + top 3 rows from `predictions_cache` ordered by confidence, renders branded HTML, sends via Resend (needs `RESEND_API_KEY`).
-- pg_cron: daily 08:00 UTC.
-- UI: `<DigestSignup>` component on homepage footer + `/unsubscribe/:token` page.
+Four features, shipped in order. Each is small and independently verifiable.
 
 ---
 
-## Step 2 — Mobile-Optimized Dashboard
+## 1. Unsubscribe links + stop-send verification
 
-**What:** New route `/m` (auto-redirect from `/dashboard` when viewport < 768px) — a swipeable, single-column, tap-friendly command center.
+**Goal:** Every digest email has a one-click unsubscribe. Once clicked, that address never gets another digest.
 
-**Build:**
-- `src/pages/MobileDashboard.tsx` with 4 swipe tabs: Markets, Signals, Portfolio, AI Picks.
-- Fluid `clamp()` typography, 48px touch targets, sticky bottom nav already exists.
-- Pull-to-refresh on the top scroll container.
-- Lazy-load each tab (React.lazy).
+**Changes**
+- `send-daily-digest` edge function:
+  - For each subscriber, mint/lookup a token in `email_unsubscribe_tokens` (already exists from infra setup).
+  - Inject `List-Unsubscribe` + `List-Unsubscribe-Post` headers (RFC 8058, one-click).
+  - Add footer link: `https://oraclebull.com/api/unsubscribe?token=...`.
+  - Before enqueueing, skip any address present in `suppressed_emails` OR where `digest_subscribers.active = false`.
+- Reuse existing `handle-email-unsubscribe` edge function (scaffolded by infra). Extend it to also flip `digest_subscribers.active = false` and insert into `suppressed_emails` with `reason = 'unsubscribe'`.
+- Public route `/unsubscribed` — confirmation page.
 
----
-
-## Step 3 — Chart Export (PNG / SVG)
-
-**What:** Every price/prediction chart gets an "Export" menu → PNG or SVG download with watermark.
-
-**Build:**
-- `src/lib/chartExport.ts` — utility using `html-to-image` (already MIT-safe) to serialize the target chart DOM node.
-- `<ChartExportButton chartRef={ref} filename="btc-daily.png" />` dropdown.
-- Wire into `PredictionChart`, `PriceSeries`, and `TokenChartTab`.
+**Verification**
+- Send test digest to a seeded subscriber, click unsubscribe, re-run `send-daily-digest`, confirm row is skipped and `email_send_log` shows no new send for that address.
 
 ---
 
-## Step 4 — Public REST API
+## 2. Delivery + bounce tracking via webhooks
 
-**What:** `https://oraclebull.com/api/v1/*` — free, rate-limited JSON endpoints.
+**Goal:** Per-subscriber delivery status (delivered / bounced / complained) visible in admin.
 
-**Endpoints:**
-- `GET /api/v1/price/:coin` — live price + 24h change
-- `GET /api/v1/trending` — top movers
-- `GET /api/v1/prediction/:coin/:timeframe` — cached AI forecast
+**Changes**
+- New edge function `email-webhook` (public, HMAC-verified) at `/api/email-webhook`:
+  - Accepts provider events (delivered, bounce, complaint, open — provider-agnostic JSON).
+  - Updates matching `email_send_log` row by `message_id` → sets `status` to `delivered` / `bounced` / `complained`, writes provider event into `metadata`.
+  - On bounce/complaint: insert into `suppressed_emails` (idempotent) so future sends skip.
+- Migration: index `email_send_log(message_id)` if not present.
+- Admin page `/admin/email-status` — table with dedup-by-message_id (per email-dashboard guide), status filter, timerange filter, per-subscriber view.
 
-**Build:**
-- Edge function `public-api` handling all three paths via URL routing.
-- Redirect `/api/v1/*` → the edge function in the Cloudflare/Netlify config.
-- Simple IP-based rate limit (60 req/min) using an in-memory Map + 5-min TTL.
-- Docs on the existing `/connect` page.
-
----
-
-## Step 5 — Guided Tutorial Page
-
-**What:** `/how-to-read-predictions` — long-form walkthrough with annotated screenshots, live example, and an interactive "try it" section.
-
-**Build:**
-- `src/pages/TutorialPage.tsx` — sticky-nav sections: Reading the bias badge, Confidence %, Support/resistance zones, RSI/MACD, Bull vs Bear scenarios, Common mistakes.
-- FAQ + HowTo JSON-LD for rich results.
-- Link from Prediction pages ("New here? Learn how to read this →") and nav menu.
+**Verification**
+- POST synthetic webhook payloads (delivered + bounce), confirm log row updates and suppression insert.
 
 ---
 
-## Technical stack notes
+## 3. Digest preview page
 
-- All backend on Supabase Edge Functions + Lovable Cloud (already provisioned).
-- Digest emails need a `RESEND_API_KEY` (I'll request it before Step 1).
-- No new npm deps except `html-to-image` for Step 3.
-- Every new page: canonical, OG tags, JSON-LD via existing `PredictionSEO`/`FAQHowToSchema` patterns.
-- Rollout order is strict — Step 1 → 5, one after another, verifying each before moving on.
+**Goal:** Render exactly what subscribers will receive, using sample or live data, before sending.
+
+**Changes**
+- Extract digest HTML builder from `send-daily-digest` into `supabase/functions/_shared/email-templates/daily-digest.tsx` (React Email).
+- New edge function `preview-daily-digest` — returns rendered HTML for a given date (defaults to today) using live market data, or `?sample=1` for fixed fixture.
+- Admin page `/admin/digest-preview`:
+  - Renders the HTML in a sandboxed iframe.
+  - Toggle: Live data / Sample data.
+  - "Send test to me" button → invokes `send-daily-digest` with `test_recipient` param.
+
+**Verification**
+- Open `/admin/digest-preview`, confirm identical rendering to a real send captured via provider inbox.
+
+---
+
+## 4. Branded daily digest template
+
+**Goal:** On-brand HTML template (Oracle Bull identity) with BTC/ETH top movers + AI forecast highlights.
+
+**Template sections** (React Email components, mobile-first, 600px):
+1. Header — Oracle Bull logo, tagline, date.
+2. **BTC + ETH spotlight** — price, 24h %, 7d spark trend text, AI signal (bull/bear/neutral) with confidence.
+3. **Top movers** — 5 gainers + 5 losers (24h) with symbol, price, %.
+4. **AI forecast highlights** — 3 highest-confidence predictions from `predictions_cache` (coin, horizon, target, confidence).
+5. **Narrative** — 1–2 sentence market summary from latest cached AI narrative.
+6. CTA button → `oraclebull.com`.
+7. Footer — unsubscribe link, physical address placeholder, "Not financial advice".
+
+**Styling:** brand tokens from `index.css` (light theme, white bg per project rules), Inter font stack, brand blue accents.
+
+**Data sources:** existing hooks/queries — `predictions_cache`, live market fetch in edge function (already used in current digest).
+
+---
+
+## Technical notes
+
+- Order: build template (4) → wire preview (3) → send flow with unsubscribe (1) → webhooks (2). Template + preview first lets us visually iterate before touching send/suppression logic.
+- All email HTML: `Body` bg stays `#ffffff` per email guide.
+- No provider SDK — sends stay on Lovable Emails queue (`enqueue_email` → `process-email-queue`).
+- Webhook endpoint uses a secret we'll add via `add_secret` when wiring provider.
+- All admin pages gated by `has_role(auth.uid(),'admin')`.
+
+Reply **"go"** to start with step 1 (branded template + preview), or tell me a different order.
