@@ -248,7 +248,9 @@ function generatePredictionsSitemap(): string {
     for (const tf of ["", "/daily", "/weekly", "/monthly"]) {
       urls += url(`${SITE_URL}/price-prediction/${crypto}${tf}`, now, "hourly", "0.9");
     }
+    urls += url(`${SITE_URL}/accuracy/${crypto}`, now, "daily", "0.7");
   }
+  urls += url(`${SITE_URL}/accuracy`, now, "daily", "0.8");
   return wrapUrlset(urls);
 }
 
