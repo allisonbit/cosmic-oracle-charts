@@ -64,7 +64,34 @@ export default function Convert() {
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
-        
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faq.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
+        })}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ExchangeRateSpecification",
+          currency: coinDef.ticker,
+          currentExchangeRate: {
+            "@type": "UnitPriceSpecification",
+            price: rate,
+            priceCurrency: fiatDef.slug.toUpperCase(),
+          },
+          url: canonical,
+        })}</script>
       </Helmet>
 
       <main className="max-w-3xl mx-auto px-4 py-10">
