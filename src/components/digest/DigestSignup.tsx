@@ -21,13 +21,32 @@ export function DigestSignup({ compact = false }: { compact?: boolean }) {
       return;
     }
     setStatus("loading");
-    const { error } = await supabase
+    const { data: inserted, error } = await supabase
       .from("digest_subscribers")
-      .insert({ email: value });
-    if (error && !/duplicate|unique/i.test(error.message)) {
+      .insert({ email: value })
+      .select("id")
+      .maybeSingle();
+    const isDuplicate = error && /duplicate|unique/i.test(error.message);
+    if (error && !isDuplicate) {
       toast.error("Could not subscribe. Try again.");
       setStatus("idle");
       return;
+    }
+    // Fire branded Welcome email (idempotent by subscriber id / email)
+    if (!isDuplicate) {
+      const idKey = `welcome-${inserted?.id ?? value}`;
+      supabase.functions
+        .invoke("send-transactional-email", {
+          body: {
+            templateName: "welcome",
+            recipientEmail: value,
+            idempotencyKey: idKey,
+            templateData: { email: value },
+          },
+        })
+        .catch(() => {
+          /* non-blocking; queue retries handle transient failures */
+        });
     }
     setStatus("done");
     toast.success("Subscribed — first digest arrives tomorrow at 08:00 UTC");
