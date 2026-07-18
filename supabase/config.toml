@@ -203,3 +203,15 @@ per = 3600
 
 [functions.process-email-queue]
 verify_jwt = true
+
+[functions.send-daily-digest]
+verify_jwt = false
+
+[functions.digest-unsubscribe]
+verify_jwt = false
+
+[functions.preview-daily-digest]
+verify_jwt = false
+
+[functions.email-webhook]
+verify_jwt = false
