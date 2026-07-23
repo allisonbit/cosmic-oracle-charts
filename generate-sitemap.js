@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 const BASE = 'https://oraclebull.com';
 const urls = [];
 function add(path, freq, pri) { urls.push({path, freq, pri}); }
@@ -16,13 +16,15 @@ function add(path, freq, pri) { urls.push({path, freq, pri}); }
   ['/compare', 'daily', 0.8], ['/factory', 'hourly', 0.8], ['/crypto-factory', 'hourly', 0.8],
   ['/factory/events', 'hourly', 0.7], ['/factory/onchain', 'hourly', 0.7],
   ['/factory/narratives', 'daily', 0.7], ['/factory/news', 'hourly', 0.7],
-  ['/portfolio', 'daily', 0.7], ['/learn', 'weekly', 0.7], ['/trade', 'hourly', 0.8],
-  ['/how-to-buy', 'weekly', 0.8], ['/liquidations/bitcoin-heatmap', 'hourly', 0.8],
-  ['/about', 'monthly', 0.5], ['/contact', 'monthly', 0.5], ['/sitemap', 'weekly', 0.4],
+  ['/learn', 'weekly', 0.7], ['/how-to-buy', 'weekly', 0.8],
+  ['/liquidations/bitcoin-heatmap', 'hourly', 0.8], ['/market-recap', 'daily', 0.7],
+  ['/reports', 'daily', 0.7], ['/welcome', 'monthly', 0.5], ['/launch', 'monthly', 0.5],
+  ['/how-to-read-predictions', 'weekly', 0.7], ['/tutorial/interactive', 'weekly', 0.7],
+  ['/api-docs', 'monthly', 0.6], ['/m', 'hourly', 0.8],
+  ['/about', 'monthly', 0.5], ['/contact', 'monthly', 0.5],
   ['/privacy-policy', 'yearly', 0.3], ['/terms', 'yearly', 0.3],
   ['/cookie-policy', 'yearly', 0.3], ['/risk-disclaimer', 'yearly', 0.3],
-  ['/editorial-policy', 'yearly', 0.3],
-  ['/markets', 'daily', 0.8], ['/forex', 'hourly', 0.8]
+  ['/editorial-policy', 'yearly', 0.3]
 ].forEach(s => add(s[0], s[1], s[2]));
 
 // Airdrops
@@ -68,6 +70,12 @@ const top30 = topCryptos.slice(0, 30);
 const years = [2026, 2027, 2028, 2030];
 top30.forEach(c => {
   years.forEach(y => add('/price-prediction/'+c+'/'+y, 'monthly', 0.7));
+});
+
+// Today and Accuracy per-coin pages (top 50)
+topCryptos.slice(0, 50).forEach(c => {
+  add('/today/'+c, 'daily', 0.6);
+  add('/accuracy/'+c, 'daily', 0.6);
 });
 
 // How-to-buy for top 50

@@ -118,7 +118,49 @@ Deno.serve(async (req) => {
     });
   }
 
-  return new Response(JSON.stringify({ ok: true, slug, coins: coins.length }), {
+  // Send weekly-report email to all digest subscribers (best-effort).
+  let emailed = 0;
+  try {
+    const { data: subs } = await supabase
+      .from("digest_subscribers")
+      .select("id, email")
+      .order("created_at", { ascending: true });
+
+    const btc = coins.find((c: any) => c.id === "bitcoin");
+    const eth = coins.find((c: any) => c.id === "ethereum");
+    const topMovers = [...coins]
+      .sort((a, b) => b.change_7d - a.change_7d)
+      .slice(0, 8)
+      .map((c: any) => ({ symbol: c.symbol.toUpperCase(), change: c.change_7d }));
+
+    const emailData = {
+      weekOf: slug,
+      btcChange: btc?.change_7d,
+      ethChange: eth?.change_7d,
+      topMovers,
+      summary: content.market?.mood ? `Market mood this week: ${content.market.mood}.` : undefined,
+    };
+
+    for (const sub of subs ?? []) {
+      try {
+        await supabase.functions.invoke("send-transactional-email", {
+          body: {
+            templateName: "weekly-report",
+            recipientEmail: sub.email,
+            idempotencyKey: `weekly-report-${slug}-${sub.id}`,
+            templateData: emailData,
+          },
+        });
+        emailed++;
+      } catch (e) {
+        console.error("weekly-report email failed for", sub.email, e);
+      }
+    }
+  } catch (e) {
+    console.error("weekly-report email batch error", e);
+  }
+
+  return new Response(JSON.stringify({ ok: true, slug, coins: coins.length, emailed }), {
     headers: { "Content-Type": "application/json", ...corsHeaders },
   });
 });

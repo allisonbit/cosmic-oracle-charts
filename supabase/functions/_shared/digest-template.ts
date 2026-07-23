@@ -207,3 +207,34 @@ export function buildDigestHtml(input: DigestData & { unsubscribeUrl: string; da
 </td></tr></table>
 </body></html>`;
 }
+
+export function buildDigestText(input: DigestData & { unsubscribeUrl: string; date: string }) {
+  const { gainers, losers, btc, eth, predictions, narrative, unsubscribeUrl, date } = input;
+  const lines: string[] = [
+    `Oracle Bull · Daily Digest · ${date}`,
+    "",
+    narrative,
+    "",
+    btc ? `Bitcoin (BTC): $${fmtPrice(btc.price)} · ${fmtPct(btc.change24h)}` : null,
+    eth ? `Ethereum (ETH): $${fmtPrice(eth.price)} · ${fmtPct(eth.change24h)}` : null,
+    "",
+    "Top Gainers · 24h",
+    ...gainers.map((c) => `${c.symbol.toUpperCase()} (${c.name}) — $${fmtPrice(c.price)} · ${fmtPct(c.change24h)}`),
+    "",
+    "Top Losers · 24h",
+    ...losers.map((c) => `${c.symbol.toUpperCase()} (${c.name}) — $${fmtPrice(c.price)} · ${fmtPct(c.change24h)}`),
+    predictions.length ? "\nAI Forecast Highlights" : null,
+    ...(predictions.length
+      ? predictions.map(
+          (p) =>
+            `${(p.symbol ?? p.coin_id).toUpperCase()} · ${p.timeframe} — ${p.bias ?? "neutral"} (${p.confidence ?? "—"}% confidence) · ${SITE}/price-prediction/${p.coin_id}/${p.timeframe}`,
+        )
+      : []),
+    "",
+    `Open Oracle Bull: ${SITE}`,
+    "",
+    `Unsubscribe: ${unsubscribeUrl}`,
+    "Not financial advice. Crypto markets are volatile — always do your own research.",
+  ].filter((l): l is string => l !== null);
+  return lines.join("\n");
+}

@@ -5,7 +5,7 @@
 // preview send (used by /admin/digest-preview "Send test to me").
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import { buildDigestHtml, fetchDigestData, type DigestData } from "../_shared/digest-template.ts";
+import { buildDigestHtml, buildDigestText, fetchDigestData, type DigestData } from "../_shared/digest-template.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -22,6 +22,7 @@ async function enqueueDigest(
     recipient: string;
     subject: string;
     html: string;
+    text: string;
     unsubscribeToken: string;
     idempotencyKey: string;
   },
@@ -33,6 +34,7 @@ async function enqueueDigest(
     sender_domain: SENDER_DOMAIN,
     subject: args.subject,
     html: args.html,
+    text: args.text,
     purpose: "transactional",
     label: "daily-digest",
     idempotency_key: args.idempotencyKey,
@@ -67,15 +69,26 @@ Deno.serve(async (req) => {
 
   // TEST SEND: single recipient, no subscriber lookup, no last_sent bookkeeping
   if (body.test_recipient) {
-    const html = buildDigestHtml({
-      ...data,
-      unsubscribeUrl: `${SITE}/unsubscribe?token=test`,
-      date: today,
-    });
+    const normalized = body.test_recipient.toLowerCase();
+    const { data: suppressed } = await supabase
+      .from("suppressed_emails")
+      .select("email")
+      .eq("email", normalized)
+      .maybeSingle();
+    if (suppressed) {
+      return new Response(
+        JSON.stringify({ ok: false, test: true, recipient: body.test_recipient, blocked: "suppressed" }),
+        { headers: { "Content-Type": "application/json", ...corsHeaders } },
+      );
+    }
+    const digestInput = { ...data, unsubscribeUrl: `${SITE}/unsubscribe?token=test`, date: today };
+    const html = buildDigestHtml(digestInput);
+    const text = buildDigestText(digestInput);
     const { error, messageId } = await enqueueDigest(supabase, {
       recipient: body.test_recipient,
       subject: `[TEST] ${subject}`,
       html,
+      text,
       unsubscribeToken: "test",
       idempotencyKey: `daily-digest-test-${Date.now()}`,
     });
@@ -102,11 +115,14 @@ Deno.serve(async (req) => {
   for (const s of subs ?? []) {
     if (blocked.has(s.email.toLowerCase())) { skipped++; continue; }
     const unsubscribeUrl = `${SITE}/unsubscribe?token=${s.unsubscribe_token}`;
-    const html = buildDigestHtml({ ...data, unsubscribeUrl, date: today });
+    const digestInput = { ...data, unsubscribeUrl, date: today };
+    const html = buildDigestHtml(digestInput);
+    const text = buildDigestText(digestInput);
     const { error } = await enqueueDigest(supabase, {
       recipient: s.email,
       subject,
       html,
+      text,
       unsubscribeToken: s.unsubscribe_token,
       idempotencyKey: `daily-digest-${today}-${s.id}`,
     });
