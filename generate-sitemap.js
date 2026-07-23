@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 const BASE = 'https://oraclebull.com';
 const urls = [];
 function add(path, freq, pri) { urls.push({path, freq, pri}); }
