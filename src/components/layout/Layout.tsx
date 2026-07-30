@@ -6,12 +6,6 @@ import { MobileBottomNav } from "./MobileBottomNav";
 import { BreadcrumbNav } from "./BreadcrumbNav";
 import { CookieBanner } from "../legal/CookieBanner";
 import { AdUnit } from "../ads/AdUnit";
-import { AdsterraNative } from "../ads/AdsterraNative";
-import { AdsterraBanner } from "../ads/AdsterraBanner";
-import { AdsterraBanner300 } from "../ads/AdsterraBanner300";
-import { AdsterraBanner320 } from "../ads/AdsterraBanner320";
-import { AdsterraSmartlink } from "../ads/AdsterraSmartlink";
-import { AdsterraStickyBanner } from "../ads/AdsterraStickyBanner";
 import { LazyAd } from "../ads/LazyAd";
 import { Loader2 } from "lucide-react";
 
@@ -48,9 +42,6 @@ export function Layout({ children, showTicker = true }: LayoutProps) {
 
         {/* Top ad zone */}
         <div className="space-y-1 mb-1">
-          <AdsterraSmartlink variant="banner" className="max-w-5xl mx-auto px-4" />
-          <div className="hidden md:block"><AdsterraBanner /></div>
-          <div className="block md:hidden"><AdsterraBanner320 /></div>
           <AdUnit format="horizontal" className="max-w-5xl mx-auto px-4" />
         </div>
 
@@ -61,18 +52,12 @@ export function Layout({ children, showTicker = true }: LayoutProps) {
 
         {/* Bottom ad zone */}
         <LazyAd className="space-y-1 mt-1">
-          <AdsterraNative className="max-w-5xl mx-auto px-4" />
-          <AdsterraBanner300 />
-          <div className="hidden md:block"><AdsterraBanner /></div>
-          <div className="block md:hidden"><AdsterraBanner320 /></div>
-          <AdsterraSmartlink variant="button" />
           <AdUnit format="horizontal" className="max-w-5xl mx-auto px-4" />
         </LazyAd>
       </main>
 
       <Footer />
       <MobileBottomNav />
-      <AdsterraStickyBanner />
       <CookieBanner />
     </div>
   );

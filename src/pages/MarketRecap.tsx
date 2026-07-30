@@ -11,15 +11,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SocialShare } from "@/components/ui/social-share";
-import { AdsterraNative } from "@/components/ads/AdsterraNative";
 import { AdUnit } from "@/components/ads/AdUnit";
-import { AdsterraBanner } from "@/components/ads/AdsterraBanner";
-import { AdsterraBanner300 } from "@/components/ads/AdsterraBanner300";
-import { AdsterraBanner320 } from "@/components/ads/AdsterraBanner320";
-import { AdsterraSmartlink } from "@/components/ads/AdsterraSmartlink";
 
 import { AdBreak } from "@/components/ads/AdBreak";
-import { AdsterraStickyBanner } from "@/components/ads/AdsterraStickyBanner";
 import { LazyAd } from "@/components/ads/LazyAd";
 import { useMarketData } from "@/hooks/useMarketData";
 import type { TopCoin } from "@/hooks/useMarketData";
@@ -115,9 +109,6 @@ export default function MarketRecap() {
 
       <main className="flex-1 container mx-auto px-4 py-24 md:py-32">
         <div className="space-y-1 mb-1">
-          <AdsterraSmartlink variant="banner" className="max-w-5xl mx-auto" />
-          <div className="hidden md:block"><AdsterraBanner /></div>
-          <div className="block md:hidden"><AdsterraBanner320 /></div>
           <AdUnit format="horizontal" className="max-w-5xl mx-auto" />
         </div>
         <div className="max-w-4xl mx-auto">
@@ -398,16 +389,10 @@ export default function MarketRecap() {
       </main>
 
       <LazyAd className="space-y-1">
-        <AdsterraNative className="max-w-5xl mx-auto px-4" />
-        <AdsterraBanner300 />
-        <div className="hidden md:block"><AdsterraBanner /></div>
-        <div className="block md:hidden"><AdsterraBanner320 /></div>
-        <AdsterraSmartlink variant="button" />
         <AdUnit format="horizontal" className="max-w-5xl mx-auto px-4" />
       </LazyAd>
       <Footer />
       <MobileBottomNav />
-      <AdsterraStickyBanner />
 
       <div className="h-20 md:hidden" aria-hidden="true" />
     </div>

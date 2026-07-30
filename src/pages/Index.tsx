@@ -7,16 +7,10 @@ import { CryptoTicker } from "@/components/layout/CryptoTicker";
 import { HeroSection } from "@/components/home/HeroSection";
 import { QuickAccessBar } from "@/components/home/QuickAccessBar";
 import { Footer } from "@/components/layout/Footer";
-import { AdsterraNative } from "@/components/ads/AdsterraNative";
 import { AdUnit } from "@/components/ads/AdUnit";
-import { AdsterraBanner } from "@/components/ads/AdsterraBanner";
-import { AdsterraBanner300 } from "@/components/ads/AdsterraBanner300";
-import { AdsterraBanner320 } from "@/components/ads/AdsterraBanner320";
-import { AdsterraSmartlink } from "@/components/ads/AdsterraSmartlink";
 
 import { AdBreak } from "@/components/ads/AdBreak";
 import { LazyAd } from "@/components/ads/LazyAd";
-import { AdsterraStickyBanner } from "@/components/ads/AdsterraStickyBanner";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SEO } from "@/components/MainSEO";
@@ -128,9 +122,6 @@ const Index = () => {
       <main id="main-content">
         {/* Top ad zone */}
         <div className="space-y-1 mb-1">
-          <AdsterraSmartlink variant="banner" className="max-w-5xl mx-auto px-4" />
-          <div className="hidden md:block"><AdsterraBanner /></div>
-          <div className="block md:hidden"><AdsterraBanner320 /></div>
           <AdUnit format="horizontal" className="max-w-5xl mx-auto px-4" />
         </div>
 
@@ -230,16 +221,10 @@ const Index = () => {
       </main>
 
       <LazyAd className="space-y-1">
-        <AdsterraNative className="max-w-5xl mx-auto px-4" />
-        <AdsterraBanner300 />
-        <div className="hidden md:block"><AdsterraBanner /></div>
-        <div className="block md:hidden"><AdsterraBanner320 /></div>
-        <AdsterraSmartlink variant="button" />
         <AdUnit format="horizontal" className="max-w-5xl mx-auto px-4" />
       </LazyAd>
       <Footer />
       <MobileBottomNav />
-      <AdsterraStickyBanner />
 
       {/* Bottom padding for mobile nav */}
       <div className="h-20 md:hidden" aria-hidden="true" />

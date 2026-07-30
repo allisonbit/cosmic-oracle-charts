@@ -7,9 +7,6 @@ import { SEO } from "@/components/MainSEO";
 import { Helmet } from "react-helmet-async";
 import { SocialShare } from "@/components/ui/social-share";
 import { AdBreak } from "@/components/ads/AdBreak";
-import { AdsterraStickyBanner } from "@/components/ads/AdsterraStickyBanner";
-import { LazyAd } from "@/components/ads/LazyAd";
-import { AdsterraNative } from "@/components/ads/AdsterraNative";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -289,10 +286,6 @@ export default function WeeklyReport() {
           </section>
         </div>
 
-        <LazyAd>
-          <AdsterraNative />
-        </LazyAd>
-
         {/* Strength Analysis */}
         {topStrength.length > 0 && (
           <section className="mb-8">
@@ -437,7 +430,6 @@ export default function WeeklyReport() {
 
       <Footer />
       <MobileBottomNav />
-      <AdsterraStickyBanner />
     </div>
   );
 }

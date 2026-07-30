@@ -1,14 +1,8 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { AdsterraNative } from "@/components/ads/AdsterraNative";
 import { AdUnit } from "@/components/ads/AdUnit";
-import { AdsterraBanner } from "@/components/ads/AdsterraBanner";
-import { AdsterraBanner300 } from "@/components/ads/AdsterraBanner300";
-import { AdsterraBanner320 } from "@/components/ads/AdsterraBanner320";
-import { AdsterraSmartlink } from "@/components/ads/AdsterraSmartlink";
 
 import { AdBreak } from "@/components/ads/AdBreak";
-import { AdsterraStickyBanner } from "@/components/ads/AdsterraStickyBanner";
 import { LazyAd } from "@/components/ads/LazyAd";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Link, useNavigate } from "react-router-dom";
@@ -189,9 +183,6 @@ export default function PredictionHub() {
 
       <main className="flex-1 container mx-auto px-4 py-20 md:py-28">
         <div className="space-y-1 mb-1">
-          <AdsterraSmartlink variant="banner" className="max-w-5xl mx-auto" />
-          <div className="hidden md:block"><AdsterraBanner /></div>
-          <div className="block md:hidden"><AdsterraBanner320 /></div>
           <AdUnit format="horizontal" className="max-w-5xl mx-auto" />
         </div>
 
@@ -625,16 +616,10 @@ export default function PredictionHub() {
       </main>
 
       <LazyAd className="space-y-1">
-        <AdsterraNative className="max-w-5xl mx-auto px-4" />
-        <AdsterraBanner300 />
-        <div className="hidden md:block"><AdsterraBanner /></div>
-        <div className="block md:hidden"><AdsterraBanner320 /></div>
-        <AdsterraSmartlink variant="button" />
         <AdUnit format="horizontal" className="max-w-5xl mx-auto px-4" />
       </LazyAd>
       <Footer />
       <MobileBottomNav />
-      <AdsterraStickyBanner />
 
     </div>
   );
