@@ -247,6 +247,23 @@ const convCoins = [
   convCoins.forEach(c => add('/convert/'+c+'/'+f, 'daily', 0.5));
 });
 
+// News articles (published rows from the content database)
+const SUPABASE_URL = 'https://qynszkirmcrldqmiplwh.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF5bnN6a2lybWNybGRxbWlwbHdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzU2NTQsImV4cCI6MjA4MDc1MTY1NH0.8Jr8lpfAifN-ozIQmA9_wU5YqYjZVlq3Q35KccSI-g0';
+try {
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/blog_articles?select=slug&order=published_at.desc&limit=2000`,
+    { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } },
+  );
+  if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
+  const rows = await res.json();
+  const newsSlugs = [...new Set(rows.map(r => r.slug).filter(Boolean))];
+  newsSlugs.forEach(s => add('/news/'+s, 'weekly', 0.6));
+  console.log('News articles added: ' + newsSlugs.length);
+} catch (e) {
+  console.warn('news slugs unavailable:', e.message);
+}
+
 // Build XML
 let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
 xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
