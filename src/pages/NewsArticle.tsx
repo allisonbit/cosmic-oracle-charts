@@ -154,7 +154,7 @@ export default function NewsArticle() {
       <Layout>
         <Helmet><title>Article not found | Oracle Bull News</title></Helmet>
         <div className="container mx-auto px-4 py-20 text-center">
-          <Newspaper className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
+          <Newspaper className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
           <h1 className="text-2xl font-bold mb-3 font-display">Article not found</h1>
           <p className="text-muted-foreground mb-6 text-sm max-w-sm mx-auto">
             This story may have expired. Browse the latest crypto news instead.
@@ -203,8 +203,22 @@ export default function NewsArticle() {
       <Helmet>
         <title>{article.metaTitle || `${article.title} | Oracle Bull News`}</title>
         <meta name="description" content={article.metaDescription} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={article.metaTitle || article.title} />
+        <meta property="og:description" content={article.metaDescription} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:site_name" content="Oracle Bull" />
+        <meta property="og:image" content={article.imageUrl || `${SITE_URL}/oracle-bull-logo.jpg`} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={article.metaTitle || article.title} />
+        <meta name="twitter:description" content={article.metaDescription} />
+        <meta name="twitter:image" content={article.imageUrl || `${SITE_URL}/oracle-bull-logo.jpg`} />
         <meta property="article:published_time" content={isoPublished} />
         <meta property="article:section" content={article.category} />
+        <script type="application/ld+json">{JSON.stringify(newsArticleLd)}</script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>
+        {faqLd && <script type="application/ld+json">{JSON.stringify(faqLd)}</script>}
       </Helmet>
 
       {/* Reading progress bar — only when NOT showing sticky bar */}
@@ -457,7 +471,7 @@ export default function NewsArticle() {
               )}
 
               {/* Disclaimer */}
-              <p className="text-[10px] text-muted-foreground/50 border-t border-border/20 pt-4 leading-relaxed">
+              <p className="text-[10px] text-muted-foreground border-t border-border/20 pt-4 leading-relaxed">
                 Aggregated for informational purposes with attribution and link to original source. AI sentiment is a
                 research signal, not financial advice. Always do your own research.
               </p>

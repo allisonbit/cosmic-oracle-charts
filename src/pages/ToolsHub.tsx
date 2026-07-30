@@ -181,7 +181,7 @@ export default function ToolsHub() {
                     </div>
                     <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-1">{desc}</p>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-muted-foreground/40 group-hover:text-primary transition-colors mt-2 shrink-0" />
+                  <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors mt-2 shrink-0" />
                 </Link>
               ))}
             </div>
@@ -344,7 +344,7 @@ export default function ToolsHub() {
                       className="flex items-center gap-3 py-2.5 border-b border-border/30 text-sm font-medium hover:text-primary transition-colors group">
                       <Icon className="w-4 h-4 text-primary shrink-0" />
                       <span className="flex-1">{label}</span>
-                      <ChevronRight className="w-3 h-3 text-muted-foreground/40 group-hover:text-primary transition-colors" />
+                      <ChevronRight className="w-3 h-3 text-muted-foreground group-hover:text-primary transition-colors" />
                     </Link>
                   ))}
                 </div>

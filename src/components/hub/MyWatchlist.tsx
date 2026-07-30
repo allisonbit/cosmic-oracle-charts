@@ -96,7 +96,7 @@ export function MyWatchlist() {
       {/* Watchlist */}
       {watchlist.length === 0 ? (
         <div className="text-center py-16 space-y-4">
-          <Star className="w-12 h-12 text-muted-foreground/30 mx-auto" />
+          <Star className="w-12 h-12 text-muted-foreground mx-auto" />
           <div>
             <h3 className="text-lg font-semibold text-foreground">Your watchlist is empty</h3>
             <p className="text-muted-foreground">Search and add coins you want to track</p>

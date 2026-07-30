@@ -102,8 +102,39 @@ topCryptos.slice(0, 50).forEach(c => add('/how-to-buy/'+c, 'monthly', 0.6));
   'bitcoin-vs-ethereum','will-solana-go-up','will-xrp-go-up','will-cardano-go-up'
 ].forEach(s => add('/market/'+s, 'daily', 0.7));
 
-// Markets per-coin (top 40)
-topCryptos.slice(0, 40).forEach(c => add('/markets/'+c, 'daily', 0.7));
+// Embed widgets (public, indexable entry points)
+add('/embed', 'monthly', 0.5);
+['bitcoin','ethereum','solana','ripple','binancecoin','cardano','dogecoin','polkadot',
+ 'chainlink','avalanche-2','litecoin','uniswap','near','sui','aptos','arbitrum',
+ 'optimism','pepe','shiba-inu','toncoin'].forEach(c => {
+  add('/embed/price/'+c, 'daily', 0.5);
+  add('/embed/prediction/'+c, 'daily', 0.5);
+  add('/embed/strength/'+c, 'daily', 0.5);
+});
+add('/embed/fear-greed', 'daily', 0.5);
+
+// Explorer token detail pages (major assets per chain)
+[
+  ['ethereum','0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'],
+  ['ethereum','0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'],
+  ['ethereum','0x514910771af9ca656af840dff83e8264ecf986ca'],
+  ['ethereum','0x1f9840a85d5af5bf1d1762f925bdaddc4201f984'],
+  ['bsc','0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c'],
+  ['base','0x4200000000000000000000000000000000000006'],
+  ['arbitrum','0x912ce59144191c1204e64559fe8253a0e49e6548'],
+  ['polygon','0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270'],
+  ['avalanche','0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7'],
+  ['optimism','0x4200000000000000000000000000000000000042'],
+].forEach(([chain, address]) => add('/explorer/'+chain+'/'+address, 'daily', 0.5));
+
+// Insights articles (curated library in src/data/insightsArticles.ts)
+try {
+  const insightsSrc = fs.readFileSync('src/data/insightsArticles.ts', 'utf8');
+  const slugs = [...insightsSrc.matchAll(/slug:\s*["'`]([a-z0-9-]+)["'`]/g)].map(m => m[1]);
+  [...new Set(slugs)].forEach(s => add('/insights/'+s, 'weekly', 0.7));
+} catch (e) {
+  console.warn('insights slugs unavailable:', e.message);
+}
 
 // Learn/educational
 [
@@ -215,6 +246,23 @@ const convCoins = [
 ['usd','eur','gbp'].forEach(f => {
   convCoins.forEach(c => add('/convert/'+c+'/'+f, 'daily', 0.5));
 });
+
+// News articles (published rows from the content database)
+const SUPABASE_URL = 'https://qynszkirmcrldqmiplwh.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF5bnN6a2lybWNybGRxbWlwbHdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzU2NTQsImV4cCI6MjA4MDc1MTY1NH0.8Jr8lpfAifN-ozIQmA9_wU5YqYjZVlq3Q35KccSI-g0';
+try {
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/blog_articles?select=slug&order=published_at.desc&limit=2000`,
+    { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } },
+  );
+  if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
+  const rows = await res.json();
+  const newsSlugs = [...new Set(rows.map(r => r.slug).filter(Boolean))];
+  newsSlugs.forEach(s => add('/news/'+s, 'weekly', 0.6));
+  console.log('News articles added: ' + newsSlugs.length);
+} catch (e) {
+  console.warn('news slugs unavailable:', e.message);
+}
 
 // Build XML
 let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';

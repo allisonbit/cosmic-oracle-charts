@@ -263,7 +263,7 @@ function ScannerContent() {
         {!analysis && !loading && (
           <Card>
             <CardContent className="py-16 text-center">
-              <Wallet className="w-12 h-12 text-muted-foreground/40 mx-auto mb-3" />
+              <Wallet className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
               <h3 className="font-semibold mb-1">Scan any wallet on any chain</h3>
               <p className="text-sm text-muted-foreground max-w-md mx-auto">
                 Paste an Ethereum, Polygon, Arbitrum, Base or Solana address to see full holdings, a portfolio risk score,

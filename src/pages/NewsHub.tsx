@@ -59,7 +59,7 @@ function HeadlineTicker({ articles }: { articles: NewsArticleData[] }) {
                   className="inline-flex items-center gap-2 text-sm hover:text-primary transition-colors shrink-0">
                   <span className={`text-[10px] font-bold px-1.5 py-px border uppercase tracking-wider shrink-0 ${s.className}`}>{s.label}</span>
                   <span className="font-medium">{a.title}</span>
-                  <span className="text-muted-foreground/50">·</span>
+                  <span className="text-muted-foreground">·</span>
                 </Link>
               );
             })}
@@ -431,7 +431,7 @@ export default function NewsHub() {
                   className={`px-4 py-2 text-sm font-bold whitespace-nowrap transition-all shrink-0 -mb-px border-b-2 ${
                     category === c
                       ? "border-foreground text-foreground"
-                      : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground/40"
+                      : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground"
                   }`}
                 >
                   {c}
@@ -593,7 +593,7 @@ export default function NewsHub() {
             </>
           ) : (
             <div className="text-center py-32">
-              <Newspaper className="w-16 h-16 text-muted-foreground/40 mx-auto mb-5" />
+              <Newspaper className="w-16 h-16 text-muted-foreground mx-auto mb-5" />
               <h3 className="text-2xl font-bold mb-3 font-display">
                 {searching ? "No stories match your search" : "No stories yet"}
               </h3>

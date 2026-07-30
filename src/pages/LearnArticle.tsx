@@ -145,9 +145,22 @@ export default function LearnArticle() {
       <Helmet>
         <title>{article.metaTitle}</title>
         <meta name="description" content={article.metaDescription} />
-        
-        
-        
+        <link rel="canonical" href={shareUrl} />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={article.metaTitle || article.title} />
+        <meta property="og:description" content={article.metaDescription} />
+        <meta property="og:url" content={shareUrl} />
+        <meta property="og:site_name" content="Oracle Bull" />
+        <meta property="og:image" content={`${SITE_URL}/oracle-bull-logo.jpg`} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={article.metaTitle || article.title} />
+        <meta name="twitter:description" content={article.metaDescription} />
+        <meta name="twitter:image" content={`${SITE_URL}/oracle-bull-logo.jpg`} />
+        <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbData)}</script>
+        {article.faqs?.length ? (
+          <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+        ) : null}
       </Helmet>
 
       {/* Reading progress bar */}
@@ -163,9 +176,9 @@ export default function LearnArticle() {
           {/* Breadcrumb */}
           <nav className="flex items-center gap-1.5 text-xs text-muted-foreground mb-8" aria-label="Breadcrumb">
             <Link to="/" className="hover:text-primary transition-colors">Home</Link>
-            <span className="text-muted-foreground/40">/</span>
+            <span className="text-muted-foreground">/</span>
             <Link to="/learn" className="hover:text-primary transition-colors">Learn</Link>
-            <span className="text-muted-foreground/40">/</span>
+            <span className="text-muted-foreground">/</span>
             <span className="text-foreground/70 truncate max-w-[250px]">{article.title}</span>
           </nav>
 
@@ -197,7 +210,7 @@ export default function LearnArticle() {
                 <Clock className="h-3.5 w-3.5 text-primary" />
                 {article.readTime}
               </span>
-              <span className="text-muted-foreground/30">·</span>
+              <span className="text-muted-foreground">·</span>
               <span className="flex items-center gap-1.5">
                 <BookOpen className="h-3.5 w-3.5 text-primary" />
                 Educational Guide

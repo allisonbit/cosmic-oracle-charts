@@ -352,7 +352,7 @@ export function EnhancedTokenDiscoveryEngine({ chain }: EnhancedTokenDiscoveryEn
                           ))
                         ) : (
                           <div className="text-center py-8">
-                            <Activity className="h-8 w-8 mx-auto text-muted-foreground/50 mb-2" />
+                            <Activity className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
                             <p className="text-xs text-muted-foreground">No tokens detected</p>
                           </div>
                         )}
@@ -377,7 +377,7 @@ export function EnhancedTokenDiscoveryEngine({ chain }: EnhancedTokenDiscoveryEn
                   ))
                 ) : (
                   <div className="col-span-full text-center py-12">
-                    <Activity className="h-12 w-12 mx-auto text-muted-foreground/50 mb-3" />
+                    <Activity className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
                     <p className="text-muted-foreground">No tokens in this category</p>
                   </div>
                 )}

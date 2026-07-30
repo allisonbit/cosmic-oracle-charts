@@ -50,7 +50,7 @@ export function ChainLinks() {
                 <div className="font-bold text-sm group-hover:text-primary transition-colors">{chain.name}</div>
                 <div className="text-[11px] text-muted-foreground">{chain.tagline}</div>
               </div>
-              <ArrowRight className="w-3.5 h-3.5 text-muted-foreground/30 group-hover:text-primary group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+              <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all flex-shrink-0" />
             </Link>
           ))}
         </div>

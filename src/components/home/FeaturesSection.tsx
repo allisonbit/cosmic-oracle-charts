@@ -126,7 +126,7 @@ export function FeaturesSection() {
                 className="group editorial-row items-start gap-6 py-6"
               >
                 {/* Index */}
-                <span className="text-xs font-mono text-muted-foreground/40 w-5 flex-shrink-0 pt-0.5">
+                <span className="text-xs font-mono text-muted-foreground w-5 flex-shrink-0 pt-0.5">
                   {String(i + 1).padStart(2, "0")}
                 </span>
 

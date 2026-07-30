@@ -338,7 +338,7 @@ export default function MyNewsFeed() {
                     "px-3 sm:px-4 py-2 text-sm font-bold whitespace-nowrap transition-all shrink-0 border-b-2",
                     category === tab.id
                       ? "border-foreground text-foreground"
-                      : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground/40",
+                      : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground",
                   )}>
                   {tab.label}
                   {tab.count !== undefined && tab.count > 0 && (
@@ -371,7 +371,7 @@ export default function MyNewsFeed() {
           {/* Watchlist empty state */}
           {category === "watchlist" && watchlist.length === 0 && !isLoading && (
             <div className="text-center py-20">
-              <Eye className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
+              <Eye className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-bold font-display mb-2">No coins in your watchlist</h3>
               <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">Add coins to your watchlist to see personalized news filtered to your portfolio.</p>
               <Button asChild variant="outline" size="sm">
@@ -383,7 +383,7 @@ export default function MyNewsFeed() {
           {/* Saved empty state */}
           {category === "saved" && savedState.ids.length === 0 && !isLoading && (
             <div className="text-center py-20">
-              <Bookmark className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
+              <Bookmark className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-bold font-display mb-2">No saved articles</h3>
               <p className="text-sm text-muted-foreground max-w-sm mx-auto">Bookmark articles to save them here for later reading.</p>
             </div>
@@ -420,7 +420,7 @@ export default function MyNewsFeed() {
             </div>
           ) : !query && category !== "watchlist" && category !== "saved" ? (
             <div className="text-center py-20">
-              <Newspaper className="w-14 h-14 text-muted-foreground/30 mx-auto mb-4" />
+              <Newspaper className="w-14 h-14 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-xl font-bold font-display mb-2">No stories yet</h3>
               <p className="text-muted-foreground text-sm mb-6">The feed refreshes every 5 minutes with news from 8+ crypto publications.</p>
               <button onClick={() => refetch()} className="text-primary font-bold hover:underline inline-flex items-center gap-2 text-sm">

@@ -155,7 +155,7 @@ export function MyAlerts() {
       {/* Alerts list */}
       {alerts.length === 0 && !showForm ? (
         <div className="text-center py-16 space-y-4">
-          <Bell className="w-12 h-12 text-muted-foreground/30 mx-auto" />
+          <Bell className="w-12 h-12 text-muted-foreground mx-auto" />
           <div>
             <h3 className="text-lg font-semibold text-foreground">No alerts yet</h3>
             <p className="text-muted-foreground">Set price alerts to never miss a move</p>

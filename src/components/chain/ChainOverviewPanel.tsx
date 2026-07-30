@@ -145,7 +145,7 @@ export function ChainOverviewPanel({ chain, overview, isLoading }: ChainOverview
             </div>
             <p className="text-muted-foreground text-xs sm:text-sm flex items-center gap-2">
               <span>Chain Analytics Dashboard</span>
-              <span className="text-muted-foreground/50">•</span>
+              <span className="text-muted-foreground">•</span>
               <span className="text-xs">{chain.symbol}</span>
             </p>
             {/* Last updated */}

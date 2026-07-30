@@ -360,7 +360,7 @@ export function EnhancedChainHealthMonitor({ chain, healthData, isLoading, onRef
       <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
         {icon}
         <span className="text-[10px] sm:text-xs text-muted-foreground">{label}</span>
-        <Info className="h-3 w-3 text-muted-foreground/50 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
+        <Info className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
       </div>
       <div className={`text-lg sm:text-2xl font-bold ${color}`}>
         {value}
@@ -416,7 +416,7 @@ export function EnhancedChainHealthMonitor({ chain, healthData, isLoading, onRef
                   <p className="text-xs text-muted-foreground">Block Height</p>
                   <div className="flex items-center gap-2">
                     <p className="text-lg font-display text-foreground">#{(healthData.blockNumber ?? 0).toLocaleString()}</p>
-                    <Info className="h-3 w-3 text-muted-foreground/50" />
+                    <Info className="h-3 w-3 text-muted-foreground" />
                   </div>
                 </button>
                 <button
@@ -433,7 +433,7 @@ export function EnhancedChainHealthMonitor({ chain, healthData, isLoading, onRef
                     <p className="text-xs text-muted-foreground">Gas Price</p>
                     <div className="flex items-center gap-2">
                       <p className="text-lg font-display text-foreground">{(healthData.gasPrice ?? 0).toFixed(2)} Gwei</p>
-                      <Info className="h-3 w-3 text-muted-foreground/50" />
+                      <Info className="h-3 w-3 text-muted-foreground" />
                     </div>
                   </button>
                 )}

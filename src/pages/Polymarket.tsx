@@ -203,7 +203,7 @@ export default function Polymarket() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">{markets.map((m) => <MarketCard key={m.id} m={m} />)}</div>
         ) : (
           <div className="text-center py-20">
-            <Gauge className="w-14 h-14 text-muted-foreground/40 mx-auto mb-3" />
+            <Gauge className="w-14 h-14 text-muted-foreground mx-auto mb-3" />
             <h3 className="font-semibold mb-1">{q ? `No markets found for "${q}"` : "No markets available right now"}</h3>
             <p className="text-sm text-muted-foreground max-w-sm mx-auto">{q ? "Try a different keyword or browse a theme above." : "The Polymarket feed is temporarily unavailable — try refreshing."}</p>
           </div>
