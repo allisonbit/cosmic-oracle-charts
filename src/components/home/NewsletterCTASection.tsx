@@ -43,7 +43,7 @@ export function NewsletterCTASection() {
           </Button>
         </div>
 
-        <p className="text-muted-foreground/50 text-xs mt-8">
+        <p className="text-muted-foreground text-xs mt-8">
           No signup · No credit card · 100% free forever
         </p>
 

@@ -87,14 +87,14 @@ export function TopCryptoPredictionLinks({ className = "" }: { className?: strin
                 >
                   Daily
                 </Link>
-                <span className="text-muted-foreground/50">|</span>
+                <span className="text-muted-foreground">|</span>
                 <Link 
                   to={`/price-prediction/${crypto.id}/weekly`}
                   className="text-muted-foreground hover:text-primary"
                 >
                   Weekly
                 </Link>
-                <span className="text-muted-foreground/50">|</span>
+                <span className="text-muted-foreground">|</span>
                 <Link 
                   to={`/price-prediction/${crypto.id}/monthly`}
                   className="text-muted-foreground hover:text-primary"

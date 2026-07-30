@@ -390,7 +390,7 @@ export function TokenDiscoveryEngine({ chain }: TokenDiscoveryEngineProps) {
                     ))
                   ) : (
                     <div className="text-center py-8">
-                      <Activity className="h-8 w-8 mx-auto text-muted-foreground/50 mb-2" />
+                      <Activity className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
                       <p className="text-xs text-muted-foreground">No tokens detected</p>
                     </div>
                   )}

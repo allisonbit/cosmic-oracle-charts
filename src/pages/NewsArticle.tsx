@@ -154,7 +154,7 @@ export default function NewsArticle() {
       <Layout>
         <Helmet><title>Article not found | Oracle Bull News</title></Helmet>
         <div className="container mx-auto px-4 py-20 text-center">
-          <Newspaper className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
+          <Newspaper className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
           <h1 className="text-2xl font-bold mb-3 font-display">Article not found</h1>
           <p className="text-muted-foreground mb-6 text-sm max-w-sm mx-auto">
             This story may have expired. Browse the latest crypto news instead.
@@ -471,7 +471,7 @@ export default function NewsArticle() {
               )}
 
               {/* Disclaimer */}
-              <p className="text-[10px] text-muted-foreground/50 border-t border-border/20 pt-4 leading-relaxed">
+              <p className="text-[10px] text-muted-foreground border-t border-border/20 pt-4 leading-relaxed">
                 Aggregated for informational purposes with attribution and link to original source. AI sentiment is a
                 research signal, not financial advice. Always do your own research.
               </p>

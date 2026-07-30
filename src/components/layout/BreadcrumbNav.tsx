@@ -191,7 +191,7 @@ export function BreadcrumbNav() {
                     {item.label}
                   </Link>
                   <ChevronRight
-                    className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0 text-muted-foreground/50"
+                    className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0 text-muted-foreground"
                     aria-hidden="true"
                   />
                 </>

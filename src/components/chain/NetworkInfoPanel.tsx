@@ -282,7 +282,7 @@ export function NetworkInfoPanel({ chain, overview, isLoading }: NetworkInfoPane
                     metric.color === "muted" && "text-muted-foreground"
                   )} />
                   <span className="text-[10px] text-muted-foreground truncate">{metric.label}</span>
-                  <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/50 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <ExternalLink className="h-2.5 w-2.5 text-muted-foreground ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
                 <p className="text-sm font-display text-foreground">{metric.value}</p>
               </button>

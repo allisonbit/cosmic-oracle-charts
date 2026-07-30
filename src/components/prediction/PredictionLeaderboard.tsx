@@ -280,7 +280,7 @@ export function PredictionLeaderboard() {
                     </td>
                     <td className="p-2 sm:p-3 text-right font-mono text-xs hidden sm:table-cell">
                       {entry.actualPrice ? formatPrice(entry.actualPrice) : (
-                        <span className="text-muted-foreground/50 text-[10px]">Pending...</span>
+                        <span className="text-muted-foreground text-[10px]">Pending...</span>
                       )}
                     </td>
                     <td className="p-2 sm:p-3 text-right">
@@ -299,7 +299,7 @@ export function PredictionLeaderboard() {
                           </span>
                         </div>
                       ) : (
-                        <span className="text-[10px] text-muted-foreground/50 flex items-center justify-end gap-1">
+                        <span className="text-[10px] text-muted-foreground flex items-center justify-end gap-1">
                           <Target className="w-3 h-3" /> Active
                         </span>
                       )}

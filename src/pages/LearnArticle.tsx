@@ -176,9 +176,9 @@ export default function LearnArticle() {
           {/* Breadcrumb */}
           <nav className="flex items-center gap-1.5 text-xs text-muted-foreground mb-8" aria-label="Breadcrumb">
             <Link to="/" className="hover:text-primary transition-colors">Home</Link>
-            <span className="text-muted-foreground/40">/</span>
+            <span className="text-muted-foreground">/</span>
             <Link to="/learn" className="hover:text-primary transition-colors">Learn</Link>
-            <span className="text-muted-foreground/40">/</span>
+            <span className="text-muted-foreground">/</span>
             <span className="text-foreground/70 truncate max-w-[250px]">{article.title}</span>
           </nav>
 
@@ -210,7 +210,7 @@ export default function LearnArticle() {
                 <Clock className="h-3.5 w-3.5 text-primary" />
                 {article.readTime}
               </span>
-              <span className="text-muted-foreground/30">·</span>
+              <span className="text-muted-foreground">·</span>
               <span className="flex items-center gap-1.5">
                 <BookOpen className="h-3.5 w-3.5 text-primary" />
                 Educational Guide

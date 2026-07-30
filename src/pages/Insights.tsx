@@ -386,7 +386,7 @@ export default function Insights() {
                                 <span className="flex items-center gap-1">
                                   <Clock className="h-3 w-3" /> {post.readTime}
                                 </span>
-                                <span className="text-muted-foreground/50">•</span>
+                                <span className="text-muted-foreground">•</span>
                                 <span>{post.wordCount} words</span>
                               </div>
                               <ArrowRight className="h-3.5 w-3.5 text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-200" />

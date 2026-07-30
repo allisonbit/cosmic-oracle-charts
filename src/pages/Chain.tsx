@@ -104,7 +104,7 @@ export default function Chain() {
       <Layout>
         <div className="container mx-auto px-4 py-24 flex items-center justify-center">
           <div className="border-t border-border/30 pt-8 text-center max-w-md">
-            <Globe className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
+            <Globe className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
             <h1 className="text-2xl font-display font-bold text-foreground mb-3">Chain Not Found</h1>
             <p className="text-muted-foreground mb-6">That blockchain isn't in our system yet. Explore the chains we cover below.</p>
             <div className="flex flex-wrap gap-2 justify-center">
@@ -188,8 +188,8 @@ export default function Chain() {
                   </div>
                   <p className="text-muted-foreground text-sm mt-1">
                     <span className="font-mono font-semibold text-foreground">{chain.symbol}</span>
-                    <span className="mx-1.5 text-muted-foreground/40">•</span>{chain.consensus}
-                    {seo && <><span className="mx-1.5 text-muted-foreground/40">•</span>{seo.tagline}</>}
+                    <span className="mx-1.5 text-muted-foreground">•</span>{chain.consensus}
+                    {seo && <><span className="mx-1.5 text-muted-foreground">•</span>{seo.tagline}</>}
                   </p>
                 </div>
               </div>
