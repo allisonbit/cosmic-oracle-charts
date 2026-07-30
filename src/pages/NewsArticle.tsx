@@ -203,8 +203,22 @@ export default function NewsArticle() {
       <Helmet>
         <title>{article.metaTitle || `${article.title} | Oracle Bull News`}</title>
         <meta name="description" content={article.metaDescription} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={article.metaTitle || article.title} />
+        <meta property="og:description" content={article.metaDescription} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:site_name" content="Oracle Bull" />
+        <meta property="og:image" content={article.imageUrl || `${SITE_URL}/oracle-bull-logo.jpg`} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={article.metaTitle || article.title} />
+        <meta name="twitter:description" content={article.metaDescription} />
+        <meta name="twitter:image" content={article.imageUrl || `${SITE_URL}/oracle-bull-logo.jpg`} />
         <meta property="article:published_time" content={isoPublished} />
         <meta property="article:section" content={article.category} />
+        <script type="application/ld+json">{JSON.stringify(newsArticleLd)}</script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>
+        {faqLd && <script type="application/ld+json">{JSON.stringify(faqLd)}</script>}
       </Helmet>
 
       {/* Reading progress bar — only when NOT showing sticky bar */}

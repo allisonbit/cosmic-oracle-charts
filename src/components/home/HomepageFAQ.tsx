@@ -1,5 +1,5 @@
-import { useEffect } from "react";
 import { ChevronDown } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 import { SITE_URL } from "@/lib/siteConfig";
 import {
   Accordion,
@@ -56,9 +56,23 @@ const faqs = [
 ];
 
 export function HomepageFAQ() {
-  // Inject FAQ schema for Google rich snippets
+  // FAQ schema for Google rich snippets
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${SITE_URL}/#faq`,
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: { "@type": "Answer", text: faq.answer },
+    })),
+  };
+
   return (
     <section className="py-12 md:py-20 border-t border-border/30" aria-labelledby="faq-heading">
+      <Helmet>
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+      </Helmet>
       <div className="container mx-auto px-4">
         <div className="text-center mb-8 md:mb-12">
           <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-medium tracking-wide uppercase mb-4">
