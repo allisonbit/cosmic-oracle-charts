@@ -34,3 +34,12 @@
     X-Frame-Options = "DENY"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# Embed widgets exist to be iframed by third-party sites — lift the frame
+# restriction for them (frame-ancestors * overrides X-Frame-Options here;
+# an empty X-Frame-Options clears the blanket DENY set above).
+[[headers]]
+  for = "/embed/*"
+  [headers.values]
+    X-Frame-Options = ""
+    Content-Security-Policy = "frame-ancestors *"
