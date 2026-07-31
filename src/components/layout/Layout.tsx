@@ -5,6 +5,7 @@ import { Footer } from "./Footer";
 import { MobileBottomNav } from "./MobileBottomNav";
 import { BreadcrumbNav } from "./BreadcrumbNav";
 import { CookieBanner } from "../legal/CookieBanner";
+import { SkipToContent } from "../system/SkipToContent";
 import { AdUnit } from "../ads/AdUnit";
 import { LazyAd } from "../ads/LazyAd";
 import { Loader2 } from "lucide-react";
@@ -28,6 +29,7 @@ function LoadingFallback() {
 export function Layout({ children, showTicker = true }: LayoutProps) {
   return (
     <div className="min-h-screen flex flex-col cosmic-bg w-full overflow-x-hidden stable-layout">
+      <SkipToContent />
       <header>
         <Navbar />
         {showTicker && (

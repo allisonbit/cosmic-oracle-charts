@@ -12,6 +12,7 @@ import { AdUnit } from "@/components/ads/AdUnit";
 import { AdBreak } from "@/components/ads/AdBreak";
 import { LazyAd } from "@/components/ads/LazyAd";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
+import { SkipToContent } from "@/components/system/SkipToContent";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SEO } from "@/components/MainSEO";
 import { ViewportSection } from "@/components/system/ViewportSection";
@@ -66,6 +67,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SkipToContent />
       <SEO />
       <Helmet>
         <script type="application/ld+json">{JSON.stringify({
