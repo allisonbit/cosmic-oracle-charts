@@ -38,8 +38,8 @@ export function useRealtimePrices(symbols: string[]) {
       if (error) throw error;
       return data as { prices: RawPrice[]; timestamp: number };
     },
-    refetchInterval: 5000,
-    staleTime: 4000,
+    refetchInterval: 10000,
+    staleTime: 8000,
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
     retry: 2,

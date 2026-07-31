@@ -49,6 +49,9 @@ export default defineConfig(({ mode, command }) => {
         injectRegister: "auto",
         workbox: {
           globPatterns: ["**/*.{js,css,html,ico,png,svg,jpg,jpeg}"],
+          // Mascot JPEGs (70-108KB) are runtime-cached on first use instead of
+          // inflating every visitor's install-time precache.
+          globIgnores: ["**/oracle-bot-mascot*.jpg", "**/og-image.jpg", "**/icon-512*.png"],
           maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
           runtimeCaching: [
             {
@@ -73,9 +76,9 @@ export default defineConfig(({ mode, command }) => {
           background_color: "#0f172a",
           display: "standalone",
           icons: [
-            { src: "oracle-bot-mascot.jpg", sizes: "192x192", type: "image/jpeg", purpose: "any" },
-            { src: "oracle-bot-mascot.jpg", sizes: "512x512", type: "image/jpeg", purpose: "any" },
-            { src: "oracle-bot-mascot.jpg", sizes: "512x512", type: "image/jpeg", purpose: "maskable" },
+            { src: "icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
+            { src: "icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
+            { src: "icon-512-maskable.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
           ],
         },
       }),

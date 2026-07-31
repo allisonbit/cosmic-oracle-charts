@@ -204,8 +204,8 @@ export function useRealtimeStrength(timeframe: string = '24h') {
       fetchData();
     }
 
-    // Set up real-time polling every 10 seconds for 24/7 updates
-    intervalRef.current = setInterval(fetchData, 10000);
+    // Set up real-time polling every 20 seconds for 24/7 updates
+    intervalRef.current = setInterval(fetchData, 20000);
 
     const onVisible = () => {
       if (document.visibilityState === 'visible') fetchData();
