@@ -113,7 +113,7 @@ function ArticleCard({ post }: { post: BlogPost }) {
             <div className="flex items-center justify-between text-[10px] sm:text-xs text-muted-foreground pt-2 border-t border-border/30">
               <div className="flex items-center gap-2">
                 <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {post.readTime}</span>
-                {post.wordCount && <><span className="text-muted-foreground/40">·</span><span>{post.wordCount} words</span></>}
+                {post.wordCount && <><span className="text-muted-foreground">·</span><span>{post.wordCount} words</span></>}
               </div>
               <ArrowRight className="h-3.5 w-3.5 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>

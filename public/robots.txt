@@ -29,6 +29,7 @@ Disallow: /my
 Disallow: /admin/
 Disallow: /admin
 Disallow: /connect
+Disallow: /unsubscribe
 
 # API and system routes
 Disallow: /api/

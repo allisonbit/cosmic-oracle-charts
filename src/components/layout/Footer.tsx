@@ -114,6 +114,7 @@ export function Footer() {
             <h4 className="font-display font-bold text-foreground text-sm md:text-base">LEARN</h4>
             <ul className="space-y-2">
               <li><Link to="/learn" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Educational Articles</Link></li>
+              <li><Link to="/how-to-read-predictions" className="block text-sm text-muted-foreground hover:text-primary transition-colors">How to Read AI Predictions</Link></li>
               <li><Link to="/learn/what-is-crypto-market-sentiment" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Crypto Sentiment Guide</Link></li>
               <li><Link to="/learn/bitcoin-market-cycles-explained" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Bitcoin Market Cycles</Link></li>
               <li><Link to="/learn/how-ai-is-used-in-crypto-market-analysis" className="block text-sm text-muted-foreground hover:text-primary transition-colors">AI in Crypto Analysis</Link></li>

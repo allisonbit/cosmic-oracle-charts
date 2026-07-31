@@ -433,7 +433,11 @@ export function SEO({ title, description, keywords, image, type = "website", can
 
     const setMeta = (name: string, content: string, property = false) => {
       const attr = property ? "property" : "name";
-      let meta = document.querySelector(`meta[${attr}="${name}"]`) as HTMLMetaElement;
+      // Remove ALL existing matches (react-helmet-async and other libs can add
+      // duplicates that confuse crawlers) and then insert a single fresh tag.
+      const existing = document.querySelectorAll(`meta[${attr}="${name}"]`);
+      existing.forEach((el, i) => { if (i > 0) el.parentNode?.removeChild(el); });
+      let meta = existing[0] as HTMLMetaElement | undefined;
       if (!meta) {
         meta = document.createElement("meta");
         meta.setAttribute(attr, name);
@@ -443,7 +447,10 @@ export function SEO({ title, description, keywords, image, type = "website", can
     };
 
     const setLink = (rel: string, href: string) => {
-      let link = document.querySelector(`link[rel="${rel}"]`) as HTMLLinkElement;
+      // Same dedup story — one canonical only, always.
+      const existing = document.querySelectorAll(`link[rel="${rel}"]`);
+      existing.forEach((el, i) => { if (i > 0) el.parentNode?.removeChild(el); });
+      let link = existing[0] as HTMLLinkElement | undefined;
       if (!link) {
         link = document.createElement("link");
         link.rel = rel;
@@ -481,68 +488,47 @@ export function SEO({ title, description, keywords, image, type = "website", can
     // Canonical URL
     setLink("canonical", canonicalUrl);
 
-    // Structured data (JSON-LD) — auto-generated per route, deliberately scoped
-    // to avoid duplicating page-level schema: BreadcrumbNav ships BreadcrumbList
-    // on Layout pages, and PredictionSEO ships rich Article/FAQ/Product schema on
-    // timeframe prediction pages. Homepage ships its own blocks via Helmet.
-    const path = resolveCanonicalPath(canonicalPath || currentPath);
-    const blocks: object[] = [];
-    if (path !== "/" && !noindex) {
-      // Article schema for content-style pages. Year predictions
-      // (/price-prediction/{coin}/{year}) are included; daily/weekly/monthly
-      // prediction pages are excluded — PredictionSEO covers those richer.
-      const isYearPrediction = /^\/price-prediction\/[^/]+\/\d{4}$/.test(path);
-      if (isYearPrediction || /^\/(predict|learn|market|chain|how-to-buy)\//.test(path)) {
-        blocks.push({
-          "@context": "https://schema.org",
-          "@type": "Article",
-          headline: finalTitle,
-          description: finalDescription,
-          image: finalImage,
-          author: { "@type": "Organization", name: defaultMeta.siteName, url: defaultMeta.baseUrl },
-          publisher: {
-            "@type": "Organization",
-            name: defaultMeta.siteName,
-            url: defaultMeta.baseUrl,
-            logo: { "@type": "ImageObject", url: `${defaultMeta.baseUrl}/oracle-bot-mascot.jpg` },
-          },
-          mainEntityOfPage: { "@type": "WebPage", "@id": canonicalUrl },
-        });
-      }
-      // FAQPage schema for question-intent pages (/q/{question-slug}).
-      if (path.startsWith("/q/")) {
-        blocks.push({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: [{
-            "@type": "Question",
-            name: finalTitle.replace(/\s*\|.*$/, ""),
-            acceptedAnswer: { "@type": "Answer", text: finalDescription },
-          }],
-        });
-      }
-    }
-    let auto = document.querySelector('script[data-seo-jsonld="auto"]') as HTMLScriptElement | null;
-    if (blocks.length) {
-      if (!auto) {
-        auto = document.createElement("script");
-        auto.type = "application/ld+json";
-        auto.setAttribute("data-seo-jsonld", "auto");
-        document.head.appendChild(auto);
-      }
-      auto.textContent = JSON.stringify(blocks.length === 1 ? blocks[0] : blocks);
-    } else {
-      auto?.remove();
-    }
+    // react-helmet-async flushes its mutations asynchronously (after this
+    // effect commits), so it can re-insert duplicate <meta name="description">
+    // or <link rel="canonical"> tags moments later. Re-run the dedup on the
+    // next microtask AND after ~300ms to catch both sync and delayed flushes.
+    const dedupeAll = () => {
+      setMeta("description", finalDescription);
+      setMeta("og:description", finalDescription, true);
+      setMeta("twitter:description", finalDescription);
+      setLink("canonical", canonicalUrl);
+    };
+    const t1 = setTimeout(dedupeAll, 0);
+    const t2 = setTimeout(dedupeAll, 300);
 
-  }, [finalTitle, finalDescription, finalKeywords, finalImage, canonicalUrl, type, noindex, currentPath, canonicalPath]);
+    // Durable dedup: some routes wrap content in <Helmet> which keeps
+    // re-inserting its own tags. Watch <head> and prune duplicates so
+    // there's always exactly one <meta name="description"> and one
+    // <link rel="canonical"> visible to crawlers.
+    const observer = new MutationObserver(() => {
+      const descs = document.querySelectorAll('meta[name="description"]');
+      if (descs.length > 1) {
+        // Keep the last one (Helmet's per-page value wins).
+        for (let i = 0; i < descs.length - 1; i++) descs[i].parentNode?.removeChild(descs[i]);
+      }
+      const canons = document.querySelectorAll('link[rel="canonical"]');
+      if (canons.length > 1) {
+        for (let i = 0; i < canons.length - 1; i++) canons[i].parentNode?.removeChild(canons[i]);
+      }
+    });
+    observer.observe(document.head, { childList: true, subtree: false });
+
+    return () => { clearTimeout(t1); clearTimeout(t2); observer.disconnect(); };
+  }, [finalTitle, finalDescription, finalKeywords, finalImage, canonicalUrl, type, noindex, currentPath]);
 
   return null;
 }
 
+// Enhanced JSON-LD Structured Data Component
+
 // JSON-LD injector for pages with richer, data-driven schema (full FAQ lists,
 // article metadata, etc.). Renders nothing; manages a dedicated head script.
-export function StructuredData({ schema }: { schema: object | object[] | null | undefined }) {
+export function StructuredData({ schema }: { schema?: object | object[] | null }) {
   const serialized = schema ? JSON.stringify(schema) : "";
   useEffect(() => {
     if (!serialized) return;

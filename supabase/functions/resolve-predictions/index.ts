@@ -133,7 +133,57 @@ Deno.serve(async (req) => {
       .upsert(rows, { onConflict: "prediction_id" });
     if (insErr) throw insErr;
 
-    return json({ resolved: rows.length, skipped: todo.length - rows.length, total_candidates: predictions.length });
+    // 6. Email users who made matching per-user predictions (best-effort).
+    let emailed = 0;
+    for (const r of rows) {
+      const { data: userPreds } = await supabase
+        .from("user_predictions")
+        .select("id, user_id, target_price, prediction_type")
+        .eq("coin_id", r.coin_id)
+        .eq("timeframe", r.timeframe)
+        .eq("is_resolved", false)
+        .lt("created_at", r.predicted_at);
+      if (!userPreds?.length) continue;
+
+      const userIds = [...new Set(userPreds.map((u) => u.user_id))];
+      const { data: profs } = await supabase
+        .from("profiles")
+        .select("id, email, email_notifications")
+        .in("id", userIds);
+      const profById = new Map((profs ?? []).map((p) => [p.id, p]));
+
+      for (const up of userPreds) {
+        await supabase
+          .from("user_predictions")
+          .update({ is_resolved: true, was_correct: r.hit, resolved_at: r.resolved_at })
+          .eq("id", up.id);
+
+        const prof = profById.get(up.user_id) as { email?: string; email_notifications?: boolean } | undefined;
+        if (!prof?.email || prof.email_notifications === false) continue;
+        try {
+          await supabase.functions.invoke("send-transactional-email", {
+            body: {
+              templateName: "prediction-resolved",
+              recipientEmail: prof.email,
+              idempotencyKey: `pred-resolved-${up.id}`,
+              templateData: {
+                symbol: r.symbol,
+                direction: up.prediction_type === "bearish" ? "down" : "up",
+                predictedPrice: Number(up.target_price),
+                actualPrice: r.actual_price,
+                correct: r.hit,
+                horizon: r.timeframe,
+              },
+            },
+          });
+          emailed++;
+        } catch (e) {
+          console.error("prediction-resolved email failed", e);
+        }
+      }
+    }
+
+    return json({ resolved: rows.length, emailed, skipped: todo.length - rows.length, total_candidates: predictions.length });
   } catch (e) {
     console.error("resolve-predictions error", e);
     return json({ error: (e as Error).message }, 500);

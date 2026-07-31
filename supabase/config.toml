@@ -200,3 +200,34 @@ verify_jwt = false
 [functions.accuracy-feed.rate_limit]
 requests = 600
 per = 3600
+
+[functions.process-email-queue]
+verify_jwt = true
+
+[functions.send-daily-digest]
+verify_jwt = false
+
+[functions.digest-unsubscribe]
+verify_jwt = false
+
+[functions.preview-daily-digest]
+verify_jwt = false
+
+[functions.email-webhook]
+verify_jwt = false
+
+
+[functions.send-transactional-email]
+verify_jwt = true
+
+[functions.preview-transactional-email]
+verify_jwt = false
+
+[functions.handle-email-unsubscribe]
+verify_jwt = false
+
+[functions.handle-email-suppression]
+verify_jwt = false
+
+[functions.gsc-dashboard]
+verify_jwt = false

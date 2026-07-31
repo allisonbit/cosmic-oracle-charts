@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, useCallback, useRef, lazy, Suspense, ReactNode } from "react";
 import type { PrivyBridgeState } from "@/auth/PrivyLayer";
+import { supabase } from "@/integrations/supabase/client";
 
 // PrivyLayer is loaded lazily so the heavy web3/wallet stack stays out of the
 // initial bundle. It only mounts once auth is actually needed (login click,
@@ -107,6 +108,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setProfile(null);
     }
   }, [bridge.ready, bridge.authenticated, bridge.user]);
+
+  // Fire a one-time Welcome email on first wallet-linked profile creation.
+  useEffect(() => {
+    if (!profile?.email || !profile.id) return;
+    const key = `welcome-wallet-${profile.id}`;
+    const sent = localStorage.getItem(key);
+    if (sent === "1") return;
+    supabase.functions
+      .invoke("send-transactional-email", {
+        body: {
+          templateName: "welcome",
+          recipientEmail: profile.email,
+          idempotencyKey: `welcome-wallet-${profile.id}`,
+          templateData: { name: profile.display_name || undefined },
+        },
+      })
+      .then(() => {
+        localStorage.setItem(key, "1");
+      })
+      .catch(() => {
+        // Non-blocking; localStorage won't be set, so it retries on next mount.
+      });
+  }, [profile?.id, profile?.email]);
 
   // Sync the Privy access token to the global scope for Supabase to use.
   useEffect(() => {

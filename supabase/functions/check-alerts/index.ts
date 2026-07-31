@@ -91,18 +91,21 @@ serve(async (req) => {
         const profile = (alert as any).profiles;
         if (profile?.email && profile?.email_notifications !== false && !alert.email_sent) {
           try {
-            const emailBody = buildAlertEmail(
-              profile.display_name || "Trader",
-              alert.symbol,
-              alert.condition,
-              alert.target_price,
-              currentPrice,
-              alert.note
-            );
-
-            // Use Lovable AI to send a nicely formatted notification
-            // For now, log the trigger. Email sending requires domain setup.
-            console.log(`📧 ALERT TRIGGERED for ${profile.email}: ${alert.symbol} ${alert.condition} $${alert.target_price} (now $${currentPrice})`);
+            const { error: sendErr } = await supabase.functions.invoke("send-transactional-email", {
+              body: {
+                templateName: "price-alert-hit",
+                recipientEmail: profile.email,
+                idempotencyKey: `price-alert-${alert.id}`,
+                templateData: {
+                  symbol: alert.symbol,
+                  direction: alert.condition === "above" ? "above" : "below",
+                  targetPrice: Number(alert.target_price),
+                  currentPrice: Number(currentPrice),
+                },
+              },
+            });
+            if (sendErr) throw sendErr;
+            console.log(`📧 alert email queued for ${profile.email}: ${alert.symbol}`);
 
             // Mark email as sent
             await supabase

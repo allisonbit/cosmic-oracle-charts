@@ -63,3 +63,32 @@ Oracle Bull provides AI-generated analysis for informational purposes only. Not 
 ## Contact
 - Website: https://oraclebull.com/contact
 - About: https://oraclebull.com/about
+
+## Pages
+- [Homepage](/): Free AI crypto predictions and market intelligence.
+- [AI Predictions Hub](/predictions): Daily, weekly, monthly forecasts for 300+ tokens.
+- [Bitcoin Prediction](/price-prediction/bitcoin): BTC AI forecast with entry zones and targets.
+- [Ethereum Prediction](/price-prediction/ethereum): ETH AI forecast with entry zones and targets.
+- [Solana Prediction](/price-prediction/solana): SOL AI forecast with entry zones and targets.
+- [Crypto Strength Meter](/crypto-strength-meter): Live rankings by momentum, volume, and sentiment.
+- [Sentiment & Fear/Greed](/sentiment): Real-time crypto sentiment gauge and whale alerts.
+- [Token Explorer](/explorer): Search 10,000+ tokens across 30+ blockchains.
+- [Crypto News](/news): Sentiment-tagged breaking crypto news.
+- [Polymarket Odds](/polymarket): Live crypto prediction market odds.
+- [Market Recap](/market-recap): Daily crypto market summary.
+- [Weekly Reports](/reports): Auto-generated State of Crypto reports.
+- [Prediction Accuracy](/accuracy): Public track record of AI predictions.
+- [Airdrops](/airdrops): Active and upcoming crypto airdrops.
+- [Compare Coins](/compare): Side-by-side coin comparison.
+- [How to Buy](/how-to-buy): Step-by-step crypto buying guides.
+- [Free Tools](/tools): Profit calculator, DCA planner, position sizer.
+- [Learn Crypto](/learn): Free crypto education library.
+- [Insights](/insights): Daily AI market analysis articles.
+- [About](/about): About Oracle Bull.
+- [Contact](/contact): Contact and support.
+
+## Optional
+- [Editorial Policy](/editorial-policy)
+- [Risk Disclaimer](/risk-disclaimer)
+- [Privacy Policy](/privacy-policy)
+- [Terms](/terms)

@@ -154,7 +154,7 @@ function SignalsContent() {
 
         {signals.length === 0 && !loading && (
           <Card><CardContent className="p-12 text-center">
-            <Zap className="w-12 h-12 text-muted-foreground/20 mx-auto mb-4" />
+            <Zap className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="font-semibold mb-2">No Signals Yet</h3>
             <p className="text-sm text-muted-foreground mb-4">Click Generate to get AI-powered trading signals</p>
             <Button onClick={generateSignals}><Zap className="w-4 h-4 mr-2" /> Generate Signals</Button>

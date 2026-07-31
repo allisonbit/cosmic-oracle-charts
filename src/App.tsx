@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-route
 import { lazy, Suspense, memo, useEffect, type ReactNode } from "react";
 import { Loader2 } from "lucide-react";
 import { AuthProvider } from "@/hooks/useAuth";
+import { FirstConnectRedirect } from "@/components/system/FirstConnectRedirect";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { AppErrorBoundary } from "@/components/system/AppErrorBoundary";
 import { RouteErrorBoundary } from "@/components/system/RouteErrorBoundary";
@@ -57,6 +58,9 @@ const YearPrediction = lazy(() => import("./pages/YearPrediction"));
 const Scanner = lazy(() => import("./pages/Scanner"));
 const Admin = lazy(() => import("./pages/Admin"));
 const BacklinkOutreach = lazy(() => import("./pages/admin/BacklinkOutreach"));
+const DigestPreview = lazy(() => import("./pages/admin/DigestPreview"));
+const EmailStatus = lazy(() => import("./pages/admin/EmailStatus"));
+const GSCDashboard = lazy(() => import("./pages/admin/GSCDashboard"));
 const MyHub = lazy(() => import("./pages/MyHub"));
 const MyWatchlistPage = lazy(() => import("./pages/MyWatchlist"));
 const MyPortfolioPage = lazy(() => import("./pages/MyPortfolio"));
@@ -98,9 +102,18 @@ const EmbedPrediction = lazy(() => import("./pages/embed/EmbedPrediction"));
 const EmbedStrength = lazy(() => import("./pages/embed/EmbedStrength"));
 const MarketRecap = lazy(() => import("./pages/MarketRecap"));
 const Accuracy = lazy(() => import("./pages/Accuracy"));
+const AccuracyCoin = lazy(() => import("./pages/AccuracyCoin"));
+const Welcome = lazy(() => import("./pages/Welcome"));
+const Launch = lazy(() => import("./pages/Launch"));
 const ReportsIndex = lazy(() => import("./pages/reports/ReportsIndex"));
 const WeeklyReport = lazy(() => import("./pages/reports/WeeklyReport"));
 const Connect = lazy(() => import("./pages/Connect"));
+const TutorialPage = lazy(() => import("./pages/TutorialPage"));
+const InteractiveTutorial = lazy(() => import("./pages/InteractiveTutorial"));
+const ApiDocs = lazy(() => import("./pages/ApiDocs"));
+const MobileDashboard = lazy(() => import("./pages/MobileDashboard"));
+const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
+const EmailUnsubscribe = lazy(() => import("./pages/EmailUnsubscribe"));
 // Loading fallback component
 const PageLoader = memo(function PageLoader() {
   return (
@@ -205,6 +218,7 @@ const App = () => (
             <HideOnEmbed>
               <ScrollToTop />
               <AdRefresh />
+              <FirstConnectRedirect />
             </HideOnEmbed>
             <Suspense fallback={<PageLoader />}>
               <Routes>
@@ -269,6 +283,9 @@ const App = () => (
                 <Route path="/embed/strength/:coin" element={B(<EmbedStrength />)} />
                 <Route path="/market-recap" element={B(<MarketRecap />)} />
                 <Route path="/accuracy" element={B(<Accuracy />)} />
+                <Route path="/accuracy/:coinId" element={B(<AccuracyCoin />)} />
+                <Route path="/welcome" element={B(<Welcome />)} />
+                <Route path="/launch" element={B(<Launch />)} />
                 <Route path="/reports" element={B(<ReportsIndex />)} />
                 <Route path="/reports/:slug" element={B(<WeeklyReport />)} />
                 {/* Legal & About pages */}
@@ -279,8 +296,17 @@ const App = () => (
                 <Route path="/risk-disclaimer" element={B(<RiskDisclaimer />)} />
                 <Route path="/editorial-policy" element={B(<EditorialPolicy />)} />
                 <Route path="/connect" element={B(<Connect />)} />
-                <Route path="/admin" element={B(<ProtectedRoute><AdminRoute><Admin /></AdminRoute></ProtectedRoute>)} />
-                <Route path="/admin/backlinks" element={B(<ProtectedRoute><AdminRoute><BacklinkOutreach /></AdminRoute></ProtectedRoute>)} />
+                <Route path="/how-to-read-predictions" element={B(<TutorialPage />)} />
+                <Route path="/tutorial/interactive" element={B(<InteractiveTutorial />)} />
+                <Route path="/api-docs" element={B(<ApiDocs />)} />
+                <Route path="/m" element={B(<MobileDashboard />)} />
+                <Route path="/unsubscribe" element={B(<Unsubscribe />)} />
+                <Route path="/email-unsubscribe" element={B(<EmailUnsubscribe />)} />
+                <Route path="/admin" element={B(<AdminRoute><Admin /></AdminRoute>)} />
+                <Route path="/admin/backlinks" element={B(<AdminRoute><BacklinkOutreach /></AdminRoute>)} />
+                <Route path="/admin/digest-preview" element={B(<AdminRoute><DigestPreview /></AdminRoute>)} />
+                <Route path="/admin/email-status" element={B(<AdminRoute><EmailStatus /></AdminRoute>)} />
+                <Route path="/admin/gsc" element={B(<AdminRoute><GSCDashboard /></AdminRoute>)} />
                 <Route path="/my" element={B(<MyHub />)} />
                 <Route path="/my/watchlist" element={B(<MyWatchlistPage />)} />
                 <Route path="/my/portfolio" element={B(<MyPortfolioPage />)} />

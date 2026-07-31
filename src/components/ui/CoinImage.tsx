@@ -136,7 +136,7 @@ export function CoinImage({ symbol, image, size = 28, className, showFallback = 
   return (
     <img
       src={currentSrc}
-      alt={symbol}
+      alt={`${symbol} cryptocurrency logo`}
       width={size}
       height={size}
       className={cn("rounded-full object-cover shrink-0", className)}

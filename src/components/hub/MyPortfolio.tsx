@@ -34,7 +34,7 @@ export function MyPortfolio() {
   if (watchlist.length === 0) {
     return (
       <div className="text-center py-16 space-y-4">
-        <Wallet className="w-12 h-12 text-muted-foreground/30 mx-auto" />
+        <Wallet className="w-12 h-12 text-muted-foreground mx-auto" />
         <div>
           <h3 className="text-lg font-semibold text-foreground">No holdings yet</h3>
           <p className="text-muted-foreground">Add coins to your watchlist to see portfolio analytics</p>
