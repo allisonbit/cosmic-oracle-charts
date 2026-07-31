@@ -457,6 +457,10 @@ export function SEO({ title, description, keywords, image, type = "website", can
     setMeta("keywords", finalKeywords);
     if (noindex) {
       setMeta("robots", "noindex,nofollow");
+    } else {
+      // Remove any stale noindex left behind by a prior 404 render — otherwise
+      // client-side navigation from the 404 page leaves real pages deindexable.
+      document.querySelector('meta[name="robots"]')?.remove();
     }
 
     // Open Graph
@@ -477,15 +481,77 @@ export function SEO({ title, description, keywords, image, type = "website", can
     // Canonical URL
     setLink("canonical", canonicalUrl);
 
-  }, [finalTitle, finalDescription, finalKeywords, finalImage, canonicalUrl, type, noindex, currentPath]);
+    // Structured data (JSON-LD) — auto-generated per route, deliberately scoped
+    // to avoid duplicating page-level schema: BreadcrumbNav ships BreadcrumbList
+    // on Layout pages, and PredictionSEO ships rich Article/FAQ/Product schema on
+    // timeframe prediction pages. Homepage ships its own blocks via Helmet.
+    const path = resolveCanonicalPath(canonicalPath || currentPath);
+    const blocks: object[] = [];
+    if (path !== "/" && !noindex) {
+      // Article schema for content-style pages. Year predictions
+      // (/price-prediction/{coin}/{year}) are included; daily/weekly/monthly
+      // prediction pages are excluded — PredictionSEO covers those richer.
+      const isYearPrediction = /^\/price-prediction\/[^/]+\/\d{4}$/.test(path);
+      if (isYearPrediction || /^\/(predict|learn|market|chain|how-to-buy)\//.test(path)) {
+        blocks.push({
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: finalTitle,
+          description: finalDescription,
+          image: finalImage,
+          author: { "@type": "Organization", name: defaultMeta.siteName, url: defaultMeta.baseUrl },
+          publisher: {
+            "@type": "Organization",
+            name: defaultMeta.siteName,
+            url: defaultMeta.baseUrl,
+            logo: { "@type": "ImageObject", url: `${defaultMeta.baseUrl}/oracle-bot-mascot.jpg` },
+          },
+          mainEntityOfPage: { "@type": "WebPage", "@id": canonicalUrl },
+        });
+      }
+      // FAQPage schema for question-intent pages (/q/{question-slug}).
+      if (path.startsWith("/q/")) {
+        blocks.push({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: [{
+            "@type": "Question",
+            name: finalTitle.replace(/\s*\|.*$/, ""),
+            acceptedAnswer: { "@type": "Answer", text: finalDescription },
+          }],
+        });
+      }
+    }
+    let auto = document.querySelector('script[data-seo-jsonld="auto"]') as HTMLScriptElement | null;
+    if (blocks.length) {
+      if (!auto) {
+        auto = document.createElement("script");
+        auto.type = "application/ld+json";
+        auto.setAttribute("data-seo-jsonld", "auto");
+        document.head.appendChild(auto);
+      }
+      auto.textContent = JSON.stringify(blocks.length === 1 ? blocks[0] : blocks);
+    } else {
+      auto?.remove();
+    }
+
+  }, [finalTitle, finalDescription, finalKeywords, finalImage, canonicalUrl, type, noindex, currentPath, canonicalPath]);
 
   return null;
 }
 
-// Enhanced JSON-LD Structured Data Component
-
-// StructuredData removed — no JSON-LD schema shipped. Kept as a no-op export
-// so any lingering import resolves without error.
-export function StructuredData() {
+// JSON-LD injector for pages with richer, data-driven schema (full FAQ lists,
+// article metadata, etc.). Renders nothing; manages a dedicated head script.
+export function StructuredData({ schema }: { schema: object | object[] | null | undefined }) {
+  const serialized = schema ? JSON.stringify(schema) : "";
+  useEffect(() => {
+    if (!serialized) return;
+    const el = document.createElement("script");
+    el.type = "application/ld+json";
+    el.setAttribute("data-seo-jsonld", "page");
+    el.textContent = serialized;
+    document.head.appendChild(el);
+    return () => { el.remove(); };
+  }, [serialized]);
   return null;
 }

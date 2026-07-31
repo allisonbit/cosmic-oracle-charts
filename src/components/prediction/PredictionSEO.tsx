@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+import { SEO, StructuredData } from '@/components/MainSEO';
 import { SITE_URL } from "@/lib/siteConfig";
 
 const baseUrl = SITE_URL;
@@ -129,62 +129,20 @@ export function PredictionSEO({ coinName, symbol, timeframe, currentPrice, bias,
     })
   };
 
-  // Breadcrumb Schema
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Home",
-        "item": baseUrl
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Predictions",
-        "item": `${baseUrl}/predictions`
-      },
-      {
-        "@type": "ListItem",
-        "position": 3,
-        "name": `${coinName} Prediction`,
-        "item": `${baseUrl}/price-prediction/${coinName.toLowerCase().replace(/\s+/g, '-')}`
-      },
-      {
-        "@type": "ListItem",
-        "position": 4,
-        "name": timeframeText,
-        "item": canonicalUrl
-      }
-    ]
-  };
+  // NOTE: no BreadcrumbList here — BreadcrumbNav (rendered by Layout) already
+  // emits the page's BreadcrumbList; duplicating it would confuse rich results.
 
   return (
-    <Helmet>
-      <title>{title}</title>
-      <meta name="description" content={description} />
-      
-      {/* Robots directives */}
-      
-      {/* Open Graph */}
-      <meta property="article:published_time" content={dateStr} />
-      <meta property="article:modified_time" content={dateStr} />
-      <meta property="article:section" content="Cryptocurrency" />
-      
-      {/* Twitter */}
-      
-      {/* AI Search Optimization */}
-      <meta name="ai-summary" content={`${coinName} ${timeframe} price prediction with ${bias || 'neutral'} outlook. Technical analysis includes RSI, MACD, moving averages, support/resistance levels. Current price: ${currentPrice ? `$${(currentPrice ?? 0).toLocaleString()}` : 'Loading'}.`} />
-      
-      {/* Canonical */}
-      
-      {/* Structured Data */}
-      
-      
-      
-      
-    </Helmet>
+    <>
+      {/* Title/description/OG/canonical via the shared imperative SEO head
+          manager — keeps head tags updated in place across SPA navigation. */}
+      <SEO
+        title={title}
+        description={description}
+        type="article"
+        canonicalPath={`/price-prediction/${coinName.toLowerCase().replace(/\s+/g, '-')}/${timeframe}`}
+      />
+      <StructuredData schema={[faqSchema, articleSchema, productSchema]} />
+    </>
   );
 }

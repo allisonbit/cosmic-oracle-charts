@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet-async";
+import { StructuredData } from "@/components/MainSEO";
 import { SITE_URL } from "@/lib/siteConfig";
 
 // ── SetupSchema — per-setup structured data ───────────────────────────────────
@@ -33,7 +33,7 @@ export function SetupSchema({
     "@type": "Recommendation",
     "name": `${coinName} (${symbol.toUpperCase()}) ${timeframe} trade setup`,
     "url": url,
-    "datePublished": new Date().toISOString(),
+    "datePublished": new Date().toISOString().split("T")[0],
     "about": {
       "@type": "FinancialProduct",
       "name": `${coinName} (${symbol.toUpperCase()})`,
@@ -52,9 +52,5 @@ export function SetupSchema({
     ],
   };
 
-  return (
-    <Helmet>
-      
-    </Helmet>
-  );
+  return <StructuredData schema={schema} />;
 }

@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'node:fs';
 const BASE = 'https://oraclebull.com';
 const urls = [];
 function add(path, freq, pri) { urls.push({path, freq, pri}); }
@@ -16,13 +16,12 @@ function add(path, freq, pri) { urls.push({path, freq, pri}); }
   ['/compare', 'daily', 0.8], ['/factory', 'hourly', 0.8], ['/crypto-factory', 'hourly', 0.8],
   ['/factory/events', 'hourly', 0.7], ['/factory/onchain', 'hourly', 0.7],
   ['/factory/narratives', 'daily', 0.7], ['/factory/news', 'hourly', 0.7],
-  ['/portfolio', 'daily', 0.7], ['/learn', 'weekly', 0.7], ['/trade', 'hourly', 0.8],
+  ['/learn', 'weekly', 0.7],
   ['/how-to-buy', 'weekly', 0.8], ['/liquidations/bitcoin-heatmap', 'hourly', 0.8],
-  ['/about', 'monthly', 0.5], ['/contact', 'monthly', 0.5], ['/sitemap', 'weekly', 0.4],
+  ['/about', 'monthly', 0.5], ['/contact', 'monthly', 0.5],
   ['/privacy-policy', 'yearly', 0.3], ['/terms', 'yearly', 0.3],
   ['/cookie-policy', 'yearly', 0.3], ['/risk-disclaimer', 'yearly', 0.3],
-  ['/editorial-policy', 'yearly', 0.3],
-  ['/markets', 'daily', 0.8], ['/forex', 'hourly', 0.8]
+  ['/editorial-policy', 'yearly', 0.3]
 ].forEach(s => add(s[0], s[1], s[2]));
 
 // Airdrops
@@ -94,8 +93,7 @@ topCryptos.slice(0, 50).forEach(c => add('/how-to-buy/'+c, 'monthly', 0.6));
   'bitcoin-vs-ethereum','will-solana-go-up','will-xrp-go-up','will-cardano-go-up'
 ].forEach(s => add('/market/'+s, 'daily', 0.7));
 
-// Markets per-coin (top 40)
-topCryptos.slice(0, 40).forEach(c => add('/markets/'+c, 'daily', 0.7));
+// (removed: /markets/{coin} pages — no such route exists in the app router)
 
 // Learn/educational
 [

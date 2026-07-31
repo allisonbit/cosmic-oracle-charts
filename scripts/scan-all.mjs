@@ -22,8 +22,8 @@ const server = http.createServer((req, res) => {
 
 // One concrete URL per route type. Dynamic params use real prerendered slugs.
 const ROUTES = [
-  '/', '/about', '/advertise', '/contact', '/editorial-policy', '/privacy-policy',
-  '/risk-disclaimer', '/terms', '/sitemap',
+  '/', '/about', '/contact', '/editorial-policy', '/privacy-policy',
+  '/risk-disclaimer', '/terms',
   '/airdrops', '/airdrops/eigenlayer',
   '/chain/arbitrum', '/chain/base', '/chain/ethereum',
   '/compare', '/compare/aave-vs-maker',
@@ -40,7 +40,7 @@ const ROUTES = [
   '/scanner', '/sentiment', '/crypto-strength-meter', '/strength', '/strength-meter',
   '/explorer', '/explorer/ethereum/0xdAC17F958D2ee523a2206206994597C13D831ec7',
   '/tools', '/tools/dca-calculator', '/tools/impermanent-loss-calculator', '/tools/profit-calculator',
-  '/trade', '/dashboard',
+  '/dashboard',
   '/my', '/my/watchlist', '/my/portfolio', '/my/alerts', '/my/copy', '/my/dca',
   '/my/journal', '/my/news', '/my/scanner', '/my/settings', '/my/signals', '/my/social', '/my/tracker',
   '/this-route-does-not-exist-404',

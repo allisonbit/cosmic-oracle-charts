@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { StructuredData } from "@/components/MainSEO";
 import DOMPurify from "dompurify";
 import { Layout } from "@/components/layout/Layout";
 import { AdBreak } from "@/components/ads/AdBreak";
@@ -166,10 +167,8 @@ export default function InsightArticle() {
         <meta property="article:published_time" content={article.publishedAt} />
         <meta property="article:section" content={article.category} />
         <meta property="article:tag" content={article.primaryKeyword} />
-        
-        
-        
       </Helmet>
+      <StructuredData schema={[structuredData, faqStructuredData, breadcrumbData].filter(Boolean) as object[]} />
 
       {/* Reading progress bar */}
       <div className="fixed top-0 left-0 right-0 z-[60] h-0.5 bg-muted/20">
