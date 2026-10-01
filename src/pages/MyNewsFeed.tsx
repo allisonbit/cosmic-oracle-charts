@@ -422,7 +422,7 @@ export default function MyNewsFeed() {
             <div className="text-center py-20">
               <Newspaper className="w-14 h-14 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-xl font-bold font-display mb-2">No stories yet</h3>
-              <p className="text-muted-foreground text-sm mb-6">The feed refreshes every 5 minutes with news from 8+ crypto publications.</p>
+              <p className="text-muted-foreground text-sm mb-6">No news source is connected in this build — the feed stays empty rather than showing stale stories.</p>
               <button onClick={() => refetch()} className="text-primary font-bold hover:underline inline-flex items-center gap-2 text-sm">
                 <RefreshCw className="w-4 h-4" /> Refresh Feed
               </button>

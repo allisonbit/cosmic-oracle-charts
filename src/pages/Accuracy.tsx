@@ -69,7 +69,7 @@ export default function Accuracy() {
   }, [rows, tf]);
 
   const title = "Crypto Prediction Accuracy Leaderboard — Oracle Bull AI Track Record";
-  const description = "Public, verifiable track record of Oracle Bull's AI crypto predictions. Hit rate, sample size, and average confidence per coin. Updated hourly.";
+  const description = "Public track record of Oracle Bull's crypto predictions — graded against real market history. Hit rate, sample size, and average confidence per coin.";
 
   return (
     <Layout>

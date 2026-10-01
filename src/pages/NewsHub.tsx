@@ -375,7 +375,7 @@ export default function NewsHub() {
     <Layout>
       <Helmet>
         <title>Crypto News Today | AI Sentiment Headlines | Oracle Bull</title>
-        <meta name="description" content="Breaking crypto news from 50+ sources with AI bullish/bearish sentiment ratings. Bitcoin, Ethereum, DeFi & regulation. Auto-refreshes every 5 min." />
+        <meta name="description" content="Crypto market headlines and context for Bitcoin, Ethereum, DeFi & regulation, alongside live market data and sentiment analytics." />
         
         
         

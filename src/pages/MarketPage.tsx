@@ -409,11 +409,11 @@ export default function MarketPage() {
   const additionalFaqs = config ? [
     {
       q: `How does Oracle Bull pick the ${config.title}?`,
-      a: `Oracle Bull uses a proprietary AI engine that analyzes over 1,000 tokens across 150+ technical, on-chain, and sentiment indicators. Each coin is scored and ranked using machine learning models trained on years of historical crypto market data. The result is an objective, data-driven ranking updated continuously.`,
+      a: `The ranking is computed live from CoinGecko market data — coins are ordered by the metrics shown on this page (market capitalization, volume, and 24-hour momentum). It's a transparent, data-driven sort of the current market, not a proprietary scoring model.`,
     },
     {
       q: "How often is this list updated?",
-      a: "This ranking is updated hourly with fresh market data. Our AI ingests real-time price feeds, volume changes, social sentiment shifts, and on-chain transaction flows to ensure you always see the most current analysis.",
+      a: "The ranking is computed from live market data every time the page loads, so it reflects the current market whenever you visit.",
     },
     {
       q: "Should I invest in these cryptocurrencies?",
@@ -421,7 +421,7 @@ export default function MarketPage() {
     },
     {
       q: "Can I get alerts for changes in these rankings?",
-      a: "Yes. Oracle Bull offers real-time AI prediction alerts and market updates. Visit the Predictions Hub to follow specific coins and receive notifications when our AI detects significant ranking changes or new trading opportunities.",
+      a: "There's no alert system in this build yet. You can revisit this page for the current ranking, or explore the Predictions Hub for per-coin technical analysis with entry zones and targets.",
     },
   ] : [];
 

@@ -106,7 +106,7 @@ export default function EmbedIndex() {
         </div>
 
         <div style={{ textAlign: "center", marginTop: 24, fontSize: 12, color: "#64748b" }}>
-          Supports 300+ coins. Widget data refreshes every 20 seconds.
+          Supports 300+ coins. Widget data is served fresh on each page load.
         </div>
       </div>
     </EmbedLayout>

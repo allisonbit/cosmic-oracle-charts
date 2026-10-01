@@ -75,11 +75,11 @@ export default function Airdrops() {
     <Layout>
       <Helmet>
         <title>Crypto Airdrops 2026 | Active & Upcoming | Oracle Bull</title>
-        <meta name="description" content="Track every crypto airdrop in 2026: active tasks, snapshot dates, eligibility & estimated values for Base, Ethereum, Solana & more. Updated daily." />
+        <meta name="description" content="Track crypto airdrops in 2026: active tasks, snapshot dates, eligibility & estimated values for Base, Ethereum, Solana & more. Editorially curated." />
         <link rel="canonical" href={canonical} />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Crypto Airdrops 2026 | Active & Upcoming | Oracle Bull" />
-        <meta property="og:description" content="Track every crypto airdrop in 2026: active tasks, snapshot dates, eligibility & estimated values for Base, Ethereum, Solana & more. Updated daily." />
+        <meta property="og:description" content="Track crypto airdrops in 2026: active tasks, snapshot dates, eligibility & estimated values for Base, Ethereum, Solana & more. Editorially curated." />
         <meta property="og:url" content={canonical} />
         <meta property="og:site_name" content="Oracle Bull" />
         <meta property="og:image" content={`${SITE_URL}/oracle-bull-logo.jpg`} />

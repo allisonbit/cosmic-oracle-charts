@@ -6,7 +6,7 @@ const features = [
     color: "text-primary",
     title: "AI-Powered Analysis",
     description:
-      "Our AI models analyze price action, market cycles and sentiment to generate daily, weekly and monthly forecasts for Bitcoin, Ethereum and 1,000+ altcoins — each with a confidence score, not a guarantee.",
+      "Our engine analyzes price action, momentum and realized volatility to generate daily, weekly and monthly forecasts for Bitcoin, Ethereum and 1,000+ altcoins — each with a confidence score, not a guarantee.",
   },
   {
     icon: Zap,

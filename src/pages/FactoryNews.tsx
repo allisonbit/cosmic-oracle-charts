@@ -422,8 +422,9 @@ export default function FactoryNews() {
             <div>
               <h3 className="font-medium text-foreground">How often is news updated?</h3>
               <p className="text-muted-foreground text-sm mt-1">
-                Our news feed refreshes every minute, pulling from 50+ sources to ensure you never miss 
-                breaking developments that could affect your positions.
+                There is no live news feed connected in this build, so this page currently shows
+                no stories rather than stale ones. Market data elsewhere on the page is live from
+                CoinGecko. If a news source is connected later, it will update on visit.
               </p>
             </div>
             <div>

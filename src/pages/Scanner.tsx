@@ -423,7 +423,7 @@ export default function Scanner() {
             <span className="flex items-center gap-1.5"><div className="w-3 h-1.5 rounded-full bg-green-400" /> Strong (65+)</span>
             <span className="flex items-center gap-1.5"><div className="w-3 h-1.5 rounded-full bg-yellow-400" /> Neutral (35-65)</span>
             <span className="flex items-center gap-1.5"><div className="w-3 h-1.5 rounded-full bg-red-400" /> Weak (&lt;35)</span>
-            <span className="ml-auto flex items-center gap-1"><Clock className="w-3 h-3" /> Auto-updates every 60s · tap a row for detail</span>
+            <span className="ml-auto flex items-center gap-1"><Clock className="w-3 h-3" /> Live market data on load · tap a row for detail</span>
           </div>
 
           {/* Results */}

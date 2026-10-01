@@ -137,12 +137,12 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
   },
   "/insights": {
     title: `Crypto Market Analysis Today | AI Insights | Oracle Bull`,
-    description: "Daily AI market analysis for Bitcoin, Ethereum, Solana & altcoins. On-chain data, technical indicators & expert research. Updated daily, always free.",
+    description: "Editorial market analysis for Bitcoin, Ethereum, Solana & altcoins. On-chain data, technical indicators & research guides. Always free.",
     keywords: "crypto analysis today, daily crypto insights, bitcoin market analysis, ethereum analysis today, crypto research, crypto news analysis"
   },
   "/contact": {
     title: "Contact Oracle Bull | Support & Community",
-    description: "Reach the Oracle Bull team via email, Twitter or Telegram. Join 50,000+ traders using free AI crypto analytics. Quick response guaranteed.",
+    description: "Reach the Oracle Bull team via email, Twitter or Telegram. Free AI crypto analytics — questions and feedback welcome.",
     keywords: "contact oracle bull, oracle bull support, oracle bull telegram, crypto community"
   },
   "/predictions": {
@@ -157,7 +157,7 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
   },
   "/about": {
     title: "About Oracle Bull | Free AI Crypto Analytics",
-    description: "Oracle Bull is a free AI crypto forecasting platform trusted by 50K+ traders. Real-time predictions, whale tracking & sentiment for 1000+ tokens.",
+    description: "Oracle Bull is a free AI crypto forecasting platform. Real-time predictions, whale tracking & sentiment for 1000+ tokens.",
     keywords: "about oracle bull, AI crypto platform, free crypto analytics"
   },
   "/privacy-policy": {
@@ -207,17 +207,17 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
   },
   "/airdrops": {
     title: `Crypto Airdrops ${currentYear} | Active & Upcoming | Oracle Bull`,
-    description: `Track every crypto airdrop in ${currentYear}: active tasks, snapshot dates, eligibility & estimated values for Base, Ethereum, Solana & more. Updated daily.`,
+    description: `Track crypto airdrops in ${currentYear}: active tasks, snapshot dates, eligibility & estimated values for Base, Ethereum, Solana & more. Editorially curated.`,
     keywords: `crypto airdrops ${currentYear}, free crypto airdrop, upcoming crypto airdrops, airdrop tracker, crypto airdrop calendar`
   },
   "/news": {
     title: `Crypto News Today | AI Sentiment Headlines | Oracle Bull`,
-    description: "Breaking crypto news from 50+ sources with AI bullish/bearish sentiment ratings. Bitcoin, Ethereum, DeFi & regulation. Auto-refreshes every 5 min.",
+    description: "Crypto market headlines and context for Bitcoin, Ethereum, DeFi & regulation, alongside live market data and sentiment analytics.",
     keywords: "crypto news today, bitcoin news today, crypto news live, breaking crypto news, cryptocurrency headlines"
   },
   "/accuracy": {
     title: `Crypto Prediction Accuracy | AI Track Record | Oracle Bull`,
-    description: "Public, verifiable track record of Oracle Bull's AI crypto predictions. Hit rates, confidence scores & per-coin performance. Updated hourly.",
+    description: "Public track record of Oracle Bull's crypto predictions — graded against real market history. Hit rates, confidence scores & per-coin performance.",
     keywords: "crypto prediction accuracy, AI crypto forecast track record, best crypto prediction site accuracy"
   },
   "/liquidations/bitcoin-heatmap": {

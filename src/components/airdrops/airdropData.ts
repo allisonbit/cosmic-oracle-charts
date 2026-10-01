@@ -58,7 +58,7 @@ export const AIRDROPS_DATA: AirdropProject[] = [
     chains: ["Ethereum", "Linea"],
     tasks: ["Bridge ETH", "Earn LXP Points", "Complete Season 2 Quests", "Provide Liquidity"],
     difficulty: "Medium", status: "Confirmed",
-    aiAnalysis: "LINEA Season 2 campaign is live in 2026. Consensys confirmed a phased TGE with community allocation for long-term LXP holders. AI scoring shows top wallets with 6+ months of consistent activity are in the highest allocation bracket. Season 2 quests have lower competition than Season 1 — prime window right now.",
+    aiAnalysis: "LINEA's Season 2 campaign is widely reported as active in 2026, and Consensys has confirmed a phased TGE with community allocation for long-term LXP holders. Historically, wallets with 6+ months of consistent activity land in higher allocation brackets on comparable L2 launches. Season 2 quests appear to have lower competition than Season 1 — verify current details on the official channels before committing funds.",
     fullGuide: {
       overview: `Linea is a Type 2 zkEVM rollup developed by Consensys, the blockchain technology company founded by Ethereum co-founder Joseph Lubin. Unlike many competing zkEVM solutions, Linea is designed to be fully EVM-equivalent, meaning any existing Ethereum smart contract can be deployed on Linea without modification. This is a critical differentiator in a crowded L2 market.
 
@@ -73,7 +73,7 @@ Linea Park and Linea Surge were the two flagship campaign programs designed to r
 
 First, institutional backing: Consensys raised $726 million across multiple funding rounds and manages MetaMask, which has 30 million monthly active users. This gives Linea an unparalleled distribution advantage — any MetaMask user can be onboarded to Linea with a single click. This is the kind of moat that makes a $3–5B FDV not just plausible, but conservative.
 
-Second, TGE timing: Oracle Bull's AI models, trained on historical L2 launch patterns (ARB, OP, MATIC), indicate that L2 airdrops tend to happen 12–18 months after mainnet launch. Linea launched its mainnet in July 2023, placing the TGE window squarely in Q3–Q4 2025. Multiple on-chain signals — including reduced LXP emission rates and a slowdown in new campaign deployments — suggest the team is entering the pre-TGE phase.
+Second, TGE timing: comparing historical L2 launch patterns (ARB, OP, MATIC), L2 airdrops have tended to happen 12–18 months after mainnet launch. Linea launched its mainnet in July 2023, which would place the TGE window around Q3–Q4 2025 — timelines can and do slip. Multiple on-chain signals — including reduced LXP emission rates and a slowdown in new campaign deployments — have been read by community analysts as pre-TGE phase indicators.
 
 Third, cross-chain composability: Linea is deeply integrated with the broader Consensys ecosystem. MetaMask users already have Linea as a default network, Infura serves as the primary RPC provider, and major DeFi protocols including Uniswap, Curve, SyncSwap, and Nile Exchange have deployed on Linea. This creates organic, non-sybil activity that is hard to replicate.`,
       stepByStep: [
@@ -86,7 +86,7 @@ Third, cross-chain composability: Linea is deeply integrated with the broader Co
         "Bridge back to Ethereum: A round-trip bridge — ETH from Ethereum to Linea and then back — demonstrates genuine usage rather than airdrop farming. Many L2 airdrops use this as a quality signal.",
         "Check your LXP balance: Visit explorer.linea.build and connect your wallet to see your current LXP and LXP-L balances. These are strong indicators of your relative allocation standing.",
       ],
-      tokenomics: `While Linea has not published official tokenomics at time of writing, Oracle Bull's AI models have synthesized available signals to project the following allocation structure:
+      tokenomics: `While Linea has not published official tokenomics at time of writing, community analysts project the following allocation structure from comparable launches:
 
 Total Supply: 10,000,000,000 LINEA (10 billion)
 Community & Airdrop Allocation: ~10% (1 billion tokens)
@@ -180,7 +180,7 @@ The competitive moat is real. Monad is technically superior to existing EVM chai
         "Follow @monad_xyz on Twitter and engage: Like, retweet, and reply to official posts. Monad has an active social scoring component — accounts with genuine engagement (not just likes) and linked wallets may receive bonus allocations.",
         "Participate in community events: Monad hosts regular Twitter Spaces, Discord events, and testnet competitions. Participating in these events often yields special NFTs or wallet tags that signal OG status.",
       ],
-      tokenomics: `Monad has not published official tokenomics. Based on comparable L1 launches and information from seed investors, Oracle Bull projects the following:
+      tokenomics: `Monad has not published official tokenomics. Based on comparable L1 launches and information from seed investors, editorial projections suggest the following:
 
 Total Supply: 10,000,000,000 MON (speculative)
 Community/Airdrop Allocation: 8–15% (800M–1.5B tokens)
@@ -191,7 +191,7 @@ Protocol Treasury: 10–15%
 
 At a launch FDV of $3B (conservative, given $244M raised at implied higher valuation), MON would be priced at $0.30. Community allocation at 10% = 1B tokens = $300M pool. Divided across 1 million qualifying wallets = $300 per average wallet. Top-tier wallets with developer activity, OG roles, and consistent testnet participation could receive 5–20x the average allocation.
 
-Note: These figures are Oracle Bull AI projections based on comparable launches and should not be treated as official figures.`,
+Note: These figures are editorial projections based on comparable launches and should not be treated as official figures.`,
       vcBackers: ["Paradigm ($225M lead)", "Electric Capital", "Coinbase Ventures", "Dragonfly Capital", "Greenfield Capital", "Figment Capital"],
       timeline: [
         { date: "Q1 2024", event: "$225M Series A led by Paradigm announced" },
@@ -337,7 +337,7 @@ Price Volatility: HIGH. BERA has experienced extreme price volatility post-launc
     chains: ["Ethereum", "Scroll"],
     tasks: ["Mint Canvas Season 2 Badges", "Deploy Smart Contract", "Vote in Governance", "Use Ambient Finance"],
     difficulty: "Medium", status: "Confirmed",
-    aiAnalysis: "SCR Canvas Season 2 is live in 2026 with 80M tokens reserved for ongoing distributions. Badge diversity remains the primary scoring metric — wallets with 20+ unique badges are in the top allocation tier. New 2026 badge categories include AI-powered DeFi tools and cross-chain governance — underfarmed and high value.",
+    aiAnalysis: "SCR's Canvas Season 2 is reported active in 2026 with 80M tokens reserved for ongoing distributions. Badge diversity has been the primary scoring metric — wallets with 20+ unique badges have historically been in the top allocation tier. Newer badge categories are typically underfarmed; verify current categories and criteria on the official Canvas page before investing time.",
     fullGuide: {
       overview: `Scroll is a zkEVM Layer 2 built natively from the EVM specification, meaning it achieves the deepest level of EVM compatibility among all zkEVM rollups. While competitors like Polygon zkEVM and zkSync Era made compromises for performance, Scroll prioritized byte-for-byte EVM equivalence — every Ethereum opcode behaves identically on Scroll, making it the most compatible home for existing Ethereum dApps.
 
@@ -576,7 +576,7 @@ The MegaETH testnet (codenamed "Metropolis") launched in Q1 2026 and immediately
 
 MegaETH's real-time performance enables entirely new DeFi primitives — order books with microsecond matching, real-time liquidations, and on-chain high-frequency trading — that were previously impossible on any blockchain. This creates a compelling thesis for attracting institutional trading volume from centralized exchanges.
 
-The MEGA token has not been officially confirmed but is widely expected based on the team's fundraising size, VC backing composition, and statements in community channels. Oracle Bull's AI models rate this as High confidence for a 2026 TGE.`,
+The MEGA token has not been officially confirmed but is widely expected based on the team's fundraising size, VC backing composition, and statements in community channels. Our editorial read rates this as High confidence for a 2026 TGE.`,
       whyItMatters: `MegaETH is the most technically differentiated new L2 in 2026 and has three properties that make it uniquely attractive:
 
 First, real-time performance changes everything. At 100,000 TPS and 1ms latency, MegaETH can host on-chain order books that match or exceed centralized exchange performance. This isn't marginal improvement — it's a categorical shift that opens DeFi to institutional market makers who currently can't operate on-chain due to latency constraints.
@@ -594,7 +594,7 @@ Third, the timing is perfect. The 2026 bull market is driving massive search for
         "Refer friends and build referral network: MegaETH's referral program gives you 20% of all POG earned by wallets you refer, for up to 3 levels deep. Building even a small referral network of 10 active users can double your POG accumulation rate.",
         "Participate in hackathons: MegaETH regularly hosts mini-hackathons on the testnet. Building a project (even a simple one) and submitting to the hackathon gives you a developer badge that carries a 5x allocation multiplier.",
       ],
-      tokenomics: `MEGA token has not been officially announced. Oracle Bull AI projects the following based on comparable L2 launches and funding round size:
+      tokenomics: `MEGA token has not been officially announced. Editorial projections, based on comparable L2 launches and funding round size, suggest the following:
 
 Total Supply: 10,000,000,000 MEGA (speculative)
 Community/Testnet Airdrop: 10–15% (1–1.5B tokens)
@@ -682,7 +682,7 @@ Enterprise adoption: Base has signed partnerships with major brands (Coca-Cola, 
         "Use Base's Smart Wallets: Deploy a Smart Wallet (ERC-4337 account abstraction wallet) on Base. This signals advanced technical usage and Coinbase has explicitly highlighted Smart Wallet adoption as a key growth metric.",
         "Participate in Base's social ecosystem: Farcaster (built on Base) and the emerging onchain social graph are uniquely Base-native. Having an active Farcaster account linked to your Base wallet creates a social identity layer that is distinct from pure DeFi farming.",
       ],
-      tokenomics: `A BASE token has not been confirmed. Oracle Bull AI projects the following based on OP Stack precedent and Coinbase's stated decentralization roadmap:
+      tokenomics: `A BASE token has not been confirmed. Editorial projections, based on OP Stack precedent and Coinbase's stated decentralization roadmap, suggest the following:
 
 Projected Total Supply: 4,294,967,296 BASE (matching OP total supply — symbolic of OP Stack heritage)
 Estimated Community Allocation: 19.4% (matching Optimism's initial community allocation)

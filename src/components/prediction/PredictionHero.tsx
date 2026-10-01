@@ -112,7 +112,7 @@ export function PredictionHero({ coinName, coinId, symbol, timeframe, data }: Pr
           </span>
           <span className="flex items-center gap-1">
             <RefreshCw className="h-3 w-3" />
-            Auto-refreshes {timeframe === 'daily' ? 'every 5 min' : timeframe === 'weekly' ? 'every 30 min' : 'hourly'}
+            Computed from live market history on each visit
           </span>
         </div>
       </div>

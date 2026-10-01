@@ -151,7 +151,7 @@ export default function Insights() {
   const structuredData = {
     "@context": "https://schema.org", "@type": "Blog",
     "name": "Oracle Bull Crypto Insights",
-    "description": "Expert cryptocurrency market analysis, on-chain data insights, and trading intelligence updated daily.",
+    "description": "Editorial cryptocurrency market analysis, on-chain data insights, and trading intelligence from the Oracle Bull team.",
     "url": "https://oraclebull.com/insights",
     "publisher": { "@type": "Organization", "name": "Oracle Bull", "url": "https://oraclebull.com" },
     "blogPost": paginatedArticles.slice(0, 10).map(post => ({
@@ -165,7 +165,7 @@ export default function Insights() {
     <Layout>
       <Helmet>
         <title>Crypto Market Analysis Today | AI Insights | Oracle Bull</title>
-        <meta name="description" content="Daily AI market analysis for Bitcoin, Ethereum, Solana & altcoins. On-chain data, technical indicators & expert research. Updated daily, always free." />
+        <meta name="description" content="Editorial market analysis for Bitcoin, Ethereum, Solana & altcoins. On-chain data, technical indicators & research guides. Always free." />
         
       </Helmet>
       <FAQSchema items={INSIGHTS_FAQS} url="https://oraclebull.com/insights" />
@@ -492,7 +492,7 @@ export default function Insights() {
           <noscript>
             <div style={{ padding: '24px 0' }}>
               <h2>All Crypto Market Insights</h2>
-              <p>Browse our complete library of AI-powered cryptocurrency market analysis articles, updated daily with expert insights on Bitcoin, Ethereum, DeFi, altcoins, and trading strategies.</p>
+              <p>Browse our complete library of cryptocurrency market analysis articles, with editorial insights on Bitcoin, Ethereum, DeFi, altcoins, and trading strategies.</p>
               <ul>
                 {data?.posts?.map(post => (
                   <li key={post.slug}>

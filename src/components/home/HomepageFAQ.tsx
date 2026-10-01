@@ -39,7 +39,7 @@ const faqs = [
   },
   {
     question: "What is Oracle Bull and how does it work?",
-    answer: "Oracle Bull is a free AI-powered cryptocurrency analytics platform that provides real-time price predictions, whale tracking, sentiment analysis, and on-chain intelligence across 1,000+ tokens and 8 blockchains. Our AI models analyze technical indicators, market sentiment, and on-chain data to generate forecasts with confidence scores.",
+    answer: "Oracle Bull is a free AI-powered cryptocurrency analytics platform that provides real-time price predictions, whale tracking, sentiment analysis, and on-chain intelligence across 1,000+ tokens and 8 blockchains. Our technical engine computes RSI, MACD, moving averages and volatility from real market history to generate forecasts with confidence scores.",
   },
   {
     question: "What cryptocurrencies and blockchains do you support?",

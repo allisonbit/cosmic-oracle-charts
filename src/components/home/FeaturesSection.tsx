@@ -12,7 +12,7 @@ const FEATURES = [
     label: "AI Predictions",
     title: "AI-Powered Price Predictions",
     description:
-      "Our AI models analyze technical indicators, on-chain flows, and social sentiment to forecast price movements — with a transparent confidence score on every prediction.",
+      "Our engine computes RSI, MACD, moving averages and volatility from real market history to forecast price movements — with a transparent confidence score on every prediction.",
     accent: "text-primary",
     cta: "View predictions",
     detail: (

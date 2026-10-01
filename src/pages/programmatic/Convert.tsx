@@ -47,7 +47,7 @@ export default function Convert() {
   const faq = [
     {
       q: `How much is 1 ${coinDef.ticker} in ${fiatDef.slug.toUpperCase()}?`,
-      a: `1 ${coinDef.name} is currently worth ${fiatDef.symbol}${fmtPrice(rate)}. The rate updates every minute and changes constantly with the market.`,
+      a: `1 ${coinDef.name} is currently worth ${fiatDef.symbol}${fmtPrice(rate)}. The rate is live from CoinGecko at the time you loaded this page and changes constantly with the market.`,
     },
     {
       q: `How do I convert ${coinDef.ticker} to ${fiatDef.slug.toUpperCase()}?`,

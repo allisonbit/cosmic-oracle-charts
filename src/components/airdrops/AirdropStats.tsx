@@ -1,17 +1,20 @@
-import { Brain, TrendingUp, DollarSign, CheckCircle2, Flame } from "lucide-react";
+import { Star, TrendingUp, BookOpen, ShieldCheck, Flame } from "lucide-react";
 import { AIRDROPS_DATA } from "./AirdropList";
 
+// All four cards are computed from the editorial dataset — nothing here is a
+// live feed or an AI output. Labels say exactly what the numbers are.
 export function AirdropStats() {
   const live = AIRDROPS_DATA.filter(a => a.liveStatus === "Live").length;
-  const verified = AIRDROPS_DATA.filter(a => a.isVerified).length;
-  const weeklyValue = "$312M";
+  const upcoming = AIRDROPS_DATA.filter(a => a.liveStatus === "Upcoming").length;
+  const lowRisk = AIRDROPS_DATA.filter(a => a.riskLevel === "Low").length;
+  const withGuide = AIRDROPS_DATA.filter(a => a.fullGuide).length;
   const avgScore = Math.round(AIRDROPS_DATA.reduce((acc, a) => acc + a.aiScore, 0) / AIRDROPS_DATA.length);
 
   const stats = [
-    { icon: <Flame className="w-5 h-5 text-danger" />, color: "bg-danger/10", value: `${live} Live`, label: "Active Airdrops Now", sub: `+${AIRDROPS_DATA.filter(a => a.liveStatus === "Upcoming").length} upcoming` },
-    { icon: <DollarSign className="w-5 h-5 text-success" />, color: "bg-success/10", value: weeklyValue, label: "Total Value This Week", sub: "across all tracked drops" },
-    { icon: <CheckCircle2 className="w-5 h-5 text-primary" />, color: "bg-primary/10", value: `${verified}/${AIRDROPS_DATA.length}`, label: "Verified Opportunities", sub: "manually reviewed" },
-    { icon: <Brain className="w-5 h-5 text-purple-400" />, color: "bg-purple-500/10", value: `${avgScore}/100`, label: "Avg. AI Score", sub: "across all ranked drops" },
+    { icon: <Flame className="w-5 h-5 text-danger" />, color: "bg-danger/10", value: `${live} Live`, label: "Live Now", sub: `+${upcoming} upcoming` },
+    { icon: <BookOpen className="w-5 h-5 text-primary" />, color: "bg-primary/10", value: `${withGuide}`, label: "In-Depth Guides", sub: `across ${AIRDROPS_DATA.length} tracked projects` },
+    { icon: <ShieldCheck className="w-5 h-5 text-success" />, color: "bg-success/10", value: `${lowRisk}`, label: "Flagged Lower-Risk", sub: "editorial assessment, not advice" },
+    { icon: <Star className="w-5 h-5 text-purple-400" />, color: "bg-purple-500/10", value: `${avgScore}/100`, label: "Avg. Editorial Score", sub: "our ranking — not an AI model" },
   ];
 
   return (
