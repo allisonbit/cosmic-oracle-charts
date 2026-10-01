@@ -21,7 +21,6 @@ const AdminRoute = lazy(() => import("@/components/auth/AdminRoute").then(m => (
 // Lazy load heavy global modals
 const AIChatBubble = lazy(() => import("@/components/chat/AIChatBubble").then(m => ({ default: m.AIChatBubble })));
 const QuickTradeModal = lazy(() => import("@/components/trading/QuickTradeModal").then(m => ({ default: m.QuickTradeModal })));
-const LiveVisitorCounter = lazy(() => import("@/components/system/LiveVisitorCounter").then(m => ({ default: m.LiveVisitorCounter })));
 
 // Eager load critical pages
 import Index from "./pages/Index";
@@ -331,9 +330,6 @@ const App = () => (
             <HideOnEmbed>
               <AIChatBubble />
               <QuickTradeModal />
-              <Suspense fallback={null}>
-                <LiveVisitorCounter />
-              </Suspense>
             </HideOnEmbed>
           </BrowserRouter>
         </AppErrorBoundary>

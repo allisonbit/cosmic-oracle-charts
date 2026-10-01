@@ -44,12 +44,15 @@ export default function MarketRecap() {
 
   const fgLabel = (n: number) =>
     n >= 75 ? "Extreme Greed" : n >= 55 ? "Greed" : n >= 45 ? "Neutral" : n >= 25 ? "Fear" : "Extreme Fear";
+  // Live F&G value or null — null means the index is unreachable, so every
+  // F&G sentence/stat below is omitted instead of printing a fake number.
+  const fng = market?.fearGreedIndex ?? null;
 
   const faq = [
     {
       q: "How is the crypto market today?",
       a: market
-        ? `The total crypto market cap is $${fmtLargeNum(market.global.totalMarketCap)} with $${fmtLargeNum(market.global.totalVolume24h)} in 24-hour volume. BTC dominance is ${market.global.btcDominance.toFixed(1)}% and the Fear & Greed Index reads ${market.fearGreedIndex} (${fgLabel(market.fearGreedIndex)}).`
+        ? `The total crypto market cap is $${fmtLargeNum(market.global.totalMarketCap)} with $${fmtLargeNum(market.global.totalVolume24h)} in 24-hour volume. BTC dominance is ${market.global.btcDominance.toFixed(1)}%${fng !== null ? ` and the Fear & Greed Index reads ${fng} (${fgLabel(fng)})` : ""}.`
         : "Loading market data...",
     },
     {
@@ -61,7 +64,7 @@ export default function MarketRecap() {
     {
       q: "Is the crypto market bullish or bearish?",
       a: market
-        ? `Market breadth shows ${bullishCount} of ${totalCoins} tracked coins are positive today, indicating a ${marketMood} environment. The Fear & Greed Index at ${market.fearGreedIndex} confirms this reading.`
+        ? `Market breadth shows ${bullishCount} of ${totalCoins} tracked coins are positive today, indicating a ${marketMood} environment.${fng !== null ? ` The Fear & Greed Index at ${fng} is consistent with this reading.` : ""}`
         : "Loading...",
     },
     {
@@ -172,8 +175,8 @@ export default function MarketRecap() {
                   </div>
                   <div className="bg-muted/30 rounded-lg p-4 text-center">
                     <div className="text-sm text-muted-foreground mb-1">Fear & Greed</div>
-                    <div className="font-mono font-bold">{market.fearGreedIndex}</div>
-                    <div className="text-xs text-muted-foreground">{fgLabel(market.fearGreedIndex)}</div>
+                    <div className="font-mono font-bold">{fng ?? "—"}</div>
+                    <div className="text-xs text-muted-foreground">{fng !== null ? fgLabel(fng) : "unavailable"}</div>
                   </div>
                 </div>
 
@@ -194,19 +197,21 @@ export default function MarketRecap() {
                       : ", sitting in the middle of its typical range — no strong rotation signal in either direction."
                     }
                   </p>
+                  {fng !== null && (
                   <p>
-                    The Fear & Greed Index reads {market.fearGreedIndex} ({fgLabel(market.fearGreedIndex)}).
-                    {market.fearGreedIndex >= 75
+                    The Fear & Greed Index reads {fng} ({fgLabel(fng)}).
+                    {fng >= 75
                       ? " Extreme greed readings have historically preceded short-term pullbacks. Euphoria-driven buying tends to fade, and traders should be cautious about chasing momentum."
-                      : market.fearGreedIndex >= 55
+                      : fng >= 55
                       ? " Greedy conditions typically fuel trend continuation, though profit-taking can accelerate at these levels."
-                      : market.fearGreedIndex >= 45
+                      : fng >= 45
                       ? " Neutral sentiment means the market lacks conviction in either direction. This often resolves with a catalyst-driven move."
-                      : market.fearGreedIndex >= 25
+                      : fng >= 25
                       ? " Fear is elevated, which historically creates buying opportunities for long-term investors willing to enter against the crowd."
                       : " Extreme fear is contrarian-bullish — the deepest fear readings have historically coincided with local bottoms."
                     }
                   </p>
+                  )}
                   <p>
                     Market breadth: {bullishCount} of {totalCoins} tracked coins are positive today ({(breadth * 100).toFixed(0)}% green).
                     {breadth > 0.7
@@ -323,7 +328,7 @@ export default function MarketRecap() {
               <div className="mb-8">
                 <SocialShare
                   title={`Crypto Market Recap — ${today}`}
-                  description={`Market cap: $${fmtLargeNum(market.global.totalMarketCap)} (${pct(market.global.marketCapChange24h)}). Fear & Greed: ${market.fearGreedIndex}. Top gainer: ${gainers[0]?.name ?? "N/A"} ${pct(gainers[0]?.change24h)}.`}
+                  description={`Market cap: $${fmtLargeNum(market.global.totalMarketCap)} (${pct(market.global.marketCapChange24h)}).${fng !== null ? ` Fear & Greed: ${fng}.` : ""} Top gainer: ${gainers[0]?.name ?? "N/A"} ${pct(gainers[0]?.change24h)}.`}
                   url="https://oraclebull.com/market-recap"
                 />
               </div>

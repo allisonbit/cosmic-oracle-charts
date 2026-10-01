@@ -37,8 +37,8 @@ export function TrendingTokensPanel({ chain, onTokenSelect }: TrendingTokensPane
   const [activeTab, setActiveTab] = useState("trending");
   const [selectedToken, setSelectedToken] = useState<DiscoveryToken | null>(null);
   
-  // Fetch real token discovery data
-  const { data: discoveryData, isLoading, refetch, isRefetching } = useTokenDiscovery(chain.id, true);
+  // Fetch real token discovery data (no refetch control — data is stable per visit)
+  const { data: discoveryData, isLoading } = useTokenDiscovery(chain.id, true);
 
   // Categorize tokens from real data
   const allTokens = discoveryData?.tokens || [];
@@ -46,6 +46,7 @@ export function TrendingTokensPanel({ chain, onTokenSelect }: TrendingTokensPane
   const gainers = [...allTokens].filter(t => t.change24h > 0).sort((a, b) => b.change24h - a.change24h).slice(0, 10);
   const losers = [...allTokens].filter(t => t.change24h < 0).sort((a, b) => a.change24h - b.change24h).slice(0, 10);
   const newPairs = allTokens.filter(t => t.category === 'new' || t.volumeSpike > 50).slice(0, 10);
+  const isRefetching = false; // discovery is fetched once per visit — no background refetch
 
   const handleTokenClick = (token: DiscoveryToken) => {
     setSelectedToken(token);

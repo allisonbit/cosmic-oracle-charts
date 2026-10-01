@@ -48,9 +48,24 @@ function formatNumber(num: number | undefined | null): string {
 }
 
 export function TopTokensTable({ chain, onTokenSelect }: TopTokensTableProps) {
-  // Standalone: live DEX pairs from DexScreener's public API.
+  // Standalone: live DEX pairs from DexScreener's public API, mapped into
+  // table rows (rank = position in the volume-ranked list).
   const { data: dexTokens = [], isLoading } = useDexTopTokens(chain.id, 25);
-  const tokens = dexTokens as TokenRow[];
+  const tokens: TokenRow[] = dexTokens.map((t, i) => ({
+    rank: i + 1,
+    id: t.id,
+    symbol: t.symbol,
+    name: t.name,
+    image: t.image,
+    price: t.price,
+    change1h: t.change1h,
+    change24h: t.change24h,
+    change7d: t.change7d,
+    volume24h: t.volume24h,
+    marketCap: t.marketCap,
+    fdv: t.fdv,
+    contractAddress: t.contractAddress,
+  }));
 
   const [sortBy, setSortBy] = useState<keyof TokenRow>('volume24h');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');

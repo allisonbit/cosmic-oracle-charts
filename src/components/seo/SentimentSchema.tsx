@@ -1,12 +1,9 @@
 import { Helmet } from "react-helmet-async";
 import { SITE_URL } from "@/lib/siteConfig";
 
-interface SentimentSchemaProps {
-  fearGreedIndex?: number;
-  marketMomentum?: string;
-}
-
-export function SentimentSchema({ fearGreedIndex = 50, marketMomentum = 'NEUTRAL' }: SentimentSchemaProps) {
+/** Static meta tags only — the page itself renders honest "unavailable"
+ * states when the live index is unreachable, so no props are needed. */
+export function SentimentSchema() {
   return (
     <Helmet>
       <title>Crypto Sentiment Analysis | Fear & Greed Index | Oracle Bull</title>
@@ -19,7 +16,7 @@ export function SentimentSEOContent() {
   return (
     <section className="holo-card p-6 mb-6">
       <h2 className="font-display text-lg font-bold mb-3">
-        AI-Powered Sentiment Intelligence
+        Live Sentiment Intelligence
       </h2>
       <div className="prose max-w-none text-sm text-muted-foreground space-y-3">
         <p>

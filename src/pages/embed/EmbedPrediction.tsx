@@ -15,7 +15,6 @@ function PredictionWidget() {
 
   const { data, isLoading } = usePricePrediction(
     crypto?.id ?? "",
-    crypto?.symbol ?? "",
     "daily",
     !!crypto,
   );

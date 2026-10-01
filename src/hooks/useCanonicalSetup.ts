@@ -49,7 +49,6 @@ export function useCanonicalSetup(
   const { data: setup } = useActiveSetup(coinId, timeframe);
   const { data: prediction, isLoading } = usePricePrediction(
     coinId,
-    symbol,
     timeframe,
     enabled,
     { contractAddress: opts?.contractAddress, chain: opts?.chain },

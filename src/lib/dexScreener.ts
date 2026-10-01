@@ -99,8 +99,8 @@ export function useDexPools(chainQuery: string, limit = 25, enabled = true) {
         const namePair = a.name.split(" /");
         rows.push({
           id: p.id,
-          symbol: (baseMeta?.symbol ?? namePair[0] ?? "").toUpperCase(),
-          name: baseMeta?.name ?? namePair[0] ?? "",
+          symbol: (baseMeta?.attributes.symbol ?? namePair[0] ?? "").toUpperCase(),
+          name: baseMeta?.attributes.name ?? namePair[0] ?? "",
           image: baseMeta?.attributes.image_url,
           price: gtNum(a.base_token_price_usd),
           change1h: gtNum(a.price_change_percentage?.h1),
@@ -110,8 +110,7 @@ export function useDexPools(chainQuery: string, limit = 25, enabled = true) {
           marketCap: gtNum(a.market_cap_usd) || gtNum(a.fdv_usd),
           fdv: gtNum(a.fdv_usd),
           liquidity: gtNum(a.reserve_in_usd),
-          txns24h: gtNum(a.transactions?.h24?.buys) + gtNum(a.transactions?.h24?.sells),
-          buys24h: gtNum(a.transactions?.h24?.buys),
+          txns24h: gtNum(a.transactions?.h24?.buys) + gtNum(a.transactions?.h24?.sells),          buys24h: gtNum(a.transactions?.h24?.buys),
           sells24h: gtNum(a.transactions?.h24?.sells),
           contractAddress: baseRel?.split("_").pop() ?? null,
           pairUrl: `https://www.geckoterminal.com/${network}/pools/${a.address}`,
@@ -263,7 +262,7 @@ export function useDexDiscovery(chainQuery: string, enabled = true) {
           tokens: tokens.map(t => {
             const volLiq = t.liquidity > 0 ? t.volume24h / t.liquidity : 0;
             const category: 'rising' | 'crashing' | 'new' | 'unusual' =
-              t.change24h > 5 ? 'rising' : t.change24h < -5 ? 'crashing' : volLiq > 5 ? 'unusual' : 'rising';
+              t.change24h > 5 ? 'rising' : t.change24h < -5 ? 'crashing' : volLiq > 5 ? 'unusual' : 'new';
             return {
               symbol: t.symbol,
               name: t.name,

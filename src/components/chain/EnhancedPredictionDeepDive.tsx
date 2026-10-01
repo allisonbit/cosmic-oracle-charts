@@ -138,6 +138,20 @@ export function EnhancedPredictionDeepDive({ chain, forecast, isLoading }: Enhan
     });
   };
 
+  const handleTimeframeClick = (tf: { readonly label: string; readonly timeframe: string; readonly methodology: readonly string[] }, data: { prediction: string; confidence: number; reasoning: string }) => {
+    setSelectedDetail({
+      type: "timeframe",
+      data: {
+        horizon: tf.timeframe,
+        prediction: data.prediction,
+        confidence: data.confidence,
+        reasoning: data.reasoning,
+        methodology: tf.methodology,
+      },
+      title: `${tf.label} Forecast Details`,
+    });
+  };
+
   const handleConfidenceClick = () => {
     if (!forecast) return;
     setSelectedDetail({

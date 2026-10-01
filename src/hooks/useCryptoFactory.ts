@@ -127,7 +127,7 @@ export function useCryptoFactory(_filters?: {
         news: [],
         trending: [],
         globalStats,
-        fearGreed: fng ?? undefined,
+        fearGreed: fng ? { value: fng.value, classification: fng.label } : undefined,
         topMovers,
         timestamp: Date.now(),
       };

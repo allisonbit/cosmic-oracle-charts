@@ -59,7 +59,6 @@ export default function PricePrediction() {
   const validTimeframe = ['daily', 'weekly', 'monthly'].includes(timeframe) ? timeframe as 'daily' | 'weekly' | 'monthly' : 'daily';
   const { data, isLoading, error, dataUpdatedAt } = usePricePrediction(
     crypto?.id || 'bitcoin',
-    crypto?.symbol || 'btc',
     validTimeframe,
     !isLoadingToken,
     { contractAddress, chain }

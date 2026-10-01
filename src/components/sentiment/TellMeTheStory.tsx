@@ -14,7 +14,9 @@ interface TokenData {
 }
 
 interface SentimentData {
-  fearGreedIndex: number;
+  /** Live F&G value or null when the index is unreachable. (Unused by this
+   * button today — kept for interface stability with future story text.) */
+  fearGreedIndex: number | null;
   volatilityIndex: number;
   marketMomentum: string;
 }

@@ -5,11 +5,10 @@ import { SITE_URL } from "@/lib/siteConfig";
 
 interface DashboardSchemaProps {
   marketCap?: string;
-  fearGreedIndex?: number;
   lastUpdate?: string;
 }
 
-export function DashboardSchema({ marketCap, fearGreedIndex, lastUpdate }: DashboardSchemaProps) {
+export function DashboardSchema({ marketCap, lastUpdate }: DashboardSchemaProps) {
   const schema = {
     "@context": "https://schema.org",
     "@type": "WebApplication",

@@ -23,7 +23,7 @@ export function WatchlistStrip() {
   // resolves. A few ids differ from both (binancecoin→BNB): alias them.
   const ID_ALIASES: Record<string, string> = { binancecoin: "bnb", ripple: "xrp" };
   const priceMap = useMemo(() => {
-    const m = new Map<string, { price: number; change24h: number; image?: string; name: string; id: string }>();
+    const m = new Map<string, { price: number; change24h: number; image?: string; name: string; symbol: string; id: string }>();
     (data?.prices ?? []).forEach(p => {
       const entry = { price: p.price, change24h: p.change24h, image: p.image, name: p.name, symbol: p.symbol, id: p.symbol.toLowerCase() };
       m.set(p.symbol.toLowerCase(), entry);

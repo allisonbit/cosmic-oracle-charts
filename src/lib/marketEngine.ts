@@ -106,6 +106,8 @@ export interface EngineCoin {
   low24h: number;
   ath: number;
   athChangePct: number;
+  /** Real 30d change (percentage string from CoinGecko — coerced). */
+  change30d?: number;
   rank: number;
   circulating: number;
 }
@@ -126,14 +128,22 @@ export interface OhlcPoint { time: number; open: number; high: number; low: numb
 interface CGMarketRow {
   id: string; symbol: string; name: string; image: string;
   current_price: number;
-  price_change_percentage_1h_in_currency?: number;
-  price_change_percentage_24h_in_currency?: number;
-  price_change_percentage_7d_in_currency?: number;
+  price_change_percentage_1h_in_currency?: number | string;
+  price_change_percentage_24h_in_currency?: number | string;
+  price_change_percentage_7d_in_currency?: number | string;
+  price_change_percentage_30d_in_currency?: number | string;
   total_volume: number; market_cap: number;
   high_24h: number; low_24h: number;
   ath: number; ath_change_percentage: number;
   market_cap_rank: number | null;
   circulating_supply: number;
+}
+
+/** CoinGecko occasionally returns numerics as strings — coerce hard. */
+function cgNum(v: number | string | undefined | null): number {
+  if (typeof v === "number") return Number.isFinite(v) ? v : 0;
+  const n = parseFloat(String(v ?? ""));
+  return Number.isFinite(n) ? n : 0;
 }
 
 function mapRow(r: CGMarketRow): EngineCoin {
@@ -143,15 +153,16 @@ function mapRow(r: CGMarketRow): EngineCoin {
     name: r.name,
     image: r.image,
     price: r.current_price ?? 0,
-    change1h: r.price_change_percentage_1h_in_currency ?? 0,
-    change24h: r.price_change_percentage_24h_in_currency ?? 0,
-    change7d: r.price_change_percentage_7d_in_currency ?? 0,
+    change1h: cgNum(r.price_change_percentage_1h_in_currency),
+    change24h: cgNum(r.price_change_percentage_24h_in_currency),
+    change7d: cgNum(r.price_change_percentage_7d_in_currency),
     volume24h: r.total_volume ?? 0,
     marketCap: r.market_cap ?? 0,
     high24h: r.high_24h ?? r.current_price ?? 0,
     low24h: r.low_24h ?? r.current_price ?? 0,
     ath: r.ath ?? 0,
     athChangePct: r.ath_change_percentage ?? 0,
+    change30d: r.price_change_percentage_30d_in_currency != null ? Number(r.price_change_percentage_30d_in_currency) : undefined,
     rank: r.market_cap_rank ?? 999,
     circulating: r.circulating_supply ?? 0,
   };
@@ -166,7 +177,7 @@ export async function fetchMarkets(perPage = 100): Promise<EngineCoin[]> {
       order: "market_cap_desc",
       per_page: perPage,
       page: 1,
-      price_change_percentage: "1h,24h,7d",
+      price_change_percentage: "1h,24h,7d,30d",
       sparkline: "false",
     },
     60_000,
@@ -190,8 +201,8 @@ export async function fetchGlobal(): Promise<GlobalMarket | null> {
 }
 
 export async function fetchFearGreed(): Promise<{ value: number; label: string } | null> {
-  const cached = cacheGet<{ value: number; label: string }>("fng", 30 * 60_000);
-  if (cached) return cached;
+  // fetchFearGreedHistory caches under "fng-history" (30 min) — one cached
+  // API call serves both the current value and the history.
   const full = await fetchFearGreedHistory(1);
   const first = full[0];
   return first ? { value: first.value, label: first.classification } : null;

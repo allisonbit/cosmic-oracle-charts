@@ -1,5 +1,4 @@
 import { useParams, Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
@@ -15,7 +14,6 @@ import {
 } from "lucide-react";
 import { useMarketData } from "@/hooks/useMarketData";
 import { useStrengthMeter } from "@/hooks/useStrengthMeter";
-import { supabase } from "@/integrations/supabase/client";
 
 function getWeekSlug(): string {
   const now = new Date();
@@ -49,21 +47,9 @@ export default function WeeklyReport() {
   const { slug } = useParams<{ slug: string }>();
   const currentSlug = slug || getWeekSlug();
 
-  const { data: stored } = useQuery({
-    queryKey: ["weekly-report", currentSlug],
-    queryFn: async () => {
-      const { data, error } = await (supabase as any)
-        .from("weekly_reports")
-        .select("*")
-        .eq("slug", currentSlug)
-        .maybeSingle();
-      if (error) return null;
-      return data;
-    },
-    retry: 1,
-    staleTime: 60_000 * 30,
-  });
-
+  // (A stored weekly_reports table was polled here before the standalone
+  // conversion — it was never rendered, so the dead query is gone. The report
+  // is computed live from the market engine.)
   const { data: market, isLoading: marketLoading } = useMarketData();
   const { data: strength } = useStrengthMeter("24h");
 
@@ -86,6 +72,9 @@ export default function WeeklyReport() {
 
   const topStrength = strength?.assets?.slice(0, 5) ?? [];
   const weakest = strength?.assets?.slice(-5).reverse() ?? [];
+  // Live F&G value or null — null means the index is unreachable, so F&G
+  // sentences/stats below are omitted instead of printing a fake number.
+  const fng = market?.fearGreedIndex ?? null;
 
   const title = `State of Crypto — ${weekLabel} | Oracle Bull`;
   const description = `Weekly crypto market report for ${weekLabel}. Top gainers, losers, sentiment analysis, strongest assets, and AI prediction accuracy review.`;
@@ -154,9 +143,7 @@ export default function WeeklyReport() {
           />
         </div>
 
-        <LazyAd>
-          <AdBreak />
-        </LazyAd>
+        <AdBreak />
 
         {/* Market Overview */}
         <section className="mb-8">
@@ -187,8 +174,8 @@ export default function WeeklyReport() {
               </div>
               <div className="bg-card rounded-xl p-4 border">
                 <div className="text-xs text-muted-foreground mb-1">Fear & Greed</div>
-                <div className="text-xl font-bold">{market.fearGreedIndex}</div>
-                <div className="text-sm text-muted-foreground">{fgLabel(market.fearGreedIndex)}</div>
+                <div className="text-xl font-bold">{fng ?? "—"}</div>
+                <div className="text-sm text-muted-foreground">{fng !== null ? fgLabel(fng) : "unavailable"}</div>
               </div>
             </div>
           ) : null}
@@ -207,8 +194,16 @@ export default function WeeklyReport() {
               Total market capitalization sits at <strong>${fmtLargeNum(market.global.totalMarketCap)}</strong>,
               {market.global.marketCapChange24h >= 0 ? " up " : " down "}
               <strong>{Math.abs(market.global.marketCapChange24h).toFixed(2)}%</strong> over the past 24 hours.
-              The Fear & Greed Index reads <strong>{market.fearGreedIndex}</strong> ({fgLabel(market.fearGreedIndex)}),
-              with Bitcoin commanding <strong>{market.global.btcDominance.toFixed(1)}%</strong> market dominance.
+              {fng !== null ? (
+                <>
+                  The Fear &amp; Greed Index reads <strong>{fng}</strong> ({fgLabel(fng)}),
+                  with Bitcoin commanding <strong>{market.global.btcDominance.toFixed(1)}%</strong> market dominance.
+                </>
+              ) : (
+                <>
+                  Bitcoin commands <strong>{market.global.btcDominance.toFixed(1)}%</strong> market dominance.
+                </>
+              )}
             </p>
             {breadth > 0.7 && (
               <p className="text-muted-foreground mt-2 text-sm">
@@ -369,15 +364,17 @@ export default function WeeklyReport() {
                    " underperforming the broader market this period."}
                 </span>
               </li>
+              {fng !== null && (
               <li className="flex items-start gap-2">
                 <ArrowRight className="h-4 w-4 text-primary mt-0.5 shrink-0" />
                 <span>
-                  Market sentiment at <strong>{market.fearGreedIndex}</strong> ({fgLabel(market.fearGreedIndex)}) suggests
-                  {market.fearGreedIndex > 70 ? " potential overheating — consider taking partial profits on extended positions." :
-                   market.fearGreedIndex < 30 ? " elevated fear — historically a better entry point for long-term positions." :
+                  Market sentiment at <strong>{fng}</strong> ({fgLabel(fng)}) suggests
+                  {fng > 70 ? " potential overheating — consider taking partial profits on extended positions." :
+                   fng < 30 ? " elevated fear — historically a better entry point for long-term positions." :
                    " balanced conditions — suitable for selective position building."}
                 </span>
               </li>
+              )}
               {topStrength[0] && (
                 <li className="flex items-start gap-2">
                   <ArrowRight className="h-4 w-4 text-primary mt-0.5 shrink-0" />
@@ -392,9 +389,7 @@ export default function WeeklyReport() {
           </section>
         )}
 
-        <LazyAd>
-          <AdBreak />
-        </LazyAd>
+        <AdBreak />
 
         {/* Internal Links */}
         <section className="mb-8">

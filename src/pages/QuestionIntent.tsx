@@ -28,7 +28,6 @@ export default function QuestionIntent() {
   const timeframe = questionData?.timeframe || 'daily';
   const { data: prediction, isLoading, error } = usePricePrediction(
     cryptoId,
-    cryptoSymbol,
     timeframe as any,
     true
   );

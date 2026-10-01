@@ -40,7 +40,9 @@ const SentimentPage = () => {
   // Live sentiment data — computed from the standalone market engine.
   const { data: sentimentData, isLoading: sentimentLoading } = useSentimentData();
 
-  const fearGreedIndex = sentimentData?.fearGreed?.[0]?.value || marketData?.fearGreedIndex || 50;
+  // Live F&G value or null — null means no live index; consumers below either
+  // omit the F&G dimension or show "—". Never a fabricated "Neutral 50".
+  const fearGreedIndex = sentimentData?.fearGreed?.[0]?.value ?? marketData?.fearGreedIndex ?? null;
   
   // Calculate metrics — all real: breadth, volatility, turnover from live coins.
   const avgChange = useMemo(() => topCoins.reduce((sum, c) => sum + c.change24h, 0) / (topCoins.length || 1), [topCoins]);
@@ -71,9 +73,10 @@ const SentimentPage = () => {
   // comes from the live categories ranking (no hardcoded "AI & Big Data").
   const topSector = sentimentData?.trendingCategories?.[0];
   const trend = avgChange > 1 ? 'improving' : avgChange < -1 ? 'declining' : 'stable';
-  const vsPrice = avgChange < -2 && socialSentiment > 55 ? 'bullish_divergence' 
-    : avgChange > 2 && socialSentiment < 45 ? 'bearish_divergence' 
-    : Math.abs(avgChange) < 1 ? 'neutral' : 'aligned';
+  // No social feed exists standalone, so true divergence is undetectable —
+  // the context bar shows neutral in quiet markets and "aligned" otherwise
+  // (nothing contradicts the price trend). Never a fabricated divergence.
+  const vsPrice = Math.abs(avgChange) < 1 ? 'neutral' : 'aligned';
 
   const handleCoinClick = (coin: typeof topCoins[0]) => {
     navigate(`/price-prediction/${coin.name?.toLowerCase() || coin.symbol?.toLowerCase()}/daily`);
@@ -94,7 +97,7 @@ const SentimentPage = () => {
 
   return (
     <Layout>
-      <SentimentSchema fearGreedIndex={fearGreedIndex} marketMomentum={marketMomentum} />
+      <SentimentSchema />
       <div className="container mx-auto px-4 py-6 md:py-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">

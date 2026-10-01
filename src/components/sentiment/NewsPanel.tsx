@@ -4,10 +4,20 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import type { RealNewsArticle } from "@/hooks/useSentimentData";
+
+interface NewsArticle {
+  title: string;
+  body?: string;
+  source: string;
+  url: string;
+  publishedAt: number;
+  sentiment: string;
+  categories?: string;
+}
 
 interface NewsPanelProps {
-  news: RealNewsArticle[];
+  /** News feed is empty standalone — the panel renders its honest empty state. */
+  news: NewsArticle[];
   isLoading?: boolean;
 }
 
@@ -48,7 +58,7 @@ export function NewsPanel({ news, isLoading }: NewsPanelProps) {
         </h3>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <Sparkles className="w-3 h-3 text-primary animate-pulse" />
-          AI-analyzed • Live
+          Aggregated feed
         </div>
       </div>
 

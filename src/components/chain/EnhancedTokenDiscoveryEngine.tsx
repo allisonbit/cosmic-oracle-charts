@@ -21,7 +21,8 @@ interface DiscoveryModalData {
 }
 
 export function EnhancedTokenDiscoveryEngine({ chain }: EnhancedTokenDiscoveryEngineProps) {
-  const { data, isLoading, dataUpdatedAt, refetch, isFetching } = useTokenDiscovery(chain.id);
+  const { data, isLoading } = useTokenDiscovery(chain.id);
+  const isFetching = isLoading; // discovery is fetched once per visit
   const [selectedToken, setSelectedToken] = useState<TokenModalData | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [discoveryModalOpen, setDiscoveryModalOpen] = useState(false);
@@ -76,7 +77,7 @@ export function EnhancedTokenDiscoveryEngine({ chain }: EnhancedTokenDiscoveryEn
   const allTokens = data?.tokens || [];
   const rising = filterTokens(allTokens.filter(t => t.category === 'rising'));
   const crashing = filterTokens(allTokens.filter(t => t.category === 'crashing'));
-  const newLaunches = filterTokens(allTokens.filter(t => t.category === 'new'));
+  const newLaunches = filterTokens(allTokens.filter(t => t.category === 'new' || t.volumeSpike > 50));
   const unusual = filterTokens(allTokens.filter(t => t.category === 'unusual'));
 
   const categories = [

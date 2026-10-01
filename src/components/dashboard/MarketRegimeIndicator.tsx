@@ -8,7 +8,7 @@ export function MarketRegimeIndicator() {
 
   const regime = useMemo(() => {
     const coins = data?.topCoins ?? [];
-    const fgi = data?.fearGreedIndex ?? 50;
+    const fgi = data?.fearGreedIndex ?? null; // null = live index unavailable
     const mcChange = data?.global?.marketCapChange24h ?? 0;
     const top = coins.slice(0, 20);
 
@@ -17,8 +17,12 @@ export function MarketRegimeIndicator() {
     const bullish = top.filter(c => (c.change24h || 0) > 2).length;
     const bearish = top.filter(c => (c.change24h || 0) < -2).length;
 
-    // Map fear/greed (0-100) directly to regime position
-    const position = Math.max(0, Math.min(100, fgi));
+    // F&G anchors the gauge when live; without it we derive the position from
+    // real coin breadth (avg 24h change mapped onto the same 0–100 scale) —
+    // never a fabricated "Neutral 50".
+    const position = fgi !== null
+      ? Math.max(0, Math.min(100, fgi))
+      : Math.max(0, Math.min(100, 50 + avgChange * 10));
     let label: string;
     if (position < 25) label = "Bear Trend";
     else if (position < 40) label = "Sideways";
@@ -30,8 +34,11 @@ export function MarketRegimeIndicator() {
     const strengthScore = Math.abs(bullish - bearish) / Math.max(top.length, 1);
     const trendStrength = strengthScore > 0.5 ? "Strong" : strengthScore > 0.25 ? "Moderate" : "Weak";
     const momentum = mcChange > 1 ? "Positive" : mcChange < -1 ? "Negative" : "Neutral";
-    // Similarity = how close fgi & mc change agree (0-100)
-    const similarity = Math.round(100 - Math.min(100, Math.abs((fgi - 50) - mcChange * 5)));
+    // Similarity = how close fgi & mc change agree (0-100); meaningless without
+    // a live F&G read → null renders as "—".
+    const similarity = fgi !== null
+      ? Math.round(100 - Math.min(100, Math.abs((fgi - 50) - mcChange * 5)))
+      : null;
     const historicalMatch = position >= 60 && avgVol > 5 ? "Late-stage bull run" : position >= 60 ? "Sustained uptrend" : position <= 40 ? "Capitulation phase" : "Consolidation range";
 
     return { position, label, volatility, trendStrength, momentum, similarity, historicalMatch };
@@ -126,10 +133,12 @@ export function MarketRegimeIndicator() {
           <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
             <div 
               className="h-full bg-primary transition-all"
-              style={{ width: `${regime.similarity}%` }}
+              style={{ width: regime.similarity !== null ? `${regime.similarity}%` : "0%" }}
             />
           </div>
-          <span className="text-xs sm:text-sm font-bold text-foreground">{regime.similarity}%</span>
+          <span className="text-xs sm:text-sm font-bold text-foreground">
+            {regime.similarity !== null ? `${regime.similarity}%` : "—"}
+          </span>
         </div>
         <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">
           {regime.historicalMatch}

@@ -27,7 +27,9 @@ interface LiveAlertsFeedProps {
 
 export function LiveAlertsFeed({ coins }: LiveAlertsFeedProps) {
   const navigate = useNavigate();
-  const [filter, setFilter] = useState<'all' | 'whale' | 'volume' | 'social' | 'critical'>('all');
+  // Alert types actually generated from real market data: volume spikes and
+  // price moves. (Legacy whale/social feeds returned with the Supabase overlay.)
+  const [filter, setFilter] = useState<'all' | 'volume' | 'price' | 'critical'>('all');
   const [alerts, setAlerts] = useState<Alert[]>([]);
 
   useEffect(() => {
@@ -134,7 +136,8 @@ export function LiveAlertsFeed({ coins }: LiveAlertsFeedProps) {
   };
 
   const criticalCount = alerts.filter(a => a.severity === 'critical').length;
-  const whaleCount = alerts.filter(a => a.type === 'whale').length;
+  const highCount = alerts.filter(a => a.severity === 'high').length;
+  const biggestMove = coins.length ? Math.max(...coins.map(c => Math.abs(c.change24h ?? 0))) : 0;
 
   return (
     <div className="space-y-4">
@@ -152,22 +155,22 @@ export function LiveAlertsFeed({ coins }: LiveAlertsFeedProps) {
         </div>
         <div className="md:flex-1 md:px-4 text-center">
           <Waves className="w-5 h-5 text-primary mx-auto mb-1" />
-          <div className="text-2xl font-display font-bold">{whaleCount}</div>
-          <div className="section-label mt-0.5">Whale Alerts</div>
+          <div className="text-2xl font-display font-bold">{highCount}</div>
+          <div className="section-label mt-0.5">High Severity</div>
         </div>
         <div className="md:flex-1 md:px-4 text-center">
           <Target className="w-5 h-5 text-success mx-auto mb-1" />
           <div className="text-2xl font-display font-bold text-success">
-            {formatValue(whaleData?.netflow)}
+            {biggestMove.toFixed(1)}%
           </div>
-          <div className="section-label mt-0.5">Net Flow</div>
+          <div className="section-label mt-0.5">Biggest 24h Move</div>
         </div>
       </div>
 
       {/* Filter Bar */}
       <div className="flex items-center justify-between flex-wrap gap-2 border-b border-border/30 pb-2">
         <div className="flex gap-5 flex-wrap text-xs">
-          {(['all', 'critical', 'whale', 'volume', 'social'] as const).map(f => (
+          {(['all', 'critical', 'volume', 'price'] as const).map(f => (
             <button
               key={f}
               onClick={() => setFilter(f)}

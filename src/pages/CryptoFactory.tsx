@@ -156,9 +156,10 @@ export default function CryptoFactory() {
 
   const { data, isLoading, refetch, isFetching } = useCryptoFactory({ asset: q || undefined });
 
-  const fearGreed = (data as any)?.fearGreed || { value: 50, classification: "Neutral" };
-  const topMovers = (data as any)?.topMovers || [];
-  const fgColor = fearGreed.value < 25 ? "text-red-400" : fearGreed.value < 45 ? "text-orange-400" : fearGreed.value < 55 ? "text-yellow-400" : fearGreed.value < 75 ? "text-green-400" : "text-emerald-400";
+  const fearGreed = data?.fearGreed ?? null; // live value or null — never a fabricated "Neutral 50"
+  const topMovers = data?.topMovers || [];
+  const fgColor = fearGreed === null ? "text-muted-foreground"
+    : fearGreed.value < 25 ? "text-red-400" : fearGreed.value < 45 ? "text-orange-400" : fearGreed.value < 55 ? "text-yellow-400" : fearGreed.value < 75 ? "text-green-400" : "text-emerald-400";
 
   const news = useMemo(() => {
     let items = data?.news || [];
@@ -177,15 +178,20 @@ export default function CryptoFactory() {
     return items;
   }, [data?.events, q]);
 
-  // Real composite sentiment from scored news
+  // Composite sentiment: the live F&G when available; otherwise the bull-share
+  // of scored news; otherwise honestly "unavailable" — never a made-up number.
   const sentBreakdown = useMemo(() => {
     const all = data?.news || [];
     const c = { bullish: 0, bearish: 0, neutral: 0 };
     all.forEach((n) => { c[n.sentiment as keyof typeof c] = (c[n.sentiment as keyof typeof c] || 0) + 1; });
-    const total = c.bullish + c.bearish + c.neutral || 1;
-    const composite = Math.round((c.bullish / total) * 100 * 0.6 + fearGreed.value * 0.4);
-    return { ...c, total, composite, label: composite >= 60 ? "Bullish" : composite >= 45 ? "Neutral" : "Bearish" };
-  }, [data?.news, fearGreed.value]);
+    const total = c.bullish + c.bearish + c.neutral;
+    const composite = fearGreed !== null
+      ? fearGreed.value
+      : total > 0
+        ? Math.round((c.bullish / total) * 100)
+        : null;
+    return { ...c, total, composite, label: composite === null ? "Unavailable" : composite >= 60 ? "Bullish" : composite >= 45 ? "Neutral" : "Bearish" };
+  }, [data?.news, fearGreed]);
 
   const itemsToday = (data?.news?.length || 0) + (events.length) + (onchain.length);
 
@@ -230,7 +236,7 @@ export default function CryptoFactory() {
             <div className="flex items-center gap-3 min-w-0">
               <span className="flex items-center gap-1.5 shrink-0"><span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" /><span className="text-green-400 font-mono">LIVE</span></span>
               <span className="text-muted-foreground font-mono shrink-0 hidden sm:inline">updated {new Date(data?.timestamp || Date.now()).toLocaleTimeString()}</span>
-              <span className={cn("font-mono font-bold whitespace-nowrap", fgColor)}>F&amp;G {fearGreed.value}</span>
+              <span className={cn("font-mono font-bold whitespace-nowrap", fgColor)}>{fearGreed !== null ? <>F&amp;G {fearGreed.value}</> : "F&G —"}</span>
             </div>
             <div className="flex items-center gap-3 shrink-0">
               <span className="text-muted-foreground hidden md:inline">{itemsToday.toLocaleString()} feed items</span>
@@ -257,7 +263,7 @@ export default function CryptoFactory() {
                 { label: "24h Volume", value: formatCompact(data.globalStats.totalVolume), icon: Activity },
                 { label: "BTC Dom", value: `${data.globalStats.btcDominance?.toFixed(1)}%`, icon: Shield, color: "text-amber-400" },
                 { label: "ETH Dom", value: `${data.globalStats.ethDominance?.toFixed(1)}%`, icon: Globe, color: "text-indigo-400" },
-                { label: "Fear & Greed", value: `${fearGreed.value}`, icon: Gauge, color: fgColor },
+                { label: "Fear & Greed", value: fearGreed !== null ? `${fearGreed.value}` : "—", icon: Gauge, color: fgColor },
                 { label: "Active Coins", value: `${(data.globalStats.activeCryptocurrencies || 0).toLocaleString()}`, icon: Eye },
               ].map((s) => (
                 <div key={s.label} className="md:px-5 md:first:pl-0">
@@ -291,7 +297,9 @@ export default function CryptoFactory() {
             <div className="p-4">
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-sm font-semibold flex items-center gap-1.5"><Brain className="w-4 h-4 text-primary" /> Market Sentiment</h2>
-              <span className={cn("text-sm font-bold", sentBreakdown.composite >= 60 ? "text-success" : sentBreakdown.composite >= 45 ? "text-warning" : "text-danger")}>{sentBreakdown.label} · {sentBreakdown.composite}/100</span>
+              <span className={cn("text-sm font-bold", sentBreakdown.composite === null ? "text-muted-foreground" : sentBreakdown.composite >= 60 ? "text-success" : sentBreakdown.composite >= 45 ? "text-warning" : "text-danger")}>
+                {sentBreakdown.label}{sentBreakdown.composite !== null ? ` · ${sentBreakdown.composite}/100` : ""}
+              </span>
             </div>
             <div className="flex h-2.5 rounded-full overflow-hidden bg-muted">
               <div className="bg-success" style={{ width: `${(sentBreakdown.bullish / sentBreakdown.total) * 100}%` }} />

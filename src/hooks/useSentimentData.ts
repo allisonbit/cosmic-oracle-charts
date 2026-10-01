@@ -167,7 +167,7 @@ export function useSentimentData() {
         name: sector, marketCap: 0, marketCapChange24h: 0, volume: 0, coinsCount: 0,
       };
       agg.marketCap += c.marketCap ?? 0;
-      agg.volume += c.volume24h ?? 0;
+      agg.volume += c.volume ?? 0;
       agg.marketCapChange24h += c.change24h ?? 0;
       agg.coinsCount += 1;
       bySector.set(sector, agg);
@@ -200,9 +200,9 @@ export function useSentimentData() {
       coins.find(c => c.symbol.toUpperCase() === p.symbol.toUpperCase())?.id ?? p.symbol.toLowerCase();
 
     return {
-      news: [],
+      news: [] as never[],
       trending,
-      trendingNfts: [],
+      trendingNfts: [] as never[],
       trendingCategories,
       fearGreed,
       global,

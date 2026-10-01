@@ -1,8 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { buildPrediction, fetchMarkets, fetchPriceSeries, type EnginePrediction } from "@/lib/marketEngine";
-
-// Re-export the engine prediction shape for consumers that reference it.
-export type PredictionData = EnginePrediction;
+import { buildPrediction, fetchMarkets, fetchPriceSeries } from "@/lib/marketEngine";
 
 export interface TechnicalIndicators {
   rsi: number;
@@ -56,20 +53,17 @@ export interface PredictionData {
     high24h: number;
     low24h: number;
     change7d: number;
-    change30d: number;
+    change30d?: number;
     ath: number;
   };
 }
 
 export function usePricePrediction(
   coinId: string,
-  symbol: string,
   timeframe: 'daily' | 'weekly' | 'monthly',
   enabled = true,
   opts?: { contractAddress?: string; chain?: string }
 ) {
-  const contractAddress = opts?.contractAddress;
-  const chain = opts?.chain;
   return useQuery<PredictionData>({
     queryKey: ['engine-prediction', coinId, timeframe],
     queryFn: async () => {
@@ -81,7 +75,19 @@ export function usePricePrediction(
       const coin = coins.find(c => c.id === coinId);
       const prediction = coin ? buildPrediction(coin, series, timeframe) : null;
       if (!prediction) throw new Error('Insufficient market history for analysis');
-      return prediction;
+      return {
+        ...prediction,
+        // Real snapshot stats from the same markets fetch (no extra call).
+        marketData: {
+          volume24h: coin!.volume24h,
+          marketCap: coin!.marketCap,
+          high24h: coin!.high24h,
+          low24h: coin!.low24h,
+          change7d: coin!.change7d,
+          change30d: coin!.change30d,
+          ath: coin!.ath,
+        },
+      };
     },
     enabled: enabled && !!coinId && coinId.length > 0,
     staleTime: timeframe === 'daily' ? 5 * 60_000 : timeframe === 'weekly' ? 30 * 60_000 : 60 * 60_000,

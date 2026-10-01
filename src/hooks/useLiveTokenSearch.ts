@@ -209,7 +209,7 @@ function gtPoolsToTokens(chain: string, limit: number): Promise<LiveToken[]> {
     included?: Array<{ id: string; type: string; attributes: { symbol?: string; name?: string; image_url?: string } }>;
   }>(`https://api.geckoterminal.com/api/v2/networks/${network}/pools?sort=h24_volume_usd_desc&page=1`).then(json => {
     const pools = json?.data ?? [];
-    const meta = new Map<string, { symbol?: string; name?: string; image_url?: string }>();
+    const meta = new Map<string, { attributes: { symbol?: string; name?: string; image_url?: string } }>();
     for (const inc of json?.included ?? []) meta.set(inc.id, inc);
     const out: LiveToken[] = [];
     for (const p of pools.slice(0, limit)) {
@@ -220,8 +220,8 @@ function gtPoolsToTokens(chain: string, limit: number): Promise<LiveToken[]> {
       const volume = num(a.volume_usd?.h24);
       if (price <= 0 && volume <= 0) continue;
       out.push({
-        symbol: (m?.symbol ?? a.name.split(' / ')[0] ?? '').toUpperCase(),
-        name: m?.name ?? a.name.split(' / ')[0] ?? '',
+        symbol: (m?.attributes.symbol ?? a.name.split(' / ')[0] ?? '').toUpperCase(),
+        name: m?.attributes.name ?? a.name.split(' / ')[0] ?? '',
         contractAddress: baseRel?.split('_').pop() ?? a.address,
         pairAddress: a.address,
         chain,
@@ -232,11 +232,11 @@ function gtPoolsToTokens(chain: string, limit: number): Promise<LiveToken[]> {
         liquidity: num(a.reserve_in_usd),
         marketCap: num(a.market_cap_usd) || num(a.fdv_usd),
         fdv: num(a.fdv_usd),
-        txns24h: num(a.transactions?.h24?.buys) + num(a.transactions?.h24?.sells),
+        txns24h: num(a.transactions?.h24?.buys ?? 0) + num(a.transactions?.h24?.sells ?? 0),
         buys24h: num(a.transactions?.h24?.buys),
         sells24h: num(a.transactions?.h24?.sells),
         dexId: p.id.split('_')[0] ?? '',
-        logo: m?.image_url,
+        logo: m?.attributes.image_url,
         verified: true,
         isTrending: true,
         rank: out.length + 1,
@@ -268,7 +268,7 @@ export function useInfiniteTrendingTokens(chain: string = 'ethereum', limit: num
       // GeckoTerminal's free pools endpoint serves one page of real top pools;
       // beyond it we honestly return empty rather than fabricate more rows.
       const tokens = pageParam === 1 ? await gtPoolsToTokens(chain, limit) : [];
-      return { tokens, query: '', chain, mode: 'trending', nextPage: tokens.length >= limit ? pageParam + 1 : null };
+      return { tokens, query: '', chain, mode: 'trending', nextPage: tokens.length >= limit ? Number(pageParam) + 1 : null };
     },
     getNextPageParam: (lastPage) => lastPage.nextPage,
     staleTime: 60000,

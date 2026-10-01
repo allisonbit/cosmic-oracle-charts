@@ -33,7 +33,8 @@ export interface TopCoin {
 
 export interface MarketDataResponse {
   global: GlobalMarketData;
-  fearGreedIndex: number;
+  /** Live Fear & Greed value, or null when the index is unreachable — never a fake default. */
+  fearGreedIndex: number | null;
   trending: TrendingCoin[];
   topCoins: TopCoin[];
   timestamp: number;
@@ -72,7 +73,7 @@ export function useMarketData() {
           activeCryptocurrencies: global?.activeCryptocurrencies ?? 0,
           marketCapChange24h: global?.marketCapChange24h ?? 0,
         },
-        fearGreedIndex: fng?.value ?? 50,
+        fearGreedIndex: fng?.value ?? null,
         trending: ranked.slice(0, 5).map((c, i) => ({
           symbol: c.symbol,
           name: c.name,

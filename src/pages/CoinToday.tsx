@@ -29,7 +29,6 @@ export default function CoinToday() {
 
   const { data: prediction, isLoading, error } = usePricePrediction(
     coinId,
-    coin?.symbol ?? "",
     "daily",
     Boolean(coin)
   );

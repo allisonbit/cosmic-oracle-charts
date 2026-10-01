@@ -142,7 +142,8 @@ export function EnhancedRiskAnalyzer({ chain }: EnhancedRiskAnalyzerProps) {
     extreme: true,
   });
 
-  const { data: discoveryData, isLoading, refetch, isFetching } = useTokenDiscovery(chain.id, true);
+  const { data: discoveryData, isLoading } = useTokenDiscovery(chain.id, true);
+  const isFetching = isLoading; // discovery is fetched once per visit
 
   const analyzedTokens = useMemo(() => {
     if (!discoveryData?.tokens) return [];

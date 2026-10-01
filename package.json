@@ -9,7 +9,7 @@
     "build:prerender": "cross-env NODE_OPTIONS=--max-old-space-size=4096 vite build",
     "build:dev": "cross-env NODE_OPTIONS=--max-old-space-size=4096 vite build --mode development",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json",
     "scan": "node scripts/scan-all.mjs",
     "smoke": "node scripts/smoke-test.mjs",
     "seo-audit": "node scripts/seo-audit.mjs",

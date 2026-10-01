@@ -66,7 +66,7 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <DashboardSchema marketCap={global ? `$${(global.totalMarketCap / 1e12).toFixed(2)}T` : undefined} fearGreedIndex={fearGreedIndex ?? 50} />
+      <DashboardSchema marketCap={global ? `$${(global.totalMarketCap / 1e12).toFixed(2)}T` : undefined} />
       <DashboardItemListSchema coins={allCoins} />
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8">
         {/* Header */}

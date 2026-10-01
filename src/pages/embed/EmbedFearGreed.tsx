@@ -19,10 +19,8 @@ function getColor(score: number): string {
 
 function FearGreedWidget() {
   const { data, isLoading } = useMarketData();
-  const score = data?.fearGreedIndex ?? 50;
-  const label = getLabel(score);
-  const color = getColor(score);
-  const rotation = -90 + (score / 100) * 180;
+  // Honest embed: no value → "Data unavailable", never a fake "Neutral 50".
+  const score = data?.fearGreedIndex ?? null;
 
   if (isLoading) {
     return (
@@ -32,6 +30,21 @@ function FearGreedWidget() {
       </div>
     );
   }
+
+  if (score === null) {
+    return (
+      <div style={{ textAlign: "center", padding: 20 }}>
+        <div style={{ fontSize: 13, fontWeight: 600, color: "#94a3b8", marginBottom: 8, textTransform: "uppercase", letterSpacing: 1 }}>
+          Fear &amp; Greed Index
+        </div>
+        <div style={{ fontSize: 14, color: "#94a3b8" }}>Data unavailable right now</div>
+      </div>
+    );
+  }
+
+  const label = getLabel(score);
+  const color = getColor(score);
+  const rotation = -90 + (score / 100) * 180;
 
   return (
     <div style={{ textAlign: "center" }}>

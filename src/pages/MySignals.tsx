@@ -3,7 +3,6 @@ import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/hooks/useAuth";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 import { useState, useMemo } from "react";
-import { invokeFunction } from "@/integrations/supabase/functions";
 import { Zap, TrendingUp, TrendingDown, Loader2, RefreshCw, Target, AlertTriangle, CheckCircle2, Shield, BarChart3, Clock, ArrowUpRight, ArrowDownRight, Activity } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

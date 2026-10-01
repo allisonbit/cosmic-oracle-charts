@@ -4,9 +4,12 @@ import path from "path";
 import { VitePWA } from "vite-plugin-pwa";
 
 // Supabase config is ENV-ONLY (no hardcoded project refs). Set in Vercel and
-// locally in .env — the client throws at startup if they're missing:
+// locally in .env to enable the cloud overlay (auth/portfolio sync):
 //   VITE_SUPABASE_URL=https://<project-ref>.supabase.co
 //   VITE_SUPABASE_PUBLISHABLE_KEY=<anon publishable key>
+// Missing vars are FINE: the app runs fully standalone (market data,
+// predictions, game, watchlist are all live from public APIs) and
+// supabase/client.ts falls back to a disabled client with a console warning.
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   const resolvedSupabaseUrl =
@@ -19,8 +22,9 @@ export default defineConfig(({ mode }) => {
     "";
 
   if (mode === "production" && (!resolvedSupabaseUrl || !resolvedSupabaseKey)) {
-    throw new Error(
-      "[build] Missing Supabase config: set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY (see .env.example).",
+    console.warn(
+      "[build] Supabase env vars not set — bundling in standalone mode. " +
+      "Set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY to enable the auth/cloud overlay.",
     );
   }
 

@@ -15,7 +15,10 @@ interface DimensionData {
 }
 
 interface MultiDimensionalSentimentProps {
-  fearGreedIndex: number;
+  /** Live Fear & Greed value, or null when alternative.me is unreachable.
+   * Null drops the F&G dimension (and its weight renormalizes) instead of
+   * silently charting a fabricated "Neutral 50". */
+  fearGreedIndex: number | null;
   /** % of top coins above water on the day (0-100) — real breadth. */
   breadth: number;
   /** Realized short-term volatility index (0-100) — real, derived from moves. */
@@ -32,13 +35,17 @@ export function MultiDimensionalSentiment({
   const calmScore = Math.max(0, Math.min(100, 100 - volatilityIndex));
   
   const dimensions: DimensionData[] = [
-    { id: 'fear_greed', name: 'Fear & Greed', shortName: 'F&G', icon: <Brain className="w-5 h-5" />, score: fearGreedIndex, weight: 0.35, trend: fearGreedIndex > 55 ? 'up' : fearGreedIndex < 45 ? 'down' : 'stable', description: 'The live market Fear & Greed Index from alternative.me, combining volatility, momentum and dominance signals.', dataPoints: ['Market volatility', 'Trading momentum', 'Bitcoin dominance', 'Trend strength'], sources: [{ name: 'Alternative.me', url: 'https://alternative.me/crypto/fear-and-greed-index/' }] },
+    // F&G included only with a live value, so the composite never leans on a fake read.
+    ...(fearGreedIndex !== null ? [{ id: 'fear_greed', name: 'Fear & Greed', shortName: 'F&G', icon: <Brain className="w-5 h-5" />, score: fearGreedIndex, weight: 0.35, trend: (fearGreedIndex > 55 ? 'up' : fearGreedIndex < 45 ? 'down' : 'stable') as 'up' | 'down' | 'stable', description: 'The live market Fear & Greed Index from alternative.me, combining volatility, momentum and dominance signals.', dataPoints: ['Market volatility', 'Trading momentum', 'Bitcoin dominance', 'Trend strength'], sources: [{ name: 'Alternative.me', url: 'https://alternative.me/crypto/fear-and-greed-index/' }] }] : []),
     { id: 'breadth', name: 'Market Breadth', shortName: 'Breadth', icon: <Users className="w-5 h-5" />, score: breadth, weight: 0.25, trend: breadth > 55 ? 'up' : breadth < 45 ? 'down' : 'stable', description: 'Share of the top coins trading higher over 24h — a real measure of how broad the move is.', dataPoints: ['Coins above water (24h)', 'Advance/decline ratio', 'Momentum leaders', 'Laggards'], sources: [{ name: 'CoinGecko (live)', url: 'https://www.coingecko.com/' }] },
     { id: 'volatility', name: 'Volatility Regime', shortName: 'Vol.', icon: <Activity className="w-5 h-5" />, score: calmScore, weight: 0.20, trend: calmScore > 55 ? 'up' : calmScore < 45 ? 'down' : 'stable', description: 'Average absolute 24h move across the top coins, inverted: high calm = orderly market, low = turbulent.', dataPoints: ['Avg |24h move|', 'Risk level', 'Range expansion', 'Regime read'], sources: [{ name: 'CoinGecko (live)', url: 'https://www.coingecko.com/' }] },
     { id: 'turnover', name: 'Volume Turnover', shortName: 'Volume', icon: <TrendingUp className="w-5 h-5" />, score: turnoverScore, weight: 0.20, trend: turnoverScore > 55 ? 'up' : turnoverScore < 45 ? 'down' : 'stable', description: '24h volume relative to market cap across the top coins — how actively capital is moving today.', dataPoints: [`${turnover.toFixed(1)}% median turnover`, 'Volume vs market cap', 'Liquidity depth', 'Participation'], sources: [{ name: 'CoinGecko (live)', url: 'https://www.coingecko.com/' }] }
   ];
 
-  const compositeScore = dimensions.reduce((sum, dim) => sum + (dim.score * dim.weight), 0);
+  // Weighted mean over the INCLUDED dimensions — weights renormalize when F&G
+  // is unavailable so the composite stays on the 0–100 scale honestly.
+  const totalWeight = dimensions.reduce((sum, dim) => sum + dim.weight, 0);
+  const compositeScore = dimensions.reduce((sum, dim) => sum + (dim.score * dim.weight), 0) / totalWeight;
   
   const getScoreColor = (score: number) => score >= 70 ? 'text-success' : score >= 50 ? 'text-primary' : score >= 35 ? 'text-warning' : 'text-danger';
   const getScoreLabel = (score: number) => score >= 80 ? 'Extreme Greed' : score >= 65 ? 'Greed' : score >= 50 ? 'Neutral-Bullish' : score >= 35 ? 'Neutral-Bearish' : score >= 20 ? 'Fear' : 'Extreme Fear';

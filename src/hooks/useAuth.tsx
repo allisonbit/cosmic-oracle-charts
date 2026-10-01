@@ -99,7 +99,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           display_name: data.display_name ?? (email ? email.split("@")[0] : null),
           avatar_url: data.avatar_url ?? null,
           email: data.email ?? email,
-          watchlist: Array.isArray(data.watchlist) ? data.watchlist : [],
+          watchlist: Array.isArray(data.watchlist)
+            ? (data.watchlist as unknown[]).filter((w): w is string => typeof w === "string")
+            : [],
           preferences: (data.preferences as Record<string, unknown>) ?? {},
           is_premium: data.is_premium ?? true,
           email_notifications: data.email_notifications ?? false,
