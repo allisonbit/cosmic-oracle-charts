@@ -18,6 +18,14 @@ if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
   );
 }
 
+/**
+ * False when no real Supabase env vars are configured (standalone mode).
+ * Cloud-backed hooks (trade_setups polling etc.) gate their `enabled` on this
+ * so production consoles stay clean — and they auto-activate the moment the
+ * env vars are added, with zero code changes.
+ */
+export const supabaseEnabled = Boolean(SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY);
+
 export const supabase = createClient<Database>(
   // Placeholder URL/key keep the client constructible; RLS-protected calls will
   // simply fail and callers already handle errors. The site never blocks on this.

@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, supabaseEnabled } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 
@@ -63,7 +63,9 @@ export function useActiveSetup(coinId: string | undefined, timeframe: string) {
         return null;
       }
     },
-    enabled: !!coinId,
+    // Standalone mode (no Supabase env): skip entirely — the prediction page
+    // falls back to the live engine setup without any dead network calls.
+    enabled: supabaseEnabled && !!coinId,
     staleTime: 30_000,
     refetchInterval: 60_000,
   });
@@ -90,7 +92,7 @@ export function useSetupHistory(coinId: string | undefined, limit = 20) {
         return [];
       }
     },
-    enabled: !!coinId,
+    enabled: supabaseEnabled && !!coinId,
     staleTime: 5 * 60_000,
   });
 }
