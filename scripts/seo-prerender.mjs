@@ -24,6 +24,14 @@ if (!fs.existsSync(TEMPLATE_PATH)) {
 }
 const template = fs.readFileSync(TEMPLATE_PATH, "utf8");
 
+// Idempotency markers: the home page's injected body is written back into the
+// template file, so strip any previously injected block before processing.
+const BODY_OPEN = "<!--ob-seo-body-->";
+const BODY_CLOSE = "<!--/ob-seo-body-->";
+const stripInjected = (html) =>
+  html.replace(new RegExp(`${BODY_OPEN}[\\s\\S]*?${BODY_CLOSE}`, "g"), "");
+const cleanTemplate = stripInjected(template);
+
 // ── helpers ────────────────────────────────────────────────────────────────
 const esc = (s) =>
   String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -39,6 +47,8 @@ function T(core) {
     if (cut <= 0) { c = c.slice(0, 50); break; }
     c = c.slice(0, cut);
   }
+  // Don't leave a dangling connector after the word-trim.
+  c = c.replace(/[\s]*[&—\u2013·|,-][\s]*$/, "").trimEnd();
   return c + BRAND;
 }
 const D = (s) => (s.length > 165 ? s.slice(0, 162).replace(/\s+\S*$/, "") + "…" : s);
@@ -887,7 +897,7 @@ for (const page of pages) {
     isHome,
   });
 
-  let html = template;
+  let html = cleanTemplate;
   html = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(page.title)}</title>`);
   html = html.replace(
     /<meta name="description" content="[\s\S]*?" \/>/,
@@ -903,8 +913,8 @@ for (const page of pages) {
       contextual: isHome ? [] : contextualLinks(clean),
       picks: isHome ? [] : pickLinksFor(clean, 12),
     });
-    // Inside #root so React wipes it on hydration.
-    html = html.replace('<div id="root">', `<div id="root">${body}`);
+    // Inside #root so React wipes it on hydration; markers keep reruns clean.
+    html = html.replace('<div id="root">', `<div id="root">${BODY_OPEN}${body}${BODY_CLOSE}`);
   }
 
   fs.mkdirSync(dir, { recursive: true });
