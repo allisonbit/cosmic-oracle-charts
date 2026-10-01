@@ -39,3 +39,6 @@ build_result_fixed.log
 fix-*.cjs
 catch-errors.cjs
 fetch_vite.cjs
+
+.vercel
+.env*
