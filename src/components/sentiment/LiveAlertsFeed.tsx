@@ -22,23 +22,10 @@ interface Alert {
 }
 
 interface LiveAlertsFeedProps {
-  whaleData?: {
-    transactions: Array<{
-      id: string;
-      type: 'buy' | 'sell' | 'transfer';
-      asset: string;
-      value: number;
-      impact: string;
-      timestamp: number;
-      from: string;
-      to: string;
-    }>;
-    netflow: number;
-  };
   coins: Array<{ symbol: string; name: string; price: number; change24h: number; volume: number }>;
 }
 
-export function LiveAlertsFeed({ whaleData, coins }: LiveAlertsFeedProps) {
+export function LiveAlertsFeed({ coins }: LiveAlertsFeedProps) {
   const navigate = useNavigate();
   const [filter, setFilter] = useState<'all' | 'whale' | 'volume' | 'social' | 'critical'>('all');
   const [alerts, setAlerts] = useState<Alert[]>([]);
@@ -46,23 +33,9 @@ export function LiveAlertsFeed({ whaleData, coins }: LiveAlertsFeedProps) {
   useEffect(() => {
     const generatedAlerts: Alert[] = [];
 
-    if (whaleData?.transactions) {
-      whaleData.transactions.slice(0, 5).forEach(tx => {
-        generatedAlerts.push({
-          id: tx.id,
-          type: 'whale',
-          severity: tx.value >= 1000000 ? 'critical' : tx.value >= 500000 ? 'high' : 'medium',
-          symbol: tx.asset,
-          title: `${tx.type === 'buy' ? 'Whale Accumulation' : tx.type === 'sell' ? 'Whale Distribution' : 'Large Transfer'}`,
-          description: `${tx.type === 'buy' ? 'Outflow from' : tx.type === 'sell' ? 'Inflow to' : 'Transfer between'} ${tx.from} → ${tx.to}`,
-          value: tx.value,
-          timestamp: tx.timestamp,
-          narrative: tx.type === 'buy' ? '#Accumulation' : '#Distribution',
-          source: 'On-chain'
-        });
-      });
-    }
-
+    // All alerts derive from real market data — volume spikes and price moves.
+    // (Legacy fabricated "social" and whale-transaction alerts removed when the
+    // site went standalone; they return via the Supabase overlay if wired up.)
     coins.filter(c => c.volume > 2e9 && Math.abs(c.change24h) > 3).slice(0, 3).forEach(coin => {
       generatedAlerts.push({
         id: `volume-${coin.symbol}`,
@@ -95,33 +68,6 @@ export function LiveAlertsFeed({ whaleData, coins }: LiveAlertsFeedProps) {
       });
     });
 
-    const socialAlerts: Alert[] = [
-      {
-        id: 'social-btc',
-        type: 'social',
-        severity: 'medium',
-        symbol: 'BTC',
-        title: 'Social Volume Spike',
-        description: 'Bitcoin mentions increased 45% across Twitter and Reddit in the last 4 hours',
-        timestamp: Date.now() - 900000,
-        narrative: '#Bitcoin_Trending',
-        source: 'Social Analytics'
-      },
-      {
-        id: 'news-eth',
-        type: 'news',
-        severity: 'high',
-        symbol: 'ETH',
-        title: 'Major News Event',
-        description: 'Ethereum network upgrade announcement trending across crypto news outlets',
-        timestamp: Date.now() - 1200000,
-        narrative: '#ETH_Upgrade',
-        source: 'News Aggregator'
-      }
-    ];
-
-    generatedAlerts.push(...socialAlerts);
-
     const severityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
     generatedAlerts.sort((a, b) => {
       const severityDiff = severityOrder[a.severity] - severityOrder[b.severity];
@@ -130,7 +76,7 @@ export function LiveAlertsFeed({ whaleData, coins }: LiveAlertsFeedProps) {
     });
 
     setAlerts(generatedAlerts);
-  }, [whaleData, coins]);
+  }, [coins]);
 
   const filteredAlerts = alerts.filter(alert => {
     if (filter === 'all') return true;

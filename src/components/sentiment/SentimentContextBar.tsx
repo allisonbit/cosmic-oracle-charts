@@ -1,13 +1,10 @@
-import { TrendingUp, TrendingDown, Activity, Waves, Cpu, Target } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { TrendingUp, TrendingDown, Activity, Waves, Cpu, Target } from "lucide-react";import { cn } from "@/lib/utils";
 
 interface SentimentContextBarProps {
   trend: 'improving' | 'declining' | 'stable';
   vsPrice: 'bullish_divergence' | 'bearish_divergence' | 'aligned' | 'neutral';
   topSector: string;
   sectorChange: number;
-  whaleMood: 'accumulating' | 'distributing' | 'neutral';
-  netflow: number;
 }
 
 export function SentimentContextBar({
@@ -15,9 +12,8 @@ export function SentimentContextBar({
   vsPrice,
   topSector,
   sectorChange,
-  whaleMood,
-  netflow
-}: SentimentContextBarProps) {
+  volumeRegime = 'normal'
+}: SentimentContextBarProps & { volumeRegime?: 'normal' | 'elevated' }) {
   const getTrendIcon = () => {
     if (trend === 'improving') return <TrendingUp className="w-4 h-4 text-success" />;
     if (trend === 'declining') return <TrendingDown className="w-4 h-4 text-danger" />;
@@ -35,12 +31,6 @@ export function SentimentContextBar({
     if (vsPrice === 'bearish_divergence') return 'Bearish Divergence';
     if (vsPrice === 'aligned') return 'Aligned with Price';
     return 'Neutral Alignment';
-  };
-
-  const getWhaleMoodText = () => {
-    if (whaleMood === 'accumulating') return 'Accumulating';
-    if (whaleMood === 'distributing') return 'Distributing';
-    return 'Neutral';
   };
 
   return (
@@ -97,24 +87,16 @@ export function SentimentContextBar({
           </div>
         </div>
 
-        {/* Whale Mood */}
+        {/* Volume regime — real, replaces the old fabricated "whale mood" */}
         <div className="flex items-center gap-3 md:px-4">
           <Waves className={cn(
             "w-4 h-4 flex-shrink-0",
-            whaleMood === 'accumulating' ? "text-success" :
-            whaleMood === 'distributing' ? "text-danger" : "text-muted-foreground"
+            volumeRegime === 'elevated' ? "text-success" : "text-muted-foreground"
           )} />
           <div>
-            <div className="section-label">Whale Mood</div>
-            <div className={cn(
-              "font-bold text-sm flex items-center gap-1",
-              whaleMood === 'accumulating' ? "text-success" :
-              whaleMood === 'distributing' ? "text-danger" : "text-foreground"
-            )}>
-              {getWhaleMoodText()}
-              <span className="text-xs text-muted-foreground">
-                ({netflow >= 0 ? '+' : ''}${(netflow / 1e6).toFixed(0)}M)
-              </span>
+            <div className="section-label">Volume Regime</div>
+            <div className="font-bold text-sm flex items-center gap-1 text-foreground">
+              {volumeRegime === 'elevated' ? 'Elevated' : 'Normal'}
             </div>
           </div>
         </div>

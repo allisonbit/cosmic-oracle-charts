@@ -263,18 +263,17 @@ export function ChainSEOContent({ chainName, chainSymbol, chainId }: ChainSEOCon
       <h2 className="font-display text-lg font-bold mb-4">{chainName} Network Analysis & Intelligence</h2>
       <div className="prose max-w-none text-sm text-muted-foreground space-y-3">
         <p>
-          Oracle Bull provides comprehensive {chainName} ({chainSymbol}) network analysis including real-time 
-          price data, on-chain metrics, DeFi TVL tracking, whale activity monitoring, and AI-powered price 
-          predictions. Our dashboard helps traders and investors understand the health and momentum of the 
-          {chainName} ecosystem.
+          Oracle Bull provides {chainName} ({chainSymbol}) analytics with real-time price data, live 24h DEX
+          volume, documented network specifications, and rule-based technical price predictions. Market figures
+          are pulled live from public market APIs — no simulated or estimated data.
         </p>
         <h3 className="text-base font-semibold text-foreground mt-4">What We Track for {chainName}</h3>
         <ul className="list-disc list-inside space-y-1">
-          <li><strong>Price Analysis:</strong> Real-time price, volume, market cap, and technical indicators</li>
-          <li><strong>Network Health:</strong> TPS, gas fees, active addresses, transaction counts</li>
-          <li><strong>DeFi Metrics:</strong> Total Value Locked, top protocols, yield opportunities</li>
-          <li><strong>Whale Activity:</strong> Large transactions, smart money flows, exchange movements</li>
-          <li><strong>Token Discovery:</strong> New tokens, trending assets, ecosystem opportunities</li>
+          <li><strong>Price Analysis:</strong> Real-time price, market cap, and technical indicators</li>
+          <li><strong>DEX Activity:</strong> 24h volume, liquidity and buy/sell counts from the chain's top on-chain pools</li>
+          <li><strong>Network Specs:</strong> Documented throughput and consensus mechanism</li>
+          <li><strong>Token Scanner:</strong> Live search across the chain's busiest DEX pairs</li>
+          <li><strong>Price Predictions:</strong> Rule-based technical engine computed from real price history</li>
         </ul>
       </div>
       

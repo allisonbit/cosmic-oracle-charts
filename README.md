@@ -1,111 +1,46 @@
-# Welcome to your Lovable project
+# Oracle Bull — Free AI Crypto Predictions
 
-## Project info
+Vite + React + TypeScript + Tailwind + shadcn-ui SPA. Now hosted on **Vercel** with a **Supabase** backend (email/password auth, edge functions, crons).
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Local development
 
-## How can I edit this code?
-
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```bash
+npm install
+cp .env.example .env    # then fill in your Supabase URL + publishable key
+npm run dev             # http://localhost:8080
 ```
 
-**Edit a file directly in GitHub**
+The build **fails** if `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` are missing — no silent fallbacks to a dead project.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Deploying to Vercel
 
-**Use GitHub Codespaces**
+1. Push this repo to GitHub and import it in Vercel (framework preset: **Vite**; `vercel.json` supplies build command, output dir, clean URLs and SPA rewrites).
+2. Add environment variables (Production + Preview):
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_PUBLISHABLE_KEY`
+3. Deploy.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Supabase project setup (new project)
 
-## What technologies are used for this project?
+1. **Database** — run everything in `supabase/migrations/` (SQL Editor or `supabase db push`).
+2. **Edge functions** — `supabase functions deploy` for every folder in `supabase/functions/` (or `supabase functions deploy --project-ref <ref>` after linking).
+3. **Auth** — Dashboard → Authentication → Providers → **Email → ON**. While testing you can disable "Confirm email" so signups work instantly; enable it again (with SMTP configured) for production.
+4. **Crons** — scheduled edge functions (news aggregation, digests, accuracy tracking, sitemaps) keep running on Supabase's cron (pg_cron / scheduled triggers in the new project). Nothing runs on Vercel's side.
 
-This project is built with:
+## What changed in the migration
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- **Hosting:** Cloudflare Workers/Pages + Netlify configs removed (`wrangler.toml`, `netlify.toml` deleted; `vercel.json` added).
+- **Auth:** Privy wallet login removed (`@privy-io/react-auth` uninstalled). Sign-in is now email/password via Supabase Auth (`SignInModal` + `useAuth`).
+- **Lovable runtime bits removed** (`@lovable.dev/*`, `lovable-tagger`) — everything builds from this repo with no external builder.
+- **Accuracy fixes:** every home signal coin (incl. ADA) has fallback data; honest "data unavailable" state instead of dash-filled cards; sane price formatting (`$680.00`, not `$680.000`).
+- **Layout:** oversized section paddings tightened across home + major pages.
 
-## How can I deploy this project?
+## Scripts
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
-
-## 🚀 Smart Contract Payment Integration
-
-We have added a completely functional payment flow powered by a Solidity smart contract deployed on the Base network.
-
-### 1. Smart Contract Deployment
-
-To deploy the smart contract on the Base mainnet or testnet, you need to configure your environment:
-
-1. Copy `.env.example` to `.env` if you haven't already.
-2. In your `.env` file, include your deployment wallet's private key and RPC URL:
-   ```env
-   PRIVATE_KEY="your-private-key"
-   RPC_URL="https://mainnet.base.org"
-   ```
-3. Run the hardhat deployment script:
-   ```sh
-   npx hardhat ignition deploy ignition/modules/OracleBullPayments.cjs --network base_mainnet
-   ```
-
-### 2. Frontend Configuration
-
-After deploying, you need to link the contract back to the frontend:
-1. Update your `.env` file with the deployed contract address:
-   ```env
-   VITE_CONTRACT_ADDRESS="0xYOUR_DEPLOYED_CONTRACT_ADDRESS"
-   VITE_RPC_URL="https://mainnet.base.org"
-   VITE_WALLET_CONNECT_PROJECT_ID="your_wallet_connect_project_id"
-   ```
-2. Run the application: `npm run dev`
-
-### 3. Testing Payment Flow
-
-Once everything is configured:
-1. Navigate to the landing page and click the "Connect Wallet" button on the Premium Access card.
-2. Ensure you are connected to the correct network (Base Mainnet).
-3. Authorize the transaction to pay the target fee (0.01 ETH).
-4. Upon successful transaction, the UI will reflect your "Paid" status and grant you full access to OracleBull traits.
+| Script | Purpose |
+| --- | --- |
+| `npm run dev` | Dev server |
+| `npm run build` | Production build |
+| `npm run typecheck` | `tsc --noEmit` |
+| `npm run lint` | ESLint |
+| `npm run smoke` | Smoke test against a deployed URL |

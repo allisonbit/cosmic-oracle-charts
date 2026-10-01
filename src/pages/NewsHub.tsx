@@ -598,7 +598,7 @@ export default function NewsHub() {
                 {searching ? "No stories match your search" : "No stories yet"}
               </h3>
               <p className="text-muted-foreground max-w-sm mx-auto mb-8 text-sm leading-relaxed">
-                {searching ? "Try a different keyword or browse a category above." : "The feed refreshes every 5 minutes."}
+                {searching ? "Try a different keyword or browse a category above." : "No news source is connected in this standalone build — stories will appear here once one is wired up."}
               </p>
               <button onClick={() => refetch()} className="text-primary font-bold hover:underline inline-flex items-center gap-2 text-sm">
                 <RefreshCw className="w-5 h-5" /> Refresh Feed
@@ -629,10 +629,9 @@ export default function NewsHub() {
                 before prices react.
               </p>
               <p>
-                The news feed auto-refreshes every 5 minutes, ensuring you never miss a breaking story during
-                fast-moving markets. Your selected category is remembered between sessions, and the infinite-scroll
-                design loads older stories seamlessly as you scroll. Use the search bar to find coverage of any
-                specific coin, protocol, or event across our entire article archive.
+                When a news source is connected, stories appear here with the same sentiment tags and filters.
+                In the meantime, use the search and category controls to explore, or jump into the live tools —
+                price predictions, the DEX scanner and the Fear & Greed index all run on real market data.
               </p>
               <p>
                 To turn headlines into actionable insight, pair the news feed with Oracle Bull's other tools.
@@ -684,7 +683,7 @@ export default function NewsHub() {
                   <ChevronRight className="w-4 h-4 text-muted-foreground group-open:rotate-90 transition-transform" />
                 </summary>
                 <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
-                  The news feed auto-refreshes every 5 minutes, and you can trigger a manual refresh at any time using the refresh button in the top navigation bar. Breaking stories typically appear within minutes of publication. The "Updated" timestamp at the top of the page shows when the last refresh occurred.
+                  No external news source is wired up in this standalone build, so the feed stays empty rather than showing simulated stories. The Refresh button re-checks the (currently unconnected) source without ever displaying invented content.
                 </div>
               </details>
 

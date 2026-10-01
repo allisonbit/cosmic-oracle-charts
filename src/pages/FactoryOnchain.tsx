@@ -366,10 +366,10 @@ export default function FactoryOnchain() {
               </p>
             </div>
             <div>
-              <h3 className="font-medium text-foreground">How quickly is on-chain data updated?</h3>
+              <h3 className="font-medium text-foreground">Why is the on-chain feed empty?</h3>
               <p className="text-muted-foreground text-sm mt-1">
-                Our on-chain feed updates every minute, capturing the latest whale movements and 
-                exchange flows across all major blockchains in near real-time.
+                Wallet-level flow tracking needs an indexed node provider this build doesn't connect to,
+                so the feed stays empty instead of showing simulated transfers.
               </p>
             </div>
           </div>

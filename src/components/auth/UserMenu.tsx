@@ -94,7 +94,7 @@ export function UserMenu({ className }: { className?: string }) {
           <DollarSign className="w-4 h-4" /> P&L Tracker
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => navigate("/my/signals")} className="gap-2 cursor-pointer">
-          <Zap className="w-4 h-4" /> AI Signals
+          <Zap className="w-4 h-4" /> Signals
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => navigate("/my/scanner")} className="gap-2 cursor-pointer">
           <Wallet className="w-4 h-4" /> Wallet Scanner

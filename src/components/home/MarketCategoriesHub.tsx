@@ -50,7 +50,7 @@ const categories = [
 
 export function MarketCategoriesHub() {
   return (
-    <section className="py-16 md:py-24 border-t border-border/30" aria-labelledby="categories-heading">
+    <section className="py-10 md:py-14 border-t border-border/30" aria-labelledby="categories-heading">
       <div className="container mx-auto px-4">
         <div className="section-header mb-2">
           <span className="section-label">Market Categories</span>

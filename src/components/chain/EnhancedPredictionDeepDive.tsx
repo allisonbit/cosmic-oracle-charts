@@ -1,6 +1,6 @@
 import { ChainForecast } from "@/hooks/useChainForecast";
 import { ChainConfig } from "@/lib/chainConfig";
-import { TrendingUp, TrendingDown, Minus, AlertTriangle, Target, Clock, Zap, Sparkles, RefreshCw, Brain, Shield, Eye, ChevronRight, BarChart3, Activity, Waves, X, Info, Lightbulb, AlertCircle, CheckCircle, XCircle } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus, AlertTriangle, Target, Clock, Zap, RefreshCw, Brain, Shield, Eye, ChevronRight, Activity, X, Info, Lightbulb, AlertCircle, CheckCircle, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -55,112 +55,61 @@ export function EnhancedPredictionDeepDive({ chain, forecast, isLoading }: Enhan
     { 
       key: "shortTerm", 
       label: "Short-Term", 
-      timeframe: "1-4 hours", 
+      timeframe: "Engine daily read", 
       icon: Zap,
-      description: "Immediate price action based on order flow and momentum indicators",
+      description: "Momentum read from the live technical engine",
       methodology: [
-        "Real-time order book analysis",
-        "Momentum oscillators (RSI, MACD)",
-        "Volume profile assessment",
-        "Whale wallet movements",
-        "Funding rate analysis"
+        "RSI (14) momentum oscillator",
+        "MACD trend & histogram",
+        "20/50/200-day moving averages",
+        "Bollinger band position",
+        "Volume trend analysis"
       ],
-      accuracy: "78%",
-      signals: ["Order flow", "Momentum", "Volume spikes"]
+      signals: ["RSI", "MACD", "Moving averages"]
     },
     { 
       key: "midTerm", 
       label: "Mid-Term", 
-      timeframe: "24-48 hours", 
+      timeframe: "Swing horizon", 
       icon: Clock,
-      description: "Daily trend analysis using on-chain metrics and market sentiment",
+      description: "Same engine read, damped for the swing horizon",
       methodology: [
-        "On-chain transaction analysis",
-        "Exchange inflow/outflow",
-        "Derivatives market signals",
-        "Social sentiment aggregation",
-        "Technical pattern recognition"
+        "Engine bias, confidence × 0.85",
+        "Bollinger band position",
+        "Volume trend confirmation",
+        "Support / resistance structure"
       ],
-      accuracy: "72%",
-      signals: ["On-chain data", "Sentiment", "Technicals"]
+      signals: ["Engine bias", "Damped confidence"]
     },
     { 
       key: "longTerm", 
       label: "Long-Term", 
-      timeframe: "3-7 days", 
+      timeframe: "Position horizon", 
       icon: Target,
-      description: "Weekly outlook based on fundamental analysis and macro factors",
+      description: "Same engine read, further damped — treat as a trend lean, not a target",
       methodology: [
-        "Network fundamentals analysis",
-        "Developer activity tracking",
-        "Institutional flow monitoring",
-        "Macro correlation analysis",
-        "Network value metrics (NVT, MVRV)"
+        "Engine bias, confidence × 0.7",
+        "Long-horizon moving-average trend",
+        "No price targets at this horizon"
       ],
-      accuracy: "68%",
-      signals: ["Fundamentals", "Macro", "Institutional"]
+      signals: ["Engine bias", "MA trend"]
     },
   ] as const;
 
-  // Enhanced trigger details
-  const triggerDetails: Record<string, { icon: any; severity: string; description: string; impact: string; actionable: string }> = {
-    "Whale accumulation patterns": {
-      icon: Waves,
-      severity: "high",
-      description: "Large wallet addresses (>10,000 ETH) showing increased accumulation activity over the past 24 hours",
-      impact: "Historically precedes 15-25% price increases within 1-2 weeks",
-      actionable: "Consider accumulating on dips if confirmed by volume"
-    },
-    "Network upgrade announcements": {
-      icon: Sparkles,
-      severity: "medium",
-      description: "Protocol improvements or major version updates announced by core development team",
-      impact: "Can drive 10-40% moves depending on upgrade significance",
-      actionable: "Monitor announcement dates and prepare positions accordingly"
-    },
-    "DeFi TVL changes": {
-      icon: BarChart3,
-      severity: "medium",
-      description: "Total Value Locked in DeFi protocols showing significant movement (+/- 5%)",
-      impact: "TVL increases often correlate with price appreciation within 1-4 weeks",
-      actionable: "Track top protocols for early signals"
-    },
-    "Cross-chain bridge activity": {
-      icon: Activity,
-      severity: "low",
-      description: "Increased capital flow between chains via bridge protocols",
-      impact: "Can indicate capital rotation and shifting market interest",
-      actionable: "Monitor bridge volumes for capital flow direction"
-    },
-    "Market sentiment shifts": {
-      icon: Brain,
-      severity: "high",
-      description: "Aggregate sentiment score from social media, news, and on-chain behavior",
-      impact: "Extreme fear/greed readings often mark local bottoms/tops",
-      actionable: "Counter-trade extreme readings with proper risk management"
-    },
-  };
-
-  const handleTimeframeClick = (tf: typeof timeframes[number], data: any) => {
-    setSelectedDetail({
-      type: "timeframe",
-      data: { ...tf, ...data },
-      title: `${tf.label} Analysis`
-    });
-  };
-
   const handleTriggerClick = (trigger: string) => {
-    const details = triggerDetails[trigger] || {
-      icon: AlertCircle,
-      severity: "medium",
-      description: trigger,
-      impact: "Market impact varies based on current conditions",
-      actionable: "Monitor closely for confirmation signals"
-    };
+    // Honest detail: the trigger IS the live engine signal — describe it as such
+    // instead of inventing impact statistics.
     setSelectedDetail({
       type: "trigger",
-      data: { trigger, ...details },
-      title: "Market Trigger Analysis"
+      data: {
+        trigger,
+        icon: Activity,
+        severity: "info",
+        description: `Live engine signal: ${trigger}. This is one of the measured technical inputs behind the current bias and confidence.`,
+        impact: "Feeds directly into the engine's bias / confidence — no historical impact statistics are claimed.",
+        actionable: "Open the full prediction page for entry zones, scenarios and the complete indicator read.",
+      },
+      title: "Engine Signal",
     });
   };
 
@@ -196,16 +145,16 @@ export function EnhancedPredictionDeepDive({ chain, forecast, isLoading }: Enhan
       data: {
         overall: forecast.overallConfidence,
         breakdown: [
-          { name: "Technical Analysis", score: forecast.shortTerm.confidence, weight: "30%" },
-          { name: "On-Chain Metrics", score: forecast.midTerm.confidence, weight: "25%" },
-          { name: "Sentiment Analysis", score: Math.floor(forecast.overallConfidence * 0.9), weight: "20%" },
-          { name: "Fundamental Data", score: forecast.longTerm.confidence, weight: "15%" },
-          { name: "AI Model Agreement", score: Math.floor(forecast.overallConfidence * 1.1), weight: "10%" },
+          { name: "RSI momentum (14)", score: forecast.shortTerm.confidence, weight: "Engine input" },
+          { name: "MACD trend & histogram", score: forecast.midTerm.confidence, weight: "Engine input" },
+          { name: "Moving-average structure", score: forecast.longTerm.confidence, weight: "Engine input" },
+          { name: "Bollinger band position", score: forecast.shortTerm.confidence, weight: "Engine input" },
+          { name: "Volume trend", score: forecast.midTerm.confidence, weight: "Engine input" },
         ],
         modelInfo: {
-          models: ["LSTM Neural Network", "Transformer Model", "Prophet Forecasting", "Gradient Boosting"],
-          dataPoints: "2.4M+ data points analyzed",
-          lastUpdated: "Updated every 60 seconds"
+          models: ["Rule-based technical engine (RSI · MACD · MA · Bollinger)"],
+          dataPoints: "Real CoinGecko daily price history",
+          lastUpdated: "Recomputed on page visit"
         }
       },
       title: "Confidence Score Breakdown"
@@ -380,7 +329,7 @@ export function EnhancedPredictionDeepDive({ chain, forecast, isLoading }: Enhan
                         {data.prediction}
                       </span>
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted/50 text-muted-foreground">
-                        {tf.accuracy} accuracy
+                        {tf.signals.slice(0, 2).join(" · ")}
                       </span>
                     </div>
 

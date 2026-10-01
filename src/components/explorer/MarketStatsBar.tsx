@@ -1,8 +1,7 @@
 import { DollarSign, BarChart3, Activity, TrendingUp, TrendingDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ExplorerChain } from "@/lib/explorerChains";
-import { useQuery } from "@tanstack/react-query";
-import { invokeFunction } from "@/integrations/supabase/functions";
+import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 
 interface MarketStatsBarProps {
   chain: ExplorerChain;
@@ -18,26 +17,23 @@ function formatNumber(num: number | undefined | null): string {
 }
 
 export function MarketStatsBar({ chain }: MarketStatsBarProps) {
-  const { data, isLoading } = useQuery({
-    queryKey: ["chain-stats", chain.id],
-    queryFn: async () => {
-      const { data, error } = await invokeFunction("chain-stats", {
-        body: { chain: chain.id },
-      });
-      if (error) throw error;
-      return data as {
-        tvl: number | null;
-        tvlChange1d: number | null;
-        nativePrice: number | null;
-        nativeChange24h: number | null;
-        nativeVolume24h: number | null;
-        nativeMarketCap: number | null;
-      };
-    },
-    refetchInterval: 5 * 60_000,
-    refetchIntervalInBackground: true,
-    staleTime: 2 * 60_000,
-  });
+  // Standalone: the chain's native coin stats come from the live engine
+  // (CoinGecko top-250 already includes every major chain's native token).
+  // TVL is not fetchable client-side and renders as an honest dash.
+  const { data: pricesData, isLoading } = useCryptoPrices();
+  const native = pricesData?.prices?.find(
+    p => p.symbol.toLowerCase() === chain.symbol.toLowerCase(),
+  );
+  const data = native
+    ? {
+        nativePrice: native.price,
+        nativeChange24h: native.change24h,
+        nativeVolume24h: native.volume24h,
+        nativeMarketCap: native.marketCap,
+        tvl: null as number | null,
+        tvlChange1d: null as number | null,
+      }
+    : null;
 
   const change = data?.nativeChange24h ?? null;
   const tvlChange = data?.tvlChange1d ?? null;

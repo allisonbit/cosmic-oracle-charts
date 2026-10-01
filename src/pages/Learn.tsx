@@ -228,23 +228,20 @@ export default function Learn() {
                 <div>
                   <div className="flex items-center gap-2 mb-3">
                     <Badge className="bg-primary/15 text-primary border-primary/25 text-xs gap-1">
-                      <Sparkles className="w-3 h-3" /> AI-Generated
-                    </Badge>
-                    <Badge variant="outline" className="text-xs gap-1">
-                      <RefreshCw className="w-3 h-3" /> Updated Daily
+                      <BookOpen className="w-3 h-3" /> Editorial Guides
                     </Badge>
                   </div>
                   <h1 className="text-2xl sm:text-3xl lg:text-4xl font-display font-bold tracking-tight mb-2">
                     Learn Crypto — Free Guides & Education
                   </h1>
                   <p className="text-muted-foreground text-sm sm:text-base max-w-lg leading-relaxed">
-                    Free guides plus daily AI-powered analysis on market trends, DeFi, Bitcoin, altcoins, and trading strategies.
+                    Free editorial guides on market trends, DeFi, Bitcoin, altcoins, and trading strategies.
                   </p>
                 </div>
                 <div className="flex items-center gap-4 text-xs sm:text-sm text-muted-foreground">
                   <span className="flex items-center gap-1.5">
                     <BookOpen className="h-3.5 w-3.5 text-primary" />
-                    <strong className="text-foreground">{data?.totalArticles || '—'}</strong> articles
+                    <strong className="text-foreground">{educationalArticles.length || '—'}</strong> articles
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Calendar className="h-3.5 w-3.5 text-primary" />

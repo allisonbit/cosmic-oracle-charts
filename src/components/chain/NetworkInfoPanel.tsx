@@ -2,9 +2,8 @@ import { useState } from "react";
 import { ChainConfig } from "@/lib/chainConfig";
 import { ChainOverview } from "@/hooks/useChainData";
 import { 
-  Cpu, Layers, Coins, Hash, Shield, Zap, Clock, Globe, Network, 
-  Server, Database, Fuel, Users, TrendingUp, Activity, ExternalLink,
-  Gauge, Lock, FileCode, Blocks, Wifi, ArrowUpDown, Timer
+  Cpu, Layers, Hash, Shield, Zap, Globe, Network, 
+  Database, FileCode, TrendingUp, Activity, ExternalLink
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -55,98 +54,69 @@ export function NetworkInfoPanel({ chain, overview, isLoading }: NetworkInfoPane
     return (num ?? 0).toLocaleString();
   };
 
+  // Documented specs (chainConfig) + live native-asset market data. Node-only
+  // metrics (gas, block height, validators, mempool) are intentionally absent —
+  // no feed for them exists in this build.
   const networkMetrics: MetricDetail[] = [
     { 
-      label: "Throughput (TPS)", 
-      value: chain.tps?.toLocaleString() || "N/A", 
-      description: "Maximum transactions the network can process per second",
+      label: "Throughput (spec)", 
+      value: chain.tps ? `${chain.tps.toLocaleString()} TPS` : "—", 
+      description: "Documented transactions-per-second specification (not a live measurement)",
       icon: Zap,
       color: "primary",
       details: [
-        { label: "Current TPS", value: overview?.tps?.toFixed(0) || chain.tps?.toString() || "N/A" },
-        { label: "Peak TPS", value: ((chain.tps || 0) * 1.2).toFixed(0) },
-        { label: "Avg Block Time", value: chain.category === "layer1" ? "12s" : "2s" },
-        { label: "Finality Time", value: chain.category === "layer1" ? "~15 min" : "~2 min" },
+        { label: "Spec TPS", value: chain.tps ? chain.tps.toLocaleString() : "—" },
+        { label: "Avg Block Time", value: chain.category === "layer1" ? "~12s" : "~2s" },
+        { label: "Finality", value: chain.category === "layer1" ? "~15 min" : "~2 min" },
+        { label: "Live node feed", value: "Not available" },
       ]
     },
     { 
       label: "Consensus", 
-      value: chain.consensus || "N/A", 
+      value: chain.consensus || "—", 
       description: "The mechanism used to validate transactions and secure the network",
       icon: Shield,
       color: "success",
       details: [
-        { label: "Type", value: chain.consensus || "N/A" },
-        { label: "Security Model", value: chain.category === "layer1" ? "Native" : "Inherited from L1" },
-        { label: "Validator Count", value: chain.id === "ethereum" ? "~900K" : chain.id === "solana" ? "~2K" : "~100+" },
-        { label: "Stake Required", value: chain.id === "ethereum" ? "32 ETH" : "Varies" },
-      ]
-    },
-    { 
-      label: "Gas Price", 
-      value: overview?.gasFees ? `${(overview.gasFees ?? 0).toFixed(2)} Gwei` : "N/A", 
-      description: "Current average cost per unit of computation on the network",
-      icon: Fuel,
-      color: "warning",
-      details: [
-        { label: "Current Gas", value: overview?.gasFees ? `${(overview.gasFees ?? 0).toFixed(2)} Gwei` : "N/A" },
-        { label: "Slow", value: overview?.gasFees ? `${(overview.gasFees * 0.8).toFixed(2)} Gwei` : "N/A" },
-        { label: "Standard", value: overview?.gasFees ? `${(overview.gasFees ?? 0).toFixed(2)} Gwei` : "N/A" },
-        { label: "Fast", value: overview?.gasFees ? `${(overview.gasFees * 1.5).toFixed(2)} Gwei` : "N/A" },
-      ]
-    },
-    { 
-      label: "Block Height", 
-      value: formatNumber((overview?.transactions24h || 0) * 10), 
-      description: "Total number of blocks produced since genesis",
-      icon: Blocks,
-      color: "secondary",
-      details: [
-        { label: "Current Block", value: formatNumber((overview?.transactions24h || 0) * 10) },
-        { label: "Blocks Today", value: formatNumber(7200) },
-        { label: "Avg Block Size", value: chain.category === "layer1" ? "~2 MB" : "~100 KB" },
-        { label: "Block Reward", value: chain.category === "layer1" ? "Dynamic" : "N/A" },
-      ]
-    },
-    { 
-      label: "Active Validators", 
-      value: chain.id === "ethereum" ? "~900K" : chain.id === "solana" ? "~2K" : "~100+", 
-      description: "Number of validators currently securing the network",
-      icon: Server,
-      color: "primary",
-      details: [
-        { label: "Active Validators", value: chain.id === "ethereum" ? "~900,000" : chain.id === "solana" ? "~2,000" : "100+" },
-        { label: "Total Staked", value: formatNumber(overview?.defiTvl ? overview.defiTvl * 0.3 : 0) },
-        { label: "APY", value: chain.id === "ethereum" ? "~3.5%" : chain.id === "solana" ? "~7%" : "~5%" },
-        { label: "Uptime", value: "99.9%" },
+        { label: "Type", value: chain.consensus || "—" },
+        { label: "Security Model", value: chain.category === "layer1" ? "Native" : "Inherited from settlement layer" },
+        { label: "Stake Required", value: chain.id === "ethereum" ? "32 ETH" : "Varies by chain" },
       ]
     },
     {
-      label: "Network Load",
-      // Deterministic load proxy from the REAL tps vs an approximate capacity
-      // ceiling per chain. Pending-tx / mempool need a node feed → shown as "—".
-      value: overview?.tps ? `${Math.min(95, Math.round((overview.tps / (chain.id === "solana" ? 3000 : chain.id === "polygon" ? 700 : 40)) * 100))}%` : "—",
-      description: "Approximate utilization from live throughput (tps vs typical capacity)",
-      icon: Gauge,
+      label: "Market Cap",
+      value: overview?.marketCap ? `$${formatNumber(overview.marketCap)}` : "—",
+      description: "Live market cap of the chain's native asset (CoinGecko)",
+      icon: TrendingUp,
+      color: "secondary",
+      details: [
+        { label: "Native asset", value: chain.symbol },
+        { label: "Source", value: "CoinGecko (live)" },
+        { label: "24h change", value: overview ? `${overview.priceChange24h >= 0 ? "+" : ""}${overview.priceChange24h.toFixed(2)}%` : "—" },
+      ]
+    },
+    {
+      label: "24h DEX Volume",
+      value: overview?.volume24h ? `$${formatNumber(overview.volume24h)}` : "—",
+      description: "24h volume across the chain's busiest DEX pairs (DexScreener)",
+      icon: Activity,
       color: "warning",
       details: [
-        { label: "Live TPS", value: overview?.tps ? overview.tps.toLocaleString() : "—" },
-        { label: "Transactions (24h)", value: overview?.transactions24h ? overview.transactions24h.toLocaleString() : "—" },
-        { label: "Mempool Size", value: "—" },
-        { label: "Congestion", value: overview?.tps ? (overview.tps > (chain.id === "solana" ? 2500 : 35) ? "Elevated" : "Normal") : "—" },
+        { label: "Scope", value: "Top DEX pairs" },
+        { label: "Source", value: "DexScreener (live)" },
+        { label: "Includes", value: "Buys + sells, both swap sides" },
       ]
     },
     { 
       label: "Native Decimals", 
-      value: chain.nativeDecimals?.toString() || "18", 
+      value: chain.nativeDecimals?.toString() || "—", 
       description: "Decimal precision of the native token",
       icon: Hash,
       color: "muted",
       details: [
-        { label: "Decimals", value: chain.nativeDecimals?.toString() || "18" },
+        { label: "Decimals", value: chain.nativeDecimals?.toString() || "—" },
         { label: "Symbol", value: chain.symbol },
-        { label: "Standard", value: chain.category === "layer1" ? "Native" : "ERC-20" },
-        { label: "Wrapped", value: `W${chain.symbol}` },
+        { label: "Wrapped form", value: `W${chain.symbol}` },
       ]
     },
     { 
@@ -159,39 +129,25 @@ export function NetworkInfoPanel({ chain, overview, isLoading }: NetworkInfoPane
         { label: "Type", value: getCategoryLabel(chain.category) },
         { label: "EVM Compatible", value: chain.id === "solana" || chain.id === "sui" || chain.id === "ton" ? "No" : "Yes" },
         { label: "Smart Contracts", value: "Yes" },
-        { label: "Launch Year", value: chain.id === "ethereum" ? "2015" : chain.id === "solana" ? "2020" : "2021+" },
       ]
     },
   ];
 
   const liveStats = [
     { 
-      label: "24h Transactions", 
-      value: formatNumber(overview?.transactions24h),
+      label: "Market Cap", 
+      value: overview?.marketCap ? `$${formatNumber(overview.marketCap)}` : "—",
+      icon: TrendingUp,
+    },
+    { 
+      label: "24h DEX Volume", 
+      value: overview?.volume24h ? `$${formatNumber(overview.volume24h)}` : "—",
       icon: Activity,
-      change: "+12.4%",
-      positive: true,
     },
     { 
-      label: "Active Addresses", 
-      value: formatNumber(overview?.activeWallets),
-      icon: Users,
-      change: "+5.2%",
-      positive: true,
-    },
-    { 
-      label: "DeFi TVL", 
-      value: `$${formatNumber(overview?.defiTvl)}`,
-      icon: Lock,
-      change: overview?.priceChange24h ? `${overview.priceChange24h > 0 ? '+' : ''}${(overview.priceChange24h ?? 0).toFixed(1)}%` : "0%",
-      positive: (overview?.priceChange24h || 0) >= 0,
-    },
-    { 
-      label: "Contracts Deployed", 
-      value: formatNumber(Math.floor((overview?.transactions24h || 0) * 0.05)),
-      icon: FileCode,
-      change: "+8.7%",
-      positive: true,
+      label: "24h Change", 
+      value: overview ? `${overview.priceChange24h >= 0 ? "+" : ""}${overview.priceChange24h.toFixed(2)}%` : "—",
+      icon: Activity,
     },
   ];
 
@@ -225,29 +181,21 @@ export function NetworkInfoPanel({ chain, overview, isLoading }: NetworkInfoPane
           </div>
           
           <div className="ml-auto flex items-center gap-2">
-            <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-success/20 text-success text-xs">
-              <Wifi className="h-3 w-3" />
-              <span>Network Healthy</span>
+            <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-muted/20 text-muted-foreground text-xs">
+              <Network className="h-3 w-3" />
+              <span>Specs + live market data</span>
             </div>
           </div>
         </div>
 
         {/* Live Stats Bar */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-3 gap-3">
           {liveStats.map((stat) => (
             <div 
               key={stat.label}
-              className="p-3 border border-border/30 hover:bg-muted/20 transition-all cursor-pointer group"
+              className="p-3 border border-border/30 hover:bg-muted/20 transition-all"
             >
-              <div className="flex items-center justify-between mb-1">
-                <stat.icon className="h-4 w-4 text-primary" />
-                <span className={cn(
-                  "text-[10px] font-medium",
-                  stat.positive ? "text-success" : "text-danger"
-                )}>
-                  {stat.change}
-                </span>
-              </div>
+              <stat.icon className="h-4 w-4 text-primary mb-1" />
               <p className="text-[10px] text-muted-foreground">{stat.label}</p>
               <p className="text-sm font-display text-foreground">{stat.value}</p>
             </div>

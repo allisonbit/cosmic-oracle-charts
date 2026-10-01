@@ -1,7 +1,5 @@
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
-import { invokeFunction } from "@/integrations/supabase/functions";
 import { MessageCircle, X, Send, Loader2, Sparkles, Bot } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -38,30 +36,12 @@ export function AIChatBubble() {
     setLoading(true);
 
     try {
-      // Save to DB
-      await supabase.from("chat_messages").insert({
-        user_id: user.id,
-        role: "user",
-        content: userMsg.content,
-      });
-
-      // Call AI via edge function
-      const { data, error } = await invokeFunction("ai-chat", {
-        body: {
-          message: userMsg.content,
-          history: messages.slice(-6).map(m => ({ role: m.role, content: m.content })),
-        },
-      });
-
-      const reply = data?.reply || "I'm having trouble connecting right now. Try again in a moment!";
+      // Standalone build: no AI backend is connected. Reply honestly instead
+      // of calling a dead edge function or writing to a nonexistent table.
+      const reply = "The AI assistant isn't connected in this standalone build, so there's no AI service behind this chat. Everything else on the site — prices, predictions, DEX data — is live.";
+      await new Promise(r => setTimeout(r, 400));
       const aiMsg: Message = { id: (Date.now() + 1).toString(), role: "assistant", content: reply };
       setMessages(prev => [...prev, aiMsg]);
-
-      await supabase.from("chat_messages").insert({
-        user_id: user.id,
-        role: "assistant",
-        content: reply,
-      });
     } catch (e) {
       setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),

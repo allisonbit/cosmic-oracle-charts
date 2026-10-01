@@ -79,13 +79,6 @@ export function EnhancedDailySummary({ chain, forecast, isLoading, onRefresh }: 
     { signal: "MACD", value: lastHist === null ? "—" : lastHist >= 0 ? "Bullish" : "Bearish", type: "indicator", strength: 78 },
   ];
 
-  // Mock news headlines
-  const newsHeadlines = [
-    { title: `${chain.name} sees increased institutional interest`, sentiment: "positive", time: "2h ago" },
-    { title: `Network activity hits new weekly high`, sentiment: "positive", time: "5h ago" },
-    { title: `Major upgrade announcement expected soon`, sentiment: "neutral", time: "8h ago" },
-  ];
-
   return (
     <>
       <div
@@ -225,22 +218,17 @@ export function EnhancedDailySummary({ chain, forecast, isLoading, onRefresh }: 
             </TabsContent>
 
             <TabsContent value="news" className="mt-4">
-              <div className="space-y-3">
-                {newsHeadlines.map((news, i) => (
-                  <button
-                    key={i}
-                    onClick={() => openDetailModal('insights', news.title, news)}
-                    className="w-full p-3 rounded-xl bg-background/40 hover:bg-background/60 transition-all border border-border/30 text-left"
-                  >
-                    <div className="flex items-start gap-3">
-                      <Newspaper className={cn("h-5 w-5 mt-0.5", news.sentiment === 'positive' ? "text-success" : news.sentiment === 'negative' ? "text-danger" : "text-warning")} />
-                      <div className="flex-1">
-                        <p className="text-sm text-foreground">{news.title}</p>
-                        <p className="text-xs text-muted-foreground mt-1">{news.time}</p>
-                      </div>
-                    </div>
-                  </button>
-                ))}
+              <div className="p-4 rounded-xl bg-background/40 border border-border/30 text-center">
+                <Newspaper className="h-8 w-8 mx-auto mb-2 text-muted-foreground opacity-40" />
+                <p className="text-sm text-muted-foreground">No news feed is connected in this build — we don't show headlines we can't verify.</p>
+                <a
+                  href={`https://cryptopanic.com/news/${chain.symbol?.toLowerCase()}/`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 mt-2 text-xs text-primary hover:underline"
+                >
+                  <ExternalLink className="h-3 w-3" /> Browse {chain.symbol} news on CryptoPanic
+                </a>
               </div>
             </TabsContent>
 
@@ -263,16 +251,16 @@ export function EnhancedDailySummary({ chain, forecast, isLoading, onRefresh }: 
                       </p>
                     </div>
                     <div className="text-center p-3">
-                      <p className="text-xs text-muted-foreground mb-1">AI Model</p>
-                      <p className="text-lg font-display text-primary">GPT-4</p>
+                      <p className="text-xs text-muted-foreground mb-1">Model</p>
+                      <p className="text-lg font-display text-primary">Technical Engine</p>
                     </div>
                     <div className="text-center p-3">
-                      <p className="text-xs text-muted-foreground mb-1">Analysis Time</p>
-                      <p className="text-lg font-display text-foreground">~15s</p>
+                      <p className="text-xs text-muted-foreground mb-1">Price Data</p>
+                      <p className="text-lg font-display text-foreground">CoinGecko</p>
                     </div>
                     <div className="text-center p-3">
-                      <p className="text-xs text-muted-foreground mb-1">Sources</p>
-                      <p className="text-lg font-display text-foreground">12+</p>
+                      <p className="text-xs text-muted-foreground mb-1">Recomputed</p>
+                      <p className="text-lg font-display text-foreground">On visit</p>
                     </div>
                   </div>
 

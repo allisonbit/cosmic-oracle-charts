@@ -95,7 +95,7 @@ const FEATURES = [
 
 export function FeaturesSection() {
   return (
-    <section className="py-16 md:py-24" aria-labelledby="features-heading">
+    <section className="py-10 md:py-14" aria-labelledby="features-heading">
       <div className="container mx-auto px-4">
         <div className="section-header mb-2">
           <span className="section-label flex items-center gap-1.5">

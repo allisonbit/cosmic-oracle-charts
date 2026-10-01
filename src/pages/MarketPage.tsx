@@ -470,7 +470,7 @@ export default function MarketPage() {
         <Navbar />
       </header>
 
-      <main className="flex-1 container mx-auto px-4 py-24 md:py-32">
+      <main className="flex-1 container mx-auto px-4 py-10 md:py-14">
         <div className="space-y-1 mb-1">
           <AdUnit format="horizontal" className="max-w-5xl mx-auto" />
         </div>

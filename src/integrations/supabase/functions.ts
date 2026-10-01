@@ -7,11 +7,15 @@
 //
 // Returns the same { data, error } shape as supabase.functions.invoke().
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://qynszkirmcrldqmiplwh.supabase.co";
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const ANON_KEY =
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
-  import.meta.env.VITE_SUPABASE_ANON_KEY ||
-  "missing-key";
+  (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY) as string | undefined;
+
+if (!SUPABASE_URL || !ANON_KEY) {
+  console.warn(
+    "[Oracle Bull] Supabase env vars missing — edge-function calls disabled (standalone mode).",
+  );
+}
 
 export interface InvokeResult<T = any> {
   data: T | null;
@@ -23,11 +27,13 @@ export async function invokeFunction<T = any>(
   options?: { body?: unknown; headers?: Record<string, string> }
 ): Promise<InvokeResult<T>> {
   try {
-    const privyToken = globalThis.__privyAccessToken;
+    if (!SUPABASE_URL || !ANON_KEY) {
+      return { data: null, error: { message: "Standalone mode: edge functions disabled" } };
+    }
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
       apikey: ANON_KEY,
-      Authorization: `Bearer ${privyToken || ANON_KEY}`,
+      Authorization: `Bearer ${ANON_KEY}`,
       ...(options?.headers || {}),
     };
 

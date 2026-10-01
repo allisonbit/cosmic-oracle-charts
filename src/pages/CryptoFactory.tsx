@@ -147,7 +147,6 @@ export default function CryptoFactory() {
   const sentiment = params.get("sentiment") || "all";
   const sort = params.get("sort") || "latest";
   const mobileTab = params.get("tab") || "feed";
-  const [countdown, setCountdown] = useState(60);
 
   const setParam = (k: string, v: string | null) => setParams((prev) => {
     const next = new URLSearchParams(prev);
@@ -156,13 +155,6 @@ export default function CryptoFactory() {
   }, { replace: true });
 
   const { data, isLoading, refetch, isFetching } = useCryptoFactory({ asset: q || undefined });
-
-  // 60s auto-refresh countdown
-  useEffect(() => {
-    const t = setInterval(() => setCountdown((c) => (c <= 1 ? 60 : c - 1)), 1000);
-    return () => clearInterval(t);
-  }, []);
-  useEffect(() => { setCountdown(60); }, [data?.timestamp]);
 
   const fearGreed = (data as any)?.fearGreed || { value: 50, classification: "Neutral" };
   const topMovers = (data as any)?.topMovers || [];
@@ -200,7 +192,7 @@ export default function CryptoFactory() {
   const canonical = `${SITE_URL}/crypto-factory`;
   const faqs = [
     { q: "What is the Crypto Factory?", a: "Crypto Factory is Oracle Bull's real-time market intelligence hub that aggregates crypto news, on-chain whale flows, market narratives and key events into one auto-updating command center, scored by impact so you see what matters fast." },
-    { q: "How often does Crypto Factory update?", a: "The feed auto-refreshes every 60 seconds. Whale and on-chain flow cards reflect large transactions as they confirm, and a live countdown shows the next refresh." },
+    { q: "How often does Crypto Factory update?", a: "Market stats, movers and Fear & Greed are pulled live from public market APIs each time you load the page (with short caching), and the Refresh button re-fetches instantly." },
     { q: "What is a crypto market narrative?", a: "A narrative is the dominant theme driving capital right now — for example AI tokens, Bitcoin ETF, RWA or memecoins. Crypto Factory ranks active narratives by momentum so you can see where attention and money are rotating." },
     { q: "What are on-chain flows in crypto?", a: "On-chain flows are movements of crypto between wallets on the blockchain. Large exchange inflows often precede selling, outflows suggest accumulation, and big wallet-to-wallet transfers can signal OTC deals or positioning before it shows up in price." },
     { q: "Is Crypto Factory free?", a: "Yes. Crypto Factory and the rest of Oracle Bull's analytics are completely free, with no signup required." },
@@ -237,12 +229,11 @@ export default function CryptoFactory() {
           <div className="container mx-auto px-4 py-2 flex items-center justify-between gap-2 text-xs">
             <div className="flex items-center gap-3 min-w-0">
               <span className="flex items-center gap-1.5 shrink-0"><span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" /><span className="text-green-400 font-mono">LIVE</span></span>
-              <span className="text-muted-foreground font-mono shrink-0 hidden sm:inline">refresh in {countdown}s</span>
+              <span className="text-muted-foreground font-mono shrink-0 hidden sm:inline">updated {new Date(data?.timestamp || Date.now()).toLocaleTimeString()}</span>
               <span className={cn("font-mono font-bold whitespace-nowrap", fgColor)}>F&amp;G {fearGreed.value}</span>
             </div>
             <div className="flex items-center gap-3 shrink-0">
-              <span className="text-muted-foreground hidden md:inline">{itemsToday.toLocaleString()} items today</span>
-              <span className="text-muted-foreground hidden sm:inline">50+ sources</span>
+              <span className="text-muted-foreground hidden md:inline">{itemsToday.toLocaleString()} feed items</span>
               <Button size="sm" variant="ghost" className="h-6 px-2 text-xs" onClick={() => refetch()}><RefreshCw className={cn("w-3 h-3 mr-1", isFetching && "animate-spin")} /> Refresh</Button>
             </div>
           </div>
@@ -255,7 +246,7 @@ export default function CryptoFactory() {
               <Link to="/" className="hover:text-primary">Home</Link><span>/</span><Link to="/tools" className="hover:text-primary">Tools</Link><span>/</span><span className="text-foreground">Crypto Factory</span>
             </nav>
             <h1 className="font-display text-2xl md:text-4xl font-bold flex items-center gap-2.5"><span className="p-2 bg-primary/15"><Zap className="w-6 h-6 text-primary" /></span> Crypto Market Intelligence Hub</h1>
-            <h2 className="text-muted-foreground mt-2 text-sm md:text-base max-w-2xl">Real-time market intelligence. Events, narratives, on-chain flows and news from 50+ sources — all auto-updating.</h2>
+            <h2 className="text-muted-foreground mt-2 text-sm md:text-base max-w-2xl">Live market stats, top movers and Fear &amp; Greed from real market data. Event/on-chain/news feeds stay empty unless a real data source is connected.</h2>
           </div>
 
           {/* Global stats */}

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { invokeFunction } from "@/integrations/supabase/functions";
+import { fetchMarkets, fetchGlobal, fetchFearGreed, type EngineCoin } from "@/lib/marketEngine";
 
 export interface GlobalMarketData {
   totalMarketCap: number;
@@ -39,64 +39,57 @@ export interface MarketDataResponse {
   timestamp: number;
 }
 
-// Fallback data for when edge function is unavailable
-const FALLBACK_DATA: MarketDataResponse = {
-  global: {
-    totalMarketCap: 3.2e12,
-    totalVolume24h: 120e9,
-    btcDominance: 54,
-    ethDominance: 12,
-    activeCryptocurrencies: 15000,
-    marketCapChange24h: 1.2,
-  },
-  fearGreedIndex: 65,
-  trending: [
-    { symbol: 'BTC', name: 'Bitcoin', rank: 1, priceChange: 1.5 },
-    { symbol: 'ETH', name: 'Ethereum', rank: 2, priceChange: 0.8 },
-    { symbol: 'SOL', name: 'Solana', rank: 3, priceChange: 2.1 },
-  ],
-  topCoins: [
-    { symbol: 'BTC', name: 'Bitcoin', price: 97000, change24h: 1.5, volume: 45e9, marketCap: 1.9e12, rank: 1 },
-    { symbol: 'ETH', name: 'Ethereum', price: 3400, change24h: 0.8, volume: 18e9, marketCap: 410e9, rank: 2 },
-    { symbol: 'SOL', name: 'Solana', price: 190, change24h: 2.1, volume: 3e9, marketCap: 85e9, rank: 5 },
-  ],
-  timestamp: Date.now(),
-};
-
-let warnedOnce = false;
+// Live market snapshot from the standalone engine. `null` global data (network
+// down) maps to zeros — the UI renders honest empty states from those.
+function toTopCoin(c: EngineCoin): TopCoin {
+  return {
+    id: c.id,
+    symbol: c.symbol,
+    name: c.name,
+    image: c.image,
+    price: c.price,
+    change1h: c.change1h,
+    change24h: c.change24h,
+    change7d: c.change7d,
+    volume: c.volume24h,
+    marketCap: c.marketCap,
+    rank: c.rank,
+  };
+}
 
 export function useMarketData() {
   return useQuery({
-    queryKey: ["crypto-market"],
+    queryKey: ["engine-market"],
     queryFn: async (): Promise<MarketDataResponse> => {
-      try {
-        const { data, error } = await invokeFunction("crypto-market");
-        
-        if (error) {
-          if (!warnedOnce) {
-            warnedOnce = true;
-            console.warn("Market data unavailable, using fallback:", error.message);
-          }
-          return { ...FALLBACK_DATA, timestamp: Date.now() };
-        }
-        
-        return data as MarketDataResponse;
-      } catch (err) {
-        if (!warnedOnce) {
-          warnedOnce = true;
-          console.warn("Market data exception, using fallback");
-        }
-        return { ...FALLBACK_DATA, timestamp: Date.now() };
-      }
+      const [coins, global, fng] = await Promise.all([fetchMarkets(100), fetchGlobal(), fetchFearGreed()]);
+      const ranked = [...coins].sort((a, b) => b.change24h - a.change24h);
+      return {
+        global: {
+          totalMarketCap: global?.totalMarketCap ?? 0,
+          totalVolume24h: global?.totalVolume24h ?? 0,
+          btcDominance: global?.btcDominance ?? 0,
+          ethDominance: global?.ethDominance ?? 0,
+          activeCryptocurrencies: global?.activeCryptocurrencies ?? 0,
+          marketCapChange24h: global?.marketCapChange24h ?? 0,
+        },
+        fearGreedIndex: fng?.value ?? 50,
+        trending: ranked.slice(0, 5).map((c, i) => ({
+          symbol: c.symbol,
+          name: c.name,
+          rank: i + 1,
+          priceChange: c.change24h,
+        })),
+        topCoins: coins.slice(0, 100).map(toTopCoin),
+        timestamp: Date.now(),
+      };
     },
-    refetchInterval: 20000, // Refresh every 20 seconds 24/7
-    staleTime: 15000,
-    gcTime: 1000 * 60 * 10, // 10 min cache
-    refetchIntervalInBackground: false, // Keep updating in background
+    refetchInterval: 90_000,
+    staleTime: 60_000,
+    gcTime: 1000 * 60 * 10,
+    refetchIntervalInBackground: false,
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
-    retry: 3,
-    retryDelay: 2000,
-    networkMode: 'offlineFirst',
+    retry: 2,
+    retryDelay: 3000,
   });
 }

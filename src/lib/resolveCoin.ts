@@ -1,11 +1,11 @@
-import { invokeFunction } from "@/integrations/supabase/functions";
+import { coingeckoFetch } from "@/lib/coingecko";
 
 // ── Canonical coin resolver ───────────────────────────────────────────────────
 // Takes ANY identifier from a route param — a CoinGecko slug ("bitcoin"), a
-// symbol ("BTC"), an EVM contract (0x…), or a Solana mint — and resolves it to a
-// normalized coin via the token-search edge function (CoinGecko + DexScreener +
-// Alchemy). This is the single source of truth the prediction page uses so any
-// coin works end-to-end.
+// symbol ("BTC"), an EVM contract (0x…), or a Solana mint — and resolves it to
+// a normalized coin using free public APIs (DexScreener for contracts,
+// CoinGecko for slugs/symbols). This is the single source of truth the
+// prediction page uses so any coin works end-to-end.
 
 export interface ResolvedCoin {
   /** CoinGecko id when known, else the original identifier (used as URL slug + cache key). */
@@ -55,35 +55,79 @@ export async function resolveCoin(
     };
   }
 
-  // 2. Resolve via token-search (handles symbol, name, EVM address, Solana mint).
+  // 2. Contract address → DexScreener's public token lookup (key-free).
+  if (isContractAddress(id)) {
+    try {
+      const res = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${encodeURIComponent(id)}`, {
+        headers: { accept: "application/json" },
+      });
+      if (res.ok) {
+        const json = (await res.json()) as { pairs?: any[] };
+        const pairs = (json.pairs ?? []).filter(p => p.chainId && p.baseToken?.address);
+        if (pairs.length > 0) {
+          const best = pairs.sort((a, b) => (b.liquidity?.usd ?? 0) - (a.liquidity?.usd ?? 0))[0];
+          return {
+            coinId: id,
+            symbol: (best.baseToken.symbol || id).toUpperCase(),
+            name: best.baseToken.name || best.baseToken.symbol || id,
+            image: best.info?.imageUrl,
+            contractAddress: best.baseToken.address,
+            chain: best.chainId,
+            price: parseFloat(best.priceUsd ?? "0") || undefined,
+            source: "address",
+          };
+        }
+      }
+    } catch {
+      // fall through to graceful fallback
+    }
+  }
+
+  // 3. Slug → CoinGecko coin metadata (rich: symbol, name, image).
   try {
-    const { data, error } = await invokeFunction("token-search", {
-      body: { query: id, mode: "search", limit: 10 },
+    const j = await coingeckoFetch<any>({
+      path: `coins/${encodeURIComponent(id)}`,
+      params: { localization: false, tickers: false, market_data: false, community_data: false, developer_data: false, sparkline: false },
+      ttlMs: 300_000,
     });
-    const tokens: any[] = !error && data?.tokens ? data.tokens : [];
-    if (tokens.length > 0) {
-      // Prefer an exact symbol/address match, else the first (most-liquid) result.
-      const lower = id.toLowerCase();
-      const exact =
-        tokens.find((t) => (t.contractAddress || t.address || "").toLowerCase() === lower) ||
-        tokens.find((t) => (t.symbol || t.baseToken?.symbol || "").toLowerCase() === lower) ||
-        tokens.find((t) => (t.coingeckoId || t.id || "").toLowerCase() === lower);
-      const t = exact || tokens[0];
-      const symbol = (t.symbol || t.baseToken?.symbol || id).toUpperCase();
-      const contractAddress = t.contractAddress || t.address || t.baseToken?.address;
-      const coingeckoId = t.coingeckoId || (t.id && !isContractAddress(t.id) ? t.id : undefined);
+    if (j?.id && j?.symbol) {
       return {
-        // Prefer the CoinGecko id for the prediction call; fall back to the address/identifier.
-        coinId: coingeckoId || contractAddress || id,
-        symbol,
-        name: t.name || t.baseToken?.name || symbol,
-        image: t.logo || t.image,
-        contractAddress,
-        chain: t.chain || t.chainId,
-        coingeckoId,
-        price: t.price ?? t.priceUsd,
-        source: isContractAddress(id) ? "address" : "search",
+        coinId: j.id,
+        symbol: (j.symbol || id).toUpperCase(),
+        name: j.name || j.id,
+        image: j.image?.large || j.image?.small,
+        coingeckoId: j.id,
+        source: "search",
       };
+    }
+  } catch {
+    // fall through
+  }
+
+  // 3b. Symbol fallback → match against the live top-markets list.
+  try {
+    const markets = await coingeckoFetch<any[]>({
+      path: "coins/markets",
+      params: { vs_currency: "usd", order: "market_cap_desc", per_page: 250, page: 1 },
+      ttlMs: 120_000,
+    });
+    if (Array.isArray(markets)) {
+      const lower = id.toLowerCase();
+      const hit =
+        markets.find(m => m.id?.toLowerCase() === lower) ??
+        markets.find(m => m.symbol?.toLowerCase() === lower) ??
+        markets.find(m => m.name?.toLowerCase() === lower);
+      if (hit) {
+        return {
+          coinId: hit.id,
+          symbol: (hit.symbol || id).toUpperCase(),
+          name: hit.name || hit.id,
+          image: hit.image,
+          coingeckoId: hit.id,
+          price: hit.current_price,
+          source: "search",
+        };
+      }
     }
   } catch {
     // fall through to graceful fallback

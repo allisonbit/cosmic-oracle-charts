@@ -1,47 +1,46 @@
-import { useState, useCallback, useRef, useEffect } from "react";
-import { Search, X, Loader2, TrendingUp, TrendingDown, Activity, ExternalLink, Zap, BarChart3, Users, MessageCircle, ArrowDownUp } from "lucide-react";
+import { useState, useMemo, useRef, useEffect } from "react";
+import { Search, X, Loader2, TrendingUp, TrendingDown, Activity, ArrowDownUp } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { invokeFunction } from "@/integrations/supabase/functions";
 import { TokenIcon } from "@/components/ui/token-icon";
 import { useNavigate } from "react-router-dom";
+import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 
-interface DexToken {
-  name: string;
+// ── Token Sentiment Scanner (standalone) ─────────────────────────────────────
+// Previously proxied a Supabase edge function that fanned out to DexScreener.
+// Standalone, it searches the live price set (top 250 by market cap) locally
+// and derives each token's sentiment from REAL metrics: 24h change, position
+// inside the 24h high/low range, and volume-to-marketcap turnover. Nothing
+// fabricated; if a metric is missing it simply isn't scored.
+
+interface LiveCoin {
   symbol: string;
-  address: string;
-  chain: string;
+  name: string;
+  id: string;
   price: number;
   change24h: number;
   volume24h: number;
-  liquidity: number;
   marketCap: number;
-  txns24h: number;
-  buys24h: number;
-  sells24h: number;
-  pairAddress: string;
-  dexId: string;
-  logo?: string;
-  coinId?: string;
+  high24h?: number;
+  low24h?: number;
+  image?: string;
+  rank?: number;
 }
 
 interface SentimentResult {
-  token: DexToken;
+  token: LiveCoin;
   sentiment: {
     overall: number;
-    buyPressure: number;
-    socialBuzz: number;
-    whaleInterest: number;
+    rangePosition: number | null; // where price sits in the 24h range (0-100)
+    turnover: number;             // volume / marketCap ratio (%)
     momentum: string;
   };
 }
 
 export function TokenSentimentSearch() {
   const navigate = useNavigate();
+  const { data: pricesData, isLoading: pricesLoading } = useCryptoPrices();
   const [query, setQuery] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
-  const [results, setResults] = useState<SentimentResult[]>([]);
-  const [selectedToken, setSelectedToken] = useState<SentimentResult | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -55,73 +54,58 @@ export function TokenSentimentSearch() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const searchTokens = useCallback(async (q: string) => {
-    if (q.length < 2) { setResults([]); return; }
-    setIsSearching(true);
-    try {
-      const { data, error } = await invokeFunction("token-search", {
-        body: { query: q, mode: "search", limit: 15 },
-      });
-      if (!error && data?.tokens) {
-        const mapped: SentimentResult[] = data.tokens.slice(0, 10).map((t: any) => {
-          const price = t.priceUsd || t.price || 0;
-          const change = t.priceChange24h || t.change24h || 0;
-          const vol = t.volume24h || t.volume?.h24 || 0;
-          const liq = t.liquidity?.usd || t.liquidity || 0;
-          // Real DexScreener txn counts; 0 when absent → neutral buyRatio below.
-          const buys = t.txns?.h24?.buys || 0;
-          const sells = t.txns?.h24?.sells || 0;
-          const txns = buys + sells;
+  const allCoins: LiveCoin[] = useMemo(() => (pricesData?.prices ?? []).map(p => ({
+    symbol: p.symbol,
+    name: p.name,
+    id: p.symbol.toLowerCase(),
+    price: p.price,
+    change24h: p.change24h,
+    volume24h: p.volume24h,
+    marketCap: p.marketCap,
+    high24h: p.high24h,
+    low24h: p.low24h,
+    image: p.image,
+    rank: p.rank,
+  })), [pricesData]);
 
-          // Calculate sentiment from real DexScreener metrics
-          const buyRatio = txns > 0 ? (buys / txns) * 100 : 50;
-          const volScore = Math.min(100, (vol / 1e6) * 2);
-          const liqScore = Math.min(100, (liq / 500000) * 50);
-          const priceScore = change > 5 ? 80 : change > 0 ? 60 : change > -5 ? 40 : 20;
-          const overall = Math.round(buyRatio * 0.4 + priceScore * 0.3 + Math.min(volScore, 100) * 0.2 + Math.min(liqScore, 100) * 0.1);
+  const results = useMemo<SentimentResult[]>(() => {
+    const q = query.trim().toLowerCase();
+    if (q.length < 2) return [];
+    const matches = allCoins
+      .filter(c => c.name.toLowerCase().includes(q) || c.symbol.toLowerCase().includes(q))
+      .slice(0, 10);
 
-          return {
-            token: {
-              name: t.name || t.baseToken?.name || t.symbol,
-              symbol: (t.symbol || t.baseToken?.symbol || "").toUpperCase(),
-              address: t.address || t.baseToken?.address || "",
-              chain: t.chain || t.chainId || "unknown",
-              price: parseFloat(price) || 0,
-              change24h: parseFloat(change) || 0,
-              volume24h: parseFloat(vol) || 0,
-              liquidity: parseFloat(liq) || 0,
-              marketCap: t.marketCap || t.fdv || 0,
-              txns24h: txns,
-              buys24h: buys,
-              sells24h: sells,
-              pairAddress: t.pairAddress || "",
-              dexId: t.dexId || "",
-              logo: t.image || t.logo || "",
-              coinId: t.id || "",
-            },
-            sentiment: {
-              overall,
-              buyPressure: Math.round(buyRatio),
-              socialBuzz: Math.min(100, Math.round(volScore * 1.2)),
-              whaleInterest: Math.min(100, Math.round(liqScore * 1.5)),
-              momentum: change > 3 ? "BULLISH" : change < -3 ? "BEARISH" : "NEUTRAL",
-            },
-          };
-        });
-        setResults(mapped);
-        setShowDropdown(true);
-      }
-    } catch (err) {
-      console.error("Sentiment search error:", err);
-    } finally {
-      setIsSearching(false);
-    }
-  }, []);
+    return matches.map(token => {
+      // Range position: 0 = at 24h low, 100 = at 24h high. Null when unknown.
+      const rangePosition =
+        token.high24h && token.low24h && token.high24h > token.low24h
+          ? Math.round(((token.price - token.low24h) / (token.high24h - token.low24h)) * 100)
+          : null;
+      const turnover = token.marketCap > 0 ? (token.volume24h / token.marketCap) * 100 : 0;
+
+      // Overall score blends real, available signals: direction (±24h change),
+      // range position, and turnover strength (capped — 20%+ is very hot).
+      const changeScore = token.change24h > 5 ? 85 : token.change24h > 0 ? 65 : token.change24h > -5 ? 40 : 20;
+      const rangeScore = rangePosition ?? 50;
+      const turnoverScore = Math.min(100, (turnover / 20) * 100);
+      const overall = Math.round(changeScore * 0.45 + rangeScore * 0.35 + turnoverScore * 0.2);
+
+      return {
+        token,
+        sentiment: {
+          overall,
+          rangePosition,
+          turnover,
+          momentum: token.change24h > 3 ? "BULLISH" : token.change24h < -3 ? "BEARISH" : "NEUTRAL",
+        },
+      };
+    });
+  }, [query, allCoins]);
 
   useEffect(() => {
-    const timer = setTimeout(() => searchTokens(query), 350);
-    return () => clearTimeout(timer);
-  }, [query, searchTokens]);
+    if (query.trim().length >= 2 && results.length > 0) setShowDropdown(true);
+    if (query.trim().length < 2) setShowDropdown(false);
+  }, [query, results]);
 
   const getSentimentColor = (score: number) =>
     score >= 65 ? "text-success" : score >= 45 ? "text-warning" : "text-danger";
@@ -143,7 +127,7 @@ export function TokenSentimentSearch() {
       <div className="flex items-center gap-2 mb-4">
         <Search className="w-4 h-4 text-primary" />
         <h3 className="section-label">Token Sentiment Scanner</h3>
-        <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/20 text-primary font-mono">Live</span>
+        <span className="text-[10px] px-2 py-0.5 rounded-full bg-success/20 text-success font-mono">Live</span>
       </div>
 
       {/* Search Input */}
@@ -152,168 +136,77 @@ export function TokenSentimentSearch() {
         <Input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search any token by name, symbol, or contract address..."
+          placeholder="Search a token by name or symbol (BTC, SOL, PEPE...)"
           className="pl-10 pr-10 bg-background/50 border-border/50 font-mono text-sm"
         />
-        {isSearching && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-primary" />}
-        {!isSearching && query && (
-          <button onClick={() => { setQuery(""); setResults([]); setSelectedToken(null); setShowDropdown(false); }}
+        {pricesLoading && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-primary" />}
+        {!pricesLoading && query && (
+          <button onClick={() => { setQuery(""); setShowDropdown(false); }}
             className="absolute right-3 top-1/2 -translate-y-1/2">
             <X className="w-4 h-4 text-muted-foreground hover:text-foreground" />
           </button>
         )}
-
-        {/* Dropdown */}
-        {showDropdown && results.length > 0 && !selectedToken && (
-          <div className="absolute z-50 w-full mt-1 rounded-lg border border-border bg-card shadow-xl max-h-[400px] overflow-y-auto">
-            {results.map((r, i) => (
-              <button
-                key={`${r.token.symbol}-${r.token.address}-${i}`}
-                onClick={() => { setSelectedToken(r); setShowDropdown(false); }}
-                className="w-full flex items-center gap-3 p-3 hover:bg-muted/50 transition-colors text-left border-b border-border/30 last:border-0"
-              >
-                <TokenIcon coinId={r.token.coinId || r.token.symbol.toLowerCase()} symbol={r.token.symbol} size="sm" />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-sm truncate">{r.token.symbol}</span>
-                    <span className="text-xs text-muted-foreground truncate">{r.token.name}</span>
-                    {r.token.chain !== "unknown" && (
-                      <span className="text-[9px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">{r.token.chain}</span>
-                    )}
-                  </div>
-                  <div className="text-xs text-muted-foreground">{formatPrice(r.token.price)}</div>
-                </div>
-                <div className="text-right shrink-0">
-                  <div className={cn("text-xs font-bold", r.token.change24h >= 0 ? "text-success" : "text-danger")}>
-                    {r.token.change24h >= 0 ? "+" : ""}{(r.token.change24h ?? 0).toFixed(2)}%
-                  </div>
-                  <div className={cn("text-[10px] font-mono", getSentimentColor(r.sentiment.overall))}>
-                    {getSentimentLabel(r.sentiment.overall)}
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
-        )}
       </div>
 
-      {/* Selected Token Sentiment Detail */}
-      {selectedToken && (
-        <div className="mt-4 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
-          {/* Token Header */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <TokenIcon coinId={selectedToken.token.coinId || selectedToken.token.symbol.toLowerCase()} symbol={selectedToken.token.symbol} size="lg" />
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-display font-bold text-lg">{selectedToken.token.symbol}</span>
-                  <span className="text-sm text-muted-foreground">{selectedToken.token.name}</span>
-                </div>
-                <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                  <span className="font-mono">{formatPrice(selectedToken.token.price)}</span>
-                  <span className={cn("font-bold", selectedToken.token.change24h >= 0 ? "text-success" : "text-danger")}>
-                    {selectedToken.token.change24h >= 0 ? "+" : ""}{(selectedToken.token.change24h ?? 0).toFixed(2)}%
-                  </span>
-                  {selectedToken.token.chain !== "unknown" && (
-                    <span className="px-1.5 py-0.5 rounded bg-muted">{selectedToken.token.chain}</span>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="flex gap-2">
+      {/* Results Dropdown */}
+      {showDropdown && (
+        <div className="absolute left-0 right-0 mt-2 z-50 border border-border rounded-lg bg-card shadow-xl max-h-[420px] overflow-y-auto">
+          {results.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-6">
+              No token matches “{query}” in the live top-250 set.
+            </p>
+          ) : (
+            results.map(({ token, sentiment }) => (
               <button
-                onClick={() => navigate(`/price-prediction/${selectedToken.token.coinId || selectedToken.token.symbol.toLowerCase()}/daily`)}
-                className="text-xs px-3 py-1.5 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors flex items-center gap-1"
+                key={token.symbol}
+                onClick={() => {
+                  navigate(`/price-prediction/${token.symbol.toLowerCase()}/daily`);
+                  setShowDropdown(false);
+                  setQuery("");
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted/40 transition-colors text-left border-b border-border/40 last:border-b-0"
               >
-                <Zap className="w-3 h-3" /> AI Prediction
-              </button>
-              <button onClick={() => setSelectedToken(null)}
-                className="text-xs px-3 py-1.5 rounded-lg bg-muted text-muted-foreground hover:bg-muted/80 transition-colors">
-                Clear
-              </button>
-            </div>
-          </div>
-
-          {/* Overall Sentiment Gauge */}
-          <div className={cn("border-l-2 pl-4", getSentimentBg(selectedToken.sentiment.overall))}>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-mono text-muted-foreground">OVERALL SENTIMENT</span>
-              <span className={cn("font-display font-bold text-2xl", getSentimentColor(selectedToken.sentiment.overall))}>
-                {selectedToken.sentiment.overall}/100
-              </span>
-            </div>
-            <div className="h-3 rounded-full bg-muted overflow-hidden mb-2">
-              <div
-                className={cn("h-full rounded-full transition-all duration-700",
-                  selectedToken.sentiment.overall >= 65 ? "bg-success" : selectedToken.sentiment.overall >= 45 ? "bg-warning" : "bg-danger"
-                )}
-                style={{ width: `${selectedToken.sentiment.overall}%` }}
-              />
-            </div>
-            <div className="flex justify-between text-[10px] text-muted-foreground">
-              <span>Extreme Fear</span>
-              <span className={cn("font-bold", getSentimentColor(selectedToken.sentiment.overall))}>
-                {getSentimentLabel(selectedToken.sentiment.overall)} • {selectedToken.sentiment.momentum}
-              </span>
-              <span>Extreme Greed</span>
-            </div>
-          </div>
-
-          {/* Metrics Grid — inline strip */}
-          <div className="grid grid-cols-2 sm:flex sm:items-stretch sm:divide-x sm:divide-border/30 border-y border-border/20 py-4 gap-y-4">
-            {[
-              { label: "Buy Pressure", value: selectedToken.sentiment.buyPressure, icon: TrendingUp, suffix: "%" },
-              { label: "Social Buzz", value: selectedToken.sentiment.socialBuzz, icon: MessageCircle, suffix: "/100" },
-              { label: "Whale Interest", value: selectedToken.sentiment.whaleInterest, icon: Users, suffix: "/100" },
-              { label: "Volume 24h", value: 0, icon: BarChart3, display: formatVol(selectedToken.token.volume24h) },
-            ].map((m) => (
-              <div key={m.label} className="sm:flex-1 sm:px-4 sm:first:pl-0 text-center">
-                <m.icon className="w-4 h-4 mx-auto mb-1 text-muted-foreground" />
-                <div className={cn("font-bold text-lg font-mono", m.value ? getSentimentColor(m.value) : "text-foreground")}>
-                  {m.display || `${m.value}${m.suffix}`}
+                <TokenIcon coinId={token.id} symbol={token.symbol} size="md" />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-sm truncate">{token.name}</span>
+                    <span className="text-[10px] text-muted-foreground font-mono">{token.symbol}</span>
+                  </div>
+                  <div className="flex items-center gap-3 mt-0.5 text-[11px] text-muted-foreground">
+                    <span className="font-mono">{formatPrice(token.price)}</span>
+                    <span className={cn("font-medium", token.change24h >= 0 ? "text-success" : "text-danger")}>
+                      {token.change24h >= 0 ? "+" : ""}{token.change24h.toFixed(2)}%
+                    </span>
+                    {sentiment.rangePosition !== null && (
+                      <span className="hidden sm:inline">Range pos: {sentiment.rangePosition}%</span>
+                    )}
+                  </div>
                 </div>
-                <div className="section-label mt-0.5">{m.label}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* Transaction Breakdown */}
-          <div className="border-t border-border/20 pt-3">
-            <div className="text-xs font-mono text-muted-foreground mb-2">24H TRANSACTION FLOW</div>
-            <div className="flex items-center gap-2 mb-2">
-              <div className="flex-1 h-3 rounded-full overflow-hidden bg-muted flex">
-                <div className="bg-success h-full transition-all" style={{ width: `${(selectedToken.token.buys24h / Math.max(selectedToken.token.txns24h, 1)) * 100}%` }} />
-                <div className="bg-danger h-full transition-all" style={{ width: `${(selectedToken.token.sells24h / Math.max(selectedToken.token.txns24h, 1)) * 100}%` }} />
-              </div>
-            </div>
-            <div className="flex justify-between text-xs">
-              <span className="text-success font-mono">▲ {(selectedToken.token.buys24h ?? 0).toLocaleString()} buys</span>
-              <span className="text-muted-foreground font-mono">{(selectedToken.token.txns24h ?? 0).toLocaleString()} total</span>
-              <span className="text-danger font-mono">▼ {(selectedToken.token.sells24h ?? 0).toLocaleString()} sells</span>
-            </div>
-          </div>
-
-          {/* Quick Stats */}
-          <div className="grid grid-cols-2 gap-6 text-xs border-t border-border/20 pt-3">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Liquidity</span>
-              <span className="font-mono font-bold">{formatVol(selectedToken.token.liquidity)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Market Cap</span>
-              <span className="font-mono font-bold">{formatVol(selectedToken.token.marketCap)}</span>
-            </div>
-          </div>
-
-          {/* Trade Actions */}
-          <div className="flex gap-2 flex-wrap">
-            <a href="/dashboard"
-              className="text-[10px] px-2 py-1 rounded bg-primary/20 text-primary hover:bg-primary/30 flex items-center gap-1 transition-colors">
-              <ArrowDownUp className="w-3 h-3" /> Trade
-            </a>
-          </div>
+                <div className="text-right shrink-0">
+                  <div className={cn("text-sm font-bold", getSentimentColor(sentiment.overall))}>
+                    {getSentimentLabel(sentiment.overall)}
+                  </div>
+                  <div className="flex items-center gap-1.5 justify-end mt-1">
+                    <div className={cn("w-16 h-1.5 rounded-full border overflow-hidden", getSentimentBg(sentiment.overall))}>
+                      <div
+                        className={cn("h-full", sentiment.overall >= 65 ? "bg-success" : sentiment.overall >= 45 ? "bg-warning" : "bg-danger")}
+                        style={{ width: `${sentiment.overall}%` }}
+                      />
+                    </div>
+                    <span className={cn("text-[10px] font-mono w-7", getSentimentColor(sentiment.overall))}>{sentiment.overall}</span>
+                  </div>
+                </div>
+              </button>
+            ))
+          )}
         </div>
       )}
+
+      {/* Hint */}
+      <p className="mt-2 text-[11px] text-muted-foreground flex items-center gap-1.5">
+        <ArrowDownUp className="w-3 h-3" />
+        Sentiment blends real signals: 24h direction, position in the 24h range, and volume turnover.
+      </p>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { invokeFunction } from "@/integrations/supabase/functions";
+import { fetchMarkets } from "@/lib/marketEngine";
 import { EmbedLayout } from "./EmbedLayout";
 import { getCryptoById } from "@/lib/extendedCryptos";
 
@@ -17,10 +17,10 @@ function PriceWidget() {
   const { data, isLoading } = useQuery({
     queryKey: ["embed-price", coin],
     queryFn: async () => {
-      const { data, error } = await invokeFunction("crypto-prices");
-      if (error) throw error;
-      const prices = data?.prices || [];
-      return prices.find((p: any) =>
+      // Standalone: real market rows straight from CoinGecko via the engine
+      // (engine handles caching + free-tier politeness).
+      const prices = await fetchMarkets(250);
+      return prices.find((p) =>
         p.symbol?.toLowerCase() === crypto?.symbol?.toLowerCase() ||
         p.name?.toLowerCase() === crypto?.name?.toLowerCase()
       );
@@ -57,8 +57,9 @@ function PriceWidget() {
         </div>
       </div>
       <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: "-0.5px" }}>
-        {formatPrice(price)}
+        {data ? formatPrice(price) : "—"}
       </div>
+      {data && (
       <div style={{
         display: "inline-flex",
         alignItems: "center",
@@ -74,6 +75,7 @@ function PriceWidget() {
         {isUp ? "▲" : "▼"} {Math.abs(change).toFixed(2)}%
         <span style={{ fontSize: 11, fontWeight: 400, color: "#94a3b8", marginLeft: 4 }}>24h</span>
       </div>
+      )}
     </div>
   );
 }

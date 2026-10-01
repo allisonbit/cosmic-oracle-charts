@@ -47,9 +47,10 @@ function MiniSparkline({ change24h, color }: { change24h: number; color: string 
 function fmtPrice(p: number) {
   if (!p || p === 0) return "—";
   if (p >= 10000) return `$${p.toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
-  if (p >= 1000) return `$${p.toLocaleString("en-US", { maximumFractionDigits: 2 })}`;
-  if (p >= 1) return `$${p.toFixed(3)}`;
-  return `$${p.toPrecision(4)}`;
+  if (p >= 100) return `$${p.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  if (p >= 1) return `$${p.toFixed(2)}`;
+  if (p >= 0.01) return `$${p.toFixed(4).replace(/0+$/, "")}`;
+  return `$${p.toPrecision(4).replace(/0+$/, "")}`;
 }
 
 function toSignal(canonical: ReturnType<typeof useCanonicalSetup>) {
@@ -112,6 +113,27 @@ function SignalCard({ coin, livePrice, idx }: {
 
   if (isLoading && !hasLivePrice) {
     return <Skeleton className="h-80 w-full" />;
+  }
+
+  // Honest empty state: never render a card of dashes and fake 50/50 bars —
+  // if we have no live price for this coin, say so plainly.
+  if (!hasLivePrice) {
+    return (
+      <div className="relative block border-t py-5 overflow-hidden" style={{ borderTopColor: coin.color + "44" }}>
+        <div className="h-0.5 w-full absolute top-0 left-0" style={{ background: `linear-gradient(90deg, ${coin.color}, transparent)` }} />
+        <div className="flex items-center gap-2 mb-2">
+          <CoinImage symbol={coin.symbol} size={28} />
+          <div>
+            <p className="font-bold text-sm leading-none">{coin.symbol}</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">{coin.name} · Daily</p>
+          </div>
+        </div>
+        <p className="text-xs text-muted-foreground mb-3">Live data unavailable right now — signal paused rather than shown inaccurately.</p>
+        <Link to={`/price-prediction/${coin.id}/daily`} className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline">
+          Open {coin.name} analysis <ChevronRight className="w-3 h-3" />
+        </Link>
+      </div>
+    );
   }
 
   const rsiLabel = sig.rsi != null
@@ -286,7 +308,7 @@ export function LiveSignals() {
   }, [pricesData?.prices]);
 
   return (
-    <section className="py-12" aria-labelledby="live-signals-heading">
+    <section className="py-8 md:py-10" aria-labelledby="live-signals-heading">
       <div className="container mx-auto px-4">
         {/* Section header */}
         <div className="section-header mb-2">

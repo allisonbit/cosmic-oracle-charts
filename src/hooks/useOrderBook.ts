@@ -1,5 +1,9 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { invokeFunction } from '@/integrations/supabase/functions';
+import { useQuery } from "@tanstack/react-query";
+
+// ── useOrderBook — real order book from Binance's public REST API ────────────
+// The old implementation polled an `orderbook` edge function (now gone).
+// Binance's public depth endpoint is key-free and CORS-open, so the browser
+// reads the real book directly. Same return shape as before.
 
 interface OrderLevel {
   price: number;
@@ -25,60 +29,66 @@ interface UseOrderBookOptions {
   refreshInterval?: number;
 }
 
+const num = (v: unknown): number => {
+  const n = typeof v === 'number' ? v : parseFloat(String(v ?? ''));
+  return Number.isFinite(n) ? n : 0;
+};
+
+function buildLevels(rows: [string, string][]): OrderLevel[] {
+  let total = 0;
+  return rows.map(([p, q]) => {
+    const price = num(p);
+    const amount = num(q);
+    total += price * amount;
+    return { price, amount, total };
+  });
+}
+
+async function fetchOrderBook(pair: string, limit: number): Promise<OrderBookData> {
+  const symbol = pair.replace(/[^A-Za-z0-9]/g, '').toUpperCase() || 'BTCUSDT';
+  const res = await fetch(`https://api.binance.com/api/v3/depth?symbol=${symbol}&limit=${Math.min(Math.max(limit, 5), 50)}`);
+  if (!res.ok) throw new Error(`Binance depth ${res.status}`);
+  const json = (await res.json()) as { bids?: [string, string][]; asks?: [string, string][] };
+  const bids = buildLevels(json.bids ?? []);
+  const asks = buildLevels(json.asks ?? []);
+  const bestBid = bids[0]?.price ?? 0;
+  const bestAsk = asks[0]?.price ?? 0;
+  const bidDepth = bids.reduce((s, l) => s + l.price * l.amount, 0);
+  const askDepth = asks.reduce((s, l) => s + l.price * l.amount, 0);
+  return {
+    bids,
+    asks,
+    spread: bestAsk > 0 && bestBid > 0 ? bestAsk - bestBid : 0,
+    totalDepth: bidDepth + askDepth,
+    imbalance: bidDepth + askDepth > 0 ? (bidDepth - askDepth) / (bidDepth + askDepth) : 0,
+    exchange: 'binance',
+    pair: symbol,
+    timestamp: new Date().toISOString(),
+  };
+}
+
 export function useOrderBook(options: UseOrderBookOptions = {}) {
   const {
     pair = 'BTCUSDT',
-    exchange = 'binance',
+    exchange = 'binance', // Binance is the only key-free public book; others ignored
     limit = 10,
-    refreshInterval = 2000 // 2 seconds for real-time order book updates
+    refreshInterval = 5000, // 5s is plenty for a public REST book
   } = options;
 
-  const [data, setData] = useState<OrderBookData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const loggedErrorRef = useRef(false);
-
-  const fetchOrderBook = useCallback(async () => {
-    // Skip polling while the tab is hidden — saves edge-function invocations on
-    // backgrounded/abandoned tabs. We refresh on visibility return below.
-    if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return;
-    try {
-      const { data: orderBookData, error: fetchError } = await invokeFunction('orderbook', {
-        body: { pair, exchange: exchange.toLowerCase(), limit },
-      });
-      if (fetchError) throw fetchError;
-      if (orderBookData?.error) throw new Error(orderBookData.error);
-      setData(orderBookData);
-      setError(null);
-    } catch (err) {
-      if (!loggedErrorRef.current) {
-        loggedErrorRef.current = true;
-        console.error('Order book fetch error (will retry silently):', err);
-      }
-      setError(err instanceof Error ? err.message : 'Unknown error');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [pair, exchange, limit]);
-
-  useEffect(() => {
-    fetchOrderBook();
-
-    const interval = setInterval(fetchOrderBook, refreshInterval);
-    const onVisible = () => {
-      if (document.visibilityState === 'visible') fetchOrderBook();
-    };
-    document.addEventListener('visibilitychange', onVisible);
-    return () => {
-      clearInterval(interval);
-      document.removeEventListener('visibilitychange', onVisible);
-    };
-  }, [fetchOrderBook, refreshInterval]);
+  const query = useQuery<OrderBookData>({
+    queryKey: ['orderbook', pair, limit],
+    queryFn: () => fetchOrderBook(pair, limit),
+    refetchInterval: refreshInterval,
+    refetchIntervalInBackground: false,
+    staleTime: refreshInterval,
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
 
   return {
-    data,
-    isLoading,
-    error,
-    refetch: fetchOrderBook
+    data: query.data ?? null,
+    isLoading: query.isLoading,
+    error: query.error instanceof Error ? query.error.message : null,
+    refetch: () => { void query.refetch(); },
   };
 }

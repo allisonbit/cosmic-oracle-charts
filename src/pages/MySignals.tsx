@@ -27,7 +27,7 @@ interface Signal {
 
 function SignalsContent() {
   const { profile } = useAuth();
-  const { data: prices } = useCryptoPrices();
+  const { data: prices, refetch: refetchPrices } = useCryptoPrices();
   const [signals, setSignals] = useState<Signal[]>([]);
   const [loading, setLoading] = useState(false);
   const [lastGenerated, setLastGenerated] = useState<Date | null>(null);
@@ -38,17 +38,55 @@ function SignalsContent() {
     return profile.watchlist as string[];
   }, [profile]);
 
+  // Signals are computed locally from live market data (engine: CoinGecko).
+  // Momentum heuristic: 24h change + volume/market-cap ratio. Clearly labeled
+  // as heuristic — no "AI" claims, no backend needed.
   const generateSignals = async () => {
     setLoading(true);
     try {
-      const coinsToAnalyze = watchlist.length > 0 ? watchlist : ["BTC", "ETH", "SOL", "BNB", "XRP"];
-      const { data, error } = await invokeFunction("ai-trading-signals", {
-        body: { coins: coinsToAnalyze },
+      const market = prices?.prices?.length
+        ? prices.prices
+        : ((await refetchPrices()).data?.prices ?? []);
+      if (market.length === 0) {
+        throw new Error("Live market data is unavailable right now. Please try again in a moment.");
+      }
+      const wanted = (watchlist.length > 0
+        ? watchlist
+        : ["BTC", "ETH", "SOL", "BNB", "XRP"]
+      ).map((s) => s.toUpperCase());
+      const coins = market.filter((p) => wanted.includes(p.symbol.toUpperCase()));
+      const pool = coins.length > 0 ? coins : market.slice(0, 10);
+
+      const generated: Signal[] = pool.map((p) => {
+        const momentum = p.change24h ?? 0;
+        const volRatio = p.marketCap > 0 ? (p.volume24h ?? 0) / p.marketCap : 0;
+        const type: Signal["type"] =
+          momentum >= 3 ? "buy" : momentum <= -3 ? "sell" : "hold";
+        const strength = Math.min(
+          95,
+          Math.round(Math.min(Math.abs(momentum) * 8, 70) + Math.min(volRatio * 100, 25))
+        );
+        const confidence = Math.min(90, 50 + Math.round(Math.min(Math.abs(momentum), 15) * 2));
+        const entry = p.price;
+        const dir = type === "sell" ? -1 : 1;
+        const swing = Math.max(Math.abs(momentum) * 0.01, 0.03);
+        return {
+          coin: p.name,
+          symbol: p.symbol.toUpperCase(),
+          type,
+          strength,
+          reason: `24h momentum ${momentum >= 0 ? "+" : ""}${momentum.toFixed(2)}% · volume/market-cap ${(volRatio * 100).toFixed(1)}%`,
+          entry,
+          target: type === "hold" ? entry * (1 + (momentum * 0.002)) : entry * (1 + dir * swing * 1.5),
+          stopLoss: type === "hold" ? entry * (1 - swing / 2) : entry * (1 - dir * swing * 0.75),
+          confidence,
+          timeframe: "24h",
+        };
       });
-      if (error) throw error;
-      setSignals(data?.signals || []);
+      generated.sort((a, b) => b.strength - a.strength);
+      setSignals(generated);
       setLastGenerated(new Date());
-      toast.success(`Generated ${data?.signals?.length || 0} signals`);
+      toast.success(`Generated ${generated.length} signals from live market data`);
     } catch (e: any) {
       toast.error(e?.message || "Signals temporarily unavailable. Please try again.");
       setSignals([]);
@@ -78,7 +116,7 @@ function SignalsContent() {
 
   return (
     <Layout>
-      <SEO title="AI Trading Signals – Smart Crypto Alerts" description="AI-powered buy/sell signals with entry, target, stop-loss, and risk/reward analysis." />
+      <SEO title="Trading Signals – Momentum-Based Crypto Alerts" description="Buy/sell/hold signals computed from live market momentum, with entry, target, stop-loss, and risk/reward analysis." />
       <div className="container mx-auto px-4 py-6 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -86,9 +124,9 @@ function SignalsContent() {
               <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-warning" />
             </div>
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold">AI Trading Signals</h1>
+              <h1 className="text-xl sm:text-2xl font-bold">Trading Signals</h1>
               <p className="text-xs sm:text-sm text-muted-foreground">
-                {watchlist.length > 0 ? `Personalized for ${watchlist.length} watchlist coins` : "Top market signals"} · {signals.length} active
+                Momentum-based, computed from live market data · {watchlist.length > 0 ? `${watchlist.length} watchlist coins` : "top coins"} · {signals.length} active
               </p>
             </div>
           </div>
@@ -156,7 +194,7 @@ function SignalsContent() {
           <Card><CardContent className="p-12 text-center">
             <Zap className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="font-semibold mb-2">No Signals Yet</h3>
-            <p className="text-sm text-muted-foreground mb-4">Click Generate to get AI-powered trading signals</p>
+            <p className="text-sm text-muted-foreground mb-4">Click Generate to compute momentum-based signals from live market data</p>
             <Button onClick={generateSignals}><Zap className="w-4 h-4 mr-2" /> Generate Signals</Button>
           </CardContent></Card>
         )}

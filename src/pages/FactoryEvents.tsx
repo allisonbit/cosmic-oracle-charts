@@ -393,10 +393,10 @@ export default function FactoryEvents() {
           <h2 className="text-xl font-semibold mb-4">Frequently Asked Questions</h2>
           <div className="space-y-4">
             <div>
-              <h3 className="font-medium text-foreground">How often is the events calendar updated?</h3>
+              <h3 className="font-medium text-foreground">Why is the events list empty?</h3>
               <p className="text-muted-foreground text-sm mt-1">
-                Our events calendar updates automatically every minute, pulling data from multiple sources 
-                to ensure you never miss a market-moving event.
+                This build has no verified event-calendar data source connected, so no events are shown rather
+                than listing invented ones. Market stats and predictions across the site remain fully live.
               </p>
             </div>
             <div>

@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { invokeFunction } from "@/integrations/supabase/functions";
+import { useDexTopTokens } from "@/lib/dexScreener";
 import { 
   ChevronDown, ChevronUp, Filter
 } from "lucide-react";
@@ -49,19 +48,9 @@ function formatNumber(num: number | undefined | null): string {
 }
 
 export function TopTokensTable({ chain, onTokenSelect }: TopTokensTableProps) {
-  const { data: tokens = [], isLoading } = useQuery({
-    queryKey: ["top-tokens", chain.id],
-    queryFn: async () => {
-      const { data, error } = await invokeFunction("top-tokens", {
-        body: { chain: chain.id, limit: 25 },
-      });
-      if (error) throw error;
-      return (data?.tokens ?? []) as TokenRow[];
-    },
-    refetchInterval: 120_000,
-    refetchIntervalInBackground: true,
-    staleTime: 60_000,
-  });
+  // Standalone: live DEX pairs from DexScreener's public API.
+  const { data: dexTokens = [], isLoading } = useDexTopTokens(chain.id, 25);
+  const tokens = dexTokens as TokenRow[];
 
   const [sortBy, setSortBy] = useState<keyof TokenRow>('volume24h');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
@@ -127,7 +116,7 @@ export function TopTokensTable({ chain, onTokenSelect }: TopTokensTableProps) {
                 <span className="flex items-center justify-end gap-1">24h <SortIcon column="change24h" /></span>
               </th>
               <th className="text-right py-2 px-2 cursor-pointer hover:text-primary hidden lg:table-cell" onClick={() => handleSort('change7d')}>
-                <span className="flex items-center justify-end gap-1">7d <SortIcon column="change7d" /></span>
+                <span className="flex items-center justify-end gap-1">6h <SortIcon column="change7d" /></span>
               </th>
               <th className="text-right py-2 px-2 cursor-pointer hover:text-primary hidden sm:table-cell" onClick={() => handleSort('volume24h')}>
                 <span className="flex items-center justify-end gap-1">Volume <SortIcon column="volume24h" /></span>

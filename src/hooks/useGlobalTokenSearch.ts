@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react';
-import { invokeFunction } from '@/integrations/supabase/functions';
-import { TOP_50_CRYPTOS, EXTENDED_CRYPTOS, searchCryptos } from '@/lib/extendedCryptos';
+import { TOP_50_CRYPTOS, searchCryptos } from '@/lib/extendedCryptos';
 
 export interface GlobalToken {
   id: string;
@@ -53,41 +52,53 @@ export function useGlobalTokenSearch() {
       // Check if it looks like a contract address
       const isContractAddress = query.startsWith('0x') || query.length > 30;
 
-      // If contract address or no local results, search via API
+      // Standalone live search: DexScreener's key-free public API for contracts
+      // and for names the local list doesn't cover.
       if (isContractAddress || localResults.length < 5) {
-        const { data, error: apiError } = await invokeFunction('token-search', {
-          body: { query, mode: 'search', limit: 30 }
-        });
+        const url = isContractAddress
+          ? `https://api.dexscreener.com/latest/dex/tokens/${encodeURIComponent(query)}`
+          : `https://api.dexscreener.com/latest/dex/search?q=${encodeURIComponent(query)}`;
+        const res = await fetch(url, { headers: { accept: 'application/json' } });
+        const json = res.ok ? (await res.json()) as { pairs?: any[] } : null;
 
-        if (!apiError && data?.tokens) {
-          const apiTokens: GlobalToken[] = data.tokens.map((t: any) => ({
-            id: t.id || t.baseToken?.address || t.address || `token-${t.symbol}`,
-            symbol: (t.symbol || t.baseToken?.symbol || '').toUpperCase(),
-            name: t.name || t.baseToken?.name || t.symbol,
-            address: t.address || t.baseToken?.address,
-            chain: t.chain || t.chainId,
-            price: t.price || t.priceUsd,
-            change24h: t.priceChange24h,
-            volume24h: t.volume24h,
-            marketCap: t.marketCap || t.fdv,
-            liquidity: t.liquidity?.usd,
-            logo: t.image || t.logo,
-            isFromSearch: true
-          }));
-
-          // Merge with local, prioritizing API for contract searches
-          const merged = isContractAddress 
-            ? [...apiTokens, ...localResults]
-            : [...localResults, ...apiTokens.filter(a => !localResults.find(l => l.symbol === a.symbol))];
-
-          const unique = merged.filter((t, i, arr) => 
-            arr.findIndex(x => x.symbol === t.symbol && x.id === t.id) === i
-          ).slice(0, 50);
-
-          setSearchResults(unique);
-          setIsSearching(false);
-          return unique;
+        const byAddr = new Map<string, GlobalToken>();
+        for (const p of json?.pairs ?? []) {
+          if (!p.baseToken?.address) continue;
+          const addr: string = p.baseToken.address;
+          const liq = p.liquidity?.usd ?? 0;
+          const prev = byAddr.get(addr);
+          if (prev && (prev.liquidity ?? 0) >= liq) continue;
+          byAddr.set(addr, {
+            id: addr,
+            symbol: (p.baseToken.symbol || '').toUpperCase(),
+            name: p.baseToken.name || p.baseToken.symbol || '',
+            address: addr,
+            chain: p.chainId,
+            price: parseFloat(p.priceUsd ?? '0') || undefined,
+            change24h: p.priceChange?.h24,
+            volume24h: p.volume?.h24,
+            marketCap: p.marketCap ?? p.fdv,
+            liquidity: liq,
+            logo: p.info?.imageUrl,
+            isFromSearch: true,
+          });
         }
+        const apiTokens = [...byAddr.values()]
+          .sort((a, b) => (b.liquidity ?? 0) - (a.liquidity ?? 0))
+          .slice(0, 30);
+
+        // Merge with local, prioritizing API for contract searches
+        const merged = isContractAddress
+          ? [...apiTokens, ...localResults]
+          : [...localResults, ...apiTokens.filter(a => !localResults.find(l => l.symbol === a.symbol))];
+
+        const unique = merged.filter((t, i, arr) =>
+          arr.findIndex(x => x.symbol === t.symbol && x.id === t.id) === i
+        ).slice(0, 50);
+
+        setSearchResults(unique);
+        setIsSearching(false);
+        return unique;
       }
 
       setSearchResults(localResults);

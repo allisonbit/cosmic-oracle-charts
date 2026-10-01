@@ -116,9 +116,9 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
     keywords: "crypto scanner, token scanner, new crypto tokens, hidden gems crypto, crypto gem finder, low cap crypto, new token alert"
   },
   "/my/scanner": {
-    title: `Free Wallet Scanner | Analyze Any Wallet | Oracle Bull`,
-    description: "Paste any EVM or Solana wallet address for instant AI analysis. See holdings, hidden gems, risk scores & pump potential. 100% free, no signup.",
-    keywords: "crypto wallet scanner free, wallet analyzer, portfolio tracker, check crypto wallet, solana wallet checker, ethereum wallet scanner"
+    title: `Free Wallet Scanner | Open Any Wallet in Explorers | Oracle Bull`,
+    description: "Paste any EVM or Solana wallet address to open it in Etherscan, Basescan, Arbiscan, Polygonscan, or Solscan. 100% free, no signup.",
+    keywords: "crypto wallet scanner free, wallet explorer, portfolio tracker, check crypto wallet, solana wallet checker, ethereum wallet scanner"
   },
   "/sentiment": {
     title: `Crypto Fear & Greed Index + Whale Tracker | Oracle Bull`,
@@ -257,8 +257,8 @@ const pageSEO: Record<string, { title: string; description: string; keywords: st
   },
   "/my/signals": {
     title: "My Signals | Oracle Bull",
-    description: "View personalized AI trading signals with entry zones, price targets, and confidence scores.",
-    keywords: "AI trading signals, crypto signals, buy sell signals, price targets"
+    description: "View momentum-based trading signals computed from live market data, with entry zones, price targets, and confidence scores.",
+    keywords: "crypto trading signals, crypto signals, buy sell signals, price targets"
   },
   "/my/tracker": {
     title: "My Tracker | Oracle Bull",

@@ -1,14 +1,11 @@
-import { lazy, Suspense, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { lazy, Suspense } from "react";
 import { Helmet } from "react-helmet-async";
-import { useAuth } from "@/hooks/useAuth";
 import { Navbar } from "@/components/layout/Navbar";
 import { CryptoTicker } from "@/components/layout/CryptoTicker";
 import { HeroSection } from "@/components/home/HeroSection";
 import { QuickAccessBar } from "@/components/home/QuickAccessBar";
 import { Footer } from "@/components/layout/Footer";
 import { AdUnit } from "@/components/ads/AdUnit";
-
 import { AdBreak } from "@/components/ads/AdBreak";
 import { LazyAd } from "@/components/ads/LazyAd";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
@@ -16,9 +13,12 @@ import { SkipToContent } from "@/components/system/SkipToContent";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SEO } from "@/components/MainSEO";
 import { ViewportSection } from "@/components/system/ViewportSection";
-import { TrustStrip, ValueStrip, WhyFreeStrip, CoverageStrip } from "@/components/home/InterstitialStrips";
+import { WhyFreeStrip } from "@/components/home/WhyFreeStrip";
 
-// Above-the-fold, live-data-first sections (eager-ish, but still split).
+// Above-the-fold & interactive sections (load eagerly-ish, still split).
+const PlayProofBand = lazy(() => import("@/components/home/PlayProofBand").then(m => ({ default: m.PlayProofBand })));
+const WatchlistStrip = lazy(() => import("@/components/home/WatchlistStrip").then(m => ({ default: m.WatchlistStrip })));
+const CoinOfTheDay = lazy(() => import("@/components/home/CoinOfTheDay").then(m => ({ default: m.CoinOfTheDay })));
 const HomeNews = lazy(() => import("@/components/home/HomeNews").then(m => ({ default: m.HomeNews })));
 const HomePolymarket = lazy(() => import("@/components/home/HomePolymarket").then(m => ({ default: m.HomePolymarket })));
 const MarketSnapshot = lazy(() => import("@/components/home/MarketSnapshot").then(m => ({ default: m.MarketSnapshot })));
@@ -44,27 +44,6 @@ const SectionFallback = () => (
 );
 
 const Index = () => {
-  const { loading, ready, authenticated } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    // Only redirect once Privy is ready to avoid flash
-    if (ready && authenticated) {
-      navigate("/my", { replace: true });
-    }
-  }, [ready, authenticated, navigate]);
-
-  // Show nothing while Privy is initializing so the login modal
-  // doesn't flash over the home page content
-  if (!ready || loading) {
-    return null;
-  }
-
-  // If already logged in, don't render home page (redirect is in flight)
-  if (authenticated) {
-    return null;
-  }
-
   return (
     <div className="min-h-screen flex flex-col">
       <SkipToContent />
@@ -82,9 +61,10 @@ const Index = () => {
           "provider": { "@type": "Organization", "name": "Oracle Bull", "url": "https://oraclebull.com" },
           "featureList": [
             "AI crypto price predictions",
-            "Real-time whale tracking",
+            "Public accuracy track record",
+            "Daily BTC prediction game",
             "Fear & Greed Index",
-            "Crypto strength meter",
+            "Whale & on-chain signals",
             "Token explorer",
             "DCA & profit calculators"
           ]
@@ -122,99 +102,94 @@ const Index = () => {
       </header>
 
       <main id="main-content">
-        {/* Top ad zone */}
-        <div className="space-y-1 mb-1">
-          <AdUnit format="horizontal" className="max-w-5xl mx-auto px-4" />
-        </div>
-
+        {/* 1. HERO — value prop, live market pulse, search, CTAs */}
         <HeroSection />
 
-        {/* ═══ 1. THE NEWSROOM — latest crypto news leads, first thing seen ═══ */}
+        {/* 2. YOUR WATCHLIST — personal strip, directly under the hero */}
+        <Suspense fallback={null}>
+          <WatchlistStrip />
+        </Suspense>
+
+        {/* 3. LIVE STATS BAND — real global numbers as immediate proof */}
+        <Suspense fallback={null}>
+          <PlatformStats />
+        </Suspense>
+
+        {/* 4. PLAY & PROVE — the daily game + the engine's public track record */}
+        <Suspense fallback={<SectionFallback />}>
+          <PlayProofBand />
+        </Suspense>
+
+        {/* 5. THE NEWSROOM — latest crypto news leads */}
         <Suspense fallback={<SectionFallback />}>
           <HomeNews />
         </Suspense>
 
-        {/* Scatter: trust signals as a thin strip right after the lead */}
-        <TrustStrip />
-
-        {/* Mid-content ad break */}
+        {/* Mid-content ad break — the page's first ad, after real value */}
         <AdBreak variant="compact" />
 
-        {/* ═══ 2. Prediction markets — what the crowd is betting on ═══ */}
-        <Suspense fallback={<SectionFallback />}>
-          <HomePolymarket />
-        </Suspense>
+        {/* 6. DAILY ROTATION — a fresh deep-dive every day */}
+        <CoinOfTheDay />
 
-        {/* ═══ 3. Live AI signals — high-conviction trade setups ═══ */}
+        {/* 7. LIVE AI SIGNALS — high-conviction trade setups */}
         <Suspense fallback={<SectionFallback />}>
           <LiveSignals />
         </Suspense>
 
-        {/* Scatter: value proposition pull-quote (old hero paragraph) */}
-        <ValueStrip />
-
-        {/* ═══ 4. Live market data — snapshot of gainers/losers/F&G ═══ */}
+        {/* 8. MARKET SNAPSHOT — gainers/losers/trending + sentiment */}
         <Suspense fallback={<SectionFallback />}>
           <MarketSnapshot />
         </Suspense>
 
-        {/* ═══ 5. Honest platform stats — single live strip ═══ */}
+        {/* 9. PREDICTION MARKETS — what the crowd is betting on */}
         <Suspense fallback={<SectionFallback />}>
-          <PlatformStats />
+          <HomePolymarket />
         </Suspense>
 
-        {/* Scatter: coverage / real-time claim */}
-        <CoverageStrip />
-
-        {/* Mid-content ad break */}
-        <AdBreak variant="full" />
-
-        {/* Explore chains — internal linking */}
-        <ViewportSection fallback={<SectionFallback />}>
-          <Suspense fallback={<SectionFallback />}>
-            <ChainLinks />
-          </Suspense>
-        </ViewportSection>
-
-        {/* Market categories hub — internal linking */}
-        <ViewportSection fallback={<SectionFallback />}>
-          <Suspense fallback={<SectionFallback />}>
-            <MarketCategoriesHub />
-          </Suspense>
-        </ViewportSection>
-
-        {/* Scatter: why it's free */}
-        <WhyFreeStrip />
-
-        {/* How It Works — 3-step onboarding */}
+        {/* 10. HOW IT WORKS — 3-step onboarding */}
         <ViewportSection fallback={<SectionFallback />}>
           <Suspense fallback={<SectionFallback />}>
             <HowItWorks />
           </Suspense>
         </ViewportSection>
 
-        {/* Why traders use us + deeper explainer */}
-        <ViewportSection fallback={<SectionFallback />}>
-          <Suspense fallback={<SectionFallback />}>
-            <SEOContentBlock />
-          </Suspense>
-        </ViewportSection>
-
-        {/* Platform features grid */}
+        {/* 11. FEATURES GRID */}
         <ViewportSection fallback={<SectionFallback />}>
           <Suspense fallback={<SectionFallback />}>
             <FeaturesSection />
           </Suspense>
         </ViewportSection>
 
-        {/* FAQ */}
+        {/* 12. EXPLORE — chains + categories (internal linking) */}
+        <ViewportSection fallback={<SectionFallback />}>
+          <Suspense fallback={<SectionFallback />}>
+            <ChainLinks />
+          </Suspense>
+        </ViewportSection>
+        <ViewportSection fallback={<SectionFallback />}>
+          <Suspense fallback={<SectionFallback />}>
+            <MarketCategoriesHub />
+          </Suspense>
+        </ViewportSection>
+
+        {/* 13. WHY IT'S FREE — the honest one-liner */}
+        <WhyFreeStrip />
+
+        {/* 14. DEEP EXPLAINER — SEO content block */}
+        <ViewportSection fallback={<SectionFallback />}>
+          <Suspense fallback={<SectionFallback />}>
+            <SEOContentBlock />
+          </Suspense>
+        </ViewportSection>
+
+        {/* 15. FAQ */}
         <ViewportSection fallback={<SectionFallback />}>
           <Suspense fallback={<SectionFallback />}>
             <HomepageFAQ />
           </Suspense>
         </ViewportSection>
 
-        {/* Final conversion CTA */}
+        {/* 16. FINAL CONVERSION CTA */}
         <ViewportSection fallback={<SectionFallback />}>
           <Suspense fallback={<SectionFallback />}>
             <NewsletterCTASection />

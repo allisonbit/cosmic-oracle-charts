@@ -46,7 +46,7 @@ const AirdropDetail = () => {
   const guide = project.fullGuide;
   const canonicalUrl = `https://oraclebull.com/airdrops/${project.id}`;
   const seoTitle = `${project.name} (${project.ticker}) Airdrop Guide 2026 — How to Farm & Maximize Allocation | Oracle Bull`;
-  const seoDesc = `Complete ${project.name} airdrop farming guide 2026. AI Score: ${project.aiScore}/100. Estimated value: ${project.estValue}. Step-by-step guide, tokenomics, risk analysis, VC backers, and Oracle Bull pro tips.`;
+  const seoDesc = `Complete ${project.name} airdrop farming guide 2026. Editorial score: ${project.aiScore}/100. Estimated value range, step-by-step guide, tokenomics, risk analysis, VC backers, and pro tips.`;
 
   return (
     <Layout>
@@ -89,11 +89,7 @@ const AirdropDetail = () => {
                 {project.liveStatus === "Live" && <span className="w-1.5 h-1.5 bg-success animate-pulse shrink-0" />}
                 {project.liveStatus}
               </span>
-              {project.isVerified && (
-                <span className="flex items-center gap-1 text-xs font-bold px-2.5 py-1 bg-primary/10 border border-primary/30 text-primary">
-                  <CheckCircle2 className="w-3 h-3 shrink-0" /> Verified
-                </span>
-              )}
+
               <span className={cn("text-xs font-bold px-2.5 py-1 border",
                 project.riskLevel === "Low" ? "bg-success/8 border-success/20 text-success"
                   : project.riskLevel === "Medium" ? "bg-warning/8 border-warning/20 text-warning"
@@ -112,7 +108,7 @@ const AirdropDetail = () => {
                   {project.name}{" "}
                   <span className="text-muted-foreground text-base sm:text-xl font-normal">({project.ticker})</span>
                 </h1>
-                <p className="text-muted-foreground text-sm mt-1">Airdrop Farming Guide — Oracle Bull AI Analysis</p>
+                <p className="text-muted-foreground text-sm mt-1">Airdrop Farming Guide — editorial research, not live market data</p>
               </div>
             </div>
 
@@ -121,7 +117,7 @@ const AirdropDetail = () => {
             {/* Metrics grid — 2 cols on mobile, 4 on sm+ */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-4">
               {[
-                { label: "AI Score", value: `${project.aiScore}/100`, color: project.aiScore >= 85 ? "text-success" : "text-warning", icon: <Brain className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> },
+                { label: "Editorial Score", value: `${project.aiScore}/100`, color: project.aiScore >= 85 ? "text-success" : "text-warning", icon: <Brain className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> },
                 { label: "Est. Value", value: project.estValue, color: "text-foreground", icon: <Coins className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-success" /> },
                 { label: "Effort:Reward", value: `${project.rewardRatio.toFixed(1)}x`, color: "text-success", icon: <TrendingUp className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> },
                 { label: "Funding", value: project.funding, color: "text-foreground", icon: <BarChart3 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-primary" /> },
@@ -171,16 +167,17 @@ const AirdropDetail = () => {
           </div>
         )}
 
-        {/* AI Score Breakdown */}
-        <Section title="Oracle Bull AI Score Breakdown" icon={<Brain className="w-4 h-4" />}>
+        {/* Editorial Score Breakdown */}
+        <Section title="Editorial Score Breakdown" icon={<Brain className="w-4 h-4" />}>
           <div className="space-y-4 border-t border-border/30 pt-4">
-            <ScoreBar label="Overall AI Score" value={project.aiScore} color="bg-primary" desc="Composite signal across all metrics" />
-            <ScoreBar label="Legitimacy" value={project.legitimacyScore} color="bg-success" desc="On-chain + VC + team credibility" />
-            <ScoreBar label="AI Confidence" value={project.aiConfidence === "Very High" ? 95 : project.aiConfidence === "High" ? 80 : project.aiConfidence === "Medium" ? 60 : 40} color="bg-warning" desc={`${project.aiConfidence} confidence in TGE timing`} />
+            <ScoreBar label="Editorial Score" value={project.aiScore} color="bg-primary" desc="Editorial assessment of airdrop attractiveness — not a live signal" />
+            <ScoreBar label="Legitimacy" value={project.legitimacyScore} color="bg-success" desc="Editorial view: team, backers and track record" />
+            <ScoreBar label="Editorial Confidence" value={project.aiConfidence === "Very High" ? 95 : project.aiConfidence === "High" ? 80 : project.aiConfidence === "Medium" ? 60 : 40} color="bg-warning" desc={`${project.aiConfidence} editorial confidence in TGE timing`} />
             <ScoreBar label="Ease of Farming" value={100 - (project.effortScore - 1) * 20} color="bg-blue-500" desc={`${project.difficulty} effort required`} />
           </div>
           <div className="mt-4 border-t border-border/20 pt-3">
             <p className="text-sm text-muted-foreground leading-relaxed italic">{project.aiAnalysis}</p>
+            <p className="text-[11px] text-muted-foreground mt-2">Scores and timelines are editorial estimates, not live data. Always verify status on the project's official channels before committing funds.</p>
           </div>
         </Section>
 
@@ -312,7 +309,7 @@ const AirdropDetail = () => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-bold text-foreground group-hover:text-primary transition-colors truncate">{a.name}</div>
-                  <div className="text-xs text-muted-foreground truncate">AI Score: {a.aiScore}/100 · {a.estValue}</div>
+                  <div className="text-xs text-muted-foreground truncate">Editorial score: {a.aiScore}/100 · est. value</div>
                 </div>
                 <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
               </Link>

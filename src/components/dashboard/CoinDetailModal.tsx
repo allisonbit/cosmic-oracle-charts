@@ -3,8 +3,7 @@ import { TrendingUp, TrendingDown, Activity, Clock, AlertTriangle, Target, BarCh
 import { cn } from "@/lib/utils";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { invokeFunction } from "@/integrations/supabase/functions";
+import { usePriceSeries } from "@/hooks/usePriceSeries";
 import { CoinImage } from "@/components/ui/CoinImage";
 
 interface CoinData {
@@ -35,24 +34,12 @@ export function CoinDetailModal({ coin, open, onOpenChange }: CoinDetailModalPro
   const trend = coin ? (coin.change24h >= 2 ? "BULLISH" : coin.change24h <= -2 ? "BEARISH" : "NEUTRAL") : "NEUTRAL";
   const isPositive = coin ? coin.change24h >= 0 : false;
 
-  const { data: sparkData } = useQuery({
-    queryKey: ["sparkline", coin?.name?.toLowerCase() || coin?.symbol?.toLowerCase()],
-    queryFn: async () => {
-      if (!coin) return [];
-      const id = coin.name?.toLowerCase() || coin.symbol?.toLowerCase();
-      const { data } = await invokeFunction(`sparkline?id=${id}&days=2`);
-      return (data?.prices ?? []) as Array<[number, number]>;
-    },
-    enabled: !!coin && open,
-    refetchInterval: 60_000,
-    refetchIntervalInBackground: true,
-    staleTime: 30_000,
-  });
+  // Standalone: real 2-day price series from the engine (CoinGecko).
+  const { data: sparkData } = usePriceSeries(coin?.name?.toLowerCase() || coin?.symbol?.toLowerCase(), 2);
 
   const chartData = useMemo(() => {
-    if (!coin) return [];
-    if (!sparkData?.length) return [];
-    return sparkData.map(([t, p]) => ({ time: new Date(t).getHours() + "h", price: p }));
+    if (!coin || !sparkData?.length) return [];
+    return sparkData.map(p => ({ time: new Date(p.time).getHours() + "h", price: p.price }));
   }, [coin, sparkData]);
 
   // Generate analysis based on the coin's performance

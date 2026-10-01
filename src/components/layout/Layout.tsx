@@ -5,6 +5,7 @@ import { Footer } from "./Footer";
 import { MobileBottomNav } from "./MobileBottomNav";
 import { BreadcrumbNav } from "./BreadcrumbNav";
 import { CookieBanner } from "../legal/CookieBanner";
+import { InstallPrompt } from "../system/InstallPrompt";
 import { SkipToContent } from "../system/SkipToContent";
 import { AdUnit } from "../ads/AdUnit";
 import { LazyAd } from "../ads/LazyAd";
@@ -60,6 +61,7 @@ export function Layout({ children, showTicker = true }: LayoutProps) {
 
       <Footer />
       <MobileBottomNav />
+      <InstallPrompt />
       <CookieBanner />
     </div>
   );

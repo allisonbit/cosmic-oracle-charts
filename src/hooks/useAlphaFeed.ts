@@ -1,19 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { invokeFunction } from "@/integrations/supabase/functions";
-import { useWhaleTracker } from "./useWhaleTracker";
-import { useFundingRates } from "./useFundingRates";
-import { useLiquidationData } from "./useLiquidationData";
 import { useCryptoPrices } from "./useCryptoPrices";
-import { formatCompactAmount } from "@/lib/coinFormat";
+import { useMarketData } from "./useMarketData";
 
-// ── Unified Live Alpha Feed ───────────────────────────────────────────────────
-// Fuses several already-live data sources into ONE chronological "market pulse"
-// stream. No new edge functions — it reuses existing hooks and the live-trades
-// function. Each source is normalized to a common AlphaEvent and accumulated
-// (deduped + capped) so the feed grows over time like a real activity log.
+// ── Unified Live Alpha Feed (standalone) ─────────────────────────────────────
+// Fuses genuinely-live, zero-backend sources into ONE chronological "market
+// pulse" stream: real price-momentum regime changes and Fear & Greed shifts,
+// both computed from the market engine. No edge functions, no polling of dead
+// endpoints — everything here is real or clearly labeled "modeled".
+//
+// Legacy sources (edge-function whale/trades/funding/liquidation) were removed
+// when the site went standalone; they return here automatically if the
+// Supabase overlay is wired up later.
 
-export type AlphaEventType = "whale" | "trade" | "funding" | "liquidation" | "signal";
+export type AlphaEventType = "signal" | "regime";
 
 export interface AlphaEvent {
   id: string;              // stable dedupe key
@@ -21,23 +20,16 @@ export interface AlphaEvent {
   symbol: string;
   image?: string;
   sentence: string;        // human-readable headline
-  value?: number;          // USD value where applicable
+  value?: number;
   timestamp: number;       // ms epoch
   href: string;            // where a click navigates
   honesty: "live" | "modeled";
 }
 
 const MAX_EVENTS = 40;
-const LARGE_TRADE_USD = 250_000;      // only surface genuinely large trades
-const FUNDING_FLIP_THRESHOLD = 0.0001; // ~0.01% — ignore noise around zero
 
-interface WhaleTx {
-  id: string; type: string; asset: string; amount: number; value: number;
-  chain: string; timestamp: number; impact: string;
-}
-interface LiveTrade {
-  id: number; symbol: string; side: "buy" | "sell"; price: number;
-  amount: number; value: number; time: number; exchange: string;
+function predictionHref(symbol: string): string {
+  return `/price-prediction/${symbol.toLowerCase()}/daily`;
 }
 
 /** Normalize a possibly-seconds timestamp to ms. */
@@ -46,45 +38,15 @@ function toMs(ts: number): number {
   return ts < 1e12 ? ts * 1000 : ts;
 }
 
-function predictionHref(symbol: string): string {
-  return `/price-prediction/${symbol.toLowerCase()}/daily`;
-}
-
 export function useAlphaFeed() {
-  // ── Sources (all already polling 24/7) ──────────────────────────────────────
-  const whale = useWhaleTracker("ethereum");
-  const funding = useFundingRates({ refreshInterval: 15000 });
-  const liquidation = useLiquidationData();
   const { data: pricesData } = useCryptoPrices();
-
-  const trades = useQuery({
-    queryKey: ["live-trades"],
-    queryFn: async () => {
-      const { data, error } = await invokeFunction("live-trades", { body: {} });
-      if (error) throw error;
-      return (data?.trades ?? []) as LiveTrade[];
-    },
-    refetchInterval: 5000,
-    refetchIntervalInBackground: false,
-    staleTime: 4000,
-  });
-
-  // symbol -> image lookup from the live price set (accurate CoinGecko URLs)
-  const imageMap = useMemo(() => {
-    const m = new Map<string, string>();
-    (pricesData?.prices ?? []).forEach((p) => {
-      if (p.image) m.set(p.symbol.toUpperCase(), p.image);
-    });
-    return m;
-  }, [pricesData]);
-
-  const img = (symbol: string) => imageMap.get(symbol?.toUpperCase());
+  const { data: marketData } = useMarketData();
 
   // ── Accumulated feed state ──────────────────────────────────────────────────
   const [events, setEvents] = useState<AlphaEvent[]>([]);
   const seenIds = useRef<Set<string>>(new Set());
-  const lastFunding = useRef<Map<string, number>>(new Map());
   const lastSignal = useRef<Map<string, "bull" | "bear">>(new Map());
+  const lastFngBand = useRef<string | null>(null);
 
   // Merge helper — adds only genuinely new events, keeps newest MAX_EVENTS.
   const push = (incoming: AlphaEvent[]) => {
@@ -101,107 +63,6 @@ export function useAlphaFeed() {
       return merged;
     });
   };
-
-  // ── Whale transactions (modeled) ────────────────────────────────────────────
-  useEffect(() => {
-    const txs = (whale.data?.transactions ?? []) as WhaleTx[];
-    const mapped: AlphaEvent[] = txs.slice(0, 8).map((t) => {
-      const sym = (t.asset || "").toUpperCase();
-      const verb = t.type === "buy" ? "accumulated" : t.type === "sell" ? "offloaded" : "moved";
-      return {
-        id: `whale:${t.id}`,
-        type: "whale",
-        symbol: sym,
-        image: img(sym),
-        sentence: `Whale ${verb} ${formatCompactAmount(t.amount)} ${sym}`,
-        value: t.value,
-        timestamp: toMs(t.timestamp),
-        href: `/chain/${(t.chain || "ethereum").toLowerCase()}`,
-        honesty: "modeled",
-      };
-    });
-    push(mapped);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [whale.dataUpdatedAt]);
-
-  // ── Large live trades (live — Binance) ──────────────────────────────────────
-  useEffect(() => {
-    const list = (trades.data ?? []).filter((t) => (t.value ?? 0) >= LARGE_TRADE_USD);
-    const mapped: AlphaEvent[] = list.slice(0, 10).map((t) => {
-      const sym = t.symbol.toUpperCase();
-      return {
-        id: `trade:${sym}:${t.id}:${t.time}`,
-        type: "trade",
-        symbol: sym,
-        image: img(sym),
-        sentence: `Large ${t.side === "buy" ? "buy" : "sell"} on ${t.exchange}`,
-        value: t.value,
-        timestamp: toMs(t.time),
-        href: predictionHref(sym),
-        honesty: "live",
-      };
-    });
-    push(mapped);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trades.dataUpdatedAt]);
-
-  // ── Funding-rate flips (live) — emit only when sign actually changes ─────────
-  useEffect(() => {
-    const rates = funding.data?.fundingRates ?? [];
-    const now = Date.now();
-    const out: AlphaEvent[] = [];
-    rates.forEach((r) => {
-      const prev = lastFunding.current.get(r.symbol);
-      lastFunding.current.set(r.symbol, r.avg);
-      if (prev === undefined) return; // need a baseline first
-      const flipped =
-        Math.sign(prev) !== Math.sign(r.avg) && Math.abs(r.avg) > FUNDING_FLIP_THRESHOLD;
-      if (!flipped) return;
-      const sym = r.symbol.toUpperCase();
-      out.push({
-        id: `funding:${sym}:${now}`,
-        type: "funding",
-        symbol: sym,
-        image: img(sym),
-        sentence:
-          r.avg > 0
-            ? `Funding flipped positive — longs paying shorts`
-            : `Funding flipped negative — shorts paying longs`,
-        timestamp: now,
-        href: predictionHref(sym),
-        honesty: "live",
-      });
-    });
-    push(out);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [funding.data?.timestamp]);
-
-  // ── Liquidation clusters (live) ─────────────────────────────────────────────
-  useEffect(() => {
-    const levels = liquidation.data?.levels ?? [];
-    const updated = liquidation.data?.lastUpdated ?? "";
-    const top = [...levels]
-      .sort((a, b) => (b.longLiquidations + b.shortLiquidations) - (a.longLiquidations + a.shortLiquidations))
-      .slice(0, 3);
-    const mapped: AlphaEvent[] = top.map((l) => {
-      const sym = l.symbol.toUpperCase();
-      const long = l.longLiquidations >= l.shortLiquidations;
-      const total = l.longLiquidations + l.shortLiquidations;
-      return {
-        id: `liq:${sym}:${updated}`,
-        type: "liquidation",
-        symbol: sym,
-        image: img(sym),
-        sentence: `${long ? "Long" : "Short"} liquidations clustering near $${l.price.toLocaleString()}`,
-        value: total,
-        timestamp: updated ? new Date(updated).getTime() : Date.now(),
-        href: predictionHref(sym),
-        honesty: "live",
-      };
-    });
-    push(mapped);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [liquidation.data?.lastUpdated]);
 
   // ── Momentum signals (modeled) — emit when a mover changes direction ────────
   useEffect(() => {
@@ -222,7 +83,7 @@ export function useAlphaFeed() {
         id: `signal:${sym}:${dir}:${Math.floor(now / 60000)}`,
         type: "signal",
         symbol: sym,
-        image: p.image || img(sym),
+        image: p.image,
         sentence: `AI momentum turned ${dir === "bull" ? "bullish" : "bearish"} (${p.change24h >= 0 ? "+" : ""}${p.change24h.toFixed(1)}% 24h)`,
         timestamp: now,
         href: predictionHref(sym),
@@ -233,8 +94,29 @@ export function useAlphaFeed() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pricesData?.timestamp]);
 
+  // ── Fear & Greed regime shifts (live index) — emit when the band changes ────
+  useEffect(() => {
+    const fng = marketData?.fearGreedIndex;
+    if (fng === null || fng === undefined) return;
+    const band =
+      fng >= 80 ? "Extreme Greed" : fng >= 60 ? "Greed" : fng >= 40 ? "Neutral" : fng >= 20 ? "Fear" : "Extreme Fear";
+    const prev = lastFngBand.current;
+    lastFngBand.current = band;
+    if (prev === null || prev === band) return; // first read or no change
+    push([{
+      id: `regime:fng:${band}:${Math.floor(Date.now() / 60000)}`,
+      type: "regime",
+      symbol: "FNG",
+      sentence: `Fear & Greed shifted into ${band} (${fng}/100)`,
+      timestamp: Date.now(),
+      href: "/sentiment",
+      honesty: "live",
+    }]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [marketData?.fearGreedIndex]);
+
   const lastUpdated = useMemo(() => (events.length ? events[0].timestamp : null), [events]);
-  const isLoading = events.length === 0 && (whale.isLoading || trades.isLoading || liquidation.isLoading);
+  const isLoading = events.length === 0 && !pricesData;
 
   return { events, isLoading, lastUpdated };
 }

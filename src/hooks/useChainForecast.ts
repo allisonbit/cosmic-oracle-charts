@@ -1,33 +1,42 @@
 import { useQuery } from "@tanstack/react-query";
-import { invokeFunction } from "@/integrations/supabase/functions";
-import { ChainDataResponse } from "./useChainData";
+import { usePricePrediction } from "@/hooks/usePricePrediction";
+import { type EnginePrediction } from "@/lib/marketEngine";
+
+export interface ChainForecastTimeframe {
+  prediction: "bullish" | "bearish" | "neutral";
+  confidence: number;
+  /** Always 0 — price targets require horizon-specific modeling; widgets hide it. */
+  priceTarget: number;
+  timeframe: string;
+  reasoning: string;
+}
 
 export interface ChainForecast {
-  shortTerm: {
-    prediction: "bullish" | "bearish" | "neutral";
-    confidence: number;
-    priceTarget: number;
-    timeframe: string;
-    reasoning: string;
-  };
-  midTerm: {
-    prediction: "bullish" | "bearish" | "neutral";
-    confidence: number;
-    priceTarget: number;
-    timeframe: string;
-    reasoning: string;
-  };
-  longTerm: {
-    prediction: "bullish" | "bearish" | "neutral";
-    confidence: number;
-    priceTarget: number;
-    timeframe: string;
-    reasoning: string;
-  };
+  shortTerm: ChainForecastTimeframe;
+  midTerm: ChainForecastTimeframe;
+  longTerm: ChainForecastTimeframe;
   keyTriggers: string[];
   riskLevel: number;
   overallConfidence: number;
   dailySummary: string;
+}
+
+export interface SentimentBucket {
+  positive: number;
+  neutral: number;
+  negative: number;
+  /** Always 0 — no social feed exists. */
+  volume: number;
+}
+
+export interface SocialSentiment {
+  twitter: SentimentBucket;
+  reddit: SentimentBucket;
+  telegram: SentimentBucket;
+  news: { positive: number; neutral: number; negative: number; count: number };
+  overallSentiment: number;
+  /** Honest marker: no social feed exists in standalone mode. */
+  note: string;
 }
 
 export interface TokenRisk {
@@ -40,114 +49,92 @@ export interface TokenRisk {
   volatility: number;
 }
 
-export interface SocialSentiment {
-  twitter: { positive: number; neutral: number; negative: number; volume: number };
-  reddit: { positive: number; neutral: number; negative: number; volume: number };
-  telegram: { positive: number; neutral: number; negative: number; volume: number };
-  news: { positive: number; neutral: number; negative: number; count: number };
-  overallSentiment: number;
-}
-
 export interface ChainForecastResponse {
-  forecast: ChainForecast;
-  tokenRisks: TokenRisk[];
-  socialSentiment: SocialSentiment;
+  forecast: ChainForecast | null;
+  socialSentiment: SocialSentiment | null;
   timestamp: number;
 }
 
-// Fallback forecast - all values derived from real priceChange, no random
-function generateFallbackForecast(chainId: string, priceChange: number): ChainForecastResponse {
-  const trend = priceChange > 2 ? "bullish" : priceChange < -2 ? "bearish" : "neutral";
-  const chainName = chainId.charAt(0).toUpperCase() + chainId.slice(1);
-  // Confidence is anchored to absolute price momentum (stronger move = higher confidence)
-  const momentumConf = Math.min(85, 60 + Math.abs(priceChange) * 1.5);
-  const riskLevel = Math.min(80, 30 + Math.abs(priceChange) * 3);
-  const sentiment = trend === "bullish" ? 72 : trend === "bearish" ? 38 : 55;
+const SOCIAL_NOTE = "No social feed in this build";
 
+/**
+ * Shape the engine prediction into the forecast object the chain widgets
+ * render. Confidence is the engine's measured conviction — bias/strength from
+ * RSI, MACD and moving averages — never random.
+ */
+function toTimeframes(pred: EnginePrediction): {
+  shortTerm: ChainForecastTimeframe;
+  midTerm: ChainForecastTimeframe;
+  longTerm: ChainForecastTimeframe;
+  overall: number;
+  risk: number;
+  triggers: string[];
+  summary: string;
+} {
+  const bias = pred.bias;
+  const reasoning = pred.summary;
+  const sigs = pred.technicalIndicators;
+  const rsiTxt = `RSI ${pred.technicalIndicators.rsi.toFixed(0)} (${pred.technicalIndicators.rsiSignal})`;
+  const maTxt = `MA trend ${pred.technicalIndicators.movingAverages.trend}`;
+  const triggers = [
+    `${maTxt} on the daily chart`,
+    `${rsiTxt} — ${sigs.rsiSignal === "oversold" ? "watch for a bounce" : sigs.rsiSignal === "overbought" ? "watch for a pullback" : "no momentum extreme"}`,
+    `MACD ${sigs.macd.trend} (histogram ${sigs.macd.histogram >= 0 ? "+" : ""}${sigs.macd.histogram.toPrecision(3)})`,
+    `Bollinger position: ${sigs.bollingerBands.position} band`,
+    `Volume trend ${sigs.volumeAnalysis.trend}`,
+  ];
+  const conf = pred.confidence;
   return {
-    forecast: {
-      shortTerm: {
-        prediction: trend,
-        confidence: Math.round(momentumConf),
-        priceTarget: 0,
-        timeframe: "1-4 hours",
-        reasoning: `${chainName} showing ${trend} momentum in short-term trading based on on-chain activity.`,
-      },
-      midTerm: {
-        prediction: trend === "bullish" ? "bullish" : "neutral",
-        confidence: Math.round(momentumConf * 0.85),
-        priceTarget: 0,
-        timeframe: "24-48 hours",
-        reasoning: "Medium-term outlook depends on broader market conditions and on-chain activity.",
-      },
-      longTerm: {
-        prediction: "bullish",
-        confidence: Math.round(momentumConf * 0.9),
-        priceTarget: 0,
-        timeframe: "3-7 days",
-        reasoning: "Long-term fundamentals remain strong with continued ecosystem development.",
-      },
-      keyTriggers: [
-        "Whale accumulation patterns",
-        "Network upgrade announcements",
-        "DeFi TVL changes",
-        "Cross-chain bridge activity",
-        "Market sentiment shifts",
-      ],
-      riskLevel: Math.round(riskLevel),
-      overallConfidence: Math.round(momentumConf),
-      dailySummary: `${chainName} network activity shows ${trend} signals. Monitor whale movements and DeFi metrics for trading opportunities.`,
-    },
-    tokenRisks: Array.from({ length: 8 }, (_, i) => ({
-      symbol: `TOKEN${i + 1}`,
-      name: `Token ${i + 1}`,
-      riskLevel: (["low", "medium", "high", "extreme"] as const)[Math.min(3, Math.floor(riskLevel / 25))],
-      riskScore: riskLevel + i * 2,
-      reasons: ["Stable liquidity", "Active development"],
-      liquidity: 1e6 * (8 - i),
-      volatility: Math.abs(priceChange) * (1 + i * 0.1),
-    })),
-    socialSentiment: {
-      twitter: { positive: Math.round(sentiment), neutral: 30, negative: Math.round(100 - sentiment - 30), volume: 15000 },
-      reddit: { positive: Math.round(sentiment - 5), neutral: 40, negative: Math.round(100 - (sentiment - 5) - 40), volume: 5000 },
-      telegram: { positive: Math.round(sentiment + 3), neutral: 28, negative: Math.round(100 - (sentiment + 3) - 28), volume: 8000 },
-      news: { positive: Math.round(sentiment - 8), neutral: 45, negative: Math.round(100 - (sentiment - 8) - 45), count: 50 },
-      overallSentiment: Math.round(sentiment),
-    },
-    timestamp: Date.now(),
+    shortTerm: { prediction: bias, confidence: conf, priceTarget: 0, timeframe: "Daily read", reasoning },
+    midTerm: { prediction: bias, confidence: Math.round(conf * 0.85), priceTarget: 0, timeframe: "Swing horizon", reasoning },
+    longTerm: { prediction: bias, confidence: Math.round(conf * 0.7), priceTarget: 0, timeframe: "Position horizon", reasoning },
+    overall: conf,
+    risk: pred.volatilityIndex,
+    triggers,
+    summary: `${pred.symbol} (${pred.timeframe}): ${pred.summary} ${rsiTxt}, ${maTxt}. ${pred.disclaimer}`,
   };
 }
 
-export function useChainForecast(chainId: string, chainData: ChainDataResponse | undefined, enabled = true) {
-  return useQuery({
-    queryKey: ["chain-forecast", chainId],
-    queryFn: async (): Promise<ChainForecastResponse> => {
-      try {
-        const { data, error } = await invokeFunction("chain-forecast", {
-          body: { chainId, chainData },
-        });
+/**
+ * Chain forecast — one real prediction per load from the same pure engine that
+ * powers /price-prediction. No edge function, no polling, no random fallback.
+ * `forecast` is null until the engine's first real read (needs ≥30 real price
+ * points); social sentiment is null — there is no social feed in standalone mode.
+ */
+export function useChainForecast(chainId: string, enabled = true) {
+  const coinId = chainId === "base" ? "ethereum" : chainId;
+  const { data: pred, isLoading } = usePricePrediction(coinId, "daily");
 
-        if (error) {
-          console.error("Error fetching chain forecast:", error);
-          return generateFallbackForecast(chainId, chainData?.overview?.priceChange24h || 0);
-        }
-
-        if (!data || !data.forecast) {
-          return generateFallbackForecast(chainId, chainData?.overview?.priceChange24h || 0);
-        }
-
-        return data as ChainForecastResponse;
-      } catch (err) {
-        console.error("Exception fetching chain forecast:", err);
-        return generateFallbackForecast(chainId, chainData?.overview?.priceChange24h || 0);
-      }
+  const query = useQuery({
+    queryKey: ["chain-forecast", coinId, pred?.timestamp],
+    queryFn: (): ChainForecastResponse => {
+      if (!pred) return { forecast: null, socialSentiment: null, timestamp: Date.now() };
+      const t = toTimeframes(pred);
+      return {
+        forecast: {
+          shortTerm: t.shortTerm,
+          midTerm: t.midTerm,
+          longTerm: t.longTerm,
+          keyTriggers: t.triggers,
+          riskLevel: t.risk,
+          overallConfidence: t.overall,
+          dailySummary: t.summary,
+        },
+        socialSentiment: {
+          twitter: { positive: 0, neutral: 0, negative: 0, volume: 0 },
+          reddit: { positive: 0, neutral: 0, negative: 0, volume: 0 },
+          telegram: { positive: 0, neutral: 0, negative: 0, volume: 0 },
+          news: { positive: 0, neutral: 0, negative: 0, count: 0 },
+          overallSentiment: 0,
+          note: SOCIAL_NOTE,
+        },
+        timestamp: Date.now(),
+      };
     },
-    enabled: enabled && !!chainId,
-    staleTime: 60000,
-    refetchInterval: 60000,
-    refetchIntervalInBackground: false,
-    retry: 2,
-    retryDelay: 1000,
-    placeholderData: (previousData) => previousData || generateFallbackForecast(chainId, 0),
+    enabled: !!chainId,
+    staleTime: 60_000,
+    refetchInterval: false,
   });
+
+  return { data: query.data, isLoading };
 }

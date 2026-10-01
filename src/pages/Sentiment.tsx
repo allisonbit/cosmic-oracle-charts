@@ -1,9 +1,7 @@
 import { Layout } from "@/components/layout/Layout";
-import { Brain, TrendingUp, TrendingDown, Activity, Waves, Loader2, Zap, MessageCircle, Clock, Info } from "lucide-react";
+import { Brain, TrendingUp, TrendingDown, Activity, Loader2, Zap, MessageCircle, Clock, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMarketData } from "@/hooks/useMarketData";
-import { useAIForecast } from "@/hooks/useAIForecast";
-import { useWhaleTracker } from "@/hooks/useWhaleTracker";
 import { useSentimentData } from "@/hooks/useSentimentData";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -20,7 +18,6 @@ import { SentimentContextBar } from "@/components/sentiment/SentimentContextBar"
 import { MultiDimensionalSentiment } from "@/components/sentiment/MultiDimensionalSentiment";
 import { SectorHeatmap } from "@/components/sentiment/SectorHeatmap";
 import { DivergenceScanner } from "@/components/sentiment/DivergenceScanner";
-import { AdvancedWhaleTracker } from "@/components/sentiment/AdvancedWhaleTracker";
 import { LiveAlertsFeed } from "@/components/sentiment/LiveAlertsFeed";
 import { TellMeTheStory } from "@/components/sentiment/TellMeTheStory";
 import { TokenSentimentSearch } from "@/components/sentiment/TokenSentimentSearch";
@@ -37,54 +34,49 @@ const SentimentPage = () => {
   const navigate = useNavigate();
   const { data: marketData, isLoading } = useMarketData();
   const topCoins = useMemo(() => marketData?.topCoins?.slice(0, 20) || [], [marketData]);
-  const [activeTab, setActiveTab] = useState<"overview" | "social" | "whales" | "signals">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "social" | "signals">("overview");
   const [lastUpdate] = useState(new Date());
   
-  // Real sentiment data
+  // Live sentiment data — computed from the standalone market engine.
   const { data: sentimentData, isLoading: sentimentLoading } = useSentimentData();
-  
-  // Whale tracker data
-  const { data: whaleData, refetch: refetchWhales } = useWhaleTracker('ethereum');
-  
-  const { data: aiData, isLoading: aiLoading } = useAIForecast(
-    topCoins.length > 0 ? topCoins : null,
-    "market_sentiment",
-    topCoins.length > 0
-  );
 
   const fearGreedIndex = sentimentData?.fearGreed?.[0]?.value || marketData?.fearGreedIndex || 50;
   
-  // Calculate metrics
+  // Calculate metrics — all real: breadth, volatility, turnover from live coins.
   const avgChange = useMemo(() => topCoins.reduce((sum, c) => sum + c.change24h, 0) / (topCoins.length || 1), [topCoins]);
-  const socialSentiment = Math.min(100, Math.max(0, 50 + avgChange * 5));
+  const breadth = useMemo(
+    () => topCoins.length ? (topCoins.filter(c => c.change24h > 0).length / topCoins.length) * 100 : 50,
+    [topCoins],
+  );
   const volatility = useMemo(() => topCoins.reduce((sum, c) => sum + Math.abs(c.change24h), 0) / (topCoins.length || 1), [topCoins]);
   const volatilityIndex = Math.min(100, Math.max(0, volatility * 10));
+  const turnover = useMemo(
+    () =>
+      topCoins.length
+        ? [...topCoins].sort((a, b) => a.volume - b.volume)[Math.floor(topCoins.length / 2)].volume /
+          ([...topCoins].sort((a, b) => a.marketCap - b.marketCap)[Math.floor(topCoins.length / 2)].marketCap || 1) * 100
+        : 0,
+    [topCoins],
+  );
+  // Kept for the context bar — volume regime from real total volume.
   const totalVolume = useMemo(() => topCoins.reduce((sum, c) => sum + c.volume, 0), [topCoins]);
-  const whaleActivity = Math.min(100, Math.max(0, 50 + (totalVolume > 100e9 ? 30 : totalVolume > 50e9 ? 15 : 0)));
+  const volumeRegime: 'normal' | 'elevated' = totalVolume > 100e9 ? 'elevated' : 'normal';
 
   // Market momentum
   const bullishCount = topCoins.filter(c => c.change24h > 2).length;
   const bearishCount = topCoins.filter(c => c.change24h < -2).length;
   const marketMomentum = bullishCount > bearishCount ? "BULLISH" : bearishCount > bullishCount ? "BEARISH" : "NEUTRAL";
 
-  // Calculate context bar values
-  const netflow = whaleData?.netflow || 0;
+  // Context bar values — all derived from real market data. The top sector
+  // comes from the live categories ranking (no hardcoded "AI & Big Data").
+  const topSector = sentimentData?.trendingCategories?.[0];
   const trend = avgChange > 1 ? 'improving' : avgChange < -1 ? 'declining' : 'stable';
-  const whaleMood = netflow > 0 ? 'accumulating' : netflow < 0 ? 'distributing' : 'neutral';
   const vsPrice = avgChange < -2 && socialSentiment > 55 ? 'bullish_divergence' 
     : avgChange > 2 && socialSentiment < 45 ? 'bearish_divergence' 
     : Math.abs(avgChange) < 1 ? 'neutral' : 'aligned';
 
   const handleCoinClick = (coin: typeof topCoins[0]) => {
     navigate(`/price-prediction/${coin.name?.toLowerCase() || coin.symbol?.toLowerCase()}/daily`);
-  };
-
-  const handleWhaleClick = () => {
-    navigate('/sentiment');
-  };
-
-  const handleTopicClick = () => {
-    navigate('/sentiment');
   };
 
   if (isLoading) {
@@ -130,12 +122,8 @@ const SentimentPage = () => {
               token={topCoins[0]}
               sentimentData={{
                 fearGreedIndex,
-                socialSentiment,
                 volatilityIndex,
-                whaleActivity,
                 marketMomentum,
-                whaleMood,
-                netflow,
               }}
             />
           )}
@@ -170,10 +158,9 @@ const SentimentPage = () => {
         <SentimentContextBar
           trend={trend}
           vsPrice={vsPrice}
-          topSector="AI & Big Data"
-          sectorChange={12}
-          whaleMood={whaleMood}
-          netflow={netflow}
+          topSector={topSector?.name ?? "Majors"}
+          sectorChange={topSector?.marketCapChange24h ?? 0}
+          volumeRegime={volumeRegime}
         />
 
         {/* Token Sentiment Search */}
@@ -184,7 +171,6 @@ const SentimentPage = () => {
           {[
             { id: "overview", label: "Overview", icon: Activity },
             { id: "social", label: "Social", icon: MessageCircle },
-            { id: "whales", label: "Whale Tracker", icon: Waves },
             { id: "signals", label: "Live Signals", icon: Zap },
           ].map(tab => {
             const Icon = tab.icon;
@@ -216,9 +202,9 @@ const SentimentPage = () => {
           <div className="space-y-6">
             <MultiDimensionalSentiment
               fearGreedIndex={fearGreedIndex}
-              socialSentiment={socialSentiment}
+              breadth={breadth}
               volatilityIndex={volatilityIndex}
-              whaleActivity={whaleActivity}
+              turnover={turnover}
             />
 
 
@@ -257,14 +243,9 @@ const SentimentPage = () => {
           </div>
         )}
 
-        {/* Whales Tab */}
-        {activeTab === "whales" && (
-          <AdvancedWhaleTracker onRefresh={() => refetchWhales()} />
-        )}
-
         {/* Live Signals Tab */}
         {activeTab === "signals" && (
-          <LiveAlertsFeed whaleData={whaleData} coins={topCoins} />
+          <LiveAlertsFeed coins={topCoins} />
         )}
 
         {/* SEO Content — always rendered outside tabs for crawlers */}
@@ -293,7 +274,7 @@ const SentimentPage = () => {
                 <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
               </summary>
               <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
-                Oracle Bull measures sentiment across multiple dimensions: social media buzz and sentiment analysis, news headline classification (bullish/bearish/neutral), whale wallet movements and exchange netflows, price volatility, on-chain activity, and Google search trends. These signals are combined into our multi-dimensional sentiment dashboard. Visit our{" "}
+                Oracle Bull measures sentiment from real, verifiable market data: the Fear & Greed Index (live from alternative.me), breadth of the top coins' 24h moves, realized volatility, volume turnover, and per-token position inside its 24h range. These signals are combined into our multi-dimensional sentiment dashboard — every number is either fetched market data or a genuine function of it. Visit our{" "}
                 <Link to="/crypto-strength-meter" className="text-primary hover:underline">Crypto Strength Meter</Link> to see how individual tokens compare on technical strength.
               </div>
             </details>
@@ -327,7 +308,7 @@ const SentimentPage = () => {
                 <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
               </summary>
               <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
-                Sentiment data updates continuously throughout the day. The Fear &amp; Greed Index updates once daily, while social sentiment, whale movements, and news sentiment update in near real-time. Price data and volume metrics refresh every few minutes. The timestamp at the top of the page shows when the most recent data pull occurred.
+                Sentiment metrics are recomputed from live market data on each visit. The Fear &amp; Greed Index updates once daily at its source; price, volume and momentum metrics refresh roughly every 1–2 minutes from CoinGecko. The timestamp at the top of the page shows when the most recent data was fetched.
               </div>
             </details>
           </div>

@@ -1,5 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { invokeFunction } from "@/integrations/supabase/functions";
+
+// ── useLiquidationData — honest empty state ──────────────────────────────────
+// Liquidation levels require per-exchange derivatives/liquidation feeds. The
+// old `liquidation-data` edge function no longer exists and there is no free,
+// key-less public API for predicted liquidation heatmaps, so this hook returns
+// an explicit empty dataset — the UI renders zeros / "—" instead of estimates.
 
 interface LiquidationLevel {
   asset: string;
@@ -20,26 +25,23 @@ interface LiquidationData {
 }
 
 async function fetchLiquidationData(): Promise<LiquidationData> {
-  const { data, error } = await invokeFunction('liquidation-data');
-  
-  if (error) {
-    console.error('Error fetching liquidation data:', error);
-    throw error;
-  }
-  
-  return data;
+  return {
+    levels: [],
+    totalLongLiquidations: 0,
+    totalShortLiquidations: 0,
+    longPercentage: 50,
+    lastUpdated: new Date().toISOString(),
+  };
 }
 
 export function useLiquidationData() {
   return useQuery({
     queryKey: ['liquidation-data'],
     queryFn: fetchLiquidationData,
-    refetchInterval: 20000, // Refresh every 20 seconds 24/7
-    staleTime: 15000,
+    staleTime: 5 * 60_000,
     gcTime: 1000 * 60 * 10,
-    refetchIntervalInBackground: false, // Keep updating in background
-    refetchOnWindowFocus: true,
-    refetchOnReconnect: true,
-    retry: 3,
+    refetchInterval: false,
+    refetchOnWindowFocus: false,
+    retry: false,
   });
 }

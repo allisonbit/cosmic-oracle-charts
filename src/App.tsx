@@ -29,6 +29,8 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 
 // Lazy load non-critical pages for better initial load
 const Dashboard = lazy(() => import("./pages/Dashboard"));
+const DailyGame = lazy(() => import("./pages/DailyGame"));
+const MarketDailyRecap = lazy(() => import("./pages/MarketDailyRecap"));
 const Sentiment = lazy(() => import("./pages/Sentiment"));
 const Explorer = lazy(() => import("./pages/Explorer"));
 const TokenDetail = lazy(() => import("./pages/TokenDetail"));
@@ -224,6 +226,9 @@ const App = () => (
               <Routes>
                 <Route path="/" element={B(<Index />)} />
                 <Route path="/dashboard" element={B(<Dashboard />)} />
+                <Route path="/game" element={B(<DailyGame />)} />
+                <Route path="/recap" element={B(<MarketDailyRecap />)} />
+                <Route path="/recap/:date" element={B(<MarketDailyRecap />)} />
 
                 <Route path="/sentiment" element={B(<Sentiment />)} />
                 <Route path="/scanner" element={B(<Scanner />)} />

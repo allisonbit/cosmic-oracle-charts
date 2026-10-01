@@ -15,12 +15,8 @@ interface TokenData {
 
 interface SentimentData {
   fearGreedIndex: number;
-  socialSentiment: number;
   volatilityIndex: number;
-  whaleActivity: number;
   marketMomentum: string;
-  whaleMood: string;
-  netflow: number;
 }
 
 interface TellMeTheStoryProps {

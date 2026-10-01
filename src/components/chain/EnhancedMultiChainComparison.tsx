@@ -1,366 +1,126 @@
-import { useState } from "react";
-import { ChainConfig, CHAINS } from "@/lib/chainConfig";
-import { GitCompare, ArrowRightLeft, Layers, DollarSign, Zap, Activity, TrendingUp, TrendingDown, ExternalLink, Info, BarChart3, Globe, Shield, Clock, Users } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ChainConfig } from "@/lib/chainConfig";
+import { type AdvancedChainDataResponse } from "@/hooks/useAdvancedChainData";
+import { GitCompare, TrendingUp, TrendingDown, Activity, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface EnhancedMultiChainComparisonProps {
   chain: ChainConfig;
-  comparisonData?: MultiChainData;
+  comparisonData?: AdvancedChainDataResponse;
   isLoading: boolean;
 }
 
-export interface MultiChainData {
-  chainMetrics: {
-    chainId: string;
-    name: string;
-    tps: number;
-    avgFee: number;
-    finality: number;
-    tvl: number;
-    volume24h: number;
-    activeUsers: number;
-    marketCap: number;
-  }[];
-  layer2Comparison: {
-    name: string;
-    tvl: number;
-    transactions24h: number;
-    avgFee: number;
-    sequencerUptime: number;
-  }[];
-  bridgeMonitoring: {
-    bridge: string;
-    tvl: number;
-    volume24h: number;
-    health: number;
-    recentHacks: number;
-  }[];
-  feeComparison: {
-    chain: string;
-    swapFee: number;
-    transferFee: number;
-    nftMintFee: number;
-    contractDeployFee: number;
-  }[];
+function compact(n: number): string {
+  if (!n) return "—";
+  if (n >= 1e12) return `$${(n / 1e12).toFixed(2)}T`;
+  if (n >= 1e9) return `$${(n / 1e9).toFixed(2)}B`;
+  if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
+  return `$${n.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
 }
 
-interface DetailModalData {
-  type: 'chain' | 'l2' | 'bridge' | 'fee' | 'methodology';
-  title: string;
-  data: any;
-}
-
+/**
+ * Real cross-chain snapshot: live 24h change / volume / market cap per native
+ * asset (CoinGecko), plus documented throughput specs. No bridge, fee or
+ * uptime fabrications — those need feeds this build doesn't have.
+ */
 export function EnhancedMultiChainComparison({ chain, comparisonData, isLoading }: EnhancedMultiChainComparisonProps) {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalData, setModalData] = useState<DetailModalData | null>(null);
-
-  const formatNumber = (n: number, decimals = 2) => {
-    if (n >= 1e9) return "$" + (n / 1e9).toFixed(decimals) + "B";
-    if (n >= 1e6) return "$" + (n / 1e6).toFixed(decimals) + "M";
-    if (n >= 1e3) return "$" + (n / 1e3).toFixed(decimals) + "K";
-    return "$" + (n ?? 0).toFixed(decimals);
-  };
-
-  const formatFee = (n: number) => {
-    if (n < 0.01) return "<$0.01";
-    return "$" + (n ?? 0).toFixed(2);
-  };
-
-  const openDetailModal = (type: DetailModalData['type'], title: string, data: any) => {
-    setModalData({ type, title, data });
-    setModalOpen(true);
-  };
-
-  if (isLoading || !comparisonData) {
-    return (
-      <div className="holo-card p-6 animate-pulse">
-        <div className="h-6 w-48 bg-muted rounded mb-6" />
-        <div className="grid grid-cols-1 gap-4">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-32 bg-muted/50 rounded-lg" />
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  // Calculate rankings
-  const tpsRanking = [...comparisonData.chainMetrics].sort((a, b) => b.tps - a.tps);
-  const tvlRanking = [...comparisonData.chainMetrics].sort((a, b) => b.tvl - a.tvl);
-  const feeRanking = [...comparisonData.chainMetrics].sort((a, b) => a.avgFee - b.avgFee);
-
-  const currentChainRanks = {
-    tps: tpsRanking.findIndex(c => c.chainId === chain.id) + 1,
-    tvl: tvlRanking.findIndex(c => c.chainId === chain.id) + 1,
-    fee: feeRanking.findIndex(c => c.chainId === chain.id) + 1,
-  };
+  const rows = comparisonData?.chainMetrics ?? [];
+  const maxVolume = Math.max(...rows.map((r) => r.volume24h), 1);
 
   return (
-    <>
-      <div className="holo-card p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-blue-500/20">
-              <GitCompare className="h-5 w-5 text-blue-400" />
-            </div>
-            <div>
-              <h3 className="font-display text-lg text-foreground">Enhanced Multi-Chain Comparison</h3>
-              <p className="text-sm text-muted-foreground">{chain.name} vs competitors</p>
-            </div>
-          </div>
-          <button
-            onClick={() => openDetailModal('methodology', 'Comparison Methodology', {})}
-            className="p-2 hover:bg-muted/40 transition-colors"
-          >
-            <Info className="h-4 w-4 text-muted-foreground" />
-          </button>
+    <div className="holo-card p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+        <div>
+          <h3 className="text-base sm:text-lg font-display text-foreground flex items-center gap-2">
+            <GitCompare className="h-5 w-5 text-primary" />
+            Chain Comparison
+          </h3>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+            Live native-asset metrics across covered chains
+          </p>
         </div>
-
-        {/* Quick Rankings */}
-        <div className="grid grid-cols-3 gap-3 mb-6">
-          <button
-            onClick={() => openDetailModal('chain', 'TPS Rankings', { type: 'tps', data: tpsRanking })}
-            className="p-4 rounded-xl bg-muted/10 hover:bg-muted/20 transition-all border border-border/30"
-          >
-            <Zap className="h-5 w-5 text-primary mb-2" />
-            <p className="text-xs text-muted-foreground">TPS Rank</p>
-            <p className="text-2xl font-display text-foreground">#{currentChainRanks.tps}</p>
-            <p className="text-xs text-muted-foreground">of {comparisonData.chainMetrics.length}</p>
-          </button>
-          <button
-            onClick={() => openDetailModal('chain', 'TVL Rankings', { type: 'tvl', data: tvlRanking })}
-            className="p-4 rounded-xl bg-muted/10 hover:bg-muted/20 transition-all border border-border/30"
-          >
-            <BarChart3 className="h-5 w-5 text-success mb-2" />
-            <p className="text-xs text-muted-foreground">TVL Rank</p>
-            <p className="text-2xl font-display text-foreground">#{currentChainRanks.tvl}</p>
-            <p className="text-xs text-muted-foreground">of {comparisonData.chainMetrics.length}</p>
-          </button>
-          <button
-            onClick={() => openDetailModal('chain', 'Fee Rankings (Lowest)', { type: 'fee', data: feeRanking })}
-            className="p-4 rounded-xl bg-muted/10 hover:bg-muted/20 transition-all border border-border/30"
-          >
-            <DollarSign className="h-5 w-5 text-warning mb-2" />
-            <p className="text-xs text-muted-foreground">Fee Rank</p>
-            <p className="text-2xl font-display text-foreground">#{currentChainRanks.fee}</p>
-            <p className="text-xs text-muted-foreground">lowest fees</p>
-          </button>
-        </div>
-
-        <Tabs defaultValue="networks" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="networks">Networks</TabsTrigger>
-            <TabsTrigger value="l2">Layer 2</TabsTrigger>
-            <TabsTrigger value="bridges">Bridges</TabsTrigger>
-            <TabsTrigger value="fees">Fees</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="networks">
-            <div className="bg-background/40 border border-border/30 rounded-lg overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-border/30">
-                      <th className="text-left p-3 text-muted-foreground font-medium">Chain</th>
-                      <th className="text-right p-3 text-muted-foreground font-medium">TPS</th>
-                      <th className="text-right p-3 text-muted-foreground font-medium">Avg Fee</th>
-                      <th className="text-right p-3 text-muted-foreground font-medium">Finality</th>
-                      <th className="text-right p-3 text-muted-foreground font-medium">TVL</th>
-                      <th className="text-right p-3 text-muted-foreground font-medium">Volume 24h</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {comparisonData.chainMetrics.map((metric, i) => {
-                      const isCurrentChain = metric.chainId === chain.id;
-                      return (
-                        <tr 
-                          key={i} 
-                          className={cn(
-                            "border-b border-border/30 last:border-0 cursor-pointer hover:bg-muted/20 transition-colors",
-                            isCurrentChain && "bg-primary/10"
-                          )}
-                          onClick={() => openDetailModal('chain', `${metric.name} Details`, metric)}
-                        >
-                          <td className="p-3">
-                            <div className="flex items-center gap-2">
-                              <span className="text-lg">{CHAINS.find(c => c.id === metric.chainId)?.icon || "◆"}</span>
-                              <span className={`font-medium ${isCurrentChain ? "text-primary" : "text-foreground"}`}>
-                                {metric.name}
-                              </span>
-                              {isCurrentChain && <Badge className="text-xs">Current</Badge>}
-                            </div>
-                          </td>
-                          <td className="p-3 text-right">
-                            <span className={`font-mono ${metric.tps > 1000 ? "text-green-400" : "text-foreground"}`}>
-                              {(metric.tps ?? 0).toLocaleString()}
-                            </span>
-                          </td>
-                          <td className="p-3 text-right">
-                            <span className={`font-mono ${metric.avgFee < 0.1 ? "text-green-400" : metric.avgFee > 10 ? "text-red-400" : "text-yellow-400"}`}>
-                              {formatFee(metric.avgFee)}
-                            </span>
-                          </td>
-                          <td className="p-3 text-right">
-                            <span className="font-mono text-foreground">{metric.finality}s</span>
-                          </td>
-                          <td className="p-3 text-right">
-                            <span className="font-mono text-foreground">{formatNumber(metric.tvl)}</span>
-                          </td>
-                          <td className="p-3 text-right">
-                            <span className="font-mono text-foreground">{formatNumber(metric.volume24h)}</span>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="l2">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {comparisonData.layer2Comparison.map((l2, i) => (
-                <button
-                  key={i}
-                  onClick={() => openDetailModal('l2', `${l2.name} L2 Analysis`, l2)}
-                  className="bg-background/40 border border-border/30 rounded-lg p-4 text-left hover:bg-muted/20 transition-all"
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="font-medium text-foreground">{l2.name}</span>
-                    <Badge variant="outline" className={`text-xs ${l2.sequencerUptime > 99 ? "text-green-400 border-green-400/30" : "text-yellow-400 border-yellow-400/30"}`}>
-                      {(l2.sequencerUptime ?? 0).toFixed(1)}% uptime
-                    </Badge>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">TVL</span>
-                      <span className="text-foreground font-medium">{formatNumber(l2.tvl)}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">24h Txns</span>
-                      <span className="text-foreground font-medium">{(l2.transactions24h / 1e6).toFixed(2)}M</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Avg Fee</span>
-                      <span className="text-green-400 font-medium">{formatFee(l2.avgFee)}</span>
-                    </div>
-                  </div>
-                  <Progress value={l2.sequencerUptime} className="h-1 mt-3" />
-                </button>
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="bridges">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {comparisonData.bridgeMonitoring.map((bridge, i) => (
-                <button
-                  key={i}
-                  onClick={() => openDetailModal('bridge', `${bridge.bridge} Bridge Analysis`, bridge)}
-                  className="bg-background/40 border border-border/30 rounded-lg p-4 text-left hover:bg-muted/20 transition-all"
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-medium text-foreground text-sm">{bridge.bridge}</span>
-                    <div className={`w-3 h-3 rounded-full ${bridge.health > 90 ? "bg-green-400" : bridge.health > 70 ? "bg-yellow-400" : "bg-red-400"}`} />
-                  </div>
-                  <div className="text-xl font-bold text-foreground mb-1">{formatNumber(bridge.tvl)}</div>
-                  <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>24h: {formatNumber(bridge.volume24h)}</span>
-                    {bridge.recentHacks > 0 && (
-                      <span className="text-red-400">{bridge.recentHacks} incidents</span>
-                    )}
-                  </div>
-                  <Progress 
-                    value={bridge.health} 
-                    className={`h-1 mt-3 ${bridge.health > 90 ? "" : bridge.health > 70 ? "[&>div]:bg-yellow-400" : "[&>div]:bg-red-400"}`} 
-                  />
-                </button>
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="fees">
-            <div className="bg-background/40 border border-border/30 rounded-lg overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-border/30">
-                      <th className="text-left p-3 text-muted-foreground font-medium">Chain</th>
-                      <th className="text-right p-3 text-muted-foreground font-medium">Token Swap</th>
-                      <th className="text-right p-3 text-muted-foreground font-medium">Transfer</th>
-                      <th className="text-right p-3 text-muted-foreground font-medium">NFT Mint</th>
-                      <th className="text-right p-3 text-muted-foreground font-medium">Deploy Contract</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {comparisonData.feeComparison.map((fee, i) => {
-                      const isCurrentChain = fee.chain.toLowerCase() === chain.id;
-                      return (
-                        <tr 
-                          key={i} 
-                          className={cn(
-                            "border-b border-border/30 last:border-0 cursor-pointer hover:bg-muted/20 transition-colors",
-                            isCurrentChain && "bg-primary/10"
-                          )}
-                          onClick={() => openDetailModal('fee', `${fee.chain} Fee Breakdown`, fee)}
-                        >
-                          <td className="p-3">
-                            <span className={`font-medium ${isCurrentChain ? "text-primary" : "text-foreground"}`}>
-                              {fee.chain}
-                            </span>
-                          </td>
-                          <td className="p-3 text-right">
-                            <span className={`font-mono ${fee.swapFee < 1 ? "text-green-400" : fee.swapFee > 20 ? "text-red-400" : "text-yellow-400"}`}>
-                              {formatFee(fee.swapFee)}
-                            </span>
-                          </td>
-                          <td className="p-3 text-right">
-                            <span className={`font-mono ${fee.transferFee < 0.5 ? "text-green-400" : fee.transferFee > 5 ? "text-red-400" : "text-yellow-400"}`}>
-                              {formatFee(fee.transferFee)}
-                            </span>
-                          </td>
-                          <td className="p-3 text-right">
-                            <span className={`font-mono ${fee.nftMintFee < 5 ? "text-green-400" : fee.nftMintFee > 50 ? "text-red-400" : "text-yellow-400"}`}>
-                              {formatFee(fee.nftMintFee)}
-                            </span>
-                          </td>
-                          <td className="p-3 text-right">
-                            <span className={`font-mono ${fee.contractDeployFee < 50 ? "text-green-400" : fee.contractDeployFee > 500 ? "text-red-400" : "text-yellow-400"}`}>
-                              {formatFee(fee.contractDeployFee)}
-                            </span>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </TabsContent>
-        </Tabs>
-
-        {/* External Links */}
-        <div className="mt-6 flex flex-wrap gap-2">
-          <a href="https://l2beat.com" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-lg bg-muted/20 text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
-            <ExternalLink className="h-3 w-3" /> L2Beat
-          </a>
-          <a href="https://defillama.com/chains" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-lg bg-muted/20 text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
-            <ExternalLink className="h-3 w-3" /> DeFi Llama
-          </a>
-          <a href="https://dune.com/browse/dashboards?q=multichain" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-lg bg-muted/20 text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
-            <ExternalLink className="h-3 w-3" /> Dune Analytics
-          </a>
-          <a href="https://chainlist.org" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-lg bg-muted/20 text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
-            <ExternalLink className="h-3 w-3" /> ChainList
-          </a>
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <Activity className={cn("h-3.5 w-3.5", isLoading ? "text-warning animate-pulse" : "text-success")} />
+          {isLoading ? "Loading" : "Live"}
         </div>
       </div>
 
-    </>
+      {isLoading && rows.length === 0 ? (
+        <div className="space-y-2">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="h-12 rounded-xl bg-muted/20 animate-pulse" />
+          ))}
+        </div>
+      ) : rows.length === 0 ? (
+        <div className="py-10 text-center text-muted-foreground">
+          <Activity className="h-10 w-10 mx-auto mb-3 opacity-40" />
+          <p className="text-sm">Market data unavailable right now — check your connection and refresh.</p>
+        </div>
+      ) : (
+        <div className="overflow-x-auto -mx-1 px-1">
+          <table className="w-full text-sm min-w-[560px]">
+            <thead>
+              <tr className="text-left text-[10px] uppercase tracking-wider text-muted-foreground border-b border-border/40">
+                <th className="py-2 pr-3 font-semibold">Chain</th>
+                <th className="py-2 px-3 font-semibold text-right">Price 24h</th>
+                <th className="py-2 px-3 font-semibold text-right">Mkt Cap</th>
+                <th className="py-2 px-3 font-semibold text-right">24h Volume</th>
+                <th className="py-2 pl-3 font-semibold text-right">TPS (spec)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r) => {
+                const active = r.chainId === chain.id;
+                return (
+                  <tr
+                    key={r.chainId}
+                    className={cn(
+                      "border-b border-border/20 transition-colors",
+                      active ? "bg-primary/5" : "hover:bg-muted/20",
+                    )}
+                  >
+                    <td className="py-2.5 pr-3">
+                      <span className={cn("font-medium", active ? "text-primary" : "text-foreground")}>
+                        {r.name}{active && <span className="ml-2 text-[10px] uppercase tracking-wider text-primary">viewing</span>}
+                      </span>
+                    </td>
+                    <td className={cn(
+                      "py-2.5 px-3 text-right font-mono font-medium",
+                      r.change24h >= 0 ? "text-success" : "text-danger",
+                    )}>
+                      <span className="inline-flex items-center gap-1">
+                        {r.change24h >= 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                        {r.change24h >= 0 ? "+" : ""}{r.change24h.toFixed(2)}%
+                      </span>
+                    </td>
+                    <td className="py-2.5 px-3 text-right font-mono text-foreground">{compact(r.marketCap)}</td>
+                    <td className="py-2.5 px-3 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <div className="hidden md:block h-1.5 w-16 rounded-full bg-muted/40 overflow-hidden">
+                          <div
+                            className={cn("h-full rounded-full", active ? "bg-primary" : "bg-muted-foreground/40")}
+                            style={{ width: `${Math.max(2, (r.volume24h / maxVolume) * 100)}%` }}
+                          />
+                        </div>
+                        <span className="font-mono text-foreground">{compact(r.volume24h)}</span>
+                      </div>
+                    </td>
+                    <td className="py-2.5 pl-3 text-right font-mono text-muted-foreground">
+                      <span className="inline-flex items-center gap-1">
+                        <Zap className="h-3 w-3 opacity-60" />
+                        {r.tps ? r.tps.toLocaleString() : "—"}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          <p className="text-[10px] text-muted-foreground mt-3">
+            Price, market cap and volume are live CoinGecko data for each chain's native asset. TPS is the chain's
+            documented specification, not a live measurement. L2s share their settlement layer's native asset.
+          </p>
+        </div>
+      )}
+    </div>
   );
 }

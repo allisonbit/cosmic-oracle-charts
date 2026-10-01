@@ -74,7 +74,7 @@ export function Footer() {
               <span className="font-display text-lg font-bold glow-text">ORACLEBULL</span>
             </Link>
             <p className="text-muted-foreground max-w-md text-sm md:text-base">
-              Free AI-powered cryptocurrency price predictions, whale tracking, sentiment analysis & blockchain dashboards for 1000+ tokens.
+              Free AI-powered cryptocurrency price predictions, live market data, sentiment analysis & blockchain dashboards for 1000+ tokens.
             </p>
           </div>
 
@@ -119,7 +119,7 @@ export function Footer() {
               <li><Link to="/learn/bitcoin-market-cycles-explained" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Bitcoin Market Cycles</Link></li>
               <li><Link to="/learn/how-ai-is-used-in-crypto-market-analysis" className="block text-sm text-muted-foreground hover:text-primary transition-colors">AI in Crypto Analysis</Link></li>
               <li><Link to="/learn/on-chain-data-explained-for-beginners" className="block text-sm text-muted-foreground hover:text-primary transition-colors">On-Chain Data Guide</Link></li>
-              <li><Link to="/learn/how-whales-influence-market-trends" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Whale Market Influence</Link></li>
+
               <li><Link to="/learn/risk-management-in-volatile-crypto-markets" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Crypto Risk Management</Link></li>
               <li><Link to="/learn/technical-analysis-vs-sentiment-analysis" className="block text-sm text-muted-foreground hover:text-primary transition-colors">TA vs Sentiment Analysis</Link></li>
             </ul>

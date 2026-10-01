@@ -4,9 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Check, Copy, Bot, Sparkles } from "lucide-react";
 
-const PROJECT_REF =
-  (import.meta.env.VITE_SUPABASE_PROJECT_ID as string) || "qynszkirmcrldqmiplwh";
-const MCP_URL = `https://${PROJECT_REF}.supabase.co/functions/v1/mcp`;
+const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL as string | undefined) ?? "";
+const MCP_URL = SUPABASE_URL ? `${SUPABASE_URL.replace(/\/$/, "")}/functions/v1/mcp` : "";
 
 export default function Connect() {
   const [copied, setCopied] = useState(false);

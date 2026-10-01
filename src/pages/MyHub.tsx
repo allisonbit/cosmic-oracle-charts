@@ -11,7 +11,7 @@ const hubPages = [
   { path: "/my/tracker", label: "P&L Tracker", desc: "Track buy prices & real profit/loss", icon: DollarSign, color: "text-cyan-500", bg: "bg-cyan-500/10 border-cyan-500/20" },
   { path: "/my/journal", label: "Trade Journal", desc: "Log trades, track win rate & performance", icon: BookOpen, color: "text-teal-500", bg: "bg-teal-500/10 border-teal-500/20" },
   { path: "/my/alerts", label: "Price Alerts", desc: "Set targets & get notified when they trigger", icon: Bell, color: "text-emerald-500", bg: "bg-emerald-500/10 border-emerald-500/20" },
-  { path: "/my/signals", label: "AI Signals", desc: "AI-powered buy/sell signals for your coins", icon: Zap, color: "text-amber-500", bg: "bg-amber-500/10 border-amber-500/20" },
+  { path: "/my/signals", label: "Signals", desc: "Momentum-based buy/sell signals for your coins", icon: Zap, color: "text-amber-500", bg: "bg-amber-500/10 border-amber-500/20" },
   { path: "/my/news", label: "News Feed", desc: "Personalized alerts, whale moves & market news", icon: Newspaper, color: "text-rose-500", bg: "bg-rose-500/10 border-rose-500/20" },
   { path: "/my/dca", label: "DCA Planner", desc: "Dollar-cost average plans & performance", icon: Repeat, color: "text-lime-500", bg: "bg-lime-500/10 border-lime-500/20" },
   { path: "/my/copy", label: "Copy Trading", desc: "Follow top traders & copy their strategies", icon: Copy, color: "text-orange-500", bg: "bg-orange-500/10 border-orange-500/20" },

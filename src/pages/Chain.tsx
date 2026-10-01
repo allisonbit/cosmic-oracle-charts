@@ -3,44 +3,34 @@ import { memo, useMemo, useCallback, lazy, Suspense, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { getChainById, getChainSEO, CHAINS } from "@/lib/chainConfig";
 import { SITE_URL } from "@/lib/siteConfig";
-import { useChainData } from "@/hooks/useChainData";
-import { useChainForecast } from "@/hooks/useChainForecast";
-import { useAdvancedChainData } from "@/hooks/useAdvancedChainData";
+import { useChainData, type ChainOverview, type TokenHeat } from "@/hooks/useChainData";
+import { useChainForecast, type ChainForecast } from "@/hooks/useChainForecast";
+import { useAdvancedChainData, type AdvancedChainDataResponse } from "@/hooks/useAdvancedChainData";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 import { useRealtimePrices } from "@/hooks/useRealtimePrices";
 import { Layout } from "@/components/layout/Layout";
 import { ChainExternalLinks } from "@/components/chain/ChainExternalLinks";
-import { ChainSpecificMetrics } from "@/components/chain/ChainSpecificMetrics";
 import { LiveTokenSearchPanel } from "@/components/chain/LiveTokenSearchPanel";
 import { ChainFAQSchema, ChainFAQDisplay } from "@/components/chain/ChainFAQSchema";
 import { ChainSEOContent } from "@/components/seo/index";
 import { LazySection } from "@/components/ui/LazySection";
 import {
   ArrowLeft, ExternalLink, RefreshCw, TrendingUp, TrendingDown,
-  Activity, Zap, Users, DollarSign, BarChart3, Globe, ChevronLeft, ChevronRight,
-  Flame, Shield, Layers, Sparkles, Target, ArrowRight, Check, Coins, BookOpen,
+  Activity, Zap, DollarSign, BarChart3, Globe, ChevronLeft, ChevronRight,
+  Flame, Layers, Sparkles, Target, ArrowRight, Check, Coins, BookOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
-// Lazy load heavy components
+// Lazy load heavy components — all fed by real engine / DexScreener data.
 const EnhancedPriceAnalysis = lazy(() => import("@/components/chain/EnhancedPriceAnalysis").then(m => ({ default: m.EnhancedPriceAnalysis })));
 const EnhancedPredictionDeepDive = lazy(() => import("@/components/chain/EnhancedPredictionDeepDive").then(m => ({ default: m.EnhancedPredictionDeepDive })));
-const EnhancedWhaleActivityRadar = lazy(() => import("@/components/chain/EnhancedWhaleActivityRadar").then(m => ({ default: m.EnhancedWhaleActivityRadar })));
 const EnhancedTokenHeatScanner = lazy(() => import("@/components/chain/EnhancedTokenHeatScanner").then(m => ({ default: m.EnhancedTokenHeatScanner })));
-const EnhancedSmartMoneyFlow = lazy(() => import("@/components/chain/EnhancedSmartMoneyFlow").then(m => ({ default: m.EnhancedSmartMoneyFlow })));
-const EnhancedRiskAnalyzer = lazy(() => import("@/components/chain/EnhancedRiskAnalyzer").then(m => ({ default: m.EnhancedRiskAnalyzer })));
-const EnhancedSocialSentimentGalaxy = lazy(() => import("@/components/chain/EnhancedSocialSentimentGalaxy").then(m => ({ default: m.EnhancedSocialSentimentGalaxy })));
 const EnhancedTokenDiscoveryEngine = lazy(() => import("@/components/chain/EnhancedTokenDiscoveryEngine").then(m => ({ default: m.EnhancedTokenDiscoveryEngine })));
 const EnhancedDailySummary = lazy(() => import("@/components/chain/EnhancedDailySummary").then(m => ({ default: m.EnhancedDailySummary })));
-const EnhancedChainHealthMonitor = lazy(() => import("@/components/chain/EnhancedChainHealthMonitor").then(m => ({ default: m.EnhancedChainHealthMonitor })));
-const EnhancedDeepFinancialMetrics = lazy(() => import("@/components/chain/EnhancedDeepFinancialMetrics").then(m => ({ default: m.EnhancedDeepFinancialMetrics })));
-const EnhancedAdvancedPredictionModels = lazy(() => import("@/components/chain/EnhancedAdvancedPredictionModels").then(m => ({ default: m.EnhancedAdvancedPredictionModels })));
-const EnhancedAnomalyDetection = lazy(() => import("@/components/chain/EnhancedAnomalyDetection").then(m => ({ default: m.EnhancedAnomalyDetection })));
 const EnhancedMultiChainComparison = lazy(() => import("@/components/chain/EnhancedMultiChainComparison").then(m => ({ default: m.EnhancedMultiChainComparison })));
-const EnhancedInstitutionalView = lazy(() => import("@/components/chain/EnhancedInstitutionalView").then(m => ({ default: m.EnhancedInstitutionalView })));
 const NetworkInfoPanel = lazy(() => import("@/components/chain/NetworkInfoPanel").then(m => ({ default: m.NetworkInfoPanel })));
 
 const ComponentLoader = memo(function ComponentLoader() {
@@ -66,13 +56,6 @@ function formatCompact(num: number): string {
   if (num >= 1e3) return `$${(num / 1e3).toFixed(1)}K`;
   return `$${(num ?? 0).toFixed(0)}`;
 }
-function formatNum(num: number): string {
-  if (!num) return "—";
-  if (num >= 1e9) return `${(num / 1e9).toFixed(1)}B`;
-  if (num >= 1e6) return `${(num / 1e6).toFixed(1)}M`;
-  if (num >= 1e3) return `${(num / 1e3).toFixed(0)}K`;
-  return (num ?? 0).toFixed(0);
-}
 
 const MONTH_YEAR = new Date().toLocaleString("en-US", { month: "long", year: "numeric" });
 
@@ -84,8 +67,8 @@ export default function Chain() {
   const [activeTab, setActiveTab] = useState("overview");
 
   const { data: chainData, isLoading: chainLoading, isFetching: chainFetching, refetch: refetchChainData } = useChainData(chainId || "", !!chain);
-  const { data: forecastData, isLoading: forecastLoading, refetch: refetchForecast } = useChainForecast(chainId || "", chainData, !!chain && !!chainData);
-  const { data: advancedData, isLoading: advancedLoading, refetch: refetchAdvanced } = useAdvancedChainData(chainId || "", !!chain);
+  const { data: forecastData, isLoading: forecastLoading } = useChainForecast(chainId || "", !!chain);
+  const { data: advancedData, isLoading: advancedLoading } = useAdvancedChainData(!!chain);
   const { data: pricesData } = useCryptoPrices();
   const realtimePrices = useRealtimePrices(chain ? [chain.symbol] : []);
 
@@ -96,8 +79,8 @@ export default function Chain() {
   const chainPrice = useMemo(() => pricesData?.prices?.find(p => p.symbol === chain?.symbol), [pricesData?.prices, chain?.symbol]);
 
   const handleRefreshAll = useCallback(() => {
-    refetchChainData(); refetchForecast(); refetchAdvanced();
-  }, [refetchChainData, refetchForecast, refetchAdvanced]);
+    refetchChainData();
+  }, [refetchChainData]);
 
   if (!chain) {
     return (
@@ -119,7 +102,7 @@ export default function Chain() {
   }
 
   const livePrice = realtimePrices.prices?.[chain.symbol.toLowerCase()] || realtimePrices.prices?.[chain.id];
-  const currentPrice = livePrice?.price || chainPrice?.price || (chainData?.overview as any)?.nativePrice || 0;
+  const currentPrice = livePrice?.price || chainPrice?.price || 0;
   const priceChange = livePrice?.change24h || chainPrice?.change24h || chainData?.overview?.priceChange24h || 0;
   const isPositive = priceChange >= 0;
 
@@ -129,20 +112,20 @@ export default function Chain() {
   const accentSoft = `hsl(${chain.color} / 0.12)`;
 
   // SEO
-  const title = `${chain.name} (${chain.symbol}) Analytics — Live Price, TVL & AI Predictions (${MONTH_YEAR})`;
+  const title = `${chain.name} (${chain.symbol}) Analytics — Live Price, DEX Volume & AI Predictions (${MONTH_YEAR})`;
   const metaDescription = seo
-    ? `${chain.name} (${chain.symbol}) live analytics: ${formatPrice(currentPrice || chainPrice?.price || 0)} price, market cap, DeFi TVL, on-chain activity, whale tracking and AI predictions. ${seo.tagline}. Updated ${MONTH_YEAR}.`.slice(0, 300)
-    : `${chain.name} (${chain.symbol}) live analytics, on-chain metrics, whale activity and AI price predictions.`;
+    ? `${chain.name} (${chain.symbol}) live analytics: ${formatPrice(currentPrice || chainPrice?.price || 0)} price, market cap, DEX volume, live token scanner and engine price predictions. ${seo.tagline}. Updated ${MONTH_YEAR}.`.slice(0, 300)
+    : `${chain.name} (${chain.symbol}) live analytics, DEX market data and engine price predictions.`;
   const canonical = `${SITE_URL}/chain/${chain.id}`;
   const predictionHref = `/price-prediction/${chain.coingeckoId}`;
 
+  // Real or documented stats only: market cap + volume are live (CoinGecko/DexScreener),
+  // throughput and consensus are documented specs from chainConfig.
   const heroStats = [
     { label: "Market Cap", value: overview ? formatCompact(overview.marketCap) : "—", icon: DollarSign },
-    { label: "24h Volume", value: overview ? formatCompact(overview.volume24h) : "—", icon: BarChart3 },
-    { label: "DeFi TVL", value: overview ? formatCompact(overview.defiTvl) : "—", icon: Layers },
-    { label: "TPS", value: overview?.tps ? formatNum(overview.tps) : (chain.tps ? formatNum(chain.tps) : "—"), icon: Zap },
-    { label: "Active Wallets", value: overview ? formatNum(overview.activeWallets) : "—", icon: Users },
-    { label: "Gas", value: overview ? `$${overview.gasFees < 0.01 ? (overview.gasFees ?? 0).toFixed(4) : (overview.gasFees ?? 0).toFixed(2)}` : "—", icon: Flame },
+    { label: "24h DEX Volume", value: overview ? formatCompact(overview.volume24h) : "—", icon: BarChart3 },
+    { label: "Throughput", value: chain.tps ? `${formatCompact(chain.tps).replace("$", "")} TPS` : "—", icon: Zap },
+    { label: "Consensus", value: chain.consensus || "—", icon: Layers },
   ];
 
   return (
@@ -150,8 +133,6 @@ export default function Chain() {
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={metaDescription} />
-        
-        
       </Helmet>
       <ChainFAQSchema chain={chain} priceData={chainPrice} />
 
@@ -209,7 +190,7 @@ export default function Chain() {
             </div>
 
             {/* Stat cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
               {heroStats.map((s) => (
                 <div key={s.label} className="rounded-xl bg-background/50 backdrop-blur-sm border border-border/40 p-3">
                   <div className="flex items-center gap-1.5 text-muted-foreground mb-1"><s.icon className="h-3.5 w-3.5" /><span className="text-[10px] uppercase tracking-wider truncate">{s.label}</span></div>
@@ -265,9 +246,6 @@ export default function Chain() {
               {[
                 { value: "overview", label: "Overview", icon: Activity },
                 { value: "tokens", label: "Tokens", icon: Flame },
-                { value: "analytics", label: "Analytics", icon: BarChart3 },
-                { value: "health", label: "Health", icon: Shield },
-                { value: "whales", label: "Whales", icon: TrendingUp },
                 { value: "predictions", label: "AI Predictions", icon: Zap },
               ].map(tab => (
                 <TabsTrigger key={tab.value} value={tab.value} className="flex items-center gap-1.5 text-xs sm:text-sm whitespace-nowrap rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm px-3 py-1.5">
@@ -279,13 +257,12 @@ export default function Chain() {
 
           {/* OVERVIEW */}
           <TabsContent value="overview" className="space-y-4 sm:space-y-6 mt-4">
-            <ChainSpecificMetrics chain={chain} chainSpecificData={chainData?.chainSpecificData} />
             <Suspense fallback={<ComponentLoader />}><NetworkInfoPanel chain={chain} overview={chainData?.overview} isLoading={chainLoading} /></Suspense>
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
               <Suspense fallback={<ComponentLoader />}><EnhancedPriceAnalysis chain={chain} priceData={chainPrice} /></Suspense>
-              <Suspense fallback={<ComponentLoader />}><EnhancedDailySummary chain={chain} forecast={forecastData?.forecast} isLoading={forecastLoading} /></Suspense>
+              <Suspense fallback={<ComponentLoader />}><EnhancedDailySummary chain={chain} forecast={forecastData?.forecast ?? undefined} isLoading={forecastLoading} /></Suspense>
             </div>
-            <Suspense fallback={<ComponentLoader />}><EnhancedMultiChainComparison chain={chain} comparisonData={advancedData?.comparisonData} isLoading={advancedLoading} /></Suspense>
+            <Suspense fallback={<ComponentLoader />}><EnhancedMultiChainComparison chain={chain} comparisonData={advancedData} isLoading={advancedLoading} /></Suspense>
           </TabsContent>
 
           {/* TOKENS */}
@@ -295,35 +272,11 @@ export default function Chain() {
             <LazySection fallbackHeight="h-64"><Suspense fallback={<ComponentLoader />}><EnhancedTokenDiscoveryEngine chain={chain} /></Suspense></LazySection>
           </TabsContent>
 
-          {/* ANALYTICS */}
-          <TabsContent value="analytics" className="space-y-4 sm:space-y-6 mt-4">
-            <LazySection fallbackHeight="h-64"><Suspense fallback={<ComponentLoader />}><EnhancedDeepFinancialMetrics chain={chain} financialData={advancedData?.financialData} isLoading={advancedLoading} /></Suspense></LazySection>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-              <LazySection fallbackHeight="h-64"><Suspense fallback={<ComponentLoader />}><EnhancedSmartMoneyFlow chain={chain} smartMoneyFlow={chainData?.smartMoneyFlow} isLoading={chainLoading} /></Suspense></LazySection>
-              <LazySection fallbackHeight="h-64"><Suspense fallback={<ComponentLoader />}><EnhancedRiskAnalyzer chain={chain} /></Suspense></LazySection>
-            </div>
-            <LazySection fallbackHeight="h-64"><Suspense fallback={<ComponentLoader />}><EnhancedInstitutionalView chain={chain} institutionalData={advancedData?.institutionalData} isLoading={advancedLoading} /></Suspense></LazySection>
-          </TabsContent>
-
-          {/* HEALTH */}
-          <TabsContent value="health" className="space-y-4 sm:space-y-6 mt-4">
-            <LazySection fallbackHeight="h-64"><Suspense fallback={<ComponentLoader />}><EnhancedChainHealthMonitor chain={chain} healthData={advancedData?.healthData} isLoading={advancedLoading} onRefresh={refetchAdvanced} /></Suspense></LazySection>
-            <LazySection fallbackHeight="h-64"><Suspense fallback={<ComponentLoader />}><EnhancedAnomalyDetection chain={chain} anomalyData={advancedData?.anomalyData} isLoading={advancedLoading} /></Suspense></LazySection>
-          </TabsContent>
-
-          {/* WHALES */}
-          <TabsContent value="whales" className="space-y-4 sm:space-y-6 mt-4">
-            <LazySection fallbackHeight="h-80"><Suspense fallback={<ComponentLoader />}><EnhancedWhaleActivityRadar chain={chain} whaleActivity={chainData?.whaleActivity} isLoading={chainLoading} /></Suspense></LazySection>
-            <LazySection fallbackHeight="h-64"><Suspense fallback={<ComponentLoader />}><EnhancedSocialSentimentGalaxy chain={chain} socialSentiment={forecastData?.socialSentiment} isLoading={forecastLoading} /></Suspense></LazySection>
-          </TabsContent>
-
           {/* PREDICTIONS */}
           <TabsContent value="predictions" className="space-y-4 sm:space-y-6 mt-4">
-            <LazySection fallbackHeight="h-64"><Suspense fallback={<ComponentLoader />}><EnhancedPredictionDeepDive chain={chain} forecast={forecastData?.forecast} isLoading={forecastLoading} /></Suspense></LazySection>
-            <LazySection fallbackHeight="h-64"><Suspense fallback={<ComponentLoader />}><EnhancedAdvancedPredictionModels chain={chain} predictionData={advancedData?.predictionData} isLoading={advancedLoading} /></Suspense></LazySection>
+            <LazySection fallbackHeight="h-64"><Suspense fallback={<ComponentLoader />}><EnhancedPredictionDeepDive chain={chain} forecast={forecastData?.forecast ?? undefined} isLoading={forecastLoading} /></Suspense></LazySection>
           </TabsContent>
         </Tabs>
-
 
         {/* ═══════════ ABOUT / SEO CONTENT ═══════════ */}
         {seo && (

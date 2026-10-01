@@ -1,11 +1,14 @@
-import { createContext, useContext, useEffect, useState, useCallback, useRef, lazy, Suspense, ReactNode } from "react";
-import type { PrivyBridgeState } from "@/auth/PrivyLayer";
+import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from "react";
+import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { SignInModal } from "@/components/auth/SignInModal";
 
-// PrivyLayer is loaded lazily so the heavy web3/wallet stack stays out of the
-// initial bundle. It only mounts once auth is actually needed (login click,
-// protected route, or trade page) — public/SEO pages never download it.
-const PrivyLayer = lazy(() => import("@/auth/PrivyLayer"));
+// ── Auth — simple email/password via Supabase Auth ───────────────────────────
+// Replaces the previous Privy wallet flow. The exported context shape is kept
+// compatible with the old hook so consumer components keep working:
+//   login() now opens the email/password modal (was: Privy wallet modal).
+//   privyReady is kept as a name for compatibility; it simply means "session
+//   state is known" (no lazy loading is needed for email/password auth).
 
 interface UserProfile {
   id: string;
@@ -20,21 +23,22 @@ interface UserProfile {
 
 interface AuthContextType {
   user: { id: string } | null;
-  session: null;
+  session: Session | null;
   profile: UserProfile | null;
   loading: boolean;
-  /** Public-friendly: true unless Privy is loading after being requested. */
+  /** Public-friendly: always true once session state is known. */
   ready: boolean;
-  /** True only once Privy has actually loaded & initialized (for gating private routes). */
+  /** Legacy name (Privy era) — true once the session state is known. */
   privyReady: boolean;
   authenticated: boolean;
   email: string | null;
+  /** Opens the email/password sign-in modal. */
   login: () => void;
   logout: () => Promise<void>;
   getAccessToken: () => Promise<string | null>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
-  /** Trigger Privy to load without opening the login modal (private routes). */
+  /** Legacy no-op (Privy era) — kept so existing call sites keep compiling. */
   ensurePrivy: () => void;
 }
 
@@ -60,123 +64,134 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
-const EMPTY_BRIDGE: PrivyBridgeState = {
-  ready: false,
-  authenticated: false,
-  user: null,
-  login: noop,
-  logout: async () => {},
-  getAccessToken: async () => null,
-};
+function deriveProfile(id: string, email: string | null): UserProfile {
+  const name = email ? email.split("@")[0] : `User-${id.slice(-4)}`;
+  return {
+    id,
+    display_name: name,
+    avatar_url: null,
+    email,
+    watchlist: [],
+    preferences: {},
+    is_premium: true,
+    email_notifications: false,
+  };
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [privyRequested, setPrivyRequested] = useState(false);
-  const [bridge, setBridge] = useState<PrivyBridgeState>(EMPTY_BRIDGE);
+  const [session, setSession] = useState<Session | null>(null);
+  const [sessionKnown, setSessionKnown] = useState(false);
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const pendingLoginRef = useRef(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
-  const ensurePrivy = useCallback(() => setPrivyRequested(true), []);
-
-  const login = useCallback(() => {
-    pendingLoginRef.current = true;
-    setPrivyRequested(true);
+  const fetchProfile = useCallback(async (uid: string, email: string | null) => {
+    // Try the profiles table first; fall back to a derived profile so the UI
+    // still works before/without a row (e.g. fresh project, pending triggers).
+    try {
+      const { data } = await supabase
+        .from("profiles")
+        .select("display_name, avatar_url, email, watchlist, preferences, is_premium, email_notifications")
+        .eq("id", uid)
+        .maybeSingle();
+      if (data) {
+        setProfile({
+          id: uid,
+          display_name: data.display_name ?? (email ? email.split("@")[0] : null),
+          avatar_url: data.avatar_url ?? null,
+          email: data.email ?? email,
+          watchlist: Array.isArray(data.watchlist) ? data.watchlist : [],
+          preferences: (data.preferences as Record<string, unknown>) ?? {},
+          is_premium: data.is_premium ?? true,
+          email_notifications: data.email_notifications ?? false,
+        });
+        return;
+      }
+    } catch {
+      /* table missing — derived profile below */
+    }
+    setProfile(deriveProfile(uid, email));
   }, []);
 
-  // Once the Privy bridge is ready, fire any pending login request.
   useEffect(() => {
-    if (pendingLoginRef.current && bridge.ready) {
-      pendingLoginRef.current = false;
-      bridge.login();
-    }
-  }, [bridge]);
+    supabase.auth
+      .getSession()
+      .then(({ data }) => {
+        setSession(data.session);
+        setSessionKnown(true);
+      })
+      .catch(() => setSessionKnown(true));
 
-  // Derive a lightweight profile from the Privy user.
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession);
+      setSessionKnown(true);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  const uid = session?.user?.id ?? null;
+  const uemail = session?.user?.email ?? null;
+
   useEffect(() => {
-    if (bridge.ready && bridge.authenticated && bridge.user) {
-      const pu = bridge.user;
-      setProfile({
-        id: pu.id,
-        display_name: pu.email ? pu.email.address.split("@")[0] : `User-${String(pu.id).slice(-4)}`,
-        avatar_url: null,
-        email: pu.email?.address || null,
-        watchlist: [],
-        preferences: {},
-        is_premium: true,
-        email_notifications: false,
-      });
-    } else if (bridge.ready && !bridge.authenticated) {
+    if (uid) {
+      fetchProfile(uid, uemail);
+    } else {
       setProfile(null);
     }
-  }, [bridge.ready, bridge.authenticated, bridge.user]);
+  }, [uid, uemail, fetchProfile]);
 
-  // Fire a one-time Welcome email on first wallet-linked profile creation.
+  // Fire a one-time Welcome email on first sign-in (non-blocking, idempotent).
   useEffect(() => {
-    if (!profile?.email || !profile.id) return;
-    const key = `welcome-wallet-${profile.id}`;
-    const sent = localStorage.getItem(key);
-    if (sent === "1") return;
+    if (!uid || !uemail) return;
+    const key = `welcome-${uid}`;
+    if (localStorage.getItem(key) === "1") return;
     supabase.functions
       .invoke("send-transactional-email", {
         body: {
           templateName: "welcome",
-          recipientEmail: profile.email,
-          idempotencyKey: `welcome-wallet-${profile.id}`,
-          templateData: { name: profile.display_name || undefined },
+          recipientEmail: uemail,
+          idempotencyKey: `welcome-${uid}`,
+          templateData: { name: (profile?.display_name || uemail.split("@")[0]) ?? undefined },
         },
       })
-      .then(() => {
-        localStorage.setItem(key, "1");
-      })
+      .then(() => localStorage.setItem(key, "1"))
       .catch(() => {
         // Non-blocking; localStorage won't be set, so it retries on next mount.
       });
-  }, [profile?.id, profile?.email]);
+  }, [uid, uemail, profile?.display_name]);
 
-  // Sync the Privy access token to the global scope for Supabase to use.
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      if (bridge.authenticated) {
-        try {
-          const token = await bridge.getAccessToken();
-          if (!cancelled) (globalThis as any).__privyAccessToken = token;
-        } catch {
-          if (!cancelled) (globalThis as any).__privyAccessToken = null;
-        }
-      } else {
-        (globalThis as any).__privyAccessToken = null;
-      }
-    })();
-    return () => { cancelled = true; };
-  }, [bridge]);
+  const login = useCallback(() => setModalOpen(true), []);
 
-  const privyReady = privyRequested && bridge.ready;
+  const signOut = useCallback(async () => {
+    await supabase.auth.signOut();
+    setProfile(null);
+  }, []);
+
+  const getAccessToken = useCallback(async () => {
+    const { data } = await supabase.auth.getSession();
+    return data.session?.access_token ?? null;
+  }, []);
 
   const value: AuthContextType = {
-    user: bridge.authenticated && bridge.user ? { id: bridge.user.id } : null,
-    session: null,
+    user: uid ? { id: uid } : null,
+    session,
     profile,
-    loading: privyRequested && !bridge.ready,
-    ready: !privyRequested || bridge.ready,
-    privyReady,
-    authenticated: bridge.authenticated,
-    email: profile?.email || null,
+    loading: !sessionKnown,
+    ready: sessionKnown,
+    privyReady: sessionKnown,
+    authenticated: !!uid,
+    email: uemail,
     login,
-    logout: async () => { await bridge.logout(); setProfile(null); },
-    getAccessToken: bridge.getAccessToken,
-    signOut: async () => { await bridge.logout(); setProfile(null); },
-    refreshProfile: async () => {},
-    ensurePrivy,
+    logout: signOut,
+    getAccessToken,
+    signOut,
+    refreshProfile: async () => { if (uid) await fetchProfile(uid, uemail); },
+    ensurePrivy: noop,
   };
 
   return (
     <AuthContext.Provider value={value}>
       {children}
-      {privyRequested && (
-        <Suspense fallback={null}>
-          <PrivyLayer onState={setBridge} />
-        </Suspense>
-      )}
+      <SignInModal open={modalOpen} onOpenChange={setModalOpen} />
     </AuthContext.Provider>
   );
 }

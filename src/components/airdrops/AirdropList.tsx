@@ -19,7 +19,7 @@ const FILTER_TABS = [
 type SortKey = "aiScore" | "rewardRatio" | "estValue";
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
-  { key: "aiScore", label: "AI Score" },
+  { key: "aiScore", label: "Editorial Score" },
   { key: "rewardRatio", label: "Effort:Reward" },
   { key: "estValue", label: "Est. Value" },
 ];
@@ -94,7 +94,7 @@ export function AirdropList() {
         <div className="flex items-center gap-2 mb-4">
           <TrendingUp className="w-4 h-4 text-primary" />
           <span className="text-sm font-bold text-foreground">{filtered.length} opportunities</span>
-          <span className="text-xs text-muted-foreground">· ranked by {sort === "aiScore" ? "Oracle AI Score" : sort === "rewardRatio" ? "Effort:Reward ratio" : "estimated value"}</span>
+          <span className="text-xs text-muted-foreground">· ranked by {sort === "aiScore" ? "editorial score" : sort === "rewardRatio" ? "Effort:Reward ratio" : "estimated value"} — editorial estimates, not live data</span>
         </div>
 
         {filtered.length === 0 ? (

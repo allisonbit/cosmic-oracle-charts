@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { invokeFunction } from "@/integrations/supabase/functions";
+import { fetchMarkets, fetchGlobal, fetchFearGreed } from "@/lib/marketEngine";
 
 export interface MarketEvent {
   id: string;
@@ -76,82 +76,66 @@ export interface CryptoFactoryData {
   narratives: NarrativeItem[];
   news: NewsItem[];
   trending: TrendingCoin[];
-  globalStats: GlobalStats;
+  globalStats?: GlobalStats;
   fearGreed?: { value: number; classification: string };
   topMovers?: any[];
   timestamp: number;
 }
 
-export function useCryptoFactory(filters?: {
+/**
+ * Standalone Crypto Factory data. Real, engine-backed sections: global market
+ * stats, top 24h movers and Fear & Greed. The feeds that required backend
+ * aggregation (event calendar, on-chain whale flows, narratives, scored news)
+ * have no key-free public source, so they return honestly empty arrays and the
+ * UI shows its "no data right now" states — nothing is simulated.
+ */
+export function useCryptoFactory(_filters?: {
   chain?: string;
   asset?: string;
   impact?: string;
   narrative?: string;
 }) {
   return useQuery<CryptoFactoryData>({
-    queryKey: ['crypto-factory', filters],
+    queryKey: ['crypto-factory'],
     queryFn: async () => {
-      const { data, error } = await invokeFunction('crypto-factory');
-      
-      if (error) {
-        console.error('Crypto factory error:', error);
-        throw error;
-      }
+      const [markets, global, fng] = await Promise.all([
+        fetchMarkets(100),
+        fetchGlobal(),
+        fetchFearGreed(),
+      ]);
 
-      let { events, onChainActivity, narratives, news } = data || {};
-      events = events || [];
-      onChainActivity = onChainActivity || [];
-      narratives = narratives || [];
-      news = news || [];
-      const { trending, globalStats, fearGreed, topMovers, timestamp } = data || {};
+      const topMovers = [...markets]
+        .sort((a, b) => Math.abs(b.change24h) - Math.abs(a.change24h))
+        .slice(0, 15)
+        .map(c => ({ id: c.id, symbol: c.symbol, name: c.name, logo: c.image, change24h: c.change24h }));
 
-      // Apply filters
-      if (filters?.chain && filters.chain !== 'All') {
-        events = events.filter((e: MarketEvent) => 
-          e.chain.toLowerCase().includes(filters.chain!.toLowerCase())
-        );
-        onChainActivity = onChainActivity.filter((a: OnChainActivity) => 
-          a.chain.toLowerCase().includes(filters.chain!.toLowerCase())
-        );
-        narratives = narratives.filter((n: NarrativeItem) => 
-          n.chains.some(c => c.toLowerCase().includes(filters.chain!.toLowerCase()))
-        );
-      }
-
-      if (filters?.asset) {
-        events = events.filter((e: MarketEvent) => 
-          e.asset.toLowerCase().includes(filters.asset!.toLowerCase())
-        );
-        onChainActivity = onChainActivity.filter((a: OnChainActivity) => 
-          a.asset.toLowerCase().includes(filters.asset!.toLowerCase())
-        );
-        news = news.filter((n: NewsItem) => 
-          n.relatedAssets.some((a: string) => a.toLowerCase().includes(filters.asset!.toLowerCase()))
-        );
-      }
-
-      if (filters?.impact && filters.impact !== 'All') {
-        events = events.filter((e: MarketEvent) => e.impact === filters.impact);
-      }
+      const globalStats: GlobalStats | undefined = global
+        ? {
+            totalMarketCap: global.totalMarketCap,
+            totalVolume: global.totalVolume24h,
+            btcDominance: global.btcDominance,
+            ethDominance: global.ethDominance,
+            marketCapChange24h: global.marketCapChange24h,
+            activeCryptocurrencies: global.activeCryptocurrencies,
+          }
+        : undefined;
 
       return {
-        events,
-        onChainActivity,
-        narratives,
-        news,
-        trending: trending || [],
-        globalStats: globalStats || {},
-        fearGreed: fearGreed || { value: 50, classification: 'Neutral' },
-        topMovers: topMovers || [],
-        timestamp,
+        events: [],
+        onChainActivity: [],
+        narratives: [],
+        news: [],
+        trending: [],
+        globalStats,
+        fearGreed: fng ?? undefined,
+        topMovers,
+        timestamp: Date.now(),
       };
     },
-    staleTime: 45000,
-    refetchInterval: 60000, // Refresh every 60 seconds 24/7
-    gcTime: 1000 * 60 * 15, // 15 min cache
-    refetchIntervalInBackground: false, // Keep updating in background
+    staleTime: 120_000,
+    refetchInterval: false, // refresh on visit / manual refresh
+    gcTime: 1000 * 60 * 15,
     refetchOnWindowFocus: true,
-    refetchOnReconnect: true,
-    retry: 3,
+    retry: 1,
   });
 }

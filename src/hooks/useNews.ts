@@ -1,7 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { invokeFunction } from "@/integrations/supabase/functions";
 
-// ── Types ─────────────────────────────────────────────────────────────────────
+// ── Types ────────────────────────────────────────────────────────────────
+// Standalone build: the `news-feed` edge function (which aggregated external
+// crypto news) no longer exists. There is no key-free public news source wired
+// up, so the hooks below return an explicit empty feed — the news pages show
+// their honest "no stories" states instead of fabricated articles.────
 export interface NewsCoin {
   id: string;
   name: string;
@@ -52,18 +55,12 @@ export function useNewsFeed(params: { category?: string; q?: string; limit?: num
   const { category = "All", q = "", limit = 40 } = params;
   return useQuery<NewsListResponse>({
     queryKey: ["news-feed", category, q, limit],
-    queryFn: async () => {
-      const { data, error } = await invokeFunction<NewsListResponse>("news-feed", {
-        body: { category, q, limit },
-      });
-      if (error) throw new Error(error.message);
-      return data ?? { articles: [], total: 0, categories: [] };
-    },
-    staleTime: 60_000,
-    refetchInterval: 5 * 60_000, // mirror the 30-min server refresh without hammering
-    refetchOnWindowFocus: true,
-    placeholderData: (prev) => prev, // keep showing results while a new filter loads
-    retry: 2,
+    queryFn: async () => ({ articles: [], total: 0, categories: [] }),
+    staleTime: 5 * 60_000,
+    refetchInterval: false,
+    refetchOnWindowFocus: false,
+    placeholderData: (prev) => prev,
+    retry: false,
   });
 }
 
@@ -71,16 +68,10 @@ export function useNewsFeed(params: { category?: string; q?: string; limit?: num
 export function useNewsArticle(slug: string | undefined) {
   return useQuery<NewsArticleResponse>({
     queryKey: ["news-article", slug],
-    queryFn: async () => {
-      const { data, error } = await invokeFunction<NewsArticleResponse>("news-feed", {
-        body: { slug },
-      });
-      if (error) throw new Error(error.message);
-      return data ?? { article: null, related: [] };
-    },
+    queryFn: async () => ({ article: null, related: [] }),
     enabled: !!slug,
     staleTime: 5 * 60_000,
-    retry: 2,
+    retry: false,
   });
 }
 

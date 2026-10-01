@@ -1,38 +1,27 @@
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-import { componentTagger } from "lovable-tagger";
 import { VitePWA } from "vite-plugin-pwa";
-import { mcpPlugin } from "@lovable.dev/mcp-js/stacks/supabase/vite";
 
-const DEFAULT_SUPABASE_URL = "https://qynszkirmcrldqmiplwh.supabase.co";
-const DEFAULT_SUPABASE_PUBLISHABLE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJIUzI1NiIsInJlZiI6InF5bnN6a2lybWNybGRxbWlwbHdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzU2NTQsImV4cCI6MjA4MDc1MTY1NH0.8Jr8lpfAifN-ozIQmA9_wU5YqYjZVlq3Q35KccSI-g0";
-
-export default defineConfig(({ mode, command }) => {
+// Supabase config is ENV-ONLY (no hardcoded project refs). Set in Vercel and
+// locally in .env — the client throws at startup if they're missing:
+//   VITE_SUPABASE_URL=https://<project-ref>.supabase.co
+//   VITE_SUPABASE_PUBLISHABLE_KEY=<anon publishable key>
+export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   const resolvedSupabaseUrl =
-    env.VITE_SUPABASE_URL ||
-    process.env.VITE_SUPABASE_URL ||
-    DEFAULT_SUPABASE_URL;
+    env.VITE_SUPABASE_URL || process.env.VITE_SUPABASE_URL || "";
   const resolvedSupabaseKey =
     env.VITE_SUPABASE_PUBLISHABLE_KEY ||
     env.VITE_SUPABASE_ANON_KEY ||
     process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
     process.env.VITE_SUPABASE_ANON_KEY ||
-    DEFAULT_SUPABASE_PUBLISHABLE_KEY;
+    "";
 
-  process.env.VITE_SUPABASE_URL = resolvedSupabaseUrl;
-  process.env.VITE_SUPABASE_PUBLISHABLE_KEY = resolvedSupabaseKey;
-  process.env.VITE_SUPABASE_ANON_KEY = resolvedSupabaseKey;
-
-  if (command === "build" && mode !== "development") {
-    if (!resolvedSupabaseKey || resolvedSupabaseKey === "missing-key") {
-      console.warn("[build] Warning: VITE_SUPABASE_PUBLISHABLE_KEY is not set.");
-    }
-    if (!resolvedSupabaseUrl) {
-      console.warn("[build] Warning: VITE_SUPABASE_URL is not set.");
-    }
+  if (mode === "production" && (!resolvedSupabaseUrl || !resolvedSupabaseKey)) {
+    throw new Error(
+      "[build] Missing Supabase config: set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY (see .env.example).",
+    );
   }
 
   return {
@@ -42,8 +31,6 @@ export default defineConfig(({ mode, command }) => {
     },
     plugins: [
       react(),
-      mode === "development" && componentTagger(),
-      mcpPlugin(),
       VitePWA({
         registerType: "autoUpdate",
         injectRegister: "auto",
@@ -77,12 +64,11 @@ export default defineConfig(({ mode, command }) => {
           display: "standalone",
           icons: [
             { src: "icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
-            { src: "icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
-            { src: "icon-512-maskable.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+            { src: "icon-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
           ],
         },
       }),
-    ].filter(Boolean),
+    ],
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),

@@ -5,7 +5,7 @@ import { DigestSignup } from "@/components/digest/DigestSignup";
 
 export function NewsletterCTASection() {
   return (
-    <section className="py-20 md:py-28 border-t border-primary/15 relative overflow-hidden" aria-labelledby="newsletter-cta-heading">
+    <section className="py-12 md:py-16 border-t border-primary/15 relative overflow-hidden" aria-labelledby="newsletter-cta-heading">
       {/* Deep glow */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute -top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-primary/8 rounded-full blur-[120px]" />

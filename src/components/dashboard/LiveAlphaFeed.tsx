@@ -12,11 +12,8 @@ import { formatRelativeTime, useNowTick } from "@/lib/relativeTime";
 // so only genuinely-new events animate (no full-list layout shift / no marquee).
 
 const TYPE_META: Record<AlphaEventType, { label: string; icon: typeof Zap; cls: string }> = {
-  trade:       { label: "Large Trade", icon: Zap,      cls: "bg-warning/10 text-warning" },
-  whale:       { label: "Whale",       icon: Waves,    cls: "bg-secondary/10 text-secondary" },
-  funding:     { label: "Funding",     icon: Activity, cls: "bg-primary/10 text-primary" },
-  liquidation: { label: "Liquidation", icon: Flame,    cls: "bg-danger/10 text-danger" },
   signal:      { label: "AI Signal",   icon: Brain,    cls: "bg-success/10 text-success" },
+  regime:      { label: "Regime",      icon: Radio,    cls: "bg-primary/10 text-primary" },
 };
 
 function FeedRow({ event, now }: { event: AlphaEvent; now: number }) {
@@ -90,10 +87,9 @@ export function LiveAlphaFeed() {
 
       {/* Helper text — SEO + clarity */}
       <p className="text-xs text-muted-foreground mb-3">
-        Real-time fusion of whale moves, large exchange trades, funding-rate flips, liquidation clusters and AI
-        momentum signals across major assets. <span className="text-foreground font-medium">Live</span> items are
-        sourced from exchange APIs; <span className="text-foreground font-medium">Modeled</span> items are derived
-        estimates.
+        Real-time fusion of AI momentum signals and Fear & Greed regime shifts, computed from live
+        CoinGecko market data. <span className="text-foreground font-medium">Live</span> items come straight from
+        the live index; <span className="text-foreground font-medium">Modeled</span> items are derived estimates.
       </p>
 
       {/* Legend */}

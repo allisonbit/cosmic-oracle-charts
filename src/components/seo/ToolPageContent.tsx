@@ -290,20 +290,21 @@ export function PredictionsHowItWorks() {
       
       <div className="prose max-w-none text-muted-foreground space-y-4">
         <p>
-          Oracle Bull's AI market analysis system combines technical analysis, on-chain data, and sentiment 
-          indicators to generate comprehensive market insights for over 1,000 cryptocurrencies. Our models 
-          are trained on years of historical data and updated in real-time.
+          Oracle Bull's prediction engine computes real technical analysis on real market history, in your
+          browser, for the top 50 cryptocurrencies and any token you search. There is no black box: every
+          number shown is either fetched market data or a genuine function of it — and when history is too
+          thin to compute an honest read, the engine refuses to show one.
         </p>
         
         <h3 className="text-lg font-bold text-foreground mt-6 mb-3">Our Analysis Methodology</h3>
         <p>
-          Each analysis incorporates multiple layers of data:
+          Each analysis is built from measured indicators on the coin's actual price history:
         </p>
         <ul className="list-disc list-inside space-y-2 ml-4">
-          <li><strong>Technical Indicators (40%):</strong> RSI, MACD, Bollinger Bands, Moving Averages, Fibonacci levels, support/resistance zones</li>
-          <li><strong>On-Chain Metrics (30%):</strong> Whale movements, exchange flows, active addresses, transaction volume</li>
-          <li><strong>Sentiment Analysis (20%):</strong> Social media trends, news sentiment, fear & greed index</li>
-          <li><strong>Market Structure (10%):</strong> Correlation with BTC, sector performance, macro factors</li>
+          <li><strong>Momentum:</strong> RSI(14) for overbought/oversold extremes</li>
+          <li><strong>Trend:</strong> MACD histogram direction plus MA20/MA50 crossover structure</li>
+          <li><strong>Volatility:</strong> Bollinger Band position and realized daily volatility — used to size every entry zone, stop and target to the coin's true behavior</li>
+          <li><strong>Structure:</strong> support/resistance zones from recent swing highs and lows</li>
         </ul>
 
         <h3 className="text-lg font-bold text-foreground mt-6 mb-3">Timeframe Analysis</h3>
@@ -311,10 +312,14 @@ export function PredictionsHowItWorks() {
           We provide analysis across three timeframes to serve different strategies:
         </p>
         <ul className="list-disc list-inside space-y-2 ml-4">
-          <li><strong>Daily Analysis:</strong> Intraday insights for active traders, updated every hour with key levels and momentum</li>
-          <li><strong>Weekly Analysis:</strong> Swing trading perspective with breakout/breakdown zones and trend direction</li>
-          <li><strong>Monthly Analysis:</strong> Investment outlook incorporating macro trends, major support/resistance, and sector rotation</li>
+          <li><strong>Daily Analysis:</strong> computed from 90 days of history — the intraday plan uses volatility-scaled bands sized to one day of movement</li>
+          <li><strong>Weekly Analysis:</strong> computed from a year of history — wider bands for swing horizons</li>
+          <li><strong>Monthly Analysis:</strong> computed from two years of history — the slowest, most structural read</li>
         </ul>
+        <p className="text-sm">
+          Signals are recomputed from live CoinGecko data on each visit; frequently-viewed series are cached
+          briefly on your device so pages load instantly without hammering the free APIs.
+        </p>
 
         <h3 className="text-lg font-bold text-foreground mt-6 mb-3">Understanding Our Bias Ratings</h3>
         <p>
@@ -385,12 +390,12 @@ export function PredictionsDataMeaning() {
         <div className="p-4 bg-muted/10 rounded-lg">
           <h3 className="font-bold mb-2 flex items-center gap-2">
             <Activity className="w-4 h-4 text-warning" />
-            Risk Score
+            Risk Level
           </h3>
           <p className="text-sm text-muted-foreground">
-            Our proprietary risk metric considers volatility, liquidity, market cap, and historical 
-            drawdowns. Higher risk scores (7-10) indicate extreme volatility - position sizes should 
-            be adjusted accordingly.
+            Derived from the coin's measured realized volatility: low (&lt;2%/day), medium (&lt;5%),
+            high (&lt;10%), extreme (10%+). Higher volatility means wider stop distances and smaller
+            sensible position sizes.
           </p>
         </div>
         
@@ -400,9 +405,9 @@ export function PredictionsDataMeaning() {
             Update Frequency
           </h3>
           <p className="text-sm text-muted-foreground">
-            Daily analysis updates every 4 hours, weekly on Sundays, and monthly on the 1st. 
-            Significant market events may trigger off-cycle updates. Always check the timestamp 
-            for the most current data.
+            Predictions are recomputed from live market data each time you open the page, so what you
+            see reflects the current market — not a scheduled batch. Prices refresh roughly every
+            1–2 minutes; the timestamp on each analysis shows when its data was fetched.
           </p>
         </div>
       </div>

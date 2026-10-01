@@ -10,12 +10,20 @@ import {
 
 const faqs = [
   {
-    question: "How does Oracle Bull's AI prediction model work?",
-    answer: "Oracle Bull runs a multi-horizon forecasting engine powered by Gemini 2.5 Flash. For every token, the model generates three distinct timeframes — a short-term outlook (1–4 hours), a mid-term trajectory (24–48 hours), and a long-term trend direction (3–7 days). The AI does not guess prices in isolation. It ingests over 50 real-time technical indicators (RSI, MACD, Bollinger Bands, Ichimoku, volume profiles), cross-references them with live sentiment scores extracted from Twitter, Reddit and Telegram, and weights the output by current whale-flow direction — whether smart money is accumulating or distributing. Each forecast arrives with a confidence score, a risk level, and a plain-English rationale so you know why the model leans bullish or bearish. Results are cached in a high-speed predictions_cache table, which is why pages load in under a second even when the underlying AI analysis is fresh.",
+    question: "How does Oracle Bull's prediction engine work?",
+    answer: "Every forecast is computed in your browser from real market history — no black box. The engine ingests live OHLC price series and computes actual technical indicators: RSI(14) for momentum extremes, MACD for trend direction, MA20/MA50 crossovers for trend structure, Bollinger Bands for volatility positioning, and realized volatility to size every entry zone, stop and target to the coin's true behavior. Each prediction ships with a bias, a confidence score, and a plain-English summary naming the exact numbers behind the read. If there isn't enough history to compute a real forecast, the engine refuses to show one — we never fabricate a prediction from thin data.",
   },
   {
-    question: "What blockchains does Oracle Bull track and why does multi-chain data improve predictions?",
-    answer: "We monitor eight major networks in real time: Ethereum, Solana, Bitcoin, BNB Chain, Arbitrum, Base, Polygon and Avalanche. The dashboard compares them side-by-side on transactions per second, average fees, finality time, total value locked and active-user counts. This matters because capital does not sit still on one chain — it rotates from Layer 1s to Layer 2s, from Ethereum to Solana, or from Base back to Arbitrum depending on fee spikes and yield opportunities. By watching cross-chain bridge flows and chain-health scores alongside whale wallet migrations, Oracle Bull can detect rotation before it shows up in a single-token chart. A bullish signal on Ethereum becomes stronger when it is confirmed by simultaneous inflows into Arbitrum and Base, and weaker if Solana is seeing net outflows at the same time.",
+    question: "How do you prove the predictions are any good?",
+    answer: "We publish the engine's full track record on the Accuracy leaderboard. The same prediction function that powers today's live calls is replayed over the last 90 days of real price history for the major coins — roughly 4,000 graded calls — and every outcome is counted: hits and misses alike. You can sort by hit rate, sample size and confidence, and refresh the backtest yourself to verify the numbers. Most sites never show you their misses; we count them.",
+  },
+  {
+    question: "What is the Daily Prediction Game?",
+    answer: "One free call per day: will Bitcoin close up or down today? Lock your pick, come back tomorrow, and it's graded against the real closing price. Build a streak, earn badges and levels — all stored on your device, no signup, no wallet connection. It's the fastest way to test your own market read against ours.",
+  },
+  {
+    question: "Which blockchains does Oracle Bull cover?",
+    answer: "We track eight major networks — Ethereum, Solana, Bitcoin, BNB Chain, Arbitrum, Base, Polygon and Avalanche — with side-by-side comparisons of transactions per second, fees, finality time, TVL and active users on the dashboard. Because capital rotates between chains, watching where flows move next often explains the price action before it happens on any single token.",
   },
   {
     question: "Is Oracle Bull free to use?",
@@ -23,7 +31,7 @@ const faqs = [
   },
   {
     question: "How accurate are the crypto predictions?",
-    answer: "Predictions are probabilistic AI forecasts built from live market data, technical indicators and sentiment. Each forecast includes a confidence score and the key factors behind it. They are research tools, not financial advice or guarantees — always do your own research.",
+    answer: "Honestly: close to a coin flip on direction — and we publish that. Our live 90-day backtest of the major coins runs right around 50% hit rate, which is what most short-horizon directional models achieve and why position sizing matters more than any single call. Every prediction includes a confidence score and the exact indicators behind it, and the full per-coin breakdown lives on the Accuracy page. Treat every signal as a research input, never financial advice.",
   },
   {
     question: "Which cryptocurrencies are covered?",
@@ -47,7 +55,7 @@ const faqs = [
   },
   {
     question: "How often is the market data updated?",
-    answer: "Price data updates in real-time via live feeds. AI predictions refresh regularly throughout the day. Market sentiment and social data update frequently, and on-chain metrics including TVL, gas prices, and transaction volumes update continuously.",
+    answer: "Prices and market stats come from CoinGecko's live feeds and refresh roughly every 1–2 minutes. Prediction pages compute fresh forecasts from the latest 90-day history, and the Fear & Greed Index updates daily at its source. Frequently-viewed data is cached briefly on your device so pages load instantly without hammering the free APIs that make the site possible.",
   },
   {
     question: "Is Oracle Bull financial advice?",
@@ -69,7 +77,7 @@ export function HomepageFAQ() {
   };
 
   return (
-    <section className="py-12 md:py-20 border-t border-border/30" aria-labelledby="faq-heading">
+    <section className="py-10 md:py-14 border-t border-border/30" aria-labelledby="faq-heading">
       <Helmet>
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       </Helmet>

@@ -41,7 +41,7 @@ export default function BitcoinLiquidationHeatmap() {
         name: "Is the Bitcoin liquidation heatmap real-time?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Yes. Our heatmap pulls live open interest, price, and funding data from major futures exchanges and refreshes every 20 seconds so you can monitor leverage build-up around Bitcoin in real time.",
+          text: "No external liquidation feed is connected in this standalone build, so the map currently shows no data rather than estimated levels. Market prices and predictions elsewhere on the site are live.",
         },
       },
     ],
@@ -76,15 +76,15 @@ export default function BitcoinLiquidationHeatmap() {
         <header className="mb-8">
           <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
             <Flame className="w-3.5 h-3.5 text-warning" />
-            <span>Live Futures Data · Updates every 20s</span>
+            <span>Derived liquidation levels · no live feed connected</span>
           </div>
           <h1 className="text-3xl md:text-5xl font-display font-bold mb-3">
             Bitcoin Liquidation Heatmap
           </h1>
           <p className="text-base md:text-lg text-muted-foreground max-w-3xl">
-            Real-time map of Bitcoin liquidity clusters and leverage-driven price levels. Identify
-            where cascading long and short liquidations are most likely to drive BTC price reversals
-            and breakouts.
+            Map of Bitcoin liquidity clusters and leverage-driven price levels. Without a live
+            derivatives feed connected, levels shown are computed from recent price history — not
+            real-time exchange liquidation data.
           </p>
         </header>
 

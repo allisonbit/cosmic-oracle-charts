@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { invokeFunction } from "@/integrations/supabase/functions";
 import { coingeckoFetch } from "@/lib/coingecko";
 
 // Normalized shape used by the comparison UI — works for ANY token whether it
@@ -68,6 +67,37 @@ function normalizeLive(t: any, slug: string): CompareToken | null {
   };
 }
 
+// Standalone DEX lookup — DexScreener's public token API, key-free and CORS-open.
+// Replaces the old token-search edge function.
+const DS_CHAINS: Record<string, string> = {
+  ethereum: "ethereum", solana: "solana", bsc: "bsc", avalanche: "avalanche",
+  polygon: "polygon", arbitrum: "arbitrum", base: "base", optimism: "optimism",
+  sui: "sui", ton: "ton",
+};
+
+async function dexTokenLookup(chain: string | undefined, address: string): Promise<CompareToken | null> {
+  const dsChain = DS_CHAINS[(chain || "").toLowerCase()];
+  if (!dsChain) return null;
+  try {
+    const res = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${encodeURIComponent(address)}`);
+    if (!res.ok) return null;
+    const json = (await res.json()) as { pairs?: any[] };
+    const pairs = (json.pairs ?? []).filter(p => p.chainId?.toLowerCase() === dsChain);
+    if (!pairs.length) return null;
+    const best = pairs.sort((a, b) => (b.liquidity?.usd ?? 0) - (a.liquidity?.usd ?? 0))[0];
+    return normalizeLive({
+      name: best.baseToken?.name, symbol: best.baseToken?.symbol,
+      logo: best.info?.imageUrl, price: parseFloat(best.priceUsd ?? "0") || 0,
+      change24h: best.priceChange?.h24 ?? 0, change1h: best.priceChange?.h1,
+      volume24h: best.volume?.h24, liquidity: best.liquidity?.usd,
+      fdv: best.fdv, marketCap: best.marketCap ?? best.fdv,
+      chain: dsChain, contractAddress: best.baseToken?.address,
+    }, address);
+  } catch {
+    return null;
+  }
+}
+
 async function resolveToken(slug: string): Promise<CompareToken | null> {
   if (!slug) return null;
 
@@ -83,10 +113,7 @@ async function resolveToken(slug: string): Promise<CompareToken | null> {
     chain = "solana"; address = slug;
   }
 
-  if (address) {
-    const { data } = await invokeFunction("token-search", { body: { query: address, chain: chain || "ethereum", mode: "search" } });
-    return normalizeLive((data as any)?.tokens?.[0], slug);
-  }
+  if (address) return dexTokenLookup(chain, address);
 
   // 2. Try CoinGecko by id for rich major-coin data (rank, ATH, 7d/30d, scores).
   try {
@@ -105,9 +132,28 @@ async function resolveToken(slug: string): Promise<CompareToken | null> {
     if (j?.id && j?.market_data) return normalizeCG(j, slug);
   } catch { /* fall through */ }
 
-  // 3. Fallback: worldwide token-search by symbol/name.
-  const { data } = await invokeFunction("token-search", { body: { query: slug, chain: "all", mode: "search" } });
-  return normalizeLive((data as any)?.tokens?.[0], slug);
+  // 3. Last resort: resolve the slug against the live top-markets list (works
+  // for every CoinGecko-listed coin; no edge function involved).
+  const coins = await coingeckoFetch<any[]>({
+    path: "coins/markets",
+    params: { vs_currency: "usd", order: "market_cap_desc", per_page: 250, page: 1 },
+    ttlMs: 120_000,
+  });
+  if (Array.isArray(coins)) {
+    const hit = coins.find(c => c.id === slug)
+      ?? coins.find(c => c.symbol?.toLowerCase() === slug.toLowerCase())
+      ?? coins.find(c => c.name?.toLowerCase() === slug.toLowerCase());
+    if (hit) {
+      return normalizeLive({
+        name: hit.name, symbol: hit.symbol, price: hit.current_price,
+        change24h: hit.price_change_percentage_24h ?? 0, change1h: hit.price_change_percentage_1h_in_currency,
+        change7d: hit.price_change_percentage_7d_in_currency,
+        volume24h: hit.total_volume, marketCap: hit.market_cap,
+        logo: hit.image, coingeckoId: hit.id,
+      }, slug);
+    }
+  }
+  return null;
 }
 
 export function useCompareToken(slug: string | undefined) {

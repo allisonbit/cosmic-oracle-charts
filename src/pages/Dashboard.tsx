@@ -1,35 +1,18 @@
 import { Layout } from "@/components/layout/Layout";
-import { TrendingUp, TrendingDown, Activity, Zap, BarChart3, Loader2, Brain, Flame, Globe, Clock, ArrowRight, Gauge, ChevronUp, ChevronDown, ArrowUpDown } from "lucide-react";
+import { TrendingUp, TrendingDown, Activity, Loader2, Brain, BarChart3, Table2, LayoutGrid, ArrowRight, Target, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useCryptoPrices } from "@/hooks/useCryptoPrices";
 import { useMarketData } from "@/hooks/useMarketData";
-import { useAIForecast } from "@/hooks/useAIForecast";
-import { useMemo, useState, useEffect, useCallback } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { EnhancedMarketMomentum } from "@/components/dashboard/EnhancedMarketMomentum";
 import { EnhancedTrendingAlerts } from "@/components/dashboard/EnhancedTrendingAlerts";
 import { EnhancedVolumeLeaders } from "@/components/dashboard/EnhancedVolumeLeaders";
 import { EnhancedDominanceChart } from "@/components/dashboard/EnhancedDominanceChart";
 import { EnhancedQuickActions } from "@/components/dashboard/EnhancedQuickActions";
-import { EnhancedMarketInsightsPanel } from "@/components/dashboard/EnhancedMarketInsightsPanel";
 import { EnhancedTopPerformers } from "@/components/dashboard/EnhancedTopPerformers";
-import { StrengthMeterWidget } from "@/components/dashboard/StrengthMeterWidget";
-import { CryptoFactoryWidget } from "@/components/dashboard/CryptoFactoryWidget";
-import { OrderBookPanel } from "@/components/dashboard/OrderBookPanel";
-import { FundingRatesPanel } from "@/components/dashboard/FundingRatesPanel";
-import { CorrelationMatrix } from "@/components/dashboard/CorrelationMatrix";
-import { LiquidationHeatmap } from "@/components/dashboard/LiquidationHeatmap";
 import { MarketRegimeIndicator } from "@/components/dashboard/MarketRegimeIndicator";
-import { WhaleActivityPanel } from "@/components/dashboard/WhaleActivityPanel";
-import { OptionsFlowPanel } from "@/components/dashboard/OptionsFlowPanel";
-import { CustomAlertsPanel } from "@/components/dashboard/CustomAlertsPanel";
 import { GlobalMetricsSummary } from "@/components/dashboard/GlobalMetricsSummary";
-import { SectorPerformancePanel } from "@/components/dashboard/SectorPerformancePanel";
-import { RecentTradesPanel } from "@/components/dashboard/RecentTradesPanel";
-import { Link, useNavigate } from "react-router-dom";
-import { CoinDetailModal } from "@/components/dashboard/CoinDetailModal";
-import { DashboardSchema, DashboardSEOContent, HowToReadDashboard, WhatMakesUsDifferent, RelatedMarketInsights, DashboardHowItWorks, DashboardItemListSchema } from "@/components/seo/index";
-
 import { SortableCryptoTable } from "@/components/dashboard/SortableCryptoTable";
 import { DashboardTopCryptos } from "@/components/dashboard/DashboardTopCryptos";
 import { DashboardHeatMap } from "@/components/dashboard/DashboardHeatMap";
@@ -37,26 +20,43 @@ import { DashboardStatsRow } from "@/components/dashboard/DashboardStatsRow";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { LiveSignals } from "@/components/home/LiveSignals";
 import { LiveAlphaFeed } from "@/components/dashboard/LiveAlphaFeed";
-import { MarketPulseSummary } from "@/components/dashboard/MarketPulseSummary";
 import { WidgetErrorBoundary } from "@/components/system/RouteErrorBoundary";
+import { DashboardSchema, DashboardItemListSchema } from "@/components/seo/index";
+
+function SectionHeading({ icon: Icon, label, title, gradient, action }: { icon: typeof Activity; label: string; title: string; gradient: string; action?: { to: string; text: string } }) {
+  return (
+    <div className="section-header mb-4">
+      <div>
+        <div className="flex items-center gap-2 mb-1">
+          <Icon className="w-3.5 h-3.5 text-primary" />
+          <span className="section-label">{label}</span>
+        </div>
+        <h2 className="text-xl md:text-2xl font-display font-bold">
+          {title} {gradient && <span className="text-gradient-cosmic">{gradient}</span>}
+        </h2>
+      </div>
+      {action && (
+        <Link
+          to={action.to}
+          className="hidden sm:inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-primary transition-colors shrink-0 group"
+        >
+          {action.text}
+          <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+        </Link>
+      )}
+    </div>
+  );
+}
 
 const Dashboard = () => {
-  const navigate = useNavigate();
   const { data: pricesData, isLoading: pricesLoading } = useCryptoPrices();
   const { data: marketData, isLoading: marketLoading } = useMarketData();
   const [lastUpdate, setLastUpdate] = useState(new Date());
-  const [selectedCoin, setSelectedCoin] = useState<any>(null);
-  
+
   const topCoins = useMemo(() => marketData?.topCoins?.slice(0, 8) || [], [marketData]);
   const allCoins = useMemo(() => marketData?.topCoins || [], [marketData]);
   const global = marketData?.global;
   const fearGreedIndex = marketData?.fearGreedIndex ?? null;
-  
-  const { data: aiData } = useAIForecast(
-    topCoins.length > 0 ? topCoins : null,
-    "market_sentiment",
-    topCoins.length > 0
-  );
 
   useEffect(() => {
     if (marketData) setLastUpdate(new Date());
@@ -76,7 +76,7 @@ const Dashboard = () => {
           // Reserve roughly the real dashboard's vertical footprint so the
           // footer doesn't jump when content swaps in. Tuned to keep CLS in the
           // "Good" (<0.1) band on first load.
-          <div className="flex justify-center items-start pt-32 min-h-[260vh]">
+          <div className="flex justify-center items-start pt-32 min-h-[120vh]">
             <div className="flex flex-col items-center gap-4">
               <Loader2 className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 animate-spin text-primary" />
               <p className="text-muted-foreground font-display text-xs sm:text-sm">Loading live market data...</p>
@@ -84,24 +84,39 @@ const Dashboard = () => {
           </div>
         ) : (
           <>
-            {/* Quick Actions */}
+            {/* ── Quick access ─────────────────────────────────────────────── */}
             <div className="mb-4 sm:mb-6">
               <WidgetErrorBoundary><EnhancedQuickActions /></WidgetErrorBoundary>
             </div>
 
-            {/* Stats Row */}
+            {/* ── Global stats band ────────────────────────────────────────── */}
             <WidgetErrorBoundary><DashboardStatsRow global={global} /></WidgetErrorBoundary>
 
-            {/* ── Live Alpha Feed — the headline real-time market pulse ───────── */}
-            <div className="mt-4 sm:mt-6 mb-4 sm:mb-6">
-              <WidgetErrorBoundary><LiveAlphaFeed /></WidgetErrorBoundary>
-            </div>
+            {/* ═══ 1. LIVE PULSE — alpha feed + regime, the real-time story ═══ */}
+            <section className="border-t border-border/30 pt-5 mt-6" aria-label="Live market pulse">
+              <SectionHeading
+                icon={Activity}
+                label="Live Pulse"
+                title="What's Moving"
+                gradient="Right Now"
+                action={{ to: "/sentiment", text: "Sentiment Hub" }}
+              />
+              <div className="grid lg:grid-cols-5 gap-4 sm:gap-6">
+                <div className="lg:col-span-3">
+                  <WidgetErrorBoundary><LiveAlphaFeed /></WidgetErrorBoundary>
+                </div>
+                <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+                  <WidgetErrorBoundary><MarketRegimeIndicator /></WidgetErrorBoundary>
+                  <WidgetErrorBoundary><EnhancedMarketMomentum /></WidgetErrorBoundary>
+                </div>
+              </div>
+            </section>
 
-            {/* ── Fear & Greed — Prominent Full-Width Card ───────────────────── */}
+            {/* ═══ 2. FEAR & GREED — full-width sentiment gauge ═══ */}
             {fearGreedIndex !== null && (
               <Link
                 to="/sentiment"
-                className="border-b border-border/30 py-5 mb-5 flex flex-col sm:flex-row items-center gap-4 sm:gap-8 group hover:bg-muted/20 transition-colors"
+                className="border-b border-border/30 py-5 my-5 flex flex-col sm:flex-row items-center gap-4 sm:gap-8 group hover:bg-muted/20 transition-colors"
               >
                 {/* Gauge */}
                 <div className="relative w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0">
@@ -162,107 +177,70 @@ const Dashboard = () => {
               </Link>
             )}
 
-            {/* ── AI Trade Signals — First thing users see ──────────────────────────── */}
-            <div className="mb-4 sm:mb-6">
+            {/* ═══ 3. AI TRADE SIGNALS — engine-read setups ═══ */}
+            <section className="border-t border-border/30 pt-5 my-6" aria-label="AI trade signals">
+              <SectionHeading
+                icon={Target}
+                label="AI Signals"
+                title="High-Conviction"
+                gradient="Trade Setups"
+                action={{ to: "/predictions", text: "All Predictions" }}
+              />
               <WidgetErrorBoundary><LiveSignals /></WidgetErrorBoundary>
-            </div>
+            </section>
 
-            {/* Global Metrics Summary */}
-            <WidgetErrorBoundary><GlobalMetricsSummary /></WidgetErrorBoundary>
-
-            {/* Main Grid */}
-            <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
-              {/* Left Column */}
-              <div className="lg:col-span-2 space-y-4 sm:space-y-6">
-                <WidgetErrorBoundary><EnhancedMarketMomentum /></WidgetErrorBoundary>
-                <WidgetErrorBoundary><EnhancedMarketInsightsPanel /></WidgetErrorBoundary>
-
-                {/* Order Book and Funding Rates */}
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <WidgetErrorBoundary><OrderBookPanel /></WidgetErrorBoundary>
-                  <WidgetErrorBoundary><FundingRatesPanel /></WidgetErrorBoundary>
+            {/* ═══ 4. MARKET PULSE — gainers, losers, volume, dominance ═══ */}
+            <section className="border-t border-border/30 pt-5 my-6" aria-label="Market movers and leaders">
+              <SectionHeading
+                icon={BarChart3}
+                label="Market Movers"
+                title="Today's"
+                gradient="Leaders & Laggards"
+                action={{ to: "/explorer", text: "Token Explorer" }}
+              />
+              <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
+                <div className="space-y-4 sm:space-y-6">
+                  <WidgetErrorBoundary><EnhancedTrendingAlerts /></WidgetErrorBoundary>
                 </div>
-
-                {/* Correlation Matrix */}
-                <WidgetErrorBoundary><CorrelationMatrix /></WidgetErrorBoundary>
+                <div className="space-y-4 sm:space-y-6">
+                  <WidgetErrorBoundary><EnhancedVolumeLeaders /></WidgetErrorBoundary>
+                </div>
+                <div className="space-y-4 sm:space-y-6">
+                  <WidgetErrorBoundary><EnhancedDominanceChart /></WidgetErrorBoundary>
+                  <WidgetErrorBoundary><EnhancedTopPerformers onCoinClick={(coin: any) => window.location.assign(`/price-prediction/${coin.name?.toLowerCase() || coin.symbol?.toLowerCase()}/daily`)} /></WidgetErrorBoundary>
+                </div>
               </div>
+            </section>
 
-              {/* Right Column */}
-              <div className="space-y-4 sm:space-y-6">
-                <WidgetErrorBoundary><EnhancedTrendingAlerts /></WidgetErrorBoundary>
-                <WidgetErrorBoundary><EnhancedTopPerformers onCoinClick={(coin: any) => navigate(`/price-prediction/${coin.name?.toLowerCase() || coin.symbol?.toLowerCase()}/daily`)} /></WidgetErrorBoundary>
-                <WidgetErrorBoundary><MarketRegimeIndicator /></WidgetErrorBoundary>
-                {/* Sidebar ad */}
+            {/* ═══ 5. FULL MARKET TABLE — every coin, sortable ═══ */}
+            <section className="border-t border-border/30 pt-5 my-6" aria-label="Full market table">
+              <SectionHeading
+                icon={Table2}
+                label="Full Market"
+                title="All Tracked"
+                gradient="Cryptocurrencies"
+              />
+              <WidgetErrorBoundary><GlobalMetricsSummary /></WidgetErrorBoundary>
+              <div className="mt-4">
+                <WidgetErrorBoundary><SortableCryptoTable coins={allCoins} /></WidgetErrorBoundary>
               </div>
-            </div>
+            </section>
 
-            {/* Sector Performance & Live Trades */}
-            <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
-              <WidgetErrorBoundary><SectorPerformancePanel /></WidgetErrorBoundary>
-              <WidgetErrorBoundary><RecentTradesPanel /></WidgetErrorBoundary>
-            </div>
-
-
-            {/* Advanced Analytics Section */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
-              <WidgetErrorBoundary><LiquidationHeatmap /></WidgetErrorBoundary>
-              <WidgetErrorBoundary><WhaleActivityPanel /></WidgetErrorBoundary>
-              <WidgetErrorBoundary><OptionsFlowPanel /></WidgetErrorBoundary>
-            </div>
-            
-            {/* Custom Alerts */}
-            <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
-              <WidgetErrorBoundary><CustomAlertsPanel /></WidgetErrorBoundary>
-              <WidgetErrorBoundary><MarketPulseSummary /></WidgetErrorBoundary>
-            </div>
-
-            {/* Strength Meter & Crypto Factory Widgets */}
-            <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
-              <WidgetErrorBoundary><StrengthMeterWidget /></WidgetErrorBoundary>
-              <WidgetErrorBoundary><CryptoFactoryWidget /></WidgetErrorBoundary>
-            </div>
-            
-            {/* Full Sortable Crypto Table */}
-            <WidgetErrorBoundary><SortableCryptoTable coins={allCoins} /></WidgetErrorBoundary>
-
-            {/* SEO Content Block */}
-            <DashboardSEOContent />
-
-            {/* How to Read the Dashboard - SEO friendly explanations */}
-            <HowToReadDashboard />
-
-            {/* Volume & Dominance with explanatory text */}
-            <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
-              <div>
-                <WidgetErrorBoundary><EnhancedVolumeLeaders /></WidgetErrorBoundary>
-                <p className="text-xs text-muted-foreground mt-2 border-t border-border/20 pt-2">
-                  <strong className="text-foreground">Volume Leaders:</strong> Cryptocurrencies with the highest 24-hour trading activity. High volume confirms price movements and indicates strong market interest.
-                </p>
+            {/* ═══ 6. VISUAL MARKET — cards + heat map ═══ */}
+            <section className="border-t border-border/30 pt-5 my-6" aria-label="Market overview visuals">
+              <SectionHeading
+                icon={LayoutGrid}
+                label="Visual Market"
+                title="Prices at a"
+                gradient="Glance"
+              />
+              <WidgetErrorBoundary><DashboardTopCryptos topCoins={topCoins} /></WidgetErrorBoundary>
+              <div className="mt-4">
+                <WidgetErrorBoundary><DashboardHeatMap topCoins={topCoins} /></WidgetErrorBoundary>
               </div>
-              <div>
-                <WidgetErrorBoundary><EnhancedDominanceChart /></WidgetErrorBoundary>
-                <p className="text-xs text-muted-foreground mt-2 border-t border-border/20 pt-2">
-                  <strong className="text-foreground">Market Dominance:</strong> Shows percentage of total market cap held by each cryptocurrency. BTC dominance above 50% typically indicates a risk-off environment.
-                </p>
-              </div>
-            </div>
+            </section>
 
-            {/* Coin Cards - Clickable */}
-            <WidgetErrorBoundary><DashboardTopCryptos topCoins={topCoins} /></WidgetErrorBoundary>
-
-            {/* Heat Map - Clickable */}
-            <WidgetErrorBoundary><DashboardHeatMap topCoins={topCoins} /></WidgetErrorBoundary>
-            
-            {/* What Makes Oracle Bull Different */}
-            <WhatMakesUsDifferent />
-            
-            {/* Related Market Insights with internal links */}
-            <RelatedMarketInsights />
-            
-            {/* Educational How It Works Section */}
-            <DashboardHowItWorks />
-
-            {/* Dashboard FAQ Section */}
+            {/* ═══ Dashboard FAQ ═══ */}
             <section className="border-t border-border/30 pt-8 mt-8 mb-8">
               <h2 className="text-2xl md:text-3xl font-display font-bold mb-6">Dashboard FAQ</h2>
               <div className="space-y-3 max-w-3xl">
@@ -272,9 +250,9 @@ const Dashboard = () => {
                     <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
                   </summary>
                   <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
-                    The Oracle Bull dashboard provides a real-time overview of the entire cryptocurrency market. You can see live prices, 24-hour price changes, trading volume leaders, market dominance charts, AI-powered trade signals, and the Fear &amp; Greed Index. It also includes advanced analytics like order book depth, funding rates, whale activity, and liquidation heatmaps. For deeper analysis, visit our{" "}
+                    The Oracle Bull dashboard provides a real-time overview of the entire cryptocurrency market: live prices, 24-hour changes, gainers and losers, volume leaders, market dominance, the Fear &amp; Greed Index, AI momentum signals, and a fully sortable table of every tracked token. For deeper analysis, visit our{" "}
                     <Link to="/explorer" className="text-primary hover:underline">Token Explorer</Link> or the{" "}
-                    <Link to="/crypto-strength-meter" className="text-primary hover:underline">Crypto Strength Meter</Link>.
+                    <Link to="/predictions" className="text-primary hover:underline">AI Predictions</Link> pages.
                   </div>
                 </details>
 
@@ -284,9 +262,9 @@ const Dashboard = () => {
                     <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
                   </summary>
                   <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
-                    Dashboard data refreshes automatically every few minutes using live feeds from CoinGecko and other market data providers. Prices, volumes, and market cap figures update in near real-time. AI{" "}
-                    <Link to="/predictions" className="text-primary hover:underline">price predictions</Link> are recalculated on each visit, and the{" "}
-                    <Link to="/sentiment" className="text-primary hover:underline">Fear &amp; Greed Index</Link> updates daily based on multiple market indicators.
+                    Prices, volumes, and market-cap figures refresh roughly every 1–2 minutes from CoinGecko's live feeds. AI{" "}
+                    <Link to="/predictions" className="text-primary hover:underline">price predictions</Link> are recomputed from the latest 90-day history on each visit, and the{" "}
+                    <Link to="/sentiment" className="text-primary hover:underline">Fear &amp; Greed Index</Link> updates daily at its source.
                   </div>
                 </details>
 
@@ -307,9 +285,8 @@ const Dashboard = () => {
                     <ChevronDown className="w-4 h-4 text-muted-foreground group-open:rotate-180 transition-transform" />
                   </summary>
                   <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
-                    The market momentum indicator shows whether the majority of top cryptocurrencies are trending up (bullish) or down (bearish) over the last 24 hours. A "BULLISH" reading means more coins are gaining than losing, while "BEARISH" indicates broader selling pressure. Combine this with our{" "}
-                    <Link to="/crypto-strength-meter" className="text-primary hover:underline">Crypto Strength Meter</Link> to identify which specific tokens have the strongest relative momentum, and check individual{" "}
-                    <Link to="/predictions" className="text-primary hover:underline">AI predictions</Link> for directional guidance.
+                    The market momentum indicator shows whether the majority of top cryptocurrencies are trending up (bullish) or down (bearish) over the last 24 hours. A "BULLISH" reading means more coins are gaining than losing, while "BEARISH" indicates broader selling pressure. Combine this with individual{" "}
+                    <Link to="/predictions" className="text-primary hover:underline">AI predictions</Link> for directional guidance on specific tokens.
                   </div>
                 </details>
 

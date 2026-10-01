@@ -1,24 +1,15 @@
 import { Layout } from "@/components/layout/Layout";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { Trophy, Target, TrendingUp, ArrowUpDown, Clock } from "lucide-react";
+import { Trophy, Target, TrendingUp, ArrowUpDown, Clock, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { BACKTEST_COINS, useBacktestOutcomes, type BacktestOutcomeRow } from "@/hooks/useBacktest";
 
 type Timeframe = "all" | "daily" | "weekly" | "monthly";
 type SortKey = "hitRate" | "total" | "avgConfidence" | "coin";
 
-interface OutcomeRow {
-  coin_id: string;
-  symbol: string;
-  timeframe: string;
-  bias: string;
-  confidence: number;
-  hit: boolean;
-  resolved_at: string;
-}
+type OutcomeRow = BacktestOutcomeRow;
 
 interface Stats {
   coinId: string;
@@ -34,27 +25,18 @@ export default function Accuracy() {
   const [tf, setTf] = useState<Timeframe>("all");
   const [sortKey, setSortKey] = useState<SortKey>("hitRate");
 
-  const { data: rows, isLoading } = useQuery({
-    queryKey: ["prediction-outcomes"],
-    queryFn: async (): Promise<OutcomeRow[]> => {
-      const { data, error } = await supabase
-        .from("prediction_outcomes")
-        .select("coin_id, symbol, timeframe, bias, confidence, hit, resolved_at")
-        .order("resolved_at", { ascending: false })
-        .limit(2000);
-      if (error) throw error;
-      return (data ?? []) as OutcomeRow[];
-    },
-    staleTime: 5 * 60_000,
-  });
+  // Shared backtest query — same cache as the homepage Play & Prove band.
+  const { data: rows, isLoading, isFetching, refetch } = useBacktestOutcomes();
 
   const stats = useMemo<Stats[]>(() => {
-    const list = (rows ?? []).filter((r) => tf === "all" || r.timeframe === tf);
+    // The live backtest grades daily-horizon reads; "all" and "daily" are the
+    // same view until multi-timeframe backtesting lands.
+    const list = (rows ?? []).filter((r) => tf === "all" || tf === "daily");
     const byCoin = new Map<string, OutcomeRow[]>();
     for (const r of list) {
-      const arr = byCoin.get(r.coin_id) ?? [];
+      const arr = byCoin.get(r.coinId) ?? [];
       arr.push(r);
-      byCoin.set(r.coin_id, arr);
+      byCoin.set(r.coinId, arr);
     }
     const out: Stats[] = [];
     for (const [coinId, arr] of byCoin) {
@@ -80,7 +62,7 @@ export default function Accuracy() {
   }, [rows, tf, sortKey]);
 
   const overall = useMemo(() => {
-    const list = (rows ?? []).filter((r) => tf === "all" || r.timeframe === tf);
+    const list = (rows ?? []).filter((r) => tf === "all" || tf === "daily");
     const total = list.length;
     const hits = list.filter((r) => r.hit).length;
     return { total, hits, rate: total ? (hits / total) * 100 : 0 };
@@ -136,7 +118,23 @@ export default function Accuracy() {
               {t === "all" ? "All Timeframes" : t}
             </button>
           ))}
+          <button
+            onClick={() => refetch()}
+            disabled={isFetching}
+            className="px-3 py-1.5 text-sm rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition inline-flex items-center gap-1.5 disabled:opacity-50"
+            title="Re-run the live backtest — pulls in any coins missed by earlier rate-limited fetches"
+          >
+            <RefreshCw className={cn("w-3.5 h-3.5", isFetching && "animate-spin")} />
+            Refresh backtest
+          </button>
         </div>
+
+        {!isLoading && stats.length > 0 && stats.length < BACKTEST_COINS.length && (
+          <p className="text-xs text-slate-500 -mt-2 mb-4">
+            Showing {stats.length} of {BACKTEST_COINS.length} tracked coins — some price history fetches were
+            rate-limited just now. Refresh the backtest to backfill the rest.
+          </p>
+        )}
 
         <div className="overflow-x-auto -mx-4 px-4 min-h-[600px]">
           <table className="w-full bg-white border border-slate-200 rounded-xl text-sm">

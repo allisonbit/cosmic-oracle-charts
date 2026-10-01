@@ -1,16 +1,13 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { AdUnit } from "@/components/ads/AdUnit";
-
 import { AdBreak } from "@/components/ads/AdBreak";
 import { LazyAd } from "@/components/ads/LazyAd";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  TrendingUp, TrendingDown, Minus, Clock, Calendar, CalendarDays,
-  ChevronRight, Zap, Target, Shield, BarChart3, Globe, Sparkles,
-  Search, ArrowUpRight, Activity, RefreshCw, Radio, Eye, Filter,
-  Bookmark, CheckCircle2, XCircle
+  Activity, RefreshCw, Globe, Clock, Calendar, CalendarDays, ChevronRight,
+  Search, TrendingUp, TrendingDown, Minus, Target, Trophy,
 } from "lucide-react";
 import { TOP_50_CRYPTOS } from "@/lib/extendedCryptos";
 import { TokenIcon } from "@/components/ui/token-icon";
@@ -20,65 +17,52 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { SEO } from "@/components/MainSEO";
-import { Helmet } from "react-helmet-async";
 import { PredictionHubSEOContent, PredictionsHowItWorks, PredictionsDataMeaning } from "@/components/seo/index";
 import { GlobalTokenSearch } from "@/components/prediction/GlobalTokenSearch";
-import { PredictionLeaderboard } from "@/components/prediction/PredictionLeaderboard";
 import { GlobalToken } from "@/hooks/useGlobalTokenSearch";
 import { cn } from "@/lib/utils";
 import { computeLocalSignal } from "@/lib/localSignal";
-import { supabase } from "@/integrations/supabase/client";
-import { useQuery } from "@tanstack/react-query";
-import { useMySetups, TradeSetup } from "@/hooks/useTradeSetups";
-import { useAuth } from "@/hooks/useAuth";
+import { useBacktestOutcomes, summarizeBacktest, BACKTEST_COINS } from "@/hooks/useBacktest";
 
 const formatPrice = (p: number) => {
-  if (!p || p <= 0) return '—';
-  if (p >= 1000) return `$${(p ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
-  if (p >= 1) return `$${(p ?? 0).toFixed(2)}`;
-  if (p >= 0.01) return `$${(p ?? 0).toFixed(4)}`;
-  return `$${(p ?? 0).toPrecision(4)}`;
+  if (!p) return "—";
+  if (p >= 1000) return `$${p.toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
+  if (p >= 1) return `$${p.toFixed(2)}`;
+  return `$${p.toPrecision(4)}`;
 };
 
 const formatCompact = (n: number) => {
-  if (!n || n <= 0) return '—';
-  if (n >= 1e12) return `$${(n / 1e12).toFixed(1)}T`;
-  if (n >= 1e9) return `$${(n / 1e9).toFixed(1)}B`;
-  if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
-  return `$${(n ?? 0).toLocaleString()}`;
+  if (n >= 1e12) return `$${(n / 1e12).toFixed(2)}T`;
+  if (n >= 1e9) return `$${(n / 1e9).toFixed(2)}B`;
+  if (n >= 1e6) return `$${(n / 1e6).toFixed(2)}M`;
+  return `$${n.toLocaleString()}`;
 };
 
-// Fetch cached predictions from database
-function useCachedPredictions() {
-  return useQuery({
-    queryKey: ['cached-predictions-hub'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('predictions_cache')
-        .select('coin_id, symbol, bias, confidence, current_price, prediction_data, timeframe, created_at')
-        .eq('timeframe', 'daily')
-        .order('created_at', { ascending: false });
-      
-      if (error) throw error;
-      return data || [];
-    },
-    staleTime: 60_000,
-    refetchInterval: 2 * 60_000,
-    refetchIntervalInBackground: true,
-  });
-}
+interface CoinTrackRecord { symbol: string; coinId: string; hits: number; total: number; rate: number }
 
 export default function PredictionHub() {
   const navigate = useNavigate();
   const { data: pricesData, isLoading, refetch, isFetching } = useCryptoPrices();
-  const { data: cachedPredictions } = useCachedPredictions();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'bullish' | 'bearish' | 'neutral'>('all');
   const [sortBy, setSortBy] = useState<'confidence' | 'change' | 'marketCap'>('confidence');
   const [liveTime, setLiveTime] = useState(new Date());
-  const { user } = useAuth();
-  const { data: mySetups } = useMySetups();
-  const [showSavedSetups, setShowSavedSetups] = useState(false);
+
+  // Real engine track record — same shared backtest cache as the Accuracy page.
+  const { data: outcomeRows } = useBacktestOutcomes();
+  const proof = summarizeBacktest(outcomeRows);
+  const coinRecords = useMemo<CoinTrackRecord[]>(() => {
+    const byCoin = new Map<string, CoinTrackRecord>();
+    (outcomeRows ?? []).forEach(r => {
+      const rec = byCoin.get(r.coinId) ?? { symbol: r.symbol.toUpperCase(), coinId: r.coinId, hits: 0, total: 0, rate: 0 };
+      rec.total += 1;
+      if (r.hit) rec.hits += 1;
+      byCoin.set(r.coinId, rec);
+    });
+    return [...byCoin.values()]
+      .map(rec => ({ ...rec, rate: rec.total ? (rec.hits / rec.total) * 100 : 0 }))
+      .sort((a, b) => b.total - a.total);
+  }, [outcomeRows]);
 
   useEffect(() => {
     const interval = setInterval(() => setLiveTime(new Date()), 1000);
@@ -90,26 +74,18 @@ export default function PredictionHub() {
     navigate(`/price-prediction/${tokenSlug}/daily`);
   }, [navigate]);
 
-  // Build token list from top 50 with real cached AI data
+  // Build token list from the top 50 with a real per-coin local signal
+  // computed from live prices — distinct bias/confidence for every token.
   const displayCryptos = useMemo(() => {
     return TOP_50_CRYPTOS.map(crypto => {
       const priceData = pricesData?.prices?.find(
         p => p.symbol.toLowerCase() === crypto.symbol.toLowerCase()
       );
       const change24h = priceData?.change24h ?? 0;
-      
-      // Use real cached prediction data if available
-      const cached = cachedPredictions?.find(
-        p => p.coin_id === crypto.id || p.symbol?.toLowerCase() === crypto.symbol.toLowerCase()
-      );
-      
-      const predData = cached?.prediction_data as any;
 
-      // Per-coin local signal from live data — used when there's no cached AI
-      // prediction so each token gets a distinct bias/confidence (not a flat value).
       const local = computeLocalSignal({
         symbol: crypto.symbol,
-        price: priceData?.price || cached?.current_price || 0,
+        price: priceData?.price || 0,
         change24h,
         high24h: priceData?.high24h,
         low24h: priceData?.low24h,
@@ -117,31 +93,24 @@ export default function PredictionHub() {
         marketCap: priceData?.marketCap,
       }, 'daily');
 
-      const bias: 'bullish' | 'bearish' | 'neutral' = (cached?.bias as any) || local.bias;
-      const confidence = cached?.confidence || local.confidence;
-      const signalStrength = predData?.technicalIndicators
-        ? Math.floor((predData.technicalIndicators.rsi || 50) + (confidence * 0.3))
-        : Math.floor((local.rsi + confidence) / 2);
-
       return {
         id: crypto.id,
         name: crypto.name,
         symbol: crypto.symbol,
-        price: priceData?.price || cached?.current_price || 0,
+        price: priceData?.price || 0,
         change24h,
         marketCap: priceData?.marketCap || 0,
-        bias,
-        confidence,
-        signalStrength,
-        hasCachedPrediction: !!cached,
-        riskLevel: predData?.riskLevel || local.riskLevel,
+        bias: local.bias,
+        confidence: local.confidence,
+        signalStrength: local.rsi,
+        riskLevel: local.riskLevel,
       };
     });
-  }, [pricesData, cachedPredictions]);
+  }, [pricesData]);
 
   const filteredCryptos = useMemo(() => {
     const result = displayCryptos.filter(crypto => {
-      const matchesSearch = !searchQuery || 
+      const matchesSearch = !searchQuery ||
         crypto.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         crypto.symbol.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = selectedCategory === 'all' || crypto.bias === selectedCategory;
@@ -169,26 +138,16 @@ export default function PredictionHub() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <SEO 
+      <SEO
         title="AI Crypto Predictions | Real-Time Token Analysis | Oracle Bull"
-        description="Get AI-powered predictions for ANY cryptocurrency worldwide. Real-time monitoring with 50+ technical indicators. Daily, weekly, monthly forecasts auto-updated."
+        description="AI-powered crypto predictions computed from real 90-day market history. RSI, MACD, moving averages and Bollinger Bands for 50+ major tokens — daily, weekly, monthly forecasts, with a public track record."
         keywords="crypto prediction, token analysis, bitcoin prediction, AI trading signals, real-time crypto forecast"
         canonicalPath="/predictions"
       />
-      <Helmet>
-        
-      </Helmet>
 
       <header><Navbar /></header>
 
-      <main className="flex-1 container mx-auto px-4 py-20 md:py-28">
-        <div className="space-y-1 mb-1">
-          <AdUnit format="horizontal" className="max-w-5xl mx-auto" />
-        </div>
-
-        <div className="flex justify-center mb-5">
-        </div>
-
+      <main className="flex-1 container mx-auto px-4 py-8 md:py-10">
         {/* === LIVE MONITORING BAR === */}
         <div className="flex flex-wrap items-center gap-3 mb-6 px-0 py-2.5 border-b border-border/30 text-xs">
           <div className="flex items-center gap-1.5">
@@ -198,20 +157,8 @@ export default function PredictionHub() {
           <span className="text-muted-foreground font-mono">{liveTime.toLocaleTimeString()}</span>
           <span className="text-border">|</span>
           <span className="text-muted-foreground">
-            Prices: <span className="text-foreground font-medium">15s</span>
+            Signals: <span className="text-foreground font-medium">computed from live prices</span>
           </span>
-          <span className="text-border">|</span>
-          <span className="text-muted-foreground">
-            AI Cache: <span className="text-foreground font-medium">2m</span>
-          </span>
-          {cachedPredictions && cachedPredictions.length > 0 && (
-            <>
-              <span className="text-border">|</span>
-              <Badge variant="outline" className="text-[10px] gap-1 border-success/30 text-success">
-                <Zap className="w-2.5 h-2.5" /> {cachedPredictions.length} cached
-              </Badge>
-            </>
-          )}
           {pricesData?.timestamp && (
             <>
               <span className="text-border">|</span>
@@ -221,10 +168,10 @@ export default function PredictionHub() {
             </>
           )}
           <div className="ml-auto">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={() => refetch()} 
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => refetch()}
               disabled={isFetching}
               className="h-6 px-2 text-xs gap-1"
             >
@@ -235,13 +182,14 @@ export default function PredictionHub() {
         </div>
 
         {/* === HERO === */}
-        <section className="mb-10">
+        <section className="mb-8">
           <div className="mb-6">
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
               AI Crypto Price Predictions
             </h1>
-            <p className="text-muted-foreground mt-1 max-w-lg">
-              Real-time AI analysis for <strong>every token on DexScreener</strong>. Search by name, symbol, or contract address.
+            <p className="text-muted-foreground mt-1 max-w-2xl">
+              Real signals computed from <strong>real market history</strong> for the top 50 tokens —
+              RSI, MACD, moving averages and Bollinger Bands, with entry zones, stops and targets.
             </p>
           </div>
 
@@ -276,22 +224,102 @@ export default function PredictionHub() {
             <div className="flex items-center gap-2 mb-3">
               <Globe className="w-4 h-4 text-primary" />
               <span className="text-sm font-semibold">Search Any Token Worldwide</span>
-              <Badge variant="outline" className="text-[10px] ml-auto">DexScreener + CoinGecko</Badge>
+              <Badge variant="outline" className="text-[10px] ml-auto">CoinGecko data</Badge>
             </div>
-            <GlobalTokenSearch 
+            <GlobalTokenSearch
               onSelect={handleTokenSelect}
               onSearchResults={() => {}}
-              placeholder="Search token name, symbol (PEPE, WIF), or paste contract address (0x...)..."
+              placeholder="Search token name or symbol (PEPE, WIF)..."
             />
           </div>
+        </section>
+
+        {/* === ENGINE TRACK RECORD — real, verifiable === */}
+        <section className="mb-8 border-t border-border/30 pt-6" aria-labelledby="track-record-heading">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <Trophy className="w-3.5 h-3.5 text-warning" />
+                <span className="section-label">Engine Track Record</span>
+              </div>
+              <h2 id="track-record-heading" className="text-xl font-bold">
+                How the Engine Has <span className="text-gradient-cosmic">Actually Performed</span>
+              </h2>
+              <p className="text-xs text-muted-foreground mt-1">
+                Today's prediction logic replayed over 90 days of real history — every call graded, hits and misses.
+              </p>
+            </div>
+            <Link
+              to="/accuracy"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-primary transition-colors shrink-0"
+            >
+              Full leaderboard <ChevronRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          {proof.total > 0 ? (
+            <>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                <div className="rounded-lg border border-border/50 bg-card px-4 py-3 text-center">
+                  <p className="stat-value text-2xl">{proof.rate.toFixed(1)}%</p>
+                  <p className="section-label mt-1">Overall Hit Rate</p>
+                </div>
+                <div className="rounded-lg border border-border/50 bg-card px-4 py-3 text-center">
+                  <p className="stat-value text-2xl">{proof.total.toLocaleString()}</p>
+                  <p className="section-label mt-1">Calls Graded</p>
+                </div>
+                <div className="rounded-lg border border-border/50 bg-card px-4 py-3 text-center">
+                  <p className="stat-value text-2xl">{proof.hits.toLocaleString()}</p>
+                  <p className="section-label mt-1">Correct</p>
+                </div>
+                <div className="rounded-lg border border-border/50 bg-card px-4 py-3 text-center">
+                  <p className="stat-value text-2xl">{(proof.total - proof.hits).toLocaleString()}</p>
+                  <p className="section-label mt-1">Misses — published too</p>
+                </div>
+              </div>
+              {coinRecords.length > 0 && (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+                  {coinRecords.map(rec => (
+                    <Link
+                      key={rec.coinId}
+                      to={`/price-prediction/${rec.coinId}/daily`}
+                      className="rounded-lg border border-border/50 bg-card px-3 py-2.5 hover:border-primary/40 transition-colors"
+                    >
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs font-bold">{rec.symbol}</span>
+                        <span className={cn(
+                          "text-xs font-bold tabular-nums",
+                          rec.rate >= 55 ? "text-success" : rec.rate >= 45 ? "text-foreground" : "text-danger",
+                        )}>{rec.rate.toFixed(0)}%</span>
+                      </div>
+                      <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                        <div
+                          className={cn("h-full rounded-full", rec.rate >= 55 ? "bg-success" : rec.rate >= 45 ? "bg-primary" : "bg-danger")}
+                          style={{ width: `${rec.rate}%` }}
+                        />
+                      </div>
+                      <p className="text-[10px] text-muted-foreground mt-1">{rec.hits}/{rec.total} correct</p>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="rounded-lg border border-dashed border-border/60 bg-muted/20 px-4 py-6 text-center">
+              <p className="text-sm font-semibold text-foreground">Running the live backtest…</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Grading ~4,200 calls against real history. First run takes a minute — refresh shortly.
+              </p>
+            </div>
+          )}
         </section>
 
         {/* === TIMEFRAME LINKS === */}
         <section className="grid md:grid-cols-3 gap-3 mb-8">
           {[
-            { id: 'daily', label: 'Daily Predictions', icon: Clock, desc: 'Intraday signals • Entry/Exit zones • 5-min updates' },
-            { id: 'weekly', label: 'Weekly Forecast', icon: Calendar, desc: 'Swing trade setups • Breakout analysis • 30-min updates' },
-            { id: 'monthly', label: 'Monthly Outlook', icon: CalendarDays, desc: 'Investment thesis • Macro factors • Hourly updates' },
+            { id: 'daily', label: 'Daily Predictions', icon: Clock, desc: 'Intraday plan • volatility-sized entry, stop and targets' },
+            { id: 'weekly', label: 'Weekly Forecast', icon: Calendar, desc: 'Swing horizon • wider bands, trend-following read' },
+            { id: 'monthly', label: 'Monthly Outlook', icon: CalendarDays, desc: 'Position horizon • macro structure over daily noise' },
           ].map(tf => (
             <Link
               key={tf.id}
@@ -314,109 +342,6 @@ export default function PredictionHub() {
 
         <AdBreak variant="compact" />
 
-        {/* === LEADERBOARD === */}
-        <section className="mb-8">
-          <PredictionLeaderboard />
-        </section>
-
-        {/* === MY SAVED SETUPS === */}
-        {user?.id && mySetups && mySetups.length > 0 && (
-          <section className="mb-8 border-t border-border/30 pt-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold flex items-center gap-2">
-                <Bookmark className="w-5 h-5 text-primary" />
-                My Saved Setups
-                <Badge variant="outline" className="text-[10px] ml-1">{mySetups.length}</Badge>
-              </h2>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-xs"
-                onClick={() => setShowSavedSetups(!showSavedSetups)}
-              >
-                {showSavedSetups ? "Hide" : "Show All"}
-              </Button>
-            </div>
-            {showSavedSetups && (
-              <div className="border-t border-border/40 overflow-x-auto">
-                <table className="w-full text-sm min-w-[700px]">
-                  <thead>
-                    <tr className="border-b border-border">
-                      <th className="text-left p-3 text-xs font-medium text-muted-foreground">Token</th>
-                      <th className="text-center p-3 text-xs font-medium text-muted-foreground">Direction</th>
-                      <th className="text-right p-3 text-xs font-medium text-muted-foreground">Entry</th>
-                      <th className="text-right p-3 text-xs font-medium text-muted-foreground">Stop Loss</th>
-                      <th className="text-right p-3 text-xs font-medium text-muted-foreground">TP1</th>
-                      <th className="text-center p-3 text-xs font-medium text-muted-foreground">Status</th>
-                      <th className="text-right p-3 text-xs font-medium text-muted-foreground">P&L</th>
-                      <th className="text-right p-3 text-xs font-medium text-muted-foreground">Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {mySetups.map((s: TradeSetup) => {
-                      const isWin = s.status === "hit_tp1" || s.status === "hit_tp2" || s.status === "hit_tp3";
-                      const isStopped = s.status === "stopped";
-                      return (
-                        <tr
-                          key={s.id}
-                          className="border-b border-border/30 hover:bg-muted/20 transition-colors cursor-pointer"
-                          onClick={() => navigate(`/price-prediction/${s.coin_id}/${s.timeframe}`)}
-                        >
-                          <td className="p-3">
-                            <div className="flex items-center gap-2">
-                              <TokenIcon coinId={s.coin_id} symbol={s.symbol} size="sm" />
-                              <div>
-                                <div className="font-medium text-sm">{s.name}</div>
-                                <div className="text-[10px] text-muted-foreground">{s.symbol.toUpperCase()} · {s.timeframe}</div>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="p-3 text-center">
-                            <Badge variant="outline" className={cn("text-[10px] gap-0.5",
-                              s.bias === "bullish" ? "border-success/40 text-success" :
-                              s.bias === "bearish" ? "border-danger/40 text-danger" :
-                              "border-warning/40 text-warning"
-                            )}>
-                              {s.bias === "bullish" && <TrendingUp className="w-3 h-3" />}
-                              {s.bias === "bearish" && <TrendingDown className="w-3 h-3" />}
-                              {s.bias === "neutral" && <Minus className="w-3 h-3" />}
-                              {s.bias.toUpperCase()}
-                            </Badge>
-                          </td>
-                          <td className="p-3 text-right font-mono text-xs">{formatPrice(s.entry_price)}</td>
-                          <td className="p-3 text-right font-mono text-xs text-danger">{formatPrice(s.stop_loss)}</td>
-                          <td className="p-3 text-right font-mono text-xs text-success">{formatPrice(s.take_profit_1)}</td>
-                          <td className="p-3 text-center">
-                            <span className={cn("inline-flex items-center gap-1 text-[10px] font-bold",
-                              isWin ? "text-success" : isStopped ? "text-danger" :
-                              s.status === "active" ? "text-primary" : "text-muted-foreground"
-                            )}>
-                              {isWin && <CheckCircle2 className="w-3 h-3" />}
-                              {isStopped && <XCircle className="w-3 h-3" />}
-                              {s.status === "active" && <Activity className="w-3 h-3" />}
-                              {s.status.replace("_", " ").toUpperCase()}
-                            </span>
-                          </td>
-                          <td className="p-3 text-right">
-                            <span className={cn("font-mono text-xs font-bold",
-                              (s.pnl_percent || 0) >= 0 ? "text-success" : "text-danger"
-                            )}>
-                              {(s.pnl_percent || 0) >= 0 ? "+" : ""}{(s.pnl_percent || 0).toFixed(1)}%
-                            </span>
-                          </td>
-                          <td className="p-3 text-right text-xs text-muted-foreground">
-                            {new Date(s.generated_at).toLocaleDateString()}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </section>
-        )}
-
         {/* === MAIN TOKEN TABLE === */}
         <section className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
@@ -425,7 +350,7 @@ export default function PredictionHub() {
                 <Activity className="w-5 h-5 text-primary" />
                 Live Token Signals
               </h2>
-              <p className="text-xs text-muted-foreground mt-0.5">{filteredCryptos.length} tokens monitored • Auto-refreshing</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{filteredCryptos.length} tokens monitored • signals recomputed from live prices</p>
             </div>
             <div className="flex items-center gap-2">
               <div className="relative w-48">
@@ -508,12 +433,7 @@ export default function PredictionHub() {
                           <div className="flex items-center gap-2">
                             <TokenIcon coinId={crypto.id} symbol={crypto.symbol} size="md" />
                             <div className="min-w-0">
-                              <div className="font-medium text-sm truncate flex items-center gap-1">
-                                {crypto.name}
-                                {crypto.hasCachedPrediction && (
-                                  <Zap className="w-3 h-3 text-primary shrink-0" />
-                                )}
-                              </div>
+                              <div className="font-medium text-sm truncate">{crypto.name}</div>
                               <div className="text-[10px] text-muted-foreground">{crypto.symbol.toUpperCase()}</div>
                             </div>
                           </div>
@@ -528,8 +448,8 @@ export default function PredictionHub() {
                           </span>
                         </td>
                         <td className="p-3 text-center">
-                          <Badge 
-                            variant="outline" 
+                          <Badge
+                            variant="outline"
                             className={cn(
                               "text-[10px] gap-0.5 font-medium",
                               crypto.bias === 'bullish' ? 'border-success/40 text-success bg-success/5' :
@@ -584,9 +504,6 @@ export default function PredictionHub() {
 
         <AdBreak variant="full" />
 
-        <div className="container mx-auto px-4 mb-8">
-        </div>
-
         {/* === SEO CONTENT === */}
         <PredictionsHowItWorks />
         <PredictionsDataMeaning />
@@ -596,23 +513,23 @@ export default function PredictionHub() {
           <h2 className="text-2xl font-bold mb-4">About AI Crypto Predictions</h2>
           <div className="prose max-w-none text-muted-foreground text-sm">
             <p className="mb-3">
-              Oracle Bull provides AI-powered cryptocurrency predictions for <strong>any token in the world</strong>. 
-              Search by name, symbol, or paste a contract address to get instant analysis with 50+ technical indicators.
+              Oracle Bull generates predictions for the top 50 tokens — and any token you search — by computing{" "}
+              <strong>real technical indicators</strong> on real market history: RSI(14) for momentum extremes, MACD for
+              trend direction, MA20/MA50 crossovers for structure, and Bollinger Bands for volatility positioning. Every
+              forecast ships with a bias, a confidence score, and volatility-sized entry zones, stops and targets.
             </p>
             <p className="mb-3">
-              Our system monitors <strong>every token on DexScreener and CoinGecko</strong> in real-time, delivering 
-              institutional-grade analysis including RSI, MACD, Bollinger Bands, support/resistance levels, and 
-              AI-generated trading zones with entry, stop-loss, and take-profit targets.
+              Signals are recomputed from live CoinGecko data each visit — no stale cache, no black box. If there isn't
+              enough history to compute a real read, the engine shows no prediction rather than a fabricated one.
             </p>
             <p>
-              All predictions auto-update continuously: daily predictions refresh every 5 minutes, weekly every 30 minutes, 
-              and monthly every hour — ensuring you always have the latest market intelligence.
+              And because trust requires evidence, the same prediction logic is replayed over 90 days of history on the{" "}
+              <Link to="/accuracy" className="text-primary hover:underline">Accuracy leaderboard</Link> — roughly{" "}
+              {proof.total ? proof.total.toLocaleString() : "4,000"} graded calls across {BACKTEST_COINS.length} majors,
+              misses included. Treat every signal as a research input, never financial advice.
             </p>
           </div>
         </section>
-
-        <div className="flex justify-center mt-8">
-        </div>
       </main>
 
       <LazyAd className="space-y-1">

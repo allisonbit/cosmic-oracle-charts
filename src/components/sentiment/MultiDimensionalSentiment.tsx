@@ -16,25 +16,26 @@ interface DimensionData {
 
 interface MultiDimensionalSentimentProps {
   fearGreedIndex: number;
-  socialSentiment: number;
+  /** % of top coins above water on the day (0-100) — real breadth. */
+  breadth: number;
+  /** Realized short-term volatility index (0-100) — real, derived from moves. */
   volatilityIndex: number;
-  whaleActivity: number;
-  fundingRate?: number;
-  onchainSentiment?: number;
+  /** Median volume-to-marketcap turnover across top coins (%). */
+  turnover: number;
 }
 
 export function MultiDimensionalSentiment({
-  fearGreedIndex, socialSentiment, volatilityIndex, whaleActivity,
-  fundingRate = 0.015, onchainSentiment = 58
+  fearGreedIndex, breadth, volatilityIndex, turnover
 }: MultiDimensionalSentimentProps) {
-  const fundingScore = 50 + (fundingRate * 1000);
+  const turnoverScore = Math.min(100, (turnover / 15) * 100); // 15%+ daily turnover = very hot
+  // Low volatility reads as "calm" — invert for the sentiment framing.
+  const calmScore = Math.max(0, Math.min(100, 100 - volatilityIndex));
   
   const dimensions: DimensionData[] = [
-    { id: 'social', name: 'Social Volume', shortName: 'Social', icon: <Users className="w-5 h-5" />, score: socialSentiment, weight: 0.20, trend: socialSentiment > 55 ? 'up' : socialSentiment < 45 ? 'down' : 'stable', description: 'Aggregated sentiment from Twitter, Reddit, Telegram, and Discord communities.', dataPoints: ['Twitter mention velocity', 'Reddit post sentiment', 'Telegram group activity', 'Discord server engagement'], sources: [{ name: 'LunarCrush', url: 'https://lunarcrush.com/' }, { name: 'Santiment', url: 'https://app.santiment.net/' }] },
-    { id: 'fear_greed', name: 'Fear & Greed', shortName: 'F&G', icon: <Brain className="w-5 h-5" />, score: fearGreedIndex, weight: 0.25, trend: fearGreedIndex > 55 ? 'up' : fearGreedIndex < 45 ? 'down' : 'stable', description: 'The market Fear & Greed Index combining volatility, momentum, and social signals.', dataPoints: ['Market volatility', 'Trading momentum', 'Social media trends', 'Bitcoin dominance'], sources: [{ name: 'Alternative.me', url: 'https://alternative.me/crypto/fear-and-greed-index/' }] },
-    { id: 'derivatives', name: 'Derivatives Data', shortName: 'Deriv.', icon: <TrendingUp className="w-5 h-5" />, score: fundingScore, weight: 0.20, trend: fundingRate > 0.01 ? 'up' : fundingRate < -0.01 ? 'down' : 'stable', description: 'Funding rates and open interest from perpetual futures markets.', dataPoints: [`Current funding: ${(fundingRate * 100).toFixed(3)}%`, 'Open interest trend', 'Long/Short ratio', 'Liquidation levels'], sources: [{ name: 'Coinglass', url: 'https://www.coinglass.com/' }] },
-    { id: 'onchain', name: 'On-Chain Sentiment', shortName: 'On-Chain', icon: <Activity className="w-5 h-5" />, score: onchainSentiment, weight: 0.20, trend: onchainSentiment > 55 ? 'up' : onchainSentiment < 45 ? 'down' : 'stable', description: 'NUPL (Net Unrealized Profit/Loss) and holder behavior analysis.', dataPoints: ['NUPL indicator', 'Holder distribution', 'Coin days destroyed', 'Exchange reserves'], sources: [{ name: 'Glassnode', url: 'https://glassnode.com/' }] },
-    { id: 'whale', name: 'Whale Activity', shortName: 'Whales', icon: <Waves className="w-5 h-5" />, score: whaleActivity, weight: 0.15, trend: whaleActivity > 60 ? 'up' : whaleActivity < 40 ? 'down' : 'stable', description: 'Large transaction monitoring and smart money flow analysis.', dataPoints: ['Large tx count (24h)', 'Exchange inflows', 'Exchange outflows', 'Accumulation patterns'], sources: [{ name: 'Whale Alert', url: 'https://whale-alert.io/' }] }
+    { id: 'fear_greed', name: 'Fear & Greed', shortName: 'F&G', icon: <Brain className="w-5 h-5" />, score: fearGreedIndex, weight: 0.35, trend: fearGreedIndex > 55 ? 'up' : fearGreedIndex < 45 ? 'down' : 'stable', description: 'The live market Fear & Greed Index from alternative.me, combining volatility, momentum and dominance signals.', dataPoints: ['Market volatility', 'Trading momentum', 'Bitcoin dominance', 'Trend strength'], sources: [{ name: 'Alternative.me', url: 'https://alternative.me/crypto/fear-and-greed-index/' }] },
+    { id: 'breadth', name: 'Market Breadth', shortName: 'Breadth', icon: <Users className="w-5 h-5" />, score: breadth, weight: 0.25, trend: breadth > 55 ? 'up' : breadth < 45 ? 'down' : 'stable', description: 'Share of the top coins trading higher over 24h — a real measure of how broad the move is.', dataPoints: ['Coins above water (24h)', 'Advance/decline ratio', 'Momentum leaders', 'Laggards'], sources: [{ name: 'CoinGecko (live)', url: 'https://www.coingecko.com/' }] },
+    { id: 'volatility', name: 'Volatility Regime', shortName: 'Vol.', icon: <Activity className="w-5 h-5" />, score: calmScore, weight: 0.20, trend: calmScore > 55 ? 'up' : calmScore < 45 ? 'down' : 'stable', description: 'Average absolute 24h move across the top coins, inverted: high calm = orderly market, low = turbulent.', dataPoints: ['Avg |24h move|', 'Risk level', 'Range expansion', 'Regime read'], sources: [{ name: 'CoinGecko (live)', url: 'https://www.coingecko.com/' }] },
+    { id: 'turnover', name: 'Volume Turnover', shortName: 'Volume', icon: <TrendingUp className="w-5 h-5" />, score: turnoverScore, weight: 0.20, trend: turnoverScore > 55 ? 'up' : turnoverScore < 45 ? 'down' : 'stable', description: '24h volume relative to market cap across the top coins — how actively capital is moving today.', dataPoints: [`${turnover.toFixed(1)}% median turnover`, 'Volume vs market cap', 'Liquidity depth', 'Participation'], sources: [{ name: 'CoinGecko (live)', url: 'https://www.coingecko.com/' }] }
   ];
 
   const compositeScore = dimensions.reduce((sum, dim) => sum + (dim.score * dim.weight), 0);

@@ -2,12 +2,11 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
-import { invokeFunction } from "@/integrations/supabase/functions";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/MainSEO";
 import { SITE_URL } from "@/lib/siteConfig";
 import { useTokenByAddress, useLiveTokenSearch } from "@/hooks/useLiveTokenSearch";
-import { useAIForecast } from "@/hooks/useAIForecast";
+import { usePricePrediction } from "@/hooks/usePricePrediction";
 import { getChainById, ALL_CHAINS } from "@/lib/explorerChains";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,6 +24,7 @@ import {
 } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart as RechartsPie, Pie, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar as RechartsRadar } from "recharts";
 import { formatPrice, formatCompact, formatNumber, formatChange } from "@/lib/formatters";
+import { fetchPriceSeries } from "@/lib/marketEngine";
 import { TokenAITab } from "@/components/features/token-detail/TokenAITab";
 import { TokenTradingTab } from "@/components/features/token-detail/TokenTradingTab";
 import { TokenHoldersTab } from "@/components/features/token-detail/TokenHoldersTab";
@@ -44,29 +44,47 @@ export default function TokenDetail() {
 
   const chainData = getChainById(chain) || ALL_CHAINS[0];
   const { data: token, isLoading } = useTokenByAddress(address, chain);
-  const { data: aiData, isLoading: aiLoading } = useAIForecast(
-    token ? { symbol: token.symbol, price: token.price, change24h: token.change24h, volume: token.volume24h } : null,
-    "coin_forecast",
-    !!token && token.price > 0
-  );
-  const forecast = aiData?.forecast;
 
-  // Real OHLC sparkline via edge fn (CoinGecko)
-  const { data: sparkData } = useQuery({
-    queryKey: ["sparkline", token?.symbol, token?.coingeckoId, chartTimeframe],
-    queryFn: async () => {
-      const days = chartTimeframe === '1h' ? 1 : chartTimeframe === '24h' ? 1 : chartTimeframe === '7d' ? 7 : 30;
-      const { data, error } = await invokeFunction("sparkline", {
-        body: { symbol: token!.symbol, id: token!.coingeckoId, days },
-      });
-      if (error) throw error;
-      return (data?.points ?? []) as Array<{ time: string; price: number }>;
-    },
-    enabled: !!token && (!!token.coingeckoId || !!token.symbol),
-    refetchInterval: 120_000,
-    refetchIntervalInBackground: true,
-    staleTime: 60_000,
+  // Real engine forecast — computed in-browser from 90-day history when the
+  // token maps to a CoinGecko id. Replaces the old dead "ai-forecast" call.
+  const engineCoinId = (token as any)?.coingeckoId || (token?.symbol ? token.symbol.toLowerCase() : "");
+  const { data: prediction, isLoading: aiLoading } = usePricePrediction(engineCoinId || "bitcoin", "daily");
+  const forecast = useMemo(() => {
+    if (!prediction) return null;
+    return {
+      bias: prediction.bias,
+      confidence: prediction.confidence,
+      riskLevel: prediction.riskLevel,
+      summary: prediction.summary,
+      targets: prediction.priceTargets
+        ? {
+            conservative: prediction.priceTargets.conservative?.high,
+            moderate: prediction.priceTargets.moderate?.high,
+            aggressive: prediction.priceTargets.aggressive?.high,
+          }
+        : undefined,
+      triggers: prediction.bullScenario?.triggers,
+      technicals: prediction.technicalIndicators
+        ? {
+            rsi: prediction.technicalIndicators.rsi,
+            macd: prediction.technicalIndicators.macd?.value,
+            ma20: prediction.technicalIndicators.movingAverages?.ma20,
+            ma50: prediction.technicalIndicators.movingAverages?.ma50,
+            volatility: `${prediction.volatilityIndex}%/day`,
+          }
+        : undefined,
+    };
+  }, [prediction]);
+
+  // Real sparkline from the standalone engine (CoinGecko market_chart).
+  const sparkDays = chartTimeframe === '30d' ? 30 : 7;
+  const { data: sparkSeries } = useQuery({
+    queryKey: ["engine-series", engineCoinId, sparkDays],
+    queryFn: () => fetchPriceSeries(engineCoinId, sparkDays),
+    enabled: !!engineCoinId,
+    staleTime: 600_000,
   });
+  const sparkData = sparkSeries;
 
   const chartData = useMemo(
     () => (sparkData ?? []).map((p, i) => ({ time: `${i}`, price: p.price, volume: 0 })),

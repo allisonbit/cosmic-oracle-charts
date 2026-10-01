@@ -1,5 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
-import { invokeFunction } from "@/integrations/supabase/functions";
+import { useDexDiscovery } from "@/lib/dexScreener";
 
 export interface DiscoveryToken {
   symbol: string;
@@ -37,33 +36,8 @@ const FALLBACK_DATA: TokenDiscoveryResponse = {
 };
 
 export function useTokenDiscovery(chain: string = 'ethereum', enabled = true) {
-  return useQuery<TokenDiscoveryResponse>({
-    queryKey: ['token-discovery', chain],
-    queryFn: async () => {
-      try {
-        const { data, error } = await invokeFunction('token-discovery', {
-          body: { chain }
-        });
-
-        if (error) {
-          console.warn('Token discovery error, using fallback:', error.message);
-          return { ...FALLBACK_DATA, chain };
-        }
-
-        return data as TokenDiscoveryResponse;
-      } catch (err) {
-        console.warn('Token discovery exception, using fallback');
-        return { ...FALLBACK_DATA, chain };
-      }
-    },
-    enabled,
-    staleTime: 20000,
-    refetchInterval: 25000, // Refresh every 25 seconds 24/7
-    gcTime: 1000 * 60 * 10,
-    refetchIntervalInBackground: false, // Keep updating in background
-    refetchOnWindowFocus: true,
-    refetchOnReconnect: true,
-    retry: 3,
-    retryDelay: 2000,
-  });
+  // Standalone: real DEX pairs from DexScreener's public API, derived into
+  // discovery categories client-side (see dexScreener.ts).
+  const { data, isLoading } = useDexDiscovery(chain, enabled);
+  return { data, isLoading };
 }

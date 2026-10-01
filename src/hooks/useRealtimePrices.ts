@@ -1,21 +1,17 @@
 import { useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { invokeFunction } from "@/integrations/supabase/functions";
+import { useCryptoPrices } from "./useCryptoPrices";
 
 /**
- * Realtime price hook.
+ * Realtime price hook (standalone).
  *
- * Previously implemented as a raw setInterval(5s) that bypassed TanStack
- * Query — meaning every component mounting it spawned its own polling loop,
- * and the data never landed in the shared cache used by `useCryptoPrices`.
+ * Previously polled the "crypto-prices" edge function every 10s. Standalone,
+ * that endpoint is dead — so this is now a thin adapter over the live engine
+ * cache (`useCryptoPrices`, CoinGecko). The public API is preserved:
+ * { prices: Record<symbol, RealtimePrice>, isConnected, refetch }.
  *
- * Now it's a thin wrapper over `useQuery` that shares the global
- * `["crypto-prices"]` cache entry with `useCryptoPrices`. TanStack Query
- * automatically picks the lowest `refetchInterval` across active observers,
- * so mounting this hook anywhere accelerates the shared cache to 5s while
- * a page only using `useCryptoPrices` stays at 15s. No duplicate fetches.
- *
- * Public API is preserved: { prices: Record<symbol, RealtimePrice>, isConnected, refetch }.
+ * The [symbol → record] map keeps every existing consumer working unchanged.
+ * If the Supabase overlay is wired up later, the old fast-polling fetch can
+ * replace the queryFn here without touching callers.
  */
 interface RealtimePrice {
   symbol: string;
@@ -24,38 +20,18 @@ interface RealtimePrice {
   lastUpdated: number;
 }
 
-interface RawPrice {
-  symbol: string;
-  price: number;
-  change24h: number;
-}
-
 export function useRealtimePrices(symbols: string[]) {
-  const query = useQuery({
-    queryKey: ["crypto-prices"],
-    queryFn: async () => {
-      const { data, error } = await invokeFunction("crypto-prices");
-      if (error) throw error;
-      return data as { prices: RawPrice[]; timestamp: number };
-    },
-    refetchInterval: 10000,
-    staleTime: 8000,
-    refetchOnWindowFocus: true,
-    refetchOnReconnect: true,
-    retry: 2,
-    retryDelay: 1500,
-    networkMode: "offlineFirst",
-  });
+  const { data, isLoading, isError, refetch, isFetching } = useCryptoPrices();
 
   const symbolKey = symbols.join(",");
   const prices = useMemo<Record<string, RealtimePrice>>(() => {
     const out: Record<string, RealtimePrice> = {};
-    const list = query.data?.prices;
+    const list = data?.prices;
     if (!list) return out;
-    const wanted = new Set(symbols);
+    const wanted = new Set(symbols.map(s => s.toLowerCase()));
     const ts = Date.now();
     for (const p of list) {
-      if (!wanted.has(p.symbol)) continue;
+      if (!wanted.has(p.symbol.toLowerCase())) continue;
       out[p.symbol] = {
         symbol: p.symbol,
         price: p.price,
@@ -65,11 +41,12 @@ export function useRealtimePrices(symbols: string[]) {
     }
     return out;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query.data, symbolKey]);
+  }, [data, symbolKey]);
 
   return {
     prices,
-    isConnected: query.isSuccess && !query.isError,
-    refetch: () => query.refetch(),
+    isConnected: !isError && !isLoading,
+    refetch: () => refetch(),
+    isFetching,
   };
 }

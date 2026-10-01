@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 
-const FN_BASE = `https://qynszkirmcrldqmiplwh.supabase.co/functions/v1`;
+const FN_BASE = `${(import.meta.env.VITE_SUPABASE_URL as string | undefined)?.replace(/\/$/, "") ?? ""}/functions/v1`;
 
 export default function DigestPreview() {
   const [mode, setMode] = useState<"live" | "sample">("sample");

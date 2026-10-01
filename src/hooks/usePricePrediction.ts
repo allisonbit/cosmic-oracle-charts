@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { invokeFunction } from "@/integrations/supabase/functions";
-import { toast } from "sonner";
+import { buildPrediction, fetchMarkets, fetchPriceSeries, type EnginePrediction } from "@/lib/marketEngine";
+
+// Re-export the engine prediction shape for consumers that reference it.
+export type PredictionData = EnginePrediction;
 
 export interface TechnicalIndicators {
   rsi: number;
@@ -69,35 +71,21 @@ export function usePricePrediction(
   const contractAddress = opts?.contractAddress;
   const chain = opts?.chain;
   return useQuery<PredictionData>({
-    queryKey: ['price-prediction', coinId, timeframe, contractAddress ?? null],
+    queryKey: ['engine-prediction', coinId, timeframe],
     queryFn: async () => {
-      const { data, error } = await invokeFunction('price-prediction', {
-        body: { coinId, symbol, timeframe, contractAddress, chain }
-      });
-      
-      if (error) {
-        // Check for specific error codes
-        const errMsg = error.message || '';
-        if (errMsg.includes('402') || errMsg.includes('credits')) {
-          toast.error("AI credits exhausted — using algorithmic analysis", { id: "ai-credits" });
-        } else if (errMsg.includes('429') || errMsg.includes('rate limit')) {
-          toast.warning("Rate limited — retrying shortly", { id: "rate-limit" });
-        }
-        throw new Error(errMsg || 'Failed to fetch prediction');
-      }
-      
-      if (!data) throw new Error('No prediction data received');
-      
-      // Validate essential fields
-      if (!data.currentPrice || data.currentPrice <= 0) {
-        throw new Error('Invalid price data received');
-      }
-      
-      return data;
+      // Real technical analysis from real history, computed in-browser.
+      const [coins, series] = await Promise.all([
+        fetchMarkets(250),
+        fetchPriceSeries(coinId, timeframe === 'daily' ? 90 : timeframe === 'weekly' ? 365 : 730),
+      ]);
+      const coin = coins.find(c => c.id === coinId);
+      const prediction = coin ? buildPrediction(coin, series, timeframe) : null;
+      if (!prediction) throw new Error('Insufficient market history for analysis');
+      return prediction;
     },
     enabled: enabled && !!coinId && coinId.length > 0,
-    staleTime: timeframe === 'daily' ? 3 * 60_000 : timeframe === 'weekly' ? 15 * 60_000 : 30 * 60_000,
-    refetchInterval: timeframe === 'daily' ? 5 * 60_000 : timeframe === 'weekly' ? 15 * 60_000 : 30 * 60_000,
+    staleTime: timeframe === 'daily' ? 5 * 60_000 : timeframe === 'weekly' ? 30 * 60_000 : 60 * 60_000,
+    refetchInterval: false,
     gcTime: 60 * 60_000,
     refetchIntervalInBackground: false,
     // A setup must stay put while the user reads it. Window-focus refetches made

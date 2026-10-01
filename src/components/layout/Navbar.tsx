@@ -12,6 +12,7 @@ const PRIMARY_NAV = [
   { path: "/",           label: "Home" },
   { path: "/dashboard",  label: "Dashboard" },
   { path: "/predictions",label: "Predictions" },
+  { path: "/game",       label: "Daily Game" },
   { path: "/news",       label: "News" },
   { path: "/tools",      label: "Tools" },
 ];
@@ -51,6 +52,8 @@ const MOBILE_GROUPS = [
     { path: "/",            label: "Home",        icon: Home },
     { path: "/dashboard",   label: "Dashboard",   icon: LayoutDashboard },
     { path: "/predictions", label: "Predictions", icon: Target },
+    { path: "/game",        label: "Daily Game",   icon: Zap },
+    { path: "/recap",       label: "Market Recap", icon: Calendar },
     { path: "/news",        label: "News",        icon: Newspaper },
     { path: "/tools",       label: "Tools",       icon: Calculator },
   ]},

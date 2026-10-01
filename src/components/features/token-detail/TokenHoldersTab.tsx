@@ -4,7 +4,6 @@ import { formatNumber } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 import { Wallet, Flame } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { invokeFunction } from "@/integrations/supabase/functions";
 import { useParams } from "react-router-dom";
 
 interface TokenHoldersTabProps {
@@ -23,20 +22,18 @@ export function TokenHoldersTab({ derivedMetrics }: TokenHoldersTabProps) {
   const { data, isLoading } = useQuery({
     queryKey: ["token-holders", chain, address],
     queryFn: async () => {
-      const { data, error } = await invokeFunction("token-holders", {
-        body: { chain, address },
-      });
-      if (error) throw error;
-      return data as {
-        holders: Array<{ address: string; balance: number; pct: number }>;
-        distribution: Array<{ label: string; pct: number }>;
-        totalHolders: number | null;
-        supported: boolean;
+      // Standalone: on-chain holder indexing needs a node provider this build
+      // doesn't connect to, so we return an explicit empty dataset — the UI
+      // shows its honest "unavailable" states instead of invented wallets.
+      return {
+        holders: [] as Array<{ address: string; balance: number; pct: number }>,
+        distribution: [] as Array<{ label: string; pct: number }>,
+        totalHolders: null as number | null,
+        supported: false,
       };
     },
     enabled: !!address,
-    refetchInterval: 5 * 60_000,
-    refetchIntervalInBackground: true,
+    retry: false,
     staleTime: 4 * 60_000,
   });
 

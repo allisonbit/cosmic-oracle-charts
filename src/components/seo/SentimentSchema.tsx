@@ -10,7 +10,7 @@ export function SentimentSchema({ fearGreedIndex = 50, marketMomentum = 'NEUTRAL
   return (
     <Helmet>
       <title>Crypto Sentiment Analysis | Fear & Greed Index | Oracle Bull</title>
-      <meta name="description" content="Track crypto market sentiment with our Fear & Greed Index, whale alerts, social sentiment analysis, and AI-powered market signals. Real-time updates." />
+      <meta name="description" content="Track crypto market sentiment with the live Fear & Greed Index, market breadth, volatility and momentum analytics — computed from real market data." />
     </Helmet>
   );
 }
@@ -23,14 +23,15 @@ export function SentimentSEOContent() {
       </h2>
       <div className="prose max-w-none text-sm text-muted-foreground space-y-3">
         <p>
-          Our Sentiment Scanner aggregates real-time data from across the crypto ecosystem to give you 
-          a complete picture of market psychology. Monitor whale movements, track social buzz, and 
-          understand what's driving price action before it happens.
+          Our Sentiment Scanner reads the real market — the live Fear & Greed Index, breadth of the
+          top coins' 24-hour moves, realized volatility, volume turnover, and each token's position
+          inside its 24-hour range — to give you a complete picture of market psychology from data
+          you can verify.
         </p>
         <p>
-          The Fear & Greed Index combines multiple on-chain and off-chain indicators to quantify 
-          market emotion on a scale of 0-100. Combined with our whale tracking and social sentiment 
-          analysis, you'll have the edge you need to make informed decisions.
+          The Fear &amp; Greed Index quantifies market emotion on a scale of 0–100 from volatility,
+          volume, dominance and trend data. Combined with our multi-dimensional dashboard, you get
+          sentiment grounded in evidence rather than speculation.
         </p>
       </div>
     </section>

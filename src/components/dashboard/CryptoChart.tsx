@@ -1,26 +1,11 @@
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { useQuery } from "@tanstack/react-query";
-import { invokeFunction } from "@/integrations/supabase/functions";
+import { usePriceSeries } from "@/hooks/usePriceSeries";
 
 export function CryptoChart({ price, isPositive, symbol }: { price: number; isPositive: boolean; symbol?: string }) {
-  const { data: points } = useQuery({
-    queryKey: ["sparkline", symbol ?? "BTC"],
-    queryFn: async () => {
-      const { data, error } = await invokeFunction("sparkline", {
-        body: { symbol: symbol ?? "BTC", days: 1 },
-      });
-      if (error) throw error;
-      return (data?.points ?? []) as Array<{ time: string; price: number }>;
-    },
-    enabled: !!symbol,
-    refetchInterval: 120_000,
-    refetchIntervalInBackground: true,
-    staleTime: 60_000,
-  });
+  // Standalone: real 1-day price series from the engine (CoinGecko).
+  const { data: points } = usePriceSeries(symbol ?? "BTC", 1);
 
-  const data = (points ?? []).length > 0
-    ? points!.map((p, i) => ({ time: `${i}`, price: p.price }))
-    : [];
+  const data = (points ?? []).map((p, i) => ({ time: `${i}`, price: p.price }));
 
   if (data.length === 0) {
     return <div className="h-[80px] bg-muted/20 rounded animate-pulse" />;

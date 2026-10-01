@@ -1,181 +1,144 @@
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { invokeFunction } from "@/integrations/supabase/functions";
+import { fetchMarkets, type EngineCoin } from "@/lib/marketEngine";
+import { useDexTopTokens, type DexToken } from "@/lib/dexScreener";
 
 export interface ChainOverview {
   marketCap: number;
   volume24h: number;
-  transactions24h: number;
-  gasFees: number;
-  tps: number;
-  activeWallets: number;
-  defiTvl: number;
   priceChange24h: number;
-}
-
-export interface WhaleActivity {
-  type: "buy" | "sell" | "transfer";
-  amount: number;
-  token: string;
-  timestamp: number;
-  value: number;
-  wallet?: string;
+  /** Node-only metrics — unavailable in standalone mode, widgets show "—". */
+  transactions24h?: number;
+  gasFees?: number;
+  tps?: number;
+  activeWallets?: number;
+  defiTvl?: number;
 }
 
 export interface TokenHeat {
   symbol: string;
   name: string;
+  /** 1h price change — real momentum signal. */
   momentum: number;
+  /** Volume ÷ liquidity ratio (×100, capped) — real activity signal. */
   volumeSpike: number;
+  /** |24h price change| — real volatility signal. */
   volatility: number;
+  /** Always 0 — no social feed exists; heat derives from price + flow only. */
   socialScore: number;
+  /** Volume ÷ market cap (×100) — real turnover signal. */
   liquidityChange: number;
   price: number;
   change24h: number;
 }
 
 export interface SmartMoneyFlow {
+  /** Aggregate DEX buy volume (24h) across the chain's top pairs. */
   inflow: number;
+  /** Aggregate DEX sell volume (24h). */
   outflow: number;
+  /** inflow − outflow, from real buys/sells. */
   netFlow: number;
   topSwaps: { from: string; to: string; amount: number }[];
+  /** Summed pool liquidity of the top pairs (real). */
   liquidityAdded: number;
+  /** Removals aren't exposed by the public API — always 0, shown as "—". */
   liquidityRemoved: number;
-}
-
-export interface EcosystemToken {
-  symbol: string;
-  name: string;
-  address: string;
-  category: string;
-  price?: number;
-  change24h?: number;
-}
-
-export interface ChainSpecificData {
-  type?: string;
-  rollupType?: string;
-  parentChain?: string;
-  consensus?: string;
-  language?: string;
-  features?: string[];
-  governance?: string;
-  bridges?: { name: string; url: string }[];
-  dexes?: { name: string; url: string; volume24h: number }[];
-  defiProtocols?: { name: string; tvl: number; category: string }[];
-  telegramApps?: { name: string; users: number; category: string }[];
-  uniqueMetrics?: Record<string, number>;
-  recentUpgrades?: { name: string; date: string; description: string }[];
-  subnets?: { name: string; description: string; tvl: number }[];
-  zkSolutions?: { name: string; status: string; tps?: number; description?: string }[];
-  orbitChains?: { name: string; description: string; status: string }[];
-  ecosystemTokens?: EcosystemToken[];
 }
 
 export interface ChainDataResponse {
   overview: ChainOverview;
-  whaleActivity: WhaleActivity[];
   tokenHeat: TokenHeat[];
   smartMoneyFlow: SmartMoneyFlow;
-  chainSpecificData?: ChainSpecificData;
   timestamp: number;
 }
 
-// Deterministic fallback - seeded per 30s window so data is stable, not random on every render
-function generateFallbackData(chainId: string): ChainDataResponse {
-  const chainDefaults: Record<string, { marketCap: number; volume: number; tokens: string[] }> = {
-    ethereum: { marketCap: 440e9, volume: 18e9, tokens: ["ETH", "LINK", "UNI", "AAVE", "LDO", "MKR", "CRV", "COMP"] },
-    solana: { marketCap: 105e9, volume: 4.5e9, tokens: ["SOL", "RAY", "ORCA", "MNGO", "BONK", "JTO", "PYTH", "JUP"] },
-    bnb: { marketCap: 100e9, volume: 2e9, tokens: ["BNB", "CAKE", "XVS", "BAKE", "TWT", "ALPACA", "DODO", "VENUS"] },
-    avalanche: { marketCap: 21e9, volume: 800e6, tokens: ["AVAX", "JOE", "PNG", "QI", "SPELL", "TIME", "BENQI", "YAK"] },
-    polygon: { marketCap: 6e9, volume: 400e6, tokens: ["MATIC", "QUICK", "GHST", "SUSHI", "AAVE", "DFYN", "QI", "WETH"] },
-    arbitrum: { marketCap: 4.6e9, volume: 450e6, tokens: ["ARB", "GMX", "MAGIC", "RDNT", "GNS", "JONES", "DPX", "PENDLE"] },
-    base: { marketCap: 2e9, volume: 300e6, tokens: ["ETH", "AERO", "BRETT", "DEGEN", "TOSHI", "HIGHER", "NORMIE", "DAI"] },
-  };
-
-  const defaults = chainDefaults[chainId] || chainDefaults.ethereum;
-  // Seed by 30s window - stable within window, fresh every 30s
-  const seed = Math.floor(Date.now() / 30000);
-  const sr = (n: number) => { const x = Math.sin(seed * 127 + n * 311) * 1e8; return x - Math.floor(x); };
-
+/** Map a DexScreener pair (real) into a heat row — every field is a real signal. */
+function toHeatRow(t: DexToken): TokenHeat {
+  const volLiq = t.liquidity > 0 ? t.volume24h / t.liquidity : 0;
   return {
-    overview: {
-      marketCap: defaults.marketCap,
-      volume24h: defaults.volume,
-      transactions24h: Math.floor(1000000 + sr(1) * 500000),
-      gasFees: 15 + sr(2) * 30,
-      tps: Math.floor(50 + sr(3) * 100),
-      activeWallets: Math.floor(100000 + sr(4) * 200000),
-      defiTvl: defaults.volume * 3,
-      priceChange24h: (sr(5) - 0.5) * 8,
-    },
-    whaleActivity: Array.from({ length: 20 }, (_, i) => ({
-      type: (["buy", "sell", "transfer"] as const)[Math.floor(sr(i * 3 + 6) * 3)],
-      amount: sr(i * 5 + 7) * 10000,
-      token: defaults.tokens[Math.floor(sr(i * 7 + 8) * defaults.tokens.length)],
-      timestamp: Date.now() - sr(i * 11 + 9) * 3600000,
-      value: sr(i * 13 + 10) * 2000000,
-      wallet: `0x${(seed * (i + 1) * 0x3f7a).toString(16).slice(0, 6)}...${(seed * i).toString(16).slice(-4)}`,
-    })),
-    tokenHeat: defaults.tokens.map((symbol, i) => ({
-      symbol,
-      name: symbol,
-      momentum: sr(i * 17 + 11) * 100,
-      volumeSpike: sr(i * 19 + 12) * 100,
-      volatility: sr(i * 23 + 13) * 100,
-      socialScore: sr(i * 29 + 14) * 100,
-      liquidityChange: (sr(i * 31 + 15) - 0.5) * 40,
-      price: sr(i * 37 + 16) * 1000,
-      change24h: (sr(i * 41 + 17) - 0.5) * 20,
-    })),
-    smartMoneyFlow: {
-      inflow: defaults.volume * 0.08,
-      outflow: defaults.volume * 0.06,
-      netFlow: defaults.volume * 0.02,
-      topSwaps: Array.from({ length: 5 }, (_, i) => ({
-        from: defaults.tokens[i % 3],
-        to: defaults.tokens[(i + 2) % defaults.tokens.length],
-        amount: defaults.volume * 0.005,
-      })),
-      liquidityAdded: defaults.volume * 0.07,
-      liquidityRemoved: defaults.volume * 0.05,
-    },
-    timestamp: Date.now(),
+    symbol: t.symbol,
+    name: t.name,
+    momentum: t.change1h,
+    volumeSpike: Math.min(500, volLiq * 100),
+    volatility: Math.abs(t.change24h),
+    socialScore: 0,
+    liquidityChange: t.marketCap > 0 ? (t.volume24h / t.marketCap) * 100 : 0,
+    price: t.price,
+    change24h: t.change24h,
   };
 }
 
 export function useChainData(chainId: string, enabled = true) {
-  return useQuery({
-    queryKey: ["chain-data", chainId],
-    queryFn: async (): Promise<ChainDataResponse> => {
-      try {
-        const { data, error } = await invokeFunction("chain-data", {
-          body: { chainId },
-        });
-
-        if (error) {
-          console.error("Error fetching chain data:", error);
-          return generateFallbackData(chainId);
-        }
-
-        if (!data || !data.overview) {
-          return generateFallbackData(chainId);
-        }
-
-        return data as ChainDataResponse;
-      } catch (err) {
-        console.error("Exception fetching chain data:", err);
-        return generateFallbackData(chainId);
-      }
-    },
+  // One fresh markets snapshot per load — shared ["engine-markets"] cache with
+  // the rest of the site. No interval polling.
+  const markets = useQuery({
+    queryKey: ["engine-markets", 250],
+    queryFn: () => fetchMarkets(250),
     enabled: enabled && !!chainId,
-    refetchInterval: 20000, // 20 seconds - live 24/7 updates
-    staleTime: 15000,
-    gcTime: 1000 * 60 * 10, // 10 min cache
-    refetchIntervalInBackground: false, // Keep updating in background 24/7
-    refetchOnWindowFocus: true,
-    refetchOnReconnect: true,
-    retry: 3,
-    retryDelay: 2000,
-    placeholderData: (previousData) => previousData || generateFallbackData(chainId),
+    staleTime: 120_000,
+    refetchInterval: false,
+    retry: 1,
   });
+
+  // Live DEX pairs for this chain from DexScreener's public API.
+  const { data: dexTokens, isLoading: dexLoading } = useDexTopTokens(chainId, 30, enabled && !!chainId);
+
+  const data: ChainDataResponse | undefined = useMemo(() => {
+    if (!chainId) return undefined;
+    const coins: EngineCoin[] | undefined = markets.data;
+    if (!coins && !dexTokens) return undefined;
+
+    // Native asset: the chain id IS the CoinGecko id for L1s; Base tracks ETH.
+    const nativeId = chainId === "base" ? "ethereum" : chainId;
+    const native = coins?.find((c) => c.id === nativeId);
+
+    const dexVolume = (dexTokens ?? []).reduce((a, t) => a + t.volume24h, 0);
+    const dexLiquidity = (dexTokens ?? []).reduce((a, t) => a + t.liquidity, 0);
+    const buys = (dexTokens ?? []).reduce((a, t) => a + t.buys24h, 0);
+    const sells = (dexTokens ?? []).reduce((a, t) => a + t.sells24h, 0);
+    const swapCount = buys + sells || 1;
+
+    const overview: ChainOverview = {
+      marketCap: native?.marketCap ?? 0,
+      volume24h: dexVolume || native?.volume24h || 0,
+      priceChange24h: native?.change24h ?? 0,
+      // Node-only metrics stay undefined → the UI shows "—".
+      transactions24h: undefined,
+      gasFees: undefined,
+      tps: undefined,
+      activeWallets: undefined,
+      defiTvl: undefined,
+    };
+
+    // Buy/sell pressure straight from real 24h swap counts (base-token side).
+    const buyShare = buys / swapCount;
+    const inflow = dexVolume * buyShare;
+    const smartMoneyFlow: SmartMoneyFlow = {
+      inflow,
+      outflow: dexVolume - inflow,
+      netFlow: inflow * 2 - dexVolume,
+      topSwaps: (dexTokens ?? []).slice(0, 5).map((t) => ({
+        from: t.symbol,
+        to: "USD",
+        amount: t.volume24h,
+      })),
+      liquidityAdded: dexLiquidity,
+      liquidityRemoved: 0,
+    };
+
+    return {
+      overview,
+      tokenHeat: (dexTokens ?? []).map(toHeatRow),
+      smartMoneyFlow,
+      timestamp: Date.now(),
+    };
+  }, [chainId, markets.data, dexTokens]);
+
+  return {
+    data,
+    isLoading: markets.isLoading || dexLoading,
+    isFetching: markets.isFetching || dexLoading,
+    refetch: () => Promise.all([markets.refetch()]),
+  };
 }

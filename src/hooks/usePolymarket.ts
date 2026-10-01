@@ -1,5 +1,10 @@
+// ── usePolymarket — standalone Polymarket market data ────────────────────────
+// The old implementation called a Supabase edge function that no longer exists.
+// Polymarket's own Gamma API (gamma-api.polymarket.com) is public, key-free and
+// CORS-open, so the browser can query it directly. Same exported shapes as
+// before — Polymarket.tsx and HomePolymarket.tsx are unchanged consumers.
+
 import { useQuery } from "@tanstack/react-query";
-import { invokeFunction } from "@/integrations/supabase/functions";
 
 export interface PolymarketMarket {
   id: string;
@@ -30,16 +35,118 @@ interface PolymarketResponse {
   query?: string;
 }
 
+const GAMMA = "https://gamma-api.polymarket.com/markets";
+
+/** Gamma returns list-typed fields as JSON strings — parse defensively. */
+function parseList(v: unknown): string[] {
+  if (Array.isArray(v)) return v.map(String);
+  if (typeof v === "string") {
+    try {
+      const parsed = JSON.parse(v);
+      return Array.isArray(parsed) ? parsed.map(String) : [];
+    } catch {
+      return [];
+    }
+  }
+  return [];
+}
+
+const num = (v: unknown): number => {
+  const n = typeof v === "number" ? v : parseFloat(String(v ?? ""));
+  return Number.isFinite(n) ? n : 0;
+};
+
+interface GammaMarket {
+  id?: string;
+  question?: string;
+  slug?: string;
+  image?: string;
+  icon?: string;
+  outcomes?: unknown;
+  outcomePrices?: unknown;
+  volume24hr?: number;
+  volumeNum?: number;
+  volume?: number;
+  liquidityNum?: number;
+  liquidity?: number | string;
+  spread?: number;
+  oneDayPriceChange?: number;
+  lastTradePrice?: number;
+  bestBid?: number;
+  bestAsk?: number;
+  endDate?: string | null;
+  end_date_iso?: string | null;
+  closed?: boolean;
+  active?: boolean;
+  events?: Array<{
+    title?: string;
+    tags?: Array<{ label?: string }>;
+  }>;
+}
+
+async function fetchTopMarkets(limit = 100): Promise<PolymarketMarket[]> {
+  const url = `${GAMMA}?closed=false&archived=false&active=true&order=volume24hr&ascending=false&limit=${limit}`;
+  const res = await fetch(url, { headers: { accept: "application/json" } });
+  if (!res.ok) throw new Error(`Gamma API ${res.status}`);
+  const rows = (await res.json()) as GammaMarket[];
+  if (!Array.isArray(rows)) return [];
+
+  return rows
+    .filter((m) => parseList(m.outcomes).length > 0)
+    .map((m) => {
+      const outcomes = parseList(m.outcomes);
+      const prices = parseList(m.outcomePrices).map((p) => num(p));
+      const tags = (m.events?.[0]?.tags ?? [])
+        .map((t) => t.label)
+        .filter((l): l is string => !!l);
+      return {
+        id: m.id ?? m.slug ?? "",
+        question: m.question ?? "",
+        eventTitle: m.events?.[0]?.title ?? "",
+        slug: m.slug ?? "",
+        url: m.slug ? `https://polymarket.com/market/${m.slug}` : "https://polymarket.com",
+        image: m.image ?? m.icon ?? "",
+        outcomes,
+        outcomePrices: outcomes.map((_, i) => prices[i] ?? 0),
+        volume24hr: num(m.volume24hr),
+        volume: num(m.volumeNum ?? m.volume),
+        liquidity: num(m.liquidityNum ?? m.liquidity),
+        spread: num(m.spread),
+        oneDayPriceChange: num(m.oneDayPriceChange),
+        lastTradePrice: num(m.lastTradePrice),
+        bestBid: num(m.bestBid),
+        bestAsk: num(m.bestAsk),
+        endDate: m.endDate ?? m.end_date_iso ?? null,
+        tags,
+        category: tags[0] ?? "Uncategorized",
+      } satisfies PolymarketMarket;
+    });
+}
+
 export function usePolymarketMarkets(q: string = "") {
   return useQuery<PolymarketResponse>({
     queryKey: ["polymarket", q],
     queryFn: async () => {
-      const { data, error } = await invokeFunction<PolymarketResponse>("polymarket", { body: { q, limit: 90 } });
-      if (error) throw new Error(error.message);
-      return data ?? { markets: [], count: 0, categories: [] };
+      const all = await fetchTopMarkets(100);
+      // Categories come from every fetched market (stable chip list).
+      const categories = [...new Set(all.map((m) => m.category))]
+        .filter((c) => c && c !== "Uncategorized")
+        .slice(0, 12);
+
+      const needle = q.trim().toLowerCase();
+      const markets = needle
+        ? all.filter(
+            (m) =>
+              m.question.toLowerCase().includes(needle) ||
+              m.eventTitle.toLowerCase().includes(needle) ||
+              m.tags.some((t) => t.toLowerCase().includes(needle)),
+          )
+        : all;
+
+      return { markets, count: markets.length, categories, query: q };
     },
     staleTime: 60_000,
-    refetchInterval: 2 * 60_000,
+    refetchInterval: false, // no background polling — refresh on visit / manual refresh
     refetchOnWindowFocus: true,
     placeholderData: (prev) => prev,
     retry: 1,

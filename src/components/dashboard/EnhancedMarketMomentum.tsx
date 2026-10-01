@@ -5,8 +5,6 @@ import {
 import { cn } from "@/lib/utils";
 import { useMarketData } from "@/hooks/useMarketData";
 import { useState, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { invokeFunction } from "@/integrations/supabase/functions";
 import { Link } from "react-router-dom";
 
 export function EnhancedMarketMomentum() {
@@ -31,26 +29,10 @@ export function EnhancedMarketMomentum() {
     return { bullish, bearish, neutral, direction, strength, avgChange, velocity, volatilityLevel };
   }, [topCoins]);
 
-  const { data: sectorData } = useQuery({
-    queryKey: ["sector-performance"],
-    queryFn: async () => {
-      const { data } = await invokeFunction("sector-performance");
-      return (data?.sectors ?? []) as Array<{ name: string; change: number }>;
-    },
-    refetchInterval: 120_000,
-    refetchIntervalInBackground: true,
-    staleTime: 60_000,
-  });
-
-  const sectors = useMemo(() => {
-    const list = (sectorData ?? []).slice(0, 4);
-    return list.map(s => ({
-      sector: s.name,
-      avgChange: s.change ?? 0,
-      topMover: topCoins[0]?.symbol || "BTC",
-      topMoverChange: topCoins[0]?.change24h || 0,
-    }));
-  }, [sectorData, topCoins]);
+  // Sector performance needed a backend aggregator that no longer exists;
+  // without a real source the section stays empty instead of showing made-up
+  // sector percentages. Momentum above is computed from live topCoins.
+  const sectors = useMemo(() => [] as Array<{ sector: string; avgChange: number; topMover: string; topMoverChange: number }>, []);
 
   return (
     <div className="border-t border-border/30 pt-5 pb-5">

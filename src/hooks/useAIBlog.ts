@@ -1,5 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { invokeFunction } from "@/integrations/supabase/functions";
+
+// ── useAIBlog — honest empty state ───────────────────────────────────────────
+// Articles were generated server-side by an `ai-blog` edge function that no
+// longer exists. This build has no content source, so the hook returns an
+// explicit empty post list — the Learn page renders its empty state rather
+// than showing fabricated articles.
 
 export interface BlogFAQ {
   question: string;
@@ -34,22 +39,15 @@ export interface AIBlogData {
 export function useAIBlog() {
   return useQuery<AIBlogData>({
     queryKey: ['ai-blog'],
-    queryFn: async () => {
-      const { data, error } = await invokeFunction('ai-blog');
-      
-      if (error) {
-        console.error('AI Blog error:', error);
-        throw error;
-      }
-
-      return data;
-    },
-    staleTime: 300000, // 5 minutes
-    refetchInterval: 600000, // 10 minutes - auto refresh
-    gcTime: 1000 * 60 * 30, // 30 min cache
-    refetchIntervalInBackground: false, // Keep updating in background
-    refetchOnWindowFocus: true,
-    refetchOnReconnect: true,
-    retry: 3,
+    queryFn: async () => ({
+      posts: [],
+      date: new Date().toISOString().slice(0, 10),
+      timestamp: Date.now(),
+      totalArticles: 0,
+    }),
+    staleTime: 5 * 60_000,
+    refetchInterval: false,
+    refetchOnWindowFocus: false,
+    retry: false,
   });
 }

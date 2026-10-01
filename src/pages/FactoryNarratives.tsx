@@ -357,10 +357,10 @@ export default function FactoryNarratives() {
           <h2 className="text-xl font-semibold mb-4">Crypto Narratives FAQ</h2>
           <div className="space-y-4">
             <div>
-              <h3 className="font-medium text-foreground">How is narrative momentum calculated?</h3>
+              <h3 className="font-medium text-foreground">Why is the narratives list empty?</h3>
               <p className="text-muted-foreground text-sm mt-1">
-                Momentum scores combine price performance, volume trends, social sentiment, and capital flows 
-                for tokens within each narrative sector. Higher scores indicate stronger buying interest.
+                Narrative momentum needs social/sector data feeds this build doesn't connect to, so the list
+                stays empty instead of displaying invented sector scores. Live market data is unaffected.
               </p>
             </div>
             <div>
