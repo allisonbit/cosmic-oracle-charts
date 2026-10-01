@@ -248,8 +248,8 @@ const convCoins = [
 });
 
 // News articles (published rows from the content database)
-const SUPABASE_URL = 'https://qynszkirmcrldqmiplwh.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF5bnN6a2lybWNybGRxbWlwbHdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzU2NTQsImV4cCI6MjA4MDc1MTY1NH0.8Jr8lpfAifN-ozIQmA9_wU5YqYjZVlq3Q35KccSI-g0';
+const SUPABASE_URL = 'https://spgijqgogjugqtjtvunb.supabase.co';
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwZ2lqcWdvZ2p1Z3F0anR2dW5iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4NjE0MjgsImV4cCI6MjEwNjQzNzQyOH0.We1TLRV-bmrCXDMpIsTkPt0PL8i07hVUPQL_eiiqvI4";
 try {
   const res = await fetch(
     `${SUPABASE_URL}/rest/v1/blog_articles?select=slug&order=published_at.desc&limit=2000`,

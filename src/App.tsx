@@ -14,6 +14,23 @@ import { RouteErrorBoundary } from "@/components/system/RouteErrorBoundary";
 import { ScrollToTop } from "@/components/system/ScrollToTop";
 import { AdRefresh } from "@/components/ads/AdRefresh";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+
+// Bounce-rate reduction: warm the most-visited route chunks on browser idle so
+// internal navigation feels instant instead of paying a network round-trip.
+// (Literal imports so Vite statically maps them to the real lazy chunks.)
+useEffect(() => {
+  const warm = () => {
+    import("./pages/Dashboard").catch(() => {});
+    import("./pages/PricePrediction").catch(() => {});
+    import("./pages/PredictionHub").catch(() => {});
+    import("./pages/MarketRecap").catch(() => {});
+    import("./pages/CoinToday").catch(() => {});
+  };
+  const t = setTimeout(() => {
+    ("requestIdleCallback" in window ? window.requestIdleCallback(warm) : setTimeout(warm, 2000));
+  }, 1500);
+  return () => clearTimeout(t);
+}, []);
 // AdminRoute is lazy so its supabase `.from()` dependency (the heavy
 // @supabase/supabase-js client) stays out of the initial bundle.
 const AdminRoute = lazy(() => import("@/components/auth/AdminRoute").then(m => ({ default: m.AdminRoute })));
